@@ -1,2 +1,2 @@
 # bluewave-uptime
-BlueWave Uptime Monitoring application
+BlueWave uptime monitoring application
