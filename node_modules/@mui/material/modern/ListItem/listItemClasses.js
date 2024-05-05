@@ -1,0 +1,7 @@
+import generateUtilityClasses from '@mui/utils/generateUtilityClasses';
+import generateUtilityClass from '@mui/utils/generateUtilityClass';
+export function getListItemUtilityClass(slot) {
+  return generateUtilityClass('MuiListItem', slot);
+}
+const listItemClasses = generateUtilityClasses('MuiListItem', ['root', 'container', 'focusVisible', 'dense', 'alignItemsFlexStart', 'disabled', 'divider', 'gutters', 'padding', 'button', 'secondaryAction', 'selected']);
+export default listItemClasses;

@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/Unstable_Grid2/index.js",
+  "types": "./index.d.ts"
+}

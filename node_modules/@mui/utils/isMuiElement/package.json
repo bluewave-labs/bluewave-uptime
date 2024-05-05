@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/isMuiElement/index.js",
+  "types": "./index.d.ts"
+}

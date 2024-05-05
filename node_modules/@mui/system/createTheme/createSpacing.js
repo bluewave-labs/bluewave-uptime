@@ -1,0 +1,37 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createSpacing;
+var _spacing = require("../spacing");
+// The different signatures imply different meaning for their arguments that can't be expressed structurally.
+// We express the difference with variable names.
+
+function createSpacing(spacingInput = 8) {
+  // Already transformed.
+  if (spacingInput.mui) {
+    return spacingInput;
+  }
+
+  // Material Design layouts are visually balanced. Most measurements align to an 8dp grid, which aligns both spacing and the overall layout.
+  // Smaller components, such as icons, can align to a 4dp grid.
+  // https://m2.material.io/design/layout/understanding-layout.html
+  const transform = (0, _spacing.createUnarySpacing)({
+    spacing: spacingInput
+  });
+  const spacing = (...argsInput) => {
+    if (process.env.NODE_ENV !== 'production') {
+      if (!(argsInput.length <= 4)) {
+        console.error(`MUI: Too many arguments provided, expected between 0 and 4, got ${argsInput.length}`);
+      }
+    }
+    const args = argsInput.length === 0 ? [1] : argsInput;
+    return args.map(argument => {
+      const output = transform(argument);
+      return typeof output === 'number' ? `${output}px` : output;
+    }).join(' ');
+  };
+  spacing.mui = true;
+  return spacing;
+}
