@@ -1,35 +1,44 @@
+import * as React from 'react';
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import DropDown from './Dropdown';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedTeamMember, setSelectedTeamMember] = useState(null);
+
+  const teamMembers = [
+    { id: 1, name: 'John Doe' },
+    { id: 2, name: 'Jane Smith' },
+    { id: 3, name: 'Alex Johnson' },
+    // more team members...
+  ];
+
+  const handleTeamMemberChange = (event, value) => {
+    setSelectedTeamMember(value);
+  };
+
+  const handleSubmit = () => {
+    alert(`Selected Team Member: ${selectedTeamMember ? selectedTeamMember.name : 'None'}`);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className="app-container" style={{ width: '500px' }}>
+      <DropDown
+        id="team-member-autocomplete"
+        options={teamMembers}
+        label="Select team member"
+        value={selectedTeamMember}
+        onChange={handleTeamMemberChange}
+      />
+    </div>
     </>
-  )
+  );
 }
 
 export default App
+
