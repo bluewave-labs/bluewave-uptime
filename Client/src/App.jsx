@@ -1,43 +1,23 @@
-import * as React from 'react';
-import { useState } from 'react'
+
+import { Routes, Route } from 'react-router-dom'
 import './App.css'
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import DropDown from './Dropdown';
+import NotFound from './Pages/NotFound'
+import Login from './Pages/Login'
+import Register from './Pages/Register'
+import HomeLayout from './Layouts/HomeLayout'
+
 
 function App() {
-  const [selectedTeamMember, setSelectedTeamMember] = useState(null);
-
-  const teamMembers = [
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-    { id: 3, name: 'Alex Johnson' },
-    // more team members...
-  ];
-
-  const handleTeamMemberChange = (event, value) => {
-    setSelectedTeamMember(value);
-  };
-
-  const handleSubmit = () => {
-    alert(`Selected Team Member: ${selectedTeamMember ? selectedTeamMember.name : 'None'}`);
-  };
-
   return (
     <>
-      <div className="app-container" style={{ width: '500px' }}>
-      <DropDown
-        id="team-member-autocomplete"
-        options={teamMembers}
-        label="Select team member"
-        value={selectedTeamMember}
-        onChange={handleTeamMemberChange}
-      />
-    </div>
+      <Routes>
+        <Route exact path='/' element={<HomeLayout />} />
+        <Route exact path='/register' element={<Register />} />
+        <Route exact path='/login' element={<Login />} />
+        <Route path='*' element={<NotFound />} />
+      </Routes>
     </>
-  );
+  )
 }
 
 export default App
