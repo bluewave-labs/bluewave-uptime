@@ -1,0 +1,9 @@
+#outlined-basic {
+  width: 320px;
+  font-size: 13px;
+}
+
+.email-text-field {
+  position: relative;
+  margin: 10px 20px;
+}
