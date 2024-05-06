@@ -8,12 +8,22 @@ const Home = () => {
     <>
       <div>Home</div>
       <DropdownTeamMember />
-      <div style={{ display: "flex", flexDirection: "flex-column" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", marginTop: "2rem" }}
+      >
+        <h4>Buttons</h4>
         <div>
           <Button level="primary" label="Primary" />
           <Button level="secondary" label="Secondary" />
           <Button level="tertiary" label="Tertiary" />
           <Button level="error" label="Error" />
+        </div>
+        <h4>Disabled Buttons</h4>
+        <div>
+          <Button level="primary" label="Primary" disabled />
+          <Button level="secondary" label="Secondary" disabled />
+          <Button level="tertiary" label="Tertiary" disabled />
+          <Button level="error" label="Error" disabled />
         </div>
       </div>
     </>

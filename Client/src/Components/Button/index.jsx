@@ -27,18 +27,18 @@ const levelConfig = {
  * @property {boolean} [disabled] - Whether the button is disabled
  */
 
-const Button = ({ level, value, disabled }) => {
+const Button = ({ level, label, disabled }) => {
   const { variant, color } = levelConfig[level];
   return (
     <MuiButton variant={variant} color={color} disabled={disabled}>
-      {value}
+      {label}
     </MuiButton>
   );
 };
 
 Button.propTypes = {
   level: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
 };
 
