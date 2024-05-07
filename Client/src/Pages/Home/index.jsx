@@ -1,7 +1,7 @@
 import DropdownTeamMember from "../../Components/DropdownTeamMember";
 import "./index.css";
 import Button from "../../Components/Button";
-import Label from "../../Components/Label";
+import BaseLabel from "../../Components/Label/BaseLabel";
 import { useTheme } from "@mui/material";
 
 const Home = () => {
@@ -27,10 +27,16 @@ const Home = () => {
         </div>
         <h4>Labels</h4>
         <div>
-          <Label label="Label" color={theme.palette.labelOrange.textColor} />
-          <Label label="Label" color={theme.palette.labelGray.textColor} />
-          <Label label="Label" color={theme.palette.labelPurple.textColor} />
-          <Label label="Label" color={theme.palette.labelGreen.textColor} />
+          <BaseLabel label="Label" color={theme.palette.labelGray.textColor} />
+          <BaseLabel
+            label="Label"
+            color={theme.palette.labelPurple.textColor}
+          />
+          <BaseLabel label="Label" color={theme.palette.labelGreen.textColor} />
+          <BaseLabel
+            label="Label"
+            color={theme.palette.labelOrange.textColor}
+          />
         </div>
       </div>
     </>

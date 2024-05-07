@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import "./index.css";
+import "./BaseLabel.css";
 import { useTheme } from "@mui/material";
 
 // Produces a lighter color based on a hex color and a percent
@@ -43,7 +43,11 @@ const Label = ({ label, color }) => {
   // Calculate lighter shades for border and bg
   const borderColor = lightenColor(color, 20);
   const bgColor = lightenColor(color, 75);
+  // Grab the default borderRadius from the theme to match button style
   const { borderRadius } = theme.shape;
+  // Calculate padding for the label to mimic button.  Appears to scale correctly, not 100% sure though.
+  const padding = theme.spacing(1 * 0.75, 2);
+
   return (
     <div
       className="label"
@@ -52,7 +56,7 @@ const Label = ({ label, color }) => {
         borderColor: borderColor,
         backgroundColor: bgColor,
         color: color,
-        padding: theme.spacing(1 * 0.75, 2),
+        padding: padding,
       }}
     >
       {label}
