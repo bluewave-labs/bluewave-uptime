@@ -1,6 +1,7 @@
 import DropdownTeamMember from "../../Components/DropdownTeamMember";
 import "./index.css";
 import Button from "../../Components/Button";
+import Link from "../../Components/Link";
 import ColoredLabel from "../../Components/Label/ColoredLabel";
 import { useTheme } from "@mui/material";
 import StatusLabel from "../../Components/Label/StautsLabel";
@@ -25,6 +26,13 @@ const Home = () => {
           <Button level="secondary" label="Secondary" disabled />
           <Button level="tertiary" label="Tertiary" disabled />
           <Button level="error" label="Error" disabled />
+        </div>
+        <div>
+          <Link
+            level="tertiary"
+            label="Tertiary Link"
+            url={"https://www.google.com"}
+          />
         </div>
         <h4>Labels</h4>
         <div>

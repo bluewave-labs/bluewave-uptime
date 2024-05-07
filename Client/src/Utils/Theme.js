@@ -4,6 +4,7 @@ import { createTheme } from "@mui/material";
 const primaryMain = "#1570EF";
 const secondaryMain = "#475467";
 const tertiaryMain = "#475467";
+const tertiaryLinkHover = "#eff8ff";
 
 // Label Colors
 const labelOrange = "#F79009";
@@ -21,6 +22,7 @@ const theme = createTheme({
     },
     tertiary: {
       main: tertiaryMain,
+      linkHover: tertiaryLinkHover,
     },
     labelOrange: {
       color: labelOrange,
