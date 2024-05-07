@@ -2,15 +2,15 @@ import DropdownTeamMember from "../../Components/DropdownTeamMember";
 import "./index.css";
 import Button from "../../Components/Button";
 import Label from "../../Components/Label";
+import { useTheme } from "@mui/material";
 
 const Home = () => {
+  const theme = useTheme();
   return (
     <>
       <div>Home</div>
       <DropdownTeamMember />
-      <div
-        style={{ display: "flex", flexDirection: "column", marginTop: "2rem" }}
-      >
+      <div>
         <h4>Buttons</h4>
         <div>
           <Button level="primary" label="Primary" />
@@ -27,10 +27,10 @@ const Home = () => {
         </div>
         <h4>Labels</h4>
         <div>
-          <Label label="Label" color="orange" />
-          <Label label="Label" color="gray" />
-          <Label label="Label" color="purple" />
-          <Label label="Label" color="green" />
+          <Label label="Label" color={theme.palette.labelOrange.textColor} />
+          <Label label="Label" color={theme.palette.labelGray.textColor} />
+          <Label label="Label" color={theme.palette.labelPurple.textColor} />
+          <Label label="Label" color={theme.palette.labelGreen.textColor} />
         </div>
       </div>
     </>
