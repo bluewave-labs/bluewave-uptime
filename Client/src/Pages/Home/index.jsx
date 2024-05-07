@@ -3,6 +3,8 @@ import DropdownTeamMember from "../../Components/DropdownTeamMember";
 import "./index.css";
 import Button from "../../Components/Button";
 import Link from "../../Components/Link";
+import Avatar from "../../Components/Avatar/Avatar";
+import avatarImage from "../../assets/Images/avatar_placeholder.png";
 
 const Home = () => {
   return (
@@ -32,6 +34,18 @@ const Home = () => {
             label="Tertiary Link"
             url={"https://www.google.com"}
           />
+        </div>
+        <h4>Avatar</h4>
+        <div style={{ display: "flex" }}>
+          <Avatar src={avatarImage} firstName="Alex" lastName="Holliday" />
+          <Avatar firstName="Alex" lastName="Holliday" />
+          <Avatar
+            src={avatarImage}
+            firstName="Alex"
+            lastName="Holliday"
+            small
+          />
+          <Avatar firstName="Alex" lastName="Holliday" small />
         </div>
       </div>
     </>
