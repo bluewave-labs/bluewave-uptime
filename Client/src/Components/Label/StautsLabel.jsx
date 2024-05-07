@@ -23,6 +23,7 @@ const StatusLabel = ({ status }) => {
     Active: theme.palette.labelGreen.color,
   };
 
+  // Look up the color for the status, default to labelGray if not found
   const color = colorLookup[status] || theme.palette.labelGray.color;
 
   return (
