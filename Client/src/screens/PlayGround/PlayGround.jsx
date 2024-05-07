@@ -2,6 +2,7 @@ import React from "react";
 import EmailTextField from "../../components/TextFields/Email/EmailTextField";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import WebsiteTextField from "../../components/TextFields/Website/WebsiteTextField";
 
 // This Component is just for the development and test
 // purposes and just to see what my components look like while development
@@ -31,6 +32,15 @@ function PlayGround() {
         id="outlined-basic"
         icon={<HelpOutlineIcon />}
         helperText="This is a hint text to help user."
+      />
+      <br />
+      <hr />
+      {/* Now, illustration of the Website text fields */}
+      <br />
+      <WebsiteTextField hintText="This is a hint text to help user." />
+      <WebsiteTextField
+        hasCopyButton={true}
+        hintText="This is a hint text to help user."
       />
     </div>
   );
