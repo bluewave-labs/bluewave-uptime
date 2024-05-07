@@ -20,32 +20,35 @@ function EmailTextField({
   const handleMouseLeave = () => setShowIcon(false);
 
   return (
-    <div className="email-text-field">
-      <TextField
-        error={error}
-        className="email-text-field-input"
-        id={id}
-        label={label}
-        variant={variant}
-        placeholder={placeholder}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              {error && showIcon && (
-                <ErrorOutlineIcon style={{ fill: "red" }} />
-              )}
-              {error && !showIcon && (
-                <ErrorOutlineIcon style={{ fill: "red" }} />
-              )}
-              {!error && showIcon && <HelpOutlineIcon />}
-            </InputAdornment>
-          ),
-        }}
-        helperText={helperText}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
-    </div>
+    <>
+      <div className="email-text-field-title">Email</div>
+      <div className="email-text-field">
+        <TextField
+          error={error}
+          className="email-text-field-input"
+          id={id}
+          label={label}
+          variant={variant}
+          placeholder={placeholder}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                {error && showIcon && (
+                  <ErrorOutlineIcon style={{ fill: "red" }} />
+                )}
+                {error && !showIcon && (
+                  <ErrorOutlineIcon style={{ fill: "red" }} />
+                )}
+                {!error && showIcon && <HelpOutlineIcon />}
+              </InputAdornment>
+            ),
+          }}
+          helperText={helperText}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      </div>
+    </>
   );
 }
 
