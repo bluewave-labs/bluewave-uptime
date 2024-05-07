@@ -26,8 +26,11 @@ const lightenColor = (color, percent) => {
  * @component
  * @param {Object} props
  * @param {string} props.label - The label of the label
- * @param {string} props.color - The color of the label
+ * @param {string} props.color - The color of the label, specified in #RRGGBB format
  * @returns {JSX.Element}
+ * @example
+ * // Render a red label
+ * <ColoredLabel label="Label" color="#FF0000" />
  */
 
 const ColoredLabel = ({ label, color }) => {

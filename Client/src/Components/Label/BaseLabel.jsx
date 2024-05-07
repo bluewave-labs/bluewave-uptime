@@ -14,7 +14,7 @@ import { useTheme } from "@mui/material";
  * @param {Object} props
  * @param {string} props.label - The label of the label
  * @param {Styles} props.styles - CSS Styles passed from parent component
- * @param {React.ReactNode} children - CSS Styles passed from parent component
+ * @param {React.ReactNode} children - Children passed from parent component
  * @returns {JSX.Element}
  */
 

@@ -8,6 +8,9 @@ import { useTheme } from "@mui/material";
  * @param {Object} props
  * @param {'Seen' | 'Waiting' | 'New' | 'Active'} props.status - The status for the label
  * @returns {JSX.Element}
+ * @example
+ * // Render an active label
+ * <StatusLabel status="Active" />
  */
 
 const StatusLabel = ({ status }) => {

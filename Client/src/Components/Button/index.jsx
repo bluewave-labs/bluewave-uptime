@@ -21,10 +21,14 @@ const levelConfig = {
 };
 
 /**
- * @param {Object} Props
- * @param {'primary' | 'secondary' | 'tertiary' | 'error'} level - The level of the button
- * @param {string} label - The label of the button
- * @param {boolean} [disabled] - Whether the button is disabled
+ * @param {Object} props
+ * @param {'primary' | 'secondary' | 'tertiary' | 'error'} props.level - The level of the button
+ * @param {string} props.label - The label of the button
+ * @param {boolean} [props.disabled] - Whether the button is disabled
+ * @returns {JSX.Element}
+ * @example
+ * // Render an error button
+ * <Button level="error" label="Error" disabled />
  */
 
 const Button = ({ level, label, disabled }) => {
