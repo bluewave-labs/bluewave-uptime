@@ -1,8 +1,9 @@
 import DropdownTeamMember from "../../Components/DropdownTeamMember";
 import "./index.css";
 import Button from "../../Components/Button";
-import BaseLabel from "../../Components/Label/BaseLabel";
+import ColoredLabel from "../../Components/Label/ColoredLabel";
 import { useTheme } from "@mui/material";
+import StatusLabel from "../../Components/Label/StautsLabel";
 
 const Home = () => {
   const theme = useTheme();
@@ -27,16 +28,18 @@ const Home = () => {
         </div>
         <h4>Labels</h4>
         <div>
-          <BaseLabel label="Label" color={theme.palette.labelGray.textColor} />
-          <BaseLabel
-            label="Label"
-            color={theme.palette.labelPurple.textColor}
-          />
-          <BaseLabel label="Label" color={theme.palette.labelGreen.textColor} />
-          <BaseLabel
-            label="Label"
-            color={theme.palette.labelOrange.textColor}
-          />
+          <ColoredLabel label="Label" color={theme.palette.labelGray.color} />
+          <ColoredLabel label="Label" color={theme.palette.labelPurple.color} />
+          <ColoredLabel label="Label" color={theme.palette.labelGreen.color} />
+          <ColoredLabel label="Label" color={theme.palette.labelOrange.color} />
+        </div>
+
+        <h4>Status Lables</h4>
+        <div>
+          <StatusLabel status="Seen" />
+          <StatusLabel status="Waiting" />
+          <StatusLabel status="New" />
+          <StatusLabel status="Active" />
         </div>
       </div>
     </>

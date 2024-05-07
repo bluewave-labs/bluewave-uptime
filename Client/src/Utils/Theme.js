@@ -6,11 +6,11 @@ const secondaryMain = "#475467";
 const tertiaryMain = "#475467";
 
 // Label Colors
-const labelTextOrange = "#B93815";
-const labelTextGray = "#475467";
-const labelTextPurple = "#6941C6";
-const labelTextGreen = "#067647";
-
+const labelOrange = "#F79009";
+const labelGray = "#475467";
+const labelPurple = "#6941C6";
+const labelGreen = "#067647";
+const labelRed = "#F04438";
 const theme = createTheme({
   palette: {
     primary: {
@@ -23,16 +23,19 @@ const theme = createTheme({
       main: tertiaryMain,
     },
     labelOrange: {
-      textColor: labelTextOrange,
+      color: labelOrange,
     },
     labelGray: {
-      textColor: labelTextGray,
+      color: labelGray,
     },
     labelPurple: {
-      textColor: labelTextPurple,
+      color: labelPurple,
     },
     labelGreen: {
-      textColor: labelTextGreen,
+      color: labelGreen,
+    },
+    labelRed: {
+      color: labelRed,
     },
   },
 });

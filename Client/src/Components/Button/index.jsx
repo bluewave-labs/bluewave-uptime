@@ -21,10 +21,10 @@ const levelConfig = {
 };
 
 /**
- * @typedef {Object} Props
- * @property {'primary' | 'secondary' | 'tertiary' | 'error'} level - The level of the button
- * @property {string} label - The label of the button
- * @property {boolean} [disabled] - Whether the button is disabled
+ * @param {Object} Props
+ * @param {'primary' | 'secondary' | 'tertiary' | 'error'} level - The level of the button
+ * @param {string} label - The label of the button
+ * @param {boolean} [disabled] - Whether the button is disabled
  */
 
 const Button = ({ level, label, disabled }) => {
