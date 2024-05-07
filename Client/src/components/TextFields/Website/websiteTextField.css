@@ -1,0 +1,84 @@
+:root {
+  --border-color: #d0d5dd;
+  --label-font-color: #475467;
+  --icon-color: #98a2b3;
+  --text-field-margin-0: 10px 20px;
+  --text-field-margin-1: 10px 20px 5px;
+  --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+.website-textfield-title {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  margin: 0 20px;
+  margin-top: 30px;
+}
+
+.website-textfield {
+  font-family: var(--font-family);
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin: var(--text-field-margin-1);
+}
+
+.website-textfield-hint {
+  margin: var(--text-field-margin-0);
+  font-family: var(--font-family);
+  font-size: 11px;
+}
+
+.website-label {
+  height: 33px;
+  padding: 5px 20px 5px 10px;
+  border: solid 1px var(--border-color);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  font-size: 13px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--label-font-color);
+}
+
+.website-url {
+  width: 248px;
+  height: 33px;
+  padding: 5px 15px;
+  border: solid 1px var(--border-color);
+}
+
+.website-icon-holder {
+  width: 40px;
+  height: 33px;
+  padding: 5px;
+  border: solid 1px var(--border-color);
+  border-left: none;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copy-to-clipboard-button {
+  height: 33px;
+  padding: 5px 20px 5px 10px;
+  border: solid 1px var(--border-color);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  text-align: center;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: var(--label-font-color);
+  cursor: pointer;
+}
+
+.copy-icon {
+  margin-right: 10px;
+}
+
+.with-no-copy-button {
+  display: none;
+}

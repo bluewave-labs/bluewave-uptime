@@ -1,0 +1,15 @@
+#outlined-basic {
+  width: 320px;
+  font-size: 13px;
+}
+
+.email-text-field {
+  position: relative;
+  margin: 10px 20px;
+}
+
+.email-text-field-title {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  margin: 0 20px;
+  margin-top: 30px;
+}
