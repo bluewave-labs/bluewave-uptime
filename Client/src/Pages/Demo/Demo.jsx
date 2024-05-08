@@ -19,6 +19,10 @@ import Avatar from "../../Components/Avatar/Avatar";
 import avatarImage from "../../assets/Images/avatar_placeholder.png";
 import { DataGrid } from "@mui/x-data-grid";
 
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 const cols = [
   {
     field: "name",
@@ -75,6 +79,7 @@ const rows = ((count) => {
 const Demo = () => {
   const [radio, setRadio] = React.useState(1);
   const [tab, setTab] = React.useState("departments");
+  const [date, setDate] = React.useState("Pick a date!");
 
   const handleRadio = (event) => {
     setRadio(event.target.value);
@@ -82,6 +87,10 @@ const Demo = () => {
 
   const handleTab = (event, newValue) => {
     setTab(newValue);
+  };
+
+  const handleDate = (newValue) => {
+    setDate(newValue.toString());
   };
 
   const change = (event, type) => {
@@ -184,12 +193,23 @@ const Demo = () => {
         />
       </div>
       <h4>Tabs</h4>
-      <Tabs value={tab} onChange={handleTab}>
-        <Tab label="My details" value="details" />
-        <Tab label="My team" value="team" />
-        <Tab label="Departments" value="departments" />
-        <Tab label="Approvals" value="approvals" />
-      </Tabs>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        {" "}
+        <Tabs value={tab} onChange={handleTab}>
+          <Tab label="My details" value="details" />
+          <Tab label="My team" value="team" />
+          <Tab label="Departments" value="departments" />
+          <Tab label="Approvals" value="approvals" />
+        </Tabs>
+      </div>
+
+      <h4>Date Picker</h4>
+      <div>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker onChange={handleDate} />
+        </LocalizationProvider>
+        <h4>{date}</h4>
+      </div>
     </div>
   );
 };
