@@ -64,7 +64,7 @@ const rows = ((count) => {
       name: {
         avatarImage: i % 2 === 0 ? avatarImage : null,
         firstName: "Placeholder Name",
-        lastName: i,
+        lastName: i.toString(),
       },
       status: "Active",
       role: "Product Designer",
@@ -180,7 +180,7 @@ const Demo = () => {
         </FormControl>
       </div>
       <h4>Table</h4>
-      <div style={{ width: "50vw" }}>
+      <div style={{ width: "75vw" }}>
         <DataGrid
           autoHeight
           columns={cols}
@@ -190,6 +190,7 @@ const Demo = () => {
               paginationModel: { page: 0, pageSize: 10 },
             },
           }}
+          pageSizeOptions={[5, 10]}
         />
       </div>
       <h4>Tabs</h4>
