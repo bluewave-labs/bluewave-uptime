@@ -1,17 +1,18 @@
-import React from "react";
 import DropdownTeamMember from "../../Components/DropdownTeamMember";
 import "./index.css";
 import Button from "../../Components/Button";
 import Link from "../../Components/Link";
+import ColoredLabel from "../../Components/Label/ColoredLabel";
+import { useTheme } from "@mui/material";
+import StatusLabel from "../../Components/Label/StautsLabel";
 
 const Home = () => {
+  const theme = useTheme();
   return (
     <>
       <div>Home</div>
       <DropdownTeamMember />
-      <div
-        style={{ display: "flex", flexDirection: "column", marginTop: "2rem" }}
-      >
+      <div>
         <h4>Buttons</h4>
         <div>
           <Button level="primary" label="Primary" />
@@ -32,6 +33,21 @@ const Home = () => {
             label="Tertiary Link"
             url={"https://www.google.com"}
           />
+        </div>
+        <h4>Labels</h4>
+        <div>
+          <ColoredLabel label="Label" color={theme.palette.labelGray.color} />
+          <ColoredLabel label="Label" color={theme.palette.labelPurple.color} />
+          <ColoredLabel label="Label" color={theme.palette.labelGreen.color} />
+          <ColoredLabel label="Label" color={theme.palette.labelOrange.color} />
+        </div>
+
+        <h4>Status Lables</h4>
+        <div>
+          <StatusLabel status="Seen" />
+          <StatusLabel status="Waiting" />
+          <StatusLabel status="New" />
+          <StatusLabel status="Active" />
         </div>
       </div>
     </>
