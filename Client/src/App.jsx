@@ -1,7 +1,11 @@
+import PlayGroundCharts from "./screens/PlayGround/PlayGround-Charts";
+
 function App() {
   return (
     <>
-      <div></div>
+      <div>
+        <PlayGroundCharts />
+      </div>
     </>
   );
 }
