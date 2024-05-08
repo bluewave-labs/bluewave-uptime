@@ -1,5 +1,5 @@
 :root {
-  --spacing-general-0: 5px 10px;
+  --stats-spacing-general-0: 5px 10px;
   --color-border-0: #eaecf0;
   --border-radius-0: 4px;
   --font-size-0: 1rem;
@@ -10,8 +10,8 @@
 }
 
 .statistic-tile {
-  margin: var(--spacing-general-0);
-  padding: var(--spacing-general-0);
+  margin: var(--stats-spacing-general-0);
+  padding: var(--stats-spacing-general-0);
   border: 1px solid var(--color-border-0);
   border-radius: var(--border-radius-0);
 
@@ -28,6 +28,7 @@
 .statistic-tile-value {
   font-size: var(--font-size-1);
   font-family: var(--font-family-0);
-  font-weight: 500;
+  color: var(--font-color-0);
+  font-weight: 700;
   margin-bottom: var(--margin-bottom-0);
 }
