@@ -5,6 +5,8 @@ import Link from "../../Components/Link";
 import ColoredLabel from "../../Components/Label/ColoredLabel";
 import { useTheme } from "@mui/material";
 import StatusLabel from "../../Components/Label/StautsLabel";
+import Avatar from "../../Components/Avatar/Avatar";
+import avatarImage from "../../assets/Images/avatar_placeholder.png";
 
 const Home = () => {
   const theme = useTheme();
@@ -48,6 +50,18 @@ const Home = () => {
           <StatusLabel status="Waiting" />
           <StatusLabel status="New" />
           <StatusLabel status="Active" />
+        </div>
+        <h4>Avatar</h4>
+        <div style={{ display: "flex" }}>
+          <Avatar src={avatarImage} firstName="Alex" lastName="Holliday" />
+          <Avatar firstName="Alex" lastName="Holliday" />
+          <Avatar
+            src={avatarImage}
+            firstName="Alex"
+            lastName="Holliday"
+            small
+          />
+          <Avatar firstName="Alex" lastName="Holliday" small />
         </div>
       </div>
     </>
