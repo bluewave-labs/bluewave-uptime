@@ -11,6 +11,8 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Tab,
+  Tabs,
 } from "@mui/material";
 import StatusLabel from "../../Components/Label/StautsLabel";
 import Avatar from "../../Components/Avatar/Avatar";
@@ -72,9 +74,14 @@ const rows = ((count) => {
 
 const Demo = () => {
   const [radio, setRadio] = React.useState(1);
+  const [tab, setTab] = React.useState("departments");
 
   const handleRadio = (event) => {
     setRadio(event.target.value);
+  };
+
+  const handleTab = (event, newValue) => {
+    setTab(newValue);
   };
 
   const change = (event, type) => {
@@ -164,7 +171,7 @@ const Demo = () => {
         </FormControl>
       </div>
       <h4>Table</h4>
-      <div style={{ height: "400px", width: "50vw" }}>
+      <div style={{ width: "50vw" }}>
         <DataGrid
           autoHeight
           columns={cols}
@@ -176,6 +183,13 @@ const Demo = () => {
           }}
         />
       </div>
+      <h4>Tabs</h4>
+      <Tabs value={tab} onChange={handleTab}>
+        <Tab label="My details" value="details" />
+        <Tab label="My team" value="team" />
+        <Tab label="Departments" value="departments" />
+        <Tab label="Approvals" value="approvals" />
+      </Tabs>
     </div>
   );
 };
