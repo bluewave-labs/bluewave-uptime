@@ -1,7 +1,11 @@
+import PlayGroundPopupModals from "./screens/PlayGround/PlayGround-Popup-Modals";
+
 function App() {
   return (
     <>
-      <div></div>
+      <div>
+        <PlayGroundPopupModals />
+      </div>
     </>
   );
 }
