@@ -3,6 +3,7 @@ import Button from "../../Components/Button";
 import Link from "../../Components/Link";
 import ColoredLabel from "../../Components/Label/ColoredLabel";
 import {
+  Box,
   useTheme,
   Switch,
   Checkbox,
@@ -16,6 +17,7 @@ import {
 } from "@mui/material";
 import StatusLabel from "../../Components/Label/StautsLabel";
 import Avatar from "../../Components/Avatar/Avatar";
+import ProgressStepper from "../../Components/ProgressStepper/ProgressStepper";
 import avatarImage from "../../assets/Images/avatar_placeholder.png";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -75,6 +77,12 @@ const rows = ((count) => {
   }
   return arr;
 })(100);
+
+const steps = [
+  { label: "Your details", content: "Please provide your name and email" },
+  { label: "Company details", content: "A few details about your company" },
+  { label: "Invite your team", content: "Start collaborating with your team" },
+];
 
 const Demo = () => {
   const [radio, setRadio] = React.useState(1);
@@ -210,6 +218,11 @@ const Demo = () => {
           <DatePicker onChange={handleDate} />
         </LocalizationProvider>
         <h4>{date}</h4>
+      </div>
+
+      <h4>Stepper</h4>
+      <div>
+        <ProgressStepper steps={steps}></ProgressStepper>
       </div>
     </div>
   );
