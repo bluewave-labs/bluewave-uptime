@@ -1,7 +1,11 @@
+import PlayGroundTooltips from "./screens/PlayGround/PlayGround-Tooltips";
+
 function App() {
   return (
     <>
-      <div></div>
+      <div>
+        <PlayGroundTooltips />
+      </div>
     </>
   );
 }

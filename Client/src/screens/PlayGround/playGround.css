@@ -5,3 +5,10 @@
 .play-ground-charts-spacing {
   height: 110px;
 }
+
+.tooltip-playground {
+  margin: auto;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
