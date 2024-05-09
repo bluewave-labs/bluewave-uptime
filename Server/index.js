@@ -1,9 +1,15 @@
 const express = require('express')
 const helmet = require('helmet')
 const cors = require('cors')
+const authRouter = require('./routes/authRoute')
 const { connectDbAndRunServer } = require('./configs/db')
 require('dotenv').config()
 
+/**
+ * NOTES
+ * Email Service will be added 
+ * Logger Service will be added (Winston or similar)
+ */
 
 const app = express()
 
@@ -15,7 +21,7 @@ app.use(express.json())
 app.use(helmet())
 
 //routes
-
+app.use('/api/v1/auth', authRouter);
 
 //health check
 app.use('/api/v1/healthy', (req, res) => {
