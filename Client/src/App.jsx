@@ -1,10 +1,10 @@
-import PlayGroundPopupModals from "./screens/PlayGround/PlayGround-Popup-Modals";
+import PlayGroundTooltips from "./screens/PlayGround/PlayGround-Tooltips";
 
 function App() {
   return (
     <>
       <div>
-        <PlayGroundPopupModals />
+        <PlayGroundTooltips />
       </div>
     </>
   );
