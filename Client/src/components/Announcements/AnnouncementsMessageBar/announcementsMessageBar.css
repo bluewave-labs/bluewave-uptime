@@ -1,0 +1,14 @@
+:root {
+  --announcement-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  --announcement-font-size-0: 13px;
+  --announcement-padding: 16px;
+}
+
+.announcement-messagebar-body {
+  font-size: var(--announcement-font-size-0);
+  font-family: var(--announcement-font-family);
+  padding: 0 var(--announcement-padding) 0 0;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
