@@ -4,7 +4,7 @@ const cors = require('cors')
 const authRouter = require('./routes/authRoute')
 const { connectDbAndRunServer } = require('./configs/db')
 require('dotenv').config()
-const { sendEmail } = require('./utils/sendEmail')
+// const { sendEmail } = require('./utils/sendEmail')
 
 /**
  * NOTES
