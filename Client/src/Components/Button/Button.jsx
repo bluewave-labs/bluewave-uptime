@@ -33,6 +33,7 @@ const levelConfig = {
 };
 
 /**
+ * @component
  * @param {Object} props
  * @param {'primary' | 'secondary' | 'tertiary' | 'error' | 'imagePrimary' | 'imageSecondary' | 'imageTertiary'} props.level - The level of the button
  * @param {string} props.label - The label of the button

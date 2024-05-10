@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../../Components/Button/Button";
-import Link from "../../Components/Link";
+import Link from "../../Components/Link/Link";
 import ColoredLabel from "../../Components/Label/ColoredLabel";
 import {
   useTheme,
@@ -25,6 +25,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
+import Divider from "@mui/material/Divider";
 
 const cols = [
   {
@@ -112,23 +113,87 @@ const Demo = () => {
     alert(event.target.checked ? `${type} checked` : `${type} unchecked`);
   };
 
+  const links = [
+    {
+      name: "Buttons",
+      url: "#buttons",
+    },
+    {
+      name: "Disabled Buttons",
+      url: "#disabled-buttons",
+    },
+    {
+      name: "Labels",
+      url: "#labels",
+    },
+    {
+      name: "Status Labels",
+      url: "#status-labels",
+    },
+    {
+      name: "Avatar",
+      url: "#avatar",
+    },
+    {
+      name: "Switches",
+      url: "#switches",
+    },
+    {
+      name: "Checkboxes",
+      url: "#checkboxes",
+    },
+    {
+      name: "Radio",
+      url: "#radio",
+    },
+    {
+      name: "Table",
+      url: "#table",
+    },
+    {
+      name: "Tabs",
+      url: "#tabs",
+    },
+    {
+      name: "Date Picker",
+      url: "#date-picker",
+    },
+    {
+      name: "Stepper",
+      url: "#stepper",
+    },
+    {
+      name: "Section",
+      url: "#section",
+    },
+  ];
+
   const theme = useTheme();
   return (
     <div>
-      <h4>Buttons</h4>
+      <ul style={{ listStyle: "none" }}>
+        {links.map((link) => (
+          <li key={link.url}>
+            <Link level="primary" label={link.name} url={link.url} />
+          </li>
+        ))}
+      </ul>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="buttons">Buttons</h4>
       <div>
         <Button level="primary" label="Primary" />
         <Button level="secondary" label="Secondary" />
         <Button level="tertiary" label="Tertiary" />
         <Button level="error" label="Error" />
+        <Button level="imageTertiary" label="Image Button" img={<AddIcon />} />
       </div>
-      <h4>Disabled Buttons</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="disabled-buttons">Disabled Buttons</h4>
       <div>
         <Button level="primary" label="Primary" disabled />
         <Button level="secondary" label="Secondary" disabled />
         <Button level="tertiary" label="Tertiary" disabled />
         <Button level="error" label="Error" disabled />
-        <Button level="imageTertiary" label="Image Button" img={<AddIcon />} />
       </div>
       <div>
         <Link
@@ -137,43 +202,48 @@ const Demo = () => {
           url={"https://www.google.com"}
         />
       </div>
-      <h4>Labels</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="labels">Labels</h4>
       <div>
         <ColoredLabel label="Label" color={theme.palette.labelGray.color} />
         <ColoredLabel label="Label" color={theme.palette.labelPurple.color} />
         <ColoredLabel label="Label" color={theme.palette.labelGreen.color} />
         <ColoredLabel label="Label" color={theme.palette.labelOrange.color} />
       </div>
-
-      <h4>Status Lables</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="status-labels">Status Lables</h4>
       <div>
         <StatusLabel status="Seen" />
         <StatusLabel status="Waiting" />
         <StatusLabel status="New" />
         <StatusLabel status="Active" />
       </div>
-      <h4>Avatar</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="avatar">Avatar</h4>
       <div style={{ display: "flex" }}>
         <Avatar src={avatarImage} firstName="Alex" lastName="Holliday" />
         <Avatar firstName="Alex" lastName="Holliday" />
         <Avatar src={avatarImage} firstName="Alex" lastName="Holliday" small />
         <Avatar firstName="Alex" lastName="Holliday" small />
       </div>
-      <h4>Switches</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="switches">Switches</h4>
       <div>
         <Switch onChange={(event) => change(event, "Switch")} />
         <Switch size="small" />
         <Switch disabled />
         <Switch checked />
       </div>
-      <h4>Checkboxes</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="checkboxes">Checkboxes</h4>
       <div>
         <Checkbox onChange={(event) => change(event, "Checkbox")} />
         <Checkbox size="small" />
         <Checkbox disabled />
         <Checkbox checked />
       </div>
-      <h4>Radio</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="radio">Radio</h4>
       <div>
         <FormControl>
           <FormLabel>Demo Radio</FormLabel>
@@ -195,7 +265,8 @@ const Demo = () => {
           </RadioGroup>
         </FormControl>
       </div>
-      <h4>Table</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="table">Table</h4>
       <div style={{ width: "75vw" }}>
         <DataGrid
           autoHeight
@@ -209,7 +280,8 @@ const Demo = () => {
           pageSizeOptions={[5, 10]}
         />
       </div>
-      <h4>Tabs</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="tabs">Tabs</h4>
       <div style={{ display: "flex", justifyContent: "center" }}>
         {" "}
         <Tabs value={tab} onChange={handleTab}>
@@ -219,21 +291,21 @@ const Demo = () => {
           <Tab label="Approvals" value="approvals" />
         </Tabs>
       </div>
-
-      <h4>Date Picker</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="date-picker">Date Picker</h4>
       <div>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker onChange={handleDate} />
         </LocalizationProvider>
         <h4>{date}</h4>
       </div>
-
-      <h4>Stepper</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="stepper">Stepper</h4>
       <div>
         <ProgressStepper steps={steps}></ProgressStepper>
       </div>
-
-      <h4>Section</h4>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="section">Section</h4>
       <Section monitors={monitors} />
     </div>
   );
