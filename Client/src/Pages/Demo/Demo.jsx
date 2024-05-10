@@ -1,9 +1,8 @@
 import React from "react";
-import Button from "../../Components/Button";
+import Button from "../../Components/Button/Button";
 import Link from "../../Components/Link";
 import ColoredLabel from "../../Components/Label/ColoredLabel";
 import {
-  Box,
   useTheme,
   Switch,
   Checkbox,
@@ -19,11 +18,13 @@ import StatusLabel from "../../Components/Label/StautsLabel";
 import Avatar from "../../Components/Avatar/Avatar";
 import ProgressStepper from "../../Components/ProgressStepper/ProgressStepper";
 import avatarImage from "../../assets/Images/avatar_placeholder.png";
+import Section from "../../Components/Section/Section";
 import { DataGrid } from "@mui/x-data-grid";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import AddIcon from "@mui/icons-material/Add";
 
 const cols = [
   {
@@ -84,6 +85,12 @@ const steps = [
   { label: "Invite your team", content: "Start collaborating with your team" },
 ];
 
+const monitors = [
+  { id: 0, name: "Google", isActive: true },
+  { id: 1, name: "Yahoo", isActive: false },
+  { id: 2, name: "Reddit", isActive: true },
+];
+
 const Demo = () => {
   const [radio, setRadio] = React.useState(1);
   const [tab, setTab] = React.useState("departments");
@@ -121,6 +128,7 @@ const Demo = () => {
         <Button level="secondary" label="Secondary" disabled />
         <Button level="tertiary" label="Tertiary" disabled />
         <Button level="error" label="Error" disabled />
+        <Button level="imageTertiary" label="Image Button" img={<AddIcon />} />
       </div>
       <div>
         <Link
@@ -224,6 +232,9 @@ const Demo = () => {
       <div>
         <ProgressStepper steps={steps}></ProgressStepper>
       </div>
+
+      <h4>Section</h4>
+      <Section monitors={monitors} />
     </div>
   );
 };

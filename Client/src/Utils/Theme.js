@@ -12,6 +12,10 @@ const labelGray = "#475467";
 const labelPurple = "#6941C6";
 const labelGreen = "#067647";
 const labelRed = "#F04438";
+
+//Section colros
+const sectionBorder = "#D0D5DD";
+const sectionBg = "#F8F9F8";
 const theme = createTheme({
   palette: {
     primary: {
@@ -39,6 +43,13 @@ const theme = createTheme({
     labelRed: {
       color: labelRed,
     },
+    section: {
+      borderColor: sectionBorder,
+      bgColor: sectionBg,
+    },
+  },
+  shape: {
+    borderRadius: 4,
   },
 });
 
