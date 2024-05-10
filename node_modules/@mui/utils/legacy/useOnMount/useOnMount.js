@@ -1,0 +1,13 @@
+'use client';
+
+import * as React from 'react';
+var EMPTY = [];
+
+/**
+ * A React.useEffect equivalent that runs once, when the component is mounted.
+ */
+export default function useOnMount(fn) {
+  /* eslint-disable react-hooks/exhaustive-deps */
+  React.useEffect(fn, EMPTY);
+  /* eslint-enable react-hooks/exhaustive-deps */
+}

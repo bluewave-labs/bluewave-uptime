@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/AdapterMomentJalaali/index.js",
+  "types": "./index.d.ts"
+}

@@ -1,0 +1,1 @@
+export { useStaticPicker } from './useStaticPicker';

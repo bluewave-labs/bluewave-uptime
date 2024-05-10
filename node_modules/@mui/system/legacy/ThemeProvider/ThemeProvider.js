@@ -1,0 +1,87 @@
+'use client';
+
+import _defineProperty from "@babel/runtime/helpers/esm/defineProperty";
+import _extends from "@babel/runtime/helpers/esm/extends";
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import { ThemeProvider as MuiThemeProvider, useTheme as usePrivateTheme } from '@mui/private-theming';
+import exactProp from '@mui/utils/exactProp';
+import { ThemeContext as StyledEngineThemeContext } from '@mui/styled-engine';
+import useThemeWithoutDefault from '../useThemeWithoutDefault';
+import RtlProvider from '../RtlProvider';
+import { jsx as _jsx } from "react/jsx-runtime";
+var EMPTY_THEME = {};
+function useThemeScoping(themeId, upperTheme, localTheme) {
+  var isPrivate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  return React.useMemo(function () {
+    var resolvedTheme = themeId ? upperTheme[themeId] || upperTheme : upperTheme;
+    if (typeof localTheme === 'function') {
+      var mergedTheme = localTheme(resolvedTheme);
+      var result = themeId ? _extends({}, upperTheme, _defineProperty({}, themeId, mergedTheme)) : mergedTheme;
+      // must return a function for the private theme to NOT merge with the upper theme.
+      // see the test case "use provided theme from a callback" in ThemeProvider.test.js
+      if (isPrivate) {
+        return function () {
+          return result;
+        };
+      }
+      return result;
+    }
+    return themeId ? _extends({}, upperTheme, _defineProperty({}, themeId, localTheme)) : _extends({}, upperTheme, localTheme);
+  }, [themeId, upperTheme, localTheme, isPrivate]);
+}
+
+/**
+ * This component makes the `theme` available down the React tree.
+ * It should preferably be used at **the root of your component tree**.
+ *
+ * <ThemeProvider theme={theme}> // existing use case
+ * <ThemeProvider theme={{ id: theme }}> // theme scoping
+ */
+function ThemeProvider(props) {
+  var children = props.children,
+    localTheme = props.theme,
+    themeId = props.themeId;
+  var upperTheme = useThemeWithoutDefault(EMPTY_THEME);
+  var upperPrivateTheme = usePrivateTheme() || EMPTY_THEME;
+  if (process.env.NODE_ENV !== 'production') {
+    if (upperTheme === null && typeof localTheme === 'function' || themeId && upperTheme && !upperTheme[themeId] && typeof localTheme === 'function') {
+      console.error(['MUI: You are providing a theme function prop to the ThemeProvider component:', '<ThemeProvider theme={outerTheme => outerTheme} />', '', 'However, no outer theme is present.', 'Make sure a theme is already injected higher in the React tree ' + 'or provide a theme object.'].join('\n'));
+    }
+  }
+  var engineTheme = useThemeScoping(themeId, upperTheme, localTheme);
+  var privateTheme = useThemeScoping(themeId, upperPrivateTheme, localTheme, true);
+  var rtlValue = engineTheme.direction === 'rtl';
+  return /*#__PURE__*/_jsx(MuiThemeProvider, {
+    theme: privateTheme,
+    children: /*#__PURE__*/_jsx(StyledEngineThemeContext.Provider, {
+      value: engineTheme,
+      children: /*#__PURE__*/_jsx(RtlProvider, {
+        value: rtlValue,
+        children: children
+      })
+    })
+  });
+}
+process.env.NODE_ENV !== "production" ? ThemeProvider.propTypes /* remove-proptypes */ = {
+  // ┌────────────────────────────── Warning ──────────────────────────────┐
+  // │ These PropTypes are generated from the TypeScript type definitions. │
+  // │    To update them, edit the d.ts file and run `pnpm proptypes`.     │
+  // └─────────────────────────────────────────────────────────────────────┘
+  /**
+   * Your component tree.
+   */
+  children: PropTypes.node,
+  /**
+   * A theme object. You can provide a function to extend the outer theme.
+   */
+  theme: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
+  /**
+   * The design system's unique id for getting the corresponded theme when there are multiple design systems.
+   */
+  themeId: PropTypes.string
+} : void 0;
+if (process.env.NODE_ENV !== 'production') {
+  process.env.NODE_ENV !== "production" ? ThemeProvider.propTypes = exactProp(ThemeProvider.propTypes) : void 0;
+}
+export default ThemeProvider;

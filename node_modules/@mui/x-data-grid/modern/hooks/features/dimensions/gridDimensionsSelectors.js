@@ -1,0 +1,1 @@
+export const gridDimensionsSelector = state => state.dimensions;

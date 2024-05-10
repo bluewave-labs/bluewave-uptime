@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/visuallyHidden/index.js",
+  "types": "./index.d.ts"
+}

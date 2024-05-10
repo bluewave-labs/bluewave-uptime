@@ -1,0 +1,1 @@
+export { AdapterMomentJalaali } from './AdapterMomentJalaali';

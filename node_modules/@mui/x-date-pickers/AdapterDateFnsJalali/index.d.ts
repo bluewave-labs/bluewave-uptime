@@ -1,0 +1,1 @@
+export { AdapterDateFnsJalali } from './AdapterDateFnsJalali';
