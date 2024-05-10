@@ -49,4 +49,5 @@ const getMonitorsByUserId = async (userId) => {
   return userMonitors;
 };
 
+// Conisder standardizing these methods so we can swap databases easily
 module.exports = { getAllMonitors, getMonitorById, getMonitorsByUserId };
