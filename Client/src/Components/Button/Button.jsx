@@ -47,7 +47,6 @@ const levelConfig = {
 
 const Button = ({ level, label, disabled, img, sx }) => {
   const { variant, color } = levelConfig[level];
-  console.log(img);
   return (
     <MuiButton
       variant={variant}

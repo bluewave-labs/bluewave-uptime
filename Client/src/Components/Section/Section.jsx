@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -23,7 +24,24 @@ import AddIcon from "@mui/icons-material/Add";
  */
 
 const Section = ({ monitors }) => {
-  console.log(monitors);
+  const [monitorStates, setMonitorStates] = useState(
+    monitors.map((monitor) => monitor.isActive)
+  );
+
+  useEffect(() => {
+    console.log("Monitor states updated", monitorStates);
+    // Update DB here
+  }, [monitorStates]);
+
+  const handleMonitor = (monitorIndex) => {
+    setMonitorStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[monitorIndex] = !newStates[monitorIndex];
+
+      return newStates;
+      // Need to update DB with new monitor state
+    });
+  };
   const theme = useTheme();
   return (
     <>
@@ -66,7 +84,7 @@ const Section = ({ monitors }) => {
         >
           <Typography>Servers List</Typography>
           <Button level="primary" label="Add new" />
-          {monitors.map((monitor) => {
+          {monitors.map((monitor, index) => {
             return (
               <Box
                 key={monitor.id}
@@ -85,7 +103,10 @@ const Section = ({ monitors }) => {
                 <MenuIcon
                   sx={{ color: `${theme.palette.section.borderColor}` }}
                 />
-                <Switch checked={monitor.isActive} />
+                <Switch
+                  checked={monitorStates[index]}
+                  onChange={() => handleMonitor(index)}
+                />
                 <Typography sx={{ flexGrow: 1 }}>{monitor.name}</Typography>
                 <DeleteOutlineIcon
                   sx={{ color: `${theme.palette.section.borderColor}` }}
