@@ -2,6 +2,8 @@ const {
   getMonitorsByIdValidation,
   getMonitorsByUserIdValidation,
 } = require("../validation/joi");
+
+// Fake database, if we have standardized DB methods we can swap out databases easily
 const db = require("../db/FakeDb");
 
 // Gets all monitors

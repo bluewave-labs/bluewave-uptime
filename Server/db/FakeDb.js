@@ -1,3 +1,9 @@
+// **************************
+// FakeDB is used to simulate the database
+// If we standarize the DB methods we can swap out databases easily
+// Too bad JS doesn't have interfaces, that would be nice.  TypeScript anyone?
+// **************************
+
 const Monitor = require("../models/Monitor");
 
 const FAKE_MONITOR_DATA = [];
