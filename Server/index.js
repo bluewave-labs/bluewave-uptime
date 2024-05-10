@@ -1,28 +1,32 @@
-const express = require('express')
-const helmet = require('helmet')
-const cors = require('cors')
-const authRouter = require('./routes/authRoute')
-const { connectDbAndRunServer } = require('./configs/db')
-require('dotenv').config()
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const authRouter = require("./routes/authRoute");
+const monitorRouter = require("./routes/monitorRoute");
+const { connectDbAndRunServer } = require("./configs/db");
+require("dotenv").config();
 // const { sendEmail } = require('./utils/sendEmail')
 
 /**
  * NOTES
- * Email Service will be added 
+ * Email Service will be added
  * Logger Service will be added (Winston or similar)
  */
 
-const app = express()
+const app = express();
 
 // middlewares
-app.use(cors(
-    //We will add configuration later
-))
-app.use(express.json())
-app.use(helmet())
+app.use(
+  cors()
+  //We will add configuration later
+);
+app.use(express.json());
+app.use(helmet());
 
 //routes
-app.use('/api/v1/auth', authRouter);
+app.use("/api/v1/auth", authRouter);
+
+app.use("/api/v1/monitors", monitorRouter);
 
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {
@@ -31,12 +35,12 @@ app.use('/api/v1/auth', authRouter);
 // })
 
 //health check
-app.use('/api/v1/healthy', (req, res) => {
-    try {
-        return res.status(200).json({message:"Healthy"})
-    } catch (error) {
-        return res.status(500).json({message:error.message})
-    }
-})
+app.use("/api/v1/healthy", (req, res) => {
+  try {
+    return res.status(200).json({ message: "Healthy" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 connectDbAndRunServer(app);
