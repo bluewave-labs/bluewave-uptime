@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/icons/index.js",
+  "types": "./index.d.ts"
+}

@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/context/index.js",
+  "types": "./index.d.ts"
+}

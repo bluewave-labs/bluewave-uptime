@@ -1,0 +1,10 @@
+import * as React from 'react';
+import { GridPrivateApiCommunity } from '../../../models/api/gridApiCommunity';
+import { DataGridProcessedProps } from '../../../models/props/DataGridProps';
+import { GridDimensions } from './gridDimensionsApi';
+import { GridStateInitializer } from '../../utils/useGridInitializeState';
+type RootProps = Pick<DataGridProcessedProps, 'onResize' | 'scrollbarSize' | 'pagination' | 'paginationMode' | 'autoHeight' | 'getRowHeight' | 'rowHeight' | 'resizeThrottleMs' | 'columnHeaderHeight' | 'headerFilterHeight'>;
+export type GridDimensionsState = GridDimensions;
+export declare const dimensionsStateInitializer: GridStateInitializer<RootProps>;
+export declare function useGridDimensions(apiRef: React.MutableRefObject<GridPrivateApiCommunity>, props: RootProps): void;
+export {};

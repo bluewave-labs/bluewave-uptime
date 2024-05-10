@@ -1,0 +1,1 @@
+export { StaticTimePicker } from './StaticTimePicker';

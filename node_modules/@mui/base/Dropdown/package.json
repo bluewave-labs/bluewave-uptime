@@ -1,0 +1,6 @@
+{
+  "sideEffects": false,
+  "module": "./index.js",
+  "main": "../node/Dropdown/index.js",
+  "types": "./index.d.ts"
+}

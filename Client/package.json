@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
+    "@emotion/style": "^0.8.0",
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
-    "@mui/icons-material": "^5.15.16",
-    "@mui/material": "^5.15.16",
+    "@mui/icons-material": "^5.15.17",
+    "@mui/material": "^5.15.17",
     "@mui/x-data-grid": "7.3.2",
     "@mui/x-date-pickers": "7.3.2",
     "dayjs": "1.11.11",
