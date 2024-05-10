@@ -1,4 +1,4 @@
-# bluewave-uptime
+# BlueWave Uptime
 
 BlueWave uptime monitoring application
 
@@ -31,3 +31,8 @@ BlueWave uptime monitoring application
 #### Starting the Development Server
 
 1.  run `npm run dev` to start the development server
+
+## Contributors
+<a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=bluewave-labs/bluewave-uptime" />
+</a>
