@@ -1,4 +1,6 @@
-# bluewave-uptime
+<div style="background-color:#f8f7fa;margin:0px;padding:0px;width:100%;height:100px;text-align:center;display:flex;justify-content:center">
+	<h1 style="color:#53389E">BlueWave UpTime</h1>
+</div>
 
 BlueWave uptime monitoring application
 
