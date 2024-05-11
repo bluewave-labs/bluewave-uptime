@@ -44,6 +44,7 @@
 .announcement-content-body {
   font-size: var(--announcement-font-size-0);
   color: var(--announcement-font-color-1);
+  font-weight: 300;
 }
 
 .announcement-content-controllers {
@@ -54,13 +55,13 @@
 
 .controllers-button-esc {
   font-size: var(--announcement-font-size-0);
-  font-weight: 500;
+  font-weight: 600;
   margin-right: 12px;
 }
 
 .controllers-button-primary {
   font-size: var(--announcement-font-size-0);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--announcement-font-color-2);
 }
 

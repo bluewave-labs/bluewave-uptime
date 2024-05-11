@@ -30,7 +30,7 @@
 }
 
 .popup-modal-input-title {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: var(--popup-modal-with-input-title-color);
 }
 
@@ -57,4 +57,5 @@
   border: 1px solid var(--popup-color-with-input-border-1);
   border-radius: 4px;
   cursor: pointer;
+  font-size: 13px;
 }

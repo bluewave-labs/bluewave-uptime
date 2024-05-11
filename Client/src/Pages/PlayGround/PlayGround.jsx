@@ -48,7 +48,10 @@ function PlayGround() {
       <hr />
       {/* Now, illustration of the Description text fields */}
       <br />
-      <DescriptionTextField hintText="This is a hint text to help user." />
+      <DescriptionTextField
+        hasError={false}
+        hintText="This is a hint text to help user."
+      />
       <DescriptionTextField
         hasError={true}
         hintText="This is a hint text to help user."

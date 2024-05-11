@@ -1,14 +1,15 @@
 import "./announcementUpdateSubscription.css";
 import React from "react";
+import PropTypes from "prop-types";
 
-function AnnouncementUpdateSubscription({
+const AnnouncementUpdateSubscription = ({
   title,
   text,
   cancel,
   positive,
   header,
   button,
-}) {
+}) => {
   return (
     <div className="update-subscription">
       <div className="update-subscription-dialog">
@@ -35,6 +36,15 @@ function AnnouncementUpdateSubscription({
       <div className="v-spacing-medium"></div>
     </div>
   );
-}
+};
+
+AnnouncementUpdateSubscription.propTypes = {
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  cancel: PropTypes.string.isRequired,
+  positive: PropTypes.string.isRequired,
+  header: PropTypes.string.isRequired,
+  button: PropTypes.string.isRequired,
+};
 
 export default AnnouncementUpdateSubscription;

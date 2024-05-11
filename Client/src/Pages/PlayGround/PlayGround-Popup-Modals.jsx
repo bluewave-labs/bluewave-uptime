@@ -5,10 +5,19 @@ import DualButtonPopupModalWithTextfields from "../../components/PopupModals/Dua
 function PlayGroundPopupModals() {
   return (
     <div style={{ display: "flex" }}>
-      <DualButtonPopupModal />
+      <DualButtonPopupModal
+        subject="Unsaved changes"
+        description="Do you want to save or discard changes?"
+        esc="Discard"
+        save="Save changes"
+      />
       <br />
       <br />
-      <DualButtonPopupModalWithTextfields />
+      <DualButtonPopupModalWithTextfields
+        title="Create new organization"
+        esc="Cancel"
+        save="Save"
+      />
     </div>
   );
 }

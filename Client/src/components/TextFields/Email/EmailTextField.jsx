@@ -4,7 +4,7 @@ import { InputAdornment, TextField } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
-function EmailTextField({
+const EmailTextField = ({
   id,
   label,
   variant,
@@ -12,10 +12,9 @@ function EmailTextField({
   icon,
   helperText,
   error,
-}) {
+}) => {
   const [showIcon, setShowIcon] = useState(false);
 
-  // State to control mouse hover effect
   const handleMouseEnter = () => setShowIcon(true);
   const handleMouseLeave = () => setShowIcon(false);
 
@@ -33,13 +32,26 @@ function EmailTextField({
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                {error && showIcon && (
-                  <ErrorOutlineIcon style={{ fill: "red" }} />
-                )}
-                {error && !showIcon && (
-                  <ErrorOutlineIcon style={{ fill: "red" }} />
-                )}
-                {!error && showIcon && <HelpOutlineIcon />}
+                <div className="icon-holder">
+                  {error && showIcon && (
+                    <ErrorOutlineIcon
+                      className="text-field-icon"
+                      style={{ fill: "red", width: "16px", height: "16px" }}
+                    />
+                  )}
+                  {error && !showIcon && (
+                    <ErrorOutlineIcon
+                      className="text-field-icon"
+                      style={{ fill: "red", width: "16px", height: "16px" }}
+                    />
+                  )}
+                  {!error && showIcon && (
+                    <HelpOutlineIcon
+                      className="text-field-icon"
+                      style={{ width: "16px", height: "16px" }}
+                    />
+                  )}
+                </div>
               </InputAdornment>
             ),
           }}
@@ -50,6 +62,6 @@ function EmailTextField({
       </div>
     </>
   );
-}
+};
 
 export default EmailTextField;

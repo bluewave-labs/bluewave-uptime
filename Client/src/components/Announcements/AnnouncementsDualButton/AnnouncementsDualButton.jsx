@@ -1,8 +1,9 @@
 import "./announcementsDualButton.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
 
-function AnnouncementsDualButton({ subject, body, esc, primary }) {
+const AnnouncementsDualButton = ({ subject, body, esc, primary }) => {
   return (
     <div className="announcement-without-tile">
       <div className="announcement-without-content">
@@ -20,6 +21,13 @@ function AnnouncementsDualButton({ subject, body, esc, primary }) {
       </div>
     </div>
   );
-}
+};
+
+AnnouncementsDualButton.propTypes = {
+  subject: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  esc: PropTypes.string.isRequired,
+  primary: PropTypes.string.isRequired,
+};
 
 export default AnnouncementsDualButton;

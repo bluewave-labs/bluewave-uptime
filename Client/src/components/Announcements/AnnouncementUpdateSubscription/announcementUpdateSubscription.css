@@ -30,7 +30,7 @@
 .subscription-dialog-title {
   font-size: 1rem;
   font-family: var(--update-subscription-font-family);
-  font-weight: 900;
+  font-weight: 700;
   color: var(--update-subscription-color-0);
 }
 
@@ -68,6 +68,7 @@
   border: 1px solid var(--update-subscription-color-4);
   background-color: var(--update-subscription-color-5);
   color: var(--update-subscription-color-2);
+  font-size: 13px;
 }
 
 .update-subscription-title {

@@ -1,12 +1,14 @@
 import React from "react";
 import "./descriptionTextField.css";
 import { TextField } from "@mui/material";
+import PropTypes from "prop-types";
 
-function DescriptionTextField({ hintText, hasError }) {
+const DescriptionTextField = ({ hintText, hasError }) => {
   return (
     <div className="description-field-holder">
-      <div className="text-field-title">Website</div>
+      <div className="text-field-title">Description</div>
       <TextField
+        id="description-field-area"
         error={hasError}
         className="description-field-area"
         multiline
@@ -16,6 +18,11 @@ function DescriptionTextField({ hintText, hasError }) {
       />
     </div>
   );
-}
+};
+
+DescriptionTextField.propTypes = {
+  hintText: PropTypes.string.isRequired,
+  hasError: PropTypes.bool.isRequired,
+};
 
 export default DescriptionTextField;

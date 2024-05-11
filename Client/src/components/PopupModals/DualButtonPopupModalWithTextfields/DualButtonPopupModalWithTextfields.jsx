@@ -1,13 +1,13 @@
 import "./dualButtonPopupModalWithTextfields.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { TextField } from "@mui/material";
+import PropTypes from "prop-types";
 
-function DualButtonPopupModalWithTextfields() {
+function DualButtonPopupModalWithTextfields({ title, esc, save }) {
   return (
     <div className="popup-modal-holder">
       <div className="popup-modal-header">
-        <div className="popup-modal-title">Create new organization</div>
+        <div className="popup-modal-title">{title}</div>
         <div className="popup-modal-close">
           <CloseIcon style={{ fill: "#98A2B3" }} />
         </div>
@@ -17,12 +17,18 @@ function DualButtonPopupModalWithTextfields() {
       <div className="spacing-height"></div>
       <div className="spacing-height"></div>
       <div className="popup-modal-controllers">
-        <button className="white-cancel-button">Cancel</button>
-        <button className="blue-save-button">Save</button>
+        <button className="white-cancel-button">{esc}</button>
+        <button className="blue-save-button">{save}</button>
       </div>
     </div>
   );
 }
+
+DualButtonPopupModalWithTextfields.propTypes = {
+  title: PropTypes.string.isRequired,
+  esc: PropTypes.string.isRequired,
+  save: PropTypes.string.isRequired,
+};
 
 export default DualButtonPopupModalWithTextfields;
 

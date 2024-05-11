@@ -8,7 +8,12 @@
 
 .tooltip-playground {
   margin: auto;
-  width: 100%;
+  padding: 5%;
+  width: 5%;
   justify-content: center;
   text-align: center;
+}
+
+.playground {
+  padding: 40px;
 }

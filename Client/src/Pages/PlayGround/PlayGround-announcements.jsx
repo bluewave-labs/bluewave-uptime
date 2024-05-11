@@ -1,3 +1,4 @@
+import "./playGround.css";
 import React from "react";
 import AnnouncementsDualButtonWithIcon from "../../components/Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -8,7 +9,7 @@ import AnnouncementUpdateSubscription from "../../components/Announcements/Annou
 
 function PlayGroundAnnouncements() {
   return (
-    <div>
+    <div className="playground">
       <AnnouncementsDualButtonWithIcon
         icon={
           <div className="info-icon-frame">
@@ -52,7 +53,7 @@ function PlayGroundAnnouncements() {
       />
       <br />
       <br />
-      <AnnouncementsMessageBar />
+      <AnnouncementsMessageBar message="New employee created successfully" />
       <br />
       <br />
       <AnnouncementUpdateSubscription

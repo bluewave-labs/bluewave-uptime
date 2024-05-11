@@ -1,6 +1,7 @@
 import "./announcementsDualButtonWithIcon.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
 
 function AnnouncementsDualButtonWithIcon({
   icon,
@@ -32,5 +33,13 @@ function AnnouncementsDualButtonWithIcon({
     </div>
   );
 }
+
+AnnouncementsDualButtonWithIcon.propTypes = {
+  icon: PropTypes.object,
+  subject: PropTypes.string,
+  body: PropTypes.string,
+  esc: PropTypes.string,
+  primary: PropTypes.string,
+};
 
 export default AnnouncementsDualButtonWithIcon;

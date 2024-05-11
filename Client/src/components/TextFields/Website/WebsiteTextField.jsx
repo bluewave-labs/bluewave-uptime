@@ -3,11 +3,11 @@ import "./websiteTextField.css";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-function WebsiteTextField({
+const WebsiteTextField = ({
   showHelp = true,
   hasCopyButton = false,
   hintText,
-}) {
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -19,9 +19,7 @@ function WebsiteTextField({
     <>
       <div className="website-textfield-title">Website</div>
       <div className="website-textfield">
-        <label className="website-label" htmlFor="website">
-          http://
-        </label>
+        <label className="website-label">http://</label>
         <input
           type="url"
           name="website-url"
@@ -41,14 +39,17 @@ function WebsiteTextField({
         )}
         {hasCopyButton && (
           <div className="copy-to-clipboard-button" onClick={handleCopy}>
-            <ContentCopyIcon className="copy-icon" />
-            <span>{copied ? " Copied " : " Copy "}</span>
+            <ContentCopyIcon
+              className="copy-icon"
+              style={{ width: "20px", height: "20px" }}
+            />
+            <span className="">{copied ? " Copied " : " Copy "}</span>
           </div>
         )}
       </div>
       <label className="website-textfield-hint">{hintText}</label>
     </>
   );
-}
+};
 
 export default WebsiteTextField;
