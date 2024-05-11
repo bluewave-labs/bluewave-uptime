@@ -2,6 +2,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
+import { useTheme } from "@mui/material";
 
 const teamMembers = [
   { title: 'John Doe'},
@@ -9,9 +10,16 @@ const teamMembers = [
   { title: 'Alex Johnson'},
 ];
 
-export default function Search() {
+/**
+ * @component
+ * @returns {JSX.Element}
+ */
+
+export default function Search()
+ {
+  const theme = useTheme();
   return (
-    <Box padding={10}> {/* Add padding to the container */}
+    <Box padding={theme.spacing(2)}> {/* Add padding to the container */}
       <Autocomplete
         multiple
         id="tags-outlined"
@@ -26,12 +34,12 @@ export default function Search() {
           />
         )}
         renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
+          value.map((option) => (
             <Chip
-              key={index}
+              key={option.title}
               variant="outlined"
               label={option.title}
-              {...getTagProps({ index })}
+              {...getTagProps({ option })}
             />
           ))
         }
