@@ -1,4 +1,5 @@
 import DropdownTeamMember from "../../Components/DropdownTeamMember";
+import Search from "../../Components/Search";
 import "./index.css";
 
 const Home = () => {
@@ -6,6 +7,7 @@ const Home = () => {
     <>
       <div>Home</div>
       <DropdownTeamMember />
+      <Search />
     </>
   );
 };
