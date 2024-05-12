@@ -3,6 +3,12 @@ import React from "react";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import PropTypes from "prop-types";
 
+/**
+ * @component
+ * @param {Object} props
+ * @param {"red" | "green"} props.theme - The color theme for the alert (required) - must be either "red" or "green"
+ * @returns {JSX.Element} - Renders the complex alert component with dynamic color theme
+ */
 const ComplexAlert = ({ theme }) => {
   if (theme === "red") {
     return (

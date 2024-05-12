@@ -3,6 +3,14 @@ import "./websiteTextField.css";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
+/**
+ * @component
+ * @param {Object} props
+ * @param {boolean} [props.showHelp=true] - Controls the visibility of the help icon (defaults to true)
+ * @param {boolean} [props.hasCopyButton=false] - Controls the visibility of the copy button (defaults to false)
+ * @param {string} props.hintText - The hint text displayed below the text field (required)
+ * @returns {JSX.Element} - Renders the website text field component with optional help and copy features
+ */
 const WebsiteTextField = ({
   showHelp = true,
   hasCopyButton = false,

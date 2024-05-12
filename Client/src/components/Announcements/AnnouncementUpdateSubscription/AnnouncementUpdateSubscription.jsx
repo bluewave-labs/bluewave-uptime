@@ -2,6 +2,18 @@ import "./announcementUpdateSubscription.css";
 import React from "react";
 import PropTypes from "prop-types";
 
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.title - Title text for the update subscription dialog (required)
+ * @param {string} props.text - Body text for the update subscription dialog (required)
+ * @param {string} props.cancel - Text for the negative (cancel) button (required)
+ * @param {string} props.positive - Text for the positive button (required)
+ * @param {string} props.header - Title text for the email subscription section (required)
+ * @param {string} props.button - Text for the subscribe button (required)
+ * @returns {JSX.Element} - Renders the announcement update subscription component
+ */
+
 const AnnouncementUpdateSubscription = ({
   title,
   text,

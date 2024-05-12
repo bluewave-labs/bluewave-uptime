@@ -2,6 +2,16 @@ import "./dualButtonPopupModal.css";
 import React from "react";
 import PropTypes from "prop-types";
 
+/**
+ * @component
+ * @param {Object} props
+ * @param {boolean} [props.open=true] - Controls the visibility of the modal (defaults to true)
+ * @param {string} props.subject - The title text for the modal (required)
+ * @param {string} props.description - The description text for the modal (required)
+ * @param {string} props.esc - The text for the discard button (usually "Cancel", "Dismiss" or "Discard") (required)
+ * @param {string} props.save - The text for the save button (required)
+ * @returns {JSX.Element} - Renders the dual button popup modal component
+ */
 const DualButtonPopupModal = ({
   open = true,
   subject,

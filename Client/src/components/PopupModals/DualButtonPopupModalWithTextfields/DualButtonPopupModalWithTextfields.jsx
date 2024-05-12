@@ -3,7 +3,30 @@ import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 
-function DualButtonPopupModalWithTextfields({ title, esc, save }) {
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.title - The title text for the modal (required)
+ * @returns {JSX.Element} - Renders a single text field component within a popup modal
+ */
+const PopupModalTextfield = ({ title }) => {
+  return (
+    <div className="popup-modal-input">
+      <div className="popup-modal-input-title">{title}</div>
+      <input type="text" className="popup-modal-text-field" />
+    </div>
+  );
+};
+
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.title - The title text for the modal (required)
+ * @param {string} props.esc - The text for the cancel button (required)
+ * @param {string} props.save - The text for the save button (required)
+ * @returns {JSX.Element} - Renders the dual button popup modal component with text fields
+ */
+const DualButtonPopupModalWithTextfields = ({ title, esc, save }) => {
   return (
     <div className="popup-modal-holder">
       <div className="popup-modal-header">
@@ -13,7 +36,7 @@ function DualButtonPopupModalWithTextfields({ title, esc, save }) {
         </div>
       </div>
       <div className="spacing-height"></div>
-      {PopupModalTextfield()}
+      <PopupModalTextfield title="Name" />
       <div className="spacing-height"></div>
       <div className="spacing-height"></div>
       <div className="popup-modal-controllers">
@@ -22,7 +45,7 @@ function DualButtonPopupModalWithTextfields({ title, esc, save }) {
       </div>
     </div>
   );
-}
+};
 
 DualButtonPopupModalWithTextfields.propTypes = {
   title: PropTypes.string.isRequired,
@@ -31,12 +54,3 @@ DualButtonPopupModalWithTextfields.propTypes = {
 };
 
 export default DualButtonPopupModalWithTextfields;
-
-function PopupModalTextfield() {
-  return (
-    <div className="popup-modal-input">
-      <div className="popup-modal-input-title">Name</div>
-      <input type="text" className="popup-modal-text-field" />
-    </div>
-  );
-}

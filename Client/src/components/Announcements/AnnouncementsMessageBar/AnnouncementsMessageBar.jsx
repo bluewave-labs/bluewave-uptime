@@ -3,7 +3,13 @@ import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 
-function AnnouncementsMessageBar({ message }) {
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.message - The announcement message text content (required)
+ * @returns {JSX.Element} - Renders the announcement message bar component
+ */
+const AnnouncementsMessageBar = ({ message }) => {
   return (
     <div className="announcement-tile">
       <div className="announcement-messagebar-body">{message}</div>
@@ -12,7 +18,7 @@ function AnnouncementsMessageBar({ message }) {
       </div>
     </div>
   );
-}
+};
 
 AnnouncementsMessageBar.propTypes = {
   message: PropTypes.string.isRequired,

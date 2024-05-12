@@ -3,6 +3,16 @@ import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.subject - The announcement subject text
+ * @param {string} props.body - The announcement body text content
+ * @param {string} props.esc - The text for the escape button
+ * @param {string} props.primary - The text for the primary button
+ * @returns {JSX.Element} - Renders the announcement dual button component
+ */
+
 const AnnouncementsDualButton = ({ subject, body, esc, primary }) => {
   return (
     <div className="announcement-without-tile">
