@@ -1,7 +1,6 @@
 import React from "react";
-import Button from "../../Components/Button/Button";
-import Link from "../../Components/Link/Link";
-import ColoredLabel from "../../Components/Label/ColoredLabel";
+import Button from "../../Components/Button/";
+import Link from "../../Components/Link";
 import {
   useTheme,
   Switch,
@@ -14,13 +13,12 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import StatusLabel from "../../Components/Label/StautsLabel";
-import Avatar from "../../Components/Avatar/Avatar";
-import ProgressStepper from "../../Components/ProgressStepper/ProgressStepper";
+import { ColoredLabel, StatusLabel } from "../../Components/Label/";
+import Avatar from "../../Components/Avatar/";
+import ProgressStepper from "../../Components/ProgressStepper";
 import avatarImage from "../../assets/Images/avatar_placeholder.png";
-import Section from "../../Components/Section/Section";
+import Section from "../../Components/Section";
 import { DataGrid } from "@mui/x-data-grid";
-
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
