@@ -3,13 +3,10 @@ const {
   getMonitorsByUserIdValidation,
 } = require("../validation/joi");
 
-// Fake database, if we have standardized DB methods we can swap out databases easily
-const db = require("../db/FakeDb");
-
 // Gets all monitors
 const getAllMonitors = async (req, res) => {
   try {
-    const monitors = await db.getAllMonitors();
+    const monitors = await req.db.getAllMonitors();
     return res.json({ success: true, msg: "Monitors found", data: monitors });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });
@@ -27,7 +24,7 @@ const getMonitorById = async (req, res) => {
 
   try {
     const monitorId = req.params.monitorId;
-    const monitor = await db.getMonitorById(monitorId);
+    const monitor = await req.db.getMonitorById(monitorId);
     return res.json({ success: true, msg: "Monitor found", data: monitor });
   } catch (error) {
     return res.status(500).json({ success: false, msg: error.message });
@@ -45,7 +42,7 @@ const getMonitorsByUserId = async (req, res) => {
 
   try {
     const userId = req.params.userId;
-    const monitors = await db.getMonitorsByUserId(userId);
+    const monitors = await req.db.getMonitorsByUserId(userId);
     return res.json({
       success: true,
       msg: `Monitors for user ${userId} found`,

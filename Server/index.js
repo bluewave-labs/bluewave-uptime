@@ -3,9 +3,22 @@ const helmet = require("helmet");
 const cors = require("cors");
 const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
-const { connectDbAndRunServer } = require("./configs/db");
+const { connectDbAndRunServer, connectViaInterface } = require("./configs/db");
 require("dotenv").config();
 // const { sendEmail } = require('./utils/sendEmail')
+
+// **************************
+// Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
+// Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
+// We can easily swap between any type of data source as long as the methods are implemented
+//
+// FakeDB
+// const db = require("./db/FakeDb");
+//
+// MongoDB
+const db = require("./db/MongoDB");
+//
+// **************************
 
 /**
  * NOTES
@@ -22,6 +35,16 @@ app.use(
 );
 app.use(express.json());
 app.use(helmet());
+
+// **************************
+// Make DB accessible anywhere we have a Request object
+// By adding the DB to the request object, we can access it in any route
+// Thus we do not need to import it in every route file, and we can easily swap out DBs as there is only one place to change it
+// **************************
+app.use((req, res, next) => {
+  req.db = db;
+  next();
+});
 
 //routes
 app.use("/api/v1/auth", authRouter);
@@ -43,4 +66,4 @@ app.use("/api/v1/healthy", (req, res) => {
   }
 });
 
-connectDbAndRunServer(app);
+connectDbAndRunServer(app, db);

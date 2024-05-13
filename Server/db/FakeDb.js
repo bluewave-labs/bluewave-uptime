@@ -1,7 +1,23 @@
 // **************************
-// FakeDB is used to simulate the database
-// If we standarize the DB methods we can swap out databases easily
-// Too bad JS doesn't have interfaces, that would be nice.  TypeScript anyone?
+// The idea here is to provide a layer of abstraction between the database and whoever is using it.
+// Instead of directly calling mongoose methods, we can call the methods on the DB object.
+// If this were Typescript or Java or Golang an interface would be implemented to ensure the methods are available.
+// But we do the best we can with Javascript.
+//
+// If the methods are consistent all we have to do to swap out one DB for another is simply change the import.
+//
+// Example:
+// We start with the fake DB:
+//
+// const db = require("../db/FakeDb");
+// const monitors = await db.getAllMonitors();
+//
+// And when we want to swtich to a real DB, all we have to do is swap the import
+//
+// const db = require("../db/MongoDb");
+// const monitors = await db.getAllMonitors();
+//
+// The rest of the code is the same, as all the `db` methods are standardized.
 // **************************
 
 const Monitor = require("../models/Monitor");
@@ -22,6 +38,14 @@ for (let i = 0; i < 10; i++) {
     })
   );
 }
+
+const connect = async () => {
+  try {
+    await console.log("Connected to FakeDB");
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const getAllMonitors = async () => {
   return FAKE_MONITOR_DATA;
@@ -49,5 +73,9 @@ const getMonitorsByUserId = async (userId) => {
   return userMonitors;
 };
 
-// Conisder standardizing these methods so we can swap databases easily
-module.exports = { getAllMonitors, getMonitorById, getMonitorsByUserId };
+module.exports = {
+  connect,
+  getAllMonitors,
+  getMonitorById,
+  getMonitorsByUserId,
+};
