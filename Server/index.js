@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
-const { connectDbAndRunServer, connectViaInterface } = require("./configs/db");
+const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 // const { sendEmail } = require('./utils/sendEmail')
 
