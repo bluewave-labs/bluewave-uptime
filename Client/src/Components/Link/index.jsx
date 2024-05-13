@@ -1,6 +1,15 @@
 import { Link as MuiLink, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 
+/**
+ * @component
+ * @param {Object} props
+ * @param {'primary' | 'secondary' | 'tertiary' | 'error'} props.level - The level of the link
+ * @param {string} props.label - The label of the link
+ * @param {string} props.url - The URL of the link
+ * @returns {JSX.Element}
+ */
+
 const Link = ({ level, label, url }) => {
   const theme = useTheme();
 
@@ -22,14 +31,6 @@ const Link = ({ level, label, url }) => {
     },
     error: {},
   };
-
-  /**
-   * @typedef {Object} Props
-   * @property {'primary' | 'secondary' | 'tertiary' | 'error'} level - The level of the link
-   * @property {string} label - The label of the link
-   * @property {string} url - The URL of the link
-   */
-
   const { sx, color } = levelConfig[level];
   return (
     <MuiLink href={url} sx={sx} color={color}>
