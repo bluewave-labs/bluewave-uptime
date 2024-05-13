@@ -6,11 +6,6 @@ const { connectDbAndRunServer } = require('./configs/db')
 require('dotenv').config()
 // const { sendEmail } = require('./utils/sendEmail')
 
-/**
- * NOTES
- * Email Service will be added 
- * Logger Service will be added (Winston or similar)
- */
 
 const app = express()
 
