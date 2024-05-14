@@ -1,7 +1,7 @@
 import React from "react";
 import "./playGround.css";
-import Statistic from "../../components/Charts/Statistics/Statistic";
-import ServerStatus from "../../components/Charts/Servers/ServerStatus";
+import Statistic from "../../Components/Charts/Statistics/Statistic";
+import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 
 function PlayGroundCharts() {
   return (

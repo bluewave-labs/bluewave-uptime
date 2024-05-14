@@ -2,6 +2,7 @@ import "./announcementsDualButtonWithIcon.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -21,8 +22,16 @@ const AnnouncementsDualButtonWithIcon = ({
   esc,
   primary,
 }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="announcement-tile">
+    <div className="announcement-tile" style={{ fontFamily: fontFamily }}>
       {icon && <div className="announcement-icon">{icon}</div>}
       <div className="announcement-content">
         {subject && (

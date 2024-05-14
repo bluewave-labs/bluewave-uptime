@@ -1,9 +1,9 @@
 import React from "react";
-import EmailTextField from "../../components/TextFields/Email/EmailTextField";
+import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import WebsiteTextField from "../../components/TextFields/Website/WebsiteTextField";
-import DescriptionTextField from "../../components/TextFields/Description/DescriptionTextField";
+import WebsiteTextField from "../../Components/TextFields/Website/WebsiteTextField";
+import DescriptionTextField from "../../Components/TextFields/Description/DescriptionTextField";
 
 // This Component is just for the development and test
 // purposes and just to see what my components look like while development

@@ -1,5 +1,5 @@
 import React from "react";
-import TooltipWithTail from "../../components/Tooltips/TooltipWithTail/TooltipWithTail";
+import TooltipWithTail from "../../Components/Tooltips/TooltipWithTail/TooltipWithTail";
 import "./playGround.css";
 
 function PlayGroundTooltips() {

@@ -5,7 +5,6 @@
   --border-radius-0: 4px;
   --font-size-0: 1rem;
   --font-size-2: 36px;
-  --font-family-0: "Roboto", "Helvetica", "Arial", sans-serif;
 
   --color-up: #17b26a;
   --color-down: #f04438;
@@ -23,14 +22,12 @@
 
 .server-status-tile-title {
   font-size: var(--font-size-0);
-  font-family: var(--font-family-0);
   font-weight: bold;
   margin-bottom: 25px;
 }
 
 .server-status-tile-value {
   font-size: var(--font-size-2);
-  font-family: var(--font-family-0);
   font-weight: bolder;
 }
 

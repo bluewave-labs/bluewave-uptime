@@ -1,6 +1,7 @@
 import "./announcementUpdateSubscription.css";
 import React from "react";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -22,8 +23,16 @@ const AnnouncementUpdateSubscription = ({
   header,
   button,
 }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="update-subscription">
+    <div className="update-subscription" style={{ fontFamily: fontFamily }}>
       <div className="update-subscription-dialog">
         <div className="subscription-dialog-title">{title}</div>
         <div className="v-spacing-small"></div>

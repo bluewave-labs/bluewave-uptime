@@ -1,6 +1,7 @@
 import "./dualButtonPopupModal.css";
 import React from "react";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -19,8 +20,19 @@ const DualButtonPopupModal = ({
   esc,
   save,
 }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="dual-button-popup-modal-holder">
+    <div
+      className="dual-button-popup-modal-holder"
+      style={{ fontFamily: fontFamily }}
+    >
       <div className="dual-button-popup-modal-subject">{subject}</div>
       <div className="dual-button-popup-modal-description">{description}</div>
       <div className="dual-modal-spacing"></div>

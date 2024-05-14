@@ -1,5 +1,4 @@
 :root {
-  --update-subscription-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   --update-subscription-color-0: #101828;
   --update-subscription-color-1: #475467;
   --update-subscription-color-2: #fff;
@@ -18,7 +17,6 @@
 
 .update-subscription,
 .update-subscription-dialog {
-  font-family: var(--update-subscription-font-family);
   max-width: 770px;
   border-radius: 4px;
   border: 1px solid #eaecf0;
@@ -30,7 +28,6 @@
 
 .subscription-dialog-title {
   font-size: 1rem;
-  font-family: var(--update-subscription-font-family);
   font-weight: 700;
   color: var(--update-subscription-color-0);
 }
@@ -45,7 +42,6 @@
 
 .subscription-dialog-text {
   font-size: 13px;
-  font-family: var(--update-subscription-font-family);
   color: var(--update-subscription-color-1);
 }
 

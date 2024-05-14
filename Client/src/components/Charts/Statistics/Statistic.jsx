@@ -1,6 +1,7 @@
 import React from "react";
 import "./statistic.css";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -10,8 +11,16 @@ import PropTypes from "prop-types";
  * @returns {JSX.Element} - Renders the statistic component
  */
 const Statistic = ({ title, value }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="statistic-tile">
+    <div className="statistic-tile" style={{ fontFamily: fontFamily }}>
       <div className="statistic-tile-title">{title}</div>
       <div className="statistic-tile-value">{value}</div>
     </div>

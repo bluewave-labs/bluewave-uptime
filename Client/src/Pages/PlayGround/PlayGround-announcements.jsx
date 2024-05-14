@@ -1,11 +1,11 @@
 import "./playGround.css";
 import React from "react";
-import AnnouncementsDualButtonWithIcon from "../../components/Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
+import AnnouncementsDualButtonWithIcon from "../../Components/Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import ComplexAlert from "../../components/Icons/ComplexAlert/ComplexAlert";
-import AnnouncementsMessageBar from "../../components/Announcements/AnnouncementsMessageBar/AnnouncementsMessageBar";
-import AnnouncementsDualButton from "../../components/Announcements/AnnouncementsDualButton/AnnouncementsDualButton";
-import AnnouncementUpdateSubscription from "../../components/Announcements/AnnouncementUpdateSubscription/AnnouncementUpdateSubscription";
+import ComplexAlert from "../../Components/Icons/ComplexAlert/ComplexAlert";
+import AnnouncementsMessageBar from "../../Components/Announcements/AnnouncementsMessageBar/AnnouncementsMessageBar";
+import AnnouncementsDualButton from "../../Components/Announcements/AnnouncementsDualButton/AnnouncementsDualButton";
+import AnnouncementUpdateSubscription from "../../Components/Announcements/AnnouncementUpdateSubscription/AnnouncementUpdateSubscription";
 
 function PlayGroundAnnouncements() {
   return (

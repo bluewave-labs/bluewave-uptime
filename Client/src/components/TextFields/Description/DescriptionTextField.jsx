@@ -2,6 +2,7 @@ import React from "react";
 import "./descriptionTextField.css";
 import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -11,8 +12,19 @@ import PropTypes from "prop-types";
  * @returns {JSX.Element} - Renders the description text field component
  */
 const DescriptionTextField = ({ hintText, hasError }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="description-field-holder">
+    <div
+      className="description-field-holder"
+      style={{ fontFamily: fontFamily }}
+    >
       <div className="text-field-title">Description</div>
       <TextField
         id="description-field-area"

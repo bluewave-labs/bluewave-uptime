@@ -1,6 +1,5 @@
 :root {
   --popup-color-border-0: #f2f2f2;
-  --popup-font-family-0: "Roboto", "Helvetica", "Arial", sans-serif;
   --popup-color-0: #101828;
   --popup-color-1: #475467;
   --color-0: #1570ef;
@@ -19,14 +18,12 @@
 }
 
 .dual-button-popup-modal-subject {
-  font-family: var(--popup-font-family-0);
   color: var(--popup-color-0);
   font-weight: bolder;
   font-size: 16px;
 }
 
 .dual-button-popup-modal-description {
-  font-family: var(--popup-font-family-0);
   color: var(--popup-color-1);
   font-size: 13px;
   margin-top: 10px;
@@ -51,7 +48,6 @@
   margin: 5px 0;
   margin-left: 20px;
   color: white;
-  font-family: var(--popup-font-family-0);
   cursor: pointer;
   font-size: 13px;
 }
@@ -59,7 +55,6 @@
 .transparent-discard-button {
   border: none;
   background-color: transparent;
-  font-family: var(--popup-font-family-0);
   margin: 5px 10px;
   font-size: 13px;
 }

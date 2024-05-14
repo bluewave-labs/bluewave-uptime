@@ -1,6 +1,5 @@
 :root {
   --color-title-1: #344054;
-  --font-family-1: "Roboto", "Helvetica", "Arial", sans-serif;
   --text-field-margin-0: 10px 20px;
   --description-color-0: #344054;
 }
@@ -13,7 +12,6 @@
 .text-field-title {
   color: var(--color-title-1);
   font-weight: bold;
-  font-family: var(--font-family-1);
   margin-bottom: 10px;
   font-size: 13px;
   color: var(--description-color-0);
@@ -28,7 +26,6 @@
 
 .description-field-label {
   margin-top: 10px;
-  font-family: var(--font-family);
   font-size: 11px;
 }
 

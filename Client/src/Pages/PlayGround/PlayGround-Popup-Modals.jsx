@@ -1,6 +1,6 @@
 import React from "react";
-import DualButtonPopupModal from "../../components/PopupModals/DualButtonPopupModal/DualButtonPopupModal";
-import DualButtonPopupModalWithTextfields from "../../components/PopupModals/DualButtonPopupModalWithTextfields/DualButtonPopupModalWithTextfields";
+import DualButtonPopupModal from "../../Components/PopupModals/DualButtonPopupModal/DualButtonPopupModal";
+import DualButtonPopupModalWithTextfields from "../../Components/PopupModals/DualButtonPopupModalWithTextfields/DualButtonPopupModalWithTextfields";
 
 function PlayGroundPopupModals() {
   return (

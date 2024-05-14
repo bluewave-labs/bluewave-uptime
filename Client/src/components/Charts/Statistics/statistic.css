@@ -4,7 +4,6 @@
   --border-radius-0: 4px;
   --font-size-0: 1rem;
   --font-size-1: 13px;
-  --font-family-0: "Roboto", "Helvetica", "Arial", sans-serif;
   --font-color-0: #344054;
   --margin-bottom-0: 10px;
 }
@@ -20,14 +19,12 @@
 
 .statistic-tile-title {
   font-size: var(--font-size-0);
-  font-family: var(--font-family-0);
   color: var(--font-color-0);
   margin-bottom: var(--margin-bottom-0);
 }
 
 .statistic-tile-value {
   font-size: var(--font-size-1);
-  font-family: var(--font-family-0);
   color: var(--font-color-0);
   font-weight: 700;
   margin-bottom: var(--margin-bottom-0);

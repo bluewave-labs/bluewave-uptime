@@ -5,11 +5,9 @@
   --icon-color: #98a2b3;
   --text-field-margin-0: 10px 20px;
   --text-field-margin-1: 10px 20px 5px;
-  --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 .website-textfield-title {
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   margin: 0 20px;
   margin-top: 30px;
   font-size: 13px;
@@ -18,7 +16,6 @@
 }
 
 .website-textfield {
-  font-family: var(--font-family);
   display: flex;
   align-items: center;
   position: relative;
@@ -27,7 +24,6 @@
 
 .website-textfield-hint {
   margin: var(--text-field-margin-0);
-  font-family: var(--font-family);
   font-size: 11px;
 }
 

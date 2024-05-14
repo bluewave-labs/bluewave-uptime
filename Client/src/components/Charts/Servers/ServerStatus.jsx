@@ -1,6 +1,7 @@
 import React from "react";
 import "./serverStatus.css";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -11,8 +12,16 @@ import PropTypes from "prop-types";
  * @returns {JSX.Element} - Renders the server status component
  */
 const ServerStatus = ({ title, value, state }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="server-status-tile">
+    <div className="server-status-tile" style={{ fontFamily: fontFamily }}>
       <div className="server-status-tile-title">{title}</div>
       <div className={`server-status-tile-value ` + " " + state}>{value}</div>
     </div>

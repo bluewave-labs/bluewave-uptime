@@ -2,6 +2,7 @@ import "./dualButtonPopupModalWithTextfields.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -10,8 +11,16 @@ import PropTypes from "prop-types";
  * @returns {JSX.Element} - Renders a single text field component within a popup modal
  */
 const PopupModalTextfield = ({ title }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="popup-modal-input">
+    <div className="popup-modal-input" style={{ fontFamily: fontFamily }}>
       <div className="popup-modal-input-title">{title}</div>
       <input type="text" className="popup-modal-text-field" />
     </div>
@@ -27,8 +36,16 @@ const PopupModalTextfield = ({ title }) => {
  * @returns {JSX.Element} - Renders the dual button popup modal component with text fields
  */
 const DualButtonPopupModalWithTextfields = ({ title, esc, save }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="popup-modal-holder">
+    <div className="popup-modal-holder" style={{ fontFamily: fontFamily }}>
       <div className="popup-modal-header">
         <div className="popup-modal-title">{title}</div>
         <div className="popup-modal-close">

@@ -2,6 +2,7 @@ import "./announcementsDualButton.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -14,8 +15,19 @@ import PropTypes from "prop-types";
  */
 
 const AnnouncementsDualButton = ({ subject, body, esc, primary }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="announcement-without-tile">
+    <div
+      className="announcement-without-tile"
+      style={{ fontFamily: fontFamily }}
+    >
       <div className="announcement-without-content">
         <div className="announcement-without-content-subject">{subject}</div>
         <div className="v-spacing"></div>

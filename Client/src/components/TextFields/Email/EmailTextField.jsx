@@ -3,6 +3,7 @@ import "./emailTextField.css";
 import { InputAdornment, TextField } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -25,13 +26,21 @@ const EmailTextField = ({
   helperText,
   error,
 }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   const [showIcon, setShowIcon] = useState(false);
 
   const handleMouseEnter = () => setShowIcon(true);
   const handleMouseLeave = () => setShowIcon(false);
 
   return (
-    <>
+    <div style={{ fontFamily: fontFamily }}>
       <div className="email-text-field-title">Email</div>
       <div className="email-text-field">
         <TextField
@@ -72,7 +81,7 @@ const EmailTextField = ({
           onMouseLeave={handleMouseLeave}
         />
       </div>
-    </>
+    </div>
   );
 };
 

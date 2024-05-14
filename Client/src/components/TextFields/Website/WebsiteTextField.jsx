@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./websiteTextField.css";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useTheme } from "@mui/material";
 
 /**
  * @component
@@ -16,6 +17,14 @@ const WebsiteTextField = ({
   hasCopyButton = false,
   hintText,
 }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -24,7 +33,7 @@ const WebsiteTextField = ({
   };
 
   return (
-    <>
+    <div style={{ fontFamily: fontFamily }}>
       <div className="website-textfield-title">Website</div>
       <div className="website-textfield">
         <label className="website-label">http://</label>
@@ -56,7 +65,7 @@ const WebsiteTextField = ({
         )}
       </div>
       <label className="website-textfield-hint">{hintText}</label>
-    </>
+    </div>
   );
 };
 
