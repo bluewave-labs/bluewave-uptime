@@ -10,14 +10,13 @@ import PlayGround from "./Pages/PlayGround/PlayGround";
 function App() {
   return (
     <>
-      {/* <Routes>
+      <Routes>
         <Route exact path="/" element={<HomeLayout />} />
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/demo" element={<Demo />} />
         <Route path="*" element={<NotFound />} />
-      </Routes> */}
-      <PlayGround />
+      </Routes>
     </>
   );
 }
