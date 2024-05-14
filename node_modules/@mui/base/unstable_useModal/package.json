@@ -1,6 +1,0 @@
-{
-  "sideEffects": false,
-  "module": "./index.js",
-  "main": "../node/unstable_useModal/index.js",
-  "types": "./index.d.ts"
-}

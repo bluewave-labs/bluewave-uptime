@@ -1,9 +1,9 @@
 import "./tooltipWithTail.css";
 import React from "react";
 import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { useTheme } from "@mui/material";
 
 const CustomizedTooltip = styled(
   ({ className, placement, arrow, ...props }: TooltipProps) => (
@@ -23,9 +23,17 @@ const CustomizedTooltip = styled(
   },
 }));
 
-function TooltipWithTail({ placement, arrow = false, title, text }) {
+const TooltipWithTail = ({ placement, arrow = false, title, text }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div>
+    <div style={{ fontFamily: fontFamily }}>
       <CustomizedTooltip
         arrow={arrow}
         placement={placement}
@@ -41,6 +49,6 @@ function TooltipWithTail({ placement, arrow = false, title, text }) {
       </CustomizedTooltip>
     </div>
   );
-}
+};
 
 export default TooltipWithTail;

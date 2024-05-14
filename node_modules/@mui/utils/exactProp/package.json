@@ -1,6 +1,0 @@
-{
-  "sideEffects": false,
-  "module": "./index.js",
-  "main": "../node/exactProp/index.js",
-  "types": "./index.d.ts"
-}

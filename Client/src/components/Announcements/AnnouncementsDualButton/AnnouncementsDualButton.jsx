@@ -1,10 +1,33 @@
 import "./announcementsDualButton.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
-function AnnouncementsDualButton({ subject, body, esc, primary }) {
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.subject - The announcement subject text
+ * @param {string} props.body - The announcement body text content
+ * @param {string} props.esc - The text for the escape button
+ * @param {string} props.primary - The text for the primary button
+ * @returns {JSX.Element} - Renders the announcement dual button component
+ */
+
+const AnnouncementsDualButton = ({ subject, body, esc, primary }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="announcement-without-tile">
+    <div
+      className="announcement-without-tile"
+      style={{ fontFamily: fontFamily }}
+    >
       <div className="announcement-without-content">
         <div className="announcement-without-content-subject">{subject}</div>
         <div className="v-spacing"></div>
@@ -20,6 +43,13 @@ function AnnouncementsDualButton({ subject, body, esc, primary }) {
       </div>
     </div>
   );
-}
+};
+
+AnnouncementsDualButton.propTypes = {
+  subject: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  esc: PropTypes.string.isRequired,
+  primary: PropTypes.string.isRequired,
+};
 
 export default AnnouncementsDualButton;

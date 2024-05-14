@@ -2,12 +2,29 @@ import React, { useState } from "react";
 import "./websiteTextField.css";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useTheme } from "@mui/material";
 
-function WebsiteTextField({
+/**
+ * @component
+ * @param {Object} props
+ * @param {boolean} [props.showHelp=true] - Controls the visibility of the help icon (defaults to true)
+ * @param {boolean} [props.hasCopyButton=false] - Controls the visibility of the copy button (defaults to false)
+ * @param {string} props.hintText - The hint text displayed below the text field (required)
+ * @returns {JSX.Element} - Renders the website text field component with optional help and copy features
+ */
+const WebsiteTextField = ({
   showHelp = true,
   hasCopyButton = false,
   hintText,
-}) {
+}) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -16,12 +33,10 @@ function WebsiteTextField({
   };
 
   return (
-    <>
+    <div style={{ fontFamily: fontFamily }}>
       <div className="website-textfield-title">Website</div>
       <div className="website-textfield">
-        <label className="website-label" htmlFor="website">
-          http://
-        </label>
+        <label className="website-label">http://</label>
         <input
           type="url"
           name="website-url"
@@ -41,14 +56,17 @@ function WebsiteTextField({
         )}
         {hasCopyButton && (
           <div className="copy-to-clipboard-button" onClick={handleCopy}>
-            <ContentCopyIcon className="copy-icon" />
-            <span>{copied ? " Copied " : " Copy "}</span>
+            <ContentCopyIcon
+              className="copy-icon"
+              style={{ width: "20px", height: "20px" }}
+            />
+            <span className="">{copied ? " Copied " : " Copy "}</span>
           </div>
         )}
       </div>
       <label className="website-textfield-hint">{hintText}</label>
-    </>
+    </div>
   );
-}
+};
 
 export default WebsiteTextField;

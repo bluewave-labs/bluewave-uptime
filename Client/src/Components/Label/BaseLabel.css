@@ -1,0 +1,7 @@
+.label {
+  border: 1px solid #000;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: normal;
+}

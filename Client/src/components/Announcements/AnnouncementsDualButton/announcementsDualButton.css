@@ -2,7 +2,7 @@
   --announcement-border-color: #d0d5dd;
   --announcement-border-radius: 4px;
   --announcement-border-radius-2: 8px;
-  --announcement-font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  /* --announcement-font-family: "Roboto", "Helvetica", "Arial", sans-serif; */
   --announcement-font-size-0: 13px;
   --announcement-font-color-0: #344054;
   --announcement-font-color-1: #475467;
@@ -16,7 +16,7 @@
   width: fit-content;
   display: flex;
   border: 1px solid var(--announcement-border-color);
-  font-family: var(--announcement-font-family);
+  /* font-family: var(--announcement-font-family); */
   padding: var(--announcement-padding);
   border-radius: var(--announcement-border-radius);
 }

@@ -1,36 +1,73 @@
 import "./dualButtonPopupModalWithTextfields.css";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { TextField } from "@mui/material";
+import PropTypes from "prop-types";
+import { useTheme } from "@mui/material";
 
-function DualButtonPopupModalWithTextfields() {
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.title - The title text for the modal (required)
+ * @returns {JSX.Element} - Renders a single text field component within a popup modal
+ */
+const PopupModalTextfield = ({ title }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
   return (
-    <div className="popup-modal-holder">
+    <div className="popup-modal-input" style={{ fontFamily: fontFamily }}>
+      <div className="popup-modal-input-title">{title}</div>
+      <input type="text" className="popup-modal-text-field" />
+    </div>
+  );
+};
+
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.title - The title text for the modal (required)
+ * @param {string} props.esc - The text for the cancel button (required)
+ * @param {string} props.save - The text for the save button (required)
+ * @returns {JSX.Element} - Renders the dual button popup modal component with text fields
+ */
+const DualButtonPopupModalWithTextfields = ({ title, esc, save }) => {
+  const theme = useTheme();
+
+  const fontLookup = {
+    default: theme.font.default.font,
+  };
+
+  const fontFamily = fontLookup["default"];
+
+  return (
+    <div className="popup-modal-holder" style={{ fontFamily: fontFamily }}>
       <div className="popup-modal-header">
-        <div className="popup-modal-title">Create new organization</div>
+        <div className="popup-modal-title">{title}</div>
         <div className="popup-modal-close">
           <CloseIcon style={{ fill: "#98A2B3" }} />
         </div>
       </div>
       <div className="spacing-height"></div>
-      {PopupModalTextfield()}
+      <PopupModalTextfield title="Name" />
       <div className="spacing-height"></div>
       <div className="spacing-height"></div>
       <div className="popup-modal-controllers">
-        <button className="white-cancel-button">Cancel</button>
-        <button className="blue-save-button">Save</button>
+        <button className="white-cancel-button">{esc}</button>
+        <button className="blue-save-button">{save}</button>
       </div>
     </div>
   );
-}
+};
+
+DualButtonPopupModalWithTextfields.propTypes = {
+  title: PropTypes.string.isRequired,
+  esc: PropTypes.string.isRequired,
+  save: PropTypes.string.isRequired,
+};
 
 export default DualButtonPopupModalWithTextfields;
-
-function PopupModalTextfield() {
-  return (
-    <div className="popup-modal-input">
-      <div className="popup-modal-input-title">Name</div>
-      <input type="text" className="popup-modal-text-field" />
-    </div>
-  );
-}
