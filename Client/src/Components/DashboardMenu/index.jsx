@@ -1,12 +1,13 @@
-import language from '@mui/icons-material/language';
-import report_gmailerrorred from '@mui/icons-material/reportGmailerrorred';
-import sensors from '@mui/icons-material/sensors';
-import settings from '@mui/icons-material/settings';
-import all_inclusive from '@mui/icons-material/AllInclusive';
+import LanguageIcon from "@mui/icons-material/Language";
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
+import SensorsIcon from "@mui/icons-material/Sensors";
+import SettingsIcon from "@mui/icons-material/Settings";
+import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
 import SvgIcon from '@mui/material/SvgIcon';
 import './index.css'; 
 
 /**
+ * @component
  * DashboardMenu component displays a menu with icons and corresponding text.
  * Each menu item consists of an icon and a text label.
  * 
@@ -17,35 +18,35 @@ function DashboardMenu() {
   return (
     <div className="dashboard-menu-container"> 
       <div className="icon-container">
-        <SvgIcon component={language} />
+        <SvgIcon component={LanguageIcon} />
         <div className="text-container">
           <span className="dashboard-menu-text">Monitors</span>
         </div>
       </div>
 
       <div className="icon-container">
-        <SvgIcon component={report_gmailerrorred} />
+        <SvgIcon component={ReportGmailerrorredIcon} />
         <div className="text-container">
           <span className="dashboard-menu-text">Incidents</span>
         </div>
       </div>
 
       <div className="icon-container">
-        <SvgIcon component={sensors} />
+        <SvgIcon component={SensorsIcon} />
         <div className="text-container">
           <span className="dashboard-menu-text">Status Pages</span>
         </div>
       </div>
 
       <div className="icon-container">
-        <SvgIcon component={all_inclusive} />
+        <SvgIcon component={AllInclusiveIcon} />
         <div className="text-container">
           <span className="dashboard-menu-text">Integrations</span>
         </div>
       </div>
 
       <div className="icon-container">
-        <SvgIcon component={settings} />
+        <SvgIcon component={SettingsIcon} />
         <div className="text-container">
           <span className="dashboard-menu-text">Settings</span>
         </div>
