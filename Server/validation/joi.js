@@ -2,6 +2,7 @@ const joi = require("joi");
 const user = require("../models/user");
 
 const authValidation = joi.object({
+  username: joi.string(),
   email: joi.string().email().required(),
   password: joi.string().min(8).required(),
 });

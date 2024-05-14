@@ -21,8 +21,10 @@
 // **************************
 
 const Monitor = require("../models/Monitor");
+const UserModel = require("../models/user");
 
 const FAKE_MONITOR_DATA = [];
+const USERS = [];
 
 for (let i = 0; i < 10; i++) {
   FAKE_MONITOR_DATA.push(
@@ -44,6 +46,31 @@ const connect = async () => {
     await console.log("Connected to FakeDB");
   } catch (error) {
     console.error(error);
+  }
+};
+
+const insertUser = async (req, res) => {
+  try {
+    const newUser = new UserModel({ ...req.body });
+    USERS.push(newUser);
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getUserByEmail = async (req, res) => {
+  const email = req.body.email;
+  try {
+    const idx = USERS.findIndex((user) => {
+      return user.email === email;
+    });
+    if (idx === -1) {
+      return null;
+    }
+    return USERS[idx];
+  } catch (error) {
+    throw new Error(`User with email ${email} not found`);
   }
 };
 
@@ -75,6 +102,8 @@ const getMonitorsByUserId = async (userId) => {
 
 module.exports = {
   connect,
+  insertUser,
+  getUserByEmail,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
