@@ -18,7 +18,8 @@
     "helmet": "^7.1.0",
     "joi": "^17.13.1",
     "mailersend": "^2.2.0",
-    "mongoose": "^8.3.3"
+    "mongoose": "^8.3.3",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "nodemon": "3.1.0"

@@ -37,6 +37,8 @@ Configure the server with the following environmental variables
 | ENV Varialbe Name    | Required/Optional | Type   | Description                       |
 | -------------------- | ----------------- | ------ | --------------------------------- |
 | DB_CONNECTION_STRING | Required          | string | Specfies URL for MongoDB Database |
+| MAILERSEND_API_KEY   | Required          | string | Specfies API KEY for MailerSend service |
+| SYSTEM_EMAIL_ADDRESS | Required          | string | Specfies System email to be used in emailing service |
 
 ---
 

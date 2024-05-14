@@ -5,6 +5,7 @@ const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
+const logger = require('./utils/logger');
 // const { sendEmail } = require('./utils/sendEmail')
 
 // **************************
@@ -22,7 +23,7 @@ const db = require("./db/MongoDB");
 
 /**
  * NOTES
- * Email Service will be added
+ * Email Service will be added 
  * Logger Service will be added (Winston or similar)
  */
 
@@ -53,15 +54,17 @@ app.use("/api/v1/monitors", monitorRouter);
 
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {
-//     const response = sendEmail('veysel.boybay@outlook.com', ['veysel.boybay@bluewavelabs.ca'], 'Testing email service', '<h1>Testing Bluewavelabs</h1>');
+//     const response = sendEmail(['veysel.boybay@bluewavelabs.ca'], 'Testing email service', '<h1>Testing Bluewavelabs</h1>');
 //     console.log(response);
 // })
 
 //health check
 app.use("/api/v1/healthy", (req, res) => {
-  try {
-    return res.status(200).json({ message: "Healthy" });
-  } catch (error) {
+    try {
+      logger.info("Checking Health of the server.")
+        return res.status(200).json({ message: "Healthy" });
+    } catch (error) {
+        logger.error(error.message)
     return res.status(500).json({ message: error.message });
   }
 });
