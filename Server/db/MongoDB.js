@@ -1,5 +1,6 @@
 const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
+const UserModel = require("../models/user");
 
 const connect = async () => {
   try {
@@ -7,6 +8,25 @@ const connect = async () => {
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Failed to connect to MongoDB");
+    throw error;
+  }
+};
+
+const insertUser = async (req, res) => {
+  try {
+    const newUser = await UserModel.create({ ...req.body });
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getUserByEmail = async (req, res) => {
+  try {
+    // Returns null if no user is found
+    const user = await UserModel.findOne({ email: req.body.email });
+    return user;
+  } catch (error) {
     throw error;
   }
 };
@@ -43,6 +63,8 @@ const getMonitorsByUserId = async (req, res) => {
 
 module.exports = {
   connect,
+  insertUser,
+  getUserByEmail,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
