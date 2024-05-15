@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import Button from "../Button/Button";
+import Button from "../Button/";
 import AddIcon from "@mui/icons-material/Add";
 
 /**
