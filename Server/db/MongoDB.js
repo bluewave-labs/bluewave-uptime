@@ -14,7 +14,7 @@ const connect = async () => {
 
 const insertUser = async (req, res) => {
   try {
-    const newUser = await UserModel.create({ ...req.body });
+    const newUser = await UserModel.create({ ...req.body }).select('-password');
     return newUser;
   } catch (error) {
     throw error;
@@ -24,7 +24,7 @@ const insertUser = async (req, res) => {
 const getUserByEmail = async (req, res) => {
   try {
     // Returns null if no user is found
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: req.body.email }).select('-password');
     return user;
   } catch (error) {
     throw error;
