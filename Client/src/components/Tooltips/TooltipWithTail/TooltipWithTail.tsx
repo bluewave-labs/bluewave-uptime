@@ -3,7 +3,6 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { useTheme } from "@mui/material";
 
 const CustomizedTooltip = styled(
   ({ className, placement, arrow, ...props }: TooltipProps) => (
@@ -23,17 +22,9 @@ const CustomizedTooltip = styled(
   },
 }));
 
-const TooltipWithTail = ({ placement, arrow = false, title, text }) => {
-  const theme = useTheme();
-
-  const fontLookup = {
-    default: theme.font.default.font,
-  };
-
-  const fontFamily = fontLookup["default"];
-
+function TooltipWithTail({ placement, arrow = false, title, text }) {
   return (
-    <div style={{ fontFamily: fontFamily }}>
+    <div>
       <CustomizedTooltip
         arrow={arrow}
         placement={placement}
@@ -49,6 +40,6 @@ const TooltipWithTail = ({ placement, arrow = false, title, text }) => {
       </CustomizedTooltip>
     </div>
   );
-};
+}
 
 export default TooltipWithTail;
