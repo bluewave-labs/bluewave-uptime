@@ -1,0 +1,31 @@
+:root {
+  --stats-spacing-general-0: 5px 10px;
+  --color-border-0: #eaecf0;
+  --border-radius-0: 4px;
+  --font-size-0: 1rem;
+  --font-size-1: 13px;
+  --font-color-0: #344054;
+  --margin-bottom-0: 10px;
+}
+
+.statistic-tile {
+  margin: var(--stats-spacing-general-0);
+  padding: var(--stats-spacing-general-0);
+  border: 1px solid var(--color-border-0);
+  border-radius: var(--border-radius-0);
+
+  width: 180px;
+}
+
+.statistic-tile-title {
+  font-size: var(--font-size-0);
+  color: var(--font-color-0);
+  margin-bottom: var(--margin-bottom-0);
+}
+
+.statistic-tile-value {
+  font-size: var(--font-size-1);
+  color: var(--font-color-0);
+  font-weight: 700;
+  margin-bottom: var(--margin-bottom-0);
+}
