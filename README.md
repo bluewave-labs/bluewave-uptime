@@ -6,6 +6,11 @@ BlueWave uptime monitoring application
 
 - Clone this repository to your local machine
 
+1.  [Installation (Client)](#client)
+1.  [Installation (Server)](#server)
+1.  [Configuration(Server)](#config-server)
+1.  [Endpoints](#endpoints)
+
 ---
 
 ### Client
@@ -30,7 +35,7 @@ BlueWave uptime monitoring application
 
 ---
 
-#### Configuration
+#### Configuration {#config-server}
 
 Configure the server with the following environmental variables
 
