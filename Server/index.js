@@ -7,6 +7,7 @@ const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
 // const { sendEmail } = require('./utils/sendEmail')
+const pingSerivce = require("./service/pingService");
 
 // **************************
 // Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
@@ -70,3 +71,13 @@ app.use("/api/v1/healthy", (req, res) => {
 });
 
 connectDbAndRunServer(app, db);
+pingSerivce.startPingService(db);
+
+// Cleanup
+
+const cleanup = async () => {
+  await pingSerivce.cleanup();
+  process.exit(0);
+};
+process.on("SIGINT", cleanup);
+process.on("SIGTERM", cleanup);
