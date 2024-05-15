@@ -1,11 +1,11 @@
 import "./tooltipWithTail.css";
 import React from "react";
 import { styled } from "@mui/material/styles";
-import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const CustomizedTooltip = styled(
-  ({ className, placement, arrow, ...props }: TooltipProps) => (
+  ({ className, placement, arrow, ...props }) => (
     <Tooltip
       {...props}
       placement={placement}
