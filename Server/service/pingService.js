@@ -70,16 +70,13 @@ const startPingService = async (db) => {
 const cleanup = async () => {
   try {
     logger.info("Cleaning up Ping Service...", { service: SERVICE_NAME });
+
     // Clean out the queue
     const jobs = await queue.getJobs(["active", "waiting", "delayed"]);
-    for (const job of jobs) {
-      await job.remove();
-    }
+    await Promise.all(jobs.map((job) => job.remove()));
 
     // Close workers
-    for (const worker of workers) {
-      await worker.close();
-    }
+    await Promise.all(workers.map((worker) => worker.close()));
 
     // Close the queue
     await queue.close();
