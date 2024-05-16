@@ -2,6 +2,15 @@ const { Queue, Worker } = require("bullmq");
 const logger = require("../utils/logger");
 require("dotenv").config();
 
+/**
+ * NOTES
+ * This code will be resource heavy as we will be creating
+ * many workers and jobs.  Operations should be robust and have good
+ * error handling and retry functionality.
+ * There will be a lot of I/O operations as well, so we should be
+ * aware of asynchronous operations and handle them properly.
+ */
+
 const connection = {
   host: process.env.BULL_MQ_HOST || "127.0.0.1",
   port: process.env.BULL_MQ_PORT || 6379,
