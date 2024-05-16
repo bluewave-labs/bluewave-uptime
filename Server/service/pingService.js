@@ -11,13 +11,15 @@ const JOBS_PER_WORKER = 5;
 
 const SERVICE_NAME = "pingService";
 
+const QUEUE_NAME = "monitors";
+
 let queue;
 let workers = [];
 
 const enqueueJob = async (queue, monitor) => {
   try {
     await queue.add(
-      "monitors",
+      QUEUE_NAME,
       { monitor },
       { delay: monitor.interval * 1000 }
     );
@@ -34,7 +36,7 @@ const pingMonitor = (monitor) => {
 const createWorker = (queue) => {
   try {
     const worker = new Worker(
-      "monitors",
+      QUEUE_NAME,
       async (job) => {
         //Ping the monitor and enqueue the job again to constantly monitor
         pingMonitor(job.data.monitor);
@@ -48,11 +50,12 @@ const createWorker = (queue) => {
     return worker;
   } catch (error) {
     logger.error(error.message, { service: SERVICE_NAME });
+    return null;
   }
 };
 
 const startPingService = async (db) => {
-  queue = new Queue("monitors", {
+  queue = new Queue(QUEUE_NAME, {
     connection,
   });
 
@@ -64,7 +67,10 @@ const startPingService = async (db) => {
   }
 
   // Make sure a worker was created, none will be created if jobs < JOBS_PER_WORKER
-  if (workers.length === 0) workers.push(createWorker(queue));
+  if (workers.length === 0) {
+    const worker = createWorker(queue);
+    worker && workers.push(worker);
+  }
 };
 
 const cleanup = async () => {
