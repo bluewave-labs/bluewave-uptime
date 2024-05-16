@@ -73,9 +73,10 @@ const cleanup = async () => {
 
     // Clean out the queue
     const jobs = await queue.getJobs(["active", "waiting", "delayed"]);
+    // There could be a great many jobs, handle this asynchronously with Promise.all
     await Promise.all(jobs.map((job) => job.remove()));
 
-    // Close workers
+    // Close workers.  Same as jobs, there could be many workers we don't want to wait for each one to close.
     await Promise.all(workers.map((worker) => worker.close()));
 
     // Close the queue
