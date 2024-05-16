@@ -3,8 +3,8 @@ const logger = require("../utils/logger");
 require("dotenv").config();
 
 const connection = {
-  host: process.env.BULL_MQ_HOST,
-  port: process.env.BULL_MQ_PORT,
+  host: process.env.BULL_MQ_HOST || "127.0.0.1",
+  port: process.env.BULL_MQ_PORT || 6379,
 };
 
 const JOBS_PER_WORKER = 5;
@@ -13,7 +13,16 @@ let queue;
 let workers = [];
 
 const enqueueJob = async (queue, monitor) => {
-  await queue.add("monitors", { monitor }, { delay: monitor.interval * 1000 });
+  try {
+    await queue.add(
+      "monitors",
+      { monitor },
+      { delay: monitor.interval * 1000 }
+    );
+    logger.info("Job enqueued", { service: "pingService" });
+  } catch (error) {
+    logger.error(error.message, { service: "pingService" });
+  }
 };
 
 const pingMonitor = (monitor) => {
@@ -21,17 +30,23 @@ const pingMonitor = (monitor) => {
 };
 
 const createWorker = (queue) => {
-  return new Worker(
-    "monitors",
-    async (job) => {
-      //Ping the monitor and enqueue the job again to constantly monitor
-      pingMonitor(job.data.monitor);
-      enqueueJob(queue, job.data.monitor);
-    },
-    {
-      connection,
-    }
-  );
+  try {
+    const worker = new Worker(
+      "monitors",
+      async (job) => {
+        //Ping the monitor and enqueue the job again to constantly monitor
+        pingMonitor(job.data.monitor);
+        enqueueJob(queue, job.data.monitor);
+      },
+      {
+        connection,
+      }
+    );
+    logger.info("Worker created", { service: "pingService" });
+    return worker;
+  } catch (error) {
+    logger.error(error.message, { service: "pingService" });
+  }
 };
 
 const startPingService = async (db) => {
@@ -52,7 +67,7 @@ const startPingService = async (db) => {
 
 const cleanup = async () => {
   try {
-    console.log("Cleaning up queue...");
+    logger.info("Cleaning up Ping Service...", { service: "pingService" });
     // Clean out the queue
     const jobs = await queue.getJobs(["active", "waiting", "delayed"]);
     for (const job of jobs) {
@@ -66,6 +81,7 @@ const cleanup = async () => {
 
     // Close the queue
     await queue.close();
+    logger.info("Ping Service cleaned up", { service: "pingService" });
   } catch (error) {
     logger.error(error.message, { service: "pingService" });
   }
