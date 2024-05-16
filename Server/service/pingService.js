@@ -9,6 +9,8 @@ const connection = {
 
 const JOBS_PER_WORKER = 5;
 
+const SERVICE_NAME = "pingService";
+
 let queue;
 let workers = [];
 
@@ -19,9 +21,9 @@ const enqueueJob = async (queue, monitor) => {
       { monitor },
       { delay: monitor.interval * 1000 }
     );
-    logger.info("Job enqueued", { service: "pingService" });
+    logger.info("Job enqueued", { service: SERVICE_NAME });
   } catch (error) {
-    logger.error(error.message, { service: "pingService" });
+    logger.error(error.message, { service: SERVICE_NAME });
   }
 };
 
@@ -42,10 +44,10 @@ const createWorker = (queue) => {
         connection,
       }
     );
-    logger.info("Worker created", { service: "pingService" });
+    logger.info("Worker created", { service: SERVICE_NAME });
     return worker;
   } catch (error) {
-    logger.error(error.message, { service: "pingService" });
+    logger.error(error.message, { service: SERVICE_NAME });
   }
 };
 
@@ -67,7 +69,7 @@ const startPingService = async (db) => {
 
 const cleanup = async () => {
   try {
-    logger.info("Cleaning up Ping Service...", { service: "pingService" });
+    logger.info("Cleaning up Ping Service...", { service: SERVICE_NAME });
     // Clean out the queue
     const jobs = await queue.getJobs(["active", "waiting", "delayed"]);
     for (const job of jobs) {
@@ -81,9 +83,9 @@ const cleanup = async () => {
 
     // Close the queue
     await queue.close();
-    logger.info("Ping Service cleaned up", { service: "pingService" });
+    logger.info("Ping Service cleaned up", { service: SERVICE_NAME });
   } catch (error) {
-    logger.error(error.message, { service: "pingService" });
+    logger.error(error.message, { service: SERVICE_NAME });
   }
 };
 
