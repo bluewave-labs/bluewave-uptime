@@ -7,20 +7,29 @@ const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
 // const { sendEmail } = require('./utils/sendEmail')
+const pingSerivce = require("./service/pingService");
 
-// **************************
-// Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
-// Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
-// We can easily swap between any type of data source as long as the methods are implemented
-//
-// FakeDB
-// const db = require("./db/FakeDb");
-//
-// MongoDB
-const db = require("./db/MongoDB");
-//
-// **************************
+/**
+ * DB Notes
+ * Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
+ * Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
+ * We can easily swap between any type of data source as long as the methods are implemented
+ *
+ * FakeDB
+ * const db = require("./db/FakeDb");
+ *
+ * MongoDB
+ * const db = require("./db/MongoDB");
+ */
 
+const DB_TYPE = {
+  MongoDB: () => require("./db/MongoDB"),
+  FakedDB: () => require("./db/FakeDb"),
+};
+
+const db = DB_TYPE[process.env.DB_TYPE]
+  ? DB_TYPE[process.env.DB_TYPE]()
+  : require("./db/FakeDb");
 /**
  * NOTES
  * Email Service will be added
@@ -70,3 +79,13 @@ app.use("/api/v1/healthy", (req, res) => {
 });
 
 connectDbAndRunServer(app, db);
+pingSerivce.startPingService(db);
+
+// Cleanup
+
+const cleanup = async () => {
+  await pingSerivce.cleanup();
+  process.exit(0);
+};
+process.on("SIGINT", cleanup);
+process.on("SIGTERM", cleanup);

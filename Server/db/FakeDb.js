@@ -26,7 +26,7 @@ const UserModel = require("../models/user");
 const FAKE_MONITOR_DATA = [];
 const USERS = [];
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 1; i++) {
   FAKE_MONITOR_DATA.push(
     new Monitor({
       userId: i % 2 === 0 ? 1 : 2,
@@ -34,7 +34,7 @@ for (let i = 0; i < 10; i++) {
       description: `Description for Monitor ${i}`,
       url: `https://monitor${i}.com`,
       isActive: true,
-      interval: 60000,
+      interval: Math.floor(Math.random() * 10) + 1,
       updated_at: new Date(),
       created_at: new Date(),
     })
