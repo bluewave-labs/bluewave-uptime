@@ -2,7 +2,7 @@ const {
   getMonitorsByIdValidation,
   getMonitorsByUserIdValidation,
 } = require("../validation/joi");
-const logger = require("../utils/logger");
+const logger = require('../utils/logger')
 
 // Gets all monitors
 const getAllMonitors = async (req, res) => {
@@ -10,7 +10,7 @@ const getAllMonitors = async (req, res) => {
     const monitors = await req.db.getAllMonitors();
     return res.json({ success: true, msg: "Monitors found", data: monitors });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { "service": "monitor" });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -29,7 +29,7 @@ const getMonitorById = async (req, res) => {
     const monitor = await req.db.getMonitorById(monitorId);
     return res.json({ success: true, msg: "Monitor found", data: monitor });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { "service": "monitor" });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -46,17 +46,14 @@ const getMonitorsByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
     const monitors = await req.db.getMonitorsByUserId(userId);
-    logger.info(`Monitors for user ${userId} found`, {
-      service: "monitor",
-      userId: userId,
-    });
+    logger.info(`Monitors for user ${userId} found`, { "service": "monitor", "userId":userId });
     return res.json({
       success: true,
       msg: `Monitors for user ${userId} found`,
       data: monitors,
     });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { "service": "monitor" });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
