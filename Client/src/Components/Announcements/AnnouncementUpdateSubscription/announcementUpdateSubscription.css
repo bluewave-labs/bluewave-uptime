@@ -15,6 +15,10 @@
   --spacing-2: 20px;
 }
 
+.update-subscription {
+  margin: var(--spacing-2);
+}
+
 .update-subscription,
 .update-subscription-dialog {
   max-width: 770px;

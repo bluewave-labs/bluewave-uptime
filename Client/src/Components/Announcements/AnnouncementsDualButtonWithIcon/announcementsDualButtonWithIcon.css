@@ -8,9 +8,11 @@
   --announcement-font-color-2: #1570ef;
   --announcement-padding: 16px;
   --info-icon-frame-color: #eaecf0;
+  --tile-margin: 20px;
 }
 
 .announcement-tile {
+  margin: var(--tile-margin);
   width: fit-content;
   display: flex;
   border: 1px solid var(--announcement-border-color);
