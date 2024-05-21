@@ -45,7 +45,13 @@ UserSchema.pre("save", async function (next) {
     next();
   }
   const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
-  this.password = bcrypt.hash(this.password, salt);
+  this.password = await bcrypt.hash(this.password, salt); // hash is also async, need to eitehr await or use hashSync
+  next();
 });
+
+UserSchema.methods.comparePassword = function (submittedPassword) {
+  console.log(submittedPassword, this.password);
+  return bcrypt.compare(submittedPassword, this.password);
+};
 
 module.exports = mongoose.model("User", UserSchema);

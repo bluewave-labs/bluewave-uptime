@@ -17,9 +17,18 @@ const logger = require("./utils/logger");
 // const db = require("./db/FakeDb");
 //
 // MongoDB
-const db = require("./db/MongoDB");
+// const db = require("./db/MongoDB");
 //
 // **************************
+
+const DB_TYPE = {
+  MongoDB: () => require("./db/MongoDB"),
+  FakedDB: () => require("./db/FakeDb"),
+};
+
+const db = DB_TYPE[process.env.DB_TYPE]
+  ? DB_TYPE[process.env.DB_TYPE]()
+  : require("./db/FakeDb");
 
 /**
  * NOTES

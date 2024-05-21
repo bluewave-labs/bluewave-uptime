@@ -1,0 +1,14 @@
+:root {
+  --announcement-font-size-0: 13px;
+  --announcement-padding: 16px;
+  --margin: 20px;
+}
+
+.announcement-messagebar-body {
+  margin: var(--margin);
+  font-size: var(--announcement-font-size-0);
+  padding: 0 var(--announcement-padding) 0 0;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}

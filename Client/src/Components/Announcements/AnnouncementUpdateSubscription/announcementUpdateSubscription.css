@@ -1,0 +1,103 @@
+:root {
+  --update-subscription-color-0: #101828;
+  --update-subscription-color-1: #475467;
+  --update-subscription-color-2: #fff;
+  --update-subscription-color-3: #eaecf0;
+  --update-subscription-color-4: #7f56d9;
+  --update-subscription-color-5: #1570ef;
+  --update-subscription-color-6: #344054;
+  --update-subscription-color-7: #d0d5dd;
+  --update-subscription-padding-0: 12px 16px;
+  --update-subscription-margin-right: 12px;
+  --update-subscription-font-size: 13px;
+  --update-subscription-radius-0: 4px;
+  --spacing-1: 16px;
+  --spacing-2: 20px;
+}
+
+.update-subscription {
+  margin: var(--spacing-2);
+}
+
+.update-subscription,
+.update-subscription-dialog {
+  max-width: 770px;
+  border-radius: 4px;
+  border: 1px solid #eaecf0;
+}
+
+.update-subscription-dialog {
+  padding: 15px 30px;
+}
+
+.subscription-dialog-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--update-subscription-color-0);
+}
+
+.v-spacing-small {
+  height: 10px;
+}
+
+.v-spacing-medium {
+  height: 15px;
+}
+
+.subscription-dialog-text {
+  font-size: 13px;
+  color: var(--update-subscription-color-1);
+}
+
+.subscription-dialog-controls {
+  display: flex;
+}
+
+.controls-negative {
+  padding: var(--update-subscription-padding-0);
+  margin-right: var(--update-subscription-margin-right);
+  border-radius: var(--update-subscription-radius-0);
+  border: 1px solid var(--update-subscription-color-3);
+  background-color: var(--update-subscription-color-2);
+  font-size: var(--update-subscription-font-size);
+}
+
+.controls-positive,
+.subscribe-button {
+  padding: var(--update-subscription-padding-0);
+  margin-right: var(--update-subscription-margin-right);
+  border-radius: var(--update-subscription-radius-0);
+  border: 1px solid var(--update-subscription-color-4);
+  background-color: var(--update-subscription-color-5);
+  color: var(--update-subscription-color-2);
+  font-size: var(--update-subscription-font-size);
+}
+
+.update-subscription-title {
+  color: var(--update-subscription-color-6);
+  padding: 0 var(--spacing-2);
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.subscription-email {
+  display: flex;
+  padding: 0 var(--spacing-2);
+}
+
+.subscription-email-field {
+  width: 290px;
+  height: 24px;
+  border-radius: var(--update-subscription-radius-0);
+  border: 1px solid var(--update-subscription-color-7);
+  box-shadow: 0px 1px 2px 0px rgba(101, 182, 28, 0.05);
+  padding: 5px 15px;
+  margin-right: var(--spacing-2);
+}
+
+.subscribe-button {
+  width: 100px;
+  height: 34px;
+  padding: 2px 15px;
+}

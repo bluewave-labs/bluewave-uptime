@@ -1,0 +1,60 @@
+:root {
+  --popup-color-border-0: #f2f2f2;
+  --popup-color-0: #101828;
+  --popup-color-1: #475467;
+  --color-0: #1570ef;
+  --color-1: #175cd3;
+}
+
+.dual-button-popup-modal-holder {
+  width: 380px;
+  height: 130px;
+  margin: 10px 20px;
+  padding: 30px;
+  box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
+    0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+  border: 1px solid var(--popup-color-border-0);
+  border-radius: 4px;
+}
+
+.dual-button-popup-modal-subject {
+  color: var(--popup-color-0);
+  font-weight: bolder;
+  font-size: 16px;
+}
+
+.dual-button-popup-modal-description {
+  color: var(--popup-color-1);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.dual-modal-spacing {
+  height: 40px;
+}
+
+.dual-button-popup-modal-controllers {
+  display: flex;
+  justify-content: end;
+}
+
+.blue-save-button {
+  width: 145px;
+  height: 35px;
+  padding: 5px 20px;
+  background-color: var(--color-0);
+  border: 1px solid var(--color-1);
+  border-radius: 4px;
+  margin: 5px 0;
+  margin-left: 20px;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.transparent-discard-button {
+  border: none;
+  background-color: transparent;
+  margin: 5px 10px;
+  font-size: 13px;
+}
