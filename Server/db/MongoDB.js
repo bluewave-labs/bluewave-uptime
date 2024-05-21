@@ -61,7 +61,7 @@ const getUserByEmail = async (req, res) => {
  */
 const getAllMonitors = async (req, res) => {
   try {
-    const monitors = await Monitor.find();
+    const monitors = await Monitor.find({ isActive: true });
     return monitors;
   } catch (error) {
     throw error;
