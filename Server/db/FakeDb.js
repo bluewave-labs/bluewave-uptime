@@ -24,7 +24,7 @@ const Monitor = require("../models/Monitor");
 const UserModel = require("../models/user");
 const bcrypt = require("bcrypt");
 
-const FAKE_MONITOR_DATA = [];
+let FAKE_MONITOR_DATA = [];
 const USERS = [];
 
 for (let i = 0; i < 10; i++) {
@@ -99,8 +99,26 @@ const getMonitorsByUserId = async (userId) => {
   if (userMonitors.length === 0) {
     throw new Error(`Monitors for user ${userId} not found`);
   }
-
   return userMonitors;
+};
+
+const createMonitor = async (req, res) => {
+  const monitor = new Monitor(req.body);
+  FAKE_MONITOR_DATA.push(monitor);
+  return monitor;
+};
+
+const deleteMonitor = async (req, res) => {
+  const monitorId = req.params.monitorId;
+  try {
+    const monitor = getMonitorById(monitorId);
+    FAKE_MONITOR_DATA = FAKE_MONITOR_DATA.filter((monitor) => {
+      return monitor.id !== monitorId;
+    });
+    return monitor;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {
@@ -110,4 +128,6 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
+  createMonitor,
+  deleteMonitor,
 };

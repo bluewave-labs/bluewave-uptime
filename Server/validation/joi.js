@@ -12,7 +12,7 @@ const registerValidation = joi.object({
   password: joi.string().min(8).required(),
 });
 
-const getMonitorsByIdValidation = joi.object({
+const getMonitorByIdValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
@@ -20,9 +20,19 @@ const getMonitorsByUserIdValidation = joi.object({
   userId: joi.string().required(),
 });
 
+const createMonitorValidation = joi.object({
+  userId: joi.string().required(),
+  name: joi.string().required(),
+  description: joi.string().required(),
+  url: joi.string().uri().required(),
+  isActive: joi.boolean(),
+  interval: joi.number(),
+});
+
 module.exports = {
   loginValidation,
   registerValidation,
-  getMonitorsByIdValidation,
+  getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
+  createMonitorValidation,
 };

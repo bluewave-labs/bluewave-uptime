@@ -1,8 +1,11 @@
 const {
-  getMonitorsByIdValidation,
+  getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
+  createMonitorValidation,
 } = require("../validation/joi");
+
 const logger = require("../utils/logger");
+const Monitor = require("../models/Monitor");
 
 /**
  * Returns all monitors
@@ -31,7 +34,7 @@ const getAllMonitors = async (req, res) => {
  * @throws {Error}
  */
 const getMonitorById = async (req, res) => {
-  const { error } = getMonitorsByIdValidation.validate(req.params);
+  const { error } = getMonitorByIdValidation.validate(req.params);
   if (error) {
     return res
       .status(400)
@@ -82,4 +85,68 @@ const getMonitorsByUserId = async (req, res) => {
   }
 };
 
-module.exports = { getAllMonitors, getMonitorById, getMonitorsByUserId };
+/**
+ * Creates a new monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const createMonitor = async (req, res) => {
+  const { error } = createMonitorValidation.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .json({ success: false, msg: error.details[0].message });
+  }
+
+  try {
+    const monitor = await req.db.createMonitor(req, res);
+    return res
+      .status(200)
+      .json({ success: true, msg: "Monitor created", data: monitor });
+  } catch (error) {
+    logger.error(error.message, { service: "monitor" });
+    return res.status(500).json({ success: false, msg: error.message });
+  }
+};
+
+// Delete Monitor
+/**
+ * Delete a monitor by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const deleteMonitor = async (req, res) => {
+  const { error } = getMonitorByIdValidation.validate(req.params);
+  if (error) {
+    return res
+      .status(400)
+      .json({ success: false, msg: error.details[0].message });
+  }
+  try {
+    const monitor = await req.db.deleteMonitor(req, res);
+    return res
+      .status(200)
+      .json({ success: true, msg: "Monitor deleted", data: monitor });
+  } catch (error) {
+    logger.error(error.message, { service: "monitor" });
+    return res.status(500).json({ success: false, msg: error.message });
+  }
+};
+
+// Edit Monitor
+
+module.exports = {
+  getAllMonitors,
+  getMonitorById,
+  getMonitorsByUserId,
+  createMonitor,
+  deleteMonitor,
+};
