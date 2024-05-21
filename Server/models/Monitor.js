@@ -1,37 +1,36 @@
 const mongoose = require("mongoose");
 
-const MonitorSchema = mongoose.Schema({
-  userId: {
-    type: String,
+const MonitorSchema = mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      immutable: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    interval: {
+      // in milliseconds
+      type: Number,
+      default: 60000,
+    },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  url: {
-    type: String,
-    required: true,
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-  interval: {
-    // in milliseconds
-    type: Number,
-    default: 60000,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Monitor", MonitorSchema);
