@@ -22,6 +22,7 @@
 
 const Monitor = require("../models/Monitor");
 const UserModel = require("../models/user");
+const bcrypt = require("bcrypt");
 
 const FAKE_MONITOR_DATA = [];
 const USERS = [];
@@ -52,6 +53,8 @@ const connect = async () => {
 const insertUser = async (req, res) => {
   try {
     const newUser = new UserModel({ ...req.body });
+    const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
+    newUser.password = await bcrypt.hash(newUser.password, salt); // hash is also async, need to eitehr await or use hashSync
     USERS.push(newUser);
     return newUser;
   } catch (error) {
