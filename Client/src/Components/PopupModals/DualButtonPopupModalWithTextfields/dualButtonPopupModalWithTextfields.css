@@ -1,0 +1,61 @@
+:root {
+  --popup-color-with-input-border-0: #f2f2f2;
+  --popup-color-with-input-border-1: #d0d5dd;
+  --popup-modal-with-input-title-color: #344054;
+}
+
+.popup-modal-holder {
+  width: 480px;
+  font-family: var(--popup-font-family-0);
+  padding: 50px 40px;
+  border-radius: 4px;
+  margin: 10px 20px;
+  border: 1px solid var(--popup-color-with-input-border-0);
+  box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
+    0px 20px 24px -4px rgba(16, 24, 40, 0.08);
+}
+
+.popup-modal-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.popup-modal-close {
+  cursor: pointer;
+}
+
+.spacing-height {
+  height: 30px;
+}
+
+.popup-modal-input-title {
+  margin-bottom: 15px;
+  color: var(--popup-modal-with-input-title-color);
+}
+
+.popup-modal-text-field {
+  width: 100%;
+  height: 35px;
+  border: 1px solid var(--popup-color-with-input-border-1);
+  border-radius: 4px;
+}
+
+.popup-modal-controllers {
+  display: flex;
+  justify-content: end;
+}
+
+.white-cancel-button {
+  border: none;
+  background-color: transparent;
+  font-family: var(--popup-font-family-0);
+  margin: 5px 10px;
+  width: 145px;
+  height: 35px;
+  padding: 5px 20px;
+  border: 1px solid var(--popup-color-with-input-border-1);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}

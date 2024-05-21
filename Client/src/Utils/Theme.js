@@ -16,6 +16,10 @@ const labelRed = "#F04438";
 //Section colros
 const sectionBorder = "#D0D5DD";
 const sectionBg = "#F8F9F8";
+
+// Global Font Family
+const fontFamilyDefault = '"Roboto", "Helvetica", "Arial", sans-serif';
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -46,6 +50,11 @@ const theme = createTheme({
     section: {
       borderColor: sectionBorder,
       bgColor: sectionBg,
+    },
+  },
+  font :{
+    default: {
+      font: fontFamilyDefault,
     },
   },
   shape: {
