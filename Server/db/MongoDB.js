@@ -61,7 +61,7 @@ const getUserByEmail = async (req, res) => {
  */
 const getAllMonitors = async (req, res) => {
   try {
-    const monitors = await Monitor.find({ isActive: true });
+    const monitors = await Monitor.find();
     return monitors;
   } catch (error) {
     throw error;
@@ -120,7 +120,6 @@ const createMonitor = async (req, res) => {
   }
 };
 
-// Delete Monitor
 /**
  * Delete a monitor by ID
  * @async
@@ -142,6 +141,29 @@ const deleteMonitor = async (req, res) => {
   }
 };
 
+/**
+ * Edit a monitor by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Monitor>}
+ * @throws {Error}
+ */
+const editMonitor = async (req, res) => {
+  const candidateId = req.params.monitorId;
+  const candidateMonitor = req.body;
+  try {
+    const editedMonitor = await Monitor.findByIdAndUpdate(
+      candidateId,
+      candidateMonitor,
+      { new: true }
+    );
+    return editedMonitor;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -151,4 +173,5 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  editMonitor,
 };

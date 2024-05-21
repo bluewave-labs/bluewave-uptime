@@ -20,7 +20,8 @@ const getMonitorsByUserIdValidation = joi.object({
   userId: joi.string().required(),
 });
 
-const createMonitorValidation = joi.object({
+const monitorValidation = joi.object({
+  _id: joi.string(),
   userId: joi.string().required(),
   name: joi.string().required(),
   description: joi.string().required(),
@@ -34,5 +35,5 @@ module.exports = {
   registerValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
-  createMonitorValidation,
+  monitorValidation,
 };

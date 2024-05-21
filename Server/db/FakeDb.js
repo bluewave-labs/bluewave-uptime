@@ -27,21 +27,6 @@ const bcrypt = require("bcrypt");
 let FAKE_MONITOR_DATA = [];
 const USERS = [];
 
-for (let i = 0; i < 10; i++) {
-  FAKE_MONITOR_DATA.push(
-    new Monitor({
-      userId: i % 2 === 0 ? 1 : 2,
-      name: `Monitor ${i}`,
-      description: `Description for Monitor ${i}`,
-      url: `https://monitor${i}.com`,
-      isActive: true,
-      interval: 60000,
-      updated_at: new Date(),
-      created_at: new Date(),
-    })
-  );
-}
-
 const connect = async () => {
   try {
     await console.log("Connected to FakeDB");
@@ -104,6 +89,8 @@ const getMonitorsByUserId = async (userId) => {
 
 const createMonitor = async (req, res) => {
   const monitor = new Monitor(req.body);
+  monitor.createdAt = Date.now();
+  monitor.updatedAt = Date.now();
   FAKE_MONITOR_DATA.push(monitor);
   return monitor;
 };
@@ -121,6 +108,21 @@ const deleteMonitor = async (req, res) => {
   }
 };
 
+const editMonitor = async (req, res) => {
+  const monitorId = req.params.monitorId;
+  const idx = FAKE_MONITOR_DATA.findIndex((monitor) => {
+    return monitor._id.toString() === monitorId;
+  });
+  const oldMonitor = FAKE_MONITOR_DATA[idx];
+  const editedMonitor = new Monitor({ ...req.body });
+  editedMonitor._id = oldMonitor._id;
+  editedMonitor.userId = oldMonitor.userId;
+  editedMonitor.updatedAt = Date.now();
+  editedMonitor.createdAt = oldMonitor.createdAt;
+  FAKE_MONITOR_DATA[idx] = editedMonitor;
+  return FAKE_MONITOR_DATA[idx];
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -130,4 +132,5 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  editMonitor,
 };
