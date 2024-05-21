@@ -2,21 +2,21 @@
   --announcement-border-color: #d0d5dd;
   --announcement-border-radius: 4px;
   --announcement-border-radius-2: 8px;
-  /* --announcement-font-family: "Roboto", "Helvetica", "Arial", sans-serif; */
   --announcement-font-size-0: 13px;
   --announcement-font-color-0: #344054;
   --announcement-font-color-1: #475467;
   --announcement-font-color-2: #1570ef;
   --announcement-padding: 16px;
   --info-icon-frame-color: #eaecf0;
+  --margin: 20px;
 }
 
 .announcement-without-tile {
+  margin: var(--margin);
   max-width: 343px;
   width: fit-content;
   display: flex;
   border: 1px solid var(--announcement-border-color);
-  /* font-family: var(--announcement-font-family); */
   padding: var(--announcement-padding);
   border-radius: var(--announcement-border-radius);
 }
