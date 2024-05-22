@@ -41,7 +41,9 @@ const insertUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
     newUser.password = await bcrypt.hash(newUser.password, salt); // hash is also async, need to eitehr await or use hashSync
     USERS.push(newUser);
-    return newUser;
+    const userToReturn = { ...newUser._doc };
+    delete userToReturn.password;
+    return userToReturn;
   } catch (error) {
     throw error;
   }

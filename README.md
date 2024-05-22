@@ -39,13 +39,14 @@ BlueWave uptime monitoring application
 
 Configure the server with the following environmental variables
 
-| ENV Varialbe Name    | Required/Optional | Type    | Description                                          | Accepted Values     |
-| -------------------- | ----------------- | ------- | ---------------------------------------------------- | ------------------- |
-| DB_TYPE              | Optional          | string  | Specify DB to use                                    | `MongoDB \| FakeDB` |
-| DB_CONNECTION_STRING | Required          | string  | Specfies URL for MongoDB Database                    |                     |
-| PORT                 | Optional          | Integer | Specifies Port for Server                            |                     |
-| MAILERSEND_API_KEY   | Required          | string  | Specfies API KEY for MailerSend service              |                     |
-| SYSTEM_EMAIL_ADDRESS | Required          | string  | Specfies System email to be used in emailing service |                     |
+| ENV Varialbe Name    | Required/Optional | Type      | Description                                          | Accepted Values     |
+| -------------------- | ----------------- | --------- | ---------------------------------------------------- | ------------------- |
+| JWT_SECRET           | Required          | `string`  | JWT secret                                           |                     |
+| DB_TYPE              | Optional          | `string`  | Specify DB to use                                    | `MongoDB \| FakeDB` |
+| DB_CONNECTION_STRING | Required          | `string`  | Specfies URL for MongoDB Database                    |                     |
+| PORT                 | Optional          | `integer` | Specifies Port for Server                            |                     |
+| MAILERSEND_API_KEY   | Required          | `string`  | Specfies API KEY for MailerSend service              |                     |
+| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specfies System email to be used in emailing service |                     |
 
 ---
 
@@ -130,9 +131,9 @@ Example:
 
 ##### Response Payload
 
-> | Type   | Notes      |
-> | ------ | ---------- |
-> | `User` | User model |
+> | Type | Notes                              |
+> | ---- | ---------------------------------- |
+> | JWT  | JSON Web Token containing a `User` |
 
 ##### Sample CURL request
 
@@ -191,9 +192,9 @@ curl --request POST \
 
 ##### Response Payload
 
-> | Type   | Notes      |
-> | ------ | ---------- |
-> | `User` | User model |
+> | Type | Notes                              |
+> | ---- | ---------------------------------- |
+> | JWT  | JSON Web Token Containing a `User` |
 
 ##### Sample CURL request
 
@@ -213,17 +214,7 @@ curl --request POST \
 {
   "success": true,
   "msg": "Found user",
-  "data": {
-    "_id": "6644fb9bae0b439371913969",
-    "firstname": "User First Name",
-    "lastname": "User Last Name",
-    "email": "user@gmail.com",
-    "isActive": true,
-    "isVerified": false,
-    "updated_at": "2024-05-15T18:14:51.049Z",
-    "created_at": "2024-05-15T18:14:51.049Z",
-    "__v": 0
-  }
+  "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjQ1MDc5YWFlMGI0MzkzNzE5MTM5NzIiLCJmaXJzdG5hbWUiOiJBbGV4IiwibGFzdG5hbWUiOiJIb2xsaWRheSIsImVtYWlsIjoiYWpob2xsaWRAZ21haWwuY29tIiwiaXNBY3RpdmUiOnRydWUsImlzVmVyaWZpZWQiOmZhbHNlLCJ1cGRhdGVkX2F0IjoiMjAyNC0wNS0xNVQxOTowNjowMi43MjBaIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDUtMTVUMTk6MDY6MDIuNzIwWiIsIl9fdiI6MCwiaWF0IjoxNzE2Mzk5MDM2fQ.clFR01gh5XK9DtLjB-_JLxMBAzBZuduRQv3ZzqHuTRY"
 }
 ```
 
