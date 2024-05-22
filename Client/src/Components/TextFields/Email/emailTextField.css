@@ -1,5 +1,6 @@
 :root {
   --textfield-color-0: #344054;
+  --textfield-font-size: 13px;
 }
 
 .email-text-field {
@@ -10,14 +11,18 @@
 #outlined-basic {
   width: 320px;
   height: 14px;
-  font-size: 13px;
+  font-size: var(--textfield-font-size);
   padding: 8px 12px;
 }
 
 .email-text-field-title {
-  font-size: 13px;
+  font-size: var(--textfield-font-size);
   color: var(--textfield-color-0);
   font-weight: bold;
+}
+
+.email-text-field-input {
+  font-size: var(--textfield-font-size);
 }
 
 #outlined-basic-helper-text {

@@ -2,6 +2,7 @@
   --spacing-1: 15px;
   --spacing-2: 20px;
   --spacing-3: 25px;
+  --textfield-font-size: 13px;
 }
 
 .login-page {
@@ -49,6 +50,7 @@
 #login-email-input {
   width: 308px;
   height: 11px;
+  font-size: var(--textfield-font-size);
 }
 
 .login-form-password-options {
