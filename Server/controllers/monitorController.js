@@ -5,7 +5,6 @@ const {
 } = require("../validation/joi");
 
 const logger = require("../utils/logger");
-const Monitor = require("../models/Monitor");
 
 /**
  * Returns all monitors

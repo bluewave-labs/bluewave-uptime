@@ -2,8 +2,17 @@ const express = require("express");
 const { registerValidation, loginValidation } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
-
 var jwt = require("jsonwebtoken");
+
+/**
+ * Creates and returns JWT token with an arbitrary payload
+ * @function
+ * @param {Object} payload
+ * @returns {String}
+ */
+const issueToken = (payload) => {
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+};
 
 /**
  * @function
@@ -44,11 +53,11 @@ const registerController = async (req, res) => {
     // TODO: Send an email to user
     // Will add this later
     logger.info("New user created!", { service: "auth", userId: newUser._id });
-    const token = jwt.sign(newUser, process.env.JWT_SECRET);
+    const token = issueToken(newUser);
 
     return res
       .status(200)
-      .json({ success: true, msg: "User created}", data: token });
+      .json({ success: true, msg: "User created", data: token });
   } catch (error) {
     logger.error(error.message, { service: "auth" });
     return res.status(500).json({ success: false, msg: error.message });
@@ -88,7 +97,7 @@ const loginController = async (req, res) => {
     delete userWithoutPassword.password;
 
     // Happy path, return token
-    const token = jwt.sign(userWithoutPassword, process.env.JWT_SECRET);
+    const token = issueToken(userWithoutPassword);
     return res
       .status(200)
       .json({ success: true, msg: "Found user", data: token });
