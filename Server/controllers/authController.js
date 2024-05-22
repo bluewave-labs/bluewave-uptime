@@ -3,6 +3,7 @@ const { registerValidation, loginValidation } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
 var jwt = require("jsonwebtoken");
+const SERVICE_NAME = "auth";
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -34,16 +35,16 @@ const registerController = async (req, res) => {
   try {
     const isUser = await req.db.getUserByEmail(req, res);
     if (isUser) {
-      logger.error("User already exists!", {
-        service: "auth",
+      logger.error("User already exists", {
+        service: SERVICE_NAME,
         userId: isUser._id,
       });
       return res
         .status(400)
-        .json({ success: false, msg: "User already exists!" });
+        .json({ success: false, msg: "User already exists" });
     }
   } catch (error) {
-    logger.error(error.message, { service: "auth" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 
@@ -52,14 +53,17 @@ const registerController = async (req, res) => {
     const newUser = await req.db.insertUser(req, res);
     // TODO: Send an email to user
     // Will add this later
-    logger.info("New user created!", { service: "auth", userId: newUser._id });
+    logger.info("New user created!", {
+      service: SERVICE_NAME,
+      userId: newUser._id,
+    });
     const token = issueToken(newUser);
 
     return res
       .status(200)
       .json({ success: true, msg: "User created", data: token });
   } catch (error) {
-    logger.error(error.message, { service: "auth" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -101,7 +105,7 @@ const loginController = async (req, res) => {
       .json({ success: true, msg: "Found user", data: token });
   } catch (error) {
     // Anything else should be an error
-    logger.error(error.message, { service: "auth" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
