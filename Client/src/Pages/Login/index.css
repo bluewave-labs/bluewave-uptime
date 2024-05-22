@@ -1,1 +1,86 @@
-/*Login styles*/
+:root {
+  --spacing-1: 15px;
+  --spacing-2: 20px;
+  --spacing-3: 25px;
+}
+
+.login-page {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form {
+  width: 360px;
+  height: 526px;
+  margin: 90px auto;
+}
+
+.login-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.login-form-header-logo {
+  margin: 0 auto;
+}
+
+.login-form-v-spacing {
+  height: var(--spacing-1);
+}
+
+.login-form-v2-spacing {
+  height: var(--spacing-2);
+}
+
+.login-form-v3-spacing {
+  height: var(--spacing-3);
+}
+
+.login-form-heading {
+  font-size: 30px;
+  font-weight: 700;
+  color: #101828;
+}
+
+#login-email-input {
+  width: 308px;
+  height: 11px;
+}
+
+.login-form-password-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-form-forgot-password {
+  color: #1570ef;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.google-enter {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.new-account-option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #475467;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.new-account-option-span {
+  margin-left: 5px;
+  color: #1570ef;
+  font-size: 14px;
+  cursor: pointer;
+}
