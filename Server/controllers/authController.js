@@ -1,7 +1,9 @@
 const express = require("express");
-const UserModel = require("../models/user");
 const { registerValidation, loginValidation } = require("../validation/joi");
 const logger = require("../utils/logger");
+require("dotenv").config();
+
+var jwt = require("jsonwebtoken");
 
 /**
  * @function
@@ -42,19 +44,25 @@ const registerController = async (req, res) => {
     // TODO: Send an email to user
     // Will add this later
     logger.info("New user created!", { service: "auth", userId: newUser._id });
+    const token = jwt.sign(newUser, process.env.JWT_SECRET);
+
     return res
       .status(200)
-      .json({ success: true, msg: "User created}", data: newUser });
+      .json({ success: true, msg: "User created}", data: token });
   } catch (error) {
     logger.error(error.message, { service: "auth" });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
 
-// **************************
-// Handles logging in a user
-// Returns a user at the moment, but will likely return a JWT in the future
-// **************************
+/**
+ * Returns JWT with User info
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
 const loginController = async (req, res) => {
   try {
     // Validate input
@@ -69,7 +77,6 @@ const loginController = async (req, res) => {
     }
     // Compare password
     const match = await user.comparePassword(req.body.password);
-    console.log(user);
     if (!match) {
       throw new Error("Password does not match!");
     }
@@ -80,11 +87,11 @@ const loginController = async (req, res) => {
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
 
-    // Happy path, return user
-    // In the future we'll probably return a JWT instead of a user
+    // Happy path, return token
+    const token = jwt.sign(userWithoutPassword, process.env.JWT_SECRET);
     return res
       .status(200)
-      .json({ success: true, msg: "Found user", data: userWithoutPassword });
+      .json({ success: true, msg: "Found user", data: token });
   } catch (error) {
     // Anything else should be an error
     logger.error(error.message, { service: "auth" });
