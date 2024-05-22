@@ -90,9 +90,7 @@ const loginController = async (req, res) => {
       throw new Error("Password does not match!");
     }
 
-    // Copy user to remove password.  More memory, but better than mutating user?
-    // We can move this to the DB layer if we want
-    // Probably not neccessary at all as we'll likely return a JWT instead of a user
+    // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
 
