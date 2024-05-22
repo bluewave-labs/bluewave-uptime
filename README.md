@@ -31,7 +31,7 @@ BlueWave uptime monitoring application
 #### Installation
 
 1.  Change directory to the `Server` directory
-2.  Install all depencies by running `npm install`
+2.  Install all dependencies by running `npm install`
 
 ---
 
@@ -39,14 +39,14 @@ BlueWave uptime monitoring application
 
 Configure the server with the following environmental variables
 
-| ENV Varialbe Name    | Required/Optional | Type      | Description                                          | Accepted Values     |
-| -------------------- | ----------------- | --------- | ---------------------------------------------------- | ------------------- |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                           |                     |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                    | `MongoDB \| FakeDB` |
-| DB_CONNECTION_STRING | Required          | `string`  | Specfies URL for MongoDB Database                    |                     |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                            |                     |
-| MAILERSEND_API_KEY   | Required          | `string`  | Specfies API KEY for MailerSend service              |                     |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specfies System email to be used in emailing service |                     |
+| ENV Variable Name    | Required/Optional | Type      | Description                                           | Accepted Values     |
+| -------------------- | ----------------- | --------- | ----------------------------------------------------- | ------------------- |
+| JWT_SECRET           | Required          | `string`  | JWT secret                                            |                     |
+| DB_TYPE              | Optional          | `string`  | Specify DB to use                                     | `MongoDB \| FakeDB` |
+| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                    |                     |
+| PORT                 | Optional          | `integer` | Specifies Port for Server                             |                     |
+| MAILERSEND_API_KEY   | Required          | `string`  | Specifies API KEY for MailerSend service              |                     |
+| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service |                     |
 
 ---
 
@@ -154,18 +154,8 @@ curl --request POST \
 ```json
 {
   "success": true,
-  "msg": "User created}",
-  "data": {
-    "_id": "6645079aae0b439371913972",
-    "firstname": "User First Name",
-    "lastname": "User Last Name",
-    "email": "user@gmail.com",
-    "isActive": true,
-    "isVerified": false,
-    "updated_at": "2024-05-15T19:06:02.720Z",
-    "created_at": "2024-05-15T19:06:02.720Z",
-    "__v": 0
-  }
+  "msg": "User created",
+  "data": "<encoded_user>"
 }
 ```
 
@@ -214,7 +204,7 @@ curl --request POST \
 {
   "success": true,
   "msg": "Found user",
-  "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjQ1MDc5YWFlMGI0MzkzNzE5MTM5NzIiLCJmaXJzdG5hbWUiOiJBbGV4IiwibGFzdG5hbWUiOiJIb2xsaWRheSIsImVtYWlsIjoiYWpob2xsaWRAZ21haWwuY29tIiwiaXNBY3RpdmUiOnRydWUsImlzVmVyaWZpZWQiOmZhbHNlLCJ1cGRhdGVkX2F0IjoiMjAyNC0wNS0xNVQxOTowNjowMi43MjBaIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDUtMTVUMTk6MDY6MDIuNzIwWiIsIl9fdiI6MCwiaWF0IjoxNzE2Mzk5MDM2fQ.clFR01gh5XK9DtLjB-_JLxMBAzBZuduRQv3ZzqHuTRY"
+  "data": "<encoded_user>"
 }
 ```
 
@@ -237,6 +227,49 @@ curl --request POST \
 > | ---------------- | ----------------- |
 > | `Array[Monitor]` | Array of monitors |
 
+###### Sample cURL Request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/monitors \
+  --header '<bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Monitors found",
+  "data": [
+    {
+      "_id": "664d070786e62625ac612ca1",
+      "userId": "6645079aae0b439371913972",
+      "name": "Wha3",
+      "description": "Description",
+      "url": "https://monitor0.com",
+      "isActive": true,
+      "interval": 60000,
+      "createdAt": "2024-05-21T20:41:43.051Z",
+      "updatedAt": "2024-05-21T20:45:10.496Z",
+      "__v": 0
+    },
+    {
+      "_id": "664e5ccf189c864800debc16",
+      "userId": "6645079aae0b439371913972",
+      "name": "Inserting a new Monitor",
+      "description": "Description",
+      "url": "https://monitor0.com",
+      "isActive": true,
+      "interval": 60000,
+      "createdAt": "2024-05-22T20:59:59.295Z",
+      "updatedAt": "2024-05-22T20:59:59.295Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
 </details>
 
 ---
@@ -256,6 +289,35 @@ curl --request POST \
 > | --------- | --------------------------------------------------- |
 > | `Monitor` | Single monitor with the id in the request parameter |
 
+###### Sample cURL Request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1 \
+  --header '<bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Monitor found",
+  "data": {
+    "_id": "664d070786e62625ac612ca1",
+    "userId": "6645079aae0b439371913972",
+    "name": "My Monitor",
+    "description": "Description",
+    "url": "https://monitor0.com",
+    "isActive": true,
+    "interval": 60000,
+    "createdAt": "2024-05-21T20:41:43.051Z",
+    "updatedAt": "2024-05-21T20:45:10.496Z",
+    "__v": 0
+  }
+}
+```
+
 </details>
 
 ---
@@ -269,13 +331,196 @@ curl --request POST \
 > | -------------- | ----- |
 > | Method         | GET   |
 
-###### Request Payload
+###### Response Payload
 
 > | Type             | Notes                                                              |
 > | ---------------- | ------------------------------------------------------------------ |
 > | `Array[Monitor]` | Array of monitors created by user with userId specified in request |
 
+###### Sample cURL Request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/monitors/user/6645079aae0b439371913972 \
+  --header '<bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Monitors for user 6645079aae0b439371913972 found",
+  "data": [
+    {
+      "_id": "664d070786e62625ac612ca1",
+      "userId": "6645079aae0b439371913972",
+      "name": "Wha3",
+      "description": "Description",
+      "url": "https://monitor0.com",
+      "isActive": true,
+      "interval": 60000,
+      "createdAt": "2024-05-21T20:41:43.051Z",
+      "updatedAt": "2024-05-21T20:45:10.496Z",
+      "__v": 0
+    },
+    {
+      "_id": "664e5ccf189c864800debc16",
+      "userId": "6645079aae0b439371913972",
+      "name": "Inserting a new Monitor",
+      "description": "Description",
+      "url": "https://monitor0.com",
+      "isActive": true,
+      "interval": 60000,
+      "createdAt": "2024-05-22T20:59:59.295Z",
+      "updatedAt": "2024-05-22T20:59:59.295Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
 </details>
+
+---
+
+<details>
+<summary><code>POST</code><b>/api/v1/monitors</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type      | Notes                             |
+> | --------- | --------------------------------- |
+> | `Monitor` | Newly created monitor is returned |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/monitors \
+  --header <bearer_token> \
+  --header 'Content-Type: application/json' \
+  --data '{"userId": "6645079aae0b439371913972",
+			"name": "Inserting a new Monitor",
+			"description": "Description",
+			"url": "https://monitor0.com",
+			"isActive": true,
+			"interval": 60000}'
+```
+
+##### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Monitor created",
+  "data": {
+    "userId": "6645079aae0b439371913972",
+    "name": "Inserting a new Monitor",
+    "description": "Description",
+    "url": "https://monitor0.com",
+    "isActive": true,
+    "interval": 60000,
+    "_id": "664e5ccf189c864800debc16",
+    "createdAt": "2024-05-22T20:59:59.295Z",
+    "updatedAt": "2024-05-22T20:59:59.295Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type | Notes               |
+> | ---- | ------------------- |
+> | None | No payload returned |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/monitors/delete/664e632a7a3ee9d620761938 \
+  --header '<bearer_token>' \
+  --header 'Content-Type: application/json' \
+```
+
+## </details>
+
+---
+
+<details>
+<summary><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type      | Notes                       |
+> | --------- | --------------------------- |
+> | `Monitor` | Returns the updated monitor |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/monitors/edit/664e5ccf189c864800debc16 \
+  --header '<bearer_token' \
+  --header 'Content-Type: application/json' \
+  --data '
+		{
+			"_id": "664e5ccf189c864800debc16",
+			"userId": "6645079aae0b439371913972",
+			"name": "Edited monitor",
+			"description": "Description",
+			"url": "https://monitor0.com",
+			"isActive": true,
+			"interval": 60000
+		}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Monitor edited",
+  "data": {
+    "_id": "664e5ccf189c864800debc16",
+    "userId": "6645079aae0b439371913972",
+    "name": "Edited monitor",
+    "description": "Description",
+    "url": "https://monitor0.com",
+    "isActive": true,
+    "interval": 60000,
+    "createdAt": "2024-05-22T20:59:59.295Z",
+    "updatedAt": "2024-05-22T21:34:33.893Z",
+    "__v": 0
+  }
+}
+```
 
 ## Contributors
 

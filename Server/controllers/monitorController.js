@@ -41,8 +41,7 @@ const getMonitorById = async (req, res) => {
   }
 
   try {
-    const monitorId = req.params.monitorId;
-    const monitor = await req.db.getMonitorById(monitorId);
+    const monitor = await req.db.getMonitorById(req, res);
     return res.json({ success: true, msg: "Monitor found", data: monitor });
   } catch (error) {
     logger.error(error.message, { service: "monitor" });
@@ -68,7 +67,7 @@ const getMonitorsByUserId = async (req, res) => {
 
   try {
     const userId = req.params.userId;
-    const monitors = await req.db.getMonitorsByUserId(userId);
+    const monitors = await req.db.getMonitorsByUserId(req, res);
     logger.info(`Monitors for user ${userId} found`, {
       service: "monitor",
       userId: userId,
