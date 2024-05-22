@@ -454,13 +454,22 @@ curl --request POST \
 > | ---- | ------------------- |
 > | None | No payload returned |
 
-##### Sample CURL request
+###### Sample CURL request
 
 ```
 curl --request POST \
   --url http://localhost:5000/api/v1/monitors/delete/664e632a7a3ee9d620761938 \
   --header '<bearer_token>' \
   --header 'Content-Type: application/json' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Monitor deleted"
+}
 ```
 
 ## </details>

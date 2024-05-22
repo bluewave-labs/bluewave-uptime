@@ -135,7 +135,7 @@ const deleteMonitor = async (req, res) => {
      * when it is deleted so there is no orphaned data
      * We also need to make sure to stop all running services for this monitor
      */
-    return res.status(204).json({ success: true, msg: "Monitor deleted" });
+    return res.status(200).json({ success: true, msg: "Monitor deleted" });
   } catch (error) {
     logger.error(error.message, { service: "monitor" });
     return res.status(500).json({ success: false, msg: error.message });
