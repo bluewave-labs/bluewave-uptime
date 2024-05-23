@@ -57,7 +57,7 @@ const registerController = async (req, res) => {
       service: SERVICE_NAME,
       userId: newUser._id,
     });
-    const token = issueToken(newUser);
+    const token = issueToken(newUser._doc);
 
     return res
       .status(200)
