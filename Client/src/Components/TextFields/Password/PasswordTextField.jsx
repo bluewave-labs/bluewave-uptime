@@ -19,7 +19,7 @@ import { useTheme } from "@mui/material";
  */
 const PasswordTextField = ({
   id,
-  label,
+  label = "Password",
   variant,
   placeholder,
   icon,
@@ -41,14 +41,13 @@ const PasswordTextField = ({
 
   return (
     <div style={{ fontFamily: fontFamily }}>
-      <div className="password-text-field-title">Password</div>
+      <div className="password-text-field-title">{label}</div>
       <div className="password-text-field">
         <TextField
           type="password"
           error={error}
           className="password-text-field-input"
           id={id}
-          label={label}
           variant={variant}
           placeholder={placeholder}
           InputProps={{
