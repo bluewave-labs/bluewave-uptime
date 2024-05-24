@@ -1,0 +1,21 @@
+.checkbox-holder {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.checkbox-label {
+  margin-left: 5px;
+  font-size: 13px;
+  color: #344054;
+  font-weight: 600;
+  cursor: pointer;
+}

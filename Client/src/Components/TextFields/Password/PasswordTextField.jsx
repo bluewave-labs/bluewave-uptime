@@ -1,5 +1,5 @@
+import "./passwordTextField.css";
 import React, { useState } from "react";
-import "./emailTextField.css";
 import { InputAdornment, TextField } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -15,11 +15,11 @@ import { useTheme } from "@mui/material";
  * @param {"error" | "help"} [props.icon] - The type of icon to display (error or help) (optional)
  * @param {string} props.helperText - The helper text displayed below the text field (optional)
  * @param {boolean} props.error - A flag indicating if the text field has an error (required)
- * @returns {JSX.Element} - Renders the email text field component with dynamic icon display
+ * @returns {JSX.Element} - Renders the password text field component with dynamic icon display
  */
-const EmailTextField = ({
+const PasswordTextField = ({
   id,
-  label = "Email",
+  label = "Password",
   variant,
   placeholder,
   icon,
@@ -41,11 +41,12 @@ const EmailTextField = ({
 
   return (
     <div style={{ fontFamily: fontFamily }}>
-      <div className="email-text-field-title">{label}</div>
-      <div className="email-text-field">
+      <div className="password-text-field-title">{label}</div>
+      <div className="password-text-field">
         <TextField
+          type="password"
           error={error}
-          className="email-text-field-input"
+          className="password-text-field-input"
           id={id}
           variant={variant}
           placeholder={placeholder}
@@ -84,4 +85,4 @@ const EmailTextField = ({
   );
 };
 
-export default EmailTextField;
+export default PasswordTextField;
