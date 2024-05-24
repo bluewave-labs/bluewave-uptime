@@ -6,17 +6,25 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useTheme } from "@mui/material";
 
 /**
+ * `EmailTextField` is a functional React component that renders a text field for email input.
+ *
  * @component
- * @param {Object} props
- * @param {string} props.id - Unique ID for the text field (optional)
- * @param {string} props.label - The label text displayed above the text field (optional)
- * @param {"standard" | "outlined" | "filled"} props.variant - The variant of the text field (e.g., "outlined") (optional)
- * @param {string} props.placeholder - The placeholder text displayed within the text field (optional)
- * @param {"error" | "help"} [props.icon] - The type of icon to display (error or help) (optional)
- * @param {string} props.helperText - The helper text displayed below the text field (optional)
- * @param {boolean} props.error - A flag indicating if the text field has an error (required)
- * @returns {JSX.Element} - Renders the email text field component with dynamic icon display
+ * @param {Object} props - The properties that define the `EmailTextField` component.
+ * @param {string} props.id - The id of the text field.
+ * @param {string} [props.label="Email"] - The label of the text field.
+ * @param {string} props.variant - The variant of the text field.
+ * @param {string} props.placeholder - The placeholder of the text field.
+ * @param {React.Element} props.icon - The icon to be displayed in the text field.
+ * @param {string} props.helperText - The helper text to be displayed below the text field.
+ * @param {boolean} props.error - If true, the text field will indicate an error state.
+ *
+ * @example
+ * // To use this component, import it and use it in your JSX like this:
+ * <EmailTextField id="email" variant="outlined" placeholder="Enter your email" />
+ *
+ * @returns {React.Element} The `EmailTextField` component with a text field for email input.
  */
+
 const EmailTextField = ({
   id,
   label = "Email",
