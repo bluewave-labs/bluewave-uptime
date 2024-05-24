@@ -6,7 +6,7 @@ const monitorRouter = require("./routes/monitorRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
-var { verifyJWT } = require("./middleware/verifyJWT");
+const { verifyJWT } = require("./middleware/verifyJWT");
 
 // const { sendEmail } = require('./utils/sendEmail')
 

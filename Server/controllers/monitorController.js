@@ -5,6 +5,7 @@ const {
 } = require("../validation/joi");
 
 const logger = require("../utils/logger");
+const SERVICE_NAME = "monitorController";
 
 /**
  * Returns all monitors
@@ -19,7 +20,7 @@ const getAllMonitors = async (req, res) => {
     const monitors = await req.db.getAllMonitors();
     return res.json({ success: true, msg: "Monitors found", data: monitors });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -42,9 +43,14 @@ const getMonitorById = async (req, res) => {
 
   try {
     const monitor = await req.db.getMonitorById(req, res);
+    if (!monitor) {
+      logger.error("Monitor not found", { service: SERVICE_NAME });
+      return res.status(404).json({ success: false, msg: "Monitor not found" });
+    }
+
     return res.json({ success: true, msg: "Monitor found", data: monitor });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -68,17 +74,20 @@ const getMonitorsByUserId = async (req, res) => {
   try {
     const userId = req.params.userId;
     const monitors = await req.db.getMonitorsByUserId(req, res);
-    logger.info(`Monitors for user ${userId} found`, {
-      service: "monitor",
-      userId: userId,
-    });
+
+    if (monitors && monitors.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "No monitors not found" });
+    }
+
     return res.json({
       success: true,
       msg: `Monitors for user ${userId} found`,
       data: monitors,
     });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -106,7 +115,7 @@ const createMonitor = async (req, res) => {
       .status(201)
       .json({ success: true, msg: "Monitor created", data: monitor });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -137,7 +146,7 @@ const deleteMonitor = async (req, res) => {
      */
     return res.status(200).json({ success: true, msg: "Monitor deleted" });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
@@ -150,9 +159,9 @@ const deleteMonitor = async (req, res) => {
  * @returns {Promise<Express.Response>}
  * @throws {Error}
  */
-const editMonitor = async (req, res) => {
-  let paramError = getMonitorByIdValidation.validate(req.params);
-  if (paramError.error) {
+const editMonitor = async (req, res, next) => {
+  let { paramError } = getMonitorByIdValidation.validate(req.params);
+  if (paramError) {
     return res
       .status(422)
       .json({ success: false, msg: paramError.error.details[0].message });
@@ -171,7 +180,7 @@ const editMonitor = async (req, res) => {
       .status(200)
       .json({ success: true, msg: "Monitor edited", data: editedMonitor });
   } catch (error) {
-    logger.error(error.message, { service: "monitor" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
