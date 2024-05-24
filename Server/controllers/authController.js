@@ -1,7 +1,19 @@
 const express = require("express");
-const UserModel = require("../models/user");
 const { registerValidation, loginValidation } = require("../validation/joi");
 const logger = require("../utils/logger");
+require("dotenv").config();
+var jwt = require("jsonwebtoken");
+const SERVICE_NAME = "auth";
+
+/**
+ * Creates and returns JWT token with an arbitrary payload
+ * @function
+ * @param {Object} payload
+ * @returns {String}
+ */
+const issueToken = (payload) => {
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+};
 
 /**
  * @function
@@ -23,16 +35,16 @@ const registerController = async (req, res) => {
   try {
     const isUser = await req.db.getUserByEmail(req, res);
     if (isUser) {
-      logger.error("User already exists!", {
-        service: "auth",
+      logger.error("User already exists", {
+        service: SERVICE_NAME,
         userId: isUser._id,
       });
       return res
         .status(400)
-        .json({ success: false, msg: "User already exists!" });
+        .json({ success: false, msg: "User already exists" });
     }
   } catch (error) {
-    logger.error(error.message, { service: "auth" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 
@@ -41,20 +53,29 @@ const registerController = async (req, res) => {
     const newUser = await req.db.insertUser(req, res);
     // TODO: Send an email to user
     // Will add this later
-    logger.info("New user created!", { service: "auth", userId: newUser._id });
+    logger.info("New user created!", {
+      service: SERVICE_NAME,
+      userId: newUser._id,
+    });
+    const token = issueToken(newUser._doc);
+
     return res
       .status(200)
-      .json({ success: true, msg: "User created}", data: newUser });
+      .json({ success: true, msg: "User created", data: token });
   } catch (error) {
-    logger.error(error.message, { service: "auth" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };
 
-// **************************
-// Handles logging in a user
-// Returns a user at the moment, but will likely return a JWT in the future
-// **************************
+/**
+ * Returns JWT with User info
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
 const loginController = async (req, res) => {
   try {
     // Validate input
@@ -69,25 +90,22 @@ const loginController = async (req, res) => {
     }
     // Compare password
     const match = await user.comparePassword(req.body.password);
-    console.log(user);
     if (!match) {
       throw new Error("Password does not match!");
     }
 
-    // Copy user to remove password.  More memory, but better than mutating user?
-    // We can move this to the DB layer if we want
-    // Probably not neccessary at all as we'll likely return a JWT instead of a user
+    // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
 
-    // Happy path, return user
-    // In the future we'll probably return a JWT instead of a user
+    // Happy path, return token
+    const token = issueToken(userWithoutPassword);
     return res
       .status(200)
-      .json({ success: true, msg: "Found user", data: userWithoutPassword });
+      .json({ success: true, msg: "Found user", data: token });
   } catch (error) {
     // Anything else should be an error
-    logger.error(error.message, { service: "auth" });
+    logger.error(error.message, { service: SERVICE_NAME });
     return res.status(500).json({ success: false, msg: error.message });
   }
 };

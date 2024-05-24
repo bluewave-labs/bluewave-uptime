@@ -6,6 +6,8 @@ const monitorRouter = require("./routes/monitorRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
+var { verifyJWT } = require("./middleware/verifyJWT");
+
 // const { sendEmail } = require('./utils/sendEmail')
 
 // **************************
@@ -58,8 +60,7 @@ app.use((req, res, next) => {
 
 //routes
 app.use("/api/v1/auth", authRouter);
-
-app.use("/api/v1/monitors", monitorRouter);
+app.use("/api/v1/monitors", verifyJWT, monitorRouter);
 
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {
