@@ -10,6 +10,14 @@ BlueWave uptime monitoring application
 1.  [Installation (Server)](#server)
 1.  [Configuration(Server)](#config-server)
 1.  [Endpoints](#endpoints)
+	- <code>POST</code> [/api/v1/auth/register](#post-register)
+	- <code>POST</code> [/api/v1/auth/login](#post-login)
+	- <code>GET</code> [/api/v1/monitors](#get-monitors)
+	- <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
+	- <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
+	- <code>POST</code> [/api/v1/monitors](#post-monitors)
+	- <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
+	- <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
 
 ---
 
@@ -111,7 +119,7 @@ Example:
 ---
 
 <details>
-<summary><code>POST</code> <b>/api/v1/auth/register</b></summary>
+<summary id='post-register'><code>POST</code> <b>/api/v1/auth/register</b></summary>
 
 ##### Method/Headers
 
@@ -164,7 +172,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>POST</code> <b>/api/v1/auth/login</b></summary>
+<summary id='post-login'><code>POST</code> <b>/api/v1/auth/login</b></summary>
 
 ##### Method/Headers
 
@@ -213,7 +221,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>GET</code> <b>/api/v1/monitors</b></summary>
+<summary id='get-monitors'><code>GET</code> <b>/api/v1/monitors</b></summary>
 
 ##### Method/Headers
 
@@ -275,7 +283,7 @@ curl --request GET \
 ---
 
 <details>
-<summary><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
+<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
 
 ###### Method/Headers
 
@@ -323,7 +331,7 @@ curl --request GET \
 ---
 
 <details>
-<summary><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
+<summary id='get-monitors-user-userid'><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
 
 ###### Method/Headers
 
@@ -385,7 +393,7 @@ curl --request GET \
 ---
 
 <details>
-<summary><code>POST</code><b>/api/v1/monitors</b></summary>
+<summary id='post-monitors'><code>POST</code><b>/api/v1/monitors</b></summary>
 
 ###### Method/Headers
 
@@ -440,7 +448,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
+<summary id='post-monitors-del-id'><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
 
 ###### Method/Headers
 
@@ -477,7 +485,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
+<summary id='post-monitors-edit-id'><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
 
 ###### Method/Headers
 
