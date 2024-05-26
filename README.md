@@ -542,6 +542,8 @@ curl --request POST \
 
 </details>
 
+---
+
 ## Contributors
 
 <a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
