@@ -7,17 +7,18 @@ BlueWave uptime monitoring application
 - Clone this repository to your local machine
 
 1.  [Installation (Client)](#client)
-1.  [Installation (Server)](#server)
-1.  [Configuration(Server)](#config-server)
-1.  [Endpoints](#endpoints)
-	- <code>POST</code> [/api/v1/auth/register](#post-register)
-	- <code>POST</code> [/api/v1/auth/login](#post-login)
-	- <code>GET</code> [/api/v1/monitors](#get-monitors)
-	- <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
-	- <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
-	- <code>POST</code> [/api/v1/monitors](#post-monitors)
-	- <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
-	- <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
+2.  [Installation (Server)](#server)
+3.  [Configuration(Server)](#config-server)
+4.  [Endpoints](#endpoints)
+    - <code>POST</code> [/api/v1/auth/register](#post-register)
+    - <code>POST</code> [/api/v1/auth/login](#post-login)
+    - <code>GET</code> [/api/v1/monitors](#get-monitors)
+    - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
+    - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
+    - <code>POST</code> [/api/v1/monitors](#post-monitors)
+    - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
+    - <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
+5.  [Contributors](#contributors)
 
 ---
 
@@ -538,6 +539,8 @@ curl --request POST \
   }
 }
 ```
+
+</details>
 
 ## Contributors
 
