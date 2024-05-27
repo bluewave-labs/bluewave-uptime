@@ -1,5 +1,10 @@
 const express = require("express");
-const { registerValidation, loginValidation } = require("../validation/joi");
+const {
+  registerValidation,
+  loginValidation,
+  editUserParamValidation,
+  editUserBodyValidation,
+} = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
 var jwt = require("jsonwebtoken");
@@ -107,4 +112,36 @@ const loginController = async (req, res, next) => {
   }
 };
 
-module.exports = { registerController, loginController };
+const userEditController = async (req, res, next) => {
+  try {
+    await editUserParamValidation.validateAsync(req.params);
+    await editUserBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message = error.details[0].message;
+    next(error);
+    return;
+  }
+
+  if (req.params.userId !== req.user._id.toString()) {
+    const error = new Error("Unauthorized access");
+    error.status = 401;
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+
+  try {
+    const updatedUser = await req.db.updateUser(req, res);
+    res
+      .status(200)
+      .json({ success: true, msg: "User updated", data: updatedUser });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+module.exports = { registerController, loginController, userEditController };

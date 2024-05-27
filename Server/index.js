@@ -63,12 +63,6 @@ app.use((req, res, next) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/monitors", verifyJWT, monitorRouter);
 
-/**
- * Error handler middleware
- * MUST be called after all routes
- */
-app.use(handleErrors);
-
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {
 //     const response = sendEmail(['veysel.boybay@bluewavelabs.ca'], 'Testing email service', '<h1>Testing Bluewavelabs</h1>');
@@ -85,5 +79,11 @@ app.use("/api/v1/healthy", (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+/**
+ * Error handler middleware
+ * Should be called last
+ */
+app.use(handleErrors);
 
 connectDbAndRunServer(app, db);
