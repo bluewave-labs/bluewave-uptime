@@ -12,6 +12,7 @@ BlueWave uptime monitoring application
 4.  [Endpoints](#endpoints)
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
+    - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
     - <code>GET</code> [/api/v1/monitors](#get-monitors)
     - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
     - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
@@ -215,6 +216,67 @@ curl --request POST \
   "success": true,
   "msg": "Found user",
   "data": "<encoded_user>"
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary id='post-auth-user-edit-id'><code>POST</code><b>/api/v1/auth/user/{userId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+##### Body
+
+> | Name          | Type     | Notes       |
+> | ------------- | -------- | ----------- |
+> | firstname     | `string` |             |
+> | lastname      | `string` |             |
+> | profilePicUrl | `string` |             |
+> | password      | `string` | Min 8 chars |
+
+###### Response Payload
+
+> | Type   | Notes                    |
+> | ------ | ------------------------ |
+> | `User` | Returns the updated user |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/auth/user/6654d156634754f789e1f10e \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"firstname": "First Name",
+  "lastname: "Last Name"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "User updated",
+  "data": {
+    "_id": "6654d156634754f789e1f10e",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "email": "me@gmail.com",
+    "isActive": true,
+    "isVerified": false,
+    "createdAt": "2024-05-27T18:30:46.358Z",
+    "updatedAt": "2024-05-27T19:21:51.747Z",
+    "__v": 0
+  }
 }
 ```
 

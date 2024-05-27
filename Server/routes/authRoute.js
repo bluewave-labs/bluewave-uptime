@@ -1,7 +1,5 @@
 const router = require("express").Router();
-const user = require("../models/user");
 const { verifyJWT } = require("../middleware/verifyJWT");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
 
 const {
   registerController,

@@ -73,7 +73,7 @@ const updateUser = async (req, res) => {
       candidateUserId,
       candidateUser,
       { new: true } // Returns updated user instead of pre-update user
-    );
+    ).select("-password");
     return updatedUser;
   } catch (error) {
     throw error;
