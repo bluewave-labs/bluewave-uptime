@@ -132,7 +132,6 @@ const userEditController = async (req, res, next) => {
     return;
   }
 
-  //Find and update user
   try {
     const updatedUser = await req.db.updateUser(req, res);
     res

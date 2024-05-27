@@ -69,7 +69,7 @@ const updateUser = async (req, res) => {
   const candidateUser = req.body;
 
   try {
-    const updatedUser = await user.findByIdAndUpdate(
+    const updatedUser = await UserModel.findByIdAndUpdate(
       candidateUserId,
       candidateUser,
       { new: true } // Returns updated user instead of pre-update user
