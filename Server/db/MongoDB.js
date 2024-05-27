@@ -2,6 +2,10 @@ const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
 const UserModel = require("../models/user");
 
+const verifyId = (userId, monitorId) => {
+  return userId.toString() === monitorId.toString();
+};
+
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -113,6 +117,7 @@ const getMonitorsByUserId = async (req, res) => {
 const createMonitor = async (req, res) => {
   try {
     const monitor = new Monitor({ ...req.body });
+    monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
   } catch (error) {
