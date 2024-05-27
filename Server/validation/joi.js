@@ -1,5 +1,4 @@
 const joi = require("joi");
-const user = require("../models/user");
 
 const loginValidation = joi.object({
   email: joi.string().email().required(),
@@ -30,10 +29,22 @@ const monitorValidation = joi.object({
   interval: joi.number(),
 });
 
+const editUserParamValidation = joi.object({
+  userId: joi.string().required(),
+});
+
+const editUserBodyValidation = joi.object({
+  firstname: joi.string(),
+  lastname: joi.string(),
+  profilePicUrl: joi.string(),
+});
+
 module.exports = {
   loginValidation,
   registerValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
+  editUserParamValidation,
+  editUserBodyValidation,
 };

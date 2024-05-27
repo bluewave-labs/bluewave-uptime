@@ -64,6 +64,31 @@ const getUserByEmail = async (req, res) => {
 //****************************************
 
 /**
+ * Update a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+
+const updateUser = async (req, res) => {
+  const candidateUserId = req.params.userId;
+  const candidateUser = req.body;
+
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      candidateUserId,
+      candidateUser,
+      { new: true } // Returns updated user instead of pre-update user
+    ).select("-password");
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * Get all monitors
  * @async
  * @param {Express.Request} req
@@ -244,6 +269,7 @@ module.exports = {
   connect,
   insertUser,
   getUserByEmail,
+  updateUser,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
