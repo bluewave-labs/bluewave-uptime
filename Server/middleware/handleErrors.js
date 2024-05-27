@@ -1,9 +1,12 @@
 const logger = require("../utils/logger");
 
 const handleErrors = (error, req, res, next) => {
-  error.status = error.status ? error.status : 500;
-  logger.error(error.message, { service: error.service });
-  res.status(error.status).json({ success: false, msg: error.message });
+  const status = error.status || 500;
+  const message = error.message || "Something went wrong";
+  const service = error.errorService || "Unknown service";
+
+  logger.error(error.message, { service: service });
+  res.status(status).json({ success: false, msg: message });
 };
 
 module.exports = { handleErrors };
