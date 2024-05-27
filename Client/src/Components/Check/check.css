@@ -1,0 +1,20 @@
+.check {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.check-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.check-h-spacing {
+  margin-right: 8px;
+}
+
+.check-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475467;
+}

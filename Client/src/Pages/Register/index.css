@@ -1,1 +1,76 @@
-/*REgister styles*/
+:root {
+  --dimension-width-1: 100vw;
+  --dimension-width-2: 360px;
+
+  --dimension-height-1: 100vh;
+
+  --spacing-small: 12px;
+  --spacing-medium: 24px;
+  --spacing-large: 40px;
+
+  --font-size-small: 13px;
+  --font-size-medium: 16px;
+
+  --register-form-heading-color-1: #101828;
+  --register-form-subheading-color-1: #475467;
+}
+
+.register-page {
+  width: var(--dimension-width-1);
+  display: flex;
+  justify-content: center;
+  min-height: var(--dimension-height-1);
+}
+
+.register-form {
+  width: var(--dimension-width-2);
+  margin: 140px auto;
+}
+
+.register-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.register-form-header-logo {
+  margin: 0 auto;
+}
+
+.register-form-v-spacing-24px {
+  height: var(--spacing-medium);
+}
+
+.register-form-v-spacing-12px {
+  height: var(--spacing-small);
+}
+
+.register-form-v-spacing-40px {
+  height: var(--spacing-large);
+}
+
+.register-form-heading {
+  font-size: var(--spacing-medium);
+  font-weight: 700;
+  color: var(--register-form-heading-color-1);
+}
+
+.register-form-subheading {
+  font-size: var(--spacing-small);
+  color: var(--register-form-subheading-color-1);
+  font-weight: 600;
+}
+
+#register-firstname-input,
+#register-lastname-input,
+#register-email-input,
+#register-password-input {
+  font-size: var(--spacing-small);
+  width: 294px;
+  height: 11px;
+  padding: 12px 14px;
+}
+
+.register-bottom-spacing {
+  height: 50px;
+}
