@@ -118,6 +118,35 @@ Example:
 
 </details>
 
+<details>
+<summary><code>Check</code></summary>
+
+| Name        | Type      | Notes                                           |
+| ----------- | --------- | ------------------------------------------------|
+| monitorId   | `string`  | Unique ID for the monitor                       |
+| status      | `boolean` | Indicates the service is  Up or Down            |
+| responseTime| `integer` | Indicates the response time of the service (ms) |
+| statusCode  | `integer` | Status Code returned from the service           |
+| message     | `string`  | Message returned from the service               |
+| updatedAt   | `Date`    | Last time the check was updated                 |
+| CreatedAt   | `Date`    | When the check was created                      |
+
+</details>
+
+<details>
+<summary><code>Alert</code></summary>
+
+| Name              | Type      | Notes                                             |
+| -----------       | --------- | --------------------------------------------------|
+| checkId           | `string`  | Unique ID for the check                           |
+| status            | `boolean` | Indicates the service is  Up or Down              |
+| message           | `string`  | Message for the user about the down service       |
+| notifiedStatus    | `boolean` | Indicates whether the user is notified            |
+| acknowledgeStatus | `boolean` | Indicates whether the user acknowledged the alert |
+| updatedAt         | `Date`    | Last time the alert was updated                   |
+| CreatedAt         | `Date`    | When the alert was created                        |
+
+</details>
 ---
 
 <details>
