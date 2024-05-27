@@ -12,28 +12,21 @@ const verifyOwnership = (Model, paramName) => {
         logger.error("Document not found", {
           service: SERVICE_NAME,
         });
-        return res
-          .status(404)
-          .json({ success: false, msg: "Document not found" });
+        const error = new Error("Document not found");
+        error.status = 404;
+        throw error;
       }
 
       // If the userID does not match the document's userID, return a 403 error
       if (userId.toString() !== doc.userId.toString()) {
-        logger.error("Unauthorized access", {
-          service: SERVICE_NAME,
-        });
-
-        return res.status(403).json({
-          success: false,
-          msg: "You are not authorized to perform this action",
-        });
+        const error = new Error("Unauthorized access");
+        error.status = 403;
+        throw error;
       }
       next();
     } catch (error) {
-      logger.error(error.message, {
-        service: SERVICE_NAME,
-      });
-      return res.status(500).json({ success: false, msg: error.message });
+      error.service = SERVICE_NAME;
+      next(error);
     }
   };
 };

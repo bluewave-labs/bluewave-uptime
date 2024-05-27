@@ -7,6 +7,7 @@ const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
+const { handleErrors } = require("./middleware/handleErrors");
 
 // const { sendEmail } = require('./utils/sendEmail')
 
@@ -61,6 +62,12 @@ app.use((req, res, next) => {
 //routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/monitors", verifyJWT, monitorRouter);
+
+/**
+ * Error handler middleware
+ * MUST be called after all routes
+ */
+app.use(handleErrors);
 
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {

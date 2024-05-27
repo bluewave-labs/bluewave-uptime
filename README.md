@@ -18,7 +18,8 @@ BlueWave uptime monitoring application
     - <code>POST</code> [/api/v1/monitors](#post-monitors)
     - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
     - <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
-5.  [Contributors](#contributors)
+5.  [Error Handling](#error-handling)
+6.  [Contributors](#contributors)
 
 ---
 
@@ -543,6 +544,40 @@ curl --request POST \
 </details>
 
 ---
+
+### Error handling {#error-handling}
+
+Errors are returned in a standard format:
+
+`{"success": false, "msg": "No token provided"}`
+
+Errors are handled by error handling middleware and should be thrown with the following parameters
+
+| Name    | Type      | Default                | Notes                                |
+| ------- | --------- | ---------------------- | ------------------------------------ |
+| status  | `integer` | 500                    | Standard HTTP codes                  |
+| message | `string`  | "Something went wrong" | An error message                     |
+| service | `string`  | "Unknown Service"      | Name of service that threw the error |
+
+Example:
+
+```
+const myRoute = async(req, res, next) => {
+  try{
+    const result = myRiskyOperationHere();
+  }
+  catch(error){
+    error.status = 404
+    error.message = "Resource not found"
+    error.service = service name
+    next(error)
+    return;
+  }
+}
+
+```
+
+Errors should not be handled at the controller level and should be left to the middleware to handle.
 
 ## Contributors
 
