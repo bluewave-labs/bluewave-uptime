@@ -25,6 +25,13 @@ BlueWave uptime monitoring application
     - <code>POST</code> [/api/v1/checks/{monitorId}](#post-checks)
     - <code>GET</code> [/api/v1/checks/{monitorId}](#get-checks)
     - <code>POST</code> [/api/v1/checks/delete/{monitorId}](#delete-checks)
+    ###### Alerts
+    - <code>POST</code> [/api/v1/alerts/{monitorId}](#create-alert)
+    - <code>GET</code> [/api/v1/alerts/user/{userId}](#get-alerts-user-id)
+    - <code>GET</code> [/api/v1/alerts/monitor/{monitorId}](#get-alerts-monitor-id)
+    - <code>GET</code> [/api/v1/alerts/{alertId}](#get-alert-alert-id)
+    - <code>POST</code> [/api/v1/alerts/edit/{alertId}](#edit-alert)
+    - <code>POST</code> [/api/v1/alerts/delete/{alertId}](#delete-alert)
 5.  [Error Handling](#error-handling)
 6.  [Contributors](#contributors)
 
@@ -333,9 +340,9 @@ curl --request POST \
 
 ##### Response Payload
 
-> | Type             | Notes             |
-> | ---------------- | ----------------- |
-> | `Array[Monitor]` | Array of monitors |
+> | Type             | Notes                 |
+> | ---------------- | --------------------- |
+> | `Array<Monitor>` | Array of all monitors |
 
 ###### Sample cURL Request
 
@@ -439,9 +446,9 @@ curl --request GET \
 
 ###### Response Payload
 
-> | Type             | Notes                                                              |
-> | ---------------- | ------------------------------------------------------------------ |
-> | `Array[Monitor]` | Array of monitors created by user with userId specified in request |
+> | Type             | Notes                                                   |
+> | ---------------- | ------------------------------------------------------- |
+> | `Array<Monitor>` | Array of monitors created by user with specified UserID |
 
 ###### Sample cURL Request
 
@@ -499,9 +506,9 @@ curl --request GET \
 
 ###### Response Payload
 
-> | Type      | Notes                             |
-> | --------- | --------------------------------- |
-> | `Monitor` | Newly created monitor is returned |
+> | Type      | Notes                           |
+> | --------- | ------------------------------- |
+> | `Monitor` | Returns newly created `Monitor` |
 
 ##### Sample CURL request
 
@@ -681,7 +688,7 @@ curl --request POST \
 
 > | Type            | Notes                    |
 > | --------------- | ------------------------ |
-> | `Array[Checks]` | Array of `Check` objects |
+> | `Array<Checks>` | Array of `Check` objects |
 
 ##### Sample CURL request
 
@@ -699,6 +706,188 @@ curl --request POST \
 
 <details>
 <summary id='delete-checks'><code>POST</code><b>/api/v1/checks/delete/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type | Notes               |
+> | ---- | ------------------- |
+> | None | No payload returned |
+
+###### Body
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+---
+
+###### Alerts
+
+<details>
+<summary id='create-alert'><code>POST</code><b>/api/v1/alerts/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                         |
+> | ------- | ----------------------------- |
+> | `Alert` | Returns newly created `Alert` |
+
+###### Body
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='get-alerts-user-id'><code>GET</code><b>/api/v1/alerts/user/{userId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type           | Notes                                   |
+> | -------------- | --------------------------------------- |
+> | `Array<Alert>` | Returns all `Alert` created by a `User` |
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+<details>
+<summary id='get-alerts-monitor-id'><code>GET</code><b>/api/v1/alerts/monitor/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type           | Notes                                                          |
+> | -------------- | -------------------------------------------------------------- |
+> | `Array<Alert>` | Returns an array of `Alert` belonging to a specified `Monitor` |
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='get-alert-alert-id'><code>GET</code><b>/api/v1/alerts/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type    | Notes                     |
+> | ------- | ------------------------- |
+> | `Alert` | Returns specified `Alert` |
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='edit-alert'><code>POST</code><b>/api/v1/alerts/edit/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                |
+> | ------- | -------------------- |
+> | `Alert` | Returns edited alert |
+
+###### Body
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+<details>
+<summary id='delete-alert'><code>POST</code><b>/api/v1/alerts/delete/{alertId}</b></summary>
 
 ###### Method/Headers
 
