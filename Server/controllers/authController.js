@@ -17,7 +17,7 @@ const SERVICE_NAME = "auth";
  * @returns {String}
  */
 const issueToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99d" });
 };
 
 /**
@@ -31,7 +31,7 @@ const registerController = async (req, res, next) => {
   try {
     await registerValidation.validateAsync(req.body);
   } catch (error) {
-    error.status = 400;
+    error.status = 422;
     error.service = SERVICE_NAME;
     error.message = error.details[0].message;
     next(error);

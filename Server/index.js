@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
+const alertRouter = require("./routes/alertRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/monitors", verifyJWT, monitorRouter);
 app.use("/api/v1/checks", verifyJWT, checkRouter);
+app.use("/api/v1/alerts", verifyJWT, alertRouter);
 
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {

@@ -39,6 +39,47 @@ const editUserBodyValidation = joi.object({
   profilePicUrl: joi.string(),
 });
 
+const createAlertParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const createAlertBodyValidation = joi.object({
+  checkId: joi.string().required(),
+  monitorId: joi.string().required(),
+  userId: joi.string().required(),
+  status: joi.boolean(),
+  message: joi.string(),
+  notifiedStatus: joi.boolean(),
+  acknowledgeStatus: joi.boolean(),
+});
+
+const getAlertsByUserIdParamValidation = joi.object({
+  userId: joi.string().required(),
+});
+
+const getAlertsByMonitorIdParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const getAlertByIdParamValidation = joi.object({
+  alertId: joi.string().required(),
+});
+
+const editAlertParamValidation = joi.object({
+  alertId: joi.string().required(),
+});
+
+const editAlertBodyValidation = joi.object({
+  status: joi.boolean(),
+  message: joi.string(),
+  notifiedStatus: joi.boolean(),
+  acknowledgeStatus: joi.boolean(),
+});
+
+const deleteAlertParamValidation = joi.object({
+  alertId: joi.string().required(),
+});
+
 module.exports = {
   loginValidation,
   registerValidation,
@@ -47,4 +88,12 @@ module.exports = {
   monitorValidation,
   editUserParamValidation,
   editUserBodyValidation,
+  createAlertParamValidation,
+  createAlertBodyValidation,
+  getAlertsByUserIdParamValidation,
+  getAlertsByMonitorIdParamValidation,
+  getAlertByIdParamValidation,
+  editAlertParamValidation,
+  editAlertBodyValidation,
+  deleteAlertParamValidation,
 };
