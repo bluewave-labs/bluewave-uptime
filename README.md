@@ -145,7 +145,9 @@ Example:
 
 | Name              | Type      | Notes                                             |
 | ----------------- | --------- | ------------------------------------------------- |
-| checkId           | `string`  | Unique ID for the check                           |
+| checkId           | `string`  | Unique ID for the associated check                |
+| monitorId         | `string`  | Unique ID for the associated monitor              |
+| userId            | `string`  | Unique ID for the associated user                 |
 | status            | `boolean` | Indicates the service is Up or Down               |
 | message           | `string`  | Message for the user about the down service       |
 | notifiedStatus    | `boolean` | Indicates whether the user is notified            |
