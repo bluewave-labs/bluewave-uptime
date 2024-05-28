@@ -1,11 +1,13 @@
 :root {
   --textfield-color-0: #344054;
   --textfield-font-size: 13px;
+  --size-16: 16px;
+  --margin-1: 10px;
 }
 
 .email-text-field {
   position: relative;
-  margin-top: 10px;
+  margin-top: var(--margin-1);
 }
 
 #outlined-basic {
@@ -27,18 +29,18 @@
 
 #outlined-basic-helper-text {
   margin-left: 0;
-  margin-top: 10px;
+  margin-top: var(--margin-1);
   font-size: 11px;
 }
 
 .text-field-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--size-16);
+  height: var(--size-16);
 }
 
 .icon-holder {
-  width: 16px;
-  height: 16px;
+  width: var(--size-16);
+  height: var(--size-16);
   padding: 0;
   margin: 0;
 }

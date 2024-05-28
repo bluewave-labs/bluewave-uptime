@@ -1,6 +1,7 @@
 :root {
   --website-color-0: #344054;
   --border-color: #d0d5dd;
+  --border-size: solid 1px;
   --label-font-color: #475467;
   --icon-color: #98a2b3;
   --text-field-margin-0: 10px 20px;
@@ -10,7 +11,7 @@
 .website-textfield-title {
   margin: 0 20px;
   margin-top: 30px;
-  font-size: 13px;
+  font-size: var(--font-size-1);
   color: var(--website-color-0);
   font-weight: bold;
 }
@@ -24,15 +25,15 @@
 
 .website-textfield-hint {
   margin: var(--text-field-margin-0);
-  font-size: 11px;
+  font-size: var(--font-size-4);
 }
 
 .website-label {
   padding: 6px 20px 6px 10px;
-  border: solid 1px var(--border-color);
+  border: var(--border-size) var(--border-color);
   border-right: none;
   border-radius: 4px 0 0 4px;
-  font-size: 13px;
+  font-size: var(--font-size-1);
   text-align: center;
   display: flex;
   justify-content: center;
@@ -44,14 +45,14 @@
   width: 248px;
   height: 31.5px;
   padding: 0px 15px;
-  border: solid 1px var(--border-color);
+  border: var(--border-size) var(--border-color);
 }
 
 .website-icon-holder {
   width: 40px;
   height: 33px;
   padding: 5px;
-  border: solid 1px var(--border-color);
+  border: var(--border-size) var(--border-color);
   border-left: none;
   text-align: center;
   display: flex;
@@ -61,10 +62,10 @@
 
 .copy-to-clipboard-button {
   padding: 5.5px 20px 6px 10px;
-  border: solid 1px var(--border-color);
+  border: var(--border-size) var(--border-color);
   border-left: none;
   border-radius: 0 8px 8px 0;
-  font-size: 13px;
+  font-size: var(--font-size-1);
   text-align: center;
   display: flex;
   justify-content: space-evenly;

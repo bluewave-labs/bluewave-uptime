@@ -20,12 +20,12 @@
 .dual-button-popup-modal-subject {
   color: var(--popup-color-0);
   font-weight: bolder;
-  font-size: 16px;
+  font-size: var(--font-size-3);
 }
 
 .dual-button-popup-modal-description {
   color: var(--popup-color-1);
-  font-size: 13px;
+  font-size: var(--font-size-1);
   margin-top: 10px;
 }
 
@@ -49,12 +49,12 @@
   margin-left: 20px;
   color: white;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--font-size-1);
 }
 
 .transparent-discard-button {
   border: none;
   background-color: transparent;
   margin: 5px 10px;
-  font-size: 13px;
+  font-size: var(--font-size-1);
 }

@@ -36,7 +36,7 @@
 
 .popup-modal-text-field {
   width: 100%;
-  height: 35px;
+  height: var(--size-35);
   border: 1px solid var(--popup-color-with-input-border-1);
   border-radius: 4px;
 }
@@ -52,7 +52,7 @@
   font-family: var(--popup-font-family-0);
   margin: 5px 10px;
   width: 145px;
-  height: 35px;
+  height: var(--size-35);
   padding: 5px 20px;
   border: 1px solid var(--popup-color-with-input-border-1);
   border-radius: 4px;

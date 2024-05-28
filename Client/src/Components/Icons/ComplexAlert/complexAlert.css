@@ -1,44 +1,44 @@
 .icon-holder-outer-red {
-  width: 38px;
-  height: 38px;
+  width: var(--size-38);
+  height: var(--size-38);
   border-radius: 50%;
-  border: 2px solid #d92d2019;
+  border: var(--border-2-solid) #d92d2019;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .icon-holder-inner-red {
-  width: 28px;
-  height: 28px;
+  width: var(--size-28);
+  height: var(--size-28);
   border-radius: 50%;
-  border: 2px solid #d92d204d;
+  border: var(--border-2-solid) #d92d204d;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .icon-holder-outer-green {
-  width: 38px;
-  height: 38px;
+  width: var(--size-38);
+  height: var(--size-38);
   border-radius: 50%;
-  border: 2px solid #07945519;
+  border: var(--border-2-solid) #07945519;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .icon-holder-inner-green {
-  width: 28px;
-  height: 28px;
+  width: var(--size-28);
+  height: var(--size-28);
   border-radius: 50%;
-  border: 2px solid #0794554d;
+  border: var(--border-2-solid) #0794554d;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .icon-core {
-  width: 20px;
-  height: 20px;
+  width: var(--size-20);
+  height: var(--size-20);
 }

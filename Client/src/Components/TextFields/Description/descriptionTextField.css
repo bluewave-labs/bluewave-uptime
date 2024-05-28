@@ -6,27 +6,26 @@
 
 .description-field-holder {
   margin: var(--text-field-margin-0);
-  margin-top: 20px;
+  margin-top: var(--margin-2);
 }
 
 .text-field-title {
   color: var(--color-title-1);
   font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 13px;
+  margin-bottom: var(--margin-1);
+  font-size: var(--font-size-1);
   color: var(--description-color-0);
-  font-weight: bold;
 }
 
 .description-field-area {
   min-width: 320px;
-  font-size: 13px;
+  font-size: var(--font-size-1);
   border-radius: 8px;
 }
 
 .description-field-label {
-  margin-top: 10px;
-  font-size: 11px;
+  margin-top: var(--margin-1);
+  font-size: var(--font-size-4);
 }
 
 .with-error {
@@ -35,11 +34,11 @@
 
 #description-field-area-helper-text {
   margin-left: 0;
-  margin-top: 10px;
-  font-size: 11px;
+  margin-top: var(--margin-1);
+  font-size: var(--font-size-4);
 }
 
 #description-field-area {
   min-width: 320px;
-  font-size: 13px;
+  font-size: var(--font-size-1);
 }

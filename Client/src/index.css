@@ -11,6 +11,27 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --size-40: 40px;
+  --size-38: 38px;
+  --size-35: 35px;
+  --size-28: 28px;
+  --size-24: 24px;
+  --size-20: 20px;
+  --size-16: 16px;
+  --size-13: 13px;
+
+  --font-size-1: 13px;
+  --font-size-2: 1rem;
+  --font-size-3: 16px;
+  --font-size-4: 11px;
+
+  --border-2-solid: 2px solid;
+
+  --margin-1: 10px;
+  --margin-2: 20px;
+
+  --cursor-pointer: pointer;
 }
 
 a {
@@ -44,7 +65,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
-  cursor: pointer;
+  cursor: var(--cursor-pointer);
   transition: border-color 0.25s;
 }
 

@@ -22,8 +22,8 @@
 
 .info-icon-frame {
   display: flex;
-  width: 40px;
-  height: 40px;
+  width: var(--size-40);
+  height: var(--size-40);
   border: 1px solid var(--info-icon-frame-color);
   border-radius: var(--announcement-border-radius-2);
   justify-content: center;
@@ -66,6 +66,6 @@
 }
 
 .announcement-close {
-  width: 24px;
-  height: 24px;
+  width: var(--size-24);
+  height: var(--size-24);
 }
