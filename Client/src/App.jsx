@@ -6,17 +6,18 @@ import Register from "./Pages/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
-import Monitors from "./Pages/Monitors"
+import Monitors from "./Pages/Monitors";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
 import Settings from "./Pages/Settings";
+import ForgotPassword from "./Pages/ForgotPassword";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<HomeLayout />} >
+        <Route exact path="/" element={<HomeLayout />}>
           <Route path="monitors" element={<Monitors />} />
           <Route path="incidents" element={<Incidents />} />
           <Route path="status" element={<Status />} />
@@ -28,6 +29,7 @@ function App() {
         <Route exact path="/demo" element={<Demo />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/playground" element={<PlayGround />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </>
   );
