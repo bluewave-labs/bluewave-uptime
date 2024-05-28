@@ -265,6 +265,123 @@ const deleteChecks = async (req, res) => {
   }
 };
 
+//****************************************
+// Alerts
+//****************************************
+
+/**
+ * Creates an Alert associated with a Monitor and User
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {<Promise<Alert>>}
+ * @throws {Error}
+ */
+const createAlert = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, msg: "Create Alert", data: req.params.monitorId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets all alerts a User has set
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {<Promise<Array<Alert>>}
+ * @throws {Error}
+ */
+const getAlertsByUserId = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      msg: "Get Alerts By UserID",
+      data: req.params.userId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets all alerts a for an associated Monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {<Promise<Array<Alert>>}
+ * @throws {Error}
+ */
+const getAlertsByMonitorId = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      msg: "Get Alerts By MonitorID",
+      data: req.params.monitorId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets an alert with specified ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Alert>}
+ * @throws {Error}
+ */
+const getAlertById = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      msg: "Get Alert By alertID",
+      data: req.params.alertId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Returns an edited monitor with the specified ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Alert>>}
+ * @throws {Error}
+ */
+const editAlert = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, msg: "Edit alert", data: req.params.alertId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Deletes a monitor with the specified ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+const deleteAlert = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, msg: "Delete alert", data: req.params.alertId });
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -279,4 +396,10 @@ module.exports = {
   createCheck,
   getChecks,
   deleteChecks,
+  createAlert,
+  getAlertsByUserId,
+  getAlertsByMonitorId,
+  getAlertById,
+  editAlert,
+  deleteAlert,
 };
