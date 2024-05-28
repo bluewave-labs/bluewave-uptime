@@ -7,9 +7,20 @@ BlueWave uptime monitoring application
 - Clone this repository to your local machine
 
 1.  [Installation (Client)](#client)
-1.  [Installation (Server)](#server)
-1.  [Configuration(Server)](#config-server)
-1.  [Endpoints](#endpoints)
+2.  [Installation (Server)](#server)
+3.  [Configuration(Server)](#config-server)
+4.  [Endpoints](#endpoints)
+    - <code>POST</code> [/api/v1/auth/register](#post-register)
+    - <code>POST</code> [/api/v1/auth/login](#post-login)
+    - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
+    - <code>GET</code> [/api/v1/monitors](#get-monitors)
+    - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
+    - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
+    - <code>POST</code> [/api/v1/monitors](#post-monitors)
+    - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
+    - <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
+5.  [Error Handling](#error-handling)
+6.  [Contributors](#contributors)
 
 ---
 
@@ -108,10 +119,39 @@ Example:
 
 </details>
 
+<details>
+<summary><code>Check</code></summary>
+
+| Name        | Type      | Notes                                           |
+| ----------- | --------- | ------------------------------------------------|
+| monitorId   | `string`  | Unique ID for the monitor                       |
+| status      | `boolean` | Indicates the service is  Up or Down            |
+| responseTime| `integer` | Indicates the response time of the service (ms) |
+| statusCode  | `integer` | Status Code returned from the service           |
+| message     | `string`  | Message returned from the service               |
+| updatedAt   | `Date`    | Last time the check was updated                 |
+| CreatedAt   | `Date`    | When the check was created                      |
+
+</details>
+
+<details>
+<summary><code>Alert</code></summary>
+
+| Name              | Type      | Notes                                             |
+| -----------       | --------- | --------------------------------------------------|
+| checkId           | `string`  | Unique ID for the check                           |
+| status            | `boolean` | Indicates the service is  Up or Down              |
+| message           | `string`  | Message for the user about the down service       |
+| notifiedStatus    | `boolean` | Indicates whether the user is notified            |
+| acknowledgeStatus | `boolean` | Indicates whether the user acknowledged the alert |
+| updatedAt         | `Date`    | Last time the alert was updated                   |
+| CreatedAt         | `Date`    | When the alert was created                        |
+
+</details>
 ---
 
 <details>
-<summary><code>POST</code> <b>/api/v1/auth/register</b></summary>
+<summary id='post-register'><code>POST</code> <b>/api/v1/auth/register</b></summary>
 
 ##### Method/Headers
 
@@ -164,7 +204,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>POST</code> <b>/api/v1/auth/login</b></summary>
+<summary id='post-login'><code>POST</code> <b>/api/v1/auth/login</b></summary>
 
 ##### Method/Headers
 
@@ -213,7 +253,68 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>GET</code> <b>/api/v1/monitors</b></summary>
+<summary id='post-auth-user-edit-id'><code>POST</code><b>/api/v1/auth/user/{userId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+##### Body
+
+> | Name          | Type     | Notes       |
+> | ------------- | -------- | ----------- |
+> | firstname     | `string` |             |
+> | lastname      | `string` |             |
+> | profilePicUrl | `string` |             |
+> | password      | `string` | Min 8 chars |
+
+###### Response Payload
+
+> | Type   | Notes                    |
+> | ------ | ------------------------ |
+> | `User` | Returns the updated user |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/auth/user/6654d156634754f789e1f10e \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"firstname": "First Name",
+  "lastname: "Last Name"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "User updated",
+  "data": {
+    "_id": "6654d156634754f789e1f10e",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "email": "me@gmail.com",
+    "isActive": true,
+    "isVerified": false,
+    "createdAt": "2024-05-27T18:30:46.358Z",
+    "updatedAt": "2024-05-27T19:21:51.747Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary id='get-monitors'><code>GET</code> <b>/api/v1/monitors</b></summary>
 
 ##### Method/Headers
 
@@ -275,7 +376,7 @@ curl --request GET \
 ---
 
 <details>
-<summary><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
+<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
 
 ###### Method/Headers
 
@@ -323,7 +424,7 @@ curl --request GET \
 ---
 
 <details>
-<summary><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
+<summary id='get-monitors-user-userid'><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
 
 ###### Method/Headers
 
@@ -385,7 +486,7 @@ curl --request GET \
 ---
 
 <details>
-<summary><code>POST</code><b>/api/v1/monitors</b></summary>
+<summary id='post-monitors'><code>POST</code><b>/api/v1/monitors</b></summary>
 
 ###### Method/Headers
 
@@ -440,7 +541,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
+<summary id='post-monitors-del-id'><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
 
 ###### Method/Headers
 
@@ -477,7 +578,7 @@ curl --request POST \
 ---
 
 <details>
-<summary><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
+<summary id='post-monitors-edit-id'><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
 
 ###### Method/Headers
 
@@ -530,6 +631,44 @@ curl --request POST \
   }
 }
 ```
+
+</details>
+
+---
+
+### Error handling {#error-handling}
+
+Errors are returned in a standard format:
+
+`{"success": false, "msg": "No token provided"}`
+
+Errors are handled by error handling middleware and should be thrown with the following parameters
+
+| Name    | Type      | Default                | Notes                                |
+| ------- | --------- | ---------------------- | ------------------------------------ |
+| status  | `integer` | 500                    | Standard HTTP codes                  |
+| message | `string`  | "Something went wrong" | An error message                     |
+| service | `string`  | "Unknown Service"      | Name of service that threw the error |
+
+Example:
+
+```
+const myRoute = async(req, res, next) => {
+  try{
+    const result = myRiskyOperationHere();
+  }
+  catch(error){
+    error.status = 404
+    error.message = "Resource not found"
+    error.service = service name
+    next(error)
+    return;
+  }
+}
+
+```
+
+Errors should not be handled at the controller level and should be left to the middleware to handle.
 
 ## Contributors
 

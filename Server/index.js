@@ -6,7 +6,8 @@ const monitorRouter = require("./routes/monitorRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
-var { verifyJWT } = require("./middleware/verifyJWT");
+const { verifyJWT } = require("./middleware/verifyJWT");
+const { handleErrors } = require("./middleware/handleErrors");
 
 // const { sendEmail } = require('./utils/sendEmail')
 
@@ -78,5 +79,11 @@ app.use("/api/v1/healthy", (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+/**
+ * Error handler middleware
+ * Should be called last
+ */
+app.use(handleErrors);
 
 connectDbAndRunServer(app, db);

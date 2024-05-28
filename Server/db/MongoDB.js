@@ -2,6 +2,10 @@ const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
 const UserModel = require("../models/user");
 
+const verifyId = (userId, monitorId) => {
+  return userId.toString() === monitorId.toString();
+};
+
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -46,6 +50,31 @@ const getUserByEmail = async (req, res) => {
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
     return await UserModel.findOne({ email: req.body.email });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Update a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+
+const updateUser = async (req, res) => {
+  const candidateUserId = req.params.userId;
+  const candidateUser = req.body;
+
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      candidateUserId,
+      candidateUser,
+      { new: true } // Returns updated user instead of pre-update user
+    ).select("-password");
+    return updatedUser;
   } catch (error) {
     throw error;
   }
@@ -113,6 +142,7 @@ const getMonitorsByUserId = async (req, res) => {
 const createMonitor = async (req, res) => {
   try {
     const monitor = new Monitor({ ...req.body });
+    monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
   } catch (error) {
@@ -168,6 +198,7 @@ module.exports = {
   connect,
   insertUser,
   getUserByEmail,
+  updateUser,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
