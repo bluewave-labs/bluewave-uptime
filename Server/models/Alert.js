@@ -7,6 +7,16 @@ const AlertSchema = mongoose.Schema(
             ref: 'Check',
             immutable: true,
         },
+        monitorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Monitor',
+            immutable: true,
+        },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            immutable: true,
+        },
         status: {
             type: Boolean,
         },
