@@ -9,6 +9,9 @@ BlueWave uptime monitoring application
 1.  [Installation (Client)](#client)
 2.  [Installation (Server)](#server)
 3.  [Configuration(Server)](#config-server)
+    - [Environment](#environmental-variables)
+    - [Database](#databases)
+      - [Docker Images](#docker-images)
 4.  [Endpoints](#endpoints)
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
@@ -46,9 +49,11 @@ BlueWave uptime monitoring application
 
 ---
 
-#### Configuration {#config-server}
+#### Configuration <a id="config-server"></a>
 
-Configure the server with the following environmental variables
+##### Environmental Variables
+
+Configure the server with the following environmental variables:
 
 | ENV Variable Name    | Required/Optional | Type      | Description                                           | Accepted Values     |
 | -------------------- | ----------------- | --------- | ----------------------------------------------------- | ------------------- |
@@ -58,6 +63,45 @@ Configure the server with the following environmental variables
 | PORT                 | Optional          | `integer` | Specifies Port for Server                             |                     |
 | MAILERSEND_API_KEY   | Required          | `string`  | Specifies API KEY for MailerSend service              |                     |
 | SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service |                     |
+
+---
+
+##### Databases
+
+This project requires a number of databases to run:
+
+1.  Main database for the application. This project includes an implementation for a MongoDB database as well as a MongoDB Docker image.
+2.  A Redis database is required for the Queue implementation in the PingService. This project includes a Redis docker image.
+
+You may run your own databases locally, or you may use the docker images included in the project to get up and running quickly.
+
+###### (Optional) Running Docker Images <a id="docker-images"></a>
+
+Docker images are located in `./Server/docker`
+
+<details>
+<summary><b>MongoDB Image</b></summary>
+Located in `./Server/docker/mongo`
+
+The `./Server/docker/mongo/mongo_data` folder should be mounted to the MongoDB container in order to persist data.
+
+From the `mongo` folder run
+
+1.  Build the image: `docker build -t <db_image_name> .`
+2.  Run the docker image: `docker run -d -p 27017:27017 -v $(pwd)/../mongo/mongo_data:/data/db --name uptime_database_mongo uptime_database_mongo`
+
+</details>
+<details>
+<summary><b>Redis Image</b></summary>
+Located in `./Server/docker/redis`
+
+the `./Server/docker/redis/redis_data` folder should be mounted to the Redis container in order to persist data.
+
+From the `Redis` folder run
+
+1.  Build the image: `docker build -t <db_image_name>`
+2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/../redis/redis_data:/data --name uptime_redis uptime_redis`
+</details>
 
 ---
 
@@ -122,15 +166,15 @@ Example:
 <details>
 <summary><code>Check</code></summary>
 
-| Name        | Type      | Notes                                           |
-| ----------- | --------- | ------------------------------------------------|
-| monitorId   | `string`  | Unique ID for the monitor                       |
-| status      | `boolean` | Indicates the service is  Up or Down            |
-| responseTime| `integer` | Indicates the response time of the service (ms) |
-| statusCode  | `integer` | Status Code returned from the service           |
-| message     | `string`  | Message returned from the service               |
-| updatedAt   | `Date`    | Last time the check was updated                 |
-| CreatedAt   | `Date`    | When the check was created                      |
+| Name         | Type      | Notes                                           |
+| ------------ | --------- | ----------------------------------------------- |
+| monitorId    | `string`  | Unique ID for the monitor                       |
+| status       | `boolean` | Indicates the service is Up or Down             |
+| responseTime | `integer` | Indicates the response time of the service (ms) |
+| statusCode   | `integer` | Status Code returned from the service           |
+| message      | `string`  | Message returned from the service               |
+| updatedAt    | `Date`    | Last time the check was updated                 |
+| CreatedAt    | `Date`    | When the check was created                      |
 
 </details>
 
@@ -138,17 +182,16 @@ Example:
 <summary><code>Alert</code></summary>
 
 | Name              | Type      | Notes                                             |
-| -----------       | --------- | --------------------------------------------------|
+| ----------------- | --------- | ------------------------------------------------- |
 | checkId           | `string`  | Unique ID for the check                           |
-| status            | `boolean` | Indicates the service is  Up or Down              |
+| status            | `boolean` | Indicates the service is Up or Down               |
 | message           | `string`  | Message for the user about the down service       |
 | notifiedStatus    | `boolean` | Indicates whether the user is notified            |
 | acknowledgeStatus | `boolean` | Indicates whether the user acknowledged the alert |
 | updatedAt         | `Date`    | Last time the alert was updated                   |
 | CreatedAt         | `Date`    | When the alert was created                        |
 
-</details>
----
+## </details>
 
 <details>
 <summary id='post-register'><code>POST</code> <b>/api/v1/auth/register</b></summary>
@@ -636,7 +679,7 @@ curl --request POST \
 
 ---
 
-### Error handling {#error-handling}
+### Error handling
 
 Errors are returned in a standard format:
 

@@ -1,3 +1,6 @@
 node_modules
 .env
 *.log
+*.sh
+docker/mongo/mongo_data/*
+docker/redis/redis_data/*
