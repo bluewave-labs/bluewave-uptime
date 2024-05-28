@@ -2,14 +2,27 @@ const express = require("express");
 const {} = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
+const { createAlertParamValidation } = require("../validation/joi");
 
 const SERVICE_NAME = "alerts";
 
-const createAlert = (req, res, next) => {
-  res.status(200).json({ success: true, msg: "Create Alert" });
+const createAlert = async (req, res, next) => {
+  try {
+    await createAlertParamValidation.validateAsync(req.params);
+    res
+      .status(200)
+      .json({ success: true, msg: "Create Alert", data: req.params.monitorId });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
 };
 const getAlertsByUserId = (req, res, next) => {
-  res.status(200).json({ success: true, msg: "Get Alerts By UserID" });
+  res.status(200).json({
+    success: true,
+    msg: "Get Alerts By UserID",
+    data: req.params.userId,
+  });
 };
 const getAlertsByMonitorId = (req, res, next) => {
   res.status(200).json({ success: true, msg: "Get Alerts By MonitorID" });

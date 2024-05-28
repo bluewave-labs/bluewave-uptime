@@ -39,6 +39,10 @@ const editUserBodyValidation = joi.object({
   profilePicUrl: joi.string(),
 });
 
+const createAlertParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
 module.exports = {
   loginValidation,
   registerValidation,
@@ -47,4 +51,5 @@ module.exports = {
   monitorValidation,
   editUserParamValidation,
   editUserBodyValidation,
+  createAlertParamValidation,
 };
