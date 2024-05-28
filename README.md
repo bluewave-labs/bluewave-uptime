@@ -10,15 +10,21 @@ BlueWave uptime monitoring application
 2.  [Installation (Server)](#server)
 3.  [Configuration(Server)](#config-server)
 4.  [Endpoints](#endpoints)
+    ###### Auth
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
     - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
+    ###### Monitors
     - <code>GET</code> [/api/v1/monitors](#get-monitors)
     - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
     - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
     - <code>POST</code> [/api/v1/monitors](#post-monitors)
     - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
     - <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
+    ###### Checks
+    - <code>POST</code> [/api/v1/checks/{monitorId}](#post-checks)
+    - <code>GET</code> [/api/v1/checks/{monitorId}](#get-checks)
+    - <code>POST</code> [/api/v1/checks/delete/{monitorId}](#delete-checks)
 5.  [Error Handling](#error-handling)
 6.  [Contributors](#contributors)
 
@@ -122,15 +128,15 @@ Example:
 <details>
 <summary><code>Check</code></summary>
 
-| Name        | Type      | Notes                                           |
-| ----------- | --------- | ------------------------------------------------|
-| monitorId   | `string`  | Unique ID for the monitor                       |
-| status      | `boolean` | Indicates the service is  Up or Down            |
-| responseTime| `integer` | Indicates the response time of the service (ms) |
-| statusCode  | `integer` | Status Code returned from the service           |
-| message     | `string`  | Message returned from the service               |
-| updatedAt   | `Date`    | Last time the check was updated                 |
-| CreatedAt   | `Date`    | When the check was created                      |
+| Name         | Type      | Notes                                           |
+| ------------ | --------- | ----------------------------------------------- |
+| monitorId    | `string`  | Unique ID for the monitor                       |
+| status       | `boolean` | Indicates the service is Up or Down             |
+| responseTime | `integer` | Indicates the response time of the service (ms) |
+| statusCode   | `integer` | Status Code returned from the service           |
+| message      | `string`  | Message returned from the service               |
+| updatedAt    | `Date`    | Last time the check was updated                 |
+| CreatedAt    | `Date`    | When the check was created                      |
 
 </details>
 
@@ -138,9 +144,9 @@ Example:
 <summary><code>Alert</code></summary>
 
 | Name              | Type      | Notes                                             |
-| -----------       | --------- | --------------------------------------------------|
+| ----------------- | --------- | ------------------------------------------------- |
 | checkId           | `string`  | Unique ID for the check                           |
-| status            | `boolean` | Indicates the service is  Up or Down              |
+| status            | `boolean` | Indicates the service is Up or Down               |
 | message           | `string`  | Message for the user about the down service       |
 | notifiedStatus    | `boolean` | Indicates whether the user is notified            |
 | acknowledgeStatus | `boolean` | Indicates whether the user acknowledged the alert |
@@ -148,7 +154,10 @@ Example:
 | CreatedAt         | `Date`    | When the alert was created                        |
 
 </details>
+
 ---
+
+###### Auth
 
 <details>
 <summary id='post-register'><code>POST</code> <b>/api/v1/auth/register</b></summary>
@@ -201,8 +210,6 @@ curl --request POST \
 
 </details>
 
----
-
 <details>
 <summary id='post-login'><code>POST</code> <b>/api/v1/auth/login</b></summary>
 
@@ -249,8 +256,6 @@ curl --request POST \
 ```
 
 </details>
-
----
 
 <details>
 <summary id='post-auth-user-edit-id'><code>POST</code><b>/api/v1/auth/user/{userId}</b></summary>
@@ -313,6 +318,8 @@ curl --request POST \
 
 ---
 
+###### Monitors
+
 <details>
 <summary id='get-monitors'><code>GET</code> <b>/api/v1/monitors</b></summary>
 
@@ -373,8 +380,6 @@ curl --request GET \
 
 </details>
 
----
-
 <details>
 <summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
 
@@ -420,8 +425,6 @@ curl --request GET \
 ```
 
 </details>
-
----
 
 <details>
 <summary id='get-monitors-user-userid'><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
@@ -483,8 +486,6 @@ curl --request GET \
 
 </details>
 
----
-
 <details>
 <summary id='post-monitors'><code>POST</code><b>/api/v1/monitors</b></summary>
 
@@ -538,8 +539,6 @@ curl --request POST \
 
 </details>
 
----
-
 <details>
 <summary id='post-monitors-del-id'><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
 
@@ -574,8 +573,6 @@ curl --request POST \
 ```
 
 ## </details>
-
----
 
 <details>
 <summary id='post-monitors-edit-id'><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
@@ -630,6 +627,101 @@ curl --request POST \
     "__v": 0
   }
 }
+```
+
+</details>
+
+---
+
+###### Checks
+
+<details>
+<summary id='post-checks'><code>POST</code><b>/api/v1/checks/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type | Notes               |
+> | ---- | ------------------- |
+> | None | No payload returned |
+
+###### Body
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='get-checks'><code>GET</code><b>/api/v1/checks/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type            | Notes                    |
+> | --------------- | ------------------------ |
+> | `Array[Checks]` | Array of `Check` objects |
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='delete-checks'><code>POST</code><b>/api/v1/checks/delete/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type | Notes               |
+> | ---- | ------------------- |
+> | None | No payload returned |
+
+###### Body
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
 ```
 
 </details>

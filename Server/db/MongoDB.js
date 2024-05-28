@@ -16,6 +16,10 @@ const connect = async () => {
   }
 };
 
+//****************************************
+// Users
+//****************************************
+
 /**
  * Insert a User
  * @async
@@ -54,6 +58,10 @@ const getUserByEmail = async (req, res) => {
     throw error;
   }
 };
+
+//****************************************
+//  Monitors
+//****************************************
 
 /**
  * Update a user by ID
@@ -194,6 +202,69 @@ const editMonitor = async (req, res) => {
   }
 };
 
+//****************************************
+// Checks
+//****************************************
+
+/**
+ * Create a check for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+
+const createCheck = async (req, res) => {
+  try {
+    // Create check with monitor id
+    res
+      .status(200)
+      .json({ success: true, msg: "Create check", data: req.params.monitorId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get all checks for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+
+const getChecks = async (req, res) => {
+  try {
+    // TODO get all checks for a monitor from DB
+    res
+      .status(200)
+      .json({ success: true, msg: "Get checks", data: req.params.monitorId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete all checks for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+
+const deleteChecks = async (req, res) => {
+  try {
+    // TODO Delete all checks for a monitor
+    res.status(200).json({
+      success: true,
+      msg: "Deleted checks",
+      data: req.params.monitorId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -205,4 +276,7 @@ module.exports = {
   createMonitor,
   deleteMonitor,
   editMonitor,
+  createCheck,
+  getChecks,
+  deleteChecks,
 };
