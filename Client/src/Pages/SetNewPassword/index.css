@@ -1,0 +1,83 @@
+:root {
+  --set-new-password-page-width-1: 100vw;
+  --set-new-password-page-height-1: 100vh;
+
+  --set-new-password-form-width-1: 360px;
+  --set-new-password-form-height-1: 526px;
+
+  --set-new-password-logo-width-1: 20px;
+  --set-new-password-font-size-medium: 13px;
+
+  --set-new-password-color-1: #101828;
+  --set-new-password-color-2: #1570ef;
+  --set-new-password-color-3: #475467;
+}
+
+.set-new-password-page {
+  width: var(--set-new-password-page-width-1);
+  display: flex;
+  justify-content: center;
+  min-height: var(--set-new-password-page-height-1);
+}
+
+.set-new-password-form {
+  width: var(--set-new-password-form-width-1);
+  min-height: var(--set-new-password-form-height-1);
+  margin: 90px auto;
+}
+
+.set-new-password-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.set-new-password-form-gap-large {
+  height: 32px;
+}
+
+.set-new-password-form-gap-medium {
+  height: 24px;
+}
+
+.set-new-password-form-gap-small-medium {
+  height: 20px;
+}
+
+.set-new-password-form-gap-small {
+  height: 12px;
+}
+
+.set-new-password-form-heading {
+  font-size: 16px;
+  color: #101828;
+  font-weight: 700;
+}
+
+.set-new-password-form-subheading {
+  font-size: 13px;
+  color: var(--set-new-password-color-3);
+  font-weight: 600;
+}
+
+.set-new-password-back-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.set-new-password-back-button-img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  align-items: center;
+}
+
+.set-new-password-back-button-text {
+  height: 20px;
+  font-size: 13px;
+  color: var(--set-new-password-color-3);
+  font-weight: 600;
+  align-items: center;
+}
