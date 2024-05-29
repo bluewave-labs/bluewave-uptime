@@ -13,6 +13,7 @@ import Integrations from "./Pages/Integrations";
 import Settings from "./Pages/Settings";
 import ForgotPassword from "./Pages/ForgotPassword";
 import CheckEmail from "./Pages/CheckEmail";
+import SetNewPassword from "./Pages/SetNewPassword";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/check-email" element={<CheckEmail />} />
+        <Route path="/set-new-password" element={<SetNewPassword />} />
       </Routes>
     </>
   );
