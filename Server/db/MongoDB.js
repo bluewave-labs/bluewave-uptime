@@ -252,7 +252,7 @@ const getChecks = async (monitorId) => {
  * Delete all checks for a monitor
  * @async
  * @param {string} monitorId
- * @returns {boolean}
+ * @returns {number}
  * @throws {Error}
  */
 
