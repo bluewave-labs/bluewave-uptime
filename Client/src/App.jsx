@@ -12,6 +12,7 @@ import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
 import Settings from "./Pages/Settings";
 import ForgotPassword from "./Pages/ForgotPassword";
+import CheckEmail from "./Pages/CheckEmail";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/check-email" element={<CheckEmail />} />
       </Routes>
     </>
   );

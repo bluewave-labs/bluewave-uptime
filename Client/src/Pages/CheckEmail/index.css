@@ -1,0 +1,102 @@
+:root {
+  --spacing-1: 15px;
+  --spacing-2: 20px;
+  --spacing-3: 25px;
+  --textfield-font-size: 13px;
+
+  --check-email-page-width-1: 100vw;
+  --check-email-page-height-1: 100vh;
+
+  --check-email-form-width-1: 360px;
+  --check-email-form-height-1: 526px;
+
+  --logo-width-1: 20px;
+  --check-email-font-size-medium: 13px;
+
+  --check-email-color-1: #101828;
+  --check-email-color-2: #1570ef;
+  --check-email-color-3: #475467;
+}
+
+.check-email-page {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.check-email-form {
+  width: 360px;
+  margin: 90px auto;
+}
+
+.check-email-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.check-email-v-gap-large {
+  height: 32px;
+}
+
+.check-email-v-gap-medium {
+  height: 24px;
+}
+
+.check-email-v-gap-small {
+  height: 12px;
+}
+
+.check-email-form-heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--check-email-color-1);
+}
+
+.check-email-form-subheading {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--check-email-color-3);
+}
+
+.check-email-form-subheading span {
+  font-weight: 700;
+}
+
+.check-email-body {
+  width: 360px;
+}
+
+.check-email-resend {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--check-email-color-3);
+  text-align: center;
+  cursor: pointer;
+}
+
+.check-email-resend span {
+  font-weight: 700;
+  color: var(--check-email-color-2);
+}
+
+.check-email-back-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.check-email-back-button-img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  align-items: center;
+}
+
+.check-email-back-button-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--check-email-color-3);
+  align-items: center;
+}
