@@ -15,8 +15,11 @@ const verifyJWT = (req, res, next) => {
   const token = req.headers["authorization"];
   // Make sure a token is provided
   if (!token) {
-    logger.error("No token provided", { service: SERVICE_NAME });
-    return res.status(401).json({ success: false, msg: "No token provided" });
+    const error = new Error("No token provided");
+    error.status = 401;
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
   }
   // Make sure it is properly formatted
   if (token.startsWith(TOKEN_PREFIX)) {
@@ -32,10 +35,9 @@ const verifyJWT = (req, res, next) => {
       next();
     });
   } else {
-    logger.error("Invalid token format", { service: SERVICE_NAME });
-    return res
-      .status(400)
-      .json({ success: false, msg: "Invalid token format" });
+    error.status = 400;
+    error.service = SERVICE_NAME;
+    next(error);
   }
 };
 

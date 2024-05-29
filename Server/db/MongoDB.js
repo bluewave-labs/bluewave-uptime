@@ -2,6 +2,10 @@ const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
 const UserModel = require("../models/user");
 
+const verifyId = (userId, monitorId) => {
+  return userId.toString() === monitorId.toString();
+};
+
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -11,6 +15,10 @@ const connect = async () => {
     throw error;
   }
 };
+
+//****************************************
+// Users
+//****************************************
 
 /**
  * Insert a User
@@ -46,6 +54,35 @@ const getUserByEmail = async (req, res) => {
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
     return await UserModel.findOne({ email: req.body.email });
+  } catch (error) {
+    throw error;
+  }
+};
+
+//****************************************
+//  Monitors
+//****************************************
+
+/**
+ * Update a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+
+const updateUser = async (req, res) => {
+  const candidateUserId = req.params.userId;
+  const candidateUser = req.body;
+
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      candidateUserId,
+      candidateUser,
+      { new: true } // Returns updated user instead of pre-update user
+    ).select("-password");
+    return updatedUser;
   } catch (error) {
     throw error;
   }
@@ -113,6 +150,7 @@ const getMonitorsByUserId = async (req, res) => {
 const createMonitor = async (req, res) => {
   try {
     const monitor = new Monitor({ ...req.body });
+    monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
   } catch (error) {
@@ -164,14 +202,204 @@ const editMonitor = async (req, res) => {
   }
 };
 
+//****************************************
+// Checks
+//****************************************
+
+/**
+ * Create a check for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+
+const createCheck = async (req, res) => {
+  try {
+    // Create check with monitor id
+    res
+      .status(200)
+      .json({ success: true, msg: "Create check", data: req.params.monitorId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get all checks for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+
+const getChecks = async (req, res) => {
+  try {
+    // TODO get all checks for a monitor from DB
+    res
+      .status(200)
+      .json({ success: true, msg: "Get checks", data: req.params.monitorId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete all checks for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+
+const deleteChecks = async (req, res) => {
+  try {
+    // TODO Delete all checks for a monitor
+    res.status(200).json({
+      success: true,
+      msg: "Deleted checks",
+      data: req.params.monitorId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+//****************************************
+// Alerts
+//****************************************
+
+/**
+ * Creates an Alert associated with a Monitor and User
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {<Promise<Alert>>}
+ * @throws {Error}
+ */
+const createAlert = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, msg: "Create Alert", data: req.params.monitorId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets all alerts a User has set
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {<Promise<Array<Alert>>}
+ * @throws {Error}
+ */
+const getAlertsByUserId = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      msg: "Get Alerts By UserID",
+      data: req.params.userId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets all alerts a for an associated Monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {<Promise<Array<Alert>>}
+ * @throws {Error}
+ */
+const getAlertsByMonitorId = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      msg: "Get Alerts By MonitorID",
+      data: req.params.monitorId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets an alert with specified ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Alert>}
+ * @throws {Error}
+ */
+const getAlertById = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      msg: "Get Alert By alertID",
+      data: req.params.alertId,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Returns an edited monitor with the specified ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Alert>>}
+ * @throws {Error}
+ */
+const editAlert = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, msg: "Edit alert", data: req.params.alertId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Deletes a monitor with the specified ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @throws {Error}
+ */
+const deleteAlert = async (req, res) => {
+  try {
+    res
+      .status(200)
+      .json({ success: true, msg: "Delete alert", data: req.params.alertId });
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   connect,
   insertUser,
   getUserByEmail,
+  updateUser,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
   editMonitor,
+  createCheck,
+  getChecks,
+  deleteChecks,
+  createAlert,
+  getAlertsByUserId,
+  getAlertsByMonitorId,
+  getAlertById,
+  editAlert,
+  deleteAlert,
 };

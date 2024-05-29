@@ -3,10 +3,13 @@ const helmet = require("helmet");
 const cors = require("cors");
 const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
+const checkRouter = require("./routes/checkRoute");
+const alertRouter = require("./routes/alertRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
-var { verifyJWT } = require("./middleware/verifyJWT");
+const { verifyJWT } = require("./middleware/verifyJWT");
+const { handleErrors } = require("./middleware/handleErrors");
 
 // const { sendEmail } = require('./utils/sendEmail')
 
@@ -61,6 +64,8 @@ app.use((req, res, next) => {
 //routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/monitors", verifyJWT, monitorRouter);
+app.use("/api/v1/checks", verifyJWT, checkRouter);
+app.use("/api/v1/alerts", verifyJWT, alertRouter);
 
 // Testing email service
 // app.use('/sendEmail', async (req, res) => {
@@ -78,5 +83,11 @@ app.use("/api/v1/healthy", (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+/**
+ * Error handler middleware
+ * Should be called last
+ */
+app.use(handleErrors);
 
 connectDbAndRunServer(app, db);
