@@ -1,5 +1,10 @@
 const express = require("express");
-const { registerValidation, loginValidation } = require("../validation/joi");
+const {
+  registerValidation,
+  loginValidation,
+  editUserParamValidation,
+  editUserBodyValidation,
+} = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
 var jwt = require("jsonwebtoken");
@@ -12,7 +17,7 @@ const SERVICE_NAME = "auth";
  * @returns {String}
  */
 const issueToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99d" });
 };
 
 /**
@@ -21,35 +26,32 @@ const issueToken = (payload) => {
  * @param {express.Response} res
  * @returns {{success: Boolean, msg: String}}
  */
-const registerController = async (req, res) => {
+const registerController = async (req, res, next) => {
   // joi validation
   try {
     await registerValidation.validateAsync(req.body);
   } catch (error) {
-    return res
-      .status(400)
-      .json({ success: false, msg: error.details[0].message });
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message = error.details[0].message;
+    next(error);
+    return;
   }
 
   // Check if the user exists
   try {
     const isUser = await req.db.getUserByEmail(req, res);
     if (isUser) {
-      logger.error("User already exists", {
-        service: SERVICE_NAME,
-        userId: isUser._id,
-      });
-      return res
-        .status(400)
-        .json({ success: false, msg: "User already exists" });
+      throw new Error("User already exists");
     }
   } catch (error) {
-    logger.error(error.message, { service: SERVICE_NAME });
-    return res.status(500).json({ success: false, msg: error.message });
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
   }
 
+  // Create a new user
   try {
-    // Create a new user
     const newUser = await req.db.insertUser(req, res);
     // TODO: Send an email to user
     // Will add this later
@@ -63,8 +65,8 @@ const registerController = async (req, res) => {
       .status(200)
       .json({ success: true, msg: "User created", data: token });
   } catch (error) {
-    logger.error(error.message, { service: SERVICE_NAME });
-    return res.status(500).json({ success: false, msg: error.message });
+    error.service = SERVICE_NAME;
+    next(error);
   }
 };
 
@@ -76,7 +78,7 @@ const registerController = async (req, res) => {
  * @returns {Promise<Express.Response>}
  * @throws {Error}
  */
-const loginController = async (req, res) => {
+const loginController = async (req, res, next) => {
   try {
     // Validate input
     await loginValidation.validateAsync(req.body);
@@ -104,10 +106,42 @@ const loginController = async (req, res) => {
       .status(200)
       .json({ success: true, msg: "Found user", data: token });
   } catch (error) {
+    error.status = 500;
     // Anything else should be an error
-    logger.error(error.message, { service: SERVICE_NAME });
-    return res.status(500).json({ success: false, msg: error.message });
+    next(error);
   }
 };
 
-module.exports = { registerController, loginController };
+const userEditController = async (req, res, next) => {
+  try {
+    await editUserParamValidation.validateAsync(req.params);
+    await editUserBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message = error.details[0].message;
+    next(error);
+    return;
+  }
+
+  if (req.params.userId !== req.user._id.toString()) {
+    const error = new Error("Unauthorized access");
+    error.status = 401;
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+
+  try {
+    const updatedUser = await req.db.updateUser(req, res);
+    res
+      .status(200)
+      .json({ success: true, msg: "User updated", data: updatedUser });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+module.exports = { registerController, loginController, userEditController };
