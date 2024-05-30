@@ -1,6 +1,7 @@
 const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
 const UserModel = require("../models/user");
+const Check = require("../models/Check");
 
 const verifyId = (userId, monitorId) => {
   return userId.toString() === monitorId.toString();
@@ -209,17 +210,20 @@ const editMonitor = async (req, res) => {
 /**
  * Create a check for a monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {Object} checkData
+ * @param {string} checkData.monitorId
+ * @param {boolean} checkData.status
+ * @param {number} checkData.responseTime
+ * @param {number} checkData.statusCode
+ * @param {string} checkData.message
+ * @returns {Promise<Check>}
  * @throws {Error}
  */
 
-const createCheck = async (req, res) => {
+const createCheck = async (checkData) => {
   try {
-    // Create check with monitor id
-    res
-      .status(200)
-      .json({ success: true, msg: "Create check", data: req.params.monitorId });
+    const check = await new Check({ ...checkData }).save();
+    return check;
   } catch (error) {
     throw error;
   }
@@ -228,17 +232,15 @@ const createCheck = async (req, res) => {
 /**
  * Get all checks for a monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} monitorId
+ * @returns {Promise<Array<Check>>}
  * @throws {Error}
  */
 
-const getChecks = async (req, res) => {
+const getChecks = async (monitorId) => {
   try {
-    // TODO get all checks for a monitor from DB
-    res
-      .status(200)
-      .json({ success: true, msg: "Get checks", data: req.params.monitorId });
+    const checks = await Check.find({ monitorId });
+    return checks;
   } catch (error) {
     throw error;
   }
@@ -247,19 +249,19 @@ const getChecks = async (req, res) => {
 /**
  * Delete all checks for a monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} monitorId
+ * @returns {number}
  * @throws {Error}
  */
 
-const deleteChecks = async (req, res) => {
+const deleteChecks = async (monitorId) => {
   try {
-    // TODO Delete all checks for a monitor
-    res.status(200).json({
-      success: true,
-      msg: "Deleted checks",
-      data: req.params.monitorId,
-    });
+    const result = await Check.deleteMany({ monitorId });
+    if (result.deletedCount > 0) {
+      return result.deletedCount;
+    } else {
+      throw new Error(`No checks found for monitor with id ${monitorId}`);
+    }
   } catch (error) {
     throw error;
   }

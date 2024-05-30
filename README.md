@@ -655,22 +655,54 @@ curl --request POST \
 
 ###### Response Payload
 
-> | Type | Notes               |
-> | ---- | ------------------- |
-> | None | No payload returned |
+> | Type    | Notes                       |
+> | ------- | --------------------------- |
+> | `Check` | Returns newly created check |
 
 ###### Body
+
+> | Name         | Type      | Notes                                  |
+> | ------------ | --------- | -------------------------------------- |
+> | monitorId    | `string`  | Monitor associated with Check          |
+> | status       | `boolean` | `true` for up and `false` for down     |
+> | responseTime | `number`  | How long it took the server to respond |
+> | statusCode   | `number`  | HTTP Status code of response           |
+> | message      | `string`  |                                        |
 
 ##### Sample CURL request
 
 ```
-
+curl --request POST \
+  --url http://localhost:5000/api/v1/checks/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"monitorId": "66562414035c4ce6a8a610ac",
+	"status": true,
+	"responseTime": 1,
+	"statusCode": 200,
+	"message": "good"
+}'
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Check created",
+  "data": {
+    "monitorId": "66562414035c4ce6a8a610ac",
+    "status": true,
+    "responseTime": 1,
+    "statusCode": 200,
+    "message": "good",
+    "_id": "66576decba9f70148ea1f354",
+    "createdAt": "2024-05-29T18:03:24.445Z",
+    "updatedAt": "2024-05-29T18:03:24.445Z",
+    "__v": 0
+  }
+}
 ```
 
 </details>
@@ -682,7 +714,7 @@ curl --request POST \
 
 > | Method/Headers | Value |
 > | -------------- | ----- |
-> | Method         | POST  |
+> | Method         | GET   |
 
 ###### Response Payload
 
@@ -693,13 +725,42 @@ curl --request POST \
 ##### Sample CURL request
 
 ```
-
+curl --request GET \
+  --url http://localhost:5000/api/v1/checks/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Checks retrieved",
+  "data": [
+    {
+      "_id": "66576c0194e11c0d4409d3c1",
+      "monitorId": "66562414035c4ce6a8a610ac",
+      "status": true,
+      "responseTime": 1,
+      "statusCode": 200,
+      "message": "good",
+      "createdAt": "2024-05-29T17:55:13.581Z",
+      "updatedAt": "2024-05-29T17:55:13.581Z",
+      "__v": 0
+    },
+    {
+      "_id": "66576c0994e11c0d4409d3c5",
+      "monitorId": "66562414035c4ce6a8a610ac",
+      "status": true,
+      "responseTime": 2,
+      "statusCode": 200,
+      "message": "good",
+      "createdAt": "2024-05-29T17:55:21.127Z",
+      "updatedAt": "2024-05-29T17:55:21.127Z",
+      "__v": 0
+    }
+  ]
+}
 ```
 
 </details>
@@ -715,22 +776,28 @@ curl --request POST \
 
 ###### Response Payload
 
-> | Type | Notes               |
-> | ---- | ------------------- |
-> | None | No payload returned |
-
-###### Body
+> | Type     | Notes                                                                |
+> | -------- | -------------------------------------------------------------------- |
+> | `Object` | `{deletedCount: n}` Returns an object showing how many items deleted |
 
 ##### Sample CURL request
 
 ```
-
+curl --request POST \
+  --url http://localhost:5000/api/v1/checks/delete/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Checks deleted",
+  "data": {
+    "deletedCount": 3
+  }
+}
 ```
 
 </details>
