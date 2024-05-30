@@ -1,4 +1,4 @@
-// import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from "@mui/x-charts/BarChart";
 
 const ChartsOverviewDemo = () => {
   return (
