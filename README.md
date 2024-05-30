@@ -823,6 +823,24 @@ curl --request POST \
 
 ###### Body
 
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": "false",
+    "acknowledgeStatus": false
+
+> | Name              | Type      | Notes                                   |
+> | ----------------- | --------- | --------------------------------------- |
+> | checkId           | `string`  | Id of `Check` associated with `Alert`   |
+> | monitorId         | `string`  | Id of `Monitor` associated with `Alert` |
+> | userId            | `string`  | Id of `User` associated with `Alert`    |
+> | status            | `boolean` | Status of `Alert`                       |
+> | message           | `string`  | `Alert` message                         |
+> | notifiedStatus    | `boolean` |                                         |
+> | acknowledgeStatus | `boolean` |                                         |
+
 ##### Sample CURL request
 
 ```
@@ -855,13 +873,33 @@ curl --request POST \
 ##### Sample CURL request
 
 ```
-
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/user/6654d1a2634754f789e1f115 \
+  --header 'Authorization: <bearer_token>'
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Got alerts",
+  "data": [
+    {
+      "_id": "6657813d809adfded891a6b7",
+      "checkId": "66577a3fd16dcf7c1ce35148",
+      "monitorId": "6657789ebf6766ee8e2d2edb",
+      "userId": "6654d1a2634754f789e1f115",
+      "status": false,
+      "message": "This is a test alert",
+      "notifiedStatus": false,
+      "acknowledgeStatus": false,
+      "createdAt": "2024-05-29T19:25:49.317Z",
+      "updatedAt": "2024-05-29T19:25:49.317Z",
+      "__v": 0
+    }
+  ]
+}
 ```
 
 </details>
@@ -883,13 +921,33 @@ curl --request POST \
 ##### Sample CURL request
 
 ```
-
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/monitor/6657789ebf6766ee8e2d2edb \
+  --header 'Authorization: <bearer_token>' \
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Got alerts by Monitor",
+  "data": [
+    {
+      "_id": "6657813d809adfded891a6b7",
+      "checkId": "66577a3fd16dcf7c1ce35148",
+      "monitorId": "6657789ebf6766ee8e2d2edb",
+      "userId": "6654d1a2634754f789e1f115",
+      "status": false,
+      "message": "This is a test alert",
+      "notifiedStatus": false,
+      "acknowledgeStatus": false,
+      "createdAt": "2024-05-29T19:25:49.317Z",
+      "updatedAt": "2024-05-29T19:25:49.317Z",
+      "__v": 0
+    }
+  ]
+}
 ```
 
 </details>
@@ -912,13 +970,31 @@ curl --request POST \
 ##### Sample CURL request
 
 ```
-
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Got Alert By alertID",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": false,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:11:22.205Z",
+    "__v": 0
+  }
+}
 ```
 
 </details>
@@ -934,22 +1010,54 @@ curl --request POST \
 
 ###### Response Payload
 
-> | Type    | Notes                |
-> | ------- | -------------------- |
-> | `Alert` | Returns edited alert |
+> | Type    | Notes                  |
+> | ------- | ---------------------- |
+> | `Alert` | Returns edited `Alert` |
 
 ###### Body
+
+> | Name              | Type      | Notes                                      |
+> | ----------------- | --------- | ------------------------------------------ |
+> | checkId           | `string`  | ID of `Check` associated with `Alert`      |
+> | monitorId         | `string`  | ID of `Monitor` id associated with `Alert` |
+> | userId            | `string`  | ID of `User` associated with `Alert`       |
+> | status            | `boolean` | Alert status                               |
+> | message           | `string`  | Alert message                              |
+> | notifiedStatus    | `boolean` |                                            |
+> | acknowledgeStatus | `boolean` |                                            |
 
 ##### Sample CURL request
 
 ```
-
+curl --request POST \
+  --url http://localhost:5000/api/v1/alerts/edit/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"acknowledgeStatus": true
+}'
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Edited alert",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": true,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:12:23.951Z",
+    "__v": 0
+  }
+}
 ```
 
 </details>
@@ -964,22 +1072,38 @@ curl --request POST \
 
 ###### Response Payload
 
-> | Type | Notes               |
-> | ---- | ------------------- |
-> | None | No payload returned |
-
-###### Body
+> | Type    | Notes                       |
+> | ------- | --------------------------- |
+> | `Alert` | Returns the deleted `Alert` |
 
 ##### Sample CURL request
 
 ```
-
+curl --request POST \
+  --url http://localhost:5000/api/v1/alerts/delete/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
 ```
 
 ###### Sample Response
 
 ```json
-
+{
+  "success": true,
+  "msg": "Deleted alert",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": true,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:12:23.951Z",
+    "__v": 0
+  }
+}
 ```
 
 </details>
