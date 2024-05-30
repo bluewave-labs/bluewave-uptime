@@ -47,7 +47,7 @@ function NavBar() {
 
   return (
     <AppBar position="fixed" sx={{ width: '100%' }}>
-      <Container maxWidth="xl" sx={{ width: '100%' }}>
+      <Container maxWidth="xxl" sx={{ width: '100%' }}>
         <Toolbar disableGutters>
           <Typography
             variant="h6"
