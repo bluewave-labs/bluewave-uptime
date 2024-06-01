@@ -1,13 +1,31 @@
 .dashboard-sidebar {
     height: 100vh;
     width: 250px; 
-    background-color: #f4f4f4; 
+    background-color: #f4f4f4;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
     position: fixed; 
     top: 0;
     left: 0;
     display: flex;
     flex-direction: column;
-    padding-top: 60px; 
+    justify-content: space-between; 
+    padding: 20px 0; 
+  }
+  
+  .menu-container {
+    margin-top: 60px; 
+  }
+  
+  .support-container {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 40px; 
+  }
+  
+  .support-text {
+    margin-left: 8px;
+    font-size: 16px; 
+    color: #333; 
   }
   
