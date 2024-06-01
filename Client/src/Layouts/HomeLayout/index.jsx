@@ -1,21 +1,17 @@
-import NavBar from '../../Components/NavBar'
-import { Outlet } from 'react-router'
-import Home from '../../Pages/Home'
-import './index.css'
-import ChartsOverviewDemo from '../../Components/DashboardProgressBars'
-import DashboardSettings from '../../Components/DashboardSettingsIcon'
-
+import NavBar from '../../Components/NavBar';
+import { Outlet } from 'react-router';
+import DashboardSidebar from '../../Components/DashboardSidebar';
+import './index.css';
 
 const HomeLayout = () => {
-    return (
-        <>
-            <NavBar />
-            <Home />
-            <Outlet />
-            <ChartsOverviewDemo />
-            <DashboardSettings />
-        </>
-    )
+  return (
+    <div className="home-layout">
+      <DashboardSidebar />
+      <div className="main-content">
+        <NavBar />
+      </div>
+    </div>
+  );
 }
 
-export default HomeLayout
+export default HomeLayout;
