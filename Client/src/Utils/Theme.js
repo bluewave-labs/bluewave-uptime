@@ -13,9 +13,19 @@ const labelPurple = "#6941C6";
 const labelGreen = "#067647";
 const labelRed = "#F04438";
 
-//Section colros
+// Section colors
 const sectionBorder = "#D0D5DD";
 const sectionBg = "#F8F9F8";
+
+// Other Colors
+const otherColorsBlackish = "#101828";
+const otherColorsBluishGray = "#344054";
+const otherColorsGraishWhite = "#eaecf0";
+const otherColorsPurple = "#7f56d9";
+const otherColorsWhite = "#fff";
+const otherColorsGraishWhiteLight = "#f2f2f2";
+const otherColorsStrongBlue = "#f2f2f2";
+
 
 // Global Font Family
 const fontFamilyDefault = '"Roboto", "Helvetica", "Arial", sans-serif';
@@ -50,6 +60,15 @@ const theme = createTheme({
     section: {
       borderColor: sectionBorder,
       bgColor: sectionBg,
+    },
+    otherColors: {
+      blackish: otherColorsBlackish,
+      bluishGray: otherColorsBluishGray,
+      graishWhite: otherColorsGraishWhite,
+      purple: otherColorsPurple,
+      white: otherColorsWhite,
+      graishWhiteLight: otherColorsGraishWhiteLight,
+      strongBlue: otherColorsStrongBlue,
     },
   },
   font :{

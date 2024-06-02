@@ -1,32 +1,12 @@
-:root {
-  --spacing-1: 15px;
-  --spacing-2: 20px;
-  --spacing-3: 25px;
-  --textfield-font-size: 13px;
-
-  --check-email-page-width-1: 100vw;
-  --check-email-page-height-1: 100vh;
-
-  --check-email-form-width-1: 360px;
-  --check-email-form-height-1: 526px;
-
-  --logo-width-1: 20px;
-  --check-email-font-size-medium: 13px;
-
-  --check-email-color-1: #101828;
-  --check-email-color-2: #1570ef;
-  --check-email-color-3: #475467;
-}
-
 .check-email-page {
-  width: 100vw;
+  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  min-height: var(--env-var-height-1);
 }
 
 .check-email-form {
-  width: 360px;
+  width: var(--env-var-width-2);
   margin: 90px auto;
 }
 
@@ -37,27 +17,27 @@
 }
 
 .check-email-v-gap-large {
-  height: 32px;
+  height: var(--env-var-spacing-3);
 }
 
 .check-email-v-gap-medium {
-  height: 24px;
+  height: var(--env-var-spacing-2);
 }
 
 .check-email-v-gap-small {
-  height: 12px;
+  height: var(--env-var-spacing-1);
 }
 
 .check-email-form-heading {
-  font-size: 16px;
+  font-size: var(--env-var-font-size-large);
   font-weight: 700;
-  color: var(--check-email-color-1);
+  color: var(--env-var-color-1);
 }
 
 .check-email-form-subheading {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   font-weight: 400;
-  color: var(--check-email-color-3);
+  color: var(--env-var-color-2);
 }
 
 .check-email-form-subheading span {
@@ -65,20 +45,20 @@
 }
 
 .check-email-body {
-  width: 360px;
+  width: var(--env-var-width-2);
 }
 
 .check-email-resend {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   font-weight: 400;
-  color: var(--check-email-color-3);
+  color: var(--env-var-color-2);
   text-align: center;
   cursor: pointer;
 }
 
 .check-email-resend span {
   font-weight: 700;
-  color: var(--check-email-color-2);
+  color: var(--env-var-color-3);
 }
 
 .check-email-back-button {
@@ -88,15 +68,16 @@
 }
 
 .check-email-back-button-img {
-  width: 20px;
-  height: 20px;
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
   margin-right: 5px;
   align-items: center;
 }
 
 .check-email-back-button-text {
-  font-size: 13px;
+  height: var(--env-var-img-width-1);
+  font-size: var(--env-var-font-size-medium);
   font-weight: 500;
-  color: var(--check-email-color-3);
+  color: var(--env-var-color-2);
   align-items: center;
 }

@@ -20,12 +20,9 @@ const Register = () => {
             src={Logomark}
             alt="Logomark"
           />
-          <div className="register-form-v-spacing-24px" />
+          <div className="register-form-v-spacing-large" />
           <div className="register-form-heading">Create an account</div>
-          <div className="register-form-v-spacing-12px"></div>
-          <div className="register-form-subheading">
-            Start your 30-day free trial.
-          </div>
+          <div className="register-form-v-spacing-large"></div>
         </div>
         <div className="register-form-v-spacing-40px" />
         <div className="register-form-inputs">
@@ -60,7 +57,7 @@ const Register = () => {
         <div className="login-form-v2-spacing" />
         <div className="register-form-checks">
           <Check text="Must be at least 8 characters" />
-          <div className="register-form-v-spacing-12px"></div>
+          <div className="register-form-v-spacing-small"></div>
           <Check text="Must contain one special character" />
         </div>
         <div className="login-form-v2-spacing" />
