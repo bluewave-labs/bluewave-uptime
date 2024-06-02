@@ -33,20 +33,20 @@ const SetNewPassword = () => {
             placeholder="••••••••"
             id="register-password-input"
           />
-          <div className="set-new-password-form-gap-small-medium"></div>
+          <div className="set-new-password-form-gap-medium"></div>
           <PasswordTextField
             label="Confirm password"
             error={false}
             placeholder="••••••••"
             id="register-password-input"
           />
-          <div className="set-new-password-form-gap-small-medium"></div>
+          <div className="set-new-password-form-gap-medium"></div>
           <div className="set-new-password-form-checks">
             <Check text="Must be at least 8 characters" />
             <div className="set-new-password-form-gap-small"></div>
             <Check text="Must contain one special character" />
           </div>
-          <div className="set-new-password-form-gap-small-medium"></div>
+          <div className="set-new-password-form-gap-medium"></div>
           <Button
             level="primary"
             label="Reset passwprd"

@@ -1,16 +1,10 @@
-:root {
-  --popup-color-with-input-border-0: #f2f2f2;
-  --popup-color-with-input-border-1: #d0d5dd;
-  --popup-modal-with-input-title-color: #344054;
-}
-
 .popup-modal-holder {
   width: 480px;
   font-family: var(--popup-font-family-0);
   padding: 50px 40px;
-  border-radius: 4px;
+  border-radius: var(--env-var-radius-1);
   margin: 10px 20px;
-  border: 1px solid var(--popup-color-with-input-border-0);
+  border: 1px solid var(--env-var-color-9);
   box-shadow: 0px 8px 8px -4px rgba(16, 24, 40, 0.03),
     0px 20px 24px -4px rgba(16, 24, 40, 0.08);
 }
@@ -31,14 +25,14 @@
 
 .popup-modal-input-title {
   margin-bottom: 15px;
-  color: var(--popup-modal-with-input-title-color);
+  color: var(--env-var-color-5);
 }
 
 .popup-modal-text-field {
   width: 100%;
   height: 35px;
-  border: 1px solid var(--popup-color-with-input-border-1);
-  border-radius: 4px;
+  border: 1px solid var(--env-var-color-4);
+  border-radius: var(--env-var-radius-1);
 }
 
 .popup-modal-controllers {
@@ -54,8 +48,8 @@
   width: 145px;
   height: 35px;
   padding: 5px 20px;
-  border: 1px solid var(--popup-color-with-input-border-1);
-  border-radius: 4px;
+  border: 1px solid var(--env-var-color-4);
+  border-radius: var(--env-var-radius-1);
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
 }

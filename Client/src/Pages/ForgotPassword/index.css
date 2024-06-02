@@ -1,33 +1,12 @@
-:root {
-  --spacing-1: 15px;
-  --spacing-2: 20px;
-  --spacing-3: 25px;
-  --textfield-font-size: 13px;
-
-  --forgot-password-page-width-1: 100vw;
-  --forgot-password-page-height-1: 100vh;
-
-  --forgot-password-form-width-1: 360px;
-  --forgot-password-form-height-1: 526px;
-
-  --logo-width-1: 20px;
-  --forgot-font-size-medium: 13px;
-
-  --forgot-color-1: #101828;
-  --forgot-color-2: #1570ef;
-  --forgot-color-3: #475467;
-}
-
 .forgot-password-page {
-  width: var(--forgot-password-page-width-1);
+  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
-  min-height: var(--forgot-password-page-height-1);
+  min-height: var(--env-var-height-1);
 }
 
 .forgot-password-form {
-  width: var(--forgot-password-form-width-1);
-  height: var(--forgot-password-form-height-1);
+  width: var(--env-var-width-2);
   margin: 90px auto;
 }
 
@@ -42,37 +21,37 @@
 }
 
 .forgot-password-v-gap-large {
-  height: 32px;
+  height: var(--env-var-spacing-3);
 }
 
 .forgot-password-v-gap-medium {
-  height: 24px;
+  height: var(--env-var-spacing-2);
 }
 
 .forgot-password-v-gap-small {
-  height: 12px;
+  height: var(--env-var-spacing-1);
 }
 
 .forgot-password-form-heading {
-  font-size: 16px;
+  font-size: var(--env-var-font-size-large);
   font-weight: 700;
-  color: #101828;
+  color: var(--env-var-color-1);
 }
 
 .forgot-password-form-subheading {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   font-weight: 500;
-  color: var(--forgot-color-3);
+  color: var(--env-var-color-2);
 }
 
 .forgot-password-body {
-  width: 360px;
+  width: var(--env-var-width-2);
 }
 
 #forgot-password-email-input {
   width: 308px;
   height: 11px;
-  font-size: var(--textfield-font-size);
+  font-size: var(--env-var-font-size-medium);
 }
 
 .forgot-password-back-button {
@@ -82,13 +61,13 @@
 }
 
 .forgot-password-back-button-img {
-  width: 20px;
-  height: 20px;
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
   margin-right: 5px;
 }
 
 .forgot-password-back-button-text {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   font-weight: 500;
-  color: var(--forgot-color-3);
+  color: var(--env-var-color-2);
 }
