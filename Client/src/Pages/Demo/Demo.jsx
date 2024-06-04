@@ -30,7 +30,7 @@ import Divider from "@mui/material/Divider";
 // Redux
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setMonitors } from "../../Features/Monitors/monitorsSlice";
+import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 
 const cols = [
   {
@@ -211,18 +211,8 @@ const Demo = () => {
         <Button
           level="primary"
           label="Get Monitors"
-          onClick={async () => {
-            try {
-              const response = await axios.get(
-                "http://localhost:5000/api/v1/monitors"
-              );
-              const monitorsResponse = response.data;
-              const monitors = monitorsResponse.data;
-              console.log(monitors);
-              dispatch(setMonitors(monitors));
-            } catch (error) {
-              console.log(error);
-            }
+          onClick={() => {
+            dispatch(getMonitors());
           }}
         />
       </div>
