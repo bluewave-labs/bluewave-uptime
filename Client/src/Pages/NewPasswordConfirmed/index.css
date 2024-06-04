@@ -1,0 +1,73 @@
+:root {
+  --password-confirmed-color-1: #101828;
+  --password-confirmed-color-2: #1570ef;
+  --password-confirmed-color-3: #475467;
+}
+
+.password-confirmed-page {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.password-confirmed-form {
+  width: 360px;
+  margin: 90px auto;
+}
+
+.password-confirmed-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.password-confirmed-v-gap-large {
+  height: 32px;
+}
+
+.password-confirmed-v-gap-medium {
+  height: 24px;
+}
+
+.password-confirmed-v-gap-small {
+  height: 12px;
+}
+
+.password-confirmed-form-heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--password-confirmed-color-1);
+}
+
+.password-confirmed-form-subheading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--password-confirmed-color-3);
+}
+
+.password-confirmed-body {
+  width: 360px;
+}
+
+.password-confirmed-back-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.password-confirmed-back-button-img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  align-items: center;
+}
+
+.password-confirmed-back-button-text {
+  height: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--password-confirmed-color-3);
+  text-align: center;
+}

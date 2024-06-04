@@ -14,6 +14,7 @@ import Settings from "./Pages/Settings";
 import ForgotPassword from "./Pages/ForgotPassword";
 import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
+import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 
 function App() {
   return (
@@ -34,6 +35,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/set-new-password" element={<SetNewPassword />} />
+        <Route
+          path="/new-password-confirmed"
+          element={<NewPasswordConfirmed />}
+        />
       </Routes>
     </>
   );
