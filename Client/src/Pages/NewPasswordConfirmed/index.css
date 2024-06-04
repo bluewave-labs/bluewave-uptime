@@ -1,18 +1,12 @@
-:root {
-  --password-confirmed-color-1: #101828;
-  --password-confirmed-color-2: #1570ef;
-  --password-confirmed-color-3: #475467;
-}
-
 .password-confirmed-page {
-  width: 100vw;
+  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  min-height: var(--env-var-height-1);
 }
 
 .password-confirmed-form {
-  width: 360px;
+  width: var(--env-var-width-2);
   margin: 90px auto;
 }
 
@@ -23,31 +17,31 @@
 }
 
 .password-confirmed-v-gap-large {
-  height: 32px;
+  height: var(--env-var-spacing-3);
 }
 
 .password-confirmed-v-gap-medium {
-  height: 24px;
+  height: var(--env-var-spacing-2);
 }
 
 .password-confirmed-v-gap-small {
-  height: 12px;
+  height: var(--env-var-spacing-1);
 }
 
 .password-confirmed-form-heading {
-  font-size: 16px;
+  font-size: var(--env-var-font-size-large);
   font-weight: 700;
-  color: var(--password-confirmed-color-1);
+  color: var(--env-var-color-1);
 }
 
 .password-confirmed-form-subheading {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   font-weight: 600;
-  color: var(--password-confirmed-color-3);
+  color: var(--env-var-color-2);
 }
 
 .password-confirmed-body {
-  width: 360px;
+  width: var(--env-var-width-2);
 }
 
 .password-confirmed-back-button {
@@ -58,16 +52,16 @@
 }
 
 .password-confirmed-back-button-img {
-  width: 20px;
-  height: 20px;
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
   margin-right: 5px;
   align-items: center;
 }
 
 .password-confirmed-back-button-text {
-  height: 20px;
-  font-size: 13px;
+  height: var(--env-var-img-width-1);
+  font-size: var(--env-var-font-size-medium);
   font-weight: 600;
-  color: var(--password-confirmed-color-3);
+  color: var(--env-var-color-2);
   text-align: center;
 }

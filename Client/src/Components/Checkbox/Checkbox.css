@@ -1,12 +1,12 @@
 .checkbox-holder {
-  height: 20px;
+  height: var(--env-var-img-width-1);
   display: flex;
   align-items: center;
 }
 
 .checkbox {
-  width: 13px;
-  height: 13px;
+  width: var(--env-var-font-size-medium);
+  height: var(--env-var-font-size-medium);
   margin: 0;
   padding: 0;
   cursor: pointer;
@@ -14,8 +14,8 @@
 
 .checkbox-label {
   margin-left: 5px;
-  font-size: 13px;
-  color: #344054;
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-5);
   font-weight: 600;
   cursor: pointer;
 }

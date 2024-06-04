@@ -1,34 +1,13 @@
-:root {
-  --spacing-1: 15px;
-  --spacing-2: 20px;
-  --spacing-3: 25px;
-  --textfield-font-size: 13px;
-
-  --login-page-width-1: 100vw;
-  --login-page-height-1: 100vh;
-
-  --login-form-width-1: 360px;
-  --login-form-height-1: 526px;
-
-  --logo-width-1: 20px;
-  --login-font-size-medium: 13px;
-
-  --login-color-1: #101828;
-  --login-color-2: #1570ef;
-  --login-color-3: #475467;
-}
-
 .login-page {
-  width: var(--login-page-width-1);
+  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: var(--login-page-height-1);
+  min-height: var(--env-var-height-1);
 }
 
 .login-form {
-  width: var(--login-form-width-1);
-  height: var(--login-form-height-1);
+  width: var(--env-var-width-2);
   margin: 90px auto;
 }
 
@@ -43,27 +22,27 @@
 }
 
 .login-form-v-spacing {
-  height: var(--spacing-1);
+  height: var(--env-var-spacing-1);
 }
 
 .login-form-v2-spacing {
-  height: var(--spacing-2);
+  height: var(--env-var-spacing-2);
 }
 
 .login-form-v3-spacing {
-  height: var(--spacing-3);
+  height: var(--env-var-spacing-3);
 }
 
 .login-form-heading {
-  font-size: 30px;
+  font-size: var(--env-var-font-size-xlarge);
   font-weight: 700;
-  color: var(--login-color-1);
+  color: var(--env-var-color-1);
 }
 
 #login-email-input {
   width: 308px;
   height: 11px;
-  font-size: var(--textfield-font-size);
+  font-size: var(--env-var-font-size-medium);
 }
 
 .login-form-password-options {
@@ -73,15 +52,15 @@
 }
 
 .login-form-forgot-password {
-  color: var(--login-color-2);
+  color: var(--env-var-color-3);
   font-weight: 600;
   cursor: pointer;
-  font-size: var(--login-font-size-medium);
+  font-size: var(--env-var-font-size-medium);
 }
 
 .google-enter {
-  width: var(--logo-width-1);
-  height: var(--logo-width-1);
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
   margin-right: 10px;
 }
 
@@ -89,14 +68,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--login-color-3);
-  font-size: var(--login-font-size-medium);
+  color: var(--env-var-color-2);
+  font-size: var(--env-var-font-size-medium);
   font-weight: 600;
 }
 
 .new-account-option-span {
   margin-left: 5px;
-  color: var(--login-color-2);
-  font-size: 14px;
+  color: var(--env-var-color-3);
+  font-size: var(--env-var-font-size-medium);
   cursor: pointer;
+  font-weight: 700;
 }
