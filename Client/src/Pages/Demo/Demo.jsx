@@ -180,8 +180,8 @@ const Demo = () => {
   // *********************************
   // Redux Demo
   // *********************************
-  const monitors = useSelector((state) => state.monitors);
-
+  const monitorState = useSelector((state) => state.monitors);
+  const { monitors } = monitorState;
   return (
     <div>
       <div style={{ padding: "4rem", border: "1px solid black" }}>
@@ -195,14 +195,17 @@ const Demo = () => {
               <th style={{ border: "1px solid black" }}>Name</th>
               <th style={{ border: "1px solid black" }}>URL</th>
             </tr>
-            {monitors.map((monitor) => {
-              return (
-                <tr key={monitor._id}>
-                  <td style={{ border: "1px solid black" }}>{monitor.name}</td>
-                  <td style={{ border: "1px solid black" }}>{monitor.url}</td>
-                </tr>
-              );
-            })}
+            {monitors &&
+              monitors.map((monitor) => {
+                return (
+                  <tr key={monitor._id}>
+                    <td style={{ border: "1px solid black" }}>
+                      {monitor.name}
+                    </td>
+                    <td style={{ border: "1px solid black" }}>{monitor.url}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
         <Button
@@ -215,6 +218,7 @@ const Demo = () => {
               );
               const monitorsResponse = response.data;
               const monitors = monitorsResponse.data;
+              console.log(monitors);
               dispatch(setMonitors(monitors));
             } catch (error) {
               console.log(error);
