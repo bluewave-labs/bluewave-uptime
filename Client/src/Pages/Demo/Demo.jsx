@@ -181,7 +181,7 @@ const Demo = () => {
   // Redux Demo
   // *********************************
   const monitorState = useSelector((state) => state.monitors);
-  const { monitors } = monitorState;
+  const { monitors, msg } = monitorState;
   return (
     <div>
       <div style={{ padding: "4rem", border: "1px solid black" }}>
@@ -208,6 +208,7 @@ const Demo = () => {
               })}
           </tbody>
         </table>
+        <p>Message: {msg}</p>
         <Button
           level="primary"
           label="Get Monitors"
