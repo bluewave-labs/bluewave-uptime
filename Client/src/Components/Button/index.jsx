@@ -39,20 +39,22 @@ const levelConfig = {
  * @param {string} props.label - The label of the button
  * @param {React.ReactNode} props.img - Image for button
  * @param {boolean} [props.disabled] - Whether the button is disabled
- * @param {Object} prps.sx - Styles for the button
+ * @param {function} props.onClick - Function to run when the button is clicked
+ * @param {Object} props.sx - Styles for the button
  * @returns {JSX.Element}
  * @example
  * // Render an error button
  * <Button level="error" label="Error" disabled sx={{marginTop: "1rem"}}/>
  */
 
-const Button = ({ level, label, disabled, img, sx }) => {
+const Button = ({ level, label, disabled, img, onClick, sx }) => {
   const { variant, color } = levelConfig[level];
   return (
     <MuiButton
       variant={variant}
       color={color}
       disabled={disabled}
+      onClick={onClick}
       sx={{
         textTransform: "none",
         ...sx,
@@ -68,6 +70,7 @@ Button.propTypes = {
   level: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   img: PropTypes.node,
+  onClick: PropTypes.func,
   sx: PropTypes.object,
   disabled: PropTypes.bool,
 };
