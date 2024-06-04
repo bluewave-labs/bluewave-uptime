@@ -63,7 +63,7 @@ app.use((req, res, next) => {
 
 //routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/monitors", verifyJWT, monitorRouter);
+app.use("/api/v1/monitors", monitorRouter);
 app.use("/api/v1/checks", verifyJWT, checkRouter);
 app.use("/api/v1/alerts", verifyJWT, alertRouter);
 
