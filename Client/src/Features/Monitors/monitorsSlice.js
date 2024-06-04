@@ -12,7 +12,9 @@ export const getMonitors = createAsyncThunk(
   "monitors/getMonitors",
   async (token, thunkApi) => {
     try {
-      const res = await axios.get("http://localhost:5000/api/v1/monitors");
+      const res = await axios.get(
+        import.meta.env.VITE_APP_API_BASE_URL + "/monitors"
+      );
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error.response.data);
