@@ -20,7 +20,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<HomeLayout />}>
+        {/* <Route exact path="/" element={<HomeLayout />}>
           <Route path="monitors" element={<Monitors />} />
           <Route path="incidents" element={<Incidents />} />
           <Route path="status" element={<Status />} />
@@ -38,7 +38,8 @@ function App() {
         <Route
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
-        />
+        /> */}
+        <Route exact path="/" element={<Monitors />} />
       </Routes>
     </>
   );

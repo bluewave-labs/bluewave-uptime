@@ -1,0 +1,25 @@
+.monitors {
+  width: 90vw;
+  min-height: 100vh;
+  padding: 4vw;
+}
+
+.monitors-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monitors-bar-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.monitors-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.monitors-gaps-medium {
+  height: var(--env-var-spacing-2);
+}
