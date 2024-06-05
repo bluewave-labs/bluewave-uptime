@@ -76,6 +76,7 @@ Configure the server with the following environmental variables:
 | PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                     |
 | SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                     |
 | SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                     |
+| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                     |
 | REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                     |
 | REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                     |
 
