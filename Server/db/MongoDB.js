@@ -1,6 +1,8 @@
 const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
 const UserModel = require("../models/user");
+const Check = require("../models/Check");
+const Alert = require("../models/Alert");
 
 const verifyId = (userId, monitorId) => {
   return userId.toString() === monitorId.toString();
@@ -59,10 +61,6 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
-//****************************************
-//  Monitors
-//****************************************
-
 /**
  * Update a user by ID
  * @async
@@ -87,6 +85,10 @@ const updateUser = async (req, res) => {
     throw error;
   }
 };
+
+//****************************************
+//  Monitors
+//****************************************
 
 /**
  * Get all monitors
@@ -209,17 +211,21 @@ const editMonitor = async (req, res) => {
 /**
  * Create a check for a monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {Object} checkData
+ * @param {string} checkData.monitorId
+ * @param {boolean} checkData.status
+ * @param {number} checkData.responseTime
+ * @param {number} checkData.statusCode
+ * @param {string} checkData.message
+ * @returns {Promise<Check>}
  * @throws {Error}
  */
 
-const createCheck = async (req, res) => {
+const createCheck = async (checkData) => {
   try {
-    // Create check with monitor id
-    res
-      .status(200)
-      .json({ success: true, msg: "Create check", data: req.params.monitorId });
+    console.log(checkData);
+    const check = await new Check({ ...checkData }).save();
+    return check;
   } catch (error) {
     throw error;
   }
@@ -228,17 +234,15 @@ const createCheck = async (req, res) => {
 /**
  * Get all checks for a monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} monitorId
+ * @returns {Promise<Array<Check>>}
  * @throws {Error}
  */
 
-const getChecks = async (req, res) => {
+const getChecks = async (monitorId) => {
   try {
-    // TODO get all checks for a monitor from DB
-    res
-      .status(200)
-      .json({ success: true, msg: "Get checks", data: req.params.monitorId });
+    const checks = await Check.find({ monitorId });
+    return checks;
   } catch (error) {
     throw error;
   }
@@ -247,19 +251,19 @@ const getChecks = async (req, res) => {
 /**
  * Delete all checks for a monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} monitorId
+ * @returns {number}
  * @throws {Error}
  */
 
-const deleteChecks = async (req, res) => {
+const deleteChecks = async (monitorId) => {
   try {
-    // TODO Delete all checks for a monitor
-    res.status(200).json({
-      success: true,
-      msg: "Deleted checks",
-      data: req.params.monitorId,
-    });
+    const result = await Check.deleteMany({ monitorId });
+    if (result.deletedCount > 0) {
+      return result.deletedCount;
+    } else {
+      throw new Error(`No checks found for monitor with id ${monitorId}`);
+    }
   } catch (error) {
     throw error;
   }
@@ -272,16 +276,21 @@ const deleteChecks = async (req, res) => {
 /**
  * Creates an Alert associated with a Monitor and User
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {Object} alertData
+ * @param {string} alertData.checkId
+ * @param {string} alert.monitorId
+ * @param {string} alert.userId
+ * @param {boolean} alert.status
+ * @param {string} alert.message
+ * @param {boolean} alert.notifiedStatus
+ * @param {boolean} alert.acknowledgeStatus
  * @returns {<Promise<Alert>>}
  * @throws {Error}
  */
-const createAlert = async (req, res) => {
+const createAlert = async (alertData) => {
   try {
-    res
-      .status(200)
-      .json({ success: true, msg: "Create Alert", data: req.params.monitorId });
+    const alert = await new Alert({ ...alertData }).save();
+    return alert;
   } catch (error) {
     throw error;
   }
@@ -290,18 +299,14 @@ const createAlert = async (req, res) => {
 /**
  * Gets all alerts a User has set
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} userId
  * @returns {<Promise<Array<Alert>>}
  * @throws {Error}
  */
-const getAlertsByUserId = async (req, res) => {
+const getAlertsByUserId = async (userId) => {
   try {
-    res.status(200).json({
-      success: true,
-      msg: "Get Alerts By UserID",
-      data: req.params.userId,
-    });
+    const alerts = await Alert.find({ userId });
+    return alerts;
   } catch (error) {
     throw error;
   }
@@ -310,73 +315,74 @@ const getAlertsByUserId = async (req, res) => {
 /**
  * Gets all alerts a for an associated Monitor
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} monitorId
  * @returns {<Promise<Array<Alert>>}
  * @throws {Error}
  */
-const getAlertsByMonitorId = async (req, res) => {
+const getAlertsByMonitorId = async (monitorId) => {
   try {
-    res.status(200).json({
-      success: true,
-      msg: "Get Alerts By MonitorID",
-      data: req.params.monitorId,
-    });
+    const alerts = await Alert.find({ monitorId });
+    return alerts;
   } catch (error) {
     throw error;
   }
 };
 
 /**
- * Gets an alert with specified ID
+ * Returns an alert with specified ID
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} alertId
  * @returns {Promise<Alert>}
  * @throws {Error}
  */
-const getAlertById = async (req, res) => {
+const getAlertById = async (alertId) => {
   try {
-    res.status(200).json({
-      success: true,
-      msg: "Get Alert By alertID",
-      data: req.params.alertId,
-    });
+    const alert = await Alert.findById(alertId);
+    return alert;
   } catch (error) {
     throw error;
   }
 };
 
 /**
- * Returns an edited monitor with the specified ID
+ * Returns an edited alert with the specified ID
  * @async
- * @param {Express.Request} req
+ * @param {string} alertId
+ * @param {Object} alertData
+ * @param {string} alertData.checkId
+ * @param {string} alertData.monitorId
+ * @param {string} alertData.userId
+ * @param {boolean} alertData.status
+ * @param {string} alertData.message
+ * @param {boolean} alertData.notifiedStatus
+ * @param {boolean} alertData.acknowledgeStatus
  * @param {Express.Response} res
  * @returns {Promise<Alert>>}
  * @throws {Error}
  */
-const editAlert = async (req, res) => {
+const editAlert = async (alertId, alertData) => {
   try {
-    res
-      .status(200)
-      .json({ success: true, msg: "Edit alert", data: req.params.alertId });
+    const editedAlert = await Alert.findByIdAndUpdate(alertId, alertData, {
+      new: true,
+    });
+    return editedAlert;
   } catch (error) {
     throw error;
   }
 };
 
 /**
- * Deletes a monitor with the specified ID
+ * Deletes an alert with the specified ID
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
+ * @param {string} alertId
  * @throws {Error}
  */
-const deleteAlert = async (req, res) => {
+const deleteAlert = async (alertId) => {
   try {
-    res
-      .status(200)
-      .json({ success: true, msg: "Delete alert", data: req.params.alertId });
+    const result = await Alert.findByIdAndDelete(alertId);
+    if (result) {
+      return result;
+    } else throw new Error(`Alert with id ${alertId} not found`);
   } catch (error) {
     throw error;
   }

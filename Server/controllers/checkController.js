@@ -1,29 +1,73 @@
-var jwt = require("jsonwebtoken");
+const {
+  createCheckParamValidation,
+  createCheckBodyValidation,
+  getChecksParamValidation,
+  deleteChecksParamValidation,
+} = require("../validation/joi");
 const SERVICE_NAME = "check";
 
-const createCheck = (req, res, next) => {
+const createCheck = async (req, res, next) => {
   try {
-    req.db.createCheck(req, res);
+    await createCheckParamValidation.validateAsync(req.params);
+    await createCheckBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message = error.details[0].message;
+    next(error);
+    return;
+  }
+
+  try {
+    const checkData = { ...req.body };
+    const check = await req.db.createCheck(checkData);
+    return res
+      .status(200)
+      .json({ success: true, msg: "Check created", data: check });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
   }
 };
 
-const getChecks = (req, res, next) => {
+const getChecks = async (req, res, next) => {
   try {
-    req.db.getChecks(req, res);
-    // Return all checks for a monitor
+    await getChecksParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message = error.details[0].message;
+    next(error);
+    return;
+  }
+
+  try {
+    const checks = await req.db.getChecks(req.params.monitorId);
+    return res
+      .status(200)
+      .json({ success: true, msg: "Checks retrieved", data: checks });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
   }
 };
 
-const deleteChecks = (req, res, next) => {
+const deleteChecks = async (req, res, next) => {
   try {
-    req.db.deleteChecks(req, res);
-    // Delete all checks for a monitor
+    await deleteChecksParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message = error.details[0].message;
+    next(error);
+    return;
+  }
+
+  try {
+    const deletedCount = await req.db.deleteChecks(req.params.monitorId);
+    return res
+      .status(200)
+      .json({ success: true, msg: "Checks deleted", data: { deletedCount } });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
