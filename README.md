@@ -63,14 +63,14 @@ BlueWave uptime monitoring application
 
 Configure the server with the following environmental variables
 
-| ENV Variable Name    | Required/Optional | Type      | Description                                           | Accepted Values     |
-| -------------------- | ----------------- | --------- | ----------------------------------------------------- | ------------------- |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                            |                     |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                     | `MongoDB \| FakeDB` |
-| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                    |                     |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                             |                     |
-| MAILERSEND_API_KEY   | Required          | `string`  | Specifies API KEY for MailerSend service              |                     |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service |                     |
+| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values     |
+| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------- |
+| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                     |
+| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB` |
+| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                     |
+| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                     |
+| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                     |
+| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                     |
 
 ---
 
