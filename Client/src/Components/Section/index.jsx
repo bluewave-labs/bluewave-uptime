@@ -16,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 /**
  * @component
  * @param {Object} props
- * @param { Array} props.montitors - Array of monitors associated with the section
+ * @param { Array} props.monitors - Array of monitors associated with the section
  * @returns {JSX.Element}
  * @example
  * // Renders a section component with a list of monitors
@@ -29,7 +29,6 @@ const Section = ({ monitors }) => {
   );
 
   useEffect(() => {
-    console.log("Monitor states updated", monitorStates);
     // Update DB here
   }, [monitorStates]);
 

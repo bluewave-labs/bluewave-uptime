@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Button from "../../Components/Button/";
 import Link from "../../Components/Link";
 import {
@@ -12,6 +13,7 @@ import {
   RadioGroup,
   Tab,
   Tabs,
+  Typography,
 } from "@mui/material";
 import { ColoredLabel, StatusLabel } from "../../Components/Label/";
 import Avatar from "../../Components/Avatar/";
@@ -24,6 +26,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
+
+// Redux
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 
 const cols = [
   {
@@ -84,13 +91,15 @@ const steps = [
   { label: "Invite your team", content: "Start collaborating with your team" },
 ];
 
-const monitors = [
+const demoMonitors = [
   { id: 0, name: "Google", isActive: true },
   { id: 1, name: "Yahoo", isActive: false },
   { id: 2, name: "Reddit", isActive: true },
 ];
 
 const Demo = () => {
+  const dispatch = useDispatch();
+
   const [radio, setRadio] = React.useState(1);
   const [tab, setTab] = React.useState("departments");
   const [date, setDate] = React.useState("Pick a date!");
@@ -167,8 +176,47 @@ const Demo = () => {
   ];
 
   const theme = useTheme();
+
+  // *********************************
+  // Redux Demo
+  // *********************************
+  const monitorState = useSelector((state) => state.monitors);
+  const { monitors, msg } = monitorState;
   return (
     <div>
+      <div style={{ padding: "4rem", border: "1px solid black" }}>
+        <Typography variant="h4">Redux Demo</Typography>
+        <Typography variant="h6">Monitors</Typography>
+        <table
+          style={{ border: "1px solid black", borderCollapse: "collapse" }}
+        >
+          <tbody>
+            <tr>
+              <th style={{ border: "1px solid black" }}>Name</th>
+              <th style={{ border: "1px solid black" }}>URL</th>
+            </tr>
+            {monitors &&
+              monitors.map((monitor) => {
+                return (
+                  <tr key={monitor._id}>
+                    <td style={{ border: "1px solid black" }}>
+                      {monitor.name}
+                    </td>
+                    <td style={{ border: "1px solid black" }}>{monitor.url}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+        <p>Message: {msg}</p>
+        <Button
+          level="primary"
+          label="Get Monitors"
+          onClick={() => {
+            dispatch(getMonitors());
+          }}
+        />
+      </div>
       <ul style={{ listStyle: "none" }}>
         {links.map((link) => (
           <li key={link.url}>
@@ -304,7 +352,7 @@ const Demo = () => {
       </div>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <h4 id="section">Section</h4>
-      <Section monitors={monitors} />
+      <Section monitors={demoMonitors} />
     </div>
   );
 };
