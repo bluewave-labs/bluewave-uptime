@@ -11,6 +11,11 @@ const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
 
+// Testing Email service
+// const { sendEmail } = require('./utils/sendEmail')
+// const { registerTemplate } = require('./utils/emailTemplates/registerTemplate')
+// const { downAlertTemplate } = require('./utils/emailTemplates/downAlertTemplate')
+
 // **************************
 // Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
 // Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
@@ -59,6 +64,19 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/monitors", monitorRouter);
 app.use("/api/v1/checks", verifyJWT, checkRouter);
 app.use("/api/v1/alerts", verifyJWT, alertRouter);
+
+// Testing email service
+// app.use('/sendEmail', async (req, res) => {
+//   try {
+//     const template0 = registerTemplate('https://www.bluewavelabs.ca')
+//     const template = downAlertTemplate('https://www.bluewavelabs.ca','Google server','2024/06/05')
+//     await sendEmail(['veysel.boybay@bluewavelabs.ca','ajhollid@gmail.com'], 'System Alert', template0, 'testing template')
+//     await sendEmail(['veysel.boybay@bluewavelabs.ca','ajhollid@gmail.com'], 'System Alert', template, 'testing template')
+//     res.send('email sent')
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
 
 
 //health check
