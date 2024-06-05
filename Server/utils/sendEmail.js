@@ -1,43 +1,38 @@
-const { MailerSend, EmailParams, Sender, Recipient } = require('mailersend')
-const logger = require('../utils/logger')
-
-
-const mailersend = new MailerSend({
-    apiKey: process.env.MAILERSEND_API_KEY,
-})
+const sgMail = require('@sendgrid/mail')
+const logger = require('./logger')
+const dotenv = require('dotenv')
+dotenv.config({path:__dirname+'/../.env'})
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const SERVICE_NAME = 'Email_Service';
 /**
+ * @async
  * @function
- * @param {[string]} receivers - takes an array of strings
- * @param {string} subject - takes a single string
- * @param {string} contentHTML - takes a single string that contains HTML
- * @returns {JSON}
- * @example 
- * sendEmail(['veysel@bluewavelabs.ca','alex@bluewavelabs.ca','monzer@bluewavelabs.ca'],'Testing Email Servide','<h1>BlueWaveLabs</h1>')
+ * @param {[String]} receivers  - takes an array of strings
+ * @param {String} subject - takes a single string
+ * @param {String} contentHTML  - takes a single string that contains HTML
+ * @param {String} contentText  - takes a string to be used if contentHTML is not compatible
+ * @example
+ * await sendEmail(['veysel@bluewavelabs.ca','alex@bluewavelabs.ca'],'Testing Email Service','<h1>BlueWaveLabs</h1>','Testing Email Service')
  */
-// TODO: from email should be in .env file 
-const sendEmail = async (receivers,subject,contentHTML) => {
-    // Sender
-    const from = process.env.SYSTEM_EMAIL_ADDRESS;
-    const sender = new Sender(from);
-    // receivers
-    let recipients = []
-    receivers.map(email => recipients.push(new Recipient(email)));
-    // Set params
-    const emailParams = new EmailParams()
-        .setFrom(sender)
-        .setTo(recipients)
-        .setSubject(subject)
-        .setHtml(contentHTML);
-    
+const sendEmail = async (receivers,subject, contentHTML, contentText = null ) => {
+    const msg = {
+        to: receivers,
+            from: {
+                name: 'Uptime System',
+                email: process.env.SYSTEM_EMAIL_ADDRESS // must be verified email by sendgrid
+            }, 
+        subject: subject,
+        text: contentText || contentHTML,
+        html: contentHTML,
+    }
     try {
-        const response = await mailersend.email.send(emailParams);
-        logger.info("Email sent to receivers!",{"service":"Email"})
-        return response;
-
+        await sgMail.send(msg);
+        logger.info(`Emails sent to receivers:${receivers} with the subject:${subject}`,{service:SERVICE_NAME})
     } catch (error) {
-        logger.error(error.body,{"service":"email"})
-        console.log(error.body)
+        logger.error(`Sending Email action failed, ERROR:${error}`, { service: SERVICE_NAME });
     }
 }
+
+
 
 module.exports = {sendEmail}
