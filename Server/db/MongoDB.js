@@ -1,6 +1,8 @@
 const Monitor = require("../models/Monitor");
 const mongoose = require("mongoose");
 const UserModel = require("../models/user");
+const Check = require("../models/Check");
+const Alert = require("../models/Alert");
 
 const verifyId = (userId, monitorId) => {
   return userId.toString() === monitorId.toString();
@@ -15,6 +17,10 @@ const connect = async () => {
     throw error;
   }
 };
+
+//****************************************
+// Users
+//****************************************
 
 /**
  * Insert a User
@@ -79,6 +85,10 @@ const updateUser = async (req, res) => {
     throw error;
   }
 };
+
+//****************************************
+//  Monitors
+//****************************************
 
 /**
  * Get all monitors
@@ -194,6 +204,190 @@ const editMonitor = async (req, res) => {
   }
 };
 
+//****************************************
+// Checks
+//****************************************
+
+/**
+ * Create a check for a monitor
+ * @async
+ * @param {Object} checkData
+ * @param {string} checkData.monitorId
+ * @param {boolean} checkData.status
+ * @param {number} checkData.responseTime
+ * @param {number} checkData.statusCode
+ * @param {string} checkData.message
+ * @returns {Promise<Check>}
+ * @throws {Error}
+ */
+
+const createCheck = async (checkData) => {
+  try {
+    console.log(checkData);
+    const check = await new Check({ ...checkData }).save();
+    return check;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get all checks for a monitor
+ * @async
+ * @param {string} monitorId
+ * @returns {Promise<Array<Check>>}
+ * @throws {Error}
+ */
+
+const getChecks = async (monitorId) => {
+  try {
+    const checks = await Check.find({ monitorId });
+    return checks;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete all checks for a monitor
+ * @async
+ * @param {string} monitorId
+ * @returns {number}
+ * @throws {Error}
+ */
+
+const deleteChecks = async (monitorId) => {
+  try {
+    const result = await Check.deleteMany({ monitorId });
+    if (result.deletedCount > 0) {
+      return result.deletedCount;
+    } else {
+      throw new Error(`No checks found for monitor with id ${monitorId}`);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+//****************************************
+// Alerts
+//****************************************
+
+/**
+ * Creates an Alert associated with a Monitor and User
+ * @async
+ * @param {Object} alertData
+ * @param {string} alertData.checkId
+ * @param {string} alert.monitorId
+ * @param {string} alert.userId
+ * @param {boolean} alert.status
+ * @param {string} alert.message
+ * @param {boolean} alert.notifiedStatus
+ * @param {boolean} alert.acknowledgeStatus
+ * @returns {<Promise<Alert>>}
+ * @throws {Error}
+ */
+const createAlert = async (alertData) => {
+  try {
+    const alert = await new Alert({ ...alertData }).save();
+    return alert;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets all alerts a User has set
+ * @async
+ * @param {string} userId
+ * @returns {<Promise<Array<Alert>>}
+ * @throws {Error}
+ */
+const getAlertsByUserId = async (userId) => {
+  try {
+    const alerts = await Alert.find({ userId });
+    return alerts;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Gets all alerts a for an associated Monitor
+ * @async
+ * @param {string} monitorId
+ * @returns {<Promise<Array<Alert>>}
+ * @throws {Error}
+ */
+const getAlertsByMonitorId = async (monitorId) => {
+  try {
+    const alerts = await Alert.find({ monitorId });
+    return alerts;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Returns an alert with specified ID
+ * @async
+ * @param {string} alertId
+ * @returns {Promise<Alert>}
+ * @throws {Error}
+ */
+const getAlertById = async (alertId) => {
+  try {
+    const alert = await Alert.findById(alertId);
+    return alert;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Returns an edited alert with the specified ID
+ * @async
+ * @param {string} alertId
+ * @param {Object} alertData
+ * @param {string} alertData.checkId
+ * @param {string} alertData.monitorId
+ * @param {string} alertData.userId
+ * @param {boolean} alertData.status
+ * @param {string} alertData.message
+ * @param {boolean} alertData.notifiedStatus
+ * @param {boolean} alertData.acknowledgeStatus
+ * @param {Express.Response} res
+ * @returns {Promise<Alert>>}
+ * @throws {Error}
+ */
+const editAlert = async (alertId, alertData) => {
+  try {
+    const editedAlert = await Alert.findByIdAndUpdate(alertId, alertData, {
+      new: true,
+    });
+    return editedAlert;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Deletes an alert with the specified ID
+ * @async
+ * @param {string} alertId
+ * @throws {Error}
+ */
+const deleteAlert = async (alertId) => {
+  try {
+    const result = await Alert.findByIdAndDelete(alertId);
+    if (result) {
+      return result;
+    } else throw new Error(`Alert with id ${alertId} not found`);
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -205,4 +399,13 @@ module.exports = {
   createMonitor,
   deleteMonitor,
   editMonitor,
+  createCheck,
+  getChecks,
+  deleteChecks,
+  createAlert,
+  getAlertsByUserId,
+  getAlertsByMonitorId,
+  getAlertById,
+  editAlert,
+  deleteAlert,
 };

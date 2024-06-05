@@ -1,5 +1,9 @@
 const joi = require("joi");
 
+//****************************************
+// Auth
+//****************************************
+
 const loginValidation = joi.object({
   email: joi.string().email().required(),
   password: joi.string().min(8).required(),
@@ -10,6 +14,20 @@ const registerValidation = joi.object({
   email: joi.string().email().required(),
   password: joi.string().min(8).required(),
 });
+
+const editUserParamValidation = joi.object({
+  userId: joi.string().required(),
+});
+
+const editUserBodyValidation = joi.object({
+  firstname: joi.string(),
+  lastname: joi.string(),
+  profilePicUrl: joi.string(),
+});
+
+//****************************************
+// Monitors
+//****************************************
 
 const getMonitorByIdValidation = joi.object({
   monitorId: joi.string().required(),
@@ -29,14 +47,73 @@ const monitorValidation = joi.object({
   interval: joi.number(),
 });
 
-const editUserParamValidation = joi.object({
+//****************************************
+// Alerts
+//****************************************
+
+const createAlertParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const createAlertBodyValidation = joi.object({
+  checkId: joi.string().required(),
+  monitorId: joi.string().required(),
+  userId: joi.string().required(),
+  status: joi.boolean(),
+  message: joi.string(),
+  notifiedStatus: joi.boolean(),
+  acknowledgeStatus: joi.boolean(),
+});
+
+const getAlertsByUserIdParamValidation = joi.object({
   userId: joi.string().required(),
 });
 
-const editUserBodyValidation = joi.object({
-  firstname: joi.string(),
-  lastname: joi.string(),
-  profilePicUrl: joi.string(),
+const getAlertsByMonitorIdParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const getAlertByIdParamValidation = joi.object({
+  alertId: joi.string().required(),
+});
+
+const editAlertParamValidation = joi.object({
+  alertId: joi.string().required(),
+});
+
+const editAlertBodyValidation = joi.object({
+  status: joi.boolean(),
+  message: joi.string(),
+  notifiedStatus: joi.boolean(),
+  acknowledgeStatus: joi.boolean(),
+});
+
+const deleteAlertParamValidation = joi.object({
+  alertId: joi.string().required(),
+});
+
+//****************************************
+// Checks
+//****************************************
+
+const createCheckParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const createCheckBodyValidation = joi.object({
+  monitorId: joi.string().required(),
+  status: joi.boolean().required(),
+  responseTime: joi.number().required(),
+  statusCode: joi.number().required(),
+  message: joi.string().required(),
+});
+
+const getChecksParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const deleteChecksParamValidation = joi.object({
+  monitorId: joi.string().required(),
 });
 
 module.exports = {
@@ -47,4 +124,16 @@ module.exports = {
   monitorValidation,
   editUserParamValidation,
   editUserBodyValidation,
+  createAlertParamValidation,
+  createAlertBodyValidation,
+  getAlertsByUserIdParamValidation,
+  getAlertsByMonitorIdParamValidation,
+  getAlertByIdParamValidation,
+  editAlertParamValidation,
+  editAlertBodyValidation,
+  deleteAlertParamValidation,
+  createCheckParamValidation,
+  createCheckBodyValidation,
+  getChecksParamValidation,
+  deleteChecksParamValidation,
 };

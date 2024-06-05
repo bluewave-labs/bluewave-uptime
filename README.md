@@ -13,15 +13,28 @@ BlueWave uptime monitoring application
     - [Database](#databases)
       - [Docker Images](#docker-images)
 4.  [Endpoints](#endpoints)
+    ###### Auth
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
     - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
+    ###### Monitors
     - <code>GET</code> [/api/v1/monitors](#get-monitors)
     - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
     - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
     - <code>POST</code> [/api/v1/monitors](#post-monitors)
     - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
     - <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
+    ###### Checks
+    - <code>POST</code> [/api/v1/checks/{monitorId}](#post-checks)
+    - <code>GET</code> [/api/v1/checks/{monitorId}](#get-checks)
+    - <code>POST</code> [/api/v1/checks/delete/{monitorId}](#delete-checks)
+    ###### Alerts
+    - <code>POST</code> [/api/v1/alerts/{monitorId}](#create-alert)
+    - <code>GET</code> [/api/v1/alerts/user/{userId}](#get-alerts-user-id)
+    - <code>GET</code> [/api/v1/alerts/monitor/{monitorId}](#get-alerts-monitor-id)
+    - <code>GET</code> [/api/v1/alerts/{alertId}](#get-alert-alert-id)
+    - <code>POST</code> [/api/v1/alerts/edit/{alertId}](#edit-alert)
+    - <code>POST</code> [/api/v1/alerts/delete/{alertId}](#delete-alert)
 5.  [Error Handling](#error-handling)
 6.  [Contributors](#contributors)
 
@@ -55,14 +68,14 @@ BlueWave uptime monitoring application
 
 Configure the server with the following environmental variables:
 
-| ENV Variable Name    | Required/Optional | Type      | Description                                           | Accepted Values     |
-| -------------------- | ----------------- | --------- | ----------------------------------------------------- | ------------------- |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                            |                     |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                     | `MongoDB \| FakeDB` |
-| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                    |                     |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                             |                     |
-| MAILERSEND_API_KEY   | Required          | `string`  | Specifies API KEY for MailerSend service              |                     |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service |                     |
+| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values     |
+| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------- |
+| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                     |
+| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB` |
+| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                     |
+| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                     |
+| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                     |
+| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                     |
 
 ---
 
@@ -183,7 +196,9 @@ Example:
 
 | Name              | Type      | Notes                                             |
 | ----------------- | --------- | ------------------------------------------------- |
-| checkId           | `string`  | Unique ID for the check                           |
+| checkId           | `string`  | Unique ID for the associated check                |
+| monitorId         | `string`  | Unique ID for the associated monitor              |
+| userId            | `string`  | Unique ID for the associated user                 |
 | status            | `boolean` | Indicates the service is Up or Down               |
 | message           | `string`  | Message for the user about the down service       |
 | notifiedStatus    | `boolean` | Indicates whether the user is notified            |
@@ -191,7 +206,11 @@ Example:
 | updatedAt         | `Date`    | Last time the alert was updated                   |
 | CreatedAt         | `Date`    | When the alert was created                        |
 
-## </details>
+</details>
+
+---
+
+###### Auth
 
 <details>
 <summary id='post-register'><code>POST</code> <b>/api/v1/auth/register</b></summary>
@@ -244,8 +263,6 @@ curl --request POST \
 
 </details>
 
----
-
 <details>
 <summary id='post-login'><code>POST</code> <b>/api/v1/auth/login</b></summary>
 
@@ -292,8 +309,6 @@ curl --request POST \
 ```
 
 </details>
-
----
 
 <details>
 <summary id='post-auth-user-edit-id'><code>POST</code><b>/api/v1/auth/user/{userId}</b></summary>
@@ -356,6 +371,8 @@ curl --request POST \
 
 ---
 
+###### Monitors
+
 <details>
 <summary id='get-monitors'><code>GET</code> <b>/api/v1/monitors</b></summary>
 
@@ -367,9 +384,9 @@ curl --request POST \
 
 ##### Response Payload
 
-> | Type             | Notes             |
-> | ---------------- | ----------------- |
-> | `Array[Monitor]` | Array of monitors |
+> | Type             | Notes                 |
+> | ---------------- | --------------------- |
+> | `Array<Monitor>` | Array of all monitors |
 
 ###### Sample cURL Request
 
@@ -415,8 +432,6 @@ curl --request GET \
 ```
 
 </details>
-
----
 
 <details>
 <summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
@@ -464,8 +479,6 @@ curl --request GET \
 
 </details>
 
----
-
 <details>
 <summary id='get-monitors-user-userid'><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
 
@@ -477,9 +490,9 @@ curl --request GET \
 
 ###### Response Payload
 
-> | Type             | Notes                                                              |
-> | ---------------- | ------------------------------------------------------------------ |
-> | `Array[Monitor]` | Array of monitors created by user with userId specified in request |
+> | Type             | Notes                                                   |
+> | ---------------- | ------------------------------------------------------- |
+> | `Array<Monitor>` | Array of monitors created by user with specified UserID |
 
 ###### Sample cURL Request
 
@@ -526,8 +539,6 @@ curl --request GET \
 
 </details>
 
----
-
 <details>
 <summary id='post-monitors'><code>POST</code><b>/api/v1/monitors</b></summary>
 
@@ -539,9 +550,9 @@ curl --request GET \
 
 ###### Response Payload
 
-> | Type      | Notes                             |
-> | --------- | --------------------------------- |
-> | `Monitor` | Newly created monitor is returned |
+> | Type      | Notes                           |
+> | --------- | ------------------------------- |
+> | `Monitor` | Returns newly created `Monitor` |
 
 ##### Sample CURL request
 
@@ -581,8 +592,6 @@ curl --request POST \
 
 </details>
 
----
-
 <details>
 <summary id='post-monitors-del-id'><code>POST</code><b>/api/v1/monitors/delete/{monitorId}</b></summary>
 
@@ -617,8 +626,6 @@ curl --request POST \
 ```
 
 ## </details>
-
----
 
 <details>
 <summary id='post-monitors-edit-id'><code>POST</code><b>/api/v1/monitors/edit/{monitorId}</b></summary>
@@ -670,6 +677,942 @@ curl --request POST \
     "interval": 60000,
     "createdAt": "2024-05-22T20:59:59.295Z",
     "updatedAt": "2024-05-22T21:34:33.893Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+---
+
+###### Checks
+
+<details>
+<summary id='post-checks'><code>POST</code><b>/api/v1/checks/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                       |
+> | ------- | --------------------------- |
+> | `Check` | Returns newly created check |
+
+###### Body
+
+> | Name         | Type      | Notes                                  |
+> | ------------ | --------- | -------------------------------------- |
+> | monitorId    | `string`  | Monitor associated with Check          |
+> | status       | `boolean` | `true` for up and `false` for down     |
+> | responseTime | `number`  | How long it took the server to respond |
+> | statusCode   | `number`  | HTTP Status code of response           |
+> | message      | `string`  |                                        |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/checks/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"monitorId": "66562414035c4ce6a8a610ac",
+	"status": true,
+	"responseTime": 1,
+	"statusCode": 200,
+	"message": "good"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Check created",
+  "data": {
+    "monitorId": "66562414035c4ce6a8a610ac",
+    "status": true,
+    "responseTime": 1,
+    "statusCode": 200,
+    "message": "good",
+    "_id": "66576decba9f70148ea1f354",
+    "createdAt": "2024-05-29T18:03:24.445Z",
+    "updatedAt": "2024-05-29T18:03:24.445Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='get-checks'><code>GET</code><b>/api/v1/checks/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type            | Notes                    |
+> | --------------- | ------------------------ |
+> | `Array<Checks>` | Array of `Check` objects |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/checks/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Checks retrieved",
+  "data": [
+    {
+      "_id": "66576c0194e11c0d4409d3c1",
+      "monitorId": "66562414035c4ce6a8a610ac",
+      "status": true,
+      "responseTime": 1,
+      "statusCode": 200,
+      "message": "good",
+      "createdAt": "2024-05-29T17:55:13.581Z",
+      "updatedAt": "2024-05-29T17:55:13.581Z",
+      "__v": 0
+    },
+    {
+      "_id": "66576c0994e11c0d4409d3c5",
+      "monitorId": "66562414035c4ce6a8a610ac",
+      "status": true,
+      "responseTime": 2,
+      "statusCode": 200,
+      "message": "good",
+      "createdAt": "2024-05-29T17:55:21.127Z",
+      "updatedAt": "2024-05-29T17:55:21.127Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+<summary id='delete-checks'><code>POST</code><b>/api/v1/checks/delete/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type     | Notes                                                                |
+> | -------- | -------------------------------------------------------------------- |
+> | `Object` | `{deletedCount: n}` Returns an object showing how many items deleted |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/checks/delete/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Checks deleted",
+  "data": {
+    "deletedCount": 3
+  }
+}
+```
+
+</details>
+
+---
+
+###### Alerts
+
+<details>
+<summary id='create-alert'><code>POST</code><b>/api/v1/alerts/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                         |
+> | ------- | ----------------------------- |
+> | `Alert` | Returns newly created `Alert` |
+
+###### Body
+
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": "false",
+    "acknowledgeStatus": false
+
+> | Name              | Type      | Notes                                   |
+> | ----------------- | --------- | --------------------------------------- |
+> | checkId           | `string`  | Id of `Check` associated with `Alert`   |
+> | monitorId         | `string`  | Id of `Monitor` associated with `Alert` |
+> | userId            | `string`  | Id of `User` associated with `Alert`    |
+> | status            | `boolean` | Status of `Alert`                       |
+> | message           | `string`  | `Alert` message                         |
+> | notifiedStatus    | `boolean` |                                         |
+> | acknowledgeStatus | `boolean` |                                         |
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='get-alerts-user-id'><code>GET</code><b>/api/v1/alerts/user/{userId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type           | Notes                                   |
+> | -------------- | --------------------------------------- |
+> | `Array<Alert>` | Returns all `Alert` created by a `User` |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/user/6654d1a2634754f789e1f115 \
+  --header 'Authorization: <bearer_token>'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Got alerts",
+  "data": [
+    {
+      "_id": "6657813d809adfded891a6b7",
+      "checkId": "66577a3fd16dcf7c1ce35148",
+      "monitorId": "6657789ebf6766ee8e2d2edb",
+      "userId": "6654d1a2634754f789e1f115",
+      "status": false,
+      "message": "This is a test alert",
+      "notifiedStatus": false,
+      "acknowledgeStatus": false,
+      "createdAt": "2024-05-29T19:25:49.317Z",
+      "updatedAt": "2024-05-29T19:25:49.317Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+</details>
+<details>
+<summary id='get-alerts-monitor-id'><code>GET</code><b>/api/v1/alerts/monitor/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type           | Notes                                                          |
+> | -------------- | -------------------------------------------------------------- |
+> | `Array<Alert>` | Returns an array of `Alert` belonging to a specified `Monitor` |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/monitor/6657789ebf6766ee8e2d2edb \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Got alerts by Monitor",
+  "data": [
+    {
+      "_id": "6657813d809adfded891a6b7",
+      "checkId": "66577a3fd16dcf7c1ce35148",
+      "monitorId": "6657789ebf6766ee8e2d2edb",
+      "userId": "6654d1a2634754f789e1f115",
+      "status": false,
+      "message": "This is a test alert",
+      "notifiedStatus": false,
+      "acknowledgeStatus": false,
+      "createdAt": "2024-05-29T19:25:49.317Z",
+      "updatedAt": "2024-05-29T19:25:49.317Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+<summary id='get-alert-alert-id'><code>GET</code><b>/api/v1/alerts/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type    | Notes                     |
+> | ------- | ------------------------- |
+> | `Alert` | Returns specified `Alert` |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Got Alert By alertID",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": false,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:11:22.205Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='edit-alert'><code>POST</code><b>/api/v1/alerts/edit/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                  |
+> | ------- | ---------------------- |
+> | `Alert` | Returns edited `Alert` |
+
+###### Body
+
+> | Name              | Type      | Notes                                      |
+> | ----------------- | --------- | ------------------------------------------ |
+> | checkId           | `string`  | ID of `Check` associated with `Alert`      |
+> | monitorId         | `string`  | ID of `Monitor` id associated with `Alert` |
+> | userId            | `string`  | ID of `User` associated with `Alert`       |
+> | status            | `boolean` | Alert status                               |
+> | message           | `string`  | Alert message                              |
+> | notifiedStatus    | `boolean` |                                            |
+> | acknowledgeStatus | `boolean` |                                            |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/alerts/edit/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"acknowledgeStatus": true
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Edited alert",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": true,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:12:23.951Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+<details>
+<summary id='delete-alert'><code>POST</code><b>/api/v1/alerts/delete/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                       |
+> | ------- | --------------------------- |
+> | `Alert` | Returns the deleted `Alert` |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/alerts/delete/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Deleted alert",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": true,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:12:23.951Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+---
+
+###### Checks
+
+<details>
+<summary id='post-checks'><code>POST</code><b>/api/v1/checks/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                       |
+> | ------- | --------------------------- |
+> | `Check` | Returns newly created check |
+
+###### Body
+
+> | Name         | Type      | Notes                                  |
+> | ------------ | --------- | -------------------------------------- |
+> | monitorId    | `string`  | Monitor associated with Check          |
+> | status       | `boolean` | `true` for up and `false` for down     |
+> | responseTime | `number`  | How long it took the server to respond |
+> | statusCode   | `number`  | HTTP Status code of response           |
+> | message      | `string`  |                                        |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/checks/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"monitorId": "66562414035c4ce6a8a610ac",
+	"status": true,
+	"responseTime": 1,
+	"statusCode": 200,
+	"message": "good"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Check created",
+  "data": {
+    "monitorId": "66562414035c4ce6a8a610ac",
+    "status": true,
+    "responseTime": 1,
+    "statusCode": 200,
+    "message": "good",
+    "_id": "66576decba9f70148ea1f354",
+    "createdAt": "2024-05-29T18:03:24.445Z",
+    "updatedAt": "2024-05-29T18:03:24.445Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='get-checks'><code>GET</code><b>/api/v1/checks/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type            | Notes                    |
+> | --------------- | ------------------------ |
+> | `Array<Checks>` | Array of `Check` objects |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/checks/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Checks retrieved",
+  "data": [
+    {
+      "_id": "66576c0194e11c0d4409d3c1",
+      "monitorId": "66562414035c4ce6a8a610ac",
+      "status": true,
+      "responseTime": 1,
+      "statusCode": 200,
+      "message": "good",
+      "createdAt": "2024-05-29T17:55:13.581Z",
+      "updatedAt": "2024-05-29T17:55:13.581Z",
+      "__v": 0
+    },
+    {
+      "_id": "66576c0994e11c0d4409d3c5",
+      "monitorId": "66562414035c4ce6a8a610ac",
+      "status": true,
+      "responseTime": 2,
+      "statusCode": 200,
+      "message": "good",
+      "createdAt": "2024-05-29T17:55:21.127Z",
+      "updatedAt": "2024-05-29T17:55:21.127Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+<summary id='delete-checks'><code>POST</code><b>/api/v1/checks/delete/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type     | Notes                                                                |
+> | -------- | -------------------------------------------------------------------- |
+> | `Object` | `{deletedCount: n}` Returns an object showing how many items deleted |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/checks/delete/66562414035c4ce6a8a610ac \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Checks deleted",
+  "data": {
+    "deletedCount": 3
+  }
+}
+```
+
+</details>
+
+---
+
+###### Alerts
+
+<details>
+<summary id='create-alert'><code>POST</code><b>/api/v1/alerts/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                         |
+> | ------- | ----------------------------- |
+> | `Alert` | Returns newly created `Alert` |
+
+###### Body
+
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": "false",
+    "acknowledgeStatus": false
+
+> | Name              | Type      | Notes                                   |
+> | ----------------- | --------- | --------------------------------------- |
+> | checkId           | `string`  | Id of `Check` associated with `Alert`   |
+> | monitorId         | `string`  | Id of `Monitor` associated with `Alert` |
+> | userId            | `string`  | Id of `User` associated with `Alert`    |
+> | status            | `boolean` | Status of `Alert`                       |
+> | message           | `string`  | `Alert` message                         |
+> | notifiedStatus    | `boolean` |                                         |
+> | acknowledgeStatus | `boolean` |                                         |
+
+##### Sample CURL request
+
+```
+
+```
+
+###### Sample Response
+
+```json
+
+```
+
+</details>
+
+<details>
+<summary id='get-alerts-user-id'><code>GET</code><b>/api/v1/alerts/user/{userId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type           | Notes                                   |
+> | -------------- | --------------------------------------- |
+> | `Array<Alert>` | Returns all `Alert` created by a `User` |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/user/6654d1a2634754f789e1f115 \
+  --header 'Authorization: <bearer_token>'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Got alerts",
+  "data": [
+    {
+      "_id": "6657813d809adfded891a6b7",
+      "checkId": "66577a3fd16dcf7c1ce35148",
+      "monitorId": "6657789ebf6766ee8e2d2edb",
+      "userId": "6654d1a2634754f789e1f115",
+      "status": false,
+      "message": "This is a test alert",
+      "notifiedStatus": false,
+      "acknowledgeStatus": false,
+      "createdAt": "2024-05-29T19:25:49.317Z",
+      "updatedAt": "2024-05-29T19:25:49.317Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+</details>
+<details>
+<summary id='get-alerts-monitor-id'><code>GET</code><b>/api/v1/alerts/monitor/{monitorId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type           | Notes                                                          |
+> | -------------- | -------------------------------------------------------------- |
+> | `Array<Alert>` | Returns an array of `Alert` belonging to a specified `Monitor` |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/monitor/6657789ebf6766ee8e2d2edb \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Got alerts by Monitor",
+  "data": [
+    {
+      "_id": "6657813d809adfded891a6b7",
+      "checkId": "66577a3fd16dcf7c1ce35148",
+      "monitorId": "6657789ebf6766ee8e2d2edb",
+      "userId": "6654d1a2634754f789e1f115",
+      "status": false,
+      "message": "This is a test alert",
+      "notifiedStatus": false,
+      "acknowledgeStatus": false,
+      "createdAt": "2024-05-29T19:25:49.317Z",
+      "updatedAt": "2024-05-29T19:25:49.317Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+</details>
+
+<details>
+<summary id='get-alert-alert-id'><code>GET</code><b>/api/v1/alerts/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type    | Notes                     |
+> | ------- | ------------------------- |
+> | `Alert` | Returns specified `Alert` |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/alerts/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Got Alert By alertID",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": false,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:11:22.205Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='edit-alert'><code>POST</code><b>/api/v1/alerts/edit/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                  |
+> | ------- | ---------------------- |
+> | `Alert` | Returns edited `Alert` |
+
+###### Body
+
+> | Name              | Type      | Notes                                      |
+> | ----------------- | --------- | ------------------------------------------ |
+> | checkId           | `string`  | ID of `Check` associated with `Alert`      |
+> | monitorId         | `string`  | ID of `Monitor` id associated with `Alert` |
+> | userId            | `string`  | ID of `User` associated with `Alert`       |
+> | status            | `boolean` | Alert status                               |
+> | message           | `string`  | Alert message                              |
+> | notifiedStatus    | `boolean` |                                            |
+> | acknowledgeStatus | `boolean` |                                            |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/alerts/edit/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"acknowledgeStatus": true
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Edited alert",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": true,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:12:23.951Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+<details>
+<summary id='delete-alert'><code>POST</code><b>/api/v1/alerts/delete/{alertId}</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+###### Response Payload
+
+> | Type    | Notes                       |
+> | ------- | --------------------------- |
+> | `Alert` | Returns the deleted `Alert` |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/alerts/delete/66577ddae5ff3c91437d0887 \
+  --header 'Authorization: <bearer_token>' \
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Deleted alert",
+  "data": {
+    "_id": "66577ddae5ff3c91437d0887",
+    "checkId": "66577a3fd16dcf7c1ce35148",
+    "monitorId": "6657789ebf6766ee8e2d2edb",
+    "userId": "6654d1a2634754f789e1f115",
+    "status": false,
+    "message": "This is a test alert",
+    "notifiedStatus": false,
+    "acknowledgeStatus": true,
+    "createdAt": "2024-05-29T19:11:22.205Z",
+    "updatedAt": "2024-05-29T19:12:23.951Z",
     "__v": 0
   }
 }

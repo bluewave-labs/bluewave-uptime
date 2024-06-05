@@ -3,13 +3,13 @@ const helmet = require("helmet");
 const cors = require("cors");
 const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
+const checkRouter = require("./routes/checkRoute");
+const alertRouter = require("./routes/alertRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
-
-// const { sendEmail } = require('./utils/sendEmail')
 
 // **************************
 // Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
@@ -33,11 +33,6 @@ const db = DB_TYPE[process.env.DB_TYPE]
   ? DB_TYPE[process.env.DB_TYPE]()
   : require("./db/FakeDb");
 
-/**
- * NOTES
- * Email Service will be added
- * Logger Service will be added (Winston or similar)
- */
 
 const app = express();
 
@@ -61,13 +56,10 @@ app.use((req, res, next) => {
 
 //routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/monitors", verifyJWT, monitorRouter);
+app.use("/api/v1/monitors", monitorRouter);
+app.use("/api/v1/checks", verifyJWT, checkRouter);
+app.use("/api/v1/alerts", verifyJWT, alertRouter);
 
-// Testing email service
-// app.use('/sendEmail', async (req, res) => {
-//     const response = sendEmail(['veysel.boybay@bluewavelabs.ca'], 'Testing email service', '<h1>Testing Bluewavelabs</h1>');
-//     console.log(response);
-// })
 
 //health check
 app.use("/api/v1/healthy", (req, res) => {
