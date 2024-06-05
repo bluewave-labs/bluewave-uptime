@@ -75,12 +75,6 @@ const startApp = async () => {
   //Temporary route for testing, remove later
   app.use("/api/v1/job", queueRouter);
 
-  // Testing email service
-  // app.use('/sendEmail', async (req, res) => {
-  //     const response = sendEmail(['veysel.boybay@bluewavelabs.ca'], 'Testing email service', '<h1>Testing Bluewavelabs</h1>');
-  //     console.log(response);
-  // })
-
   //health check
   app.use("/api/v1/healthy", (req, res) => {
     try {
