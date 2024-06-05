@@ -10,90 +10,91 @@ require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
+const queueRouter = require("./routes/queueRoute");
+const JobQueue = require("./service/jobQueue");
 
-// Testing Email service
-// const { sendEmail } = require('./utils/sendEmail')
-// const { registerTemplate } = require('./utils/emailTemplates/registerTemplate')
-// const { downAlertTemplate } = require('./utils/emailTemplates/downAlertTemplate')
+// Need to wrap server setup in a function to handle async nature of JobQueue
+const startApp = async () => {
+  // const { sendEmail } = require('./utils/sendEmail')
 
-// **************************
-// Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
-// Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
-// We can easily swap between any type of data source as long as the methods are implemented
-//
-// FakeDB
-// const db = require("./db/FakeDb");
-//
-// MongoDB
-// const db = require("./db/MongoDB");
-//
-// **************************
+  // **************************
+  // Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
+  // Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
+  // We can easily swap between any type of data source as long as the methods are implemented
+  //
+  // FakeDB
+  // const db = require("./db/FakeDb");
+  //
+  // MongoDB
+  // const db = require("./db/MongoDB");
+  //
+  // **************************
+  const DB_TYPE = {
+    MongoDB: () => require("./db/MongoDB"),
+    FakedDB: () => require("./db/FakeDb"),
+  };
 
-const DB_TYPE = {
-  MongoDB: () => require("./db/MongoDB"),
-  FakedDB: () => require("./db/FakeDb"),
+  const db = DB_TYPE[process.env.DB_TYPE]
+    ? DB_TYPE[process.env.DB_TYPE]()
+    : require("./db/FakeDb");
+
+  const jobQueue = await JobQueue.createJobQueue();
+  /**
+   * NOTES
+   * Email Service will be added
+   * Logger Service will be added (Winston or similar)
+   */
+
+  const app = express();
+
+  // middlewares
+  app.use(
+    cors()
+    //We will add configuration later
+  );
+  app.use(express.json());
+  app.use(helmet());
+
+  // **************************
+  // Make DB accessible anywhere we have a Request object
+  // By adding the DB to the request object, we can access it in any route
+  // Thus we do not need to import it in every route file, and we can easily swap out DBs as there is only one place to change it
+  // Same applies for JobQueue
+  // **************************
+  app.use((req, res, next) => {
+    req.db = db;
+    req.jobQueue = jobQueue;
+    next();
+  });
+
+  //routes
+  app.use("/api/v1/auth", authRouter);
+  app.use("/api/v1/monitors", monitorRouter);
+  app.use("/api/v1/checks", verifyJWT, checkRouter);
+  app.use("/api/v1/alerts", verifyJWT, alertRouter);
+  //Temporary route for testing, remove later
+  app.use("/api/v1/job", queueRouter);
+
+  //health check
+  app.use("/api/v1/healthy", (req, res) => {
+    try {
+      logger.info("Checking Health of the server.");
+      return res.status(200).json({ message: "Healthy" });
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
+  /**
+   * Error handler middleware
+   * Should be called last
+   */
+  app.use(handleErrors);
+
+  connectDbAndRunServer(app, db);
 };
 
-const db = DB_TYPE[process.env.DB_TYPE]
-  ? DB_TYPE[process.env.DB_TYPE]()
-  : require("./db/FakeDb");
-
-
-const app = express();
-
-// middlewares
-app.use(
-  cors()
-  //We will add configuration later
-);
-app.use(express.json());
-app.use(helmet());
-
-// **************************
-// Make DB accessible anywhere we have a Request object
-// By adding the DB to the request object, we can access it in any route
-// Thus we do not need to import it in every route file, and we can easily swap out DBs as there is only one place to change it
-// **************************
-app.use((req, res, next) => {
-  req.db = db;
-  next();
+startApp().catch((error) => {
+  console.log(error);
 });
-
-//routes
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/monitors", monitorRouter);
-app.use("/api/v1/checks", verifyJWT, checkRouter);
-app.use("/api/v1/alerts", verifyJWT, alertRouter);
-
-// Testing email service
-// app.use('/sendEmail', async (req, res) => {
-//   try {
-//     const template0 = registerTemplate('https://www.bluewavelabs.ca')
-//     const template = downAlertTemplate('https://www.bluewavelabs.ca','Google server','2024/06/05')
-//     await sendEmail(['veysel.boybay@bluewavelabs.ca','ajhollid@gmail.com'], 'System Alert', template0, 'testing template')
-//     await sendEmail(['veysel.boybay@bluewavelabs.ca','ajhollid@gmail.com'], 'System Alert', template, 'testing template')
-//     res.send('email sent')
-//   } catch (error) {
-//     console.log(error)
-//   }
-// })
-
-
-//health check
-app.use("/api/v1/healthy", (req, res) => {
-  try {
-    logger.info("Checking Health of the server.");
-    return res.status(200).json({ message: "Healthy" });
-  } catch (error) {
-    logger.error(error.message);
-    return res.status(500).json({ message: error.message });
-  }
-});
-
-/**
- * Error handler middleware
- * Should be called last
- */
-app.use(handleErrors);
-
-connectDbAndRunServer(app, db);
