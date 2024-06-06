@@ -10,6 +10,7 @@ import { useTheme } from "@mui/material";
  *
  * @component
  * @param {Object} props - The properties that define the `EmailTextField` component.
+ * @param {function} props.onChange - The function to call when the text field changes.
  * @param {string} props.id - The id of the text field.
  * @param {string} [props.label="Email"] - The label of the text field.
  * @param {string} props.variant - The variant of the text field.
@@ -26,6 +27,7 @@ import { useTheme } from "@mui/material";
  */
 
 const EmailTextField = ({
+  onChange,
   id,
   label = "Email",
   variant,
@@ -52,6 +54,7 @@ const EmailTextField = ({
       <div className="email-text-field-title">{label}</div>
       <div className="email-text-field">
         <TextField
+          onChange={onChange}
           error={error}
           className="email-text-field-input"
           id={id}

@@ -8,6 +8,7 @@ import { useTheme } from "@mui/material";
 /**
  * @component
  * @param {Object} props
+ * @param {function} props.onChange - The function to call when the text field changes (optional)
  * @param {string} props.id - Unique ID for the text field (optional)
  * @param {string} props.label - The label text displayed above the text field (optional)
  * @param {"standard" | "outlined" | "filled"} props.variant - The variant of the text field (e.g., "outlined") (optional)
@@ -18,6 +19,7 @@ import { useTheme } from "@mui/material";
  * @returns {JSX.Element} - Renders the password text field component with dynamic icon display
  */
 const PasswordTextField = ({
+  onChange,
   id,
   label = "Password",
   variant,
@@ -44,6 +46,7 @@ const PasswordTextField = ({
       <div className="password-text-field-title">{label}</div>
       <div className="password-text-field">
         <TextField
+          onChange={onChange}
           type="password"
           error={error}
           className="password-text-field-input"

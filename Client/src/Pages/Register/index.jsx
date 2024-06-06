@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
@@ -10,6 +10,28 @@ import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 
 const Register = () => {
+  const idMap = {
+    "register-firstname-input": "firstname",
+    "register-lastname-input": "lastname",
+    "register-email-input": "email",
+    "register-password-input": "password",
+  };
+
+  const [form, setForm] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  });
+
+  const handleInput = (e) => {
+    const fieldName = idMap[e.target.id];
+    setForm({
+      ...form,
+      [idMap[e.target.id]]: e.target.value,
+    });
+  };
+
   return (
     <div className="register-page">
       <BackgroundPattern></BackgroundPattern>
@@ -27,6 +49,7 @@ const Register = () => {
         <div className="register-form-v-spacing-40px" />
         <div className="register-form-inputs">
           <StringTextField
+            onChange={handleInput}
             error={false}
             label="First name*"
             placeholder="Enter your first name"
@@ -34,6 +57,7 @@ const Register = () => {
           />
           <div className="login-form-v2-spacing" />
           <StringTextField
+            onChange={handleInput}
             error={false}
             label="Last name*"
             placeholder="Enter your last name"
@@ -41,6 +65,7 @@ const Register = () => {
           />
           <div className="login-form-v2-spacing" />
           <EmailTextField
+            onChange={handleInput}
             label="Email*"
             error={false}
             placeholder="Enter your email"
@@ -48,6 +73,7 @@ const Register = () => {
           />
           <div className="login-form-v2-spacing" />
           <PasswordTextField
+            onChange={handleInput}
             label="Password*"
             error={false}
             placeholder="Create a password"
