@@ -1,12 +1,12 @@
-import DashboardMenu from '../../Components/DashboardMenu';
-import SupportIcon from '@mui/icons-material/Support'; 
-import SvgIcon from '@mui/material/SvgIcon';
-import './index.css';
+import DashboardMenu from "../../Components/DashboardMenu";
+import SvgIcon from "@mui/material/SvgIcon";
+import "./index.css";
+import SupportIcon from "../../assets/Images/Icon-support-gray.png";
 
 /**
  * @component
  * DashboardSidebar component serves as a sidebar containing the DashboardMenu and a Support icon at the bottom.
- * 
+ *
  * @returns {JSX.Element} The JSX element representing the DashboardSidebar component.
  */
 
@@ -17,7 +17,7 @@ function DashboardSidebar() {
         <DashboardMenu />
       </div>
       <div className="support-container">
-        <SvgIcon component={SupportIcon} />
+        <img className="support-icon" src={SupportIcon} alt="SupportIcon" />
         <span className="support-text">Support</span>
       </div>
     </div>
