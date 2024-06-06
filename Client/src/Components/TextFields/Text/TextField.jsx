@@ -7,6 +7,7 @@ import { useTheme } from "@mui/material";
 
 /**
  * @param {Object} props - The component props.
+ * @param {function} props.onChange - The function to call when the text field changes.
  * @param {string} props.id - The ID of the text field.
  * @param {string} props.label - The label text for the text field.
  * @param {string} props.variant - The variant of the text field.
@@ -17,6 +18,7 @@ import { useTheme } from "@mui/material";
  * @returns {JSX.Element} The rendered component.
  */
 const StringTextField = ({
+  onChange,
   id,
   label,
   variant,
@@ -43,6 +45,7 @@ const StringTextField = ({
       <div className="email-text-field-title">{label}</div>
       <div className="email-text-field">
         <TextField
+          onChange={onChange}
           error={error}
           className="email-text-field-input"
           id={id}
