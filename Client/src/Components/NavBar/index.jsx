@@ -110,7 +110,11 @@ function NavBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton
+                id="icon-button"
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0 }}
+              >
                 <div className="icon-button-toggle">
                   <Avatar
                     alt="Remy Sharp"
@@ -144,8 +148,17 @@ function NavBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem
+                  id="menu-item"
+                  key={setting}
+                  onClick={handleCloseUserMenu}
+                >
+                  <Typography
+                    fontSize="var(--env-var-font-size-medium)"
+                    textAlign="center"
+                  >
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
