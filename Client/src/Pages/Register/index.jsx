@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import axios from "axios";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
@@ -9,7 +12,11 @@ import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 
+const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+
 const Register = () => {
+  const navigate = useNavigate();
+
   const idMap = {
     "register-firstname-input": "firstname",
     "register-lastname-input": "lastname",
@@ -30,6 +37,19 @@ const Register = () => {
       ...form,
       [idMap[e.target.id]]: e.target.value,
     });
+  };
+
+  const handleSubmit = async () => {
+    //TODO input validation
+    try {
+      const result = await axios.post(`${BASE_URL}/auth/register`, form);
+      const token = result.data.data;
+      localStorage.setItem("token", token);
+      navigate("/"); // Redirect to home page
+    } catch (error) {
+      // TODO error handlign
+      alert(`Something went wrong: ${error.response.data.msg}`);
+    }
   };
 
   return (
@@ -88,7 +108,12 @@ const Register = () => {
         </div>
         <div className="login-form-v2-spacing" />
         <div className="register-form-actions">
-          <Button level="primary" label="Get started" sx={{ width: "100%" }} />
+          <Button
+            onClick={handleSubmit}
+            level="primary"
+            label="Get started"
+            sx={{ width: "100%" }}
+          />
           <div className="login-form-v-spacing" />
           <Button
             disabled={true}
