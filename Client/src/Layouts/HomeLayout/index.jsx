@@ -22,6 +22,7 @@ const HomeLayout = () => {
         {token && <p>Email: {decodedToken.email}</p>}
         {/* I am a demo */}
       </div>
+      <Outlet />
     </div>
   );
 };

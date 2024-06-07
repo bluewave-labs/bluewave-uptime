@@ -1,11 +1,10 @@
 .home-layout {
-    display: flex;
-  }
-  
-  .main-content {
-    margin-left: 250px; 
-    flex: 1;
-    padding: 20px; 
-    overflow-y: auto; 
-  }
-  
+  display: flex;
+}
+
+.main-content {
+  margin-left: 250px;
+  flex: 1;
+  /* padding: 20px;  */
+  overflow-y: auto;
+}

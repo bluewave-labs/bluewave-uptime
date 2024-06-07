@@ -1,1 +1,32 @@
 /* NavBar Component Styles*/
+.icon-button-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button-avatar {
+  width: 25px;
+  height: 25px;
+  margin-right: var(--env-var-spacing-1);
+}
+
+.icon-button-toggle-title {
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-5);
+  margin-right: var(--env-var-spacing-2);
+}
+
+.icon-button-toggle-pic {
+  width: 10px;
+  height: 5px;
+}
+
+#icon-button {
+  color: transparent;
+  -webkit-transition: none;
+  transition: none;
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+}
