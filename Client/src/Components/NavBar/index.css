@@ -26,4 +26,7 @@
   color: transparent;
   -webkit-transition: none;
   transition: none;
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
 }
