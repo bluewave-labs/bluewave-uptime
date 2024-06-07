@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
@@ -8,6 +9,24 @@ import Google from "../../assets/Images/Google.png";
 import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
 
 const Login = () => {
+  const idMap = {
+    "login-email-input": "email",
+    "login-password-input": "password",
+  };
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleInput = (e) => {
+    const fieldName = idMap[e.target.id];
+    setForm({
+      ...form,
+      [fieldName]: e.target.value,
+    });
+  };
+
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
@@ -24,15 +43,17 @@ const Login = () => {
         <div className="login-form-v3-spacing" />
         <div className="login-form-inputs">
           <EmailTextField
+            onChange={handleInput}
             error={false}
             placeholder="Enter your email"
             id="login-email-input"
           />
           <div className="login-form-v2-spacing" />
           <PasswordTextField
+            onChange={handleInput}
             error={false}
             placeholder="Password"
-            id="login-email-input"
+            id="login-password-input"
           />
         </div>
         <div className="login-form-v3-spacing" />
