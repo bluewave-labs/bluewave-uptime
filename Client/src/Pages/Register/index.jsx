@@ -32,7 +32,6 @@ const Register = () => {
   });
 
   const handleInput = (e) => {
-    const fieldName = idMap[e.target.id];
     setForm({
       ...form,
       [idMap[e.target.id]]: e.target.value,
