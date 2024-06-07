@@ -1,0 +1,15 @@
+.current-monitors {
+  border: 1px solid #eaecf0;
+  padding: 40px;
+  border-radius: 4px;
+}
+
+.current-monitors-title-holder {
+  display: flex;
+}
+
+.current-monitors-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-right: var();
+}
