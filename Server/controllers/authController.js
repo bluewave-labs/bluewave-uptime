@@ -9,8 +9,10 @@ const logger = require("../utils/logger");
 require("dotenv").config();
 var jwt = require("jsonwebtoken");
 const SERVICE_NAME = "auth";
-const { sendEmail } = require('../utils/sendEmail')
-const { registerTemplate } = require('../utils/emailTemplates/registerTemplate')
+const { sendEmail } = require("../utils/sendEmail");
+const {
+  registerTemplate,
+} = require("../utils/emailTemplates/registerTemplate");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -60,10 +62,15 @@ const registerController = async (req, res, next) => {
       userId: newUser._id,
     });
     const token = issueToken(newUser._doc);
-    
+
     // Sending email to user with pre defined template
-    const template = registerTemplate('https://www.bluewavelabs.ca');
-    await sendEmail([newUser.email], 'Welcome to Uptime Monitor', template, 'Registered.');
+    const template = registerTemplate("https://www.bluewavelabs.ca");
+    await sendEmail(
+      [newUser.email],
+      "Welcome to Uptime Monitor",
+      template,
+      "Registered."
+    );
 
     return res
       .status(200)
