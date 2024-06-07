@@ -7,11 +7,12 @@ import { useTheme } from "@mui/material";
 /**
  * @component
  * @param {Object} props
+ * @param {function} props.onChange - The function to call when the text field changes (optional)
  * @param {string} props.hintText - The hint text displayed within the text field (required)
  * @param {boolean} props.hasError - A flag indicating if the text field has an error (required)
  * @returns {JSX.Element} - Renders the description text field component
  */
-const DescriptionTextField = ({ hintText, hasError }) => {
+const DescriptionTextField = ({ onChange, hintText, hasError }) => {
   const theme = useTheme();
 
   const fontLookup = {
@@ -27,6 +28,7 @@ const DescriptionTextField = ({ hintText, hasError }) => {
     >
       <div className="text-field-title">Description</div>
       <TextField
+        onChange={onChange}
         id="description-field-area"
         error={hasError}
         className="description-field-area"
