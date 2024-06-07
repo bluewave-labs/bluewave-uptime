@@ -18,11 +18,11 @@ import SettingsIcon from "../../assets/Images/Icon-setting-gray.png";
 function DashboardMenu() {
   return (
     <div className="dashboard-menu-container">
-      {DashboardMenuButton(Monitors, "Monitors")}
-      {DashboardMenuButton(Incidents, "Incidents")}
-      {DashboardMenuButton(SensorsIcon, "Status Pages")}
-      {DashboardMenuButton(AllInclusiveIcon, "Integrations")}
-      {DashboardMenuButton(SettingsIcon, "Settings")}
+      {DashboardMenuButton(Monitors, "Monitors", "/monitors")}
+      {DashboardMenuButton(Incidents, "Incidents", "/incidents")}
+      {DashboardMenuButton(SensorsIcon, "Status Pages", "/status")}
+      {DashboardMenuButton(AllInclusiveIcon, "Integrations", "/integrations")}
+      {DashboardMenuButton(SettingsIcon, "Settings", "/settings")}
     </div>
   );
 }
