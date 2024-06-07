@@ -1,4 +1,3 @@
-import React from "react";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
