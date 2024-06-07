@@ -4,22 +4,23 @@ import DashboardSidebar from "../../Components/DashboardSidebar";
 import "./index.css";
 
 // Demo, remove me
-import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 // Emd Demo
 
 const HomeLayout = () => {
-  const token = localStorage.getItem("token");
-  const decodedToken = token && jwtDecode(token);
+  const authState = useSelector((state) => state.auth);
+  const { user, msg } = authState;
+  console.log(user, msg);
   return (
     <div className="home-layout">
       <DashboardSidebar />
       <div className="main-content">
         <NavBar />
         {/* Remove me later */}
-        {token && <p>You are logged in</p>}
-        {token && <p>First Name: {decodedToken.firstname}</p>}
-        {token && <p>Last Name: {decodedToken.lastname}</p>}
-        {token && <p>Email: {decodedToken.email}</p>}
+        {user && <p>{user.firstname}</p>}
+        {user && <p>{user.lastname}</p>}
+        {user && <p>{user.email}</p>}
+        {msg && <p>Msg: {msg}</p>}
         {/* I am a demo */}
       </div>
       <Outlet />

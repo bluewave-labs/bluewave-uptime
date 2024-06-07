@@ -13,9 +13,13 @@ import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import { registerValidation } from "../../Validation/validation";
 
+import { useDispatch } from "react-redux";
+import { register } from "../../Features/Auth/authSlice";
+
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const Register = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // TODO If possible, change the IDs of these fields to match the backend
@@ -55,23 +59,31 @@ const Register = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("submitting");
     try {
       await registerValidation.validateAsync(form, { abortEarly: false });
+      const action = await dispatch(register(form));
 
-      const result = await axios.post(`${BASE_URL}/auth/register`, form);
-      const token = result.data.data;
-      localStorage.setItem("token", token);
-      navigate("/"); // Redirect to home page
+      if (action.meta.requestStatus === "fulfilled") {
+        const token = action.payload.data;
+        localStorage.setItem("token", token);
+        navigate("/");
+      }
+
+      if (action.meta.requestStatus === "rejected") {
+        const error = new Error("Request rejected");
+        error.response = action.payload;
+        throw error;
+      }
     } catch (error) {
-      // TODO User friendly error display
       if (error.name === "ValidationError") {
+        // TODO Handle validation errors
         console.log(error);
         alert("Invalid input");
       } else if (error.response) {
-        console.log(error);
-        alert(error.response.data.msg);
+        // TODO handle dispatch errors
+        alert(error.response.msg);
       } else {
+        // TODO handle unknown errors
         console.log(error);
         alert("Unknown error");
       }
