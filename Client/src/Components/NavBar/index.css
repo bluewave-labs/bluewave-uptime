@@ -21,3 +21,12 @@
   width: 10px;
   height: 5px;
 }
+
+#icon-button {
+  color: transparent;
+  -webkit-transition: none;
+  transition: none;
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+}

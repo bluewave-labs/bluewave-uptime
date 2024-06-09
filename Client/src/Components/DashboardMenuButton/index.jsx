@@ -1,5 +1,6 @@
 import "./index.css";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Renders a menu button with an icon and title.
@@ -10,11 +11,9 @@ import React, { useState } from "react";
  * @returns {React.ReactElement} The rendered menu button component.
  */
 
-const DashboardMenuButton = (icon, title) => {
-  const [isActive, setIsActive] = useState(false);
-
+const DashboardMenuButton = (icon, title, to, isActive, onClick) => {
   const handleClick = () => {
-    setIsActive(!isActive);
+    onClick();
   };
 
   return (
