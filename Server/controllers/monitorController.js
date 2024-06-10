@@ -116,6 +116,7 @@ const createMonitor = async (req, res, next) => {
 
   try {
     const monitor = await req.db.createMonitor(req, res);
+
     return res
       .status(201)
       .json({ success: true, msg: "Monitor created", data: monitor });
