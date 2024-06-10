@@ -5,7 +5,7 @@ import Button from '../Button';
  * Integrations component
  * @returns {JSX.Element}
  */
-const Integrations = () => {
+const IntegrationsComponent = () => {
   const theme = useTheme();
 
   return (
@@ -53,4 +53,4 @@ const Integrations = () => {
   );
 };
 
-export default Integrations;
+export default IntegrationsComponent;
