@@ -153,10 +153,9 @@ const userEditController = async (req, res, next) => {
 };
 
 const recoveryRequestController = async (req, res, next) => {
-  const email = req.body.email;
   try {
+    const email = req.body.email;
     const user = await req.db.getUserByEmail(req, res);
-    // TODO Email token to user
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
       console.log(recoveryToken);
@@ -166,6 +165,23 @@ const recoveryRequestController = async (req, res, next) => {
         data: recoveryToken.token,
       });
     }
+    // TODO Email token to user
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+const validateRecoveryTokenController = async (req, res, next) => {
+  try {
+    const candidateToken = req.body.recoveryToken;
+    const recoveryToken = await req.db.validateRecoveryToken(req, res);
+    return res.status(200).json({
+      success: true,
+      msg: "Token is valid",
+      data: recoveryToken,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -177,4 +193,5 @@ module.exports = {
   loginController,
   userEditController,
   recoveryRequestController,
+  validateRecoveryTokenController,
 };

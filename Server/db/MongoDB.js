@@ -112,6 +112,20 @@ const requestRecoveryToken = async (req, res) => {
   }
 };
 
+const validateRecoveryToken = async (req, res) => {
+  try {
+    const candidateToken = req.body.recoveryToken;
+    const recoveryToken = await RecoveyToken.findOne({ token: candidateToken });
+    if (recoveryToken !== null) {
+      return recoveryToken;
+    } else {
+      throw new Error("Token not found");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 //****************************************
 //  Monitors
 //****************************************
@@ -420,6 +434,7 @@ module.exports = {
   getUserByEmail,
   updateUser,
   requestRecoveryToken,
+  validateRecoveryToken,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
