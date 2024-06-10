@@ -14,7 +14,6 @@ class JobQueue {
    * @throws {Error}
    */
   constructor() {
-    console.log(process.env.REDIS_PORT);
     this.queue = new Queue(QUEUE_NAME, {
       connection,
     });

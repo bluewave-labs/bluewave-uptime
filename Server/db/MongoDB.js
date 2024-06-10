@@ -3,10 +3,8 @@ const mongoose = require("mongoose");
 const UserModel = require("../models/user");
 const Check = require("../models/Check");
 const Alert = require("../models/Alert");
-
-const verifyId = (userId, monitorId) => {
-  return userId.toString() === monitorId.toString();
-};
+const RecoveyToken = require("../models/RecoveryToken");
+const crypto = require("crypto");
 
 const connect = async () => {
   try {
@@ -44,6 +42,7 @@ const insertUser = async (req, res) => {
  * Get User by Email
  * Gets a user by Email.  Not sure if we'll ever need this except for login.
  * If not needed except for login, we can move password comparison here
+ * Throws error if user not found
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
@@ -52,10 +51,14 @@ const insertUser = async (req, res) => {
  */
 const getUserByEmail = async (req, res) => {
   try {
-    // Returns null if no user is found
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
-    return await UserModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: req.body.email });
+    if (user) {
+      return user;
+    } else {
+      throw new Error("User not found");
+    }
   } catch (error) {
     throw error;
   }
@@ -81,6 +84,29 @@ const updateUser = async (req, res) => {
       { new: true } // Returns updated user instead of pre-update user
     ).select("-password");
     return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Request a recovery token
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+const requestRecoveryToken = async (req, res) => {
+  try {
+    // Delete any existing tokens
+    await RecoveyToken.deleteMany({ email: req.body.email });
+    let recoveryToken = new RecoveyToken({
+      email: req.body.email,
+      token: crypto.randomBytes(32).toString("hex"),
+    });
+    await recoveryToken.save();
+    return recoveryToken;
   } catch (error) {
     throw error;
   }
@@ -393,6 +419,7 @@ module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
+  requestRecoveryToken,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,

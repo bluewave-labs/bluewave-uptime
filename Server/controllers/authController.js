@@ -13,6 +13,7 @@ const { sendEmail } = require("../utils/sendEmail");
 const {
   registerTemplate,
 } = require("../utils/emailTemplates/registerTemplate");
+const RecoveryToken = require("../models/RecoveryToken");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -97,10 +98,6 @@ const loginController = async (req, res, next) => {
     // Check if user exists
     const user = await req.db.getUserByEmail(req, res);
 
-    // If user not found, throw an error
-    if (!user) {
-      throw new Error("User not found!");
-    }
     // Compare password
     const match = await user.comparePassword(req.body.password);
     if (!match) {
@@ -145,7 +142,7 @@ const userEditController = async (req, res, next) => {
 
   try {
     const updatedUser = await req.db.updateUser(req, res);
-    res
+    return res
       .status(200)
       .json({ success: true, msg: "User updated", data: updatedUser });
   } catch (error) {
@@ -155,4 +152,29 @@ const userEditController = async (req, res, next) => {
   }
 };
 
-module.exports = { registerController, loginController, userEditController };
+const recoveryRequestController = async (req, res, next) => {
+  const email = req.body.email;
+  try {
+    const user = await req.db.getUserByEmail(req, res);
+    // TODO Email token to user
+    if (user) {
+      const recoveryToken = await req.db.requestRecoveryToken(req, res);
+      console.log(recoveryToken);
+      return res.status(200).json({
+        success: true,
+        msg: "Created recovery token",
+        data: recoveryToken.token,
+      });
+    }
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+module.exports = {
+  registerController,
+  loginController,
+  userEditController,
+  recoveryRequestController,
+};
