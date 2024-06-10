@@ -31,6 +31,20 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   }
 });
 
+const handleAuthFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+  const decodedToken = jwtDecode(action.payload.data);
+  const user = { ...decodedToken };
+  state.user = user;
+};
+const handleAuthRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+};
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -41,36 +55,14 @@ const authSlice = createSlice({
       .addCase(register.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(register.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
-        const decodedToken = jwtDecode(action.payload.data);
-        const user = { ...decodedToken };
-        state.user = user;
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
-      })
+      .addCase(register.fulfilled, handleAuthFulfilled)
+      .addCase(register.rejected, handleAuthRejected)
       // Login thunk
       .addCase(login.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
-        const decodedToken = jwtDecode(action.payload.data);
-        const user = { ...decodedToken };
-        state.user = user;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
-      });
+      .addCase(login.fulfilled, handleAuthFulfilled)
+      .addCase(login.rejected, handleAuthRejected);
   },
 });
 
