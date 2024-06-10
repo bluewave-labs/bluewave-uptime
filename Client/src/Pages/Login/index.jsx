@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
@@ -8,23 +8,51 @@ import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
 
+import { loginValidation } from "../../Validation/validation";
+import { login } from "../../Features/Auth/authSlice";
+import { useDispatch } from "react-redux";
+
 const Login = () => {
+  const dispatch = useDispatch();
+
   const idMap = {
     "login-email-input": "email",
     "login-password-input": "password",
   };
+
+  const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const handleInput = (e) => {
-    const fieldName = idMap[e.target.id];
-    setForm({
-      ...form,
-      [fieldName]: e.target.value,
+  useEffect(() => {
+    const { error } = loginValidation.validate(form, {
+      abortEarly: false,
     });
+
+    if (error) {
+      // Creates an error object in the format { field: message }
+      const validationErrors = error.details.reduce((acc, err) => {
+        return { ...acc, [err.path[0]]: err.message };
+      }, {});
+      setErrors(validationErrors);
+    }
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      await loginValidation.validateAsync(form, { abortEarly: false });
+      dispatch(login(form));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleInput = (e) => {
+    const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
+    setForm(newForm);
   };
 
   return (
@@ -44,14 +72,16 @@ const Login = () => {
         <div className="login-form-inputs">
           <EmailTextField
             onChange={handleInput}
-            error={false}
+            error={errors.email ? true : false}
+            helperText={errors.email ? errors.email : ""}
             placeholder="Enter your email"
             id="login-email-input"
           />
           <div className="login-form-v2-spacing" />
           <PasswordTextField
             onChange={handleInput}
-            error={false}
+            error={errors.password ? true : false}
+            helperText={errors.password ? errors.password : ""}
             placeholder="Password"
             id="login-password-input"
           />
@@ -63,7 +93,12 @@ const Login = () => {
         </div>
         <div className="login-form-v3-spacing" />
         <div className="login-form-actions">
-          <Button level="primary" label="Sign in" sx={{ width: "100%" }} />
+          <Button
+            level="primary"
+            label="Sign in"
+            sx={{ width: "100%" }}
+            onClick={handleSubmit}
+          />
           <div className="login-form-v-spacing" />
           <Button
             level="secondary"
