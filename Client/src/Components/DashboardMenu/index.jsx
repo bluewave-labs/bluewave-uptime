@@ -6,6 +6,9 @@ import Incidents from "../../assets/Images/Icon-warning-gray.png";
 import SensorsIcon from "../../assets/Images/Icon-signal-gray.png";
 import AllInclusiveIcon from "../../assets/Images/Icon-link-gray.png";
 import SettingsIcon from "../../assets/Images/Icon-setting-gray.png";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import pathMap from "../../Utils/PathMap";
 
 /**
  * @component
@@ -16,13 +19,56 @@ import SettingsIcon from "../../assets/Images/Icon-setting-gray.png";
  */
 
 function DashboardMenu() {
+  const [activeButton, setActiveButton] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    setActiveButton(location.pathname);
+  }, [location]);
+
+  const handleClick = (title, path) => {
+    setActiveButton(title);
+    navigate(path);
+  };
+
   return (
     <div className="dashboard-menu-container">
-      {DashboardMenuButton(Monitors, "Monitors", "/monitors")}
-      {DashboardMenuButton(Incidents, "Incidents", "/incidents")}
-      {DashboardMenuButton(SensorsIcon, "Status Pages", "/status")}
-      {DashboardMenuButton(AllInclusiveIcon, "Integrations", "/integrations")}
-      {DashboardMenuButton(SettingsIcon, "Settings", "/settings")}
+      {DashboardMenuButton(
+        Monitors,
+        "Monitors",
+        "/monitors",
+        activeButton === "/monitors",
+        () => handleClick(pathMap["/monitors"], "/monitors")
+      )}
+      {DashboardMenuButton(
+        Incidents,
+        "Incidents",
+        "/incidents",
+        activeButton === "/incidents",
+        () => handleClick(pathMap["/incidents"], "/incidents")
+      )}
+      {DashboardMenuButton(
+        SensorsIcon,
+        "Status Pages",
+        "/status",
+        activeButton === "/status",
+        () => handleClick(pathMap["/status"], "/status")
+      )}
+      {DashboardMenuButton(
+        AllInclusiveIcon,
+        "Integrations",
+        "/integrations",
+        activeButton === "/integrations",
+        () => handleClick(pathMap["/integrations"], "/integrations")
+      )}
+      {DashboardMenuButton(
+        SettingsIcon,
+        "Settings",
+        "/settings",
+        activeButton === "/settings",
+        () => handleClick(pathMap["/settings"], "/settings")
+      )}
     </div>
   );
 }

@@ -50,6 +50,8 @@ const Register = () => {
         return { ...acc, [err.path[0]]: err.message };
       }, {});
       setErrors(validationErrors);
+    } else {
+      setErrors({});
     }
   }, []);
 
