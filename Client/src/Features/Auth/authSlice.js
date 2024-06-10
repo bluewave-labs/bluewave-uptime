@@ -5,6 +5,7 @@ const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const initialState = {
   isLoading: false,
+  authToken: "",
   user: "",
   success: null,
   msg: null,
@@ -35,6 +36,7 @@ const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
+  state.authToken = action.payload.data;
   const decodedToken = jwtDecode(action.payload.data);
   const user = { ...decodedToken };
   state.user = user;

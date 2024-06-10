@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 const HomeLayout = () => {
   const authState = useSelector((state) => state.auth);
   const { user, msg } = authState;
-  console.log(user, msg);
   return (
     <div className="home-layout">
       <DashboardSidebar />
