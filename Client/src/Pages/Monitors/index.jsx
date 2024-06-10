@@ -13,6 +13,7 @@ const Monitors = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // TODO add token to request
     dispatch(getMonitors());
   }, [dispatch]);
 
