@@ -87,7 +87,7 @@ const Register = () => {
       if (error.name === "ValidationError") {
         // TODO Handle validation errors
         console.log(error);
-        alert("Invalid input");
+        alert(error);
       } else if (error.response) {
         // TODO handle dispatch errors
         alert(error.response.msg);
