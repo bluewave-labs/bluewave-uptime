@@ -8,6 +8,7 @@ import AllInclusiveIcon from "../../assets/Images/Icon-link-gray.png";
 import SettingsIcon from "../../assets/Images/Icon-setting-gray.png";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import pathMap from "../../Utils/PathMap";
 
 /**
  * @component
@@ -38,35 +39,35 @@ function DashboardMenu() {
         "Monitors",
         "/monitors",
         activeButton === "/monitors",
-        () => handleClick("Monitors", "/monitors")
+        () => handleClick(pathMap["/monitors"], "/monitors")
       )}
       {DashboardMenuButton(
         Incidents,
         "Incidents",
         "/incidents",
         activeButton === "/incidents",
-        () => handleClick("Incidents", "/incidents")
+        () => handleClick(pathMap["/incidents"], "/incidents")
       )}
       {DashboardMenuButton(
         SensorsIcon,
         "Status Pages",
         "/status",
         activeButton === "/status",
-        () => handleClick("Status Pages", "/status")
+        () => handleClick(pathMap["/status"], "/status")
       )}
       {DashboardMenuButton(
         AllInclusiveIcon,
         "Integrations",
         "/integrations",
         activeButton === "/integrations",
-        () => handleClick("Integrations", "/integrations")
+        () => handleClick(pathMap["/integrations"], "/integrations")
       )}
       {DashboardMenuButton(
         SettingsIcon,
         "Settings",
         "/settings",
         activeButton === "/settings",
-        () => handleClick("Settings", "/settings")
+        () => handleClick(pathMap["/settings"], "/settings")
       )}
     </div>
   );
