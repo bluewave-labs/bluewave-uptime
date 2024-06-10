@@ -23,7 +23,12 @@ export const register = createAsyncThunk(
 );
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
-  console.log(form);
+  try {
+    const res = await axios.post(`${BASE_URL}/auth/login`, form);
+    return res.data;
+  } catch (error) {
+    return thunkApi.rejectWithValue(error.response.data);
+  }
 });
 
 const authSlice = createSlice({
@@ -32,6 +37,7 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Register thunk
       .addCase(register.pending, (state, action) => {
         state.isLoading = true;
       })
@@ -44,6 +50,23 @@ const authSlice = createSlice({
         state.user = user;
       })
       .addCase(register.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      // Login thunk
+      .addCase(login.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+        const decodedToken = jwtDecode(action.payload.data);
+        const user = { ...decodedToken };
+        state.user = user;
+      })
+      .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;

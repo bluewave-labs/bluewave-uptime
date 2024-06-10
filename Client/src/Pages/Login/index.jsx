@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
@@ -14,6 +16,7 @@ import { useDispatch } from "react-redux";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const idMap = {
     "login-email-input": "email",
@@ -38,19 +41,51 @@ const Login = () => {
         return { ...acc, [err.path[0]]: err.message };
       }, {});
       setErrors(validationErrors);
+    } else {
+      setErrors({});
     }
   }, []);
 
   const handleSubmit = async () => {
     try {
       await loginValidation.validateAsync(form, { abortEarly: false });
-      dispatch(login(form));
+      const action = await dispatch(login(form));
+      if (action.meta.requestStatus === "fulfilled") {
+        const token = action.payload.data;
+        localStorage.setItem("token", token);
+        navigate("/");
+      }
+      if (action.meta.requestStatus === "rejected") {
+        const error = new Error("Request rejected");
+        error.response = action.payload;
+        throw error;
+      }
     } catch (error) {
-      console.log(error);
+      if (error.name === "ValidationError") {
+        // TODO Handle validation errors
+        console.log(error.details);
+        alert("Invalid input");
+      } else if (error.response) {
+        // TODO handle dispatch errors
+        alert(error.response.msg);
+      } else {
+        // TODO handle unknown errors
+        console.log(error);
+        alert("Unknown error");
+      }
     }
   };
 
   const handleInput = (e) => {
+    const fieldName = idMap[e.target.id];
+    // Extract and validate individual fields as input changes
+    const fieldSchema = loginValidation.extract(fieldName);
+    const { error } = fieldSchema.validate(e.target.value);
+    let errMsg = "";
+    if (error) {
+      errMsg = error.message;
+    }
+    setErrors({ ...errors, [fieldName]: errMsg });
     const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
     setForm(newForm);
   };

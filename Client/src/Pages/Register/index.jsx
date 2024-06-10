@@ -54,6 +54,15 @@ const Register = () => {
   }, []);
 
   const handleInput = (e) => {
+    const fieldName = idMap[e.target.id];
+    // Extract and validate individual fields as input changes
+    const fieldSchema = registerValidation.extract(fieldName);
+    const { error } = fieldSchema.validate(e.target.value);
+    let errMsg = "";
+    if (error) {
+      errMsg = error.message;
+    }
+    setErrors({ ...errors, [fieldName]: errMsg });
     const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
     setForm(newForm);
   };
