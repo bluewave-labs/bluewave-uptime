@@ -11,13 +11,9 @@ import { useNavigate } from "react-router-dom";
  * @returns {React.ReactElement} The rendered menu button component.
  */
 
-const DashboardMenuButton = (icon, title, to) => {
-  const [isActive, setIsActive] = useState(false);
-  const navigate = useNavigate();
-
+const DashboardMenuButton = (icon, title, to, isActive, onClick) => {
   const handleClick = () => {
-    setIsActive(!isActive);
-    navigate(to);
+    onClick();
   };
 
   return (
