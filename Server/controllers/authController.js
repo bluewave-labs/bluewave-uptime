@@ -4,6 +4,9 @@ const {
   loginValidation,
   editUserParamValidation,
   editUserBodyValidation,
+  recoveryValidation,
+  recoveryTokenValidation,
+  newPasswordValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -161,6 +164,7 @@ const userEditController = async (req, res, next) => {
  */
 const recoveryRequestController = async (req, res, next) => {
   try {
+    await recoveryValidation.validateAsync(req.body);
     const user = await req.db.getUserByEmail(req, res);
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
@@ -194,7 +198,8 @@ const recoveryRequestController = async (req, res, next) => {
  */
 const validateRecoveryTokenController = async (req, res, next) => {
   try {
-    const recoveryToken = await req.db.validateRecoveryToken(req, res);
+    await recoveryTokenValidation.validateAsync(req.body);
+    await req.db.validateRecoveryToken(req, res);
     // TODO Redirect user to reset password after validating token
     return res.status(200).json({
       success: true,
@@ -219,6 +224,7 @@ const validateRecoveryTokenController = async (req, res, next) => {
  */
 const resetPasswordController = async (req, res, next) => {
   try {
+    await newPasswordValidation.validateAsync(req.body);
     user = await req.db.resetPassword(req, res);
     res.status(200).json({ success: true, msg: "Password reset", data: user });
   } catch (error) {
