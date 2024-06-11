@@ -34,7 +34,7 @@ function App() {
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/check-email" element={<CheckEmail />} />
-        <Route path="/set-new-password" element={<SetNewPassword />} />
+        <Route path="/set-new-password/:token" element={<SetNewPassword />} />
         <Route
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}

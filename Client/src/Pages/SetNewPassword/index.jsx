@@ -6,8 +6,10 @@ import PasswordTextField from "../../Components/TextFields/Password/PasswordText
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import LeftArrow from "../../assets/Images/arrow-left.png";
+import { useParams } from "react-router-dom";
 
 const SetNewPassword = () => {
+  const { token } = useParams();
   return (
     <div className="set-new-password-page">
       <BackgroundPattern />
