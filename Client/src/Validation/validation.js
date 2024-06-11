@@ -40,4 +40,15 @@ const loginValidation = joi.object({
   }),
 });
 
-export { registerValidation, loginValidation };
+const recoveryValidation = joi.object({
+  email: joi
+    .string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      "string.email": "Email must be a valid email",
+      "string.empty": "Email is required",
+    }),
+});
+
+export { registerValidation, loginValidation, recoveryValidation };
