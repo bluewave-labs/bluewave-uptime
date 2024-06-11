@@ -51,4 +51,21 @@ const recoveryValidation = joi.object({
     }),
 });
 
-export { registerValidation, loginValidation, recoveryValidation };
+const newPasswordValidation = joi.object({
+  password: joi.string().min(8).required().messages({
+    "string.min": "Password must be at least 8 characters",
+    "string.empty": "Password is required",
+  }),
+  confirm: joi.string().valid(joi.ref("password")).min(8).required().messages({
+    "string.min": "Password must be at least 8 characters",
+    "string.empty": "Password is required",
+    "any.only": "Passwords do not match",
+  }),
+});
+
+export {
+  registerValidation,
+  loginValidation,
+  recoveryValidation,
+  newPasswordValidation,
+};

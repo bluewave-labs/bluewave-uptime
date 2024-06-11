@@ -167,7 +167,7 @@ const recoveryRequestController = async (req, res, next) => {
       await sendEmail(
         [req.body.email],
         "Uptime Monitor Password Recovery",
-        `<a href='${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}'>Click here to reset your password</a>`,
+        `<a clicktracking="off" href='${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}'>Click here to reset your password</a>`,
         `Recovery token: ${recoveryToken.token}`
       );
       return res.status(200).json({

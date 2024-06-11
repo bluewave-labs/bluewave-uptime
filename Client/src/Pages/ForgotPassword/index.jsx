@@ -12,6 +12,7 @@ import axios from "axios";
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const ForgotPassword = () => {
+  const [isLoading, setIsLoading] = useState(false); // Used to disable the button while loading so user doesn't submit multiple times
   const [errors, setErrors] = useState({});
   const [form, setForm] = useState({
     email: "",
@@ -39,16 +40,21 @@ const ForgotPassword = () => {
   };
 
   const handleSubmit = async () => {
-    const { error } = recoveryValidation.validate(form);
-    if (error === undefined) {
-      try {
-        const res = await axios.post(`${BASE_URL}/auth/recovery/request`, form);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
+    //TODO show loading spinner
+    setIsLoading(true);
+    try {
+      const { error } = recoveryValidation.validate(form);
+      if (error !== undefined) {
+        throw error;
       }
-    } else {
+      const res = await axios.post(`${BASE_URL}/auth/recovery/request`, form);
+      // TODO properly display success
+      alert(JSON.stringify(res.data));
+    } catch (error) {
+      //TODO display error (Toast?)
       alert(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -72,13 +78,14 @@ const ForgotPassword = () => {
         <div className="forgot-password-body">
           <EmailTextField
             onChange={handleInput}
-            error={errors.email ? true : false}
-            helperText={errors.email ? errors.email : ""}
+            error={errors.email !== undefined ? true : false}
+            helperText={errors.email !== undefined ? errors.email : ""}
             placeholder="Enter your email"
             id="forgot-password-email-input"
           />
           <div className="forgot-password-v-gap-medium"></div>
           <Button
+            disabled={errors.email !== undefined || isLoading === true}
             onClick={handleSubmit}
             level="primary"
             label="Reset password"
