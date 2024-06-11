@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const UserModel = require("../models/user");
 const Check = require("../models/Check");
 const Alert = require("../models/Alert");
-const RecoveyToken = require("../models/RecoveryToken");
+const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
 
 const connect = async () => {
@@ -100,8 +100,8 @@ const updateUser = async (req, res) => {
 const requestRecoveryToken = async (req, res) => {
   try {
     // Delete any existing tokens
-    await RecoveyToken.deleteMany({ email: req.body.email });
-    let recoveryToken = new RecoveyToken({
+    await RecoveryToken.deleteMany({ email: req.body.email });
+    let recoveryToken = new RecoveryToken({
       email: req.body.email,
       token: crypto.randomBytes(32).toString("hex"),
     });
@@ -115,7 +115,9 @@ const requestRecoveryToken = async (req, res) => {
 const validateRecoveryToken = async (req, res) => {
   try {
     const candidateToken = req.body.recoveryToken;
-    const recoveryToken = await RecoveyToken.findOne({ token: candidateToken });
+    const recoveryToken = await RecoveryToken.findOne({
+      token: candidateToken,
+    });
     if (recoveryToken !== null) {
       return recoveryToken;
     } else {
@@ -124,6 +126,29 @@ const validateRecoveryToken = async (req, res) => {
   } catch (error) {
     throw error;
   }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const newPassword = req.body.password;
+
+    // Validate token again
+    const recoveryToken = await validateRecoveryToken(req, res);
+    const user = await UserModel.findOne({ email: recoveryToken.email });
+
+    if (user !== null) {
+      user.password = newPassword;
+      await user.save();
+      await RecoveryToken.deleteMany({ email: recoveryToken.email });
+      // Fetch the user again without the password
+      const userWithoutPassword = await UserModel.findOne({
+        email: recoveryToken.email,
+      }).select("-password");
+      return userWithoutPassword;
+    } else {
+      throw new Error("User not found");
+    }
+  } catch (error) {}
 };
 
 //****************************************
@@ -435,6 +460,7 @@ module.exports = {
   updateUser,
   requestRecoveryToken,
   validateRecoveryToken,
+  resetPassword,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,

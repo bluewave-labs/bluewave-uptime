@@ -27,6 +27,9 @@ BlueWave uptime monitoring application
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
     - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
+    - <code>POST</code> [/api/v1/auth/recovery/request](#post-auth-recovery-request-id)
+    - <code>POST</code> [/api/v1/auth/recovery/validate](#post-auth-recovery-validate-id)
+    - <code>POST</code> [/api/v1/auth/recovery/reset](#post-auth-recovery-reset-id)
     ###### Monitors
     - <code>GET</code> [/api/v1/monitors](#get-monitors)
     - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
@@ -375,6 +378,166 @@ curl --request POST \
     "isVerified": false,
     "createdAt": "2024-05-27T18:30:46.358Z",
     "updatedAt": "2024-05-27T19:21:51.747Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='post-auth-recovery-request-id'><code>POST</code><b>/api/v1/auth/recovery/request</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+##### Body
+
+> | Name  | Type     | Notes        |
+> | ----- | -------- | ------------ |
+> | email | `string` | User's email |
+
+###### Response Payload
+
+> | Type            | Notes                                   |
+> | --------------- | --------------------------------------- |
+> | `RecoveryToken` | Returns a recovery token if email found |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/auth/recovery/request \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"email" : "ajhollid@gmail.com"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Created recovery token",
+  "data": {
+    "email": "your_email@gmail.com",
+    "token": "f519da5e4a9be40cfc3c0fde97e60c0e6d17bdaa613f5ba537a45073f3865193",
+    "_id": "6668878263587f30748e968e",
+    "expiry": "2024-06-11T17:21:06.984Z",
+    "createdAt": "2024-06-11T17:21:06.985Z",
+    "updatedAt": "2024-06-11T17:21:06.985Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='post-auth-recovery-validate-id'><code>POST</code><b>/api/v1/auth/recovery/validate</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+##### Body
+
+> | Name          | Type     | Notes                               |
+> | ------------- | -------- | ----------------------------------- |
+> | recoveryToken | `string` | Token issued in `/recovery/request` |
+
+###### Response Payload
+
+> | Type            | Notes                      |
+> | --------------- | -------------------------- |
+> | `RecoveryToken` | Returns the recovery token |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/auth/recovery/validate \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"recoveryToken" : "f519da5e4a9be40cfc3c0fde97e60c0e6d17bdaa613f5ba537a45073f3865193"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Token is valid",
+  "data": {
+    "_id": "6668894263587f30748e969a",
+    "email": "ajhollid@gmail.com",
+    "token": "457d9926b24dedf613f120eeb524ef00ac45b3f0fc5c70bd25b1cc8aa83a64a0",
+    "expiry": "2024-06-11T17:28:34.349Z",
+    "createdAt": "2024-06-11T17:28:34.349Z",
+    "updatedAt": "2024-06-11T17:28:34.349Z",
+    "__v": 0
+  }
+}
+```
+
+</details>
+
+<details>
+<summary id='post-auth-recovery-reset-id'><code>POST</code><b>/api/v1/auth/recovery/reset</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | POST  |
+
+##### Body
+
+> | Name          | Type     | Notes                                         |
+> | ------------- | -------- | --------------------------------------------- |
+> | recoveryToken | `string` | Token issued returned by `/recovery/validate` |
+> | password      | `string` | User's new password`                          |
+
+###### Response Payload
+
+> | Type   | Notes                    |
+> | ------ | ------------------------ |
+> | `User` | Returns the updated user |
+
+##### Sample CURL request
+
+```
+curl --request POST \
+  --url http://localhost:5000/api/v1/auth/recovery/reset \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"recoveryToken" : "f519da5e4a9be40cfc3c0fde97e60c0e6d17bdaa613f5ba537a45073f3865193",
+	"password": "testtest"
+}'
+```
+
+###### Sample Response
+
+```json
+{
+  "success": true,
+  "msg": "Password reset",
+  "data": {
+    "_id": "66675891cb17336d84c25d9f",
+    "firstname": "User First Name",
+    "lastname": "User Last Name",
+    "email": "your_email@gmail.com",
+    "isActive": true,
+    "isVerified": false,
+    "createdAt": "2024-06-10T19:48:33.863Z",
+    "updatedAt": "2024-06-11T17:21:22.289Z",
     "__v": 0
   }
 }

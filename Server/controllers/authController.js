@@ -154,15 +154,13 @@ const userEditController = async (req, res, next) => {
 
 const recoveryRequestController = async (req, res, next) => {
   try {
-    const email = req.body.email;
     const user = await req.db.getUserByEmail(req, res);
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
-      console.log(recoveryToken);
       return res.status(200).json({
         success: true,
         msg: "Created recovery token",
-        data: recoveryToken.token,
+        data: recoveryToken,
       });
     }
     // TODO Email token to user
@@ -175,8 +173,8 @@ const recoveryRequestController = async (req, res, next) => {
 
 const validateRecoveryTokenController = async (req, res, next) => {
   try {
-    const candidateToken = req.body.recoveryToken;
     const recoveryToken = await req.db.validateRecoveryToken(req, res);
+    // TODO Redirect user to reset password after validating token
     return res.status(200).json({
       success: true,
       msg: "Token is valid",
@@ -188,10 +186,21 @@ const validateRecoveryTokenController = async (req, res, next) => {
     return;
   }
 };
+
+const resetPasswordController = async (req, res, next) => {
+  try {
+    user = await req.db.resetPassword(req, res);
+    res.status(200).json({ success: true, msg: "Password reset", data: user });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
 module.exports = {
   registerController,
   loginController,
   userEditController,
   recoveryRequestController,
   validateRecoveryTokenController,
+  resetPasswordController,
 };
