@@ -173,7 +173,6 @@ const recoveryRequestController = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         msg: "Created recovery token",
-        data: recoveryToken,
       });
     }
     // TODO Email token to user
