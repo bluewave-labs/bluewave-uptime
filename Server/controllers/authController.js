@@ -13,7 +13,6 @@ const { sendEmail } = require("../utils/sendEmail");
 const {
   registerTemplate,
 } = require("../utils/emailTemplates/registerTemplate");
-const RecoveryToken = require("../models/RecoveryToken");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -88,7 +87,6 @@ const registerController = async (req, res, next) => {
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @returns {Promise<Express.Response>}
- * @throws {Error}
  */
 const loginController = async (req, res, next) => {
   try {
@@ -152,11 +150,26 @@ const userEditController = async (req, res, next) => {
   }
 };
 
+/**
+ * Returns a recovery token
+ * @async
+ * @param {Express.Request} req
+ * @property {Object} req.body
+ * @property {string} req.body.email
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
 const recoveryRequestController = async (req, res, next) => {
   try {
     const user = await req.db.getUserByEmail(req, res);
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
+      await sendEmail(
+        [req.body.email],
+        "Uptime Monitor Password Recovery",
+        `<a href='${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}'>Click here to reset your password</a>`,
+        `Recovery token: ${recoveryToken.token}`
+      );
       return res.status(200).json({
         success: true,
         msg: "Created recovery token",
@@ -171,6 +184,15 @@ const recoveryRequestController = async (req, res, next) => {
   }
 };
 
+/**
+ * Returns a recovery token
+ * @async
+ * @param {Express.Request} req
+ * @property {Object} req.body
+ * @property {string} req.body.token
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
 const validateRecoveryTokenController = async (req, res, next) => {
   try {
     const recoveryToken = await req.db.validateRecoveryToken(req, res);
@@ -187,6 +209,16 @@ const validateRecoveryTokenController = async (req, res, next) => {
   }
 };
 
+/**
+ * Returns an updated user
+ * @async
+ * @param {Express.Request} req
+ * @property {Object} req.body
+ * @property {string} req.body.token
+ * @property {string} req.body.password
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
 const resetPasswordController = async (req, res, next) => {
   try {
     user = await req.db.resetPassword(req, res);

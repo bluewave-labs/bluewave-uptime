@@ -83,6 +83,7 @@ Configure the server with the following environmental variables:
 
 | ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values     |
 | -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------- |
+| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                     |
 | JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                     |
 | DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB` |
 | DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                     |
