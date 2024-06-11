@@ -88,6 +88,7 @@ const Register = () => {
     } catch (error) {
       if (error.name === "ValidationError") {
         // TODO Handle validation errors
+        console.log(error);
         alert(error);
       } else if (error.response) {
         // TODO handle dispatch errors
