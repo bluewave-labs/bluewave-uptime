@@ -199,7 +199,6 @@ const validateRecoveryTokenController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: "Token is valid",
-      data: recoveryToken,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
