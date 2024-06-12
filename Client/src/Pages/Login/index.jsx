@@ -44,9 +44,10 @@ const Login = () => {
     } else {
       setErrors({});
     }
-  }, []);
+  }, [form]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       await loginValidation.validateAsync(form, { abortEarly: false });
       const action = await dispatch(login(form));
@@ -77,15 +78,6 @@ const Login = () => {
   };
 
   const handleInput = (e) => {
-    const fieldName = idMap[e.target.id];
-    // Extract and validate individual fields as input changes
-    const fieldSchema = loginValidation.extract(fieldName);
-    const { error } = fieldSchema.validate(e.target.value);
-    let errMsg = "";
-    if (error) {
-      errMsg = error.message;
-    }
-    setErrors({ ...errors, [fieldName]: errMsg });
     const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
     setForm(newForm);
   };
@@ -93,7 +85,7 @@ const Login = () => {
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
-      <div className="login-form">
+      <form className="login-form" onSubmit={handleSubmit}>
         <div className="login-form-header">
           <img
             className="login-form-header-logo"
@@ -110,6 +102,7 @@ const Login = () => {
             error={errors.email ? true : false}
             helperText={errors.email ? errors.email : ""}
             placeholder="Enter your email"
+            autoComplete="email"
             id="login-email-input"
           />
           <div className="login-form-v2-spacing" />
@@ -118,6 +111,7 @@ const Login = () => {
             error={errors.password ? true : false}
             helperText={errors.password ? errors.password : ""}
             placeholder="Password"
+            autoComplete="current-password"
             id="login-password-input"
           />
         </div>
@@ -129,10 +123,10 @@ const Login = () => {
         <div className="login-form-v3-spacing" />
         <div className="login-form-actions">
           <Button
+            type="submit"
             level="primary"
             label="Sign in"
             sx={{ width: "100%" }}
-            onClick={handleSubmit}
           />
           <div className="login-form-v-spacing" />
           <Button
@@ -147,7 +141,7 @@ const Login = () => {
           Don’t have an account?
           <span className="new-account-option-span">Sign up</span>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
