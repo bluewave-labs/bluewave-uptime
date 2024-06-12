@@ -17,12 +17,14 @@ BlueWave uptime monitoring application
 - Clone this repository to your local machine
 
 1.  [Installation (Client)](#client)
-2.  [Installation (Server)](#server)
-3.  [Configuration(Server)](#config-server)
-    - [Environment](#environmental-variables)
+2.  [Configuration(Client)](#config-server)
+    - [Environment](#env-vars-client)
+3.  [Installation (Server)](#server)
+4.  [Configuration(Server)](#config-server)
+    - [Environment](#env-vars-server)
     - [Database](#databases)
       - [Docker Images](#docker-images)
-4.  [Endpoints](#endpoints)
+5.  [Endpoints](#endpoints)
     ###### Auth
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
@@ -48,8 +50,8 @@ BlueWave uptime monitoring application
     - <code>GET</code> [/api/v1/alerts/{alertId}](#get-alert-alert-id)
     - <code>POST</code> [/api/v1/alerts/edit/{alertId}](#edit-alert)
     - <code>POST</code> [/api/v1/alerts/delete/{alertId}](#delete-alert)
-5.  [Error Handling](#error-handling)
-6.  [Contributors](#contributors)
+6.  [Error Handling](#error-handling)
+7.  [Contributors](#contributors)
 
 ---
 
@@ -59,6 +61,18 @@ BlueWave uptime monitoring application
 
 1.  Change directory to the `Client` directory
 2.  Install all dependencies by running `npm install`
+
+<br/>
+
+#### Configuration <a id="config-client"></a>
+
+##### Environmental Variables <a id="env-vars-client"></a>
+
+| ENV Variable Name     | Required/Optional | Type     | Description        | Accepted Values |
+| --------------------- | ----------------- | -------- | ------------------ | --------------- |
+| VITE_APP_API_BASE_URL | Required          | `string` | Base URL of server | {host}/api/v1   |
+
+<br/>
 
 #### Starting Development Server
 
@@ -73,11 +87,11 @@ BlueWave uptime monitoring application
 1.  Change directory to the `Server` directory
 2.  Install all dependencies by running `npm install`
 
----
+<br/>
 
 #### Configuration <a id="config-server"></a>
 
-##### Environmental Variables
+##### Environmental Variables <a id="env-vars-server"></a>
 
 Configure the server with the following environmental variables:
 
@@ -94,7 +108,7 @@ Configure the server with the following environmental variables:
 | REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                     |
 | REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                     |
 
----
+<br/>
 
 ##### Databases
 
@@ -133,7 +147,7 @@ From the `Redis` folder run
 2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/../redis/redis_data:/data --name uptime_redis uptime_redis`
 </details>
 
----
+<br/>
 
 #### Starting the Development Server
 
