@@ -19,6 +19,7 @@ import { useTheme } from "@mui/material";
  */
 const StringTextField = ({
   onChange,
+  autoComplete,
   id,
   label,
   variant,
@@ -51,6 +52,7 @@ const StringTextField = ({
           id={id}
           variant={variant}
           placeholder={placeholder}
+          autoComplete={autoComplete}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
