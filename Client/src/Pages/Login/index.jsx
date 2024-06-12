@@ -102,7 +102,7 @@ const Login = () => {
             error={errors.email ? true : false}
             helperText={errors.email ? errors.email : ""}
             placeholder="Enter your email"
-            autoComplete="username"
+            autoComplete="email"
             id="login-email-input"
           />
           <div className="login-form-v2-spacing" />

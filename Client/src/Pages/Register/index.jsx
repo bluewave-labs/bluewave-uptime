@@ -132,6 +132,7 @@ const Register = () => {
             error={errors.email ? true : false}
             helperText={errors.email ? errors.email : ""}
             placeholder="Enter your email"
+            autoComplete="email"
             id="register-email-input"
           />
           <div className="login-form-v2-spacing" />
@@ -141,6 +142,7 @@ const Register = () => {
             error={errors.password ? true : false}
             helperText={errors.password ? errors.password : ""}
             placeholder="Create a password"
+            autoComplete="current-password"
             id="register-password-input"
           />
         </div>
