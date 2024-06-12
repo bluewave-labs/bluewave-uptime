@@ -44,7 +44,7 @@ const Login = () => {
     } else {
       setErrors({});
     }
-  }, []);
+  }, [form]);
 
   const handleSubmit = async () => {
     try {
@@ -77,15 +77,6 @@ const Login = () => {
   };
 
   const handleInput = (e) => {
-    const fieldName = idMap[e.target.id];
-    // Extract and validate individual fields as input changes
-    const fieldSchema = loginValidation.extract(fieldName);
-    const { error } = fieldSchema.validate(e.target.value);
-    let errMsg = "";
-    if (error) {
-      errMsg = error.message;
-    }
-    setErrors({ ...errors, [fieldName]: errMsg });
     const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
     setForm(newForm);
   };
