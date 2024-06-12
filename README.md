@@ -17,7 +17,7 @@ BlueWave uptime monitoring application
 - Clone this repository to your local machine
 
 1.  [Installation (Client)](#client)
-2.  [Configuration(Client)](#config-server)
+2.  [Configuration(Client)](#config-client)
     - [Environment](#env-vars-client)
 3.  [Installation (Server)](#server)
 4.  [Configuration(Server)](#config-server)
@@ -57,14 +57,14 @@ BlueWave uptime monitoring application
 
 ### Client
 
-#### Installation
+#### <u>Installation</u>
 
 1.  Change directory to the `Client` directory
 2.  Install all dependencies by running `npm install`
 
 <br/>
 
-#### Configuration <a id="config-client"></a>
+#### <u>Configuration</u> <a id="config-client"></a>
 
 ##### Environmental Variables <a id="env-vars-client"></a>
 
@@ -74,7 +74,7 @@ BlueWave uptime monitoring application
 
 <br/>
 
-#### Starting Development Server
+#### <u>Starting Development Server</u>
 
 1.  Run `npm run dev` to start the development server.
 
@@ -82,14 +82,14 @@ BlueWave uptime monitoring application
 
 ### Server
 
-#### Installation
+#### <u>Installation</u>
 
 1.  Change directory to the `Server` directory
 2.  Install all dependencies by running `npm install`
 
 <br/>
 
-#### Configuration <a id="config-server"></a>
+#### <u>Configuration</u> <a id="config-server"></a>
 
 ##### Environmental Variables <a id="env-vars-server"></a>
 
@@ -149,7 +149,7 @@ From the `Redis` folder run
 
 <br/>
 
-#### Starting the Development Server
+#### <u>Starting the Development Server</u>
 
 1.  run `npm run dev` to start the development server
 
