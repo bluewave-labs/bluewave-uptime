@@ -8,10 +8,13 @@ import LeftArrow from "../../assets/Images/arrow-left.png";
 import { useState, useEffect } from "react";
 import { recoveryValidation } from "../../Validation/validation";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false); // Used to disable the button while loading so user doesn't submit multiple times
   const [errors, setErrors] = useState({});
   const [form, setForm] = useState({
@@ -47,9 +50,8 @@ const ForgotPassword = () => {
       if (error !== undefined) {
         throw error;
       }
-      const res = await axios.post(`${BASE_URL}/auth/recovery/request`, form);
-      // TODO properly display success
-      alert(JSON.stringify(res.data));
+      await axios.post(`${BASE_URL}/auth/recovery/request`, form);
+      navigate("/check-email");
     } catch (error) {
       //TODO display error (Toast?)
       alert(error);
