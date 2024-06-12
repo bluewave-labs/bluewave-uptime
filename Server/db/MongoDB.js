@@ -131,7 +131,6 @@ const validateRecoveryToken = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const newPassword = req.body.password;
-
     // Validate token again
     const recoveryToken = await validateRecoveryToken(req, res);
     const user = await UserModel.findOne({ email: recoveryToken.email });
@@ -148,7 +147,9 @@ const resetPassword = async (req, res) => {
     } else {
       throw new Error("User not found");
     }
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 //****************************************
