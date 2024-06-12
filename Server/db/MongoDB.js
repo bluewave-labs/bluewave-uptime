@@ -136,6 +136,11 @@ const resetPassword = async (req, res) => {
     const recoveryToken = await validateRecoveryToken(req, res);
     const user = await UserModel.findOne({ email: recoveryToken.email });
 
+    const match = await user.comparePassword(newPassword);
+    if (match === true) {
+      throw new Error("New password must be different from old password");
+    }
+
     if (user !== null) {
       user.password = newPassword;
       await user.save();
@@ -148,7 +153,9 @@ const resetPassword = async (req, res) => {
     } else {
       throw new Error("User not found");
     }
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 //****************************************
