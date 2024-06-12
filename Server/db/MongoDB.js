@@ -131,9 +131,15 @@ const validateRecoveryToken = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const newPassword = req.body.password;
+
     // Validate token again
     const recoveryToken = await validateRecoveryToken(req, res);
     const user = await UserModel.findOne({ email: recoveryToken.email });
+
+    const match = await user.comparePassword(newPassword);
+    if (match === true) {
+      throw new Error("New password must be different from old password");
+    }
 
     if (user !== null) {
       user.password = newPassword;

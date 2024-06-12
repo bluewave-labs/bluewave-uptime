@@ -40,10 +40,10 @@ const SetNewPassword = () => {
         ...form,
         recoveryToken: token,
       });
-      navigate("/new-passsword-confirmed");
+      navigate("/new-password-confirmed");
     } catch (error) {
       // TODO display error (Toast?)
-      alert(error);
+      alert(error.response.data.msg);
     } finally {
       setIsLoading(false);
     }
