@@ -38,7 +38,6 @@ const startApp = async () => {
     ? DB_TYPE[process.env.DB_TYPE]()
     : require("./db/FakeDb");
 
-  const jobQueue = await JobQueue.createJobQueue();
   /**
    * NOTES
    * Email Service will be added
@@ -69,7 +68,7 @@ const startApp = async () => {
 
   //routes
   app.use("/api/v1/auth", authRouter);
-  app.use("/api/v1/monitors", monitorRouter);
+  app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
   app.use("/api/v1/alerts", verifyJWT, alertRouter);
   //Temporary route for testing, remove later
@@ -92,7 +91,8 @@ const startApp = async () => {
    */
   app.use(handleErrors);
 
-  connectDbAndRunServer(app, db);
+  await connectDbAndRunServer(app, db);
+  const jobQueue = await JobQueue.createJobQueue(db);
 };
 
 startApp().catch((error) => {

@@ -24,6 +24,7 @@ const {
  * @returns {String}
  */
 const issueToken = (payload) => {
+  //TODO Add proper expiration date
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99d" });
 };
 
