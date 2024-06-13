@@ -1,0 +1,15 @@
+version: '3'
+services:
+  server:
+    image: uptime_server:latest
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongodb
+  redis:
+    image: uptime_redis
+  mongodb:
+    image: uptime_database_mongo
