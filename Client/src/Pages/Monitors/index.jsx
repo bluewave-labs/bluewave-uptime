@@ -7,6 +7,8 @@ import React from "react";
 const Monitors = () => {
   return (
     <div className="monitors">
+      <div className="monitors-gaps-medium"></div>
+      <div className="monitors-gaps-medium"></div>
       <div className="monitors-bar">
         <div className="monitors-bar-title">Hello, Jackie</div>
         <Button

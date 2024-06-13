@@ -87,7 +87,6 @@ const registerController = async (req, res, next) => {
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @returns {Promise<Express.Response>}
- * @throws {Error}
  */
 const loginController = async (req, res, next) => {
   try {
@@ -97,10 +96,6 @@ const loginController = async (req, res, next) => {
     // Check if user exists
     const user = await req.db.getUserByEmail(req, res);
 
-    // If user not found, throw an error
-    if (!user) {
-      throw new Error("User not found!");
-    }
     // Compare password
     const match = await user.comparePassword(req.body.password);
     if (!match) {
@@ -145,7 +140,7 @@ const userEditController = async (req, res, next) => {
 
   try {
     const updatedUser = await req.db.updateUser(req, res);
-    res
+    return res
       .status(200)
       .json({ success: true, msg: "User updated", data: updatedUser });
   } catch (error) {
@@ -155,4 +150,87 @@ const userEditController = async (req, res, next) => {
   }
 };
 
-module.exports = { registerController, loginController, userEditController };
+/**
+ * Returns a recovery token
+ * @async
+ * @param {Express.Request} req
+ * @property {Object} req.body
+ * @property {string} req.body.email
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+const recoveryRequestController = async (req, res, next) => {
+  try {
+    const user = await req.db.getUserByEmail(req, res);
+    if (user) {
+      const recoveryToken = await req.db.requestRecoveryToken(req, res);
+      await sendEmail(
+        [req.body.email],
+        "Uptime Monitor Password Recovery",
+        `<a href='${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}'>Click here to reset your password</a>`,
+        `Recovery token: ${recoveryToken.token}`
+      );
+      return res.status(200).json({
+        success: true,
+        msg: "Created recovery token",
+      });
+    }
+    // TODO Email token to user
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
+ * Returns a recovery token
+ * @async
+ * @param {Express.Request} req
+ * @property {Object} req.body
+ * @property {string} req.body.token
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+const validateRecoveryTokenController = async (req, res, next) => {
+  try {
+    const recoveryToken = await req.db.validateRecoveryToken(req, res);
+    // TODO Redirect user to reset password after validating token
+    return res.status(200).json({
+      success: true,
+      msg: "Token is valid",
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
+ * Returns an updated user
+ * @async
+ * @param {Express.Request} req
+ * @property {Object} req.body
+ * @property {string} req.body.token
+ * @property {string} req.body.password
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+const resetPasswordController = async (req, res, next) => {
+  try {
+    user = await req.db.resetPassword(req, res);
+    res.status(200).json({ success: true, msg: "Password reset", data: user });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+module.exports = {
+  registerController,
+  loginController,
+  userEditController,
+  recoveryRequestController,
+  validateRecoveryTokenController,
+  resetPasswordController,
+};

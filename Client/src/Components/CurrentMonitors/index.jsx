@@ -1,5 +1,8 @@
+import SearchTextField from "../TextFields/Search/SearchTextField";
 import "./index.css";
 import React from "react";
+import HostsTable from "../HostsTable";
+import Pagination from "../Pagination";
 
 const CurrentMonitors = () => {
   return (
@@ -9,8 +12,14 @@ const CurrentMonitors = () => {
           <div className="current-monitors-title">Current monitors</div>
           <div className="current-monitors-counter">5</div>
         </div>
-        <div className="current-monitors-search-bar"></div>
+        <div className="current-monitors-search-bar">
+          <SearchTextField />
+        </div>
       </div>
+      <div className="monitors-v-gaping"></div>
+      <HostsTable />
+      <div className="monitors-v-gaping"></div>
+      <Pagination />
     </div>
   );
 };

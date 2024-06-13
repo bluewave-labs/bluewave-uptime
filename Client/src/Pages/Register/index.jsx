@@ -50,10 +50,21 @@ const Register = () => {
         return { ...acc, [err.path[0]]: err.message };
       }, {});
       setErrors(validationErrors);
+    } else {
+      setErrors({});
     }
   }, []);
 
   const handleInput = (e) => {
+    const fieldName = idMap[e.target.id];
+    // Extract and validate individual fields as input changes
+    const fieldSchema = registerValidation.extract(fieldName);
+    const { error } = fieldSchema.validate(e.target.value);
+    let errMsg = "";
+    if (error) {
+      errMsg = error.message;
+    }
+    setErrors({ ...errors, [fieldName]: errMsg });
     const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
     setForm(newForm);
   };
@@ -78,7 +89,7 @@ const Register = () => {
       if (error.name === "ValidationError") {
         // TODO Handle validation errors
         console.log(error);
-        alert("Invalid input");
+        alert(error);
       } else if (error.response) {
         // TODO handle dispatch errors
         alert(error.response.msg);

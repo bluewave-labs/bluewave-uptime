@@ -1,7 +1,7 @@
-const sgMail = require('@sendgrid/mail')
-const logger = require('./logger')
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-const SERVICE_NAME = 'Email_Service';
+const sgMail = require("@sendgrid/mail");
+const logger = require("./logger");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const SERVICE_NAME = "Email_Service";
 /**
  * @async
  * @function
@@ -12,25 +12,34 @@ const SERVICE_NAME = 'Email_Service';
  * @example
  * await sendEmail(['veysel@bluewavelabs.ca','alex@bluewavelabs.ca'],'Testing Email Service','<h1>BlueWaveLabs</h1>','Testing Email Service')
  */
-const sendEmail = async (receivers,subject, contentHTML, contentText = null ) => {
-    const msg = {
-        to: receivers,
-            from: {
-                name: 'Uptime System',
-                email: process.env.SYSTEM_EMAIL_ADDRESS // must be verified email by sendgrid
-            }, 
-        subject: subject,
-        text: contentText || contentHTML,
-        html: contentHTML,
-    }
-    try {
-        await sgMail.send(msg);
-        logger.info(`Emails sent to receivers:${receivers} with the subject:${subject}`,{service:SERVICE_NAME})
-    } catch (error) {
-        logger.error(`Sending Email action failed, ERROR:${error}`, { service: SERVICE_NAME });
-    }
-}
+const sendEmail = async (
+  receivers,
+  subject,
+  contentHTML,
+  contentText = null
+) => {
+  const msg = {
+    to: receivers,
+    from: {
+      name: "Uptime System",
+      email: process.env.SYSTEM_EMAIL_ADDRESS, // must be verified email by sendgrid
+    },
+    subject: subject,
+    text: contentText || contentHTML,
+    html: contentHTML,
+  };
+  try {
+    await sgMail.send(msg);
+    logger.info(
+      `Emails sent to receivers:${receivers} with the subject:${subject}`,
+      { service: SERVICE_NAME }
+    );
+  } catch (error) {
+    logger.error(`Sending Email action failed, ERROR:${error}`, {
+      service: SERVICE_NAME,
+    });
+    throw error;
+  }
+};
 
-
-
-module.exports = {sendEmail}
+module.exports = { sendEmail };
