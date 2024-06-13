@@ -22,6 +22,7 @@ const PasswordTextField = ({
   onChange,
   id,
   label = "Password",
+  autoComplete,
   variant,
   placeholder,
   icon,
@@ -48,6 +49,7 @@ const PasswordTextField = ({
         <TextField
           onChange={onChange}
           type="password"
+          autoComplete={autoComplete}
           error={error}
           className="password-text-field-input"
           id={id}

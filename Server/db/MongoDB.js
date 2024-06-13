@@ -5,6 +5,7 @@ const Check = require("../models/Check");
 const Alert = require("../models/Alert");
 const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
+const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 
 const connect = async () => {
   try {
@@ -34,6 +35,9 @@ const insertUser = async (req, res) => {
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
   } catch (error) {
+    if (error.code === DUPLICATE_KEY_CODE) {
+      throw new Error("Email already exists");
+    }
     throw error;
   }
 };
@@ -136,6 +140,11 @@ const resetPassword = async (req, res) => {
     const recoveryToken = await validateRecoveryToken(req, res);
     const user = await UserModel.findOne({ email: recoveryToken.email });
 
+    const match = await user.comparePassword(newPassword);
+    if (match === true) {
+      throw new Error("New password must be different from old password");
+    }
+
     if (user !== null) {
       user.password = newPassword;
       await user.save();
@@ -148,7 +157,9 @@ const resetPassword = async (req, res) => {
     } else {
       throw new Error("User not found");
     }
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 //****************************************
