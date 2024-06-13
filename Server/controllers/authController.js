@@ -45,18 +45,6 @@ const registerController = async (req, res, next) => {
     return;
   }
 
-  // Check if the user exists
-  try {
-    const isUser = await req.db.getUserByEmail(req, res);
-    if (isUser) {
-      throw new Error("User already exists");
-    }
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    next(error);
-    return;
-  }
-
   // Create a new user
   try {
     const newUser = await req.db.insertUser(req, res);
@@ -101,8 +89,8 @@ const loginController = async (req, res, next) => {
 
     // Compare password
     const match = await user.comparePassword(req.body.password);
-    if (!match) {
-      throw new Error("Password does not match!");
+    if (match !== true) {
+      throw new Error("Incorrect password");
     }
 
     // Remove password from user object.  Should this be abstracted to DB layer?

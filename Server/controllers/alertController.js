@@ -1,4 +1,3 @@
-const express = require("express");
 const logger = require("../utils/logger");
 require("dotenv").config();
 const {
@@ -11,7 +10,6 @@ const {
   editAlertBodyValidation,
   deleteAlertParamValidation,
 } = require("../validation/joi");
-const { get } = require("mongoose");
 
 const SERVICE_NAME = "alerts";
 
