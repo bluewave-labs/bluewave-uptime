@@ -37,6 +37,7 @@ const errorMessages = {
   // Job Queue Errors
   JOB_QUEUE_WORKER_CLOSE: "Error closing worker",
   JOB_QUEUE_DELETE_JOB: "Job not found in queue",
+  JOB_QUEUE_OBLITERATE: "Error obliterating queue",
 };
 
 const successMessages = {
