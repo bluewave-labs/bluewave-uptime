@@ -60,7 +60,8 @@ const monitorValidation = joi.object({
   userId: joi.string().required(),
   name: joi.string().required(),
   description: joi.string().required(),
-  url: joi.string().uri().required(),
+  type: joi.string().required(),
+  url: joi.string().required(),
   isActive: joi.boolean(),
   interval: joi.number(),
 });
