@@ -88,6 +88,7 @@ const loginController = async (req, res, next) => {
     const user = await req.db.getUserByEmail(req, res);
 
     // Compare password
+
     const match = await user.comparePassword(req.body.password);
     if (match !== true) {
       throw new Error("Incorrect password");
