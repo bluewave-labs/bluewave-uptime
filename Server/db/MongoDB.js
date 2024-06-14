@@ -6,7 +6,8 @@ const Alert = require("../models/Alert");
 const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
-
+const { errorMessages, successMessages } = require("../utils/messages");
+const { error } = require("console");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -36,7 +37,7 @@ const insertUser = async (req, res) => {
     return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
   } catch (error) {
     if (error.code === DUPLICATE_KEY_CODE) {
-      throw new Error("Email already exists");
+      throw new Error(errorMessages.DB_USER_EXISTS);
     }
     throw error;
   }
@@ -61,7 +62,7 @@ const getUserByEmail = async (req, res) => {
     if (user) {
       return user;
     } else {
-      throw new Error("User not found");
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
   } catch (error) {
     throw error;
@@ -125,7 +126,7 @@ const validateRecoveryToken = async (req, res) => {
     if (recoveryToken !== null) {
       return recoveryToken;
     } else {
-      throw new Error("Token not found");
+      throw new Error(errorMessages.DB_TOKEN_NOT_FOUND);
     }
   } catch (error) {
     throw error;
@@ -142,7 +143,7 @@ const resetPassword = async (req, res) => {
 
     const match = await user.comparePassword(newPassword);
     if (match === true) {
-      throw new Error("New password must be different from old password");
+      throw new Error(errorMessages.DB_RESET_PASSWORD_BAD_MATCH);
     }
 
     if (user !== null) {
@@ -155,7 +156,7 @@ const resetPassword = async (req, res) => {
       }).select("-password");
       return userWithoutPassword;
     } else {
-      throw new Error("User not found");
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
   } catch (error) {
     throw error;
@@ -249,7 +250,7 @@ const deleteMonitor = async (req, res) => {
   try {
     const monitor = await Monitor.findByIdAndDelete(monitorId);
     if (!monitor) {
-      throw new Error(`Monitor with id ${monitorId} not found`);
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
     }
     return monitor;
   } catch (error) {
@@ -338,7 +339,7 @@ const deleteChecks = async (monitorId) => {
     if (result.deletedCount > 0) {
       return result.deletedCount;
     } else {
-      throw new Error(`No checks found for monitor with id ${monitorId}`);
+      throw new Error(errorMessages.DB_DELETE_CHECKS(monitorId));
     }
   } catch (error) {
     throw error;
@@ -458,7 +459,9 @@ const deleteAlert = async (alertId) => {
     const result = await Alert.findByIdAndDelete(alertId);
     if (result) {
       return result;
-    } else throw new Error(`Alert with id ${alertId} not found`);
+    } else {
+      throw new Error(errorMessages.DB_DELETE_ALERT(alertId));
+    }
   } catch (error) {
     throw error;
   }
