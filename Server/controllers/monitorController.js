@@ -116,6 +116,8 @@ const createMonitor = async (req, res, next) => {
 
   try {
     const monitor = await req.db.createMonitor(req, res);
+    // Add monitor to job queue
+    req.jobQueue.addJob(monitor._id, monitor);
     return res
       .status(201)
       .json({ success: true, msg: "Monitor created", data: monitor });
@@ -147,6 +149,8 @@ const deleteMonitor = async (req, res, next) => {
 
   try {
     const monitor = await req.db.deleteMonitor(req, res, next);
+    req.jobQueue.deleteJob(monitor);
+
     /**
      * TODO
      * We should remove all checks and alerts associated with this monitor
