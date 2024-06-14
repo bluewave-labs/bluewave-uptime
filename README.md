@@ -19,12 +19,15 @@ BlueWave uptime monitoring application
 1.  [Installation (Client)](#client)
 2.  [Configuration(Client)](#config-client)
     - [Environment](#env-vars-client)
-3.  [Installation (Server)](#server)
-4.  [Configuration(Server)](#config-server)
-    - [Environment](#env-vars-server)
-    - [Database](#databases)
-      - [Docker Images](#docker-images)
-5.  [Endpoints](#endpoints)
+3.  [Getting Started (Server)](#server)
+    - [Docker Compose Quickstart](#docker-quickstart)
+    - [Manual Installation](#manual-install)
+      - [Install Server](#install-server)
+      - [Environment](#env-vars-server)
+      - [Database](#databases)
+        - [(Optional) Dockerised Databases](#optional-docker-databases)
+      - [Start Server](#start-server)
+4.  [Endpoints](#endpoints)
     ###### Auth
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
@@ -50,8 +53,8 @@ BlueWave uptime monitoring application
     - <code>GET</code> [/api/v1/alerts/{alertId}](#get-alert-alert-id)
     - <code>POST</code> [/api/v1/alerts/edit/{alertId}](#edit-alert)
     - <code>POST</code> [/api/v1/alerts/delete/{alertId}](#delete-alert)
-6.  [Error Handling](#error-handling)
-7.  [Contributors](#contributors)
+5.  [Error Handling](#error-handling)
+6.  [Contributors](#contributors)
 
 ---
 
@@ -80,16 +83,42 @@ BlueWave uptime monitoring application
 
 ---
 
-### Server
+### Getting Started (Server)
 
-#### <u>Installation</u>
+#### <u>Docker Quickstart</u> <a id="docker-quickstart"></a>
+
+The fastest way to start the server is to use our Dockerfiles and [Docker Compose](https://docs.docker.com/compose/).
+
+To get the server up and running you need to:
+
+1. In the `Server/docker` directory run the build script `build_images.sh` to build docker images for the server, Redis database, and MongoDB database.
+2. In the `Server/docker` directory, create a `.env` file with the [requried environtmental variables](#env-vars-server). Sample file:
+
+```
+CLIENT_HOST="http://localhost:5173"
+JWT_SECRET="my_secret"
+DB_TYPE="MongoDB"
+DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
+REDIS_HOST="redis"
+REDIS_PORT=6379
+SYSTEM_EMAIL_ADDRESS="<email>"
+SENDGRID_API_KEY="<api_key>"
+LOGIN_PAGE_URL="<login_page"
+```
+
+3.  In the `Server/docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all three images.
+
+That's it, the server is ready to use.
+<br/>
+
+#### <u>Manual Install</u> <a id="manual-install"></a>
+
+##### Install Server <a id="install-server"></a>
 
 1.  Change directory to the `Server` directory
 2.  Install all dependencies by running `npm install`
 
 <br/>
-
-#### <u>Configuration</u> <a id="config-server"></a>
 
 ##### Environmental Variables <a id="env-vars-server"></a>
 
@@ -110,48 +139,51 @@ Configure the server with the following environmental variables:
 
 <br/>
 
-##### Databases
+##### Databases <a id="databases"></a>
 
 This project requires a number of databases to run:
 
 1.  Main database for the application. This project includes an implementation for a MongoDB database as well as a MongoDB Docker image.
 2.  A Redis database is required for the Queue implementation in the PingService. This project includes a Redis docker image.
 
-You may run your own databases locally, or you may use the docker images included in the project to get up and running quickly.
+You may use the included Dockerfiles to spin up databases quickly if you wish.
 
-###### (Optional) Running Docker Images <a id="docker-images"></a>
+###### (Optional) Dockerised Databases <a id="optional-docker-databases"></a>
 
-Docker images are located in `./Server/docker`
+Dockerfiles for the server and databases are located in the `./Server/docker` directory
 
 <details>
 <summary><b>MongoDB Image</b></summary>
-Located in `./Server/docker/mongo`
+Location: `./Server/docker/mongoDB.Dockerfile`
 
-The `./Server/docker/mongo/mongo_data` folder should be mounted to the MongoDB container in order to persist data.
+The `./Server/docker/mongo/data` directory should be mounted to the MongoDB container in order to persist data.
 
-From the `mongo` folder run
+From the `Server/docker` directory run
 
-1.  Build the image: `docker build -t <db_image_name> .`
-2.  Run the docker image: `docker run -d -p 27017:27017 -v $(pwd)/../mongo/mongo_data:/data/db --name uptime_database_mongo uptime_database_mongo`
+1.  Build the image: `docker build -f mongoDB.Dockerfile -t uptime_database_mongo .`
+2.  Run the docker image: `docker run -d -p 27017:27017 -v $(pwd)/mongo/data:/data/db --name uptime_database_mongo uptime_database_mongo`
 
 </details>
 <details>
 <summary><b>Redis Image</b></summary>
-Located in `./Server/docker/redis`
+Location `./Server/docker/redislDockerfile`
 
-the `./Server/docker/redis/redis_data` folder should be mounted to the Redis container in order to persist data.
+the `./Server/docker/redis/data` directory should be mounted to the Redis container in order to persist data.
 
-From the `Redis` folder run
+From the `Server/docker` directory run
 
-1.  Build the image: `docker build -t <db_image_name>`
-2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/../redis/redis_data:/data --name uptime_redis uptime_redis`
+1.  Build the image: `docker build -f redis.Dockerfile -t uptime_redis .`
+2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`
 </details>
-
 <br/>
 
-#### <u>Starting the Development Server</u>
+##### Starting the Development Server <a id="start-server"></a>
 
-1.  run `npm run dev` to start the development server
+- run `npm run dev` to start the development server
+
+OR
+
+- run `node index.js` to start server
 
 ---
 

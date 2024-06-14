@@ -4,3 +4,4 @@ node_modules
 *.sh
 docker/mongo/data/*
 docker/redis/data/*
+!docker/build_images.sh

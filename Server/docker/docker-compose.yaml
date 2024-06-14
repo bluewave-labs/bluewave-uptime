@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   server:
     image: uptime_server:latest
@@ -10,6 +10,15 @@ services:
       - redis
       - mongodb
   redis:
-    image: uptime_redis
+    image: uptime_redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
   mongodb:
-    image: uptime_database_mongo
+    image: uptime_database_mongo:latest
+    command: ["mongod", "--quiet"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/data:/data/db
