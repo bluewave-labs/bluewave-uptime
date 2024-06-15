@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../Components/Button/";
+import ButtonSpinner from "../../Components/ButtonSpinner";
 import Link from "../../Components/Link";
 import {
   useTheme,
@@ -13,6 +14,7 @@ import {
   Tab,
   Tabs,
   Typography,
+  Stack,
 } from "@mui/material";
 import { ColoredLabel, StatusLabel } from "../../Components/Label/";
 import Avatar from "../../Components/Avatar/";
@@ -25,6 +27,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
+import UploadIcon from '@mui/icons-material/Upload';
+import SendIcon from '@mui/icons-material/Send';
 
 // Redux
 import { useSelector } from "react-redux";
@@ -181,6 +185,16 @@ const Demo = () => {
   // *********************************
   const monitorState = useSelector((state) => state.monitors);
   const { monitors, msg } = monitorState;
+
+  //Button Spinner state
+  const [isLoading, setIsLoading] = useState(false);
+  const handleButtonSpinnerClick = () => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 4000);
+  };
   return (
     <div>
       <div style={{ padding: "4rem", border: "1px solid black" }}>
@@ -352,6 +366,54 @@ const Demo = () => {
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <h4 id="section">Section</h4>
       <Section monitors={demoMonitors} />
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <h4 id="section">Loading Buttons</h4>
+      <Stack direction="row" justifyContent="center" spacing={3}>
+        <ButtonSpinner
+          level="primary"
+          label="Submit"
+          onClick={handleButtonSpinnerClick}
+          isLoading={isLoading}
+        />
+        <ButtonSpinner
+          level="secondary"
+          label="Fetch Data"
+          loadingText="Fetching..."
+          onClick={handleButtonSpinnerClick}
+          isLoading={isLoading}
+        />
+        <ButtonSpinner
+          level="tertiary"
+          label="Add"
+          loadingText="Adding..."
+          onClick={handleButtonSpinnerClick}
+          isLoading={isLoading}
+        />
+        <ButtonSpinner
+          level="imagePrimary"
+          label="Upload"
+          position="start"
+          img={<UploadIcon/>}
+          onClick={handleButtonSpinnerClick}
+          isLoading={isLoading}
+        />
+        <ButtonSpinner
+          level="imageSecondary"
+          label="Send"
+          position="end"
+          img={<SendIcon/>}
+          onClick={handleButtonSpinnerClick}
+          isLoading={isLoading}
+        />
+         <ButtonSpinner
+          level="error"
+          label="Disabled"
+          onClick={handleButtonSpinnerClick}
+          isLoading={isLoading}
+          disabled={true}
+        />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
     </div>
   );
 };
