@@ -10,7 +10,18 @@
 
 # BlueWave Uptime
 
-BlueWave uptime monitoring application
+BlueWave Uptime is an open source server monitoring application. It is a tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performing optimally, providing real-time alerts and reports on the availability, downtime, and response time of the monitored services.
+
+## Contributing 
+
+You are welcome to provide contributions to the project. It uses React on the FE, and Nodejs and MongoDB on the BE, hence if you are comfortable with working with those technologies, you are encouraged to send your PRs. Please read [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md)
+
+Note that We have a Figma file that includes: 
+
+- All the dashboard elements and components
+- The design guideline for the app
+
+You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). Since it is read-only, we encourage you to copy to your own Figma page, then work on it.
 
 ## Getting Started
 
