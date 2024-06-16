@@ -18,25 +18,12 @@ const levelConfig = {
     variant: "contained",
     color: "error",
   },
-  imagePrimary: {
-    color: "primary",
-    variant: "contained",
-  },
-  imageSecondary: {
-    color: "secondary",
-    variant: "outlined",
-  },
-  imageTertiary: {
-    color: "tertiary",
-    variant: "text",
-  },
 };
 
 /**
- * ButtonSpinner component displays a button with loading loadingText capability.
  * @component
  * @param {Object} props
- * @param {'primary' | 'secondary' | 'tertiary' | 'error' | 'imagePrimary' | 'imageSecondary' | 'imageTertiary'} props.level - The style level of the button.
+ * @param {'primary' | 'secondary' | 'tertiary' | 'error'} props.level - The style level of the button.
  * @param {string} props.label - The label text displayed on the button.
  * @param {React.ReactNode} [props.img] - Icon or image element to display within the button.
  * @param {boolean} [props.disabled=false] - Determines if the button is disabled.
