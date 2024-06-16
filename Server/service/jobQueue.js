@@ -9,6 +9,7 @@ const logger = require("../utils/logger");
 const { errorMessages, successMessages } = require("../utils/messages");
 const SERVICE_NAME = "JobQueue";
 const axios = require("axios");
+const ping = require("ping");
 
 class JobQueue {
   /**
@@ -36,6 +37,9 @@ class JobQueue {
     try {
       queue.db = db;
       const monitors = await db.getAllMonitors();
+      for (const monitor of monitors) {
+        await queue.addJob(monitor.id, monitor);
+      }
       const workerStats = await queue.getWorkerStats();
       await queue.scaleWorkers(workerStats);
       return queue;
@@ -53,10 +57,25 @@ class JobQueue {
     const worker = new Worker(
       QUEUE_NAME,
       async (job) => {
-        //TODO add a check to see what type of service
-        const response = await axios.get(job.data.url);
-        // TODO create a check object and save it to the db
-        console.log(response.status);
+        // TODO Extract to service
+        if (job.data.type === "ping") {
+          const response = await ping.promise.probe(job.data.url);
+          // TODO insert checks into DB
+          if (response.alive === true) {
+            console.log(`${job.data.url} is alive`);
+          } else {
+            console.log(`${job.data.url} is dead`);
+          }
+        } else if (job.data.type === "http") {
+          const response = await axios.get(job.data.url);
+          // TODO create a check object and save it to the db
+          if (response.status >= 200 && response.status < 300) {
+            // TODO insert checks into DB
+            console.log(`${job.data.url} is alive`);
+          } else {
+            console.log(`${job.data.url} is dead`);
+          }
+        }
       },
       {
         connection,
@@ -219,6 +238,11 @@ class JobQueue {
    */
   async obliterate() {
     try {
+      const jobs = await this.getJobs();
+      for (const job of jobs) {
+        await this.queue.remove(job.id);
+      }
+      console.log(jobs);
       await this.queue.obliterate();
       logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
         service: SERVICE_NAME,
@@ -229,6 +253,8 @@ class JobQueue {
       throw error;
     }
   }
+
+  //TODO Cleanup Queue on shutdown
 }
 
 module.exports = JobQueue;

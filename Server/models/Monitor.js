@@ -14,6 +14,11 @@ const MonitorSchema = mongoose.Schema(
     description: {
       type: String,
     },
+    type: {
+      type: String,
+      required: true,
+      enum: ["http", "ping"],
+    },
     url: {
       type: String,
       required: true,
