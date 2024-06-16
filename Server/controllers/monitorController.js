@@ -5,6 +5,8 @@ const {
 } = require("../validation/joi");
 
 const SERVICE_NAME = "monitorController";
+const { errorMessages, successMessages } = require("../utils/messages");
+const { error } = require("winston");
 
 /**
  * Returns all monitors
@@ -17,7 +19,11 @@ const SERVICE_NAME = "monitorController";
 const getAllMonitors = async (req, res, next) => {
   try {
     const monitors = await req.db.getAllMonitors();
-    return res.json({ success: true, msg: "Monitors found", data: monitors });
+    return res.json({
+      success: true,
+      msg: successMessages.MONITOR_GET_ALL,
+      data: monitors,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -45,12 +51,16 @@ const getMonitorById = async (req, res, next) => {
   try {
     const monitor = await req.db.getMonitorById(req, res);
     if (!monitor) {
-      const error = new Error("Monitor not found");
+      const error = new Error(errorMessages.MONITOR_GET_BY_ID);
       error.status = 404;
       throw error;
     }
 
-    return res.json({ success: true, msg: "Monitor found", data: monitor });
+    return res.json({
+      success: true,
+      msg: successMessages.MONTIOR_GET_BY_ID,
+      data: monitor,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -78,14 +88,14 @@ const getMonitorsByUserId = async (req, res, next) => {
     const monitors = await req.db.getMonitorsByUserId(req, res);
 
     if (monitors && monitors.length === 0) {
-      const err = new Error("No monitors found");
+      const err = new Error(errorMessages.MONITOR_GET_BY_USER_ID);
       err.status = 404;
       throw err;
     }
 
     return res.json({
       success: true,
-      msg: `Monitors for user ${userId} found`,
+      msg: successMessages.MONITOR_GET_BY_USER_ID(userId),
       data: monitors,
     });
   } catch (error) {
@@ -118,9 +128,11 @@ const createMonitor = async (req, res, next) => {
     const monitor = await req.db.createMonitor(req, res);
     // Add monitor to job queue
     req.jobQueue.addJob(monitor._id, monitor);
-    return res
-      .status(201)
-      .json({ success: true, msg: "Monitor created", data: monitor });
+    return res.status(201).json({
+      success: true,
+      msg: successMessages.MONITOR_CREATE,
+      data: monitor,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -157,7 +169,9 @@ const deleteMonitor = async (req, res, next) => {
      * when it is deleted so there is no orphaned data
      * We also need to make sure to stop all running services for this monitor
      */
-    return res.status(200).json({ success: true, msg: "Monitor deleted" });
+    return res
+      .status(200)
+      .json({ success: true, msg: successMessages.MONITOR_DELETE });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -188,7 +202,11 @@ const editMonitor = async (req, res, next) => {
     const editedMonitor = await req.db.editMonitor(req, res);
     return res
       .status(200)
-      .json({ success: true, msg: "Monitor edited", data: editedMonitor });
+      .json({
+        success: true,
+        msg: successMessages.MONITOR_EDIT,
+        data: editedMonitor,
+      });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

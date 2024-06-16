@@ -10,6 +10,7 @@ const {
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
+const { errorMessages, successMessages } = require("../utils/messages");
 var jwt = require("jsonwebtoken");
 const SERVICE_NAME = "auth";
 const { sendEmail } = require("../utils/sendEmail");
@@ -49,7 +50,7 @@ const registerController = async (req, res, next) => {
   // Create a new user
   try {
     const newUser = await req.db.insertUser(req, res);
-    logger.info("New user created!", {
+    logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,
       userId: newUser._id,
     });
@@ -64,9 +65,11 @@ const registerController = async (req, res, next) => {
       "Registered."
     );
 
-    return res
-      .status(200)
-      .json({ success: true, msg: "User created", data: token });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_CREATE_USER,
+      data: token,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -92,7 +95,7 @@ const loginController = async (req, res, next) => {
 
     const match = await user.comparePassword(req.body.password);
     if (match !== true) {
-      throw new Error("Incorrect password");
+      throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
     }
 
     // Remove password from user object.  Should this be abstracted to DB layer?
@@ -101,9 +104,11 @@ const loginController = async (req, res, next) => {
 
     // Happy path, return token
     const token = issueToken(userWithoutPassword);
-    return res
-      .status(200)
-      .json({ success: true, msg: "Found user", data: token });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_LOGIN_USER,
+      data: token,
+    });
   } catch (error) {
     error.status = 500;
     // Anything else should be an error
@@ -124,7 +129,7 @@ const userEditController = async (req, res, next) => {
   }
 
   if (req.params.userId !== req.user._id.toString()) {
-    const error = new Error("Unauthorized access");
+    const error = new Error(errorMessages.AUTH_UNAUTHORIZED);
     error.status = 401;
     error.service = SERVICE_NAME;
     next(error);
@@ -133,9 +138,11 @@ const userEditController = async (req, res, next) => {
 
   try {
     const updatedUser = await req.db.updateUser(req, res);
-    return res
-      .status(200)
-      .json({ success: true, msg: "User updated", data: updatedUser });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_UPDATE_USER,
+      data: updatedUser,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -166,7 +173,7 @@ const recoveryRequestController = async (req, res, next) => {
       );
       return res.status(200).json({
         success: true,
-        msg: "Created recovery token",
+        msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
       });
     }
     // TODO Email token to user
@@ -193,7 +200,7 @@ const validateRecoveryTokenController = async (req, res, next) => {
     // TODO Redirect user to reset password after validating token
     return res.status(200).json({
       success: true,
-      msg: "Token is valid",
+      msg: successMessages.AUTH_VERIFY_RECOVERY_TOKEN,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -216,7 +223,13 @@ const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
     user = await req.db.resetPassword(req, res);
-    res.status(200).json({ success: true, msg: "Password reset", data: user });
+    res
+      .status(200)
+      .json({
+        success: true,
+        msg: successMessages.AUTH_RESET_PASSWORD,
+        data: user,
+      });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

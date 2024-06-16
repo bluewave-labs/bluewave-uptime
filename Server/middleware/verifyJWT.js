@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const logger = require("../utils/logger");
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
-
+const { errorMessages } = require("../utils/messages");
 /**
  * Verifies the JWT token
  * @function
@@ -15,7 +15,7 @@ const verifyJWT = (req, res, next) => {
   const token = req.headers["authorization"];
   // Make sure a token is provided
   if (!token) {
-    const error = new Error("No token provided");
+    const error = new Error(error.errorMessages.NO_AUTH_TOKEN);
     error.status = 401;
     error.service = SERVICE_NAME;
     next(error);
@@ -27,8 +27,12 @@ const verifyJWT = (req, res, next) => {
     // Verify the token's authenticity
     jwt.verify(parsedToken, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        logger.error("Invalid token", { service: SERVICE_NAME });
-        return res.status(401).json({ success: false, msg: "Invalid token" });
+        logger.error(errorMessages.INVALID_AUTH_TOKEN, {
+          service: SERVICE_NAME,
+        });
+        return res
+          .status(401)
+          .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
       }
       //Add the user to the request object for use in the route
       req.user = decoded;

@@ -6,6 +6,7 @@ const connection = {
 };
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
+const { errorMessages, successMessages } = require("../utils/messages");
 const SERVICE_NAME = "JobQueue";
 const axios = require("axios");
 const ping = require("ping");
@@ -155,7 +156,9 @@ class JobQueue {
           await worker.close();
         } catch (error) {
           // Catch the error instead of throwing it
-          console.error("Error closing worker", error);
+          logger.error(errorMessages.JOB_QUEUE_WORKER_CLOSE, {
+            service: SERVICE_NAME,
+          });
         }
       }
       return true;
@@ -214,12 +217,12 @@ class JobQueue {
         every: monitor.interval,
       });
       if (deleted) {
-        logger.info("Job removed from queue", {
+        logger.info(successMessages.JOB_QUEUE_DELETE_JOB, {
           service: SERVICE_NAME,
           jobId: monitor.id,
         });
       } else {
-        logger.error("Job not found in queue", {
+        logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
           service: SERVICE_NAME,
           jobId: monitor.id,
         });
@@ -241,8 +244,12 @@ class JobQueue {
       }
       console.log(jobs);
       await this.queue.obliterate();
+      logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
+        service: SERVICE_NAME,
+      });
       return true;
     } catch (error) {
+      logger.error(errorMessages.JOB_QUEUE_OBLITERATE);
       throw error;
     }
   }
