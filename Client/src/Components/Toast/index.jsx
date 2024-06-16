@@ -7,14 +7,16 @@ import "./index.css";
 const ToastComponent = () => {
   const displayMsg = () => {
     toast(
-      <AnnouncementsDualButtonWithIcon
-        icon={<ComplexAlert theme="red" />}
-        subject="There was a problem with that action"
-        body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur, ipsum dolor."
-        esc="Dismiss"
-        primary="Learn more"
-        dismiss={() => toast.dismiss()}
-      />,
+      ({ closeToast, toastProps }) => (
+        <AnnouncementsDualButtonWithIcon
+          icon={<ComplexAlert theme="red" />}
+          subject="There was a problem with that action"
+          body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur, ipsum dolor."
+          esc="Dismiss"
+          primary="Learn more"
+          closeToast={closeToast}
+        />
+      ),
       { closeButton: false }
     );
   };
