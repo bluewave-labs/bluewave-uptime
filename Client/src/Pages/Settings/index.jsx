@@ -9,6 +9,7 @@ import {
   Avatar,
   Stack,
   Divider,
+  Modal,
 } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
@@ -40,17 +41,21 @@ const Settings = () => {
       setIsLoading(false);
     }, 2000);
   };
+  //TODO - implement delete profile update function
   const handleUpdatePicture = () => {};
+
+  const [isOpen, setIsOpen] = useState(false);
+  //TODO - implement delete account function
   const handleDeleteAccount = () => {
     setIsLoading(true);
 
     setTimeout(() => {
       setIsLoading(false);
+      setIsOpen(false);
     }, 2000);
   };
   return (
     <Box
-      flexDirection="column"
       //TODO - need to figure out document sizing
       //TODO - breakpoints for responsive design
       height="calc(100vh - 104px)"
@@ -63,7 +68,7 @@ const Settings = () => {
     >
       <TabContext value={tab}>
         <Box width="100%" sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleTabChange} aria-label="setting tabs">
+          <TabList onChange={handleTabChange} aria-label="settings tabs">
             {tabList.map((label, index) => (
               <Tab
                 label={label}
@@ -98,11 +103,11 @@ const Settings = () => {
                   flex: 1,
                   color: theme.palette.secondary.main,
                   fontSize: "13px",
-                  fontWeight: "700",
+                  fontWeight: "600",
                   marginRight: "10px",
                 }}
               >
-                First Name
+                First name
               </Typography>
               <TextField
                 id="edit-first-name"
@@ -121,11 +126,11 @@ const Settings = () => {
                   flex: 1,
                   color: theme.palette.secondary.main,
                   fontSize: "13px",
-                  fontWeight: "700",
+                  fontWeight: "600",
                   marginRight: "10px",
                 }}
               >
-                Last Name
+                Last name
               </Typography>
               <TextField
                 id="edit-last-name"
@@ -151,7 +156,7 @@ const Settings = () => {
                   sx={{
                     color: theme.palette.secondary.main,
                     fontSize: "13px",
-                    fontWeight: "700",
+                    fontWeight: "600",
                   }}
                 >
                   Email
@@ -189,10 +194,10 @@ const Settings = () => {
                   sx={{
                     color: theme.palette.secondary.main,
                     fontSize: "13px",
-                    fontWeight: "700",
+                    fontWeight: "600",
                   }}
                 >
-                  Your Photo
+                  Your photo
                 </Typography>
                 <Typography
                   variant="h4"
@@ -206,7 +211,7 @@ const Settings = () => {
                   This photo will be displayed in your profile page.
                 </Typography>
               </Stack>
-              <Stack direction="row" alignContent="center" sx={{ flex: 1 }}>
+              <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
                 {/* TODO - Use Avatar component instead of @mui */}
                 <Avatar
                   alt="Remy Sharp"
@@ -214,13 +219,14 @@ const Settings = () => {
                   className="icon-button-avatar"
                   style={{ width: "64px", height: "64px" }}
                 />
-                {/* TODO - delete pfp functionality */}
                 <ButtonSpinner
                   level="tertiary"
                   label="Delete"
                   onClick={handleDeletePicture}
                   isLoading={isLoading}
                   sx={{
+                    height: "fit-content",
+                    fontSize: "13px",
                     "&:focus": {
                       outline: "none",
                     },
@@ -232,7 +238,9 @@ const Settings = () => {
                   label="Update"
                   onClick={handleUpdatePicture}
                   sx={{
+                    height: "fit-content",
                     color: theme.palette.primary.main,
+                    fontSize: "13px",
                     "&:focus": {
                       outline: "none",
                     },
@@ -251,10 +259,10 @@ const Settings = () => {
                   sx={{
                     color: theme.palette.secondary.main,
                     fontSize: "13px",
-                    fontWeight: "700",
+                    fontWeight: "600",
                   }}
                 >
-                  Delete Account
+                  Delete account
                 </Typography>
                 <Typography
                   variant="h4"
@@ -271,8 +279,8 @@ const Settings = () => {
                 <Box sx={{ mt: theme.spacing(1) }}>
                   <Button
                     level="error"
-                    label="Delete Account"
-                    onClick={handleDeleteAccount}
+                    label="Delete account"
+                    onClick={() => setIsOpen(true)}
                     sx={{
                       fontSize: "13px",
                       "&:focus": {
@@ -288,6 +296,80 @@ const Settings = () => {
         <TabPanel value="1">Password</TabPanel>
         <TabPanel value="2">Team</TabPanel>
       </TabContext>
+      {/* TODO - Update ModalPopup Component with @mui for reusability */}
+      {/* <DualButtonPopupModal
+        subject="Really delete this account?"
+        description="If you delete your account, you will no longer be able to sign in, and all of your data will be deleted. Deleting your account is permanent and non-recoverable action."
+        esc="Cancel"
+        save="Delete account"
+      /> */}
+      <Modal
+        aria-labelledby="modal-delete-account"
+        aria-describedby="delete-account-confirmation"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        disablePortal
+      >
+        <Stack
+          gap="10px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: "4px",
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography
+            id="modal-delete-account"
+            variant="h4"
+            component="h1"
+            sx={{
+              color: theme.palette.secondary.main,
+              fontSize: "16px",
+              fontWeight: "600",
+            }}
+          >
+            Really delete this account?
+          </Typography>
+          <Typography
+            id="delete-account-confirmation"
+            variant="h4"
+            component="p"
+            sx={{
+              color: theme.palette.secondary.main,
+              fontSize: "13px",
+            }}
+          >
+            If you delete your account, you will no longer be able to sign in,
+            and all of your data will be deleted. Deleting your account is
+            permanent and non-recoverable action.
+          </Typography>
+          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => setIsOpen(false)}
+              sx={{ fontSize: "13px" }}
+            />
+            <ButtonSpinner
+              level="error"
+              label="Delete account"
+              onClick={handleDeleteAccount}
+              isLoading={isLoading}
+              sx={{ fontSize: "13px" }}
+            />
+          </Stack>
+        </Stack>
+      </Modal>
     </Box>
   );
 };
