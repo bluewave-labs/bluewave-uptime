@@ -20,6 +20,30 @@ import ButtonSpinner from "../../Components/ButtonSpinner";
 import Button from "../../Components/Button";
 
 const tabList = ["Profile", "Password", "Team"];
+const profileConfig = {
+  firstName: {
+    id: "edit-first-name",
+    label: "First name",
+    type: "input",
+  },
+  lastName: {
+    id: "edit-last-name",
+    label: "Last name",
+    type: "input",
+  },
+  email: {
+    id: "edit-email",
+    label: "Email",
+    description: "After updating, you'll receive a confirmation email.",
+    type: "input",
+  },
+  photo: {
+    id: "edit-photo",
+    label: "Your photo",
+    description: "This photo will be displayed in your profile page.",
+    type: "photo",
+  },
+};
 
 const Settings = () => {
   //(tab) 0 - Profile
@@ -95,159 +119,91 @@ const Settings = () => {
           sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
         >
           <form className="edit-profile-form" noValidate spellCheck="false">
-            <div className="edit-profile-form__wrapper">
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  flex: 1,
-                  color: theme.palette.secondary.main,
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  marginRight: "10px",
-                }}
-              >
-                First name
-              </Typography>
-              <TextField
-                id="edit-first-name"
-                placeholder="Enter your first name"
-                sx={{
-                  flex: 1,
-                  minWidth: theme.spacing(30),
-                }}
-              ></TextField>
-            </div>
-            <div className="edit-profile-form__wrapper">
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  flex: 1,
-                  color: theme.palette.secondary.main,
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  marginRight: "10px",
-                }}
-              >
-                Last name
-              </Typography>
-              <TextField
-                id="edit-last-name"
-                placeholder="Enter your last name"
-                sx={{
-                  flex: 1,
-                  minWidth: theme.spacing(30),
-                }}
-              ></TextField>
-            </div>
-            <div className="edit-profile-form__wrapper">
-              <Stack
-                direction="column"
-                gap="8px"
-                sx={{
-                  flex: 1,
-                  marginRight: "10px",
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    fontSize: "13px",
-                    fontWeight: "600",
-                  }}
+            {Object.entries(profileConfig).map(([key, field]) => (
+              <div className="edit-profile-form__wrapper" key={key}>
+                <Stack
+                  direction="column"
+                  gap="8px"
+                  sx={{ flex: 1, marginRight: "10px" }}
                 >
-                  Email
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="p"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    opacity: 0.6,
-                    fontSize: "13px",
-                  }}
-                >
-                  After updating, you'll receive a confirmation email.
-                </Typography>
-              </Stack>
-              <TextField
-                id="edit-email"
-                placeholder="Enter your email"
-                sx={{
-                  flex: 1,
-                  minWidth: theme.spacing(30),
-                }}
-              ></TextField>
-            </div>
-            <div className="edit-profile-form__wrapper">
-              <Stack
-                direction="column"
-                gap="8px"
-                sx={{ flex: 1, marginRight: "10px" }}
-              >
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    fontSize: "13px",
-                    fontWeight: "600",
-                  }}
-                >
-                  Your photo
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="p"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    opacity: 0.6,
-                    fontSize: "13px",
-                  }}
-                >
-                  This photo will be displayed in your profile page.
-                </Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
-                {/* TODO - Use Avatar component instead of @mui */}
-                <Avatar
-                  alt="Remy Sharp"
-                  src="/static/images/avatar/2.jpg"
-                  className="icon-button-avatar"
-                  style={{ width: "64px", height: "64px" }}
-                />
-                <ButtonSpinner
-                  level="tertiary"
-                  label="Delete"
-                  onClick={handleDeletePicture}
-                  isLoading={isLoading}
-                  sx={{
-                    height: "fit-content",
-                    fontSize: "13px",
-                    "&:focus": {
-                      outline: "none",
-                    },
-                  }}
-                />
-                {/* TODO - modal popup for update pfp? */}
-                <Button
-                  level="tertiary"
-                  label="Update"
-                  onClick={handleUpdatePicture}
-                  sx={{
-                    height: "fit-content",
-                    color: theme.palette.primary.main,
-                    fontSize: "13px",
-                    "&:focus": {
-                      outline: "none",
-                    },
-                  }}
-                />
-              </Stack>
-            </div>
+                  <Typography
+                    variant="h4"
+                    component="h1"
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      fontSize: "13px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {field.label}
+                  </Typography>
+                  {field ? (
+                    <Typography
+                      variant="h5"
+                      component="p"
+                      sx={{
+                        color: theme.palette.secondary.main,
+                        opacity: 0.6,
+                        fontSize: "13px",
+                      }}
+                    >
+                      {field.description}
+                    </Typography>
+                  ) : (
+                    ""
+                  )}
+                </Stack>
+                {field.type === "input" ? (
+                  <TextField
+                    id={field.id}
+                    placeholder={`Enter your ${field.label.toLowerCase()}`}
+                    sx={{
+                      flex: 1,
+                      minWidth: theme.spacing(30),
+                    }}
+                  ></TextField>
+                ) : field.type === "photo" ? (
+                  <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
+                    {/* TODO - Use Avatar component instead of @mui */}
+                    <Avatar
+                      alt="Remy Sharp"
+                      src="/static/images/avatar/2.jpg"
+                      className="icon-button-avatar"
+                      style={{ width: "64px", height: "64px" }}
+                    />
+                    <ButtonSpinner
+                      level="tertiary"
+                      label="Delete"
+                      onClick={handleDeletePicture}
+                      isLoading={isLoading}
+                      sx={{
+                        height: "fit-content",
+                        fontSize: "13px",
+                        "&:focus": {
+                          outline: "none",
+                        },
+                      }}
+                    />
+                    {/* TODO - modal popup for update pfp? */}
+                    <Button
+                      level="tertiary"
+                      label="Update"
+                      onClick={handleUpdatePicture}
+                      sx={{
+                        height: "fit-content",
+                        color: theme.palette.primary.main,
+                        fontSize: "13px",
+                        "&:focus": {
+                          outline: "none",
+                        },
+                      }}
+                    />
+                  </Stack>
+                ) : (
+                  ""
+                )}
+              </div>
+            ))}
           </form>
           <Divider sx={{ marginY: theme.spacing(6.25) }} />
           <form className="delete-profile-form" noValidate spellCheck="false">
@@ -293,7 +249,10 @@ const Settings = () => {
             </div>
           </form>
         </TabPanel>
-        <TabPanel value="1">Password</TabPanel>
+        <TabPanel
+          value="1"
+          sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
+        ></TabPanel>
         <TabPanel value="2">Team</TabPanel>
       </TabContext>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}

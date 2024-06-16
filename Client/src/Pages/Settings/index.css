@@ -1,18 +1,24 @@
-.edit-profile-form, .delete-profile-form{
-    width: inherit;
+.edit-profile-form,
+.edit-password-form,
+.delete-profile-form {
+  width: inherit;
 }
-.edit-profile-form__wrapper, .delete-profile-form__wrapper{
-    width: 90%;
-    
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
+.edit-profile-form__wrapper,
+.delete-profile-form__wrapper,
+.edit-password-form__wrapper {
+  width: 90%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
 }
-.edit-profile-form__wrapper:not(:first-of-type){
-    margin-top: 40px;
+.edit-profile-form__wrapper:not(:first-of-type),
+.edit-password-form__wrapper:not(:first-of-type) {
+  margin-top: 40px;
 }
-.edit-profile-form__wrapper input{
-    font-size: 13px;
-    padding: 10px;
+.edit-profile-form__wrapper input,
+.edit-password-form__wrapper input {
+  font-size: 13px;
+  padding: 10px;
 }
