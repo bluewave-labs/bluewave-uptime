@@ -59,7 +59,7 @@ class JobQueue {
       QUEUE_NAME,
       async (job) => {
         try {
-          await this.networkService.getStatus(job);
+          const res = await this.networkService.getStatus(job);
         } catch (error) {
           logger.error(`Error processing job ${job.id}: ${error.message}`, {
             service: SERVICE_NAME,
