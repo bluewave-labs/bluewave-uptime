@@ -1,29 +1,50 @@
 .edit-profile-form,
 .edit-password-form,
-.delete-profile-form {
+.delete-profile-form,
+.edit-team-form {
   width: inherit;
 }
 .edit-profile-form__wrapper,
 .delete-profile-form__wrapper {
   width: 90%;
 }
-.edit-password-form {
-  width: 100%;
-}
 .edit-profile-form__wrapper,
 .delete-profile-form__wrapper,
-.edit-password-form__wrapper {
+.edit-password-form__wrapper,
+.edit-team-form__wrapper {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
 }
+.edit-profile-form__wrapper h1.MuiTypography-root,
+.delete-profile-form__wrapper h1.MuiTypography-root,
+.edit-password-form__wrapper h1.MuiTypography-root,
+.edit-team-form__wrapper h1.MuiTypography-root {
+  font-size: 13px;
+  color: var(--env-var-color-2);
+  font-weight: 600;
+}
+.edit-profile-form__wrapper p.MuiTypography-root,
+.delete-profile-form__wrapper p.MuiTypography-root {
+  font-size: 13px;
+  color: var(--env-var-color-2);
+  opacity: 0.6;
+}
+#modal-delete-account,
+#modal-edit-org-name {
+  font-size: 16px;
+  color: var(--env-var-color-2);
+  font-weight: 600;
+}
 .edit-profile-form__wrapper:not(:first-of-type),
-.edit-password-form__wrapper:not(:first-of-type) {
+.edit-password-form__wrapper:not(:first-of-type),
+.edit-team-form__wrapper:not(:first-of-type) {
   margin-top: 40px;
 }
 .edit-profile-form__wrapper input,
-.edit-password-form__wrapper input {
+.edit-password-form__wrapper input,
+#edit-organization-name {
   font-size: 13px;
   padding: 10px;
 }
@@ -50,4 +71,8 @@
 .MuiBox-root > .announcement-tile .announcement-close svg {
   color: var(--env-var-color-15);
   fill: var(--env-var-color-15) !important;
+}
+
+.edit-team-form .Mui-disabled {
+  color: var(--env-var-color-2) !important;
 }

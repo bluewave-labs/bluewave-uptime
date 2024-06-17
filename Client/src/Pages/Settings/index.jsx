@@ -69,6 +69,12 @@ const passwordConfig = {
     type: "notice",
   },
 };
+const orgConfig = {
+  name: "Bluewave Labs",
+  isLoading: false,
+  isOpen: false,
+  newName: "",
+};
 
 const Settings = () => {
   //(tab) 0 - Profile
@@ -114,6 +120,32 @@ const Settings = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const [orgStates, setOrgStates] = useState(orgConfig);
+  const toggleOrgModal = (state) => {
+    setOrgStates((prev) => ({
+      ...prev,
+      isOpen: state,
+    }));
+  };
+  const toggleOrgLoading = (state) => {
+    setOrgStates((prev) => ({
+      ...prev,
+      isLoading: state,
+    }));
+  };
+  const handleRenameOrg = () => {
+    toggleOrgLoading(true);
+
+    setTimeout(() => {
+      setOrgStates((prev) => ({
+        ...prev,
+        name: prev.newName !== "" ? prev.newName : prev.name,
+        isLoading: false,
+        isOpen: false,
+        newName: "",
+      }));
+    }, 2000);
+  };
   return (
     <Box
       //TODO - need to figure out document sizing
@@ -162,27 +194,11 @@ const Settings = () => {
                   gap="8px"
                   sx={{ flex: 1, marginRight: "10px" }}
                 >
-                  <Typography
-                    variant="h4"
-                    component="h1"
-                    sx={{
-                      color: theme.palette.secondary.main,
-                      fontSize: "13px",
-                      fontWeight: "600",
-                    }}
-                  >
+                  <Typography variant="h4" component="h1">
                     {field.label}
                   </Typography>
                   {field ? (
-                    <Typography
-                      variant="h5"
-                      component="p"
-                      sx={{
-                        color: theme.palette.secondary.main,
-                        opacity: 0.6,
-                        fontSize: "13px",
-                      }}
-                    >
+                    <Typography variant="h5" component="p">
                       {field.description}
                     </Typography>
                   ) : (
@@ -245,26 +261,10 @@ const Settings = () => {
           <form className="delete-profile-form" noValidate spellCheck="false">
             <div className="delete-profile-form__wrapper">
               <Stack direction="column" gap="15px">
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    fontSize: "13px",
-                    fontWeight: "600",
-                  }}
-                >
+                <Typography variant="h4" component="h1">
                   Delete account
                 </Typography>
-                <Typography
-                  variant="h4"
-                  component="p"
-                  sx={{
-                    color: theme.palette.secondary.main,
-                    opacity: 0.6,
-                    fontSize: "13px",
-                  }}
-                >
+                <Typography variant="h5" component="p">
                   Note that deleting your account will remove all data from our
                   system. This is permanent and non-recoverable.
                 </Typography>
@@ -330,15 +330,7 @@ const Settings = () => {
                   gap="8px"
                   sx={{ flex: 1, marginRight: "10px" }}
                 >
-                  <Typography
-                    variant="h4"
-                    component="h1"
-                    sx={{
-                      color: theme.palette.secondary.main,
-                      fontSize: "13px",
-                      fontWeight: "600",
-                    }}
-                  >
+                  <Typography variant="h4" component="h1">
                     {field.label}
                   </Typography>
                 </Stack>
@@ -386,35 +378,103 @@ const Settings = () => {
                 )}
               </div>
             ))}
+            <Divider
+              aria-hidden="true"
+              width="0"
+              sx={{ marginY: theme.spacing(6.25) }}
+            />
+            {/* !!! - All save buttons are tied to the same state */}
+            {/* TODO - Implement Save Password function */}
+            <Stack direction="row" justifyContent="flex-end">
+              <Box width="fit-content">
+                <ButtonSpinner
+                  level="primary"
+                  label="Save"
+                  onClick={handleSaveProfile}
+                  isLoading={isLoading}
+                  loadingText="Saving..."
+                  sx={{
+                    paddingX: "40px",
+                    height: "fit-content",
+                    fontSize: "13px",
+                    "&:focus": {
+                      outline: "none",
+                    },
+                  }}
+                />
+              </Box>
+            </Stack>
           </form>
-          <Divider
-            aria-hidden="true"
-            width="0"
-            sx={{ marginY: theme.spacing(6.25) }}
-          />
-          {/* !!! - All save buttons are tied to the same state */}
-          {/* TODO - Implement Save Password function */}
-          <Stack direction="row" justifyContent="flex-end">
-            <Box width="fit-content">
-              <ButtonSpinner
-                level="primary"
-                label="Save"
-                onClick={handleSaveProfile}
-                isLoading={isLoading}
-                loadingText="Saving..."
-                sx={{
-                  paddingX: "40px",
-                  height: "fit-content",
-                  fontSize: "13px",
-                  "&:focus": {
-                    outline: "none",
-                  },
-                }}
-              />
-            </Box>
-          </Stack>
         </TabPanel>
-        <TabPanel value="2">Team</TabPanel>
+        <TabPanel
+          value="2"
+          sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
+        >
+          <form className="edit-team-form" noValidate spellCheck="false">
+            <div className="edit-team-form__wrapper">
+              <Stack
+                direction="column"
+                gap="8px"
+                sx={{ flex: 1, marginRight: "10px" }}
+              >
+                <Typography variant="h4" component="h1">
+                  Organization name
+                </Typography>
+              </Stack>
+              <Stack
+                direction="row"
+                justifyContent="flex-end"
+                gap="8px"
+                sx={{ flex: 1 }}
+              >
+                <ButtonSpinner
+                  level="tertiary"
+                  label={!orgStates.isLoading && orgStates.name}
+                  disabled
+                  onClick={() => toggleOrgModal(true)}
+                  isLoading={orgStates.isLoading}
+                />
+                <Button
+                  level="primary"
+                  label="Rename"
+                  sx={{ paddingX: "30px" }}
+                  onClick={() => toggleOrgModal(true)}
+                />
+              </Stack>
+            </div>
+            <div className="edit-team-form__wrapper">
+              <Typography variant="h4" component="h1">
+                Team members
+              </Typography>
+            </div>
+            <Divider
+              aria-hidden="true"
+              width="0"
+              sx={{ marginY: theme.spacing(6.25) }}
+            />
+            {/* !!! - All save buttons are tied to the same state */}
+            {/* TODO - Implement Save Team function */}
+            <Stack direction="row" justifyContent="flex-end">
+              <Box width="fit-content">
+                <ButtonSpinner
+                  level="primary"
+                  label="Save"
+                  onClick={handleSaveProfile}
+                  isLoading={isLoading}
+                  loadingText="Saving..."
+                  sx={{
+                    paddingX: "40px",
+                    height: "fit-content",
+                    fontSize: "13px",
+                    "&:focus": {
+                      outline: "none",
+                    },
+                  }}
+                />
+              </Box>
+            </Stack>
+          </form>
+        </TabPanel>
       </TabContext>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}
       {/* <DualButtonPopupModal
@@ -448,21 +508,12 @@ const Settings = () => {
             },
           }}
         >
-          <Typography
-            id="modal-delete-account"
-            variant="h4"
-            component="h1"
-            sx={{
-              color: theme.palette.secondary.main,
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
-          >
+          <Typography id="modal-delete-account" variant="h4" component="h1">
             Really delete this account?
           </Typography>
           <Typography
             id="delete-account-confirmation"
-            variant="h4"
+            variant="h5"
             component="p"
             sx={{
               color: theme.palette.secondary.main,
@@ -486,6 +537,63 @@ const Settings = () => {
               onClick={handleDeleteAccount}
               isLoading={isLoading}
               sx={{ fontSize: "13px" }}
+            />
+          </Stack>
+        </Stack>
+      </Modal>
+      <Modal
+        aria-labelledby="modal-edit-org-name"
+        aria-describedby="edit-organization-name"
+        open={orgStates.isOpen}
+        onClose={() => toggleOrgModal(false)}
+        disablePortal
+      >
+        <Stack
+          gap="20px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: "4px",
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-edit-org-name" variant="h4" component="h1">
+            Rename this organization?
+          </Typography>
+          <TextField
+            id="edit-organization-name"
+            placeholder={orgStates.name}
+            spellCheck="false"
+            value={orgStates.newName}
+            onChange={(event) =>
+              setOrgStates((prev) => ({
+                ...prev,
+                newName: event.target.value,
+              }))
+            }
+          ></TextField>
+          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => toggleOrgModal(false)}
+              sx={{ fontSize: "13px" }}
+            />
+            <ButtonSpinner
+              level="primary"
+              label="Rename"
+              onClick={handleRenameOrg}
+              isLoading={orgStates.isLoading}
+              sx={{ fontSize: "13px", paddingX: "30px" }}
             />
           </Stack>
         </Stack>
