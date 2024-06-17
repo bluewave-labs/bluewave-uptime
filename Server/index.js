@@ -93,6 +93,16 @@ const startApp = async () => {
 
   await connectDbAndRunServer(app, db);
   const jobQueue = await JobQueue.createJobQueue(db);
+
+  const cleanup = async () => {
+    console.log("Shutting down gracefully");
+    await jobQueue.obliterate();
+    console.log("Finished cleanup");
+    process.exit(0);
+  };
+
+  process.on("SIGINT", cleanup);
+  process.on("SIGTERM", cleanup);
 };
 
 startApp().catch((error) => {

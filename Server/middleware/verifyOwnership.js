@@ -1,5 +1,6 @@
 const logger = require("../utils/logger");
 const SERVICE_NAME = "verifyOwnership";
+const { errorMessages } = require("../utils/messages");
 
 const verifyOwnership = (Model, paramName) => {
   return async (req, res, next) => {
@@ -9,10 +10,10 @@ const verifyOwnership = (Model, paramName) => {
       const doc = await Model.findById(documentId);
       //If the document is not found, return a 404 error
       if (!doc) {
-        logger.error("Document not found", {
+        logger.error(errorMessages.VERIFY_OWNER_NOT_FOUND, {
           service: SERVICE_NAME,
         });
-        const error = new Error("Document not found");
+        const error = new Error(errorMessages.VERIFY_OWNER_NOT_FOUND);
         error.status = 404;
         throw error;
       }
@@ -20,7 +21,7 @@ const verifyOwnership = (Model, paramName) => {
       // If the userID does not match the document's userID, return a 403 error
       if (userId.toString() !== doc.userId.toString()) {
         console.log("boom");
-        const error = new Error("Unauthorized access");
+        const error = new Error(errorMessages.VERIFY_OWNER_UNAUTHORIZED);
         error.status = 403;
         throw error;
       }

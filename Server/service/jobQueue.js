@@ -6,8 +6,10 @@ const connection = {
 };
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
+const { errorMessages, successMessages } = require("../utils/messages");
 const SERVICE_NAME = "JobQueue";
 const axios = require("axios");
+const ping = require("ping");
 
 class JobQueue {
   /**
@@ -35,6 +37,9 @@ class JobQueue {
     try {
       queue.db = db;
       const monitors = await db.getAllMonitors();
+      for (const monitor of monitors) {
+        await queue.addJob(monitor.id, monitor);
+      }
       const workerStats = await queue.getWorkerStats();
       await queue.scaleWorkers(workerStats);
       return queue;
@@ -52,9 +57,25 @@ class JobQueue {
     const worker = new Worker(
       QUEUE_NAME,
       async (job) => {
-        const response = await axios.get(job.data.url);
-        // TODO create a check object and save it to the db
-        console.log(response.status);
+        // TODO Extract to service
+        if (job.data.type === "ping") {
+          const response = await ping.promise.probe(job.data.url);
+          // TODO insert checks into DB
+          if (response.alive === true) {
+            console.log(`${job.data.url} is alive`);
+          } else {
+            console.log(`${job.data.url} is dead`);
+          }
+        } else if (job.data.type === "http") {
+          const response = await axios.get(job.data.url);
+          // TODO create a check object and save it to the db
+          if (response.status >= 200 && response.status < 300) {
+            // TODO insert checks into DB
+            console.log(`${job.data.url} is alive`);
+          } else {
+            console.log(`${job.data.url} is dead`);
+          }
+        }
       },
       {
         connection,
@@ -135,7 +156,9 @@ class JobQueue {
           await worker.close();
         } catch (error) {
           // Catch the error instead of throwing it
-          console.error("Error closing worker", error);
+          logger.error(errorMessages.JOB_QUEUE_WORKER_CLOSE, {
+            service: SERVICE_NAME,
+          });
         }
       }
       return true;
@@ -194,12 +217,12 @@ class JobQueue {
         every: monitor.interval,
       });
       if (deleted) {
-        logger.info("Job removed from queue", {
+        logger.info(successMessages.JOB_QUEUE_DELETE_JOB, {
           service: SERVICE_NAME,
           jobId: monitor.id,
         });
       } else {
-        logger.error("Job not found in queue", {
+        logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
           service: SERVICE_NAME,
           jobId: monitor.id,
         });
@@ -215,12 +238,23 @@ class JobQueue {
    */
   async obliterate() {
     try {
+      const jobs = await this.getJobs();
+      for (const job of jobs) {
+        await this.queue.remove(job.id);
+      }
+      console.log(jobs);
       await this.queue.obliterate();
+      logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
+        service: SERVICE_NAME,
+      });
       return true;
     } catch (error) {
+      logger.error(errorMessages.JOB_QUEUE_OBLITERATE);
       throw error;
     }
   }
+
+  //TODO Cleanup Queue on shutdown
 }
 
 module.exports = JobQueue;
