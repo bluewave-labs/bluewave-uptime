@@ -11,49 +11,55 @@ class NetworkService {
   }
 
   async handlePing(job) {
+    const startTime = Date.now();
     try {
       const response = await ping.promise.probe(job.data.url);
       const isAlive = response.alive;
-      await this.logAndStoreCheck(job, isAlive);
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      await this.logAndStoreCheck(job, isAlive, responseTime);
       return isAlive;
     } catch (error) {
-      await this.logAndStoreCheck(job, false, error);
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      await this.logAndStoreCheck(job, false, responseTime, error);
       return false;
     }
   }
 
   async handleHttp(job) {
     try {
+      const startTime = Date.now();
       const response = await axios.get(job.data.url);
       const isAlive = response.status >= 200 && response.status < 300;
-      await this.logAndStoreCheck(job, isAlive);
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      await this.logAndStoreCheck(job, isAlive, responseTime);
       return isAlive;
     } catch (error) {
-      await this.logAndStoreCheck(job, false, error);
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      await this.logAndStoreCheck(job, false, responseTime, error);
       return false;
     }
   }
 
   async getStatus(job) {
-    try {
-      switch (job.data.type) {
-        case this.TYPE_PING:
-          return await this.handlePing(job);
-        case this.TYPE_HTTP:
-          return await this.handleHttp(job);
-        default:
-          console.error(`Unsupported type: ${job.data.type}`, {
-            service: this.SERVICE_NAME,
-            timestamp: new Date().toISOString(),
-          });
-          return false;
-      }
-    } catch (error) {
-      throw error;
+    switch (job.data.type) {
+      case this.TYPE_PING:
+        return await this.handlePing(job);
+      case this.TYPE_HTTP:
+        return await this.handleHttp(job);
+      default:
+        console.error(`Unsupported type: ${job.data.type}`, {
+          service: this.SERVICE_NAME,
+          timestamp: new Date().toISOString(),
+        });
+        return false;
     }
   }
 
-  async logAndStoreCheck(job, isAlive, error = null) {
+  async logAndStoreCheck(job, isAlive, responseTime, error = null) {
     const status = isAlive ? "alive" : "dead";
     if (error) {
       logger.error(`Error processing job ${job.id}: ${error.message}`, {
@@ -65,7 +71,9 @@ class NetworkService {
     }
 
     if (isAlive) {
-      console.log(`Job ${job.data.url} is alive`);
+      console.log(
+        `Job ${job.data.url} is alive, response time: ${responseTime}ms`
+      );
       return;
     }
 
