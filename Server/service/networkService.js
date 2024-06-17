@@ -10,36 +10,50 @@ class NetworkService {
     this.SERVICE_NAME = "NetworkService";
   }
 
-  async handlePing(job) {
+  async measureResponseTime(operation) {
     const startTime = Date.now();
     try {
-      const response = await ping.promise.probe(job.data.url);
-      const isAlive = response.alive;
+      const response = await operation();
       const endTime = Date.now();
-      const responseTime = endTime - startTime;
+      return { responseTime: endTime - startTime, response };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async handlePing(job) {
+    const operation = async () => {
+      const response = await ping.promise.probe(job.data.url);
+      return response;
+    };
+
+    try {
+      const { responseTime, response } = await this.measureResponseTime(
+        operation
+      );
+      const isAlive = response.alive;
       await this.logAndStoreCheck(job, isAlive, responseTime);
       return isAlive;
     } catch (error) {
-      const endTime = Date.now();
-      const responseTime = endTime - startTime;
-      await this.logAndStoreCheck(job, false, responseTime, error);
+      await this.logAndStoreCheck(job, false, 0, error);
       return false;
     }
   }
 
   async handleHttp(job) {
-    try {
-      const startTime = Date.now();
+    const operation = async () => {
       const response = await axios.get(job.data.url);
+      return response;
+    };
+    try {
+      const { responseTime, response } = await this.measureResponseTime(
+        operation
+      );
       const isAlive = response.status >= 200 && response.status < 300;
-      const endTime = Date.now();
-      const responseTime = endTime - startTime;
       await this.logAndStoreCheck(job, isAlive, responseTime);
       return isAlive;
     } catch (error) {
-      const endTime = Date.now();
-      const responseTime = endTime - startTime;
-      await this.logAndStoreCheck(job, false, responseTime, error);
+      await this.logAndStoreCheck(job, false, 0, error);
       return false;
     }
   }
@@ -62,11 +76,7 @@ class NetworkService {
   async logAndStoreCheck(job, isAlive, responseTime, error = null) {
     const status = isAlive ? "alive" : "dead";
     if (error) {
-      logger.error(`Error processing job ${job.id}: ${error.message}`, {
-        service: this.SERVICE_NAME,
-        jobId: job.id,
-        error: error,
-      });
+      console.log(`Job ${job.data.url} is dead`);
       return;
     }
 
@@ -77,10 +87,8 @@ class NetworkService {
       return;
     }
 
-    if (!isAlive) {
-      console.log(`Job ${job.data.url} is dead`);
-      return;
-    }
+    console.log(`Job ${job.data.url} is dead`);
+    return;
   }
 }
 
