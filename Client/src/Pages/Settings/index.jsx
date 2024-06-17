@@ -10,14 +10,22 @@ import {
   Stack,
   Divider,
   Modal,
+  FormControl,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import "./index.css";
-
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ButtonSpinner from "../../Components/ButtonSpinner";
 import Button from "../../Components/Button";
+import "./index.css";
+import AnnouncementsDualButtonWithIcon from "../../Components/Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 
 const tabList = ["Profile", "Password", "Team"];
 const profileConfig = {
@@ -42,6 +50,23 @@ const profileConfig = {
     label: "Your photo",
     description: "This photo will be displayed in your profile page.",
     type: "photo",
+  },
+};
+const passwordConfig = {
+  current_password: {
+    id: "edit-current-password",
+    label: "Current password",
+    type: "input",
+  },
+  password: {
+    id: "edit-password",
+    label: "Password",
+    type: "input",
+  },
+  confirm_password: {
+    id: "notice-confirm-password",
+    label: "Confirm new password",
+    type: "notice",
   },
 };
 
@@ -78,6 +103,17 @@ const Settings = () => {
       setIsOpen(false);
     }, 2000);
   };
+  const handleSaveProfile = () => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsOpen(false);
+    }, 2000);
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <Box
       //TODO - need to figure out document sizing
@@ -85,7 +121,7 @@ const Settings = () => {
       height="calc(100vh - 104px)"
       minWidth={theme.spacing(55)}
       width="100vw"
-      maxWidth="calc(100vw - 700px)"
+      maxWidth="calc(100vw - 800px)"
       mt={theme.spacing(8)}
       pt={theme.spacing(5)}
       px={theme.spacing(10)}
@@ -205,7 +241,7 @@ const Settings = () => {
               </div>
             ))}
           </form>
-          <Divider sx={{ marginY: theme.spacing(6.25) }} />
+          <Divider aria-hidden="true" sx={{ marginY: theme.spacing(6.25) }} />
           <form className="delete-profile-form" noValidate spellCheck="false">
             <div className="delete-profile-form__wrapper">
               <Stack direction="column" gap="15px">
@@ -248,11 +284,136 @@ const Settings = () => {
               </Stack>
             </div>
           </form>
+          <Divider
+            aria-hidden="true"
+            width="0"
+            sx={{ marginY: theme.spacing(6.25) }}
+          />
+          {/* !!! - All save buttons are tied to the same state */}
+          {/* TODO - Implement Save Profile function */}
+          <Stack direction="row" justifyContent="flex-end">
+            <Box width="fit-content">
+              <ButtonSpinner
+                level="primary"
+                label="Save"
+                onClick={handleSaveProfile}
+                isLoading={isLoading}
+                loadingText="Saving..."
+                sx={{
+                  paddingX: "40px",
+                  height: "fit-content",
+                  fontSize: "13px",
+                  "&:focus": {
+                    outline: "none",
+                  },
+                }}
+              />
+            </Box>
+          </Stack>
         </TabPanel>
         <TabPanel
           value="1"
           sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
-        ></TabPanel>
+        >
+          <form className="edit-password-form" noValidate spellCheck="false">
+            <div className="edit-password-form__wrapper">
+              <AnnouncementsDualButtonWithIcon
+                icon={<InfoOutlinedIcon style={{ fill: "#344054" }} />}
+                subject="SSO login"
+                body="Since you logged in via SSO, you cannot reset or modify your password."
+              />
+            </div>
+            {Object.entries(passwordConfig).map(([key, field]) => (
+              <div className="edit-password-form__wrapper" key={key}>
+                <Stack
+                  direction="column"
+                  gap="8px"
+                  sx={{ flex: 1, marginRight: "10px" }}
+                >
+                  <Typography
+                    variant="h4"
+                    component="h1"
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      fontSize: "13px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {field.label}
+                  </Typography>
+                </Stack>
+                {/* TODO - Refactor Password Input Component */}
+                {field.type === "input" ? (
+                  <FormControl sx={{ flex: 1, minWidth: theme.spacing(30) }}>
+                    <OutlinedInput
+                      id={field.id}
+                      value="RandomPasswordLol"
+                      type={showPassword ? "text" : "password"}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setShowPassword((show) => !show)}
+                            sx={{
+                              width: "30px",
+                              height: "30px",
+                              "&:focus": {
+                                outline: "none",
+                              },
+                            }}
+                          >
+                            {!showPassword ? (
+                              <VisibilityOff sx={{ fill: "#98A2B3" }} />
+                            ) : (
+                              <Visibility sx={{ fill: "#98A2B3" }} />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    ></OutlinedInput>
+                  </FormControl>
+                ) : field.type === "notice" ? (
+                  <Box sx={{ flex: 1, minWidth: theme.spacing(30) }}>
+                    <AnnouncementsDualButtonWithIcon
+                      icon={
+                        <WarningAmberOutlinedIcon style={{ fill: "#f79009" }} />
+                      }
+                      body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
+                    />
+                  </Box>
+                ) : (
+                  ""
+                )}
+              </div>
+            ))}
+          </form>
+          <Divider
+            aria-hidden="true"
+            width="0"
+            sx={{ marginY: theme.spacing(6.25) }}
+          />
+          {/* !!! - All save buttons are tied to the same state */}
+          {/* TODO - Implement Save Password function */}
+          <Stack direction="row" justifyContent="flex-end">
+            <Box width="fit-content">
+              <ButtonSpinner
+                level="primary"
+                label="Save"
+                onClick={handleSaveProfile}
+                isLoading={isLoading}
+                loadingText="Saving..."
+                sx={{
+                  paddingX: "40px",
+                  height: "fit-content",
+                  fontSize: "13px",
+                  "&:focus": {
+                    outline: "none",
+                  },
+                }}
+              />
+            </Box>
+          </Stack>
+        </TabPanel>
         <TabPanel value="2">Team</TabPanel>
       </TabContext>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}

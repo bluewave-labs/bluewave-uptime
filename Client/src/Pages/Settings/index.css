@@ -4,10 +4,15 @@
   width: inherit;
 }
 .edit-profile-form__wrapper,
+.delete-profile-form__wrapper {
+  width: 90%;
+}
+.edit-password-form {
+  width: 100%;
+}
+.edit-profile-form__wrapper,
 .delete-profile-form__wrapper,
 .edit-password-form__wrapper {
-  width: 90%;
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -21,4 +26,28 @@
 .edit-password-form__wrapper input {
   font-size: 13px;
   padding: 10px;
+}
+
+.edit-password-form__wrapper > .announcement-tile {
+  width: 100%;
+}
+.edit-password-form__wrapper
+  > .announcement-tile
+  .announcement-content-subject {
+  margin-bottom: 2px;
+}
+.edit-password-form__wrapper .announcement-tile {
+  margin: 0;
+}
+.edit-password-form__wrapper .announcement-tile .announcement-close {
+  margin-left: auto;
+}
+.MuiBox-root > .announcement-tile {
+  border-color: var(--env-var-color-14);
+  background-color: var(--lighter-env-var-color-14);
+}
+.MuiBox-root > .announcement-tile .announcement-content-body,
+.MuiBox-root > .announcement-tile .announcement-close svg {
+  color: var(--env-var-color-15);
+  fill: var(--env-var-color-15) !important;
 }

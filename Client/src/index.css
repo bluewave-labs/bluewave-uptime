@@ -28,6 +28,9 @@
   --env-var-color-11: #5d6b98;
   --env-var-color-12: #182230;
   --env-var-color-13: #f9fafb;
+  --env-var-color-14: #fecf60;
+  --lighter-env-var-color-14: rgba(254, 207, 96, 0.1);
+  --env-var-color-15: #f79009;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
