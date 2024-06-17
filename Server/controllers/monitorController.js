@@ -161,6 +161,8 @@ const deleteMonitor = async (req, res, next) => {
 
   try {
     const monitor = await req.db.deleteMonitor(req, res, next);
+    // Delete associated checks and alerts
+    console.log(monitor);
     req.jobQueue.deleteJob(monitor);
 
     /**
@@ -200,13 +202,11 @@ const editMonitor = async (req, res, next) => {
 
   try {
     const editedMonitor = await req.db.editMonitor(req, res);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.MONITOR_EDIT,
-        data: editedMonitor,
-      });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MONITOR_EDIT,
+      data: editedMonitor,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

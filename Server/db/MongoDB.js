@@ -249,9 +249,12 @@ const deleteMonitor = async (req, res) => {
   const monitorId = req.params.monitorId;
   try {
     const monitor = await Monitor.findByIdAndDelete(monitorId);
+    deleteChecks(monitorId);
+    deleteAlertByMonitorId(monitorId);
     if (!monitor) {
       throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
     }
+
     return monitor;
   } catch (error) {
     throw error;
@@ -319,6 +322,7 @@ const createCheck = async (checkData) => {
 const getChecks = async (monitorId) => {
   try {
     const checks = await Check.find({ monitorId });
+    console.log(checks);
     return checks;
   } catch (error) {
     throw error;
@@ -467,6 +471,15 @@ const deleteAlert = async (alertId) => {
   }
 };
 
+const deleteAlertByMonitorId = async (monitorId) => {
+  try {
+    const result = await Alert.deleteMany({ monitorId });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   connect,
   insertUser,
@@ -490,4 +503,5 @@ module.exports = {
   getAlertById,
   editAlert,
   deleteAlert,
+  deleteAlertByMonitorId,
 };
