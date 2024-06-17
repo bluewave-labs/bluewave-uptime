@@ -7,9 +7,8 @@ const connection = {
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
 const { errorMessages, successMessages } = require("../utils/messages");
+const NetworkService = require("./networkService");
 const SERVICE_NAME = "JobQueue";
-const axios = require("axios");
-const ping = require("ping");
 
 class JobQueue {
   /**
@@ -23,6 +22,7 @@ class JobQueue {
     });
     this.workers = [];
     this.db = null;
+    this.networkService = null;
   }
 
   /**
@@ -36,6 +36,7 @@ class JobQueue {
     const queue = new JobQueue();
     try {
       queue.db = db;
+      queue.networkService = new NetworkService(db);
       const monitors = await db.getAllMonitors();
       for (const monitor of monitors) {
         await queue.addJob(monitor.id, monitor);
@@ -57,24 +58,14 @@ class JobQueue {
     const worker = new Worker(
       QUEUE_NAME,
       async (job) => {
-        // TODO Extract to service
-        if (job.data.type === "ping") {
-          const response = await ping.promise.probe(job.data.url);
-          // TODO insert checks into DB
-          if (response.alive === true) {
-            console.log(`${job.data.url} is alive`);
-          } else {
-            console.log(`${job.data.url} is dead`);
-          }
-        } else if (job.data.type === "http") {
-          const response = await axios.get(job.data.url);
-          // TODO create a check object and save it to the db
-          if (response.status >= 200 && response.status < 300) {
-            // TODO insert checks into DB
-            console.log(`${job.data.url} is alive`);
-          } else {
-            console.log(`${job.data.url} is dead`);
-          }
+        try {
+          await this.networkService.getStatus(job);
+        } catch (error) {
+          logger.error(`Error processing job ${job.id}: ${error.message}`, {
+            service: SERVICE_NAME,
+            jobId: job.id,
+            error: error,
+          });
         }
       },
       {
