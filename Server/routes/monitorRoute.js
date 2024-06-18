@@ -18,4 +18,6 @@ router.post(
   verifyOwnership(Monitor, "monitorId"),
   monitorController.editMonitor
 );
+
+router.delete("/delete/all", monitorController.deleteAllMonitors);
 module.exports = router;

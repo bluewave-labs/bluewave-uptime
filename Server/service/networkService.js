@@ -9,6 +9,7 @@ class NetworkService {
     this.TYPE_PING = "ping";
     this.TYPE_HTTP = "http";
     this.SERVICE_NAME = "NetworkService";
+    this.NETWORK_ERROR = 5000;
   }
 
   /**
@@ -46,9 +47,20 @@ class NetworkService {
         operation
       );
       const isAlive = response.alive;
-      return await this.logAndStoreCheck(job, isAlive, responseTime);
+
+      const check = new Check({
+        monitorId: job.data._id,
+        status: isAlive,
+        responseTime,
+      });
+      return await this.logAndStoreCheck(check);
     } catch (error) {
-      return await this.logAndStoreCheck(job, false, error.responseTime, error);
+      const check = new Check({
+        monitorId: job.data._id,
+        status: false,
+        responseTime: error.responseTime,
+      });
+      return await this.logAndStoreCheck(check);
     }
   }
 
@@ -58,20 +70,45 @@ class NetworkService {
    * @returns {Promise<{boolean}} The result of logging and storing the check
    */
   async handleHttp(job) {
+    // Define operation for timing
     const operation = async () => {
       const response = await axios.get(job.data.url);
       return response;
     };
+
+    // attempt connection
     try {
       const { responseTime, response } = await this.measureResponseTime(
         operation
       );
+
+      // check if response is in the 200 range, if so, service is up
       const isAlive = response.status >= 200 && response.status < 300;
-      return await this.logAndStoreCheck(job, isAlive, responseTime);
+
+      //Create a check with relevant data
+      const check = new Check({
+        monitorId: job.data._id,
+        status: isAlive,
+        responseTime,
+        statusCode: response.status,
+      });
+      return await this.logAndStoreCheck(check);
     } catch (error) {
-      return await this.logAndStoreCheck(job, false, error.responseTime, error);
+      const check = new Check({
+        monitorId: job.data._id,
+        status: false,
+        responseTime: error.responseTime,
+      });
+      // The server returned a response
+      if (error.response) {
+        check.statusCode = error.response.status;
+      } else {
+        check.statusCode = this.NETWORK_ERROR;
+      }
+      return await this.logAndStoreCheck(check);
     }
   }
+
   /**
    * Retrieves the status of a given job based on its type.
    * For unsupported job types, it logs an error and returns false.
@@ -107,15 +144,7 @@ class NetworkService {
    * @param {Error} [error=null] - Optional error object if an error occurred during the check.
    * @returns {Promise<boolean>} The status of the inserted check if successful, otherwise false.
    */
-  async logAndStoreCheck(job, isAlive, responseTime, error = null) {
-    const check = new Check({
-      monitorId: job.data._id,
-      status: isAlive,
-      responseTime,
-      statusCode: 0,
-      message: error ? error.message : "",
-    });
-
+  async logAndStoreCheck(check) {
     try {
       const insertedCheck = await check.save();
       return insertedCheck.status;
