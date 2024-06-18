@@ -1,19 +1,19 @@
 .dashboard-sidebar {
-  height: 100vh;
+  height: calc(100vh - 64px);
   width: 250px;
   border: 1px solid var(--color-border-0);
-  border-radius: var(--border-radius-0);
-  position: fixed;
-  top: 0;
-  left: 0;
+  border-top: none;
+  border-bottom: none;
+  top: 64px;
+  position: sticky;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px 0;
 }
 
-.menu-container {
-  margin-top: 60px;
+.dashboard-menu-container{
+  padding-top: 40px;
 }
 
 .support-container {

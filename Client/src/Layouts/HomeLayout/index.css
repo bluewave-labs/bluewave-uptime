@@ -1,10 +1,13 @@
-.home-layout {
+.main-content {
+  position: relative;
   display: flex;
+  width: 100%;
+  height: max-content;
+  justify-content: flex-start;
 }
 
-.main-content {
-  margin-left: 250px;
-  flex: 1;
-  /* padding: 20px;  */
+.main-content>div:nth-child(2){
+  position: relative;
   overflow-y: auto;
+  flex: 1;
 }
