@@ -164,7 +164,6 @@ const Settings = () => {
   //TODO - implement delete profile picture function
   const handleDeletePicture = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);
@@ -176,7 +175,6 @@ const Settings = () => {
   //TODO - implement delete account function
   const handleDeleteAccount = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       setIsLoading(false);
       setIsOpen(false);
@@ -184,7 +182,6 @@ const Settings = () => {
   };
   const handleSaveProfile = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       setIsLoading(false);
       setIsOpen(false);
@@ -220,30 +217,53 @@ const Settings = () => {
     }, 2000);
   };
 
-  const [teamStates, setTeamStates] = useState(teamConfig);
+  const [teamStates, setTeamStates] = useState({
+    members: teamConfig,
+    filter: "",
+  });
   const handleCellChecked = (id) => {
-    const updatedTeamStates = [...teamStates];
+    const updatedTeamStates = [...teamStates.members];
     updatedTeamStates[id] = {
       ...updatedTeamStates[id],
       isChecked: !updatedTeamStates[id].isChecked,
     };
-    setTeamStates(updatedTeamStates);
+    setTeamStates((prev) => ({
+      ...prev,
+      members: updatedTeamStates,
+    }));
+  };
+  const handleFilter = (filter) => {
+    setTeamStates((prev) => ({
+      ...prev,
+      filter: filter,
+    }));
   };
   const handleApplyActionSelect = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       setIsLoading(false);
-      setIsOpen(false);
     }, 2000);
   };
   const handleApplyRoleSelect = () => {
     setIsLoading(true);
-
     setTimeout(() => {
       setIsLoading(false);
-      setIsOpen(false);
     }, 2000);
+  };
+  const handleSaveTeam = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  };
+  const [toggleInviteModal, setToggleInviteModal] = useState(false);
+  const handleInviteMember = () => {};
+  const handleMembersQuery = (type) => {
+    let count = 0;
+    teamStates.members.forEach((member) => {
+      type === "" ? count++ : member.type === type ? count++ : "";
+    });
+    return count;
   };
   return (
     <Box
@@ -521,6 +541,7 @@ const Settings = () => {
                 </Typography>
               </Stack>
               <Stack
+                id="org-name-flex-container"
                 direction="row"
                 justifyContent="flex-end"
                 gap="8px"
@@ -528,7 +549,7 @@ const Settings = () => {
               >
                 <ButtonSpinner
                   level="tertiary"
-                  label={!orgStates.isLoading && orgStates.name}
+                  label={!orgStates.isLoading ? orgStates.name : ""}
                   disabled
                   onClick={() => toggleOrgModal(true)}
                   isLoading={orgStates.isLoading}
@@ -547,7 +568,52 @@ const Settings = () => {
                 Team members
               </Typography>
             </div>
-            <div className="edit-team-form__wrapper">
+            <div
+              className="edit-team-form__wrapper compact"
+              style={{ alignItems: "center" }}
+            >
+              <Stack
+                direction="row"
+                gap="20px"
+                alignItems="center"
+                sx={{ flex: 1, fontSize: "14px" }}
+              >
+                <Box
+                  onClick={() => handleFilter("")}
+                  sx={{ cursor: "pointer" }}
+                >
+                  All
+                  <span className="members-query">
+                    <span>{handleMembersQuery("")}</span>
+                  </span>
+                </Box>
+                <Box
+                  onClick={() => handleFilter("admin")}
+                  sx={{ cursor: "pointer" }}
+                >
+                  Administrator
+                  <span className="members-query">
+                    <span>{handleMembersQuery("admin")}</span>
+                  </span>
+                </Box>
+                <Box
+                  onClick={() => handleFilter("member")}
+                  sx={{ cursor: "pointer" }}
+                >
+                  Member
+                  <span className="members-query">
+                    <span>{handleMembersQuery("member")}</span>
+                  </span>
+                </Box>
+              </Stack>
+              <Button
+                level="primary"
+                label="Invite a team member"
+                sx={{ paddingX: "30px", fontSize: "13px" }}
+                onClick={() => setToggleInviteModal(true)}
+              />
+            </div>
+            <div className="edit-team-form__wrapper compact">
               <Container
                 disableGutters
                 sx={{
@@ -565,7 +631,7 @@ const Settings = () => {
                         fontSize: "13px",
                         color: theme.palette.secondary.main,
                       }}
-                      inputProps={{id: "select-actions-input"}}
+                      inputProps={{ id: "select-actions-input" }}
                     >
                       {actionsConfig.map((action) => (
                         <MenuItem
@@ -598,7 +664,7 @@ const Settings = () => {
                         fontSize: "13px",
                         color: theme.palette.secondary.main,
                       }}
-                      inputProps={{id: "select-role-input"}}
+                      inputProps={{ id: "select-role-input" }}
                     >
                       {roleConfig.map((role) => (
                         <MenuItem
@@ -627,6 +693,7 @@ const Settings = () => {
                 <Table
                   sx={{
                     borderTop: `1px solid ${theme.palette.section.borderColor}`,
+                    tableLayout: "fixed",
                   }}
                 >
                   <TableHead>
@@ -649,33 +716,38 @@ const Settings = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {teamStates.map((cell) => (
-                      <TableRow key={cell.id}>
-                        <TableCell align="center">
-                          <Checkbox
-                            id={`${cell.id}-${cell.name}`}
-                            checked={cell.isChecked}
-                            onChange={() => handleCellChecked(cell.id)}
-                            inputProps={{ "aria-label": "controlled" }}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Stack direction="column">
-                            <Box
-                              sx={{
-                                color: theme.palette.otherColors.blackish,
-                                verticalAlign: "top",
-                              }}
-                            >
-                              {cell.name}
-                            </Box>
-                            <Box>Created at {cell.createdAt}</Box>
-                          </Stack>
-                        </TableCell>
-                        <TableCell>{cell.email}</TableCell>
-                        <TableCell>{cell.role}</TableCell>
-                      </TableRow>
-                    ))}
+                    {teamStates.members.map((cell) =>
+                      teamStates.filter === "" ||
+                      teamStates.filter === cell.type ? (
+                        <TableRow key={cell.id}>
+                          <TableCell align="center">
+                            <Checkbox
+                              id={`${cell.id}-${cell.name}`}
+                              checked={cell.isChecked}
+                              onChange={() => handleCellChecked(cell.id)}
+                              inputProps={{ "aria-label": "controlled" }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Stack direction="column">
+                              <Box
+                                sx={{
+                                  color: theme.palette.otherColors.blackish,
+                                  verticalAlign: "top",
+                                }}
+                              >
+                                {cell.name}
+                              </Box>
+                              <Box>Created at {cell.createdAt}</Box>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>{cell.email}</TableCell>
+                          <TableCell>{cell.role}</TableCell>
+                        </TableRow>
+                      ) : (
+                        ""
+                      )
+                    )}
                   </TableBody>
                 </Table>
               </Container>
@@ -692,7 +764,7 @@ const Settings = () => {
                 <ButtonSpinner
                   level="primary"
                   label="Save"
-                  onClick={handleSaveProfile}
+                  onClick={handleSaveTeam}
                   isLoading={isLoading}
                   loadingText="Saving..."
                   sx={{
@@ -827,6 +899,74 @@ const Settings = () => {
               onClick={handleRenameOrg}
               isLoading={orgStates.isLoading}
               sx={{ fontSize: "13px", paddingX: "30px" }}
+            />
+          </Stack>
+        </Stack>
+      </Modal>
+      <Modal
+        aria-labelledby="modal-invite-member"
+        aria-describedby="invite-member-to-team"
+        open={toggleInviteModal}
+        onClose={() => setToggleInviteModal(false)}
+        disablePortal
+      >
+        <Stack
+          gap="10px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: "4px",
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-invite-member" variant="h4" component="h1">
+            Invite new team member
+          </Typography>
+          <Typography
+            id="invite-member-to-team"
+            variant="h5"
+            component="p"
+            sx={{
+              color: theme.palette.secondary.main,
+              fontSize: "13px",
+            }}
+          >
+            When you add a new team member, they will get access to all
+            monitors.
+          </Typography>
+          <TextField
+            id="input-team-member"
+            spellCheck="false"
+            // value={orgStates.newName}
+            // onChange={(event) =>
+            //   setOrgStates((prev) => ({
+            //     ...prev,
+            //     newName: event.target.value,
+            //   }))
+            // }
+          ></TextField>
+          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => setToggleInviteModal(false)}
+              sx={{ fontSize: "13px" }}
+            />
+            <ButtonSpinner
+              level="primary"
+              label="Send invite"
+              onClick={handleInviteMember}
+              isLoading={isLoading}
+              sx={{ fontSize: "13px" }}
             />
           </Stack>
         </Stack>

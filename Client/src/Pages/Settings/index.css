@@ -21,19 +21,20 @@
 .delete-profile-form__wrapper h1.MuiTypography-root,
 .edit-password-form__wrapper h1.MuiTypography-root,
 .edit-team-form__wrapper h1.MuiTypography-root {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
   font-weight: 600;
 }
 .edit-profile-form__wrapper p.MuiTypography-root,
 .delete-profile-form__wrapper p.MuiTypography-root {
-  font-size: 13px;
+  font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
   opacity: 0.6;
 }
 #modal-delete-account,
-#modal-edit-org-name {
-  font-size: 16px;
+#modal-edit-org-name,
+#modal-invite-member {
+  font-size: var(--env-var-font-size-large);
   color: var(--env-var-color-2);
   font-weight: 600;
 }
@@ -42,10 +43,15 @@
 .edit-team-form__wrapper:not(:first-of-type) {
   margin-top: 40px;
 }
+.edit-team-form__wrapper.compact {
+  margin-top: 30px;
+  color: var(--env-var-color-16);
+}
 .edit-profile-form__wrapper input,
 .edit-password-form__wrapper input,
-#edit-organization-name {
-  font-size: 13px;
+#edit-organization-name,
+#input-team-member {
+  font-size: var(--env-var-font-size-medium);
   padding: 10px;
 }
 
@@ -73,7 +79,7 @@
   fill: var(--env-var-color-15) !important;
 }
 
-.edit-team-form .Mui-disabled {
+#org-name-flex-container .Mui-disabled {
   color: var(--env-var-color-2) !important;
 }
 
@@ -89,7 +95,7 @@
   padding-left: 20px;
 }
 .edit-team-form__wrapper td {
-  font-size: 13px;
+  font-size: (--env-var-font-size-medium);
   color: var(--env-var-color-16);
 }
 
@@ -100,7 +106,6 @@
   padding-right: 50px;
   line-height: 1.75;
 }
-
 .MuiInputBase-root:has(#select-actions) fieldset,
 .MuiInputBase-root:has(#select-role) fieldset {
   border-color: #a1a7b1;
@@ -110,4 +115,19 @@
 .MuiInputBase-root:has(#select-actions):hover fieldset,
 .MuiInputBase-root:has(#select-role):hover fieldset {
   border-color: var(--env-var-color-2);
+}
+
+.members-query{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--env-var-color-3);
+  background-color: #e0e9fd;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 50%;
 }
