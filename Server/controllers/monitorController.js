@@ -161,8 +161,10 @@ const deleteMonitor = async (req, res, next) => {
 
   try {
     const monitor = await req.db.deleteMonitor(req, res, next);
-    req.jobQueue.deleteJob(monitor);
-
+    // Delete associated checks and alerts
+    await req.jobQueue.deleteJob(monitor);
+    await req.db.deleteChecks(monitor._id);
+    await req.db.deleteAlertByMonitorId(monitor._id);
     /**
      * TODO
      * We should remove all checks and alerts associated with this monitor
@@ -172,6 +174,18 @@ const deleteMonitor = async (req, res, next) => {
     return res
       .status(200)
       .json({ success: true, msg: successMessages.MONITOR_DELETE });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+const deleteAllMonitors = async (req, res) => {
+  try {
+    const deleteCount = await req.db.deleteAllMonitors();
+    return res
+      .status(200)
+      .json({ success: true, msg: `Deleted ${deleteCount} monitors` });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -200,13 +214,11 @@ const editMonitor = async (req, res, next) => {
 
   try {
     const editedMonitor = await req.db.editMonitor(req, res);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.MONITOR_EDIT,
-        data: editedMonitor,
-      });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MONITOR_EDIT,
+      data: editedMonitor,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -219,5 +231,6 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  deleteAllMonitors,
   editMonitor,
 };

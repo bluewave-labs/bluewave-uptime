@@ -259,6 +259,19 @@ const deleteMonitor = async (req, res) => {
 };
 
 /**
+ * DELETE ALL MONITORS (TEMP)
+ */
+
+const deleteAllMonitors = async (req, res) => {
+  try {
+    const deletedCount = await Monitor.deleteMany({});
+    return deletedCount.deletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * Edit a monitor by ID
  * @async
  * @param {Express.Request} req
@@ -336,11 +349,7 @@ const getChecks = async (monitorId) => {
 const deleteChecks = async (monitorId) => {
   try {
     const result = await Check.deleteMany({ monitorId });
-    if (result.deletedCount > 0) {
-      return result.deletedCount;
-    } else {
-      throw new Error(errorMessages.DB_DELETE_CHECKS(monitorId));
-    }
+    return result.deletedCount;
   } catch (error) {
     throw error;
   }
@@ -457,11 +466,16 @@ const editAlert = async (alertId, alertData) => {
 const deleteAlert = async (alertId) => {
   try {
     const result = await Alert.findByIdAndDelete(alertId);
-    if (result) {
-      return result;
-    } else {
-      throw new Error(errorMessages.DB_DELETE_ALERT(alertId));
-    }
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteAlertByMonitorId = async (monitorId) => {
+  try {
+    const result = await Alert.deleteMany({ monitorId });
+    return result;
   } catch (error) {
     throw error;
   }
@@ -480,6 +494,7 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  deleteAllMonitors,
   editMonitor,
   createCheck,
   getChecks,
@@ -490,4 +505,5 @@ module.exports = {
   getAlertById,
   editAlert,
   deleteAlert,
+  deleteAlertByMonitorId,
 };
