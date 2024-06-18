@@ -14,6 +14,15 @@ import {
   OutlinedInput,
   InputAdornment,
   IconButton,
+  Container,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Checkbox,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
 import TabContext from "@mui/lab/TabContext";
@@ -75,6 +84,70 @@ const orgConfig = {
   isOpen: false,
   newName: "",
 };
+const teamColumns = [
+  {
+    id: "checkbox",
+    label: "",
+    sx: { minWidth: "20px", width: "40px" },
+  },
+  {
+    id: "name",
+    label: "NAME",
+    sx: { fontSize: "12px" },
+  },
+  { id: "email", label: "EMAIL", sx: { fontSize: "12px" } },
+  { id: "role", label: "ROLE", sx: { fontSize: "12px" } },
+];
+const teamConfig = [
+  {
+    id: 0,
+    isChecked: false,
+    name: "John Connor",
+    email: "john@domain.com",
+    type: "admin",
+    role: "Administrator",
+    createdAt: "10/4/2022",
+  },
+  {
+    id: 1,
+    isChecked: false,
+    name: "Adam McFadden",
+    email: "adam@domain.com",
+    type: "member",
+    role: "Member",
+    createdAt: "10/4/2022",
+  },
+  {
+    id: 2,
+    isChecked: false,
+    name: "Cris Cross",
+    email: "cris@domain.com",
+    type: "member",
+    role: "Member",
+    createdAt: "10/4/2022",
+  },
+  {
+    id: 3,
+    isChecked: false,
+    name: "Prince",
+    email: "prince@domain.com",
+    type: "member",
+    role: "Member",
+    createdAt: "10/4/2022",
+  },
+];
+const actionsConfig = [
+  {
+    value: "bulk",
+    label: "Bulk actions",
+  },
+];
+const roleConfig = [
+  {
+    value: "role",
+    label: "Change role to",
+  },
+];
 
 const Settings = () => {
   //(tab) 0 - Profile
@@ -144,6 +217,32 @@ const Settings = () => {
         isOpen: false,
         newName: "",
       }));
+    }, 2000);
+  };
+
+  const [teamStates, setTeamStates] = useState(teamConfig);
+  const handleCellChecked = (id) => {
+    const updatedTeamStates = [...teamStates];
+    updatedTeamStates[id] = {
+      ...updatedTeamStates[id],
+      isChecked: !updatedTeamStates[id].isChecked,
+    };
+    setTeamStates(updatedTeamStates);
+  };
+  const handleApplyActionSelect = () => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsOpen(false);
+    }, 2000);
+  };
+  const handleApplyRoleSelect = () => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsOpen(false);
     }, 2000);
   };
   return (
@@ -433,11 +532,12 @@ const Settings = () => {
                   disabled
                   onClick={() => toggleOrgModal(true)}
                   isLoading={orgStates.isLoading}
+                  sx={{ fontSize: "13px" }}
                 />
                 <Button
                   level="primary"
                   label="Rename"
-                  sx={{ paddingX: "30px" }}
+                  sx={{ paddingX: "30px", fontSize: "13px" }}
                   onClick={() => toggleOrgModal(true)}
                 />
               </Stack>
@@ -446,6 +546,139 @@ const Settings = () => {
               <Typography variant="h4" component="h1">
                 Team members
               </Typography>
+            </div>
+            <div className="edit-team-form__wrapper">
+              <Container
+                disableGutters
+                sx={{
+                  border: `1px solid ${theme.palette.section.borderColor}`,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  borderBottom: "none",
+                }}
+              >
+                <Stack direction="row" gap="40px" p="20px">
+                  <Stack direction="row" gap="10px" alignItems="center">
+                    <Select
+                      id="select-actions"
+                      value="bulk"
+                      sx={{
+                        fontSize: "13px",
+                        color: theme.palette.secondary.main,
+                      }}
+                      inputProps={{id: "select-actions-input"}}
+                    >
+                      {actionsConfig.map((action) => (
+                        <MenuItem
+                          value={action.value}
+                          key={action.value}
+                          sx={{ fontSize: "13px" }}
+                        >
+                          {action.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <ButtonSpinner
+                      level="secondary"
+                      label="Apply"
+                      onClick={handleApplyActionSelect}
+                      isLoading={isLoading}
+                      sx={{
+                        height: "fit-content",
+                        fontSize: "13px",
+                        fontWeight: 500,
+                        bgcolor: "#fafafa",
+                      }}
+                    />
+                  </Stack>
+                  <Stack direction="row" gap="10px" alignItems="center">
+                    <Select
+                      id="select-role"
+                      value="role"
+                      sx={{
+                        fontSize: "13px",
+                        color: theme.palette.secondary.main,
+                      }}
+                      inputProps={{id: "select-role-input"}}
+                    >
+                      {roleConfig.map((role) => (
+                        <MenuItem
+                          value={role.value}
+                          key={role.value}
+                          sx={{ fontSize: "13px" }}
+                        >
+                          {role.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <ButtonSpinner
+                      level="secondary"
+                      label="Apply"
+                      onClick={handleApplyRoleSelect}
+                      isLoading={isLoading}
+                      sx={{
+                        height: "fit-content",
+                        fontSize: "13px",
+                        fontWeight: 500,
+                        bgcolor: "#fafafa",
+                      }}
+                    />
+                  </Stack>
+                </Stack>
+                <Table
+                  sx={{
+                    borderTop: `1px solid ${theme.palette.section.borderColor}`,
+                  }}
+                >
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        bgcolor: "#fafafa",
+                      }}
+                    >
+                      {teamColumns.map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          sx={{
+                            ...cell.sx,
+                            color: theme.palette.otherColors.slateGray,
+                          }}
+                        >
+                          {cell.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {teamStates.map((cell) => (
+                      <TableRow key={cell.id}>
+                        <TableCell align="center">
+                          <Checkbox
+                            id={`${cell.id}-${cell.name}`}
+                            checked={cell.isChecked}
+                            onChange={() => handleCellChecked(cell.id)}
+                            inputProps={{ "aria-label": "controlled" }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Stack direction="column">
+                            <Box
+                              sx={{
+                                color: theme.palette.otherColors.blackish,
+                                verticalAlign: "top",
+                              }}
+                            >
+                              {cell.name}
+                            </Box>
+                            <Box>Created at {cell.createdAt}</Box>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>{cell.email}</TableCell>
+                        <TableCell>{cell.role}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Container>
             </div>
             <Divider
               aria-hidden="true"
