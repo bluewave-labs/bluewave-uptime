@@ -254,7 +254,19 @@ const deleteMonitor = async (req, res) => {
     }
     return monitor;
   } catch (error) {
-    console.log("CATHCING DELETE MONITOR ERROR");
+    throw error;
+  }
+};
+
+/**
+ * DELETE ALL MONITORS (TEMP)
+ */
+
+const deleteAllMonitors = async (req, res) => {
+  try {
+    const deletedCount = await Monitor.deleteMany({});
+    return deletedCount.deletedCount;
+  } catch (error) {
     throw error;
   }
 };
@@ -320,7 +332,6 @@ const createCheck = async (checkData) => {
 const getChecks = async (monitorId) => {
   try {
     const checks = await Check.find({ monitorId });
-    console.log(checks);
     return checks;
   } catch (error) {
     throw error;
@@ -483,6 +494,7 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  deleteAllMonitors,
   editMonitor,
   createCheck,
   getChecks,

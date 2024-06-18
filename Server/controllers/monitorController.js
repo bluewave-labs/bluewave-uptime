@@ -180,6 +180,18 @@ const deleteMonitor = async (req, res, next) => {
   }
 };
 
+const deleteAllMonitors = async (req, res) => {
+  try {
+    const deleteCount = await req.db.deleteAllMonitors();
+    return res
+      .status(200)
+      .json({ success: true, msg: `Deleted ${deleteCount} monitors` });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 /**
  * Edit a monitor by ID
  * @async
@@ -219,5 +231,6 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  deleteAllMonitors,
   editMonitor,
 };
