@@ -4,7 +4,7 @@ import React from "react";
 import HostsTable from "../HostsTable";
 import Pagination from "../Pagination";
 
-const CurrentMonitors = () => {
+const CurrentMonitors = ({ monitors }) => {
   return (
     <div className="current-monitors">
       <div className="current-monitors-bar">
@@ -17,7 +17,7 @@ const CurrentMonitors = () => {
         </div>
       </div>
       <div className="monitors-v-gaping"></div>
-      <HostsTable />
+      <HostsTable monitors={monitors} />
       <div className="monitors-v-gaping"></div>
       <Pagination />
     </div>

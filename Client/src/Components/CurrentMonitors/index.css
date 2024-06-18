@@ -23,7 +23,7 @@
   width: var(--env-var-spacing-2);
   height: var(--env-var-spacing-2);
   background-color: var(--env-var-color-15);
-  border: 1px solid var(--env-var-color-14);
+  border: 1px solid var(--env-var-color-6);
   border-radius: 50%;
   text-align: center;
   align-items: center;

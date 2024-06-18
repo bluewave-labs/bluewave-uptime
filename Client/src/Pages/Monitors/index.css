@@ -1,4 +1,5 @@
-.monitors {
+.monitors,
+.new-monitor {
   width: 70vw;
   padding: 4vw;
 }
@@ -21,4 +22,10 @@
 
 .monitors-gaps-medium {
   height: var(--env-var-spacing-2);
+}
+
+.new-monitor-header {
+  color: var(--env-var-color-1);
+  font-size: var(--env-var-font-size-large-plus);
+  font-weight: 600;
 }

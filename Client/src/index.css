@@ -39,6 +39,7 @@
   --env-var-color-22: #4e5ba6;
   --env-var-color-23: #17b26a;
   --env-var-color-24: #d92d20;
+  --env-var-color-25: #667085;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
@@ -57,6 +58,7 @@
   --env-var-font-size-medium: 13px;
   --env-var-font-size-medium-plus: 14px;
   --env-var-font-size-large: 16px;
+  --env-var-font-size-large-plus: 24px;
   --env-var-font-size-xlarge: 30px;
 
   --env-var-img-width-1: 20px;

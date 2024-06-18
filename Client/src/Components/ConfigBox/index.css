@@ -1,0 +1,24 @@
+.config-box {
+  display: flex;
+  padding: 30px 40px;
+  border: 1px solid var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+  justify-content: space-between;
+  padding-bottom: 50px;
+}
+
+.config-box-desc {
+  width: 35%;
+}
+
+.config-box-desc-title {
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-large);
+  font-weight: 700;
+  margin-bottom: var(--env-var-spacing-1);
+}
+
+.config-box-desc-text {
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-medium);
+}
