@@ -19,7 +19,6 @@ import Button from "../../Button";
  * and deleting account.
  *
  * @returns {JSX.Element}
- *
  */
 
 const ProfilePanel = () => {

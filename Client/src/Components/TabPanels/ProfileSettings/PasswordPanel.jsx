@@ -22,11 +22,12 @@ import ButtonSpinner from "../../ButtonSpinner";
  * PasswordPanel component manages the form for editing password.
  *
  * @returns {JSX.Element}
- * 
  */
 
 const PasswordPanel = () => {
   const theme = useTheme();
+  //TODO - use redux loading state
+  //!! - currently all loading buttons are tied to the same state
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
