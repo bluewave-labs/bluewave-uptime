@@ -1,15 +1,22 @@
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
-import SvgIcon from '@mui/material/SvgIcon';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useTheme } from '@mui/material/styles';
+import "./index.css";
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
+import SvgIcon from "@mui/material/SvgIcon";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { useTheme } from "@mui/material/styles";
 
-const settings = ['Open Site', 'Detailed View', 'Incidents', 'Configure', 'Remove'];
+const settings = [
+  "Open Site",
+  "Detailed View",
+  "Incidents",
+  "Configure",
+  "Remove",
+];
 
 /**
  * DashboardSettings component
@@ -54,20 +61,29 @@ function DashboardSettings() {
         id="menu-appbar"
         anchorEl={anchorElUser}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
         {settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography textAlign="center">{setting}</Typography>
+          <MenuItem
+            className="dashboard-setting-menu-item"
+            key={setting}
+            onClick={handleCloseUserMenu}
+          >
+            <Typography
+              style={{ fontSize: "var(--env-var-font-size-medium)" }}
+              textAlign="center"
+            >
+              {setting}
+            </Typography>
           </MenuItem>
         ))}
       </Menu>

@@ -1,0 +1,163 @@
+{
+    "success": true,
+    "msg": "Got monitor for 666c9146c9bfa20db790b1df successfully\"",
+    "data": [
+      {
+        "_id": "6671d8469ba14f9f260eed23",
+        "userId": "666c9146c9bfa20db790b1df",
+        "name": "Google Monitor",
+        "description": "Google",
+        "type": "ping",
+        "url": "127.0.0.1",
+        "isActive": true,
+        "interval": 10000,
+        "createdAt": "2024-06-18T18:56:06.212Z",
+        "updatedAt": "2024-06-18T18:56:06.212Z",
+        "__v": 0,
+        "checks": [
+          {
+            "_id": "6671d84a9ba14f9f260eed27",
+            "monitorId": "6671d8469ba14f9f260eed23",
+            "status": true,
+            "responseTime": 2,
+            "createdAt": "2024-06-18T18:56:10.082Z",
+            "updatedAt": "2024-06-18T18:56:10.082Z",
+            "__v": 0
+          },
+          {
+            "_id": "6671d8549ba14f9f260eed2d",
+            "monitorId": "6671d8469ba14f9f260eed23",
+            "status": true,
+            "responseTime": 2,
+            "createdAt": "2024-06-18T18:56:20.016Z",
+            "updatedAt": "2024-06-18T18:56:20.016Z",
+            "__v": 0
+          },
+          {
+            "_id": "6671d85e9ba14f9f260eed3c",
+            "monitorId": "6671d8469ba14f9f260eed23",
+            "status": true,
+            "responseTime": 2,
+            "createdAt": "2024-06-18T18:56:30.050Z",
+            "updatedAt": "2024-06-18T18:56:30.050Z",
+            "__v": 0
+          }
+        ]
+      },
+      {
+        "_id": "6671d8529ba14f9f260eed2b",
+        "userId": "666c9146c9bfa20db790b1df",
+        "name": "Google Monitor",
+        "description": "Google",
+        "type": "http",
+        "url": "https://www.google.com/404",
+        "isActive": true,
+        "interval": 10000,
+        "createdAt": "2024-06-18T18:56:18.555Z",
+        "updatedAt": "2024-06-18T18:56:18.555Z",
+        "__v": 0,
+        "checks": [
+          {
+            "_id": "6671d8549ba14f9f260eed31",
+            "monitorId": "6671d8529ba14f9f260eed2b",
+            "status": false,
+            "responseTime": 167,
+            "statusCode": 404,
+            "createdAt": "2024-06-18T18:56:20.190Z",
+            "updatedAt": "2024-06-18T18:56:20.190Z",
+            "__v": 0
+          },
+          {
+            "_id": "6671d85e9ba14f9f260eed3e",
+            "monitorId": "6671d8529ba14f9f260eed2b",
+            "status": false,
+            "responseTime": 228,
+            "statusCode": 404,
+            "createdAt": "2024-06-18T18:56:30.279Z",
+            "updatedAt": "2024-06-18T18:56:30.279Z",
+            "__v": 0
+          }
+        ]
+      },
+      {
+        "_id": "6671d8619ba14f9f260eed4c",
+        "userId": "666c9146c9bfa20db790b1df",
+        "name": "Amazon Monitor",
+        "description": "Amazon website",
+        "type": "http",
+        "url": "https://www.amazon.com",
+        "isActive": true,
+        "interval": 15000,
+        "createdAt": "2024-06-18T18:56:49.419Z",
+        "updatedAt": "2024-06-18T18:56:49.419Z",
+        "__v": 0,
+        "checks": [
+          {
+            "_id": "6671d8649ba14f9f260eed50",
+            "monitorId": "6671d8619ba14f9f260eed4c",
+            "status": true,
+            "responseTime": 158,
+            "statusCode": 200,
+            "createdAt": "2024-06-18T18:56:52.302Z",
+            "updatedAt": "2024-06-18T18:56:52.302Z",
+            "__v": 0
+          },
+          {
+            "_id": "6671d86e9ba14f9f260eed5a",
+            "monitorId": "6671d8619ba14f9f260eed4c",
+            "status": true,
+            "responseTime": 162,
+            "statusCode": 200,
+            "createdAt": "2024-06-18T18:57:02.331Z",
+            "updatedAt": "2024-06-18T18:57:02.331Z",
+            "__v": 0
+          },
+          {
+            "_id": "6671d8779ba14f9f260eed64",
+            "monitorId": "6671d8619ba14f9f260eed4c",
+            "status": true,
+            "responseTime": 145,
+            "statusCode": 200,
+            "createdAt": "2024-06-18T18:57:12.378Z",
+            "updatedAt": "2024-06-18T18:57:12.378Z",
+            "__v": 0
+          }
+        ]
+      },
+      {
+        "_id": "6671d8789ba14f9f260eed66",
+        "userId": "666c9146c9bfa20db790b1df",
+        "name": "Facebook Monitor",
+        "description": "Facebook website",
+        "type": "http",
+        "url": "https://www.facebook.com",
+        "isActive": true,
+        "interval": 20000,
+        "createdAt": "2024-06-18T18:57:12.798Z",
+        "updatedAt": "2024-06-18T18:57:12.798Z",
+        "__v": 0,
+        "checks": [
+          {
+            "_id": "6671d87b9ba14f9f260eed6a",
+            "monitorId": "6671d8789ba14f9f260eed66",
+            "status": true,
+            "responseTime": 221,
+            "statusCode": 200,
+            "createdAt": "2024-06-18T18:57:15.613Z",
+            "updatedAt": "2024-06-18T18:57:15.613Z",
+            "__v": 0
+          },
+          {
+            "_id": "6671d8859ba14f9f260eed74",
+            "monitorId": "6671d8789ba14f9f260eed66",
+            "status": true,
+            "responseTime": 234,
+            "statusCode": 200,
+            "createdAt": "2024-06-18T18:57:25.655Z",
+            "updatedAt": "2024-06-18T18:57:25.655Z",
+            "__v": 0
+          }
+        ]
+      }
+    ]
+}

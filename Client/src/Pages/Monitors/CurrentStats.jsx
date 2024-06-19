@@ -6,10 +6,16 @@ import BarChart from "../../Components/Charts/BarChart/BarChart";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import CurrentMonitors from "../../Components/CurrentMonitors";
+import MockData from "../../Mock/sample_data.json";
 
 const hardCodedMonitors = [
   {
-    host: Host("Discord", 100, "var(--env-var-color-17)"),
+    host: Host(
+      "Discord",
+      100,
+      "var(--env-var-color-17)",
+      "https://www.google.com"
+    ),
     status: HostStatus(
       "var(--env-var-color-20)",
       "Up",
@@ -19,7 +25,12 @@ const hardCodedMonitors = [
     actions: HostActions(),
   },
   {
-    host: Host("Google", 99.9, "var(--env-var-color-17)"),
+    host: Host(
+      "Google",
+      99.9,
+      "var(--env-var-color-17)",
+      "https://www.google.com"
+    ),
     status: HostStatus(
       "var(--env-var-color-20)",
       "Up",
@@ -29,7 +40,12 @@ const hardCodedMonitors = [
     actions: HostActions(),
   },
   {
-    host: Host("NBC", 98.1, "var(--env-var-color-18)"),
+    host: Host(
+      "NBC",
+      98.1,
+      "var(--env-var-color-18)",
+      "https://www.google.com"
+    ),
     status: HostStatus(
       "var(--env-var-color-20)",
       "Up",
@@ -39,7 +55,12 @@ const hardCodedMonitors = [
     actions: HostActions(),
   },
   {
-    host: Host("Google", 95.1, "var(--env-var-color-19)"),
+    host: Host(
+      "Google",
+      95.1,
+      "var(--env-var-color-19)",
+      "https://www.google.com"
+    ),
     status: HostStatus(
       "var(--env-var-color-21)",
       "Down",
@@ -49,7 +70,12 @@ const hardCodedMonitors = [
     actions: HostActions(),
   },
   {
-    host: Host("NBC", 99.9, "var(--env-var-color-17)"),
+    host: Host(
+      "NBC",
+      99.9,
+      "var(--env-var-color-17)",
+      "https://www.google.com"
+    ),
     status: HostStatus(
       "var(--env-var-color-15)",
       "Cannot resolve",
@@ -60,17 +86,39 @@ const hardCodedMonitors = [
   },
 ];
 
-const CurrentStats = () => {
+const CurrentStats = (mockdata = true) => {
   // The hardcoded part is passed as default value for the purpose of demonstration.
   // Pass an empty array, [], before fetching the data
   const [monitors, setMonitors] = useState(hardCodedMonitors);
 
   useEffect(() => {
-    fetch("API_URL")
-      .then((response) => response.json())
-      .then((data) => setMonitors(data))
-      .catch((error) => console.error(error));
-  }, []);
+    if (mockdata) {
+      console.log(MockData.data);
+      setMonitors(
+        MockData.data.map((item) => ({
+          host: Host(item.name, 100, "var(--env-var-color-17)", item.url),
+          status: HostStatus(
+            item.isActive
+              ? "var(--env-var-color-20)"
+              : "var(--env-var-color-21)",
+            item.isActive ? "Up" : "Down",
+            item.isActive
+              ? "var(--env-var-color-17)"
+              : "var(--env-var-color-19)"
+          ),
+          team: <BarChart />,
+          actions: HostActions(),
+        }))
+      );
+    }
+  }, [mockdata]);
+
+  // useEffect(() => {
+  //   fetch("API_URL")
+  //     .then((response) => response.json())
+  //     .then((data) => setMonitors(data))
+  //     .catch((error) => console.error(error));
+  // }, []);
 
   return (
     <div>
