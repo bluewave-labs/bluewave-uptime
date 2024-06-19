@@ -25,6 +25,7 @@ const otherColorsPurple = "#7f56d9";
 const otherColorsWhite = "#fff";
 const otherColorsGraishWhiteLight = "#f2f2f2";
 const otherColorsStrongBlue = "#f2f2f2";
+const otherColorsSlateGray = "#667085";
 
 
 // Global Font Family
@@ -69,6 +70,7 @@ const theme = createTheme({
       white: otherColorsWhite,
       graishWhiteLight: otherColorsGraishWhiteLight,
       strongBlue: otherColorsStrongBlue,
+      slateGray: otherColorsSlateGray,
     },
   },
   font :{

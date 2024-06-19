@@ -390,7 +390,7 @@ const Demo = () => {
           isLoading={isLoading}
         />
         <ButtonSpinner
-          level="imagePrimary"
+          level="primary"
           label="Upload"
           position="start"
           img={<UploadIcon/>}
@@ -398,7 +398,7 @@ const Demo = () => {
           isLoading={isLoading}
         />
         <ButtonSpinner
-          level="imageSecondary"
+          level="secondary"
           label="Send"
           position="end"
           img={<SendIcon/>}
