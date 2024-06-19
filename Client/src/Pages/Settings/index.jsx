@@ -35,6 +35,7 @@ import Button from "../../Components/Button";
 import "./index.css";
 import AnnouncementsDualButtonWithIcon from "../../Components/Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import ProfilePanel from "../../Components/TabPanels/ProfileSettings/ProfilePanel";
+import PasswordPanel from "../../Components/TabPanels/ProfileSettings/PasswordPanel";
 
 const tabList = ["Profile", "Password", "Team"];
 const passwordConfig = {
@@ -138,13 +139,7 @@ const Settings = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const handleSaveProfile = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsOpen(false);
-    }, 2000);
-  };
+  
   const handleDeleteAccount = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -266,101 +261,7 @@ const Settings = () => {
           </TabList>
         </Box>
         <ProfilePanel />
-        <TabPanel
-          value="1"
-          sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
-        >
-          <form className="edit-password-form" noValidate spellCheck="false">
-            <div className="edit-password-form__wrapper">
-              <AnnouncementsDualButtonWithIcon
-                icon={<InfoOutlinedIcon style={{ fill: "#344054" }} />}
-                subject="SSO login"
-                body="Since you logged in via SSO, you cannot reset or modify your password."
-              />
-            </div>
-            {Object.entries(passwordConfig).map(([key, field]) => (
-              <div className="edit-password-form__wrapper" key={key}>
-                <Stack
-                  direction="column"
-                  gap="8px"
-                  sx={{ flex: 1, marginRight: "10px" }}
-                >
-                  <Typography variant="h4" component="h1">
-                    {field.label}
-                  </Typography>
-                </Stack>
-                {/* TODO - Refactor Password Input Component */}
-                {field.type === "input" ? (
-                  <FormControl sx={{ flex: 1, minWidth: theme.spacing(30) }}>
-                    <OutlinedInput
-                      id={field.id}
-                      value="RandomPasswordLol"
-                      type={showPassword ? "text" : "password"}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={() => setShowPassword((show) => !show)}
-                            sx={{
-                              width: "30px",
-                              height: "30px",
-                              "&:focus": {
-                                outline: "none",
-                              },
-                            }}
-                          >
-                            {!showPassword ? (
-                              <VisibilityOff sx={{ fill: "#98A2B3" }} />
-                            ) : (
-                              <Visibility sx={{ fill: "#98A2B3" }} />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    ></OutlinedInput>
-                  </FormControl>
-                ) : field.type === "notice" ? (
-                  <Box sx={{ flex: 1, minWidth: theme.spacing(30) }}>
-                    <AnnouncementsDualButtonWithIcon
-                      icon={
-                        <WarningAmberOutlinedIcon style={{ fill: "#f79009" }} />
-                      }
-                      body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
-                    />
-                  </Box>
-                ) : (
-                  ""
-                )}
-              </div>
-            ))}
-            <Divider
-              aria-hidden="true"
-              width="0"
-              sx={{ marginY: theme.spacing(6.25) }}
-            />
-            {/* !!! - All save buttons are tied to the same state */}
-            {/* TODO - Implement Save Password function */}
-            <Stack direction="row" justifyContent="flex-end">
-              <Box width="fit-content">
-                <ButtonSpinner
-                  level="primary"
-                  label="Save"
-                  onClick={handleSaveProfile}
-                  isLoading={isLoading}
-                  loadingText="Saving..."
-                  sx={{
-                    paddingX: "40px",
-                    height: "fit-content",
-                    fontSize: "13px",
-                    "&:focus": {
-                      outline: "none",
-                    },
-                  }}
-                />
-              </Box>
-            </Stack>
-          </form>
-        </TabPanel>
+        <PasswordPanel />
         <TabPanel
           value="2"
           sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
