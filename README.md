@@ -12,11 +12,11 @@
 
 BlueWave Uptime is an open source server monitoring application. It is a tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performing optimally, providing real-time alerts and reports on the availability, downtime, and response time of the monitored services.
 
-## Contributing 
+## Contributing
 
 You are welcome to provide contributions to the project. It uses React on the FE, and Nodejs and MongoDB on the BE, hence if you are comfortable with working with those technologies, you are encouraged to send your PRs. Please read [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md)
 
-Note that We have a Figma file that includes: 
+Note that We have a Figma file that includes:
 
 - All the dashboard elements and components
 - The design guideline for the app
@@ -695,18 +695,43 @@ curl --request GET \
 ```json
 {
   "success": true,
-  "msg": "Monitor found",
+  "msg": "Got monitor by Id successfully",
   "data": {
-    "_id": "664d070786e62625ac612ca1",
-    "userId": "6645079aae0b439371913972",
-    "name": "My Monitor",
-    "description": "Description",
-    "url": "https://monitor0.com",
+    "_id": "6671eb54f7040ece47892f53",
+    "userId": "666c9146c9bfa20db790b1df",
+    "name": "Google Monitor",
+    "description": "Google",
+    "type": "http",
+    "url": "https://www.google.com/404",
     "isActive": true,
-    "interval": 60000,
-    "createdAt": "2024-05-21T20:41:43.051Z",
-    "updatedAt": "2024-05-21T20:45:10.496Z",
-    "__v": 0
+    "interval": 10000,
+    "createdAt": "2024-06-18T20:17:24.112Z",
+    "updatedAt": "2024-06-18T20:17:24.112Z",
+    "__v": 0,
+    "checks": [
+      {
+        "_id": "6671eb5af7040ece47892f61",
+        "monitorId": "6671eb54f7040ece47892f53",
+        "status": false,
+        "responseTime": 145,
+        "expiry": "2024-06-18T20:17:30.246Z",
+        "statusCode": 404,
+        "createdAt": "2024-06-18T20:17:30.246Z",
+        "updatedAt": "2024-06-18T20:17:30.246Z",
+        "__v": 0
+      },
+      {
+        "_id": "6671eb64f7040ece47892f6b",
+        "monitorId": "6671eb54f7040ece47892f53",
+        "status": false,
+        "responseTime": 170,
+        "expiry": "2024-06-18T20:17:40.209Z",
+        "statusCode": 404,
+        "createdAt": "2024-06-18T20:17:40.210Z",
+        "updatedAt": "2024-06-18T20:17:40.210Z",
+        "__v": 0
+      }
+    ]
   }
 }
 ```
@@ -741,31 +766,33 @@ curl --request GET \
 ```json
 {
   "success": true,
-  "msg": "Monitors for user 6645079aae0b439371913972 found",
+  "msg": "Got monitor for 666c9146c9bfa20db790b1df successfully\"",
   "data": [
     {
-      "_id": "664d070786e62625ac612ca1",
-      "userId": "6645079aae0b439371913972",
-      "name": "Wha3",
-      "description": "Description",
-      "url": "https://monitor0.com",
+      "_id": "6671eb54f7040ece47892f53",
+      "userId": "666c9146c9bfa20db790b1df",
+      "name": "Google Monitor",
+      "description": "Google",
+      "type": "http",
+      "url": "https://www.google.com/404",
       "isActive": true,
-      "interval": 60000,
-      "createdAt": "2024-05-21T20:41:43.051Z",
-      "updatedAt": "2024-05-21T20:45:10.496Z",
-      "__v": 0
-    },
-    {
-      "_id": "664e5ccf189c864800debc16",
-      "userId": "6645079aae0b439371913972",
-      "name": "Inserting a new Monitor",
-      "description": "Description",
-      "url": "https://monitor0.com",
-      "isActive": true,
-      "interval": 60000,
-      "createdAt": "2024-05-22T20:59:59.295Z",
-      "updatedAt": "2024-05-22T20:59:59.295Z",
-      "__v": 0
+      "interval": 10000,
+      "createdAt": "2024-06-18T20:17:24.112Z",
+      "updatedAt": "2024-06-18T20:17:24.112Z",
+      "__v": 0,
+      "checks": [
+        {
+          "_id": "6671eb5af7040ece47892f61",
+          "monitorId": "6671eb54f7040ece47892f53",
+          "status": false,
+          "responseTime": 145,
+          "expiry": "2024-06-18T20:17:30.246Z",
+          "statusCode": 404,
+          "createdAt": "2024-06-18T20:17:30.246Z",
+          "updatedAt": "2024-06-18T20:17:30.246Z",
+          "__v": 0
+        }
+      ]
     }
   ]
 }

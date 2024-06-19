@@ -195,7 +195,9 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
-    return monitor;
+    const checks = await Check.find({ monitorId: monitor._id });
+    const monitorWithChecks = { ...monitor.toObject(), checks };
+    return monitorWithChecks;
   } catch (error) {
     throw error;
   }
@@ -212,7 +214,18 @@ const getMonitorById = async (req, res) => {
 const getMonitorsByUserId = async (req, res) => {
   try {
     const monitors = await Monitor.find({ userId: req.params.userId });
-    return monitors;
+    // Map each monitor to include its associated checks
+    const monitorsWithChecks = await Promise.all(
+      monitors.map(async (monitor) => {
+        // Checks are order oldest -> newest
+        const checks = await Check.find({ monitorId: monitor._id }).sort({
+          createdAt: 1,
+        });
+        return { ...monitor.toObject(), checks };
+      })
+    );
+
+    return monitorsWithChecks;
   } catch (error) {
     throw error;
   }
