@@ -12,17 +12,17 @@ const HomeLayout = () => {
   const { user, msg } = authState;
   return (
     <div className="home-layout">
-      <DashboardSidebar />
+      <NavBar />
       <div className="main-content">
-        <NavBar />
+        <DashboardSidebar />
         {/* Remove me later */}
         {user && <p>{user.firstname}</p>}
         {user && <p>{user.lastname}</p>}
         {user && <p>{user.email}</p>}
         {msg && <p>Msg: {msg}</p>}
         {/* I am a demo */}
+        <Outlet />
       </div>
-      <Outlet />
     </div>
   );
 };

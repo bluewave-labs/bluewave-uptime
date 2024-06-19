@@ -49,7 +49,7 @@ function NavBar() {
 
   return (
     <AppBar
-      position="fixed"
+      position="sticky"
       sx={{
         width: "100%",
         backgroundColor: "white",
