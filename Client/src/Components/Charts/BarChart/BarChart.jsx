@@ -1,7 +1,8 @@
 import React from "react";
 import "./barChart.css";
+import PropTypes from "prop-types";
 
-const BarChart = ({ checks }) => {
+const BarChart = ({ checks = [] }) => {
   return (
     <div className="bar-chart">
       {checks.map((value, index) => (
@@ -13,6 +14,10 @@ const BarChart = ({ checks }) => {
       ))}
     </div>
   );
+};
+
+BarChart.propTypes = {
+  checks: PropTypes.array,
 };
 
 export default BarChart;
