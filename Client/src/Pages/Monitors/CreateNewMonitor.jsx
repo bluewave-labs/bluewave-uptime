@@ -2,6 +2,7 @@ import ConfigBox from "../../Components/ConfigBox";
 import FlexibileTextField from "../../Components/TextFields/Flexibile/FlexibileTextField";
 import "./index.css";
 import React from "react";
+import RadioButton from "../../Components/RadioButton";
 
 const CreateNewMonitor = () => {
   return (
@@ -45,6 +46,25 @@ const CreateNewMonitor = () => {
             <div className="config-box-desc-text">
               You can always add or remove checks after adding your site.
             </div>
+          </div>
+        }
+        rightLayout={
+          <div className="service-check-list">
+            <RadioButton
+              title="HTTP/website monitoring"
+              desc="Use HTTP(s) to monitor your website or API endpoint."
+            />
+            <div className="monitors-gaps-medium"></div>
+            <RadioButton
+              title="Ping monitoring"
+              desc="Check whether your server is available or not."
+            />
+            <div className="monitors-gaps-medium"></div>
+            <RadioButton
+              title="Port monitoring"
+              desc="Monitor a specific service on your server."
+            />
+            <div className="monitors-gaps-medium"></div>
           </div>
         }
       />

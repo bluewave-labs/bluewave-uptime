@@ -29,3 +29,13 @@
   font-size: var(--env-var-font-size-large-plus);
   font-weight: 600;
 }
+
+.service-check-list-title {
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-medium);
+}
+
+.service-check-list-desc {
+  color: var(--env-var-color-25);
+  font-size: var(--env-var-font-size-small);
+}
