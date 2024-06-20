@@ -74,7 +74,7 @@ function DashboardSettings() {
       >
         {settings.map((setting) => (
           <MenuItem
-            className="dashboard-setting-menu-item"
+            id="dashboard-setting-menu-item"
             key={setting}
             onClick={handleCloseUserMenu}
           >

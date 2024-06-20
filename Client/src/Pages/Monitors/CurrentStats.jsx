@@ -106,7 +106,7 @@ const CurrentStats = (mockdata = true) => {
               ? "var(--env-var-color-17)"
               : "var(--env-var-color-19)"
           ),
-          team: <BarChart />,
+          team: <BarChart checks={item.checks} />,
           actions: HostActions(),
         }))
       );

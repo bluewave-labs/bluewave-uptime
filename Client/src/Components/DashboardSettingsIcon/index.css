@@ -1,10 +1,10 @@
-.dashboard-setting-menu-item {
+#dashboard-setting-menu-item {
   width: 135px;
   padding: 6px;
   margin: 5px 12px;
 }
 
-.dashboard-setting-menu-item:hover {
+#dashboard-setting-menu-item:hover {
   color: var(--env-var-color-26);
 }
 
