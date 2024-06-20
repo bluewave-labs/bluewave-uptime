@@ -7,6 +7,7 @@ import { persistReducer, persistStore } from "redux-persist";
 const persistConfig = {
   key: "root",
   storage,
+  whitielist: ["auth", "monitors"],
 };
 
 const rootReducer = combineReducers({
