@@ -45,7 +45,7 @@
 }
 .edit-team-form__wrapper.compact {
   margin-top: 30px;
-  color: var(--env-var-color-16);
+  color: var(--env-var-color-29);
 }
 .edit-profile-form__wrapper input,
 .edit-password-form__wrapper input,
@@ -70,13 +70,13 @@
   margin-left: auto;
 }
 .MuiBox-root > .announcement-tile {
-  border-color: var(--env-var-color-14);
-  background-color: var(--lighter-env-var-color-14);
+  border-color: var(--env-var-color-27);
+  background-color: var(--lighter-env-var-color-27);
 }
 .MuiBox-root > .announcement-tile .announcement-content-body,
 .MuiBox-root > .announcement-tile .announcement-close svg {
-  color: var(--env-var-color-15);
-  fill: var(--env-var-color-15) !important;
+  color: var(--env-var-color-28);
+  fill: var(--env-var-color-28) !important;
 }
 
 #org-name-flex-container .Mui-disabled {
@@ -96,7 +96,7 @@
 }
 .edit-team-form__wrapper td {
   font-size: (--env-var-font-size-medium);
-  color: var(--env-var-color-16);
+  color: var(--env-var-color-29);
 }
 
 #select-actions,
