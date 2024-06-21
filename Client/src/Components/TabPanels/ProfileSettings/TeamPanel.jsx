@@ -186,10 +186,10 @@ const TeamPanel = () => {
   return (
     <TabPanel
       value="2"
-      sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
+      sx={{ padding: "0", marginTop: theme.spacing(6.25) }}
     >
-      <form className="edit-team-form" noValidate spellCheck="false">
-        <div className="edit-team-form__wrapper">
+      <form className="edit-organization-form">
+        <div className="edit-organization-form__wrapper">
           <Stack
             direction="column"
             gap="8px"
@@ -222,6 +222,66 @@ const TeamPanel = () => {
             />
           </Stack>
         </div>
+        <Divider aria-hidden="true" sx={{ marginY: theme.spacing(6.25) }} />
+      </form>
+      <Modal
+        aria-labelledby="modal-edit-org-name"
+        aria-describedby="edit-organization-name"
+        open={orgStates.isOpen}
+        onClose={() => toggleOrgModal(false)}
+        disablePortal
+      >
+        <Stack
+          gap="20px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: "4px",
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-edit-org-name" variant="h4" component="h1">
+            Rename this organization?
+          </Typography>
+          <TextField
+            id="edit-organization-name"
+            placeholder={orgStates.name}
+            spellCheck="false"
+            value={orgStates.newName}
+            onChange={(event) =>
+              setOrgStates((prev) => ({
+                ...prev,
+                newName: event.target.value,
+              }))
+            }
+          ></TextField>
+          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => toggleOrgModal(false)}
+              sx={{ fontSize: "13px" }}
+            />
+            <ButtonSpinner
+              level="primary"
+              label="Rename"
+              onClick={handleRenameOrg}
+              isLoading={orgStates.isLoading}
+              sx={{ fontSize: "13px", paddingX: "30px" }}
+            />
+          </Stack>
+        </Stack>
+      </Modal>
+      <form className="edit-team-form" noValidate spellCheck="false">
         <div className="edit-team-form__wrapper">
           <Typography variant="h4" component="h1">
             Team members
@@ -433,63 +493,6 @@ const TeamPanel = () => {
           </Box>
         </Stack>
       </form>
-      <Modal
-        aria-labelledby="modal-edit-org-name"
-        aria-describedby="edit-organization-name"
-        open={orgStates.isOpen}
-        onClose={() => toggleOrgModal(false)}
-        disablePortal
-      >
-        <Stack
-          gap="20px"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: "4px",
-            boxShadow: 24,
-            p: "30px",
-            "&:focus": {
-              outline: "none",
-            },
-          }}
-        >
-          <Typography id="modal-edit-org-name" variant="h4" component="h1">
-            Rename this organization?
-          </Typography>
-          <TextField
-            id="edit-organization-name"
-            placeholder={orgStates.name}
-            spellCheck="false"
-            value={orgStates.newName}
-            onChange={(event) =>
-              setOrgStates((prev) => ({
-                ...prev,
-                newName: event.target.value,
-              }))
-            }
-          ></TextField>
-          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
-            <Button
-              level="tertiary"
-              label="Cancel"
-              onClick={() => toggleOrgModal(false)}
-              sx={{ fontSize: "13px" }}
-            />
-            <ButtonSpinner
-              level="primary"
-              label="Rename"
-              onClick={handleRenameOrg}
-              isLoading={orgStates.isLoading}
-              sx={{ fontSize: "13px", paddingX: "30px" }}
-            />
-          </Stack>
-        </Stack>
-      </Modal>
       <Modal
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"

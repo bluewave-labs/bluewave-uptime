@@ -1,10 +1,6 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import {
-  Box,
-  Tab,
-  useTheme,
-} from "@mui/material";
+import { Box, Tab, useTheme } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import "./index.css";
@@ -32,18 +28,21 @@ const Settings = () => {
 
   return (
     <Box
-      //TODO - need to figure out document sizing
       //TODO - breakpoints for responsive design
-      height="calc(100vh - 104px)"
       minWidth={theme.spacing(55)}
       width="100vw"
       maxWidth="calc(100vw - 800px)"
-      mt={theme.spacing(8)}
       pt={theme.spacing(5)}
       px={theme.spacing(10)}
     >
       <TabContext value={tab}>
-        <Box width="100%" sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            "& .MuiTabs-root": { height: "fit-content", minHeight: "0" },
+          }}
+        >
           <TabList onChange={handleTabChange} aria-label="settings tabs">
             {tabList.map((label, index) => (
               <Tab
@@ -55,11 +54,16 @@ const Settings = () => {
                   color: theme.palette.secondary.main,
                   textTransform: "none",
                   minWidth: "fit-content",
+                  minHeight: 0,
                   paddingLeft: "0",
-                  paddingY: "8px",
+                  paddingY: "10px",
                   marginRight: "20px",
                   "&:focus": {
                     outline: "none",
+                  },
+                  "& .MuiTouchRipple-root": {
+                    pointerEvents: "none",
+                    display: "none",
                   },
                 }}
               />

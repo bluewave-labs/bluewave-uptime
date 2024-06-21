@@ -1,7 +1,8 @@
 .edit-profile-form,
 .edit-password-form,
 .delete-profile-form,
-.edit-team-form {
+.edit-team-form,
+.edit-organization-form {
   width: inherit;
 }
 .edit-profile-form__wrapper,
@@ -11,7 +12,8 @@
 .edit-profile-form__wrapper,
 .delete-profile-form__wrapper,
 .edit-password-form__wrapper,
-.edit-team-form__wrapper {
+.edit-team-form__wrapper,
+.edit-organization-form__wrapper {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -20,7 +22,8 @@
 .edit-profile-form__wrapper h1.MuiTypography-root,
 .delete-profile-form__wrapper h1.MuiTypography-root,
 .edit-password-form__wrapper h1.MuiTypography-root,
-.edit-team-form__wrapper h1.MuiTypography-root {
+.edit-team-form__wrapper h1.MuiTypography-root,
+.edit-organization-form h1.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
   font-weight: 600;

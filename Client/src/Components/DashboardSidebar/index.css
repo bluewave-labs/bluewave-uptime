@@ -12,10 +12,6 @@
   justify-content: space-between;
 }
 
-.dashboard-menu-container{
-  padding-top: 40px;
-}
-
 .support-container {
   display: flex;
   align-items: center;

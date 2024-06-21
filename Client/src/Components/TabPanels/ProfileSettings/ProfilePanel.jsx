@@ -54,10 +54,7 @@ const ProfilePanel = () => {
   };
 
   return (
-    <TabPanel
-      value="0"
-      sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
-    >
+    <TabPanel value="0" sx={{ padding: "0", marginTop: theme.spacing(6.25) }}>
       <form className="edit-profile-form" noValidate spellCheck="false">
         <div className="edit-profile-form__wrapper">
           <Stack
@@ -172,6 +169,30 @@ const ProfilePanel = () => {
             />
           </Stack>
         </div>
+        <Divider
+          aria-hidden="true"
+          width="0"
+          sx={{ marginY: theme.spacing(1) }}
+        />
+        <Stack direction="row" justifyContent="flex-end">
+          <Box width="fit-content">
+            <ButtonSpinner
+              level="primary"
+              label="Save"
+              onClick={handleSaveProfile}
+              isLoading={isLoading}
+              loadingText="Saving..."
+              sx={{
+                paddingX: "40px",
+                height: "fit-content",
+                fontSize: "13px",
+                "&:focus": {
+                  outline: "none",
+                },
+              }}
+            />
+          </Box>
+        </Stack>
       </form>
       <Divider aria-hidden="true" sx={{ marginY: theme.spacing(6.25) }} />
       <form className="delete-profile-form" noValidate spellCheck="false">
@@ -200,30 +221,6 @@ const ProfilePanel = () => {
           </Stack>
         </div>
       </form>
-      <Divider
-        aria-hidden="true"
-        width="0"
-        sx={{ marginY: theme.spacing(6.25) }}
-      />
-      <Stack direction="row" justifyContent="flex-end">
-        <Box width="fit-content">
-          <ButtonSpinner
-            level="primary"
-            label="Save"
-            onClick={handleSaveProfile}
-            isLoading={isLoading}
-            loadingText="Saving..."
-            sx={{
-              paddingX: "40px",
-              height: "fit-content",
-              fontSize: "13px",
-              "&:focus": {
-                outline: "none",
-              },
-            }}
-          />
-        </Box>
-      </Stack>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}
       <Modal
         aria-labelledby="modal-delete-account"
