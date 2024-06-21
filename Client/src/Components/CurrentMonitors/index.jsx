@@ -1,8 +1,15 @@
 import SearchTextField from "../TextFields/Search/SearchTextField";
 import "./index.css";
-import React from "react";
 import HostsTable from "../HostsTable";
 import Pagination from "../Pagination";
+import PropTypes from "prop-types";
+
+/**
+ * CurrentMonitors displays the current status of monitor
+ *
+ * @component
+ * @param {Array<Monitor>} monitors - An array of monitor objects to be displayed.
+ */
 
 const CurrentMonitors = ({ monitors }) => {
   return (
@@ -22,6 +29,10 @@ const CurrentMonitors = ({ monitors }) => {
       <Pagination />
     </div>
   );
+};
+
+CurrentMonitors.propTypes = {
+  monitors: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default CurrentMonitors;

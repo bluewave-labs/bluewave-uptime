@@ -31,7 +31,7 @@ function App() {
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/demo" element={<Demo />} />
-        <Route path="/toast" element={<ToastComponent />} />
+        {/* <Route path="/toast" element={<ToastComponent />} /> */}
         <Route path="*" element={<NotFound />} />
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

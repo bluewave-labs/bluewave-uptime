@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Host from "../../Components/Host";
-import HostStatus from "../../Components/HostStatus";
-import HostActions from "../../Components/HostActions";
-import BarChart from "../../Components/Charts/BarChart/BarChart";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import CurrentMonitors from "../../Components/CurrentMonitors";
-import MockData from "../../Mock/sample_data.json";
+import PropTypes from "prop-types";
+
+/**
+ * CurrentStats displays the current status of monitor
+ *
+ * @component
+ * @param {Array<Monitor>} monitors - An array of monitor objects to be displayed.
+ */
 
 const CurrentStats = ({ monitors }) => {
   return (
@@ -31,6 +33,10 @@ const CurrentStats = ({ monitors }) => {
       <CurrentMonitors monitors={monitors} />
     </div>
   );
+};
+
+CurrentStats.propTypes = {
+  monitors: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default CurrentStats;
