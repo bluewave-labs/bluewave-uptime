@@ -8,40 +8,7 @@ import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import CurrentMonitors from "../../Components/CurrentMonitors";
 import MockData from "../../Mock/sample_data.json";
 
-const CurrentStats = (mockdata = true) => {
-  // The hardcoded part is passed as default value for the purpose of demonstration.
-  // Pass an empty array, [], before fetching the data
-  const [monitors, setMonitors] = useState([]);
-
-  useEffect(() => {
-    if (mockdata) {
-      console.log(MockData.data);
-      setMonitors(
-        MockData.data.map((item) => ({
-          host: Host(item.name, 100, "var(--env-var-color-17)", item.url),
-          status: HostStatus(
-            item.isActive
-              ? "var(--env-var-color-20)"
-              : "var(--env-var-color-21)",
-            item.isActive ? "Up" : "Down",
-            item.isActive
-              ? "var(--env-var-color-17)"
-              : "var(--env-var-color-19)"
-          ),
-          team: <BarChart checks={item.checks} />,
-          actions: HostActions(),
-        }))
-      );
-    }
-  }, [mockdata]);
-
-  // useEffect(() => {
-  //   fetch("API_URL")
-  //     .then((response) => response.json())
-  //     .then((data) => setMonitors(data))
-  //     .catch((error) => console.error(error));
-  // }, []);
-
+const CurrentStats = ({ monitors }) => {
   return (
     <div>
       <div className="monitors-gaps-medium"></div>

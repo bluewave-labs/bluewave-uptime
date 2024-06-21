@@ -13,14 +13,21 @@ const HostsTable = ({ monitors }) => {
           </tr>
         </thead>
         <tbody>
-          {monitors.map((monitor, index) => (
-            <tr className="tbody-row" key={index}>
-              <td className="tbody-row-cell">{monitor.host}</td>
-              <td className="tbody-row-cell">{monitor.status}</td>
-              <td className="tbody-row-cell">{monitor.team}</td>
-              <td className="tbody-row-cell actions-cell">{monitor.actions}</td>
-            </tr>
-          ))}
+          {monitors.map((monitor, index) => {
+            console.log(monitor);
+            return (
+              <tr className="tbody-row" key={index}>
+                <td className="tbody-row-cell">{monitor.url}</td>
+                <td className="tbody-row-cell">
+                  {monitor.isActive ? "Active" : "Down"}
+                </td>
+                <td className="tbody-row-cell">{monitor.team}</td>
+                <td className="tbody-row-cell actions-cell">
+                  {monitor.actions}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
