@@ -11,6 +11,18 @@ import PropTypes from "prop-types";
  */
 
 const CurrentStats = ({ monitors }) => {
+  const up = monitors.reduce((acc, cur) => {
+    if (cur.checks) {
+      return cur.checks[cur.checks.length - 1].status === true ? acc + 1 : acc;
+    }
+  }, 0);
+
+  const down = monitors.reduce((acc, cur) => {
+    if (cur.checks) {
+      return cur.checks[cur.checks.length - 1].status === false ? acc + 1 : acc;
+    }
+  }, 0);
+
   return (
     <div>
       <div className="monitors-gaps-medium"></div>
@@ -25,9 +37,9 @@ const CurrentStats = ({ monitors }) => {
       </div>
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-stats">
-        <ServerStatus title="Up" value="4" state="up" />
-        <ServerStatus title="Down" value="0" state="down" />
-        <ServerStatus title="Paused" value="0" state="pause" />
+        <ServerStatus title="Up" value={up} state="up" />
+        <ServerStatus title="Down" value={down} state="down" />
+        <ServerStatus title="Paused" value={0} state="pause" />
       </div>
       <div className="monitors-gaps-medium"></div>
       <CurrentMonitors monitors={monitors} />
