@@ -12,7 +12,7 @@
 }
 
 .server-status-tile {
-  width: 230px;
+  width: 310px;
   padding: var(--spacing-general-1);
   border: 1px solid var(--color-border-0);
   border-radius: var(--border-radius-0);
