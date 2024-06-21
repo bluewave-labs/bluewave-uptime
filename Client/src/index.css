@@ -3,9 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* color-scheme: light dark;
+  color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424; */
+  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -41,10 +41,11 @@
   --env-var-color-24: #d92d20;
   --env-var-color-25: #667085;
   --env-var-color-26: #ff1818;
+
   --env-var-color-27: #fecf60;
   --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
   --env-var-color-28: #f79009;
-  --env-var-color-29: #D0D5DD;
+  --env-var-color-29: #667085;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
@@ -63,9 +64,12 @@
   --env-var-font-size-medium: 13px;
   --env-var-font-size-medium-plus: 14px;
   --env-var-font-size-large: 16px;
+  --env-var-font-size-large-plus: 24px;
   --env-var-font-size-xlarge: 30px;
 
   --env-var-img-width-1: 20px;
+  --env-var-img-width-2: 16px;
+  --env-var-img-width-3: 12px;
 
   --env-var-default-1: 24px;
   --env-var-default-2: 40px;

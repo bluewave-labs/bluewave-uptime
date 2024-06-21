@@ -27,13 +27,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
-import UploadIcon from '@mui/icons-material/Upload';
-import SendIcon from '@mui/icons-material/Send';
+import UploadIcon from "@mui/icons-material/Upload";
+import SendIcon from "@mui/icons-material/Send";
 
 // Redux
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitors } from "../../Features/Monitors/monitorsSlice";
+import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
 
 const cols = [
   {
@@ -226,7 +227,7 @@ const Demo = () => {
           level="primary"
           label="Get Monitors"
           onClick={() => {
-            dispatch(getMonitors());
+            dispatch(getMonitorsByUserId("User ID Here"));
           }}
         />
       </div>
@@ -393,7 +394,7 @@ const Demo = () => {
           level="primary"
           label="Upload"
           position="start"
-          img={<UploadIcon/>}
+          img={<UploadIcon />}
           onClick={handleButtonSpinnerClick}
           isLoading={isLoading}
         />
@@ -401,11 +402,11 @@ const Demo = () => {
           level="secondary"
           label="Send"
           position="end"
-          img={<SendIcon/>}
+          img={<SendIcon />}
           onClick={handleButtonSpinnerClick}
           isLoading={isLoading}
         />
-         <ButtonSpinner
+        <ButtonSpinner
           level="error"
           label="Disabled"
           onClick={handleButtonSpinnerClick}
