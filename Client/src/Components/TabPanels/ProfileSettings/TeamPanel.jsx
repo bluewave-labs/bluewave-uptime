@@ -184,27 +184,22 @@ const TeamPanel = () => {
     return count;
   };
   return (
-    <TabPanel
-      value="2"
-      sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
-    >
-      <form className="edit-team-form" noValidate spellCheck="false">
-        <div className="edit-team-form__wrapper">
-          <Stack
-            direction="column"
-            gap="8px"
-            sx={{ flex: 1, marginRight: "10px" }}
-          >
+    <TabPanel value="2">
+      <form className="edit-organization-form">
+        <div
+          className="edit-organization-form__wrapper"
+        >
+          <Stack>
             <Typography variant="h4" component="h1">
               Organization name
             </Typography>
           </Stack>
           <Stack
             id="org-name-flex-container"
+            className="row-stack"
             direction="row"
             justifyContent="flex-end"
             gap="8px"
-            sx={{ flex: 1 }}
           >
             <ButtonSpinner
               level="tertiary"
@@ -212,50 +207,103 @@ const TeamPanel = () => {
               disabled
               onClick={() => toggleOrgModal(true)}
               isLoading={orgStates.isLoading}
-              sx={{ fontSize: "13px" }}
             />
             <Button
               level="primary"
               label="Rename"
-              sx={{ paddingX: "30px", fontSize: "13px" }}
+              sx={{ paddingX: "30px" }}
               onClick={() => toggleOrgModal(true)}
             />
           </Stack>
         </div>
+        <Divider
+          aria-hidden="true"
+          className="short-divider"
+          sx={{ marginY: theme.spacing(4) }}
+        />
+      </form>
+      <Modal
+        aria-labelledby="modal-edit-org-name"
+        aria-describedby="edit-organization-name"
+        open={orgStates.isOpen}
+        onClose={() => toggleOrgModal(false)}
+        disablePortal
+      >
+        <Stack
+          gap="20px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-edit-org-name" variant="h4" component="h1">
+            Rename this organization?
+          </Typography>
+          <TextField
+            id="edit-organization-name"
+            placeholder={orgStates.name}
+            spellCheck="false"
+            value={orgStates.newName}
+            onChange={(event) =>
+              setOrgStates((prev) => ({
+                ...prev,
+                newName: event.target.value,
+              }))
+            }
+          ></TextField>
+          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => toggleOrgModal(false)}
+            />
+            <ButtonSpinner
+              level="primary"
+              label="Rename"
+              onClick={handleRenameOrg}
+              isLoading={orgStates.isLoading}
+              sx={{ paddingX: "30px" }}
+            />
+          </Stack>
+        </Stack>
+      </Modal>
+      <form className="edit-team-form" noValidate spellCheck="false">
         <div className="edit-team-form__wrapper">
           <Typography variant="h4" component="h1">
             Team members
           </Typography>
         </div>
-        <div
-          className="edit-team-form__wrapper compact"
-          style={{ alignItems: "center" }}
-        >
+        <div className="edit-team-form__wrapper compact">
           <Stack
             direction="row"
             gap="20px"
             alignItems="center"
-            sx={{ flex: 1, fontSize: "14px" }}
+            sx={{ fontSize: "14px" }}
           >
-            <Box onClick={() => handleFilter("")} sx={{ cursor: "pointer" }}>
+            <Box onClick={() => handleFilter("")}>
               All
               <span className="members-query">
                 <span>{handleMembersQuery("")}</span>
               </span>
             </Box>
-            <Box
-              onClick={() => handleFilter("admin")}
-              sx={{ cursor: "pointer" }}
-            >
+            <Box onClick={() => handleFilter("admin")}>
               Administrator
               <span className="members-query">
                 <span>{handleMembersQuery("admin")}</span>
               </span>
             </Box>
-            <Box
-              onClick={() => handleFilter("member")}
-              sx={{ cursor: "pointer" }}
-            >
+            <Box onClick={() => handleFilter("member")}>
               Member
               <span className="members-query">
                 <span>{handleMembersQuery("member")}</span>
@@ -265,7 +313,7 @@ const TeamPanel = () => {
           <Button
             level="primary"
             label="Invite a team member"
-            sx={{ paddingX: "30px", fontSize: "13px" }}
+            sx={{ paddingX: "30px" }}
             onClick={() => setToggleInviteModal(true)}
           />
         </div>
@@ -279,14 +327,15 @@ const TeamPanel = () => {
             }}
           >
             <Stack direction="row" gap="40px" p="20px">
-              <Stack direction="row" gap="10px" alignItems="center">
+              <Stack
+                direction="row"
+                gap="10px"
+                alignItems="center"
+                className="table-stack"
+              >
                 <Select
                   id="select-actions"
                   value="bulk"
-                  sx={{
-                    fontSize: "13px",
-                    color: theme.palette.secondary.main,
-                  }}
                   inputProps={{ id: "select-actions-input" }}
                 >
                   {actionsConfig.map((action) => (
@@ -305,9 +354,6 @@ const TeamPanel = () => {
                   onClick={handleSelectActionType}
                   isLoading={isLoading}
                   sx={{
-                    height: "fit-content",
-                    fontSize: "13px",
-                    fontWeight: 500,
                     bgcolor: "#fafafa",
                   }}
                 />
@@ -316,10 +362,6 @@ const TeamPanel = () => {
                 <Select
                   id="select-role"
                   value="role"
-                  sx={{
-                    fontSize: "13px",
-                    color: theme.palette.secondary.main,
-                  }}
                   inputProps={{ id: "select-role-input" }}
                 >
                   {roleConfig.map((role) => (
@@ -338,9 +380,6 @@ const TeamPanel = () => {
                   onClick={handleSelectRoleType}
                   isLoading={isLoading}
                   sx={{
-                    height: "fit-content",
-                    fontSize: "13px",
-                    fontWeight: 500,
                     bgcolor: "#fafafa",
                   }}
                 />
@@ -408,11 +447,7 @@ const TeamPanel = () => {
             </Table>
           </Container>
         </div>
-        <Divider
-          aria-hidden="true"
-          width="0"
-          sx={{ marginY: theme.spacing(6.25) }}
-        />
+        <Divider aria-hidden="true" width="0" />
         <Stack direction="row" justifyContent="flex-end">
           <Box width="fit-content">
             <ButtonSpinner
@@ -423,73 +458,11 @@ const TeamPanel = () => {
               loadingText="Saving..."
               sx={{
                 paddingX: "40px",
-                height: "fit-content",
-                fontSize: "13px",
-                "&:focus": {
-                  outline: "none",
-                },
               }}
             />
           </Box>
         </Stack>
       </form>
-      <Modal
-        aria-labelledby="modal-edit-org-name"
-        aria-describedby="edit-organization-name"
-        open={orgStates.isOpen}
-        onClose={() => toggleOrgModal(false)}
-        disablePortal
-      >
-        <Stack
-          gap="20px"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: "4px",
-            boxShadow: 24,
-            p: "30px",
-            "&:focus": {
-              outline: "none",
-            },
-          }}
-        >
-          <Typography id="modal-edit-org-name" variant="h4" component="h1">
-            Rename this organization?
-          </Typography>
-          <TextField
-            id="edit-organization-name"
-            placeholder={orgStates.name}
-            spellCheck="false"
-            value={orgStates.newName}
-            onChange={(event) =>
-              setOrgStates((prev) => ({
-                ...prev,
-                newName: event.target.value,
-              }))
-            }
-          ></TextField>
-          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
-            <Button
-              level="tertiary"
-              label="Cancel"
-              onClick={() => toggleOrgModal(false)}
-              sx={{ fontSize: "13px" }}
-            />
-            <ButtonSpinner
-              level="primary"
-              label="Rename"
-              onClick={handleRenameOrg}
-              isLoading={orgStates.isLoading}
-              sx={{ fontSize: "13px", paddingX: "30px" }}
-            />
-          </Stack>
-        </Stack>
-      </Modal>
       <Modal
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"
@@ -507,7 +480,7 @@ const TeamPanel = () => {
             width: 400,
             bgcolor: "white",
             border: "solid 1px #f2f2f2",
-            borderRadius: "4px",
+            borderRadius: `${theme.shape.borderRadius}px`,
             boxShadow: 24,
             p: "30px",
             "&:focus": {
@@ -518,15 +491,7 @@ const TeamPanel = () => {
           <Typography id="modal-invite-member" variant="h4" component="h1">
             Invite new team member
           </Typography>
-          <Typography
-            id="invite-member-to-team"
-            variant="h5"
-            component="p"
-            sx={{
-              color: theme.palette.secondary.main,
-              fontSize: "13px",
-            }}
-          >
+          <Typography id="invite-member-to-team" variant="h5" component="p">
             When you add a new team member, they will get access to all
             monitors.
           </Typography>
@@ -546,14 +511,12 @@ const TeamPanel = () => {
               level="tertiary"
               label="Cancel"
               onClick={() => setToggleInviteModal(false)}
-              sx={{ fontSize: "13px" }}
             />
             <ButtonSpinner
               level="primary"
               label="Send invite"
               onClick={handleInviteMember}
               isLoading={isLoading}
-              sx={{ fontSize: "13px" }}
             />
           </Stack>
         </Stack>

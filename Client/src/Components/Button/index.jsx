@@ -59,6 +59,9 @@ const Button = ({ type, level, label, disabled, img, onClick, sx }) => {
       onClick={onClick}
       sx={{
         textTransform: "none",
+        "&:focus": {
+          outline: "none",
+        },
         ...sx,
       }}
     >

@@ -54,17 +54,10 @@ const ProfilePanel = () => {
   };
 
   return (
-    <TabPanel
-      value="0"
-      sx={{ padding: "0", marginTop: theme.spacing(6.25), width: "100%" }}
-    >
+    <TabPanel value="0">
       <form className="edit-profile-form" noValidate spellCheck="false">
         <div className="edit-profile-form__wrapper">
-          <Stack
-            direction="column"
-            gap="8px"
-            sx={{ flex: 1, marginRight: "10px" }}
-          >
+          <Stack>
             <Typography variant="h4" component="h1">
               First Name
             </Typography>
@@ -75,16 +68,11 @@ const ProfilePanel = () => {
             placeholder="Enter your first name"
             sx={{
               flex: 1,
-              minWidth: theme.spacing(30),
             }}
           />
         </div>
         <div className="edit-profile-form__wrapper">
-          <Stack
-            direction="column"
-            gap="8px"
-            sx={{ flex: 1, marginRight: "10px" }}
-          >
+          <Stack>
             <Typography variant="h4" component="h1">
               Last Name
             </Typography>
@@ -95,16 +83,11 @@ const ProfilePanel = () => {
             placeholder="Enter your last name"
             sx={{
               flex: 1,
-              minWidth: theme.spacing(30),
             }}
           />
         </div>
         <div className="edit-profile-form__wrapper">
-          <Stack
-            direction="column"
-            gap="8px"
-            sx={{ flex: 1, marginRight: "10px" }}
-          >
+          <Stack>
             <Typography variant="h4" component="h1">
               Email
             </Typography>
@@ -118,16 +101,11 @@ const ProfilePanel = () => {
             placeholder="Enter your email"
             sx={{
               flex: 1,
-              minWidth: theme.spacing(30),
             }}
           />
         </div>
         <div className="edit-profile-form__wrapper">
-          <Stack
-            direction="column"
-            gap="8px"
-            sx={{ flex: 1, marginRight: "10px" }}
-          >
+          <Stack>
             <Typography variant="h4" component="h1">
               Your Photo
             </Typography>
@@ -135,7 +113,7 @@ const ProfilePanel = () => {
               This photo will be displayed in your profile page.
             </Typography>
           </Stack>
-          <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
+          <Stack className="row-stack" direction="row" alignItems="center">
             {/* TODO - Use Avatar component instead of @mui */}
             <Avatar
               alt="Remy Sharp"
@@ -148,13 +126,6 @@ const ProfilePanel = () => {
               label="Delete"
               onClick={handleDeletePicture}
               isLoading={isLoading}
-              sx={{
-                height: "fit-content",
-                fontSize: "13px",
-                "&:focus": {
-                  outline: "none",
-                },
-              }}
             />
             {/* TODO - modal popup for update pfp? */}
             <Button
@@ -162,18 +133,33 @@ const ProfilePanel = () => {
               label="Update"
               onClick={handleUpdatePicture}
               sx={{
-                height: "fit-content",
                 color: theme.palette.primary.main,
-                fontSize: "13px",
-                "&:focus": {
-                  outline: "none",
-                },
               }}
             />
           </Stack>
         </div>
+        <Divider
+          aria-hidden="true"
+          className="short-divider"
+          width="0"
+          sx={{ marginY: theme.spacing(1) }}
+        />
+        <Stack direction="row" justifyContent="flex-end">
+          <Box width="fit-content">
+            <ButtonSpinner
+              level="primary"
+              label="Save"
+              onClick={handleSaveProfile}
+              isLoading={isLoading}
+              loadingText="Saving..."
+              sx={{
+                paddingX: "40px",
+              }}
+            />
+          </Box>
+        </Stack>
       </form>
-      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(6.25) }} />
+      <Divider aria-hidden="true" />
       <form className="delete-profile-form" noValidate spellCheck="false">
         <div className="delete-profile-form__wrapper">
           <Stack direction="column" gap="15px">
@@ -189,41 +175,11 @@ const ProfilePanel = () => {
                 level="error"
                 label="Delete account"
                 onClick={() => setIsOpen(true)}
-                sx={{
-                  fontSize: "13px",
-                  "&:focus": {
-                    outline: "none",
-                  },
-                }}
               />
             </Box>
           </Stack>
         </div>
       </form>
-      <Divider
-        aria-hidden="true"
-        width="0"
-        sx={{ marginY: theme.spacing(6.25) }}
-      />
-      <Stack direction="row" justifyContent="flex-end">
-        <Box width="fit-content">
-          <ButtonSpinner
-            level="primary"
-            label="Save"
-            onClick={handleSaveProfile}
-            isLoading={isLoading}
-            loadingText="Saving..."
-            sx={{
-              paddingX: "40px",
-              height: "fit-content",
-              fontSize: "13px",
-              "&:focus": {
-                outline: "none",
-              },
-            }}
-          />
-        </Box>
-      </Stack>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}
       <Modal
         aria-labelledby="modal-delete-account"
@@ -242,7 +198,7 @@ const ProfilePanel = () => {
             width: 400,
             bgcolor: "white",
             border: "solid 1px #f2f2f2",
-            borderRadius: "4px",
+            borderRadius: `${theme.shape.borderRadius}px`,
             boxShadow: 24,
             p: "30px",
             "&:focus": {
@@ -257,10 +213,6 @@ const ProfilePanel = () => {
             id="delete-account-confirmation"
             variant="h5"
             component="p"
-            sx={{
-              color: theme.palette.secondary.main,
-              fontSize: "13px",
-            }}
           >
             If you delete your account, you will no longer be able to sign in,
             and all of your data will be deleted. Deleting your account is
@@ -271,14 +223,12 @@ const ProfilePanel = () => {
               level="tertiary"
               label="Cancel"
               onClick={() => setIsOpen(false)}
-              sx={{ fontSize: "13px" }}
             />
             <ButtonSpinner
               level="error"
               label="Delete account"
               onClick={handleDeleteAccount}
               isLoading={isLoading}
-              sx={{ fontSize: "13px" }}
             />
           </Stack>
         </Stack>
