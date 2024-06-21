@@ -1,6 +1,7 @@
 import BarChart from "../Charts/BarChart/BarChart";
 import PropTypes from "prop-types";
-
+import Host from "../Host/";
+import HostStatus from "../HostStatus";
 /**
  * HostsTable displays the current status of monitor
  *
@@ -22,12 +23,29 @@ const HostsTable = ({ monitors }) => {
         </thead>
         <tbody>
           {monitors.map((monitor) => {
+            const host = Host(
+              monitor.name,
+              100,
+              "var(--env-var-color-17)",
+              monitor.url
+            );
+
+            const status = HostStatus(
+              monitor.checks[monitor.checks.length - 1].status === true
+                ? "var(--env-var-color-20)"
+                : "var(--env-var-color-21)",
+              monitor.checks[monitor.checks.length - 1].status === true
+                ? "Up"
+                : "Down",
+              monitor.checks[monitor.checks.length - 1].status === true
+                ? "var(--env-var-color-17)"
+                : "var(--env-var-color-19)"
+            );
+
             return (
               <tr className="tbody-row" key={monitor._id}>
-                <td className="tbody-row-cell">{monitor.url}</td>
-                <td className="tbody-row-cell">
-                  {monitor.isActive ? "Active" : "Down"}
-                </td>
+                <td className="tbody-row-cell">{host}</td>
+                <td className="tbody-row-cell">{status}</td>
                 <td className="tbody-row-cell">
                   <BarChart checks={monitor.checks} />
                 </td>
