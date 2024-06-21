@@ -70,7 +70,13 @@ const ButtonSpinner = ({
       endIcon={position === "end" && img}
       onClick={onClick}
       loading={isLoading}
-      sx={{ textTransform: "none", ...sx }}
+      sx={{
+        textTransform: "none",
+        "&:focus": {
+          outline: "none",
+        },
+        ...sx,
+      }}
     >
       <span>{label}</span>
     </LoadingButton>

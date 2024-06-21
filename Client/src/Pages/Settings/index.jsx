@@ -32,14 +32,15 @@ const Settings = () => {
       minWidth={theme.spacing(55)}
       width="100vw"
       maxWidth="calc(100vw - 800px)"
-      pt={theme.spacing(5)}
+      py={theme.spacing(5)}
       px={theme.spacing(10)}
+      className="settings"
     >
       <TabContext value={tab}>
         <Box
           sx={{
             borderBottom: 1,
-            borderColor: "divider",
+            borderColor: theme.palette.section.borderColor,
             "& .MuiTabs-root": { height: "fit-content", minHeight: "0" },
           }}
         >

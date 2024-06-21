@@ -28,10 +28,23 @@
   --env-var-color-11: #5d6b98;
   --env-var-color-12: #182230;
   --env-var-color-13: #f9fafb;
-  --env-var-color-14: #fecf60;
-  --lighter-env-var-color-14: rgba(254, 207, 96, 0.1);
-  --env-var-color-15: #f79009;
-  --env-var-color-16: #667085;
+  --env-var-color-14: #98a2b3;
+  --env-var-color-15: #f2f4f7;
+  --env-var-color-16: #ebebeb;
+  --env-var-color-17: #079455;
+  --env-var-color-18: #ffc301;
+  --env-var-color-19: #f04438;
+  --env-var-color-20: #ecfdf3;
+  --env-var-color-21: hsla(0, 100%, 52%, 0.06);
+  --env-var-color-22: #4e5ba6;
+  --env-var-color-23: #17b26a;
+  --env-var-color-24: #d92d20;
+  --env-var-color-25: #667085;
+  --env-var-color-26: #ff1818;
+  --env-var-color-27: #fecf60;
+  --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
+  --env-var-color-28: #f79009;
+  --env-var-color-29: #D0D5DD;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;

@@ -1,63 +1,79 @@
-.edit-profile-form,
-.edit-password-form,
-.delete-profile-form,
-.edit-team-form,
-.edit-organization-form {
+.settings h1.MuiTypography-root,
+.settings p.MuiTypography-root,
+.settings input,
+.settings button,
+.settings td,
+.settings .MuiSelect-select {
+  font-size: var(--env-var-font-size-medium);
+}
+.settings h1.MuiTypography-root,
+.settings p.MuiTypography-root,
+.settings input,
+.settings .MuiSelect-select {
+  color: var(--env-var-color-2);
+}
+.settings h1.MuiTypography-root {
+  font-weight: 600;
+}
+.settings .MuiStack-root:not(.table-stack) {
+  flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+}
+.settings .MuiTabPanel-root {
+  padding: 0;
+  margin-top: 50px;
+}
+.settings .MuiDivider-root:not(.short-divider) {
+  margin: 50px 0;
+}
+.settings .MuiDivider-root,
+.settings .MuiOutlinedInput-root fieldset,
+.announcement-tile {
+  border-color: var(--env-var-color-29);
+}
+[class$="-form"] {
   width: inherit;
 }
-.edit-profile-form__wrapper,
-.delete-profile-form__wrapper {
-  width: 90%;
-}
-.edit-profile-form__wrapper,
-.delete-profile-form__wrapper,
-.edit-password-form__wrapper,
-.edit-team-form__wrapper,
-.edit-organization-form__wrapper {
+[class$="__wrapper"],
+[class$="__wrapper compact"] {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
 }
-.edit-profile-form__wrapper h1.MuiTypography-root,
-.delete-profile-form__wrapper h1.MuiTypography-root,
-.edit-password-form__wrapper h1.MuiTypography-root,
-.edit-team-form__wrapper h1.MuiTypography-root,
-.edit-organization-form h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
-  font-weight: 600;
+.edit-profile-form__wrapper .MuiStack-root:not(.row-stack),
+.edit-password-form__wrapper .MuiStack-root:not(.row-stack),
+.edit-organization-form__wrapper .MuiStack-root:not(.row-stack) {
+  flex-direction: column;
+  gap: 8px;
+  margin-right: 10px;
 }
 .edit-profile-form__wrapper p.MuiTypography-root,
 .delete-profile-form__wrapper p.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
   opacity: 0.6;
 }
 #modal-delete-account,
 #modal-edit-org-name,
 #modal-invite-member {
   font-size: var(--env-var-font-size-large);
-  color: var(--env-var-color-2);
-  font-weight: 600;
 }
 .edit-profile-form__wrapper:not(:first-of-type),
 .edit-password-form__wrapper:not(:first-of-type),
 .edit-team-form__wrapper:not(:first-of-type) {
-  margin-top: 40px;
+  margin-top: var(--env-var-spacing-4);
 }
 .edit-team-form__wrapper.compact {
-  margin-top: 30px;
-  color: var(--env-var-color-16);
+  margin-top: var(--env-var-spacing-3);
+  justify-content: flex-start;
+  align-items: center;
 }
 .edit-profile-form__wrapper input,
 .edit-password-form__wrapper input,
 #edit-organization-name,
 #input-team-member {
-  font-size: var(--env-var-font-size-medium);
   padding: 10px;
 }
-
 .edit-password-form__wrapper > .announcement-tile {
   width: 100%;
 }
@@ -66,6 +82,10 @@
   .announcement-content-subject {
   margin-bottom: 2px;
 }
+#edit-password + div > button > svg,
+#edit-current-password + div > button > svg {
+  color: var(--env-var-color-29);
+}
 .edit-password-form__wrapper .announcement-tile {
   margin: 0;
 }
@@ -73,15 +93,16 @@
   margin-left: auto;
 }
 .MuiBox-root > .announcement-tile {
-  border-color: var(--env-var-color-14);
-  background-color: var(--lighter-env-var-color-14);
+  border-color: var(--env-var-color-27);
+  background-color: var(--lighter-env-var-color-27);
 }
-.MuiBox-root > .announcement-tile .announcement-content-body,
-.MuiBox-root > .announcement-tile .announcement-close svg {
-  color: var(--env-var-color-15);
-  fill: var(--env-var-color-15) !important;
+.MuiBox-root > .announcement-tile .announcement-content-body {
+  color: var(--env-var-color-28);
 }
-
+.MuiBox-root > .announcement-tile .announcement-close svg,
+.edit-password-form__wrapper > .announcement-tile .announcement-close svg {
+  display: none;
+}
 #org-name-flex-container .Mui-disabled {
   color: var(--env-var-color-2) !important;
 }
@@ -92,14 +113,13 @@
   vertical-align: text-top;
 }
 .edit-team-form__wrapper th {
-  padding: 14px 0;
+  padding: var(--env-var-spacing-1) 0;
 }
 .edit-team-form__wrapper th:first-of-type {
   padding-left: 20px;
 }
 .edit-team-form__wrapper td {
-  font-size: (--env-var-font-size-medium);
-  color: var(--env-var-color-16);
+  color: var(--env-var-color-25);
 }
 
 #select-actions,
@@ -120,7 +140,10 @@
   border-color: var(--env-var-color-2);
 }
 
-.members-query{
+.MuiStack-root:has(.MuiBox-root > .members-query) .MuiBox-root {
+  cursor: pointer;
+}
+.members-query {
   display: inline-flex;
   justify-content: center;
   align-items: center;
