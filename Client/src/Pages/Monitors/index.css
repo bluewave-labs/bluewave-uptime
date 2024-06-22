@@ -39,3 +39,7 @@
   color: var(--env-var-color-25);
   font-size: var(--env-var-font-size-small);
 }
+
+.host-status-box-text {
+  font-size: var(--env-var-font-size-medium);
+}
