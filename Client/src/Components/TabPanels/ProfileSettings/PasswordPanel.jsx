@@ -17,6 +17,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ButtonSpinner from "../../ButtonSpinner";
+import PasswordTextField from "../../TextFields/Password/PasswordTextField";
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -31,6 +32,76 @@ const PasswordPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  //for testing, will tweak when I implement redux slice
+  const [localData, setLocalData] = useState({
+    "edit-current-password": {
+      value: "",
+      //TBD
+      type: "",
+    },
+    "edit-new-password": {
+      value: "",
+      type: "password",
+    },
+    "edit-confirm-password": {
+      value: "",
+      type: "confirm",
+    },
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    setLocalData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        value: value,
+      },
+    }));
+    validateField(id, value);
+  };
+
+  const validateField = (id, value) => {
+    let error = "";
+    switch (localData[id].type) {
+      case "password":
+        error =
+          value.trim() === ""
+            ? "*This field is required."
+            : value.length < 8
+            ? "*Password must be at least 8 characters long."
+            : !/[A-Z]/.test(value)
+            ? "*Password must contain at least one uppercase letter."
+            : !/\d/.test(value)
+            ? "*Password must contain at least one number."
+            : !/[!@#$%^&*]/.test(value)
+            ? "*Password must contain at least one symbol."
+            : "";
+        break;
+      case "confirm":
+        error =
+          value.trim() === ""
+            ? "*This field is required."
+            : value !== localData["edit-new-password"].value
+            ? "*Passwords do not match."
+            : "";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (error === "") {
+        delete updatedErrors[id];
+      } else {
+        updatedErrors[id] = error;
+      }
+      return updatedErrors;
+    });
+  };
+
   //TODO - implement save password function
   const handleSavePassword = () => {
     setIsLoading(true);
@@ -44,7 +115,11 @@ const PasswordPanel = () => {
       <form className="edit-password-form" noValidate spellCheck="false">
         <div className="edit-password-form__wrapper">
           <AnnouncementsDualButtonWithIcon
-            icon={<InfoOutlinedIcon style={{ fill: theme.palette.secondary.main }} />}
+            icon={
+              <InfoOutlinedIcon
+                style={{ fill: theme.palette.secondary.main }}
+              />
+            }
             subject="SSO login"
             body="Since you logged in via SSO, you cannot reset or modify your password."
           />
@@ -52,64 +127,45 @@ const PasswordPanel = () => {
         <div className="edit-password-form__wrapper">
           <Stack>
             <Typography variant="h4" component="h1">
-              Current Password
+              Current password
             </Typography>
           </Stack>
-          <FormControl sx={{ flex: 1 }}>
-            <OutlinedInput
+          <Stack>
+            <PasswordTextField
               id="edit-current-password"
-              value="RandomPasswordLol"
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword((show) => !show)}
-                    sx={{
-                      width: "30px",
-                      height: "30px",
-                      "&:focus": {
-                        outline: "none",
-                      },
-                    }}
-                  >
-                    {!showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            ></OutlinedInput>
-          </FormControl>
+              label={null}
+              placeholder="Enter your current password"
+              autoComplete="current-password"
+              visibility={showPassword}
+              setVisibility={setShowPassword}
+            />
+          </Stack>
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
             <Typography variant="h4" component="h1">
-              Password
+              New password
             </Typography>
           </Stack>
-          <FormControl sx={{ flex: 1 }}>
-            <OutlinedInput
-              id="edit-password"
-              value="RandomPasswordLol"
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword((show) => !show)}
-                    sx={{
-                      width: "30px",
-                      height: "30px",
-                      "&:focus": {
-                        outline: "none",
-                      },
-                    }}
-                  >
-                    {!showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            ></OutlinedInput>
-          </FormControl>
+          <Stack>
+            <PasswordTextField
+              id="edit-new-password"
+              label={null}
+              placeholder="Enter your new password"
+              autoComplete="new-password"
+              visibility={showPassword}
+              setVisibility={setShowPassword}
+              onChange={handleChange}
+              error={errors["edit-new-password"] ? true : false}
+            />
+            {errors["edit-new-password"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["edit-new-password"]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
@@ -117,6 +173,28 @@ const PasswordPanel = () => {
               Confirm new password
             </Typography>
           </Stack>
+          <Stack>
+            <PasswordTextField
+              id="edit-confirm-password"
+              label={null}
+              placeholder="Reenter your new password"
+              autoComplete="new-password"
+              visibility={showPassword}
+              setVisibility={setShowPassword}
+              onChange={handleChange}
+              error={errors["edit-confirm-password"] ? true : false}
+            />
+            {errors["edit-confirm-password"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["edit-confirm-password"]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
+        </div>
+        <div className="edit-password-form__wrapper">
+          <Stack></Stack>
           <Box sx={{ flex: 1 }}>
             <AnnouncementsDualButtonWithIcon
               icon={<WarningAmberOutlinedIcon style={{ fill: "#f79009" }} />}
@@ -133,6 +211,7 @@ const PasswordPanel = () => {
               onClick={handleSavePassword}
               isLoading={isLoading}
               loadingText="Saving..."
+              disabled={Object.keys(errors).length !== 0 && true}
               sx={{
                 paddingX: "40px",
               }}

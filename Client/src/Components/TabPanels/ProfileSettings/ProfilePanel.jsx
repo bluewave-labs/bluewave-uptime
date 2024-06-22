@@ -1,17 +1,12 @@
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  Avatar,
-  Box,
-  Divider,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
+import EmailTextField from "../../TextFields/Email/EmailTextField";
+import StringTextField from "../../TextFields/Text/TextField";
+import Avatar from "../../Avatar";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -26,6 +21,70 @@ const ProfilePanel = () => {
   //TODO - use redux loading state
   //!! - currently all loading buttons are tied to the same state
   const [isLoading, setIsLoading] = useState(false);
+
+  //for testing, will tweak when I implement redux slice
+  const [localData, setLocalData] = useState({
+    "edit-first-name": {
+      value: "",
+      type: "name",
+    },
+    "edit-last-name": {
+      value: "",
+      type: "name",
+    },
+    "edit-email": {
+      value: "",
+      type: "email",
+    },
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    setLocalData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        value: value,
+      },
+    }));
+    validateField(id, value);
+  };
+
+  const validateField = (id, value) => {
+    let error = "";
+    switch (localData[id].type) {
+      case "name":
+        error =
+          value.trim() === ""
+            ? "*This field is required."
+            : /\d/.test(value)
+            ? "*Name is invalid."
+            : "";
+        break;
+      case "email":
+        error =
+          value.trim() === ""
+            ? "*This field is required."
+            : !/^\S+@\S+\.\S+$/.test(value)
+            ? "*Email is invalid."
+            : "";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (error === "") {
+        delete updatedErrors[id];
+      } else {
+        updatedErrors[id] = error;
+      }
+      return updatedErrors;
+    });
+  };
+
   //TODO - implement delete profile picture function
   const handleDeletePicture = () => {
     setIsLoading(true);
@@ -62,14 +121,23 @@ const ProfilePanel = () => {
               First Name
             </Typography>
           </Stack>
-          {/* TODO - use existing textfield components */}
-          <TextField
-            id="edit-first-name"
-            placeholder="Enter your first name"
-            sx={{
-              flex: 1,
-            }}
-          />
+          <Stack>
+            <StringTextField
+              id="edit-first-name"
+              label={null}
+              placeholder="Enter your first name"
+              autoComplete="given-name"
+              onChange={handleChange}
+              error={errors["edit-first-name"] ? true : false}
+            />
+            {errors["edit-first-name"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["edit-first-name"]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -77,14 +145,23 @@ const ProfilePanel = () => {
               Last Name
             </Typography>
           </Stack>
-          {/* TODO - use existing textfield components */}
-          <TextField
-            id="edit-last-name"
-            placeholder="Enter your last name"
-            sx={{
-              flex: 1,
-            }}
-          />
+          <Stack>
+            <StringTextField
+              id="edit-last-name"
+              label={null}
+              placeholder="Enter your last name"
+              autoComplete="family-name"
+              onChange={handleChange}
+              error={errors["edit-last-name"] ? true : false}
+            />
+            {errors["edit-last-name"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["edit-last-name"]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -95,14 +172,23 @@ const ProfilePanel = () => {
               After updating, you'll receive a confirmation email.
             </Typography>
           </Stack>
-          {/* TODO - use existing textfield components */}
-          <TextField
-            id="edit-email"
-            placeholder="Enter your email"
-            sx={{
-              flex: 1,
-            }}
-          />
+          <Stack>
+            <EmailTextField
+              id="edit-email"
+              label={null}
+              placeholder="Enter your email"
+              autoComplete="email"
+              onChange={handleChange}
+              error={errors["edit-email"] ? true : false}
+            />
+            {errors["edit-email"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["edit-email"]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -114,12 +200,14 @@ const ProfilePanel = () => {
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            {/* TODO - Use Avatar component instead of @mui */}
+            {/* TODO - Update placeholder values with redux data */}
             <Avatar
-              alt="Remy Sharp"
               src="/static/images/avatar/2.jpg"
-              className="icon-button-avatar"
-              style={{ width: "64px", height: "64px" }}
+              firstName="Jackie"
+              lastName="Dawn"
+              sx={{
+                width: "64px", height: "64px", border: "none", mr: "8px"
+              }}
             />
             <ButtonSpinner
               level="tertiary"
@@ -152,6 +240,7 @@ const ProfilePanel = () => {
               onClick={handleSaveProfile}
               isLoading={isLoading}
               loadingText="Saving..."
+              disabled={Object.keys(errors).length !== 0 && true}
               sx={{
                 paddingX: "40px",
               }}
