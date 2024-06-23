@@ -2,22 +2,12 @@ import TabPanel from "@mui/lab/TabPanel";
 import React, { useState } from "react";
 import AnnouncementsDualButtonWithIcon from "../../Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import { useTheme } from "@emotion/react";
-import {
-  Box,
-  Divider,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  Stack,
-  Typography,
-} from "@mui/material";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Visibility from "@mui/icons-material/Visibility";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ButtonSpinner from "../../ButtonSpinner";
 import PasswordTextField from "../../TextFields/Password/PasswordTextField";
+import { editPasswordValidation } from "../../../Validation/validation";
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -33,86 +23,76 @@ const PasswordPanel = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   //for testing, will tweak when I implement redux slice
+  const idToName = {
+    "edit-current-password": "currentPassword",
+    "edit-new-password": "password",
+    "edit-confirm-password": "confirm",
+  };
   const [localData, setLocalData] = useState({
-    "edit-current-password": {
-      value: "",
-      //TBD
-      type: "",
-    },
-    "edit-new-password": {
-      value: "",
-      type: "password",
-    },
-    "edit-confirm-password": {
-      value: "",
-      type: "confirm",
-    },
+    currentPassword: "",
+    password: "",
+    confirm: "",
   });
   const [errors, setErrors] = useState({});
 
   const handleChange = (event) => {
     const { value, id } = event.target;
+    const name = idToName[id];
     setLocalData((prev) => ({
       ...prev,
-      [id]: {
-        ...prev[id],
-        value: value,
-      },
+      [name]: value,
     }));
-    validateField(id, value);
-  };
 
-  const validateField = (id, value) => {
-    let error = "";
-    switch (localData[id].type) {
-      case "password":
-        error =
-          value.trim() === ""
-            ? "*This field is required."
-            : value.length < 8
-            ? "*Password must be at least 8 characters long."
-            : !/[A-Z]/.test(value)
-            ? "*Password must contain at least one uppercase letter."
-            : !/\d/.test(value)
-            ? "*Password must contain at least one number."
-            : !/[!@#$%^&*]/.test(value)
-            ? "*Password must contain at least one symbol."
-            : "";
-        break;
-      case "confirm":
-        error =
-          value.trim() === ""
-            ? "*This field is required."
-            : value !== localData["edit-new-password"].value
-            ? "*Passwords do not match."
-            : "";
-        break;
-      default:
-        break;
-    }
+    const validation = editPasswordValidation.validate(
+      { [name]: value },
+      { abortEarly: false, context: { password: localData.password } }
+    );
 
     setErrors((prev) => {
       const updatedErrors = { ...prev };
-      if (error === "") {
-        delete updatedErrors[id];
+
+      if (validation.error) {
+        updatedErrors[name] = validation.error.details[0].message;
       } else {
-        updatedErrors[id] = error;
+        delete updatedErrors[name];
       }
       return updatedErrors;
     });
   };
 
-  //TODO - implement save password function
-  const handleSavePassword = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     setIsLoading(true);
+
+    const { error } = editPasswordValidation.validate(localData, {
+      abortEarly: false,
+      context: { password: localData.password },
+    });
+
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      setIsLoading(false);
+    } else {
+      //TODO - submit logic
+    }
+
     setTimeout(() => {
       setIsLoading(false);
-      setIsOpen(false);
     }, 2000);
   };
+
   return (
     <TabPanel value="1">
-      <form className="edit-password-form" noValidate spellCheck="false">
+      <form
+        onSubmit={handleSubmit}
+        className="edit-password-form"
+        noValidate
+        spellCheck="false"
+      >
         <div className="edit-password-form__wrapper">
           <AnnouncementsDualButtonWithIcon
             icon={
@@ -138,7 +118,16 @@ const PasswordPanel = () => {
               autoComplete="current-password"
               visibility={showPassword}
               setVisibility={setShowPassword}
+              onChange={handleChange}
+              error={errors[idToName["edit-current-password"]] ? true : false}
             />
+            {errors[idToName["edit-current-password"]] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors[idToName["edit-current-password"]]}
+              </Typography>
+            ) : (
+              ""
+            )}
           </Stack>
         </div>
         <div className="edit-password-form__wrapper">
@@ -156,11 +145,11 @@ const PasswordPanel = () => {
               visibility={showPassword}
               setVisibility={setShowPassword}
               onChange={handleChange}
-              error={errors["edit-new-password"] ? true : false}
+              error={errors[idToName["edit-new-password"]] ? true : false}
             />
-            {errors["edit-new-password"] ? (
+            {errors[idToName["edit-new-password"]] ? (
               <Typography variant="h5" component="p" className="input-error">
-                {errors["edit-new-password"]}
+                {errors[idToName["edit-new-password"]]}
               </Typography>
             ) : (
               ""
@@ -182,11 +171,11 @@ const PasswordPanel = () => {
               visibility={showPassword}
               setVisibility={setShowPassword}
               onChange={handleChange}
-              error={errors["edit-confirm-password"] ? true : false}
+              error={errors[idToName["edit-confirm-password"]] ? true : false}
             />
-            {errors["edit-confirm-password"] ? (
+            {errors[idToName["edit-confirm-password"]] ? (
               <Typography variant="h5" component="p" className="input-error">
-                {errors["edit-confirm-password"]}
+                {errors[idToName["edit-confirm-password"]]}
               </Typography>
             ) : (
               ""
@@ -208,7 +197,7 @@ const PasswordPanel = () => {
             <ButtonSpinner
               level="primary"
               label="Save"
-              onClick={handleSavePassword}
+              onClick={handleSubmit}
               isLoading={isLoading}
               loadingText="Saving..."
               disabled={Object.keys(errors).length !== 0 && true}

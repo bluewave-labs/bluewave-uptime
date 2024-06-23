@@ -68,6 +68,7 @@ const PasswordTextField = ({
                   <IconButton
                   aria-label="toggle password visibility"
                   onClick={() => setVisibility((show) => !show)}
+                  tabIndex={-1}
                   sx={{
                     width: "30px",
                     height: "30px",

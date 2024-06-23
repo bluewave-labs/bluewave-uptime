@@ -7,6 +7,7 @@ import Button from "../../Button";
 import EmailTextField from "../../TextFields/Email/EmailTextField";
 import StringTextField from "../../TextFields/Text/TextField";
 import Avatar from "../../Avatar";
+import { editProfileValidation } from "../../../Validation/validation";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -23,63 +24,38 @@ const ProfilePanel = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   //for testing, will tweak when I implement redux slice
+  const idToName = {
+    "edit-first-name": "firstName",
+    "edit-last-name": "lastName",
+    "edit-email": "email",
+  };
   const [localData, setLocalData] = useState({
-    "edit-first-name": {
-      value: "",
-      type: "name",
-    },
-    "edit-last-name": {
-      value: "",
-      type: "name",
-    },
-    "edit-email": {
-      value: "",
-      type: "email",
-    },
+    firstName: "",
+    lastName: "",
+    email: "",
   });
   const [errors, setErrors] = useState({});
 
   const handleChange = (event) => {
     const { value, id } = event.target;
+    const name = idToName[id];
     setLocalData((prev) => ({
       ...prev,
-      [id]: {
-        ...prev[id],
-        value: value,
-      },
+      [name]: value,
     }));
-    validateField(id, value);
-  };
-
-  const validateField = (id, value) => {
-    let error = "";
-    switch (localData[id].type) {
-      case "name":
-        error =
-          value.trim() === ""
-            ? "*This field is required."
-            : /\d/.test(value)
-            ? "*Name is invalid."
-            : "";
-        break;
-      case "email":
-        error =
-          value.trim() === ""
-            ? "*This field is required."
-            : !/^\S+@\S+\.\S+$/.test(value)
-            ? "*Email is invalid."
-            : "";
-        break;
-      default:
-        break;
-    }
+    
+    const validation = editProfileValidation.validate(
+      { [name]: value },
+      { abortEarly: false }
+    );
 
     setErrors((prev) => {
       const updatedErrors = { ...prev };
-      if (error === "") {
-        delete updatedErrors[id];
+
+      if (validation.error) {
+        updatedErrors[name] = validation.error.details[0].message;
       } else {
-        updatedErrors[id] = error;
+        delete updatedErrors[name];
       }
       return updatedErrors;
     });
@@ -128,11 +104,11 @@ const ProfilePanel = () => {
               placeholder="Enter your first name"
               autoComplete="given-name"
               onChange={handleChange}
-              error={errors["edit-first-name"] ? true : false}
+              error={errors[idToName["edit-first-name"]] ? true : false}
             />
-            {errors["edit-first-name"] ? (
+            {errors[idToName["edit-first-name"]] ? (
               <Typography variant="h5" component="p" className="input-error">
-                {errors["edit-first-name"]}
+                {errors[idToName["edit-first-name"]]}
               </Typography>
             ) : (
               ""
@@ -152,11 +128,11 @@ const ProfilePanel = () => {
               placeholder="Enter your last name"
               autoComplete="family-name"
               onChange={handleChange}
-              error={errors["edit-last-name"] ? true : false}
+              error={errors[idToName["edit-last-name"]] ? true : false}
             />
-            {errors["edit-last-name"] ? (
+            {errors[idToName["edit-last-name"]] ? (
               <Typography variant="h5" component="p" className="input-error">
-                {errors["edit-last-name"]}
+                {errors[idToName["edit-last-name"]]}
               </Typography>
             ) : (
               ""
@@ -179,11 +155,11 @@ const ProfilePanel = () => {
               placeholder="Enter your email"
               autoComplete="email"
               onChange={handleChange}
-              error={errors["edit-email"] ? true : false}
+              error={errors[idToName["edit-email"]] ? true : false}
             />
-            {errors["edit-email"] ? (
+            {errors[idToName["edit-email"]] ? (
               <Typography variant="h5" component="p" className="input-error">
-                {errors["edit-email"]}
+                {errors[idToName["edit-email"]]}
               </Typography>
             ) : (
               ""
@@ -206,7 +182,10 @@ const ProfilePanel = () => {
               firstName="Jackie"
               lastName="Dawn"
               sx={{
-                width: "64px", height: "64px", border: "none", mr: "8px"
+                width: "64px",
+                height: "64px",
+                border: "none",
+                mr: "8px",
               }}
             />
             <ButtonSpinner

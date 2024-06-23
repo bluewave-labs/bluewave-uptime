@@ -63,9 +63,82 @@ const newPasswordValidation = joi.object({
   }),
 });
 
+const editProfileValidation = joi.object({
+  firstName: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
+    "string.empty": "*First name is required.",
+    "string.pattern.base": "*First name must contain only letters.",
+  }),
+  lastName: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
+    "string.empty": "*Last name is required.",
+    "string.pattern.base": "*Last name must contain only letters.",
+  }),
+  email: joi
+    .string()
+    .trim()
+    .email({ tlds: { allow: false } })
+    .messages({
+      "string.empty": "*Email is required.",
+      "string.email": "*Invalid email address.",
+    }),
+});
+
+const editPasswordValidation = joi.object({
+  // TBD - validation for current password ?
+  currentPassword : joi
+  .string().trim()
+  .messages({
+    "string.empty": "*Current password is required.",
+  }),
+  password: joi
+    .string()
+    .trim()
+    .min(8)
+    .messages({
+      "string.empty": "*Password is required.",
+      "string.min": "*Password must be at least 8 characters long.",
+    })
+    .custom((value, helpers) => {
+      if (!/[A-Z]/.test(value)) {
+        return helpers.message(
+          "*Password must contain at least one uppercase letter."
+        );
+      }
+      if (!/[a-z]/.test(value)) {
+        return helpers.message(
+          "*Password must contain at least one lowercase letter."
+        );
+      }
+      if (!/\d/.test(value)) {
+        return helpers.message("*Password must contain at least one number.");
+      }
+      if (!/[!@#$%^&*]/.test(value)) {
+        return helpers.message(
+          "*Password must contain at least one special character."
+        );
+      }
+
+      return value;
+    }),
+  confirm: joi
+    .string()
+    .trim()
+    .messages({
+      "string.empty": "*Password confirmation is required.",
+    })
+    .custom((value, helpers) => {
+      const { password } = helpers.prefs.context;
+      if (value !== password) {
+        return helpers.message("*Passwords do not match.");
+      }
+      return value;
+    }),
+});
+
 export {
   registerValidation,
   loginValidation,
   recoveryValidation,
   newPasswordValidation,
+  editPasswordValidation,
+  editProfileValidation,
 };
