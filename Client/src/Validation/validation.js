@@ -64,11 +64,11 @@ const newPasswordValidation = joi.object({
 });
 
 const editProfileValidation = joi.object({
-  firstName: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
+  firstname: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
     "string.empty": "*First name is required.",
     "string.pattern.base": "*First name must contain only letters.",
   }),
-  lastName: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
+  lastname: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
     "string.empty": "*Last name is required.",
     "string.pattern.base": "*Last name must contain only letters.",
   }),

@@ -25,13 +25,13 @@ const ProfilePanel = () => {
 
   //for testing, will tweak when I implement redux slice
   const idToName = {
-    "edit-first-name": "firstName",
-    "edit-last-name": "lastName",
+    "edit-first-name": "firstname",
+    "edit-last-name": "lastname",
     "edit-email": "email",
   };
   const [localData, setLocalData] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
   });
   const [errors, setErrors] = useState({});
