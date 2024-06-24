@@ -16,7 +16,7 @@ import ChevronDown from "../../assets/Images/Icon-chevron-down.png";
 import { clearAuthState } from "../../Features/Auth/authSlice";
 import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const settings = ["Profile", "Team", "Invite Colleagues", "Logout"];
@@ -37,6 +37,7 @@ function NavBar() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const authState = useSelector((state) => state.auth);
 
   /**
    * Handles opening the user menu.
@@ -156,7 +157,9 @@ function NavBar() {
                     className="icon-button-avatar"
                     style={{ width: "25px", height: "25px" }}
                   />
-                  <div className="icon-button-toggle-title">Jackie Dawn</div>
+                  <div className="icon-button-toggle-title">
+                    {authState.user.firstname} {authState.user.lastname}
+                  </div>
                   <img
                     className="icon-button-toggle-pic"
                     src={ChevronDown}

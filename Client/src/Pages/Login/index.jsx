@@ -80,6 +80,9 @@ const Login = () => {
     setForm(newForm);
   };
 
+  const handleSignupClick = () => {
+    navigate("/register");
+  };
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
@@ -137,7 +140,14 @@ const Login = () => {
         <div className="login-form-v3-spacing" />
         <div className="new-account-option">
           Don’t have an account?
-          <span className="new-account-option-span">Sign up</span>
+          <span
+            onClick={() => {
+              navigate("/register");
+            }}
+            className="new-account-option-span"
+          >
+            Sign up
+          </span>
         </div>
       </form>
     </div>
