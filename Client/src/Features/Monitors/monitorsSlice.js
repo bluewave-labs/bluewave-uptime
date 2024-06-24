@@ -86,6 +86,7 @@ const monitorsSlice = createSlice({
         state.monitors = action.payload.data;
       })
       .addCase(getMonitorsByUserId.rejected, (state, action) => {
+        console.log(action);
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
