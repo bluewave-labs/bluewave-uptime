@@ -12,15 +12,17 @@ import PropTypes from "prop-types";
 
 const CurrentStats = ({ monitors }) => {
   const up = monitors.reduce((acc, cur) => {
-    if (cur.checks) {
+    if (cur.checks.length > 0) {
       return cur.checks[cur.checks.length - 1].status === true ? acc + 1 : acc;
     }
+    return 0;
   }, 0);
 
   const down = monitors.reduce((acc, cur) => {
-    if (cur.checks) {
+    if (cur.checks.length > 0) {
       return cur.checks[cur.checks.length - 1].status === false ? acc + 1 : acc;
     }
+    return 0;
   }, 0);
 
   return (

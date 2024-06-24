@@ -9,6 +9,25 @@ import HostStatus from "../HostStatus";
  * @param {Array<Monitor>} monitors - An array of monitor objects to be displayed.
  */
 
+const getLastCheckStatus = (monitor) => {
+  if (monitor.checks.length === 0) {
+    // Default values for when there are no checks
+    return {
+      color: "var(--env-var-color-21)",
+      statusText: "No Data",
+      dotColor: "var(--env-var-color-19)",
+    };
+  }
+
+  const lastCheck = monitor.checks[monitor.checks.length - 1];
+  const isUp = lastCheck.status === true;
+  return {
+    color: isUp ? "var(--env-var-color-20)" : "var(--env-var-color-21)",
+    statusText: isUp ? "Up" : "Down",
+    dotColor: isUp ? "var(--env-var-color-17)" : "var(--env-var-color-19)",
+  };
+};
+
 const HostsTable = ({ monitors }) => {
   return (
     <div className="current-monitors-table-holder">
@@ -30,17 +49,10 @@ const HostsTable = ({ monitors }) => {
               monitor.url
             );
 
-            const status = HostStatus(
-              monitor.checks[monitor.checks.length - 1].status === true
-                ? "var(--env-var-color-20)"
-                : "var(--env-var-color-21)",
-              monitor.checks[monitor.checks.length - 1].status === true
-                ? "Up"
-                : "Down",
-              monitor.checks[monitor.checks.length - 1].status === true
-                ? "var(--env-var-color-17)"
-                : "var(--env-var-color-19)"
-            );
+            const { color, currentStatus, dotColor } =
+              getLastCheckStatus(monitor);
+
+            const status = HostStatus(color, currentStatus, dotColor);
 
             return (
               <tr className="tbody-row" key={monitor._id}>
