@@ -24,6 +24,11 @@ function App() {
       <Routes>
         <Route exact path="/" element={<HomeLayout />}>
           <Route
+            exact
+            path="/"
+            element={<ProtectedRoute Component={Monitors} />}
+          />
+          <Route
             path="/monitors"
             element={<ProtectedRoute Component={Monitors} />}
           />
@@ -43,9 +48,10 @@ function App() {
             path="settings"
             element={<ProtectedRoute Component={Settings} />}
           />
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/register" element={<Register />} />
         </Route>
+
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/register" element={<Register />} />
         <Route exact path="/demo" element={<Demo />} />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
         <Route path="*" element={<NotFound />} />
