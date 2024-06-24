@@ -1,9 +1,11 @@
 import "./passwordTextField.css";
 import React, { useState } from "react";
-import { InputAdornment, TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useTheme } from "@mui/material";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
 
 /**
  * @component
@@ -16,6 +18,8 @@ import { useTheme } from "@mui/material";
  * @param {"error" | "help"} [props.icon] - The type of icon to display (error or help) (optional)
  * @param {string} props.helperText - The helper text displayed below the text field (optional)
  * @param {boolean} props.error - A flag indicating if the text field has an error (required)
+ * @param {boolean} props.visibility - A flag indicating if the password visibility is toggled (optional)
+ * @param {function} props.setVisibility - Function to toggle password visibility (optional)
  * @returns {JSX.Element} - Renders the password text field component with dynamic icon display
  */
 const PasswordTextField = ({
@@ -28,6 +32,8 @@ const PasswordTextField = ({
   icon,
   helperText,
   error,
+  visibility,
+  setVisibility,
 }) => {
   const theme = useTheme();
 
@@ -48,7 +54,7 @@ const PasswordTextField = ({
       <div className="password-text-field">
         <TextField
           onChange={onChange}
-          type="password"
+          type={visibility ? "text" : "password"}
           autoComplete={autoComplete}
           error={error}
           className="password-text-field-input"
@@ -58,26 +64,43 @@ const PasswordTextField = ({
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <div className="icon-holder">
-                  {error && showIcon && (
-                    <ErrorOutlineIcon
-                      className="text-field-icon"
-                      style={{ fill: "red", width: "16px", height: "16px" }}
-                    />
-                  )}
-                  {error && !showIcon && (
-                    <ErrorOutlineIcon
-                      className="text-field-icon"
-                      style={{ fill: "red", width: "16px", height: "16px" }}
-                    />
-                  )}
-                  {!error && showIcon && (
-                    <HelpOutlineIcon
-                      className="text-field-icon"
-                      style={{ width: "16px", height: "16px" }}
-                    />
-                  )}
-                </div>
+                {visibility !== undefined ? (
+                  <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setVisibility((show) => !show)}
+                  tabIndex={-1}
+                  sx={{
+                    width: "30px",
+                    height: "30px",
+                    "&:focus": {
+                      outline: "none",
+                    },
+                  }}
+                >
+                  {!visibility ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+                ) : (
+                  <div className="icon-holder">
+                    {error && showIcon && (
+                      <ErrorOutlineIcon
+                        className="text-field-icon"
+                        style={{ fill: "red", width: "16px", height: "16px" }}
+                      />
+                    )}
+                    {error && !showIcon && (
+                      <ErrorOutlineIcon
+                        className="text-field-icon"
+                        style={{ fill: "red", width: "16px", height: "16px" }}
+                      />
+                    )}
+                    {!error && showIcon && (
+                      <HelpOutlineIcon
+                        className="text-field-icon"
+                        style={{ width: "16px", height: "16px" }}
+                      />
+                    )}
+                  </div>
+                )}
               </InputAdornment>
             ),
           }}
