@@ -1,4 +1,4 @@
-import { Route, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -15,9 +15,12 @@ import PropTypes from "prop-types";
 
 const ProtectedRoute = ({ Component, ...rest }) => {
   const authState = useSelector((state) => state.auth);
-  console.log(authState);
 
-  return true ? <Component {...rest} /> : <Navigate to="/login" replace />;
+  return authState.authToken ? (
+    <Component {...rest} />
+  ) : (
+    <Navigate to="/login" replace />
+  );
 };
 
 ProtectedRoute.propTypes = {

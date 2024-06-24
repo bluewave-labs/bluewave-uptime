@@ -55,7 +55,7 @@ function NavBar() {
     // Clear auth state
     dispatch(clearAuthState());
     dispatch(clearMonitorState());
-    navigate("/");
+    navigate("/login");
   };
 
   /**

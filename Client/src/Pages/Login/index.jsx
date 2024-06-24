@@ -52,9 +52,7 @@ const Login = () => {
       await loginValidation.validateAsync(form, { abortEarly: false });
       const action = await dispatch(login(form));
       if (action.meta.requestStatus === "fulfilled") {
-        const token = action.payload.data;
-        localStorage.setItem("token", token);
-        navigate("/");
+        navigate("/monitors");
       }
       if (action.meta.requestStatus === "rejected") {
         const error = new Error("Request rejected");

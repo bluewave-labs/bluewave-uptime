@@ -27,14 +27,25 @@ function App() {
             path="/monitors"
             element={<ProtectedRoute Component={Monitors} />}
           />
-
-          <Route path="incidents" element={<Incidents />} />
-          <Route path="status" element={<Status />} />
-          <Route path="integrations" element={<Integrations />} />
-          <Route path="settings" element={<Settings />} />
+          <Route
+            path="incidents"
+            element={<ProtectedRoute Component={Incidents} />}
+          />
+          <Route
+            path="status"
+            element={<ProtectedRoute Component={Status} />}
+          />
+          <Route
+            path="integrations"
+            element={<ProtectedRoute Component={Integrations} />}
+          />
+          <Route
+            path="settings"
+            element={<ProtectedRoute Component={Settings} />}
+          />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
         </Route>
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/login" element={<Login />} />
         <Route exact path="/demo" element={<Demo />} />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
         <Route path="*" element={<NotFound />} />
