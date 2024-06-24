@@ -46,7 +46,14 @@ export const getMonitorsByUserId = createAsyncThunk(
 const monitorsSlice = createSlice({
   name: "monitors",
   initialState,
-  reducers: {},
+  reducers: {
+    clearMonitorState: (state) => {
+      state.isLoading = false;
+      state.monitors = [];
+      state.success = null;
+      state.msg = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // *****************************************************
@@ -86,6 +93,6 @@ const monitorsSlice = createSlice({
   },
 });
 
-export const { setMonitors } = monitorsSlice.actions;
+export const { setMonitors, clearMonitorState } = monitorsSlice.actions;
 
 export default monitorsSlice.reducer;

@@ -50,17 +50,25 @@ const handleAuthRejected = (state, action) => {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    clearAuthState: (state) => {
+      state.authToken = "";
+      state.user = "";
+      state.isLoading = false;
+      state.success = true;
+      state.msg = "Logged out successfully";
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Register thunk
-      .addCase(register.pending, (state, action) => {
+      .addCase(register.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(register.fulfilled, handleAuthFulfilled)
       .addCase(register.rejected, handleAuthRejected)
       // Login thunk
-      .addCase(login.pending, (state, action) => {
+      .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(login.fulfilled, handleAuthFulfilled)
@@ -69,3 +77,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
+export const { clearAuthState } = authSlice.actions;
