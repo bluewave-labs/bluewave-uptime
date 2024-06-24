@@ -13,6 +13,9 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
 import ChevronDown from "../../assets/Images/Icon-chevron-down.png";
+import { clearAuthState } from "../../Features/Auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const settings = ["Profile", "Team", "Invite Colleagues", "Logout"];
 
@@ -30,6 +33,8 @@ const settings = ["Profile", "Team", "Invite Colleagues", "Logout"];
 function NavBar() {
   const theme = useTheme();
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   /**
    * Handles opening the user menu.
@@ -41,10 +46,36 @@ function NavBar() {
   };
 
   /**
+   * Handles logging out the user
+   *
+   */
+  const logout = () => {
+    // Clear auth state
+    dispatch(clearAuthState());
+    navigate("/");
+  };
+
+  /**
    * Handles closing the user menu.
    */
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (setting) => {
     setAnchorElUser(null);
+    switch (setting) {
+      case "Profile":
+        console.log("Profile");
+        break;
+      case "Team":
+        console.log("Team");
+        break;
+      case "Invite Colleagues":
+        console.log("Invite Colleagues");
+        break;
+      case "Logout":
+        logout();
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -151,7 +182,7 @@ function NavBar() {
                 <MenuItem
                   id="menu-item"
                   key={setting}
-                  onClick={handleCloseUserMenu}
+                  onClick={() => handleCloseUserMenu(setting)}
                 >
                   <Typography
                     fontSize="var(--env-var-font-size-medium)"
