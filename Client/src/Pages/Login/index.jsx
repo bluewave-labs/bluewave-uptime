@@ -83,6 +83,7 @@ const Login = () => {
   const handleSignupClick = () => {
     navigate("/register");
   };
+
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
