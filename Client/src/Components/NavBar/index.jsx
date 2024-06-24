@@ -14,6 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
 import ChevronDown from "../../assets/Images/Icon-chevron-down.png";
 import { clearAuthState } from "../../Features/Auth/authSlice";
+import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
+
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -52,6 +54,7 @@ function NavBar() {
   const logout = () => {
     // Clear auth state
     dispatch(clearAuthState());
+    dispatch(clearMonitorState());
     navigate("/");
   };
 
