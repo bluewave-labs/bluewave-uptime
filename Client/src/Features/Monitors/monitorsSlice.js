@@ -94,6 +94,6 @@ const monitorsSlice = createSlice({
   },
 });
 
-export const { setMonitors } = monitorsSlice.actions;
+export const { setMonitors, clearMonitorState } = monitorsSlice.actions;
 
 export default monitorsSlice.reducer;
