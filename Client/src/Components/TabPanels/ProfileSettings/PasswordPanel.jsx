@@ -24,13 +24,14 @@ const PasswordPanel = () => {
 
   //for testing, will tweak when I implement redux slice
   const idToName = {
-    "edit-current-password": "currentPassword",
-    "edit-new-password": "password",
+    "edit-current-password": "password",
+    //TBD - form field naming
+    "edit-new-password": "newpassword",
     "edit-confirm-password": "confirm",
   };
   const [localData, setLocalData] = useState({
-    currentPassword: "",
     password: "",
+    newpassword: "",
     confirm: "",
   });
   const [errors, setErrors] = useState({});
@@ -45,7 +46,7 @@ const PasswordPanel = () => {
 
     const validation = editPasswordValidation.validate(
       { [name]: value },
-      { abortEarly: false, context: { password: localData.password } }
+      { abortEarly: false, context: { newpassword: localData.newpassword } }
     );
 
     setErrors((prev) => {
@@ -66,7 +67,7 @@ const PasswordPanel = () => {
 
     const { error } = editPasswordValidation.validate(localData, {
       abortEarly: false,
-      context: { password: localData.password },
+      context: { newpassword: localData.newpassword },
     });
 
     if (error) {

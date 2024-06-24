@@ -84,12 +84,12 @@ const editProfileValidation = joi.object({
 
 const editPasswordValidation = joi.object({
   // TBD - validation for current password ?
-  currentPassword : joi
+  password : joi
   .string().trim()
   .messages({
     "string.empty": "*Current password is required.",
   }),
-  password: joi
+  newpassword: joi
     .string()
     .trim()
     .min(8)
