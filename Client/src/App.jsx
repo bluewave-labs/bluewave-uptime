@@ -16,13 +16,18 @@ import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ToastComponent from "./Components/Toast";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
     <>
       <Routes>
         <Route exact path="/" element={<HomeLayout />}>
-          <Route path="monitors" element={<Monitors />} />
+          <Route
+            path="/monitors"
+            element={<ProtectedRoute Component={Monitors} />}
+          />
+
           <Route path="incidents" element={<Incidents />} />
           <Route path="status" element={<Status />} />
           <Route path="integrations" element={<Integrations />} />

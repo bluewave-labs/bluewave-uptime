@@ -46,7 +46,14 @@ export const getMonitorsByUserId = createAsyncThunk(
 const monitorsSlice = createSlice({
   name: "monitors",
   initialState,
-  reducers: {},
+  reducers: {
+    clearMonitorState: (state) => {
+      state.isLoading = false;
+      state.monitors = [];
+      state.success = null;
+      state.msg = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // *****************************************************
@@ -79,6 +86,7 @@ const monitorsSlice = createSlice({
         state.monitors = action.payload.data;
       })
       .addCase(getMonitorsByUserId.rejected, (state, action) => {
+        console.log(action);
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
