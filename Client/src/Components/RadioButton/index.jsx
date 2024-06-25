@@ -25,8 +25,10 @@ function RadioButton(props) {
   return (
     <div className="custom-radio-button">
       <FormControlLabel
-        value="check"
+        checked={props.checked}
+        value={props.value}
         control={<Radio size={props.size} />}
+        onChange={props.onChange}
         label={
           <div>
             <div className="service-check-list-title">{props.title}</div>
@@ -43,10 +45,6 @@ RadioButton.propTypes = {
   title: PropTypes.string.isRequired,
   desc: PropTypes.string,
   size: PropTypes.string,
-};
-
-RadioButton.defaultProps = {
-  size: "small",
 };
 
 export default RadioButton;

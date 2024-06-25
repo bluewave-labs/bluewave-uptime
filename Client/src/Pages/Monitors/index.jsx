@@ -1,4 +1,4 @@
-// import CreateNewMonitor from "./CreateNewMonitor";
+import CreateNewMonitor from "./CreateNewMonitor";
 import CurrentStats from "./CurrentStats";
 import "./index.css";
 import { useEffect } from "react";
