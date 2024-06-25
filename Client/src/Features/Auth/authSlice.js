@@ -18,7 +18,10 @@ export const register = createAsyncThunk(
       const res = await axios.post(`${BASE_URL}/auth/register`, form);
       return res.data;
     } catch (error) {
-      return thunkApi.rejectWithValue(error.response.data);
+      if (error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -28,7 +31,10 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
     const res = await axios.post(`${BASE_URL}/auth/login`, form);
     return res.data;
   } catch (error) {
-    return thunkApi.rejectWithValue(error.response.data);
+    if (error.response && error.response.data) {
+      return thunkApi.rejectWithValue(error.response.data);
+    }
+    return thunkApi.rejectWithValue(error.message);
   }
 });
 
@@ -43,8 +49,10 @@ const handleAuthFulfilled = (state, action) => {
 };
 const handleAuthRejected = (state, action) => {
   state.isLoading = false;
-  state.success = action.payload.success;
-  state.msg = action.payload.msg;
+  state.success = false;
+  state.msg = action.payload
+    ? action.payload.msg
+    : "Failed to login or register";
 };
 
 const authSlice = createSlice({

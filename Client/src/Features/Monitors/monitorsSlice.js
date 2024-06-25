@@ -18,7 +18,10 @@ export const getMonitors = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      return thunkApi.rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -38,7 +41,10 @@ export const getMonitorsByUserId = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      return thunkApi.rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -70,8 +76,10 @@ const monitorsSlice = createSlice({
       })
       .addCase(getMonitors.rejected, (state, action) => {
         state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Getting montiors failed";
       })
       // *****************************************************
       // Monitors by userId
@@ -86,10 +94,11 @@ const monitorsSlice = createSlice({
         state.monitors = action.payload.data;
       })
       .addCase(getMonitorsByUserId.rejected, (state, action) => {
-        console.log(action);
         state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Getting montiors failed";
       });
   },
 });
