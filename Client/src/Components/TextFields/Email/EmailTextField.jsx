@@ -19,7 +19,8 @@ import { useTheme } from "@mui/material";
  * @param {React.Element} props.icon - The icon to be displayed in the text field.
  * @param {string} props.helperText - The helper text to be displayed below the text field.
  * @param {boolean} props.error - If true, the text field will indicate an error state.
- *
+ * @param {boolean} props.disabled - If true, the text field will be disabled and cannot be interacted with.
+ * 
  * @example
  * // To use this component, import it and use it in your JSX like this:
  * <EmailTextField id="email" variant="outlined" placeholder="Enter your email" />
@@ -38,6 +39,7 @@ const EmailTextField = ({
   icon,
   helperText,
   error,
+  disabled
 }) => {
   const theme = useTheme();
 
@@ -65,6 +67,7 @@ const EmailTextField = ({
           variant={variant}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          disabled={disabled}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -81,7 +84,7 @@ const EmailTextField = ({
                       style={{ fill: "red", width: "16px", height: "16px" }}
                     />
                   )}
-                  {!error && showIcon && (
+                  {!error && showIcon && !disabled && (
                     <HelpOutlineIcon
                       className="text-field-icon"
                       style={{ width: "16px", height: "16px" }}

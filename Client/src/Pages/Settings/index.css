@@ -171,11 +171,19 @@
   }
 }
 
-.settings .MuiStack-root:has(p.MuiTypography-root.input-error){
+.settings .MuiStack-root:has(p.MuiTypography-root.input-error) {
   position: relative;
   margin-bottom: 8px;
 }
-.settings p.MuiTypography-root.input-error{
+.settings .text-field-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px !important;
+  height: 18px !important;
+  opacity: 0.8;
+}
+.settings p.MuiTypography-root.input-error {
   color: var(--env-var-color-24);
   opacity: 0.8;
   position: absolute;
@@ -187,10 +195,10 @@
 }
 
 .edit-profile-form__wrapper .MuiFormControl-root,
-.edit-password-form__wrapper .MuiFormControl-root{
+.edit-password-form__wrapper .MuiFormControl-root {
   width: 100%;
 }
 .edit-profile-form__wrapper .MuiStack-root:has(.MuiFormControl-root),
-.edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root){
+.edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root) {
   margin: 0;
 }

@@ -23,18 +23,20 @@ const ProfilePanel = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const { user, isLoading } = useSelector((state) => state.auth);
-  console.log(user);
+  const { user, authToken, isLoading } = useSelector((state) => state.auth);
   const idToName = {
     "edit-first-name": "firstname",
     "edit-last-name": "lastname",
-    "edit-email": "email",
+    //Disabled for now, will revisit in the future
+    // "edit-email": "email",
   };
   const [localData, setLocalData] = useState({
     firstname: user.firstname,
     lastname: user.lastname,
-    email: user.email,
-    profilePicUrl: ""
+    //Disabled for now, will revisit in the future
+    // email: user.email,
+    //TODO - upload picture
+    profilePicUrl: "placeholder",
   });
   const [errors, setErrors] = useState({});
   const [isOpen, setIsOpen] = useState(false);
@@ -73,13 +75,25 @@ const ProfilePanel = () => {
     }, 2000);
   };
   //TODO - implement update profile function
-  const handleUpdatePicture = () => {};
+  const handleUpdatePicture = () => {
+    setLocalData((prev) => ({ ...prev, profilePicUrl: file }));
+    console.log(localData);
+  };
   //TODO - implement delete account function
   const handleDeleteAccount = () => {};
   //TODO - implement save profile function
   const handleSaveProfile = (event) => {
     event.preventDefault();
-    dispatch(update(user._id, localData));
+    if (
+      localData.firstname === user.firstname &&
+      localData.lastname === user.lastname &&
+      localData.profilePicUrl === user.profilePicUrl
+    ) {
+      //TODO - add toast(profile data is unchanged) and maybe disable button
+      return;
+    }
+
+    dispatch(update({ authToken, localData }));
   };
 
   return (
@@ -141,18 +155,19 @@ const ProfilePanel = () => {
               Email
             </Typography>
             <Typography variant="h5" component="p">
-              After updating, you'll receive a confirmation email.
+              This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
           <Stack>
             <EmailTextField
               id="edit-email"
               label={null}
-              value={localData.email}
+              value={user.email}
               placeholder="Enter your email"
               autoComplete="email"
-              onChange={handleChange}
-              error={errors[idToName["edit-email"]] ? true : false}
+              // onChange={handleChange}
+              // error={errors[idToName["edit-email"]] ? true : false}
+              disabled={true}
             />
             {errors[idToName["edit-email"]] ? (
               <Typography variant="h5" component="p" className="input-error">
@@ -214,7 +229,7 @@ const ProfilePanel = () => {
               level="primary"
               label="Save"
               onClick={handleSaveProfile}
-              isLoading={false}
+              isLoading={isLoading}
               loadingText="Saving..."
               disabled={Object.keys(errors).length !== 0 && true}
               sx={{

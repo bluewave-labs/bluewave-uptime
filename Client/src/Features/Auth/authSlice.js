@@ -34,12 +34,21 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
 
 export const update = createAsyncThunk(
   "auth/update",
-  async (user_id, form, thunkApi) => {
+  async (data, thunkApi) => {
+    const { authToken: token, localData: form } = data;
+    const user = jwtDecode(token);
     try {
-      const res = await axios.post(`${BASE_URL}/auth/user/${user_id}`, form);
+      //1.5s delay to show loading spinner
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       return res.data;
     } catch (error) {
-      console.log(error);
       return thunkApi.rejectWithValue(error.response.data);
     }
   }
@@ -68,6 +77,12 @@ const handleAuthRejected = (state, action) => {
   state.success = action.payload.success;
   state.msg = action.payload.msg;
 };
+const handleUpdateFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+  state.user = action.payload.data;
+}
 
 const authSlice = createSlice({
   name: "auth",
@@ -99,7 +114,7 @@ const authSlice = createSlice({
       .addCase(update.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(update.fulfilled, handleAuthFulfilled)
+      .addCase(update.fulfilled, handleUpdateFulfilled)
       .addCase(update.rejected, handleAuthRejected);
   },
 });
