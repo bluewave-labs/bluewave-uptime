@@ -7,6 +7,7 @@ import HomeLayout from "./Layouts/HomeLayout";
 import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
 import Monitors from "./Pages/Monitors";
+import CreateNewMonitor from "./Pages/CreateNewMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
@@ -31,6 +32,10 @@ function App() {
           <Route
             path="/monitors"
             element={<ProtectedRoute Component={Monitors} />}
+          />
+          <Route
+            path="/monitors/create"
+            element={<ProtectedRoute Component={CreateNewMonitor} />}
           />
           <Route
             path="incidents"

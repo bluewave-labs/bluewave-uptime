@@ -3,6 +3,7 @@ import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import CurrentMonitors from "../../Components/CurrentMonitors";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 /**
  * CurrentStats displays the current status of monitor
@@ -12,6 +13,7 @@ import { useSelector } from "react-redux";
  */
 
 const CurrentStats = ({ monitors }) => {
+  const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
   const up = monitors.reduce((acc, cur) => {
     if (cur.checks.length > 0) {
@@ -38,6 +40,9 @@ const CurrentStats = ({ monitors }) => {
         <Button
           level="primary"
           label="Create new monitor"
+          onClick={() => {
+            navigate("/monitors/create");
+          }}
           sx={{ padding: "10px 20px", fontSize: "13px" }}
         />
       </div>
