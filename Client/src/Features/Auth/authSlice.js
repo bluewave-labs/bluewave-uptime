@@ -32,6 +32,28 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   }
 });
 
+export const update = createAsyncThunk(
+  "auth/update",
+  async (user_id, form, thunkApi) => {
+    try {
+      const res = await axios.post(`${BASE_URL}/auth/user/${user_id}`, form);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteAccount = createAsyncThunk(
+  "auth/delete",
+  async (form, thunkApi) => {
+    try {
+      //TODO
+    } catch (error) {}
+  }
+);
+
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
@@ -72,7 +94,13 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(login.fulfilled, handleAuthFulfilled)
-      .addCase(login.rejected, handleAuthRejected);
+      .addCase(login.rejected, handleAuthRejected)
+      // Update thunk
+      .addCase(update.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(update.fulfilled, handleAuthFulfilled)
+      .addCase(update.rejected, handleAuthRejected);
   },
 });
 

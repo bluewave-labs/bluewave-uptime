@@ -32,11 +32,11 @@
 .announcement-tile {
   border-color: var(--env-var-color-29);
 }
-[class$="-form"] {
+.settings [class$="-form"] {
   width: inherit;
 }
-[class$="__wrapper"],
-[class$="__wrapper compact"] {
+.settings [class$="__wrapper"],
+.settings [class$="__wrapper compact"] {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
