@@ -55,7 +55,10 @@ export const update = createAsyncThunk(
       });
       return res.data;
     } catch (error) {
-      return thunkApi.rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -90,7 +93,14 @@ const handleUpdateFulfilled = (state, action) => {
   state.success = action.payload.success;
   state.msg = action.payload.msg;
   state.user = action.payload.data;
-}
+};
+const handleUpdateRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = false;
+  state.msg = action.payload
+    ? action.payload.msg
+    : "Failed to update profile data.";
+};
 
 const authSlice = createSlice({
   name: "auth",
@@ -123,7 +133,7 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(update.fulfilled, handleUpdateFulfilled)
-      .addCase(update.rejected, handleAuthRejected);
+      .addCase(update.rejected, handleUpdateRejected);
   },
 });
 
