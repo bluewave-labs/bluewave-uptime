@@ -1,7 +1,6 @@
 import CreateNewMonitor from "./CreateNewMonitor";
 import CurrentStats from "./CurrentStats";
 import "./index.css";
-import React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -19,7 +18,7 @@ const Monitors = () => {
   return (
     <div className="monitors">
       <CreateNewMonitor />
-      {/* <CurrentStats monitors={monitorState.monitors} /> */}
+      <CurrentStats monitors={monitorState.monitors} />
     </div>
   );
 };
