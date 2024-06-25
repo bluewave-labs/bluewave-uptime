@@ -24,6 +24,10 @@
   height: var(--env-var-spacing-2);
 }
 
+.monitors-gaps-small-plus {
+  height: var(--env-var-spacing-1-plus);
+}
+
 .new-monitor-header {
   color: var(--env-var-color-1);
   font-size: var(--env-var-font-size-large-plus);
@@ -42,4 +46,38 @@
 
 .host-status-box-text {
   font-size: var(--env-var-font-size-medium);
+}
+
+.monitors-dropdown-holder {
+  padding-left: 30px;
+}
+
+#ports-list {
+  width: 172.92px;
+  height: 12px;
+  font-size: var(--env-var-font-size-small);
+  align-items: center;
+}
+
+.incident-notif-config-title,
+.adv-setting-title {
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-medium);
+}
+
+.adv-setting-title {
+  font-weight: 500;
+}
+
+.config-box-inputs,
+.service-check-list,
+.incident-notif-config,
+.advanced-setting-config,
+.proxy-setting-config {
+  padding-right: 40px;
+}
+
+.monitors-create-button-holder {
+  display: flex;
+  justify-content: end;
 }
