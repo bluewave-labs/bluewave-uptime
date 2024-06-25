@@ -17,7 +17,6 @@ const Monitors = () => {
 
   return (
     <div className="monitors">
-      <CreateNewMonitor />
       <CurrentStats monitors={monitorState.monitors} />
     </div>
   );
