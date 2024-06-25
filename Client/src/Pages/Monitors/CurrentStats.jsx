@@ -2,6 +2,7 @@ import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import CurrentMonitors from "../../Components/CurrentMonitors";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 
 /**
  * CurrentStats displays the current status of monitor
@@ -11,6 +12,7 @@ import PropTypes from "prop-types";
  */
 
 const CurrentStats = ({ monitors }) => {
+  const authState = useSelector((state) => state.auth);
   const up = monitors.reduce((acc, cur) => {
     if (cur.checks.length > 0) {
       return cur.checks[cur.checks.length - 1].status === true ? acc + 1 : acc;
@@ -30,7 +32,9 @@ const CurrentStats = ({ monitors }) => {
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-bar">
-        <div className="monitors-bar-title">Hello, Jackie</div>
+        <div className="monitors-bar-title">
+          Hello, {authState.user.firstname}
+        </div>
         <Button
           level="primary"
           label="Create new monitor"
