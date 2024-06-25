@@ -94,7 +94,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
 
 ---
 
-### Getting Started (Server)
+### Getting Started (Server) <a id="server"></a>
 
 #### <u>Docker Quickstart</u> <a id="docker-quickstart"></a>
 
@@ -135,18 +135,19 @@ That's it, the server is ready to use.
 
 Configure the server with the following environmental variables:
 
-| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values     |
-| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------- |
-| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                     |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                     |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB` |
-| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                     |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                     |
-| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                     |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                     |
-| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                     |
-| REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                     |
-| REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                     |
+| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values                                  |
+| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                                                  |
+| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                                                  |
+| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB`                              |
+| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                                                  |
+| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                                                  |
+| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                                                  |
+| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                                                  |
+| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                                                  |
+| REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                                                  |
+| REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                                                  |
+| TOKEN_TTL            | Optional          | string    | Time for token to live                                                                      | In vercel/ms format https://github.com/vercel/ms |
 
 <br/>
 
