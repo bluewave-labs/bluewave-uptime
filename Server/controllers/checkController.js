@@ -4,6 +4,7 @@ const {
   getChecksParamValidation,
   deleteChecksParamValidation,
 } = require("../validation/joi");
+const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "check";
 
 const createCheck = async (req, res, next) => {
@@ -23,7 +24,7 @@ const createCheck = async (req, res, next) => {
     const check = await req.db.createCheck(checkData);
     return res
       .status(200)
-      .json({ success: true, msg: "Check created", data: check });
+      .json({ success: true, msg: successMessages.CHECK_CREATE, data: check });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -45,7 +46,7 @@ const getChecks = async (req, res, next) => {
     const checks = await req.db.getChecks(req.params.monitorId);
     return res
       .status(200)
-      .json({ success: true, msg: "Checks retrieved", data: checks });
+      .json({ success: true, msg: successMessages.CHECK_GET, data: checks });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -67,7 +68,11 @@ const deleteChecks = async (req, res, next) => {
     const deletedCount = await req.db.deleteChecks(req.params.monitorId);
     return res
       .status(200)
-      .json({ success: true, msg: "Checks deleted", data: { deletedCount } });
+      .json({
+        success: true,
+        msg: successMessages.CHECK_DELETE,
+        data: { deletedCount },
+      });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

@@ -22,13 +22,28 @@ export const getMonitors = createAsyncThunk(
   }
 );
 
+export const getMonitorsByUserId = createAsyncThunk(
+  "montiors/getMonitorsByUserId",
+  async (token, thunkApi) => {
+    try {
+      // TODO get userId and make request
+      console.log(token);
+    } catch (error) {
+      return thunkApi.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const monitorsSlice = createSlice({
   name: "monitors",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getMonitors.pending, (state, action) => {
+      // *****************************************************
+      // All Monitors
+      // *****************************************************
+      .addCase(getMonitors.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getMonitors.fulfilled, (state, action) => {
@@ -39,6 +54,24 @@ const monitorsSlice = createSlice({
         state.monitors = action.payload.data;
       })
       .addCase(getMonitors.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      // *****************************************************
+      // Monitors by userId
+      // *****************************************************
+
+      .addCase(getMonitorsByUserId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getMonitorsByUserId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.msg;
+        console.log(action.payload);
+        state.monitors = action.payload.data;
+      })
+      .addCase(getMonitorsByUserId.rejected, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;

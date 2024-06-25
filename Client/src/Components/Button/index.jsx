@@ -36,6 +36,7 @@ const levelConfig = {
  * @component
  * @param {Object} props
  * @param {'primary' | 'secondary' | 'tertiary' | 'error' | 'imagePrimary' | 'imageSecondary' | 'imageTertiary'} props.level - The level of the button
+ * @param {string} props.type - The type of the button
  * @param {string} props.label - The label of the button
  * @param {React.ReactNode} props.img - Image for button
  * @param {boolean} [props.disabled] - Whether the button is disabled
@@ -44,19 +45,23 @@ const levelConfig = {
  * @returns {JSX.Element}
  * @example
  * // Render an error button
- * <Button level="error" label="Error" disabled sx={{marginTop: "1rem"}}/>
+ * <Button type="submit" level="error" label="Error" disabled sx={{marginTop: "1rem"}}/>
  */
 
-const Button = ({ level, label, disabled, img, onClick, sx }) => {
+const Button = ({ type, level, label, disabled, img, onClick, sx }) => {
   const { variant, color } = levelConfig[level];
   return (
     <MuiButton
+      type={type}
       variant={variant}
       color={color}
       disabled={disabled}
       onClick={onClick}
       sx={{
         textTransform: "none",
+        "&:focus": {
+          outline: "none",
+        },
         ...sx,
       }}
     >
@@ -67,6 +72,7 @@ const Button = ({ level, label, disabled, img, onClick, sx }) => {
 };
 
 Button.propTypes = {
+  type: PropTypes.string,
   level: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   img: PropTypes.node,

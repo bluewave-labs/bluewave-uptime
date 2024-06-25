@@ -26,6 +26,23 @@ const editUserBodyValidation = joi.object({
   profilePicUrl: joi.string(),
 });
 
+const recoveryValidation = joi.object({
+  email: joi
+    .string()
+    .email({ tlds: { allow: false } })
+    .required(),
+});
+
+const recoveryTokenValidation = joi.object({
+  recoveryToken: joi.string().required(),
+});
+
+const newPasswordValidation = joi.object({
+  recoveryToken: joi.string().required(),
+  password: joi.string().min(8).required(),
+  confirm: joi.string(),
+});
+
 //****************************************
 // Monitors
 //****************************************
@@ -43,7 +60,8 @@ const monitorValidation = joi.object({
   userId: joi.string().required(),
   name: joi.string().required(),
   description: joi.string().required(),
-  url: joi.string().uri().required(),
+  type: joi.string().required(),
+  url: joi.string().required(),
   isActive: joi.boolean(),
   interval: joi.number(),
 });
@@ -120,6 +138,9 @@ const deleteChecksParamValidation = joi.object({
 module.exports = {
   loginValidation,
   registerValidation,
+  recoveryValidation,
+  recoveryTokenValidation,
+  newPasswordValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,

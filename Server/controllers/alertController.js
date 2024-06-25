@@ -1,4 +1,3 @@
-const express = require("express");
 const logger = require("../utils/logger");
 require("dotenv").config();
 const {
@@ -11,8 +10,7 @@ const {
   editAlertBodyValidation,
   deleteAlertParamValidation,
 } = require("../validation/joi");
-const { get } = require("mongoose");
-
+const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "alerts";
 
 /**
@@ -40,7 +38,7 @@ const createAlert = async (req, res, next) => {
     const alert = await req.db.createAlert(alertData);
     return res
       .status(200)
-      .json({ success: true, msg: "Alert created", data: alert });
+      .json({ success: true, msg: successMessages.ALERT_CREATE, data: alert });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -68,9 +66,11 @@ const getAlertsByUserId = async (req, res, next) => {
 
   try {
     const alerts = await req.db.getAlertsByUserId(req.params.userId);
-    return res
-      .status(200)
-      .json({ success: true, msg: "Got alerts", data: alerts });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.ALERT_GET_BY_USER,
+      data: alerts,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -92,7 +92,7 @@ const getAlertsByMonitorId = async (req, res, next) => {
     const alerts = await req.db.getAlertsByMonitorId(req.params.monitorId);
     return res.status(200).json({
       success: true,
-      msg: "Got alerts by Monitor",
+      msg: successMessages.ALERT_GET_BY_MONITOR,
       data: alerts,
     });
   } catch (error) {
@@ -116,7 +116,7 @@ const getAlertById = async (req, res, next) => {
     const alert = await req.db.getAlertById(req.params.alertId);
     return res.status(200).json({
       success: true,
-      msg: "Got Alert By alertID",
+      msg: successMessages.ALERT_GET_BY_ID,
       data: alert,
     });
   } catch (error) {
@@ -143,7 +143,7 @@ const editAlert = async (req, res, next) => {
     const alert = await req.db.editAlert(req.params.alertId, alertData);
     return res.status(200).json({
       success: true,
-      msg: "Edited alert",
+      msg: successMessages.ALERT_EDIT,
       data: alert,
     });
   } catch (error) {
@@ -166,7 +166,7 @@ const deleteAlert = async (req, res, next) => {
     const deleted = await req.db.deleteAlert(req.params.alertId);
     return res.status(200).json({
       success: true,
-      msg: "Deleted alert",
+      msg: successMessages.ALERT_DELETE,
       data: deleted,
     });
   } catch (error) {

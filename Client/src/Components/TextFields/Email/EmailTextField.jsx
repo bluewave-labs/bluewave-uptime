@@ -32,6 +32,7 @@ const EmailTextField = ({
   label = "Email",
   variant,
   placeholder,
+  autoComplete,
   icon,
   helperText,
   error,
@@ -60,6 +61,7 @@ const EmailTextField = ({
           id={id}
           variant={variant}
           placeholder={placeholder}
+          autoComplete={autoComplete}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

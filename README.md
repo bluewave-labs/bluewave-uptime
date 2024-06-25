@@ -10,18 +10,34 @@
 
 # BlueWave Uptime
 
-BlueWave uptime monitoring application
+BlueWave Uptime is an open source server monitoring application. It is a tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performing optimally, providing real-time alerts and reports on the availability, downtime, and response time of the monitored services.
+
+## Contributing
+
+You are welcome to provide contributions to the project. It uses React on the FE, and Nodejs and MongoDB on the BE, hence if you are comfortable with working with those technologies, you are encouraged to send your PRs. Please read [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md)
+
+Note that We have a Figma file that includes:
+
+- All the dashboard elements and components
+- The design guideline for the app
+
+You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). Since it is read-only, we encourage you to copy to your own Figma page, then work on it.
 
 ## Getting Started
 
 - Clone this repository to your local machine
 
 1.  [Installation (Client)](#client)
-2.  [Installation (Server)](#server)
-3.  [Configuration(Server)](#config-server)
-    - [Environment](#environmental-variables)
-    - [Database](#databases)
-      - [Docker Images](#docker-images)
+2.  [Configuration(Client)](#config-client)
+    - [Environment](#env-vars-client)
+3.  [Getting Started (Server)](#server)
+    - [Docker Compose Quickstart](#docker-quickstart)
+    - [Manual Installation](#manual-install)
+      - [Install Server](#install-server)
+      - [Environment](#env-vars-server)
+      - [Database](#databases)
+        - [(Optional) Dockerised Databases](#optional-docker-databases)
+      - [Start Server](#start-server)
 4.  [Endpoints](#endpoints)
     ###### Auth
     - <code>POST</code> [/api/v1/auth/register](#post-register)
@@ -55,29 +71,67 @@ BlueWave uptime monitoring application
 
 ### Client
 
-#### Installation
+#### <u>Installation</u>
 
 1.  Change directory to the `Client` directory
 2.  Install all dependencies by running `npm install`
 
-#### Starting Development Server
+<br/>
+
+#### <u>Configuration</u> <a id="config-client"></a>
+
+##### Environmental Variables <a id="env-vars-client"></a>
+
+| ENV Variable Name     | Required/Optional | Type     | Description        | Accepted Values |
+| --------------------- | ----------------- | -------- | ------------------ | --------------- |
+| VITE_APP_API_BASE_URL | Required          | `string` | Base URL of server | {host}/api/v1   |
+
+<br/>
+
+#### <u>Starting Development Server</u>
 
 1.  Run `npm run dev` to start the development server.
 
 ---
 
-### Server
+### Getting Started (Server)
 
-#### Installation
+#### <u>Docker Quickstart</u> <a id="docker-quickstart"></a>
+
+The fastest way to start the server is to use our Dockerfiles and [Docker Compose](https://docs.docker.com/compose/).
+
+To get the server up and running you need to:
+
+1. In the `Server/docker` directory run the build script `build_images.sh` to build docker images for the server, Redis database, and MongoDB database.
+2. In the `Server/docker` directory, create a `.env` file with the [requried environtmental variables](#env-vars-server). Sample file:
+
+```
+CLIENT_HOST="http://localhost:5173"
+JWT_SECRET="my_secret"
+DB_TYPE="MongoDB"
+DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
+REDIS_HOST="redis"
+REDIS_PORT=6379
+SYSTEM_EMAIL_ADDRESS="<email>"
+SENDGRID_API_KEY="<api_key>"
+LOGIN_PAGE_URL="<login_page"
+```
+
+3.  In the `Server/docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all three images.
+
+That's it, the server is ready to use.
+<br/>
+
+#### <u>Manual Install</u> <a id="manual-install"></a>
+
+##### Install Server <a id="install-server"></a>
 
 1.  Change directory to the `Server` directory
 2.  Install all dependencies by running `npm install`
 
----
+<br/>
 
-#### Configuration <a id="config-server"></a>
-
-##### Environmental Variables
+##### Environmental Variables <a id="env-vars-server"></a>
 
 Configure the server with the following environmental variables:
 
@@ -94,50 +148,53 @@ Configure the server with the following environmental variables:
 | REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                     |
 | REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                     |
 
----
+<br/>
 
-##### Databases
+##### Databases <a id="databases"></a>
 
 This project requires a number of databases to run:
 
 1.  Main database for the application. This project includes an implementation for a MongoDB database as well as a MongoDB Docker image.
 2.  A Redis database is required for the Queue implementation in the PingService. This project includes a Redis docker image.
 
-You may run your own databases locally, or you may use the docker images included in the project to get up and running quickly.
+You may use the included Dockerfiles to spin up databases quickly if you wish.
 
-###### (Optional) Running Docker Images <a id="docker-images"></a>
+###### (Optional) Dockerised Databases <a id="optional-docker-databases"></a>
 
-Docker images are located in `./Server/docker`
+Dockerfiles for the server and databases are located in the `./Server/docker` directory
 
 <details>
 <summary><b>MongoDB Image</b></summary>
-Located in `./Server/docker/mongo`
+Location: `./Server/docker/mongoDB.Dockerfile`
 
-The `./Server/docker/mongo/mongo_data` folder should be mounted to the MongoDB container in order to persist data.
+The `./Server/docker/mongo/data` directory should be mounted to the MongoDB container in order to persist data.
 
-From the `mongo` folder run
+From the `Server/docker` directory run
 
-1.  Build the image: `docker build -t <db_image_name> .`
-2.  Run the docker image: `docker run -d -p 27017:27017 -v $(pwd)/../mongo/mongo_data:/data/db --name uptime_database_mongo uptime_database_mongo`
+1.  Build the image: `docker build -f mongoDB.Dockerfile -t uptime_database_mongo .`
+2.  Run the docker image: `docker run -d -p 27017:27017 -v $(pwd)/mongo/data:/data/db --name uptime_database_mongo uptime_database_mongo`
 
 </details>
 <details>
 <summary><b>Redis Image</b></summary>
-Located in `./Server/docker/redis`
+Location `./Server/docker/redislDockerfile`
 
-the `./Server/docker/redis/redis_data` folder should be mounted to the Redis container in order to persist data.
+the `./Server/docker/redis/data` directory should be mounted to the Redis container in order to persist data.
 
-From the `Redis` folder run
+From the `Server/docker` directory run
 
-1.  Build the image: `docker build -t <db_image_name>`
-2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/../redis/redis_data:/data --name uptime_redis uptime_redis`
+1.  Build the image: `docker build -f redis.Dockerfile -t uptime_redis .`
+2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`
 </details>
+<br/>
 
----
+##### Starting the Development Server <a id="start-server"></a>
 
-#### Starting the Development Server
+- run `npm run dev` to start the development server
 
-1.  run `npm run dev` to start the development server
+OR
+
+- run `node index.js` to start server
 
 ---
 
@@ -638,18 +695,43 @@ curl --request GET \
 ```json
 {
   "success": true,
-  "msg": "Monitor found",
+  "msg": "Got monitor by Id successfully",
   "data": {
-    "_id": "664d070786e62625ac612ca1",
-    "userId": "6645079aae0b439371913972",
-    "name": "My Monitor",
-    "description": "Description",
-    "url": "https://monitor0.com",
+    "_id": "6671eb54f7040ece47892f53",
+    "userId": "666c9146c9bfa20db790b1df",
+    "name": "Google Monitor",
+    "description": "Google",
+    "type": "http",
+    "url": "https://www.google.com/404",
     "isActive": true,
-    "interval": 60000,
-    "createdAt": "2024-05-21T20:41:43.051Z",
-    "updatedAt": "2024-05-21T20:45:10.496Z",
-    "__v": 0
+    "interval": 10000,
+    "createdAt": "2024-06-18T20:17:24.112Z",
+    "updatedAt": "2024-06-18T20:17:24.112Z",
+    "__v": 0,
+    "checks": [
+      {
+        "_id": "6671eb5af7040ece47892f61",
+        "monitorId": "6671eb54f7040ece47892f53",
+        "status": false,
+        "responseTime": 145,
+        "expiry": "2024-06-18T20:17:30.246Z",
+        "statusCode": 404,
+        "createdAt": "2024-06-18T20:17:30.246Z",
+        "updatedAt": "2024-06-18T20:17:30.246Z",
+        "__v": 0
+      },
+      {
+        "_id": "6671eb64f7040ece47892f6b",
+        "monitorId": "6671eb54f7040ece47892f53",
+        "status": false,
+        "responseTime": 170,
+        "expiry": "2024-06-18T20:17:40.209Z",
+        "statusCode": 404,
+        "createdAt": "2024-06-18T20:17:40.210Z",
+        "updatedAt": "2024-06-18T20:17:40.210Z",
+        "__v": 0
+      }
+    ]
   }
 }
 ```
@@ -684,31 +766,33 @@ curl --request GET \
 ```json
 {
   "success": true,
-  "msg": "Monitors for user 6645079aae0b439371913972 found",
+  "msg": "Got monitor for 666c9146c9bfa20db790b1df successfully\"",
   "data": [
     {
-      "_id": "664d070786e62625ac612ca1",
-      "userId": "6645079aae0b439371913972",
-      "name": "Wha3",
-      "description": "Description",
-      "url": "https://monitor0.com",
+      "_id": "6671eb54f7040ece47892f53",
+      "userId": "666c9146c9bfa20db790b1df",
+      "name": "Google Monitor",
+      "description": "Google",
+      "type": "http",
+      "url": "https://www.google.com/404",
       "isActive": true,
-      "interval": 60000,
-      "createdAt": "2024-05-21T20:41:43.051Z",
-      "updatedAt": "2024-05-21T20:45:10.496Z",
-      "__v": 0
-    },
-    {
-      "_id": "664e5ccf189c864800debc16",
-      "userId": "6645079aae0b439371913972",
-      "name": "Inserting a new Monitor",
-      "description": "Description",
-      "url": "https://monitor0.com",
-      "isActive": true,
-      "interval": 60000,
-      "createdAt": "2024-05-22T20:59:59.295Z",
-      "updatedAt": "2024-05-22T20:59:59.295Z",
-      "__v": 0
+      "interval": 10000,
+      "createdAt": "2024-06-18T20:17:24.112Z",
+      "updatedAt": "2024-06-18T20:17:24.112Z",
+      "__v": 0,
+      "checks": [
+        {
+          "_id": "6671eb5af7040ece47892f61",
+          "monitorId": "6671eb54f7040ece47892f53",
+          "status": false,
+          "responseTime": 145,
+          "expiry": "2024-06-18T20:17:30.246Z",
+          "statusCode": 404,
+          "createdAt": "2024-06-18T20:17:30.246Z",
+          "updatedAt": "2024-06-18T20:17:30.246Z",
+          "__v": 0
+        }
+      ]
     }
   ]
 }

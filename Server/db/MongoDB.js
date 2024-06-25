@@ -5,7 +5,9 @@ const Check = require("../models/Check");
 const Alert = require("../models/Alert");
 const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
-
+const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
+const { errorMessages, successMessages } = require("../utils/messages");
+const { error } = require("console");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -34,6 +36,9 @@ const insertUser = async (req, res) => {
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
   } catch (error) {
+    if (error.code === DUPLICATE_KEY_CODE) {
+      throw new Error(errorMessages.DB_USER_EXISTS);
+    }
     throw error;
   }
 };
@@ -57,7 +62,7 @@ const getUserByEmail = async (req, res) => {
     if (user) {
       return user;
     } else {
-      throw new Error("User not found");
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
   } catch (error) {
     throw error;
@@ -121,7 +126,7 @@ const validateRecoveryToken = async (req, res) => {
     if (recoveryToken !== null) {
       return recoveryToken;
     } else {
-      throw new Error("Token not found");
+      throw new Error(errorMessages.DB_TOKEN_NOT_FOUND);
     }
   } catch (error) {
     throw error;
@@ -136,6 +141,11 @@ const resetPassword = async (req, res) => {
     const recoveryToken = await validateRecoveryToken(req, res);
     const user = await UserModel.findOne({ email: recoveryToken.email });
 
+    const match = await user.comparePassword(newPassword);
+    if (match === true) {
+      throw new Error(errorMessages.DB_RESET_PASSWORD_BAD_MATCH);
+    }
+
     if (user !== null) {
       user.password = newPassword;
       await user.save();
@@ -146,9 +156,11 @@ const resetPassword = async (req, res) => {
       }).select("-password");
       return userWithoutPassword;
     } else {
-      throw new Error("User not found");
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 //****************************************
@@ -183,7 +195,9 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
-    return monitor;
+    const checks = await Check.find({ monitorId: monitor._id });
+    const monitorWithChecks = { ...monitor.toObject(), checks };
+    return monitorWithChecks;
   } catch (error) {
     throw error;
   }
@@ -200,7 +214,18 @@ const getMonitorById = async (req, res) => {
 const getMonitorsByUserId = async (req, res) => {
   try {
     const monitors = await Monitor.find({ userId: req.params.userId });
-    return monitors;
+    // Map each monitor to include its associated checks
+    const monitorsWithChecks = await Promise.all(
+      monitors.map(async (monitor) => {
+        // Checks are order oldest -> newest
+        const checks = await Check.find({ monitorId: monitor._id }).sort({
+          createdAt: 1,
+        });
+        return { ...monitor.toObject(), checks };
+      })
+    );
+
+    return monitorsWithChecks;
   } catch (error) {
     throw error;
   }
@@ -238,9 +263,22 @@ const deleteMonitor = async (req, res) => {
   try {
     const monitor = await Monitor.findByIdAndDelete(monitorId);
     if (!monitor) {
-      throw new Error(`Monitor with id ${monitorId} not found`);
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
     }
     return monitor;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * DELETE ALL MONITORS (TEMP)
+ */
+
+const deleteAllMonitors = async (req, res) => {
+  try {
+    const deletedCount = await Monitor.deleteMany({});
+    return deletedCount.deletedCount;
   } catch (error) {
     throw error;
   }
@@ -324,11 +362,7 @@ const getChecks = async (monitorId) => {
 const deleteChecks = async (monitorId) => {
   try {
     const result = await Check.deleteMany({ monitorId });
-    if (result.deletedCount > 0) {
-      return result.deletedCount;
-    } else {
-      throw new Error(`No checks found for monitor with id ${monitorId}`);
-    }
+    return result.deletedCount;
   } catch (error) {
     throw error;
   }
@@ -445,9 +479,16 @@ const editAlert = async (alertId, alertData) => {
 const deleteAlert = async (alertId) => {
   try {
     const result = await Alert.findByIdAndDelete(alertId);
-    if (result) {
-      return result;
-    } else throw new Error(`Alert with id ${alertId} not found`);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteAlertByMonitorId = async (monitorId) => {
+  try {
+    const result = await Alert.deleteMany({ monitorId });
+    return result;
   } catch (error) {
     throw error;
   }
@@ -466,6 +507,7 @@ module.exports = {
   getMonitorsByUserId,
   createMonitor,
   deleteMonitor,
+  deleteAllMonitors,
   editMonitor,
   createCheck,
   getChecks,
@@ -476,4 +518,5 @@ module.exports = {
   getAlertById,
   editAlert,
   deleteAlert,
+  deleteAlertByMonitorId,
 };

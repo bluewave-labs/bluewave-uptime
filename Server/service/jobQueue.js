@@ -6,6 +6,9 @@ const connection = {
 };
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
+const { errorMessages, successMessages } = require("../utils/messages");
+const NetworkService = require("./networkService");
+const SERVICE_NAME = "JobQueue";
 
 class JobQueue {
   /**
@@ -18,6 +21,8 @@ class JobQueue {
       connection,
     });
     this.workers = [];
+    this.db = null;
+    this.networkService = null;
   }
 
   /**
@@ -27,9 +32,15 @@ class JobQueue {
    * @returns {Promise<JobQueue>} - Returns a new JobQueue
    *
    */
-  static async createJobQueue() {
+  static async createJobQueue(db) {
     const queue = new JobQueue();
     try {
+      queue.db = db;
+      queue.networkService = new NetworkService(db);
+      const monitors = await db.getAllMonitors();
+      for (const monitor of monitors) {
+        await queue.addJob(monitor.id, monitor);
+      }
       const workerStats = await queue.getWorkerStats();
       await queue.scaleWorkers(workerStats);
       return queue;
@@ -47,8 +58,15 @@ class JobQueue {
     const worker = new Worker(
       QUEUE_NAME,
       async (job) => {
-        // TODO Ping a monitor
-        console.log(`${job.name} completed, workers: ${this.workers.length}`);
+        try {
+          const res = await this.networkService.getStatus(job);
+        } catch (error) {
+          logger.error(`Error processing job ${job.id}: ${error.message}`, {
+            service: SERVICE_NAME,
+            jobId: job.id,
+            error: error,
+          });
+        }
       },
       {
         connection,
@@ -129,7 +147,9 @@ class JobQueue {
           await worker.close();
         } catch (error) {
           // Catch the error instead of throwing it
-          console.error("Error closing worker", error);
+          logger.error(errorMessages.JOB_QUEUE_WORKER_CLOSE, {
+            service: SERVICE_NAME,
+          });
         }
       }
       return true;
@@ -147,7 +167,6 @@ class JobQueue {
   async getJobs() {
     try {
       const jobs = await this.queue.getRepeatableJobs();
-      console.log("jobs", jobs);
       return jobs;
     } catch (error) {
       throw error;
@@ -166,12 +185,39 @@ class JobQueue {
     try {
       await this.queue.add(jobName, payload, {
         repeat: {
-          every: 1000,
-          limit: 100,
+          every: payload.interval,
         },
       });
       const workerStats = await this.getWorkerStats();
       await this.scaleWorkers(workerStats);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a job from the queue.
+   *
+   * @async
+   * @param {Monitor} monitor - The monitor to remove.
+   * @throws {Error}
+   */
+  async deleteJob(monitor) {
+    try {
+      const deleted = await this.queue.removeRepeatable(monitor.id, {
+        every: monitor.interval,
+      });
+      if (deleted) {
+        logger.info(successMessages.JOB_QUEUE_DELETE_JOB, {
+          service: SERVICE_NAME,
+          jobId: monitor.id,
+        });
+      } else {
+        logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
+          service: SERVICE_NAME,
+          jobId: monitor.id,
+        });
+      }
     } catch (error) {
       throw error;
     }
@@ -183,12 +229,23 @@ class JobQueue {
    */
   async obliterate() {
     try {
+      const jobs = await this.getJobs();
+      for (const job of jobs) {
+        await this.queue.remove(job.id);
+      }
+      console.log(jobs);
       await this.queue.obliterate();
+      logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
+        service: SERVICE_NAME,
+      });
       return true;
     } catch (error) {
+      logger.error(errorMessages.JOB_QUEUE_OBLITERATE);
       throw error;
     }
   }
+
+  //TODO Cleanup Queue on shutdown
 }
 
 module.exports = JobQueue;

@@ -1,22 +1,23 @@
 import React from "react";
 import "./barChart.css";
+import PropTypes from "prop-types";
 
-const BarChart = () => {
-  const data = Array.from({ length: 12 }, () =>
-    Math.floor(Math.random() * 100)
-  );
-
+const BarChart = ({ checks = [] }) => {
   return (
     <div className="bar-chart">
-      {data.map((value, index) => (
+      {checks.map((value, index) => (
         <div
           key={index}
-          className={`bar ${index < 6 ? "green" : "red"}`}
-          style={{ height: `${value}%` }}
+          className={`bar ${value.status ? "green" : "red"}`}
+          style={{ height: `${value.responseTime / 3}%` }}
         />
       ))}
     </div>
   );
+};
+
+BarChart.propTypes = {
+  checks: PropTypes.array,
 };
 
 export default BarChart;

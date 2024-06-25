@@ -1,5 +1,4 @@
 import "./announcementsDualButtonWithIcon.css";
-import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material";
@@ -12,6 +11,7 @@ import { useTheme } from "@mui/material";
  * @param {string} props.body - The announcement body text content
  * @param {string} props.esc - The text for the escape button (usually "Close")
  * @param {string} props.primary - The text for the primary button
+ * @param {function} props.closeToast - Function to close the toast notification
  * @returns {JSX.Element} - Renders the announcement dual button with icon component
  */
 
@@ -21,6 +21,7 @@ const AnnouncementsDualButtonWithIcon = ({
   body,
   esc,
   primary,
+  closeToast,
 }) => {
   const theme = useTheme();
 
@@ -40,14 +41,18 @@ const AnnouncementsDualButtonWithIcon = ({
         {body && <div className="announcement-content-body">{body}</div>}
         {(esc || primary) && (
           <div className="announcement-content-controllers">
-            {esc && <div className="controllers-button-esc">{esc}</div>}
+            {esc && (
+              <div className="controllers-button-esc" onClick={closeToast}>
+                {esc}
+              </div>
+            )}
             {primary && (
               <div className="controllers-button-primary">{primary}</div>
             )}
           </div>
         )}
       </div>
-      <div className="announcement-close">
+      <div className="announcement-close" onClick={closeToast}>
         <CloseIcon style={{ fill: "#98A2B3" }} />
       </div>
     </div>
@@ -60,6 +65,7 @@ AnnouncementsDualButtonWithIcon.propTypes = {
   body: PropTypes.string,
   esc: PropTypes.string,
   primary: PropTypes.string,
+  closeToast: PropTypes.func.isRequired,
 };
 
 export default AnnouncementsDualButtonWithIcon;

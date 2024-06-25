@@ -13,6 +13,7 @@ import AnnouncementUpdateSubscription from "../../Components/Announcements/Annou
 import PlayGroundCharts from "./PlayGround-Charts";
 import PlayGroundPopupModals from "./PlayGround-Popup-Modals";
 import PlayGroundTooltips from "./PlayGround-Tooltips";
+import Toast from "../../Components/Toast";
 
 // This Component is just for the development and test
 // purposes and just to see what my components look like while development
@@ -52,6 +53,7 @@ function PlayGround() {
         hasCopyButton={true}
         hintText="This is a hint text to help user."
       />
+      <Toast />
 
       <hr />
       {/* Now, illustration of the Description text fields */}

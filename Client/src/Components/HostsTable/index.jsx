@@ -1,10 +1,6 @@
 import React from "react";
-import HostStatus from "../HostStatus";
-import Host from "../Host";
-import BarChart from "../Charts/BarChart/BarChart";
-import HostActions from "../HostActions";
 
-function HostsTable() {
+const HostsTable = ({ monitors }) => {
   return (
     <div className="current-monitors-table-holder">
       <table className="current-monitors-table">
@@ -17,90 +13,18 @@ function HostsTable() {
           </tr>
         </thead>
         <tbody>
-          <tr className="tbody-row">
-            <td className="tbody-row-cell">
-              {Host("Discord", 100, "var(--env-var-color-17)")}
-            </td>
-            <td className="tbody-row-cell">
-              {HostStatus(
-                "var(--env-var-color-20)",
-                "Up",
-                "var(--env-var-color-17)"
-              )}
-            </td>
-            <td className="tbody-row-cell">
-              <BarChart />
-            </td>
-            <td className="tbody-row-cell actions-cell">{HostActions()}</td>
-          </tr>
-          <tr className="tbody-row">
-            <td className="tbody-row-cell">
-              {Host("Google", 99.9, "var(--env-var-color-17)")}
-            </td>
-            <td className="tbody-row-cell">
-              {HostStatus(
-                "var(--env-var-color-20)",
-                "Up",
-                "var(--env-var-color-17)"
-              )}
-            </td>
-            <td className="tbody-row-cell">
-              <BarChart />
-            </td>
-            <td className="tbody-row-cell actions-cell">{HostActions()}</td>
-          </tr>
-          <tr className="tbody-row">
-            <td className="tbody-row-cell">
-              {Host("NBC", 98.1, "var(--env-var-color-18)")}
-            </td>
-            <td className="tbody-row-cell">
-              {HostStatus(
-                "var(--env-var-color-20)",
-                "Up",
-                "var(--env-var-color-17)"
-              )}
-            </td>
-            <td className="tbody-row-cell">
-              <BarChart />
-            </td>
-            <td className="tbody-row-cell actions-cell">{HostActions()}</td>
-          </tr>
-          <tr className="tbody-row">
-            <td className="tbody-row-cell">
-              {Host("Google", 95.1, "var(--env-var-color-19)")}
-            </td>
-            <td className="tbody-row-cell">
-              {HostStatus(
-                "var(--env-var-color-21)",
-                "Down",
-                "var(--env-var-color-19)"
-              )}
-            </td>
-            <td className="tbody-row-cell">
-              <BarChart />
-            </td>
-            <td className="tbody-row-cell actions-cell">{HostActions()}</td>
-          </tr>
-          <tr className="tbody-row">
-            <td className="tbody-row-cell">
-              {Host("NBC", 99.9, "var(--env-var-color-17)")}
-            </td>
-            <td className="tbody-row-cell">
-              {HostStatus(
-                "var(--env-var-color-15)",
-                "Cannot resolve",
-                "var(--env-var-color-22)"
-              )}
-            </td>
-            <td className="tbody-row-cell">
-              <BarChart />
-            </td>
-            <td className="tbody-row-cell actions-cell">{HostActions()}</td>
-          </tr>
+          {monitors.map((monitor, index) => (
+            <tr className="tbody-row" key={index}>
+              <td className="tbody-row-cell">{monitor.host}</td>
+              <td className="tbody-row-cell">{monitor.status}</td>
+              <td className="tbody-row-cell">{monitor.team}</td>
+              <td className="tbody-row-cell actions-cell">{monitor.actions}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
   );
-}
+};
 
 export default HostsTable;

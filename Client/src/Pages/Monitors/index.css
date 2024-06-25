@@ -1,4 +1,5 @@
-.monitors {
+.monitors,
+.new-monitor {
   width: 70vw;
   padding: 4vw;
 }
@@ -16,9 +17,67 @@
 
 .monitors-stats {
   display: flex;
-  justify-content: space-between;
+  gap: 24px;
 }
 
 .monitors-gaps-medium {
   height: var(--env-var-spacing-2);
+}
+
+.monitors-gaps-small-plus {
+  height: var(--env-var-spacing-1-plus);
+}
+
+.new-monitor-header {
+  color: var(--env-var-color-1);
+  font-size: var(--env-var-font-size-large-plus);
+  font-weight: 600;
+}
+
+.service-check-list-title {
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-medium);
+}
+
+.service-check-list-desc {
+  color: var(--env-var-color-25);
+  font-size: var(--env-var-font-size-small);
+}
+
+.host-status-box-text {
+  font-size: var(--env-var-font-size-medium);
+}
+
+.monitors-dropdown-holder {
+  padding-left: 30px;
+}
+
+#ports-list {
+  width: 172.92px;
+  height: 12px;
+  font-size: var(--env-var-font-size-small);
+  align-items: center;
+}
+
+.incident-notif-config-title,
+.adv-setting-title {
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-medium);
+}
+
+.adv-setting-title {
+  font-weight: 500;
+}
+
+.config-box-inputs,
+.service-check-list,
+.incident-notif-config,
+.advanced-setting-config,
+.proxy-setting-config {
+  padding-right: 40px;
+}
+
+.monitors-create-button-holder {
+  display: flex;
+  justify-content: end;
 }

@@ -1,8 +1,8 @@
 import React from "react";
-import Actions from "../../assets/Images/Icon-setting-actions-gray.png";
+import DashboardSettings from "../DashboardSettingsIcon";
 
 function HostActions() {
-  return <img className="host-actions" src={Actions} alt="Actions" />;
+  return <DashboardSettings />;
 }
 
 export default HostActions;

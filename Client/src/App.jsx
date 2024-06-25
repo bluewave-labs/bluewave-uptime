@@ -15,6 +15,7 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
+import ToastComponent from "./Components/Toast";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/demo" element={<Demo />} />
+        <Route path="/toast" element={<ToastComponent />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

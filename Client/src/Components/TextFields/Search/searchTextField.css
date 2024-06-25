@@ -18,7 +18,7 @@
   width: 150px;
   border: none;
   outline: none;
-  font-size: var(--env-var-font-size-large);
+  font-size: var(--env-var-font-size-medium);
 }
 
 .search-field::placeholder {

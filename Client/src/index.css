@@ -39,6 +39,13 @@
   --env-var-color-22: #4e5ba6;
   --env-var-color-23: #17b26a;
   --env-var-color-24: #d92d20;
+  --env-var-color-25: #667085;
+  --env-var-color-26: #ff1818;
+
+  --env-var-color-27: #fecf60;
+  --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
+  --env-var-color-28: #f79009;
+  --env-var-color-29: #667085;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
@@ -49,6 +56,7 @@
   --env-var-height-1: 100vh;
 
   --env-var-spacing-1: 12px;
+  --env-var-spacing-1-plus: 16px;
   --env-var-spacing-2: 24px;
   --env-var-spacing-3: 32px;
   --env-var-spacing-4: 40px;
@@ -57,6 +65,7 @@
   --env-var-font-size-medium: 13px;
   --env-var-font-size-medium-plus: 14px;
   --env-var-font-size-large: 16px;
+  --env-var-font-size-large-plus: 24px;
   --env-var-font-size-xlarge: 30px;
 
   --env-var-img-width-1: 20px;
@@ -82,10 +91,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  height: 100%;
 }
 
 h1 {
