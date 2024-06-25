@@ -8,6 +8,8 @@ import EmailTextField from "../../TextFields/Email/EmailTextField";
 import StringTextField from "../../TextFields/Text/TextField";
 import Avatar from "../../Avatar";
 import { editProfileValidation } from "../../../Validation/validation";
+import { useDispatch, useSelector } from "react-redux";
+import { update } from "../../../Features/Auth/authSlice";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -19,22 +21,26 @@ import { editProfileValidation } from "../../../Validation/validation";
 
 const ProfilePanel = () => {
   const theme = useTheme();
-  //TODO - use redux loading state
-  //!! - currently all loading buttons are tied to the same state
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  //for testing, will tweak when I implement redux slice
+  const { user, authToken, isLoading } = useSelector((state) => state.auth);
   const idToName = {
     "edit-first-name": "firstname",
     "edit-last-name": "lastname",
-    "edit-email": "email",
+    //Disabled for now, will revisit in the future
+    // "edit-email": "email",
   };
   const [localData, setLocalData] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
+    firstname: user.firstname,
+    lastname: user.lastname,
+    //Disabled for now, will revisit in the future
+    // email: user.email,
+    //TODO - upload picture
+    profilePicUrl: "placeholder",
   });
   const [errors, setErrors] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [loadingPfp, setLoadingPfp] = useState(false);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -43,7 +49,7 @@ const ProfilePanel = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     const validation = editProfileValidation.validate(
       { [name]: value },
       { abortEarly: false }
@@ -63,29 +69,31 @@ const ProfilePanel = () => {
 
   //TODO - implement delete profile picture function
   const handleDeletePicture = () => {
-    setIsLoading(true);
+    setLoadingPfp(true);
     setTimeout(() => {
-      setIsLoading(false);
+      setLoadingPfp(false);
     }, 2000);
   };
   //TODO - implement update profile function
-  const handleUpdatePicture = () => {};
-  const [isOpen, setIsOpen] = useState(false);
-  //TODO - implement delete account function
-  const handleDeleteAccount = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsOpen(false);
-    }, 2000);
+  const handleUpdatePicture = () => {
+    setLocalData((prev) => ({ ...prev, profilePicUrl: file }));
+    console.log(localData);
   };
+  //TODO - implement delete account function
+  const handleDeleteAccount = () => {};
   //TODO - implement save profile function
-  const handleSaveProfile = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsOpen(false);
-    }, 2000);
+  const handleSaveProfile = (event) => {
+    event.preventDefault();
+    if (
+      localData.firstname === user.firstname &&
+      localData.lastname === user.lastname &&
+      localData.profilePicUrl === user.profilePicUrl
+    ) {
+      //TODO - add toast(profile data is unchanged) and maybe disable button
+      return;
+    }
+
+    dispatch(update({ authToken, localData }));
   };
 
   return (
@@ -101,6 +109,7 @@ const ProfilePanel = () => {
             <StringTextField
               id="edit-first-name"
               label={null}
+              value={localData.firstname}
               placeholder="Enter your first name"
               autoComplete="given-name"
               onChange={handleChange}
@@ -125,6 +134,7 @@ const ProfilePanel = () => {
             <StringTextField
               id="edit-last-name"
               label={null}
+              value={localData.lastname}
               placeholder="Enter your last name"
               autoComplete="family-name"
               onChange={handleChange}
@@ -145,17 +155,19 @@ const ProfilePanel = () => {
               Email
             </Typography>
             <Typography variant="h5" component="p">
-              After updating, you'll receive a confirmation email.
+              This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
           <Stack>
             <EmailTextField
               id="edit-email"
               label={null}
+              value={user.email}
               placeholder="Enter your email"
               autoComplete="email"
-              onChange={handleChange}
-              error={errors[idToName["edit-email"]] ? true : false}
+              // onChange={handleChange}
+              // error={errors[idToName["edit-email"]] ? true : false}
+              disabled={true}
             />
             {errors[idToName["edit-email"]] ? (
               <Typography variant="h5" component="p" className="input-error">
@@ -179,8 +191,8 @@ const ProfilePanel = () => {
             {/* TODO - Update placeholder values with redux data */}
             <Avatar
               src="/static/images/avatar/2.jpg"
-              firstName="Jackie"
-              lastName="Dawn"
+              firstName={localData.firstname}
+              lastName={localData.lastname}
               sx={{
                 width: "64px",
                 height: "64px",
@@ -192,7 +204,7 @@ const ProfilePanel = () => {
               level="tertiary"
               label="Delete"
               onClick={handleDeletePicture}
-              isLoading={isLoading}
+              isLoading={loadingPfp}
             />
             {/* TODO - modal popup for update pfp? */}
             <Button
