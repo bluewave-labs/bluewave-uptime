@@ -19,6 +19,7 @@
 
 import { FormControlLabel, Radio } from "@mui/material";
 import React from "react";
+import "./index.css";
 import PropTypes from "prop-types";
 
 function RadioButton(props) {

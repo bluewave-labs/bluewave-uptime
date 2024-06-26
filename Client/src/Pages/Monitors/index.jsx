@@ -17,7 +17,8 @@ const Monitors = () => {
 
   return (
     <div className="monitors">
-      <CurrentStats monitors={monitorState.monitors} />
+      {/* <CurrentStats monitors={monitorState.monitors} /> */}
+      <CreateNewMonitor />
     </div>
   );
 };
