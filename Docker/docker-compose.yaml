@@ -1,11 +1,19 @@
 version: "3"
 services:
+  client:
+    image: uptime_client:latest
+    ports:
+      - "5173:5173"
+    env_file:
+      - client.env
+    depends_on:
+      - server
   server:
     image: uptime_server:latest
     ports:
       - "5000:5000"
     env_file:
-      - .env
+      - server.env
     depends_on:
       - redis
       - mongodb
