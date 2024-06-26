@@ -1,8 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { Button, Container } from "@mui/material";
+import AlertMessage from "./reusable/AlertMessage";
 
-const index = () => {
+const Index = () => {
   const [notification, setNotification] = useState({
     open: false,
     title: "",
@@ -67,9 +68,18 @@ const index = () => {
         >
           Update Alert
         </Button>
+
+        <AlertMessage
+          open={notification.open}
+          type={notification.type}
+          title={notification.title}
+          message={notification.message}
+          dismissText="Dismiss"
+          actionText={notification.actionText}
+        />
       </Container>
     </div>
   );
 };
 
-export default index;
+export default Index;
