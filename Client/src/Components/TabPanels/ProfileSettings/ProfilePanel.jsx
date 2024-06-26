@@ -1,7 +1,14 @@
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Modal,
+  Stack,
+  Typography,
+} from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
 import EmailTextField from "../../TextFields/Email/EmailTextField";
@@ -10,6 +17,9 @@ import Avatar from "../../Avatar";
 import { editProfileValidation } from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../../Features/Auth/authSlice";
+import ImageField from "../../TextFields/Image";
+import DoDisturbAltIcon from "@mui/icons-material/DoDisturbAlt";
+import CloseIcon from "@mui/icons-material/Close";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -39,8 +49,9 @@ const ProfilePanel = () => {
     profilePicUrl: "placeholder",
   });
   const [errors, setErrors] = useState({});
-  const [isOpen, setIsOpen] = useState(false);
-  const [loadingPfp, setLoadingPfp] = useState(false);
+  const [isOpen, setIsOpen] = useState("");
+  const isModalOpen = (name) => isOpen === name;
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -69,16 +80,13 @@ const ProfilePanel = () => {
 
   //TODO - implement delete profile picture function
   const handleDeletePicture = () => {
-    setLoadingPfp(true);
+    setLoading(true);
     setTimeout(() => {
-      setLoadingPfp(false);
+      setLoading(false);
     }, 2000);
   };
   //TODO - implement update profile function
-  const handleUpdatePicture = () => {
-    setLocalData((prev) => ({ ...prev, profilePicUrl: file }));
-    console.log(localData);
-  };
+  const handleUpdatePicture = () => {};
   //TODO - implement delete account function
   const handleDeleteAccount = () => {};
   //TODO - implement save profile function
@@ -94,6 +102,7 @@ const ProfilePanel = () => {
     }
 
     dispatch(update({ authToken, localData }));
+    //TODO - add toast confirmation
   };
 
   return (
@@ -204,13 +213,13 @@ const ProfilePanel = () => {
               level="tertiary"
               label="Delete"
               onClick={handleDeletePicture}
-              isLoading={loadingPfp}
+              isLoading={loading}
             />
             {/* TODO - modal popup for update pfp? */}
             <Button
               level="tertiary"
               label="Update"
-              onClick={handleUpdatePicture}
+              onClick={() => setIsOpen("picture")}
               sx={{
                 color: theme.palette.primary.main,
               }}
@@ -254,7 +263,7 @@ const ProfilePanel = () => {
               <Button
                 level="error"
                 label="Delete account"
-                onClick={() => setIsOpen(true)}
+                onClick={() => setIsOpen("delete")}
               />
             </Box>
           </Stack>
@@ -264,8 +273,8 @@ const ProfilePanel = () => {
       <Modal
         aria-labelledby="modal-delete-account"
         aria-describedby="delete-account-confirmation"
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        open={isModalOpen("delete")}
+        onClose={() => setIsOpen("")}
         disablePortal
       >
         <Stack
@@ -302,7 +311,7 @@ const ProfilePanel = () => {
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsOpen("")}
             />
             <ButtonSpinner
               level="error"
@@ -310,6 +319,71 @@ const ProfilePanel = () => {
               onClick={handleDeleteAccount}
               isLoading={isLoading}
             />
+          </Stack>
+        </Stack>
+      </Modal>
+      <Modal
+        aria-labelledby="modal-update-picture"
+        aria-describedby="update-profile-picture"
+        open={isModalOpen("picture")}
+        onClose={() => setIsOpen("")}
+        disablePortal
+      >
+        <Stack
+          gap="20px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Stack
+            direction="row"
+            mt="-10px"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography id="modal-update-picture" variant="h4" component="h1">
+              Upload Image
+            </Typography>
+            <IconButton
+              onClick={() => setIsOpen("")}
+              sx={{
+                "&:focus": {
+                  outline: "none",
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+          <ImageField id="update-profile-picture" />
+          <Stack direction="row" mt="10px" justifyContent="space-between">
+            <Button level="secondary" label="Edit" disabled />
+            <Stack direction="row" gap="10px" justifyContent="flex-end">
+              <ButtonSpinner
+                level="tertiary"
+                label="Remove"
+                onClick={handleDeletePicture}
+                isLoading={loading}
+              />
+              <ButtonSpinner
+                level="primary"
+                label="Update"
+                onClick={handleUpdatePicture}
+                isLoading={isLoading}
+              />
+            </Stack>
           </Stack>
         </Stack>
       </Modal>
