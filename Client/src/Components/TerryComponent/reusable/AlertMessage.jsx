@@ -10,10 +10,42 @@ const AlertMessage = ({
   message,
   dismissText = "Learn more",
   actionText,
+  close,
+  dismissClose,
 }) => {
+  // Function to determine icon color based on the title
+  const switchIconColor = (type) => {
+    switch (type) {
+      case "release":
+        return "black";
+      case "problem":
+        return "red";
+      case "update":
+        return "green";
+      default:
+        return "blue";
+    }
+  };
+
   return (
     <Snackbar open={open} className="snackbar-main">
-      <Alert onClose={close} severity="info" variant="filled">
+      <Alert
+        onClose={close}
+        severity="info"
+        variant="filled"
+        sx={{
+          width: "100%",
+          backgroundColor: "white",
+          color: "black",
+          border: "2px solid lightgrey",
+          "& .MuiAlert-icon": {
+            color: switchIconColor(type), // Change this to the desired color
+          },
+          "& .MuiButtonBase-root": {
+            color: "grey",
+          },
+        }}
+      >
         <div className="alert-title">{title}</div>
         <div className="alert-message">{message}</div>
         <div className="alert-dismissText-actionText-parent">
@@ -34,6 +66,8 @@ AlertMessage.propTypes = {
   message: PropTypes.string.isRequired,
   dismissText: PropTypes.string,
   actionText: PropTypes.string,
+  close: PropTypes.func,
+  dismissClose: PropTypes.func,
 };
 
 export default AlertMessage;
