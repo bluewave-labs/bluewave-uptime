@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTheme } from "@emotion/react";
+import PropTypes from "prop-types";
 import {
   Box,
   IconButton,
@@ -12,16 +13,15 @@ import "./index.css";
 
 /**
  * @param {Object} props - The component props.
+ * @param {JSX.Element} props.icon - The icon element to display (optional).
+ * @param {string} props.label - The label text for the progress item.
+ * @param {string} props.size - The size information for the progress item.
+ * @param {number} props.progress - The current progress value (0-100).
+ * @param {function} props.onClick - The function to handle click events on the remove button.
  * @returns {JSX.Element} The rendered component.
  */
 
-const ProgressUpload = ({
-  icon,
-  label,
-  size,
-  progress = 0,
-  onClick,
-}) => {
+const ProgressUpload = ({ icon, label, size, progress = 0, onClick }) => {
   const theme = useTheme();
   return (
     <Box
@@ -99,6 +99,14 @@ const ProgressUpload = ({
       </Stack>
     </Box>
   );
+};
+
+ProgressUpload.propTypes = {
+  icon: PropTypes.element, // JSX element for the icon (optional)
+  label: PropTypes.string.isRequired, // Label text for the progress item
+  size: PropTypes.string.isRequired, // Size information for the progress item
+  progress: PropTypes.number.isRequired, // Current progress value (0-100)
+  onClick: PropTypes.func.isRequired, // Function to handle click events on the remove button
 };
 
 export default ProgressUpload;

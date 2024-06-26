@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -6,8 +7,12 @@ import "./index.css";
 
 /**
  * @param {Object} props - The component props.
+ * @param {string} props.id - The unique identifier for the input field.
+ * @param {string} props.picture - The URL of the image to display.
+ * @param {function} props.onChange - The function to handle file input change.
  * @returns {JSX.Element} The rendered component.
  */
+
 const ImageField = ({ id, picture, onChange }) => {
   const theme = useTheme();
 
@@ -110,6 +115,12 @@ const ImageField = ({ id, picture, onChange }) => {
       )}
     </>
   );
+};
+
+ImageField.propTypes = {
+  id: PropTypes.string.isRequired,
+  picture: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default ImageField;
