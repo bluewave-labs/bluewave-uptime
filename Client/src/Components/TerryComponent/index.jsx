@@ -24,6 +24,14 @@ const Index = () => {
     });
   };
 
+  const handleCloseAlertMessage = () => {
+    setNotification({ ...notification, open: false });
+  };
+
+  const handleDismissText = () => {
+    setNotification({ ...notification, open: false });
+  };
+
   return (
     <div>
       <Container style={{ marginTop: "100px", marginLeft: "70px" }}>
@@ -76,6 +84,8 @@ const Index = () => {
           message={notification.message}
           dismissText="Dismiss"
           actionText={notification.actionText}
+          close={handleCloseAlertMessage}
+          dismissClose={handleDismissText}
         />
       </Container>
     </div>

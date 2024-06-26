@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
+import "./AlertMessage.css";
 import PropTypes from "prop-types";
 import { Snackbar, Alert } from "@mui/material";
 

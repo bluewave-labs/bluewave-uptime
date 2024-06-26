@@ -1,0 +1,28 @@
+/* Alert Message.css */
+.snackbar-main {
+  position: relative;
+  top: 0;
+}
+
+.alert-title {
+  font-weight: bold;
+}
+
+.alert-message {
+  margin: 5px 0px 15px 0px;
+}
+
+.alert-dismissText-actionText-parent {
+  display: flex;
+}
+
+.alert-dismissText {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.alert-actionText {
+  color: #0080ff;
+  font-weight: bold;
+  margin-left: 15px;
+}
