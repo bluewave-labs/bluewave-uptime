@@ -1,69 +1,65 @@
-import React, { useEffect, useState } from "react";
-import Host from "../../Components/Host";
-import HostStatus from "../../Components/HostStatus";
-import HostActions from "../../Components/HostActions";
-import BarChart from "../../Components/Charts/BarChart/BarChart";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import CurrentMonitors from "../../Components/CurrentMonitors";
-import MockData from "../../Mock/sample_data.json";
+import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const CurrentStats = (mockdata = true) => {
-  // The hardcoded part is passed as default value for the purpose of demonstration.
-  // Pass an empty array, [], before fetching the data
-  const [monitors, setMonitors] = useState([]);
+/**
+ * CurrentStats displays the current status of monitor
+ *
+ * @component
+ * @param {Array<Monitor>} monitors - An array of monitor objects to be displayed.
+ */
 
-  useEffect(() => {
-    if (mockdata) {
-      console.log(MockData.data);
-      setMonitors(
-        MockData.data.map((item) => ({
-          host: Host(item.name, 100, "var(--env-var-color-17)", item.url),
-          status: HostStatus(
-            item.isActive
-              ? "var(--env-var-color-20)"
-              : "var(--env-var-color-21)",
-            item.isActive ? "Up" : "Down",
-            item.isActive
-              ? "var(--env-var-color-17)"
-              : "var(--env-var-color-19)"
-          ),
-          team: <BarChart checks={item.checks} />,
-          actions: HostActions(),
-        }))
-      );
+const CurrentStats = ({ monitors }) => {
+  const navigate = useNavigate();
+  const authState = useSelector((state) => state.auth);
+  const up = monitors.reduce((acc, cur) => {
+    if (cur.checks.length > 0) {
+      return cur.checks[cur.checks.length - 1].status === true ? acc + 1 : acc;
     }
-  }, [mockdata]);
+    return 0;
+  }, 0);
 
-  // useEffect(() => {
-  //   fetch("API_URL")
-  //     .then((response) => response.json())
-  //     .then((data) => setMonitors(data))
-  //     .catch((error) => console.error(error));
-  // }, []);
+  const down = monitors.reduce((acc, cur) => {
+    if (cur.checks.length > 0) {
+      return cur.checks[cur.checks.length - 1].status === false ? acc + 1 : acc;
+    }
+    return 0;
+  }, 0);
 
   return (
     <div>
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-bar">
-        <div className="monitors-bar-title">Hello, Jackie</div>
+        <div className="monitors-bar-title">
+          Hello, {authState.user.firstname}
+        </div>
         <Button
           level="primary"
           label="Create new monitor"
+          onClick={() => {
+            navigate("/monitors/create");
+          }}
           sx={{ padding: "10px 20px", fontSize: "13px" }}
         />
       </div>
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-stats">
-        <ServerStatus title="Up" value="4" state="up" />
-        <ServerStatus title="Down" value="0" state="down" />
-        <ServerStatus title="Paused" value="0" state="pause" />
+        <ServerStatus title="Up" value={up} state="up" />
+        <ServerStatus title="Down" value={down} state="down" />
+        <ServerStatus title="Paused" value={0} state="pause" />
       </div>
       <div className="monitors-gaps-medium"></div>
       <CurrentMonitors monitors={monitors} />
     </div>
   );
+};
+
+CurrentStats.propTypes = {
+  monitors: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default CurrentStats;

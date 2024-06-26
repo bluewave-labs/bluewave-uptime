@@ -2,6 +2,3 @@ node_modules
 .env
 *.log
 *.sh
-docker/mongo/data/*
-docker/redis/data/*
-!docker/build_images.sh

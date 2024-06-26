@@ -27,18 +27,17 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
 
 - Clone this repository to your local machine
 
+1.  [Docker Quickstart](#docker-compose)
 1.  [Installation (Client)](#client)
-2.  [Configuration(Client)](#config-client)
+1.  [Configuration(Client)](#config-client)
     - [Environment](#env-vars-client)
-3.  [Getting Started (Server)](#server)
-    - [Docker Compose Quickstart](#docker-quickstart)
-    - [Manual Installation](#manual-install)
-      - [Install Server](#install-server)
-      - [Environment](#env-vars-server)
-      - [Database](#databases)
-        - [(Optional) Dockerised Databases](#optional-docker-databases)
-      - [Start Server](#start-server)
-4.  [Endpoints](#endpoints)
+1.  [Getting Started (Server)](#server)
+    - [Install Server](#install-server)
+    - [Environment](#env-vars-server)
+    - [Database](#databases)
+      - [(Optional) Dockerised Databases](#optional-docker-databases)
+    - [Start Server](#start-server)
+1.  [Endpoints](#endpoints)
     ###### Auth
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
@@ -64,10 +63,44 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
     - <code>GET</code> [/api/v1/alerts/{alertId}](#get-alert-alert-id)
     - <code>POST</code> [/api/v1/alerts/edit/{alertId}](#edit-alert)
     - <code>POST</code> [/api/v1/alerts/delete/{alertId}](#delete-alert)
-5.  [Error Handling](#error-handling)
-6.  [Contributors](#contributors)
+1.  [Error Handling](#error-handling)
+1.  [Contributors](#contributors)
 
 ---
+
+### Docker Quick Start
+
+#### <u>Docker Quickstart</u> <a id="docker-quickstart"></a>
+
+The fastest way to start the application is to use our Dockerfiles and [Docker Compose](https://docs.docker.com/compose/).
+
+To get the application up and running you need to:
+
+1. In the `Docker` directory run the build script `build_images.sh` to build docker images for the client, server, Redis database, and MongoDB database.
+2. In the `Docker` directory, create a `server.env` file with the [requried environtmental variables](#env-vars-server) for the server. Sample file:
+
+```
+CLIENT_HOST="http://localhost:5173"
+JWT_SECRET="my_secret"
+DB_TYPE="MongoDB"
+DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
+REDIS_HOST="redis"
+REDIS_PORT=6379
+SYSTEM_EMAIL_ADDRESS="<email>"
+SENDGRID_API_KEY="<api_key>"
+LOGIN_PAGE_URL="<login_page"
+```
+
+3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-cllient) for the client. Sample file:
+
+```
+VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
+```
+
+4.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
+
+That's it, the application is ready to use on port 5173.
+<br/>
 
 ### Client
 
@@ -94,33 +127,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
 
 ---
 
-### Getting Started (Server)
-
-#### <u>Docker Quickstart</u> <a id="docker-quickstart"></a>
-
-The fastest way to start the server is to use our Dockerfiles and [Docker Compose](https://docs.docker.com/compose/).
-
-To get the server up and running you need to:
-
-1. In the `Server/docker` directory run the build script `build_images.sh` to build docker images for the server, Redis database, and MongoDB database.
-2. In the `Server/docker` directory, create a `.env` file with the [requried environtmental variables](#env-vars-server). Sample file:
-
-```
-CLIENT_HOST="http://localhost:5173"
-JWT_SECRET="my_secret"
-DB_TYPE="MongoDB"
-DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
-REDIS_HOST="redis"
-REDIS_PORT=6379
-SYSTEM_EMAIL_ADDRESS="<email>"
-SENDGRID_API_KEY="<api_key>"
-LOGIN_PAGE_URL="<login_page"
-```
-
-3.  In the `Server/docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all three images.
-
-That's it, the server is ready to use.
-<br/>
+### Getting Started (Server) <a id="server"></a>
 
 #### <u>Manual Install</u> <a id="manual-install"></a>
 
@@ -135,18 +142,19 @@ That's it, the server is ready to use.
 
 Configure the server with the following environmental variables:
 
-| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values     |
-| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------- |
-| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                     |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                     |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB` |
-| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                     |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                     |
-| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                     |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                     |
-| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                     |
-| REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                     |
-| REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                     |
+| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values                                  |
+| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                                                  |
+| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                                                  |
+| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB`                              |
+| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                                                  |
+| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                                                  |
+| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                                                  |
+| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                                                  |
+| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                                                  |
+| REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                                                  |
+| REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                                                  |
+| TOKEN_TTL            | Optional          | string    | Time for token to live                                                                      | In vercel/ms format https://github.com/vercel/ms |
 
 <br/>
 
@@ -161,15 +169,15 @@ You may use the included Dockerfiles to spin up databases quickly if you wish.
 
 ###### (Optional) Dockerised Databases <a id="optional-docker-databases"></a>
 
-Dockerfiles for the server and databases are located in the `./Server/docker` directory
+Dockerfiles for the server and databases are located in the `Docker` directory
 
 <details>
 <summary><b>MongoDB Image</b></summary>
 Location: `./Server/docker/mongoDB.Dockerfile`
 
-The `./Server/docker/mongo/data` directory should be mounted to the MongoDB container in order to persist data.
+The `Docker/mongo/data` directory should be mounted to the MongoDB container in order to persist data.
 
-From the `Server/docker` directory run
+From the `Docker` directory run
 
 1.  Build the image: `docker build -f mongoDB.Dockerfile -t uptime_database_mongo .`
 2.  Run the docker image: `docker run -d -p 27017:27017 -v $(pwd)/mongo/data:/data/db --name uptime_database_mongo uptime_database_mongo`
@@ -179,9 +187,9 @@ From the `Server/docker` directory run
 <summary><b>Redis Image</b></summary>
 Location `./Server/docker/redislDockerfile`
 
-the `./Server/docker/redis/data` directory should be mounted to the Redis container in order to persist data.
+the `Docker/redis/data` directory should be mounted to the Redis container in order to persist data.
 
-From the `Server/docker` directory run
+From the `Docker` directory run
 
 1.  Build the image: `docker build -f redis.Dockerfile -t uptime_redis .`
 2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`

@@ -52,9 +52,7 @@ const Login = () => {
       await loginValidation.validateAsync(form, { abortEarly: false });
       const action = await dispatch(login(form));
       if (action.meta.requestStatus === "fulfilled") {
-        const token = action.payload.data;
-        localStorage.setItem("token", token);
-        navigate("/");
+        navigate("/monitors");
       }
       if (action.meta.requestStatus === "rejected") {
         const error = new Error("Request rejected");
@@ -80,6 +78,10 @@ const Login = () => {
   const handleInput = (e) => {
     const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
     setForm(newForm);
+  };
+
+  const handleSignupClick = () => {
+    navigate("/register");
   };
 
   return (
@@ -139,7 +141,14 @@ const Login = () => {
         <div className="login-form-v3-spacing" />
         <div className="new-account-option">
           Don’t have an account?
-          <span className="new-account-option-span">Sign up</span>
+          <span
+            onClick={() => {
+              navigate("/register");
+            }}
+            className="new-account-option-span"
+          >
+            Sign up
+          </span>
         </div>
       </form>
     </div>

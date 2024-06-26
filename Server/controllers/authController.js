@@ -26,7 +26,8 @@ const {
  */
 const issueToken = (payload) => {
   //TODO Add proper expiration date
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99d" });
+  const tokenTTL = process.env.TOKEN_TTL ? process.env.TOKEN_TTL : "2h";
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
 };
 
 /**
@@ -223,13 +224,11 @@ const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
     user = await req.db.resetPassword(req, res);
-    res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.AUTH_RESET_PASSWORD,
-        data: user,
-      });
+    res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_RESET_PASSWORD,
+      data: user,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
