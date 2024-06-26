@@ -8,6 +8,18 @@ import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox
 import Button from "../../Components/Button";
 
 const CreateNewMonitor = () => {
+  const portOptions = [
+    { label: "Port 1", value: "Port1" },
+    { label: "Port 2", value: "Port2" },
+    // Add more Ports as needed
+  ];
+
+  const frequencyOptions = [
+    { label: "1 minute", value: "1" },
+    { label: "5 minutes", value: "5" },
+    // Add more Ports as needed
+  ];
+
   const [incidentEmail, setIncidentEmail] = useState("");
 
   const [notifyViaSMS, setNotifyViaSMS] = useState(false);
@@ -27,6 +39,17 @@ const CreateNewMonitor = () => {
 
   const [urlToMonitor, setUrlToMonitor] = useState("");
   const [friendlyName, setFriendlyName] = useState("");
+
+  const [port, setPort] = useState("Select a port to check");
+  const [frequncy, setFrequency] = useState("1 minute");
+
+  const handlePortOptionChange = (newValue) => {
+    setPort(newValue);
+  };
+
+  const handleFrequencyOptionChange = (newValue) => {
+    setPort(newValue);
+  };
 
   const handleUrlToMonitor = (event) => {
     setUrlToMonitor(event.target.value);
@@ -162,9 +185,15 @@ const CreateNewMonitor = () => {
               checked={selectedMonitorType === "port"}
               onChange={() => handleMonitorTypeChange("port")}
             />
-            <div className="monitors-gaps-medium"></div>
+            <div className="monitors-gaps-small-plus"></div>
             <div className="monitors-dropdown-holder">
-              <FlexibileTextField placeholder="Select a port to check" />
+              <Dropdown
+                id="ports-dropdown"
+                label="Select a port to check"
+                onChange={handlePortOptionChange}
+                options={portOptions}
+                value={port}
+              />
             </div>
           </div>
         }
@@ -228,7 +257,14 @@ const CreateNewMonitor = () => {
         rightLayout={
           <div className="advanced-setting-config">
             <div className="adv-setting-title">Check frequency</div>
-            <FlexibileTextField />
+            <div className="monitors-gaps-small"></div>
+            <Dropdown
+              id="freq-dropdown"
+              label="1 minutes"
+              onChange={handleFrequencyOptionChange}
+              options={frequencyOptions}
+              value={frequencyOptions}
+            />
             <div className="monitors-gaps-medium"></div>
             <div className="adv-setting-title">
               Maximum retries before the service is marked as down
@@ -286,6 +322,7 @@ const CreateNewMonitor = () => {
       <div className="monitors-gaps-small"></div>
       <div className="monitors-create-button-holder">
         <Button
+          id="create-new-monitor-btn"
           level="primary"
           label="Create new monitor"
           sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
