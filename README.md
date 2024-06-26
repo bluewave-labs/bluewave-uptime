@@ -173,7 +173,8 @@ Dockerfiles for the server and databases are located in the `Docker` directory
 
 <details>
 <summary><b>MongoDB Image</b></summary>
-Location: `./Server/docker/mongoDB.Dockerfile`
+
+Location: `Docker/mongoDB.Dockerfile`
 
 The `Docker/mongo/data` directory should be mounted to the MongoDB container in order to persist data.
 
@@ -185,7 +186,8 @@ From the `Docker` directory run
 </details>
 <details>
 <summary><b>Redis Image</b></summary>
-Location `./Server/docker/redislDockerfile`
+
+Location `Docker/redis.Dockerfile`
 
 the `Docker/redis/data` directory should be mounted to the Redis container in order to persist data.
 
