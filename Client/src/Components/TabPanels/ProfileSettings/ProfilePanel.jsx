@@ -1,14 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  Box,
-  Divider,
-  IconButton,
-  Modal,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
 import EmailTextField from "../../TextFields/Email/EmailTextField";
@@ -18,8 +11,8 @@ import { editProfileValidation } from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../../Features/Auth/authSlice";
 import ImageField from "../../TextFields/Image";
-import DoDisturbAltIcon from "@mui/icons-material/DoDisturbAlt";
-import CloseIcon from "@mui/icons-material/Close";
+import ImageIcon from "@mui/icons-material/Image";
+import ProgressUpload from "../../ProgressBars";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -78,15 +71,64 @@ const ProfilePanel = () => {
     });
   };
 
-  //TODO - implement delete profile picture function
+  //TODO - add setPicture state to localData
+  const [picture, setPicture] = useState();
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const handlePicture = (event) => {
+    const pic = event.target.files[0];
+    console.log(pic);
+    //TODO - add setPicture state to localData
+    setPicture({ name: pic.name, type: pic.type, size: formatBytes(pic.size) });
+    setIsUploading(true);
+
+    setTimeout(() => {
+      //TODO - add setPicture state to localData
+      setPicture((prev) => ({ ...prev, src: URL.createObjectURL(pic) }));
+    }, 1500);
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      setUploadProgress(progress);
+      if (progress >= 100) {
+        clearInterval(interval);
+      }
+    }, 150);
+  };
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " MB";
+  };
+  const handleCancelUpload = () => {
+    //TODO - add setPicture state to localData
+    setPicture(null);
+    setUploadProgress(0);
+    setIsUploading(false);
+  };
+  const handleClosePictureModal = () => {
+    setIsOpen("");
+    setUploadProgress(0);
+    setIsUploading(false);
+  };
+
+  //TODO - revisit once localData is set up properly
   const handleDeletePicture = () => {
     setLoading(true);
     setTimeout(() => {
+      //TODO - add setPicture state to localData
+      setPicture(null);
       setLoading(false);
     }, 2000);
   };
   //TODO - implement update profile function
-  const handleUpdatePicture = () => {};
+  const handleUpdatePicture = () => {
+    setIsOpen("");
+    setUploadProgress(0);
+    setIsUploading(false);
+  };
   //TODO - implement delete account function
   const handleDeleteAccount = () => {};
   //TODO - implement save profile function
@@ -199,7 +241,7 @@ const ProfilePanel = () => {
           <Stack className="row-stack" direction="row" alignItems="center">
             {/* TODO - Update placeholder values with redux data */}
             <Avatar
-              src="/static/images/avatar/2.jpg"
+              src={picture ? picture.src : "/static/images/avatar/2.jpg"}
               firstName={localData.firstname}
               lastName={localData.lastname}
               sx={{
@@ -215,7 +257,6 @@ const ProfilePanel = () => {
               onClick={handleDeletePicture}
               isLoading={loading}
             />
-            {/* TODO - modal popup for update pfp? */}
             <Button
               level="tertiary"
               label="Update"
@@ -326,11 +367,10 @@ const ProfilePanel = () => {
         aria-labelledby="modal-update-picture"
         aria-describedby="update-profile-picture"
         open={isModalOpen("picture")}
-        onClose={() => setIsOpen("")}
+        onClose={handleClosePictureModal}
         disablePortal
       >
         <Stack
-          gap="20px"
           sx={{
             position: "absolute",
             top: "50%",
@@ -347,43 +387,44 @@ const ProfilePanel = () => {
             },
           }}
         >
-          <Stack
-            direction="row"
-            mt="-10px"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography id="modal-update-picture" variant="h4" component="h1">
-              Upload Image
-            </Typography>
-            <IconButton
-              onClick={() => setIsOpen("")}
-              sx={{
-                "&:focus": {
-                  outline: "none",
-                },
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-          <ImageField id="update-profile-picture" />
-          <Stack direction="row" mt="10px" justifyContent="space-between">
-            <Button level="secondary" label="Edit" disabled />
-            <Stack direction="row" gap="10px" justifyContent="flex-end">
-              <ButtonSpinner
-                level="tertiary"
-                label="Remove"
-                onClick={handleDeletePicture}
-                isLoading={loading}
-              />
-              <ButtonSpinner
-                level="primary"
-                label="Update"
-                onClick={handleUpdatePicture}
-                isLoading={isLoading}
-              />
-            </Stack>
+          <Typography id="modal-update-picture" variant="h4" component="h1">
+            Upload Image
+          </Typography>
+          <ImageField
+            id="update-profile-picture"
+            picture={picture?.src}
+            onChange={handlePicture}
+          />
+          {isUploading ? (
+            <ProgressUpload
+              icon={<ImageIcon />}
+              label={picture?.name}
+              size={picture?.size}
+              progress={uploadProgress}
+              onClick={handleCancelUpload}
+            />
+          ) : (
+            ""
+          )}
+          <Stack direction="row" mt="20px" gap="10px" justifyContent="flex-end">
+            <Button
+              level="secondary"
+              label="Edit"
+              disabled
+              sx={{ mr: "auto" }}
+            />
+            <ButtonSpinner
+              level="tertiary"
+              label="Remove"
+              onClick={handleCancelUpload}
+              isLoading={loading}
+            />
+            <ButtonSpinner
+              level="primary"
+              label="Update"
+              onClick={handleUpdatePicture}
+              isLoading={isLoading}
+            />
           </Stack>
         </Stack>
       </Modal>
