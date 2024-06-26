@@ -18,7 +18,9 @@ const AlertMessage = ({
         <div className="alert-message">{message}</div>
         <div className="alert-dismissText-actionText-parent">
           <div className="alert-dismissText">{dismissText}</div>
-          <div className="alert-actionText">{actionText}</div>
+          <div className="alert-actionText" onClick={dismissClose}>
+            {actionText}
+          </div>
         </div>
       </Alert>
     </Snackbar>
