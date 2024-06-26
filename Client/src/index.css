@@ -14,6 +14,8 @@
 
   /* Generalized Stylings */
 
+  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
+
   --env-var-color-1: #101828;
   --env-var-color-2: #475467;
   --env-var-color-3: #1570ef;
@@ -77,8 +79,6 @@
 
   --env-var-shadow-1: 0px 4px 24px -4px rgba(16, 24, 40, 0.08),
     0px 3px 3px -3px rgba(16, 24, 40, 0.03);
-
-  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 a {
