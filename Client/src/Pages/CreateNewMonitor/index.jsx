@@ -9,11 +9,13 @@ import { MenuItem, Select, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { createMonitorValidation } from "../../Validation/validation";
 import { createMonitor } from "../../Features/Monitors/monitorsSlice";
+import { useNavigate } from "react-router-dom";
 
 const CreateNewMonitor = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
 
@@ -76,7 +78,7 @@ const CreateNewMonitor = () => {
   //   }));
   // };
 
-  const handleCreateNewMonitor = (event) => {
+  const handleCreateNewMonitor = async (event) => {
     event.preventDefault();
     //obj to submit
     let monitor = {
@@ -102,7 +104,14 @@ const CreateNewMonitor = () => {
         // ...advancedSettings, // TODO frequency should be interval, then we can use spread
         interval: advancedSettings.frequency * MS_PER_MINUTE,
       };
-      dispatch(createMonitor({ authToken, monitor }));
+      try {
+        const action = await dispatch(createMonitor({ authToken, monitor }));
+        if (action.meta.requestStatus === "fulfilled") {
+          navigate("/monitors");
+        }
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
