@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
-import CreateNewMonitor from "../CreateNewMonitor";
 
 const Monitors = () => {
   const monitorState = useSelector((state) => state.monitors);
@@ -17,8 +16,7 @@ const Monitors = () => {
 
   return (
     <div className="monitors">
-      {/* <CurrentStats monitors={monitorState.monitors} /> */}
-      <CreateNewMonitor />
+      <CurrentStats monitors={monitorState.monitors} />
     </div>
   );
 };
