@@ -132,7 +132,14 @@ const editPasswordValidation = joi.object({
     }),
 });
 
+const createMonitorValidation = joi.object({
+  url: joi.string().trim().messages({ "string.empty": "*Url is required." }),
+  name: joi.string().trim().messages({ "string.empty": "*Name is required." }),
+  type: joi.string().trim().messages({ "string.empty": "*Type is required." }),
+});
+
 export {
+  createMonitorValidation,
   registerValidation,
   loginValidation,
   recoveryValidation,

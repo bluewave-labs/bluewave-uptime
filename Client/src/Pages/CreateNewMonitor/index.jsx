@@ -5,34 +5,42 @@ import React, { useState } from "react";
 import RadioButton from "../../Components/RadioButton";
 import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox";
 import Button from "../../Components/Button";
-import { MenuItem, Select } from "@mui/material";
+import { MenuItem, Select, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
+import { createMonitorValidation } from "../../Validation/validation";
 
 const CreateNewMonitor = () => {
+  const { user } = useSelector((state) => state.auth);
+  const [errors, setErrors] = useState({});
+
   //General Settings Form
   const [generalSettings, setGeneralSettings] = useState({ url: "", name: "" });
   //Checks Form
-  const [checks, setChecks] = useState({ type: "", port: "" });
-  //Incidents Form
-  const [notifications, setNotifications] = useState({
-    viaSms: false,
-    viaEmail: false,
-    viaOther: false,
-    email: "",
+  const [checks, setChecks] = useState({
+    type: "",
+    //  port: ""
   });
+  //Incidents Form
+  // const [notifications, setNotifications] = useState({
+  //   viaSms: false,
+  //   viaEmail: false,
+  //   viaOther: false,
+  //   email: "",
+  // });
   //Advanced Settings Form
   const [advancedSettings, setAdvancedSettings] = useState({
     frequency: "",
-    retries: "",
-    codes: "",
-    redirects: "",
+    // retries: "",
+    // codes: "",
+    // redirects: "",
   });
   //Proxy Settings Form
-  const [proxy, setProxy] = useState({
-    enabled: false,
-    protocol: "",
-    address: "",
-    proxy_port: "",
-  });
+  // const [proxy, setProxy] = useState({
+  //   enabled: false,
+  //   protocol: "",
+  //   address: "",
+  //   proxy_port: "",
+  // });
 
   const handleChange = (event, id, setState, checkbox) => {
     const { value } = event.target;
@@ -40,19 +48,59 @@ const CreateNewMonitor = () => {
       ...prev,
       [id]: checkbox ? true : value,
     }));
+
+    const validation = createMonitorValidation.validate(
+      { [id]: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+
+      if (validation.error) {
+        updatedErrors[id] = validation.error.details[0].message;
+      } else {
+        delete updatedErrors[id];
+      }
+      return updatedErrors;
+    });
   };
-  const handleCheck = (id, setState) => {
-    setState((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  // const handleCheck = (id, setState) => {
+  //   setState((prev) => ({
+  //     ...prev,
+  //     [id]: !prev[id],
+  //   }));
+  // };
+
+  const handleCreateNewMonitor = (event) => {
+    event.preventDefault();
+    //obj to submit
+    const monitor = {
+      ...generalSettings,
+      ...advancedSettings,
+      userId: user._id,
+      ...checks,
+    };
+
+    const { error } = createMonitorValidation.validate(monitor, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+    } else {
+      //TODO - submit logic
+    }
   };
 
-  const handleCreateNewMonitor = () => {
+  console.log(errors);
 
-  }
-
-  const ports = ["Port 1", "Port 2", "Port 3"];
+  //select values
+  // const ports = ["Port 1", "Port 2", "Port 3"];
   const frequencies = [1, 2, 3, 4, 5];
 
   return (
@@ -81,6 +129,13 @@ const CreateNewMonitor = () => {
                 handleChange(event, "url", setGeneralSettings)
               }
             />
+            {errors["url"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["url"]}
+              </Typography>
+            ) : (
+              ""
+            )}
             <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-name"
@@ -92,6 +147,13 @@ const CreateNewMonitor = () => {
                 handleChange(event, "name", setGeneralSettings)
               }
             />
+            {errors["name"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["name"]}
+              </Typography>
+            ) : (
+              ""
+            )}
           </div>
         }
       />
@@ -113,8 +175,8 @@ const CreateNewMonitor = () => {
               title="HTTP/website monitoring"
               desc="Use HTTP(s) to monitor your website or API endpoint."
               value="http"
-              checked={checks.monitor === "http"}
-              onChange={(event) => handleChange(event, "monitor", setChecks)}
+              checked={checks.type === "http"}
+              onChange={(event) => handleChange(event, "type", setChecks)}
             />
             <div className="monitors-gaps-medium"></div>
             <RadioButton
@@ -122,8 +184,8 @@ const CreateNewMonitor = () => {
               title="Ping monitoring"
               desc="Check whether your server is available or not."
               value="ping"
-              checked={checks.monitor === "ping"}
-              onChange={(event) => handleChange(event, "monitor", setChecks)}
+              checked={checks.type === "ping"}
+              onChange={(event) => handleChange(event, "type", setChecks)}
             />
             <div className="monitors-gaps-medium"></div>
             {/* TODO */}
@@ -132,8 +194,8 @@ const CreateNewMonitor = () => {
               title="Port monitoring"
               desc="Monitor a specific service on your server."
               value="port"
-              checked={checks.monitor === "port"}
-              onChange={(event) => handleChange(event, "monitor", setChecks)}
+              checked={checks.type === "port"}
+              onChange={(event) => handleChange(event, "type", setChecks)}
             />
             <div className="monitors-gaps-small-plus"></div>
             <div className="monitors-dropdown-holder">
@@ -153,6 +215,13 @@ const CreateNewMonitor = () => {
                 ))}
               </Select>
             </div> */}
+            {errors["type"] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors["type"]}
+              </Typography>
+            ) : (
+              ""
+            )}
           </div>
         }
       />
@@ -320,7 +389,7 @@ const CreateNewMonitor = () => {
           level="primary"
           label="Create new monitor"
           sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
-          onClick={() => handleCreateNewMonitor()}
+          onClick={handleCreateNewMonitor}
         />
       </div>
     </form>
