@@ -27,7 +27,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
 
 - Clone this repository to your local machine
 
-1.  [Docker Quickstart](#docker-compose)
+1.  [Docker Quickstart](#docker-quickstart)
 1.  [Installation (Client)](#client)
 1.  [Configuration(Client)](#config-client)
     - [Environment](#env-vars-client)
