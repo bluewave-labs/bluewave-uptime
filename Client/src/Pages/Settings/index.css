@@ -173,7 +173,6 @@
 
 .settings .MuiStack-root:has(p.MuiTypography-root.input-error) {
   position: relative;
-  margin-bottom: 8px;
 }
 .settings .text-field-icon {
   position: absolute;

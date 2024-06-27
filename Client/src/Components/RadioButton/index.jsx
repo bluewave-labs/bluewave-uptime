@@ -11,6 +11,7 @@
  * />
  *
  * @param {Object} props - The component props.
+ * @param {string} props.id - The id of the radio button.
  * @param {string} props.title - The title of the radio button.
  * @param {string} [props.desc] - The description of the radio button.
  * @param {string} [props.size="small"] - The size of the radio button.
@@ -28,7 +29,7 @@ function RadioButton(props) {
       <FormControlLabel
         checked={props.checked}
         value={props.value}
-        control={<Radio size={props.size} />}
+        control={<Radio id={props.id} size={props.size} />}
         onChange={props.onChange}
         label={
           <div>
