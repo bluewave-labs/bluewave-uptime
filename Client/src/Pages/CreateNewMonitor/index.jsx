@@ -6,11 +6,15 @@ import RadioButton from "../../Components/RadioButton";
 import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox";
 import Button from "../../Components/Button";
 import { MenuItem, Select, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { createMonitorValidation } from "../../Validation/validation";
+import { createMonitor } from "../../Features/Monitors/monitorsSlice";
 
 const CreateNewMonitor = () => {
-  const { user } = useSelector((state) => state.auth);
+  const MS_PER_MINUTE = 60000;
+  const { user, authToken } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
   const [errors, setErrors] = useState({});
 
   //General Settings Form
@@ -29,7 +33,7 @@ const CreateNewMonitor = () => {
   // });
   //Advanced Settings Form
   const [advancedSettings, setAdvancedSettings] = useState({
-    frequency: "",
+    frequency: 1,
     // retries: "",
     // codes: "",
     // redirects: "",
@@ -75,10 +79,8 @@ const CreateNewMonitor = () => {
   const handleCreateNewMonitor = (event) => {
     event.preventDefault();
     //obj to submit
-    const monitor = {
+    let monitor = {
       ...generalSettings,
-      ...advancedSettings,
-      userId: user._id,
       ...checks,
     };
 
@@ -93,11 +95,16 @@ const CreateNewMonitor = () => {
       });
       setErrors(newErrors);
     } else {
-      //TODO - submit logic
+      monitor = {
+        ...monitor,
+        description: monitor.name,
+        userId: user._id,
+        // ...advancedSettings, // TODO frequency should be interval, then we can use spread
+        interval: advancedSettings.frequency * MS_PER_MINUTE,
+      };
+      dispatch(createMonitor({ authToken, monitor }));
     }
   };
-
-  console.log(errors);
 
   //select values
   // const ports = ["Port 1", "Port 2", "Port 3"];
