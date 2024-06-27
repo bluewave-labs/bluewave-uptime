@@ -11,7 +11,7 @@ const CreateNewMonitor = () => {
   //General Settings Form
   const [generalSettings, setGeneralSettings] = useState({ url: "", name: "" });
   //Checks Form
-  const [checks, setChecks] = useState({ monitor: "", port: "" });
+  const [checks, setChecks] = useState({ type: "", port: "" });
   //Incidents Form
   const [notifications, setNotifications] = useState({
     viaSms: false,
@@ -48,19 +48,15 @@ const CreateNewMonitor = () => {
     }));
   };
 
-  console.log({
-    ...generalSettings,
-    ...checks,
-    ...notifications,
-    ...advancedSettings,
-    ...proxy,
-  });
+  const handleCreateNewMonitor = () => {
+
+  }
 
   const ports = ["Port 1", "Port 2", "Port 3"];
   const frequencies = [1, 2, 3, 4, 5];
 
   return (
-    <div>
+    <form onSubmit={handleCreateNewMonitor} noValidate spellCheck="false">
       <div className="new-monitor-header">Create new monitor</div>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
@@ -130,7 +126,8 @@ const CreateNewMonitor = () => {
               onChange={(event) => handleChange(event, "monitor", setChecks)}
             />
             <div className="monitors-gaps-medium"></div>
-            <RadioButton
+            {/* TODO */}
+            {/* <RadioButton
               id="monitor-checks-port"
               title="Port monitoring"
               desc="Monitor a specific service on your server."
@@ -155,11 +152,12 @@ const CreateNewMonitor = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </div>
+            </div> */}
           </div>
         }
       />
-      <div className="monitors-gaps-medium"></div>
+      {/* TODO */}
+      {/* <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
         leftLayout={
@@ -212,7 +210,7 @@ const CreateNewMonitor = () => {
             </div>
           </div>
         }
-      />
+      /> */}
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
@@ -240,7 +238,8 @@ const CreateNewMonitor = () => {
               ))}
             </Select>
             <div className="monitors-gaps-medium"></div>
-            <FlexibileTextField
+            {/* TODO */}
+            {/* <FlexibileTextField
               id="monitor-settings-retries"
               title="Maximum retries before the service is marked as down"
               type="number"
@@ -268,11 +267,12 @@ const CreateNewMonitor = () => {
               onChange={(event) =>
                 handleChange(event, "redirects", setAdvancedSettings)
               }
-            />
+            /> */}
           </div>
         }
       />
-      <div className="monitors-gaps-medium"></div>
+      {/* TODO */}
+      {/* <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
         leftLayout={
@@ -311,7 +311,7 @@ const CreateNewMonitor = () => {
             />
           </div>
         }
-      />
+      /> */}
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-small"></div>
       <div className="monitors-create-button-holder">
@@ -320,10 +320,10 @@ const CreateNewMonitor = () => {
           level="primary"
           label="Create new monitor"
           sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
-          // onClick={() => handleCreateNewMonitor()}
+          onClick={() => handleCreateNewMonitor()}
         />
       </div>
-    </div>
+    </form>
   );
 };
 
