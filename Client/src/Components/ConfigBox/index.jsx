@@ -3,10 +3,10 @@ import React from "react";
 
 const ConfigBox = ({ leftLayout, rightLayout }) => {
   return (
-    <div className="config-box">
+    <form className="config-box" noValidate spellCheck="false">
       {leftLayout}
       {rightLayout}
-    </div>
+    </form>
   );
 };
 

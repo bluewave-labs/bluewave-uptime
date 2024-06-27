@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
+import CreateNewMonitor from "../CreateNewMonitor";
 
 const Monitors = () => {
   const monitorState = useSelector((state) => state.monitors);

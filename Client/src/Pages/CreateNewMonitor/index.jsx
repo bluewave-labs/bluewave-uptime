@@ -3,119 +3,61 @@ import ConfigBox from "../../Components/ConfigBox";
 import FlexibileTextField from "../../Components/TextFields/Flexibile/FlexibileTextField";
 import React, { useState } from "react";
 import RadioButton from "../../Components/RadioButton";
-import Dropdown from "../../Components/Dropdown";
 import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox";
 import Button from "../../Components/Button";
+import { MenuItem, Select } from "@mui/material";
 
 const CreateNewMonitor = () => {
-  const portOptions = [
-    { label: "Port 1", value: "Port1" },
-    { label: "Port 2", value: "Port2" },
-    // Add more Ports as needed
-  ];
+  //General Settings Form
+  const [generalSettings, setGeneralSettings] = useState({ url: "", name: "" });
+  //Checks Form
+  const [checks, setChecks] = useState({ monitor: "", port: "" });
+  //Incidents Form
+  const [notifications, setNotifications] = useState({
+    viaSms: false,
+    viaEmail: false,
+    viaOther: false,
+    email: "",
+  });
+  //Advanced Settings Form
+  const [advancedSettings, setAdvancedSettings] = useState({
+    frequency: "",
+    retries: "",
+    codes: "",
+    redirects: "",
+  });
+  //Proxy Settings Form
+  const [proxy, setProxy] = useState({
+    enabled: false,
+    protocol: "",
+    address: "",
+    proxy_port: "",
+  });
 
-  const frequencyOptions = [
-    { label: "1 minute", value: "1" },
-    { label: "5 minutes", value: "5" },
-    // Add more Ports as needed
-  ];
-
-  const [incidentEmail, setIncidentEmail] = useState("");
-
-  const [notifyViaSMS, setNotifyViaSMS] = useState(false);
-  const [notifyViaEmail, setNotifyViaEmail] = useState(false);
-  const [notifyViaCurrentEmail, setNotifyViaCurrentEmail] = useState(false);
-
-  const [maxRetries, setMaxRetries] = useState(0);
-  const [acceptCode, setAcceptCode] = useState(0);
-  const [maxRedirects, setMaxRedirects] = useState(0);
-
-  const [proxy, setProxy] = useState(false);
-
-  const [proxyAddress, setProxyAddress] = useState("");
-  const [proxyPort, setProxyPort] = useState("");
-
-  const [selectedMonitorType, setSelectedMonitorType] = useState("");
-
-  const [urlToMonitor, setUrlToMonitor] = useState("");
-  const [friendlyName, setFriendlyName] = useState("");
-
-  const [port, setPort] = useState("Select a port to check");
-  const [frequncy, setFrequency] = useState("1 minute");
-
-  const handlePortOptionChange = (newValue) => {
-    setPort(newValue);
+  const handleChange = (event, id, setState, checkbox) => {
+    const { value } = event.target;
+    setState((prev) => ({
+      ...prev,
+      [id]: checkbox ? true : value,
+    }));
+  };
+  const handleCheck = (id, setState) => {
+    setState((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
-  const handleFrequencyOptionChange = (newValue) => {
-    setPort(newValue);
-  };
+  console.log({
+    ...generalSettings,
+    ...checks,
+    ...notifications,
+    ...advancedSettings,
+    ...proxy,
+  });
 
-  const handleUrlToMonitor = (event) => {
-    setUrlToMonitor(event.target.value);
-    console.log(urlToMonitor);
-  };
-
-  const handleFriendlyName = (event) => {
-    setFriendlyName(event.target.value);
-    console.log(friendlyName);
-  };
-
-  const handleIncidentEmail = (event) => {
-    setIncidentEmail(event.target.value);
-    console.log(incidentEmail);
-  };
-
-  const handleNotifyViaSMS = (event) => {
-    setNotifyViaSMS(event.target.checked);
-  };
-
-  const handleNotifyViaEmail = (event) => {
-    setNotifyViaEmail(event.target.checked);
-  };
-
-  const handleNotifyViaCurrentEmail = (event) => {
-    setNotifyViaCurrentEmail(event.target.checked);
-  };
-
-  const handleSetMaxRetries = (event) => {
-    setMaxRetries(event.target.value);
-    console.log(maxRetries);
-  };
-
-  const handleSetAcceptCode = (event) => {
-    setAcceptCode(event.target.value);
-    console.log(acceptCode);
-  };
-
-  const handleSetMaxRedirects = (event) => {
-    setMaxRedirects(event.target.value);
-    console.log(maxRedirects);
-  };
-
-  const handleEnableProxy = (event) => {
-    setProxy(event.target.value);
-    console.log(proxy);
-  };
-
-  const handleproxyAddress = (event) => {
-    setProxyAddress(event.target.value);
-    console.log(proxyAddress);
-  };
-
-  const handleproxyPort = (event) => {
-    setProxyPort(event.target.value);
-    console.log(proxyPort);
-  };
-
-  const handleMonitorTypeChange = (value) => {
-    setSelectedMonitorType(value);
-    console.log(value);
-  };
-
-  const handleCreateNewMonitor = () => {
-    console.log("Created");
-  };
+  const ports = ["Port 1", "Port 2", "Port 3"];
+  const frequencies = [1, 2, 3, 4, 5];
 
   return (
     <div>
@@ -134,17 +76,25 @@ const CreateNewMonitor = () => {
         rightLayout={
           <div className="config-box-inputs">
             <FlexibileTextField
+              id="monitor-url"
               title="URL to monitor"
               type="url"
               placeholder="https://google.com"
-              onChange={handleUrlToMonitor}
+              value={generalSettings.url}
+              onChange={(event) =>
+                handleChange(event, "url", setGeneralSettings)
+              }
             />
             <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
+              id="monitor-name"
               title="Friendly name (optional)"
               type="text"
               placeholder="Google"
-              onChange={handleFriendlyName}
+              value={generalSettings.name}
+              onChange={(event) =>
+                handleChange(event, "name", setGeneralSettings)
+              }
             />
           </div>
         }
@@ -163,37 +113,48 @@ const CreateNewMonitor = () => {
         rightLayout={
           <div className="service-check-list">
             <RadioButton
+              id="monitor-checks-http"
               title="HTTP/website monitoring"
               desc="Use HTTP(s) to monitor your website or API endpoint."
               value="http"
-              checked={selectedMonitorType === "http"}
-              onChange={() => handleMonitorTypeChange("http")}
+              checked={checks.monitor === "http"}
+              onChange={(event) => handleChange(event, "monitor", setChecks)}
             />
             <div className="monitors-gaps-medium"></div>
             <RadioButton
+              id="monitor-checks-ping"
               title="Ping monitoring"
               desc="Check whether your server is available or not."
               value="ping"
-              checked={selectedMonitorType === "ping"}
-              onChange={() => handleMonitorTypeChange("ping")}
+              checked={checks.monitor === "ping"}
+              onChange={(event) => handleChange(event, "monitor", setChecks)}
             />
             <div className="monitors-gaps-medium"></div>
             <RadioButton
+              id="monitor-checks-port"
               title="Port monitoring"
               desc="Monitor a specific service on your server."
               value="port"
-              checked={selectedMonitorType === "port"}
-              onChange={() => handleMonitorTypeChange("port")}
+              checked={checks.monitor === "port"}
+              onChange={(event) => handleChange(event, "monitor", setChecks)}
             />
             <div className="monitors-gaps-small-plus"></div>
             <div className="monitors-dropdown-holder">
-              <Dropdown
-                id="ports-dropdown"
-                label="Select a port to check"
-                onChange={handlePortOptionChange}
-                options={portOptions}
-                value={port}
-              />
+              <Select
+                id="monitor-ports"
+                value={checks.port || "placeholder"}
+                inputProps={{ id: "monitor-ports-select" }}
+                onChange={(event) => handleChange(event, "port", setChecks)}
+              >
+                <MenuItem id="port-placeholder" value="placeholder">
+                  Select a port to check
+                </MenuItem>
+                {ports.map((port, index) => (
+                  <MenuItem key={`port-${index}`} value={port}>
+                    {port}
+                  </MenuItem>
+                ))}
+              </Select>
             </div>
           </div>
         }
@@ -217,29 +178,35 @@ const CreateNewMonitor = () => {
             <div className="monitors-gaps-medium"></div>
             <div className="incident-notif-config-checks">
               <CustomizableCheckBox
-                isChecked={notifyViaSMS}
-                handleChange={handleNotifyViaSMS}
+                id="monitor-notify-sms"
                 title="Notify via SMS (to be implemented)"
+                isChecked={notifications.viaSms}
+                handleChange={() => handleCheck("viaSms", setNotifications)}
               />
               <div className="monitors-gaps-medium"></div>
               <CustomizableCheckBox
-                isChecked={notifyViaEmail}
-                handleChange={handleNotifyViaEmail}
+                id="monitor-notify-email"
                 title="Notify via email (to current email address)"
+                isChecked={notifications.viaEmail}
+                handleChange={() => handleCheck("viaEmail", setNotifications)}
               />
               <div className="monitors-gaps-medium"></div>
               <CustomizableCheckBox
-                isChecked={notifyViaCurrentEmail}
-                handleChange={handleNotifyViaCurrentEmail}
+                id="monitor-notify-other"
                 title="Notify via email (to another email address below)"
+                isChecked={notifications.viaOther}
+                handleChange={() => handleCheck("viaOther", setNotifications)}
               />
               <div className="monitors-gaps-small-plus"></div>
               <div className="monitors-dropdown-holder">
                 <FlexibileTextField
+                  id="monitor-notify-other-email"
                   placeholder="notifications@gmail.com"
                   type="email"
-                  value={incidentEmail}
-                  onChange={handleIncidentEmail}
+                  value={notifications.email}
+                  onChange={(event) =>
+                    handleChange(event, "email", setNotifications)
+                  }
                 />
               </div>
             </div>
@@ -258,35 +225,49 @@ const CreateNewMonitor = () => {
           <div className="advanced-setting-config">
             <div className="adv-setting-title">Check frequency</div>
             <div className="monitors-gaps-small"></div>
-            <Dropdown
-              id="freq-dropdown"
-              label="1 minutes"
-              onChange={handleFrequencyOptionChange}
-              options={frequencyOptions}
-              value={frequencyOptions}
+            <Select
+              id="monitor-frequencies"
+              value={advancedSettings.frequency || 1}
+              inputProps={{ id: "monitor-frequencies-select" }}
+              onChange={(event) =>
+                handleChange(event, "frequency", setAdvancedSettings)
+              }
+            >
+              {frequencies.map((freq) => (
+                <MenuItem key={`port-${freq}`} value={freq}>
+                  {freq} {freq === 1 ? "minute" : "minutes"}
+                </MenuItem>
+              ))}
+            </Select>
+            <div className="monitors-gaps-medium"></div>
+            <FlexibileTextField
+              id="monitor-settings-retries"
+              title="Maximum retries before the service is marked as down"
+              type="number"
+              value={advancedSettings.retries}
+              onChange={(event) =>
+                handleChange(event, "retries", setAdvancedSettings)
+              }
             />
             <div className="monitors-gaps-medium"></div>
-            <div className="adv-setting-title">
-              Maximum retries before the service is marked as down
-            </div>
             <FlexibileTextField
-              onChange={handleSetMaxRetries}
+              id="monitor-settings-codes"
+              title="Accepted status codes"
               type="number"
-              placeholder=""
+              value={advancedSettings.codes}
+              onChange={(event) =>
+                handleChange(event, "codes", setAdvancedSettings)
+              }
             />
             <div className="monitors-gaps-medium"></div>
-            <div className="adv-setting-title">Accepted status codes</div>
             <FlexibileTextField
-              onChange={handleSetAcceptCode}
+              id="monitor-settings-redirects"
+              title="Maximum redirects"
               type="number"
-              placeholder=""
-            />
-            <div className="monitors-gaps-medium"></div>
-            <div className="adv-setting-title">Maximum redirects</div>
-            <FlexibileTextField
-              onChange={handleSetMaxRedirects}
-              type="number"
-              placeholder=""
+              value={advancedSettings.redirects}
+              onChange={(event) =>
+                handleChange(event, "redirects", setAdvancedSettings)
+              }
             />
           </div>
         }
@@ -302,19 +283,32 @@ const CreateNewMonitor = () => {
         rightLayout={
           <div className="proxy-setting-config">
             <CustomizableCheckBox
-              isChecked={proxy}
-              handleChange={handleEnableProxy}
+              id="monitor-proxy-enable"
               title="Enable proxy"
+              isChecked={proxy.enabled}
+              handleChange={() => handleCheck("enabled", setProxy)}
             />
             <div className="monitors-gaps-medium"></div>
-            <div className="adv-setting-title">Proxy protocol</div>
-            <FlexibileTextField />
+            <FlexibileTextField
+              id="monitor-proxy-protocol"
+              title="Proxy protocol"
+              value={proxy.protocol}
+              onChange={(event) => handleChange(event, "protocol", setProxy)}
+            />
             <div className="monitors-gaps-medium"></div>
-            <div className="adv-setting-title">Proxy address</div>
-            <FlexibileTextField onChange={handleproxyAddress} />
+            <FlexibileTextField
+              id="monitor-proxy-address"
+              title="Proxy address"
+              value={proxy.address}
+              onChange={(event) => handleChange(event, "address", setProxy)}
+            />
             <div className="monitors-gaps-medium"></div>
-            <div className="adv-setting-title">Proxy port</div>
-            <FlexibileTextField onChange={handleproxyPort} />
+            <FlexibileTextField
+              id="monitor-proxy-port"
+              title="Proxy port"
+              value={proxy.proxy_port}
+              onChange={(event) => handleChange(event, "proxy_port", setProxy)}
+            />
           </div>
         }
       />
@@ -326,7 +320,7 @@ const CreateNewMonitor = () => {
           level="primary"
           label="Create new monitor"
           sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
-          onClick={() => handleCreateNewMonitor()}
+          // onClick={() => handleCreateNewMonitor()}
         />
       </div>
     </div>
