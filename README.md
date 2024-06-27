@@ -27,7 +27,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
 
 - Clone this repository to your local machine
 
-1.  [Docker Quickstart](#docker-compose)
+1.  [Docker Quickstart](#docker-quickstart)
 1.  [Installation (Client)](#client)
 1.  [Configuration(Client)](#config-client)
     - [Environment](#env-vars-client)
@@ -91,7 +91,7 @@ SENDGRID_API_KEY="<api_key>"
 LOGIN_PAGE_URL="<login_page"
 ```
 
-3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-cllient) for the client. Sample file:
+3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
