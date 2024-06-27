@@ -817,6 +817,18 @@ curl --request GET \
 > | -------------- | ----- |
 > | Method         | POST  |
 
+##### Body
+
+> | Name        | Type      | Notes                  | Accepted Values        |
+> | ----------- | --------- | ---------------------- | ---------------------- |
+> | userId      | `string`  | UserId of current user |                        |
+> | name        | `string`  | Monitor name           |                        |
+> | description | `string`  | Monitor Description    |                        |
+> | type        | `string`  | Valid email address    | `"ping"`&#124;`"http"` |
+> | url         | `string`  | URL of service or IP   |                        |
+> | isActive    | `boolean` |                        |                        |
+> | interval    | `number`  | In ms                  |                        |
+
 ###### Response Payload
 
 > | Type      | Notes                           |
@@ -830,12 +842,15 @@ curl --request POST \
   --url http://localhost:5000/api/v1/monitors \
   --header <bearer_token> \
   --header 'Content-Type: application/json' \
-  --data '{"userId": "6645079aae0b439371913972",
-			"name": "Inserting a new Monitor",
-			"description": "Description",
-			"url": "https://monitor0.com",
+  --header 'User-Agent: insomnia/2023.5.8' \
+  --data '{
+      "userId": "66675891cb17336d84c25d9f",
+			"name": "Ping Google",
+			"description": "Google",
+ 			"type": "ping",
+			"url": "8.8.8.8",
 			"isActive": true,
-			"interval": 60000}'
+			"interval": 5000}'
 ```
 
 ##### Sample Response
