@@ -83,6 +83,7 @@ const theme = createTheme({
   },
   shape: {
     borderRadius: 4,
+    borderThick: 2,
     boxShadow: shadow,
   },
 });
