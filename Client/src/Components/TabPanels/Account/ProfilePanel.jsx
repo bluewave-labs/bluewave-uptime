@@ -148,7 +148,7 @@ const ProfilePanel = () => {
   };
 
   return (
-    <TabPanel value="0">
+    <TabPanel value="profile">
       <form className="edit-profile-form" noValidate spellCheck="false">
         <div className="edit-profile-form__wrapper">
           <Stack>
