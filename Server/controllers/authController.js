@@ -7,6 +7,7 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
+  userDeleteValidation
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -238,7 +239,7 @@ const resetPasswordController = async (req, res, next) => {
 const deleteUserController = async (req, res, next) => {
   try {
     // Validate user
-    await editUserParamValidation.userDeleteValidation(req.params.userId);
+    await userDeleteValidation.validateAsync(req.params.userId);
 
     // Check if the user exists
     const user = await req.db.getUserById(req.params.userId);
@@ -250,9 +251,11 @@ const deleteUserController = async (req, res, next) => {
     const monitors = await req.db.getMonitorsByUserId(req.params.userId);
 
     // Step 2: For each monitor, delete all associated checks and alerts
-    for (const monitor of monitors) {
-      await req.db.deleteChecks(monitor.id);
-      await req.db.deleteAlertByMonitorId(monitor.id);
+    if (monitors) {
+      for (const monitor of monitors) {
+        await req.db.deleteChecks(monitor.id);
+        await req.db.deleteAlertByMonitorId(monitor.id);
+      }
     }
 
     // Step 3: Delete all monitors associated with the user

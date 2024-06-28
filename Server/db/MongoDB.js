@@ -396,7 +396,7 @@ const getChecks = async (monitorId) => {
 const deleteChecks = async (monitorId) => {
   try {
     const result = await Check.deleteMany({ monitorId });
-    return result.deletedCount;
+    return result;
   } catch (error) {
     throw error;
   }
