@@ -66,10 +66,10 @@ function NavBar() {
     setAnchorElUser(null);
     switch (setting) {
       case "Profile":
-        console.log("Profile");
+        navigate("/account/profile");
         break;
       case "Team":
-        console.log("Team");
+        navigate("/account/team");
         break;
       case "Invite Colleagues":
         console.log("Invite Colleagues");

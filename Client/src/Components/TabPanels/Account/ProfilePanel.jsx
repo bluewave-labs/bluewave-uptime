@@ -148,12 +148,12 @@ const ProfilePanel = () => {
   };
 
   return (
-    <TabPanel value="0">
+    <TabPanel value="profile">
       <form className="edit-profile-form" noValidate spellCheck="false">
         <div className="edit-profile-form__wrapper">
           <Stack>
             <Typography variant="h4" component="h1">
-              First Name
+              First name
             </Typography>
           </Stack>
           <Stack>
@@ -178,7 +178,7 @@ const ProfilePanel = () => {
         <div className="edit-profile-form__wrapper">
           <Stack>
             <Typography variant="h4" component="h1">
-              Last Name
+              Last name
             </Typography>
           </Stack>
           <Stack>
@@ -232,18 +232,17 @@ const ProfilePanel = () => {
         <div className="edit-profile-form__wrapper">
           <Stack>
             <Typography variant="h4" component="h1">
-              Your Photo
+              Your photo
             </Typography>
             <Typography variant="h5" component="p">
               This photo will be displayed in your profile page.
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            {/* TODO - Update placeholder values with redux data */}
             <Avatar
               src={picture ? picture.src : "/static/images/avatar/2.jpg"}
-              firstName={localData.firstname}
-              lastName={localData.lastname}
+              firstName={user?.firstname}
+              lastName={user?.lastname}
               sx={{
                 width: "64px",
                 height: "64px",

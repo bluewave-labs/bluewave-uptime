@@ -234,6 +234,41 @@ const resetPasswordController = async (req, res, next) => {
     next(error);
   }
 };
+
+const deleteUserController = async (req, res, next) => {
+  try {
+    // Validate user ID
+    await editUserParamValidation.validateAsync(req.params);
+
+    // Check if the user exists
+    const user = await req.db.getUserById(req.params.userId);
+    if (!user) {
+      throw new Error(errorMessages.AUTH_USER_NOT_FOUND);
+    }
+
+    // Delete the user
+    await req.db.deleteUser(req.params.userId);
+
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_DELETE_USER,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+module.exports = {
+  registerController,
+  loginController,
+  userEditController,
+  recoveryRequestController,
+  validateRecoveryTokenController,
+  resetPasswordController,
+  deleteUserController,
+};
+
 module.exports = {
   registerController,
   loginController,

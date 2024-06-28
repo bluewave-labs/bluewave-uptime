@@ -87,7 +87,7 @@ const PasswordPanel = () => {
   };
 
   return (
-    <TabPanel value="1">
+    <TabPanel value="password">
       <form
         onSubmit={handleSubmit}
         className="edit-password-form"

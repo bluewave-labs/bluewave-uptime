@@ -10,9 +10,9 @@ const CustomizableCheckbox = (props) => {
         onChange={props.handleChange}
         className="custom-checkbox"
         type="checkbox"
-        id="checkbox"
+        id={props.id}
       />
-      <label className="custom-checkbox-label">{props.title}</label>
+      <label className="custom-checkbox-label" htmlFor={props.id}>{props.title}</label>
     </div>
   );
 };
