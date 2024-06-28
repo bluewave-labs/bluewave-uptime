@@ -237,7 +237,7 @@ const resetPasswordController = async (req, res, next) => {
 
 const deleteUserController = async (req, res, next) => {
   try {
-    // Validate user ID
+    // Validate user
     await editUserParamValidation.validateAsync(req.params);
 
     // Check if the user exists
@@ -267,13 +267,4 @@ module.exports = {
   validateRecoveryTokenController,
   resetPasswordController,
   deleteUserController,
-};
-
-module.exports = {
-  registerController,
-  loginController,
-  userEditController,
-  recoveryRequestController,
-  validateRecoveryTokenController,
-  resetPasswordController,
 };

@@ -113,6 +113,29 @@ const deleteUser = async (req, res) => {
   }
 };
 
+/**
+ * Request a recovery token
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+const requestRecoveryToken = async (req, res) => {
+  try {
+    // Delete any existing tokens
+    await RecoveryToken.deleteMany({ email: req.body.email });
+    let recoveryToken = new RecoveryToken({
+      email: req.body.email,
+      token: crypto.randomBytes(32).toString("hex"),
+    });
+    await recoveryToken.save();
+    return recoveryToken;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const validateRecoveryToken = async (req, res) => {
   try {
     const candidateToken = req.body.recoveryToken;
@@ -495,6 +518,7 @@ module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
+  deleteUser,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
