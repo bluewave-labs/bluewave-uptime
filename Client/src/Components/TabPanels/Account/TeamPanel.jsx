@@ -184,7 +184,7 @@ const TeamPanel = () => {
     return count;
   };
   return (
-    <TabPanel value="2">
+    <TabPanel value="team">
       <form className="edit-organization-form">
         <div
           className="edit-organization-form__wrapper"
