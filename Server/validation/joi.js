@@ -43,6 +43,10 @@ const newPasswordValidation = joi.object({
   confirm: joi.string(),
 });
 
+const userDeleteValidation = joi.object({
+  userId: joi.string().required(),
+});
+
 //****************************************
 // Monitors
 //****************************************

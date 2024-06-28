@@ -304,6 +304,21 @@ const deleteAllMonitors = async (req, res) => {
 };
 
 /**
+ * Delete all monitors associated with a user ID
+ * @async
+ * @param {string} userId - The ID of the user whose monitors are to be deleted.
+ * @returns {Promise} A promise that resolves when the operation is complete.
+ */
+const deleteMonitorsByUserId = async (userId) => {
+  try {
+    const result = await Monitor.deleteMany({ userId: userId });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * Edit a monitor by ID
  * @async
  * @param {Express.Request} req
@@ -539,4 +554,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
+  deleteMonitorsByUserId
 };

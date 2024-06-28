@@ -238,7 +238,7 @@ const resetPasswordController = async (req, res, next) => {
 const deleteUserController = async (req, res, next) => {
   try {
     // Validate user
-    await editUserParamValidation.validateAsync(req.params);
+    await editUserParamValidation.userDeleteValidation(req.params.userId);
 
     // Check if the user exists
     const user = await req.db.getUserById(req.params.userId);
@@ -246,7 +246,19 @@ const deleteUserController = async (req, res, next) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
-    // Delete the user
+    // Step 1: Find all monitors associated with the user
+    const monitors = await req.db.getMonitorsByUserId(req.params.userId);
+
+    // Step 2: For each monitor, delete all associated checks and alerts
+    for (const monitor of monitors) {
+      await req.db.deleteChecks(monitor.id);
+      await req.db.deleteAlertByMonitorId(monitor.id);
+    }
+
+    // Step 3: Delete all monitors associated with the user
+    await req.db.deleteMonitorsByUserId(req.params.userId);
+
+    // Step 4: Finally, delete the user
     await req.db.deleteUser(req.params.userId);
 
     return res.status(200).json({
