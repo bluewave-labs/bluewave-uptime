@@ -243,7 +243,7 @@ const deleteUserController = async (req, res, next) => {
     // Check if the user exists
     const user = await req.db.getUserById(req.params.userId);
     if (!user) {
-      throw new Error(errorMessages.AUTH_USER_NOT_FOUND);
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
     // Delete the user
