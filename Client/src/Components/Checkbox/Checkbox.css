@@ -33,5 +33,4 @@
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
   font-weight: 500;
-  cursor: pointer;
 }

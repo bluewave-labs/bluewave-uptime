@@ -45,6 +45,12 @@
   font-size: var(--env-var-font-size-medium);
 }
 
+#login-password-input {
+  width: 308px;
+  height: 11px;
+  font-size: var(--env-var-font-size-medium);
+}
+
 .login-form-password-options {
   display: flex;
   align-items: center;

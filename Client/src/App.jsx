@@ -6,6 +6,7 @@ import Register from "./Pages/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
+import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
 import CreateNewMonitor from "./Pages/CreateNewMonitor";
 import Incidents from "./Pages/Incidents";
@@ -52,6 +53,18 @@ function App() {
           <Route
             path="settings"
             element={<ProtectedRoute Component={Settings} />}
+          />
+          <Route
+            path="account/profile"
+            element={<ProtectedRoute Component={Account} open="profile" />}
+          />
+          <Route
+            path="account/password"
+            element={<ProtectedRoute Component={Account} open="password" />}
+          />
+          <Route
+            path="account/team"
+            element={<ProtectedRoute Component={Account} open="team" />}
           />
         </Route>
 
