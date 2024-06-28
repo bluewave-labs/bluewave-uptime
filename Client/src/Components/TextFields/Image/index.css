@@ -1,0 +1,15 @@
+.image-field-wrapper h2.MuiTypography-root,
+.image-field-wrapper p.MuiTypography-root {
+  color: var(--env-var-color-2);
+  font-size: var(--env-var-font-size-medium);
+}
+.image-field-wrapper h2.MuiTypography-root {
+  margin-top: 10px;
+}
+.image-field-wrapper p.MuiTypography-root {
+  opacity: 0.8;
+}
+.image-field-wrapper h2.MuiTypography-root span {
+  color: var(--env-var-color-3);
+  font-weight: 500;
+}

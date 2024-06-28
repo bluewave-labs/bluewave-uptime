@@ -1,17 +1,18 @@
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  Avatar,
-  Box,
-  Divider,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
+import EmailTextField from "../../TextFields/Email/EmailTextField";
+import StringTextField from "../../TextFields/Text/TextField";
+import Avatar from "../../Avatar";
+import { editProfileValidation } from "../../../Validation/validation";
+import { useDispatch, useSelector } from "react-redux";
+import { update } from "../../../Features/Auth/authSlice";
+import ImageField from "../../TextFields/Image";
+import ImageIcon from "@mui/icons-material/Image";
+import ProgressUpload from "../../ProgressBars";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -23,34 +24,127 @@ import Button from "../../Button";
 
 const ProfilePanel = () => {
   const theme = useTheme();
-  //TODO - use redux loading state
-  //!! - currently all loading buttons are tied to the same state
-  const [isLoading, setIsLoading] = useState(false);
-  //TODO - implement delete profile picture function
-  const handleDeletePicture = () => {
-    setIsLoading(true);
+  const dispatch = useDispatch();
+
+  const { user, authToken, isLoading } = useSelector((state) => state.auth);
+  const idToName = {
+    "edit-first-name": "firstname",
+    "edit-last-name": "lastname",
+    //Disabled for now, will revisit in the future
+    // "edit-email": "email",
+  };
+  const [localData, setLocalData] = useState({
+    firstname: user.firstname,
+    lastname: user.lastname,
+    //Disabled for now, will revisit in the future
+    // email: user.email,
+    //TODO - upload picture
+    profilePicUrl: "placeholder",
+  });
+  const [errors, setErrors] = useState({});
+  const [isOpen, setIsOpen] = useState("");
+  const isModalOpen = (name) => isOpen === name;
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idToName[id];
+    setLocalData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    const validation = editProfileValidation.validate(
+      { [name]: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+
+      if (validation.error) {
+        updatedErrors[name] = validation.error.details[0].message;
+      } else {
+        delete updatedErrors[name];
+      }
+      return updatedErrors;
+    });
+  };
+
+  //TODO - add setPicture state to localData
+  const [picture, setPicture] = useState();
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const handlePicture = (event) => {
+    const pic = event.target.files[0];
+    console.log(pic);
+    //TODO - add setPicture state to localData
+    setPicture({ name: pic.name, type: pic.type, size: formatBytes(pic.size) });
+    setIsUploading(true);
+
     setTimeout(() => {
-      setIsLoading(false);
+      //TODO - add setPicture state to localData
+      setPicture((prev) => ({ ...prev, src: URL.createObjectURL(pic) }));
+    }, 1500);
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      setUploadProgress(progress);
+      if (progress >= 100) {
+        clearInterval(interval);
+      }
+    }, 150);
+  };
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " MB";
+  };
+  const handleCancelUpload = () => {
+    //TODO - add setPicture state to localData
+    setPicture(null);
+    setUploadProgress(0);
+    setIsUploading(false);
+  };
+  const handleClosePictureModal = () => {
+    setIsOpen("");
+    setUploadProgress(0);
+    setIsUploading(false);
+  };
+
+  //TODO - revisit once localData is set up properly
+  const handleDeletePicture = () => {
+    setLoading(true);
+    setTimeout(() => {
+      //TODO - add setPicture state to localData
+      setPicture(null);
+      setLoading(false);
     }, 2000);
   };
   //TODO - implement update profile function
-  const handleUpdatePicture = () => {};
-  const [isOpen, setIsOpen] = useState(false);
-  //TODO - implement delete account function
-  const handleDeleteAccount = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsOpen(false);
-    }, 2000);
+  const handleUpdatePicture = () => {
+    setIsOpen("");
+    setUploadProgress(0);
+    setIsUploading(false);
   };
+  //TODO - implement delete account function
+  const handleDeleteAccount = () => {};
   //TODO - implement save profile function
-  const handleSaveProfile = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsOpen(false);
-    }, 2000);
+  const handleSaveProfile = (event) => {
+    event.preventDefault();
+    if (
+      localData.firstname === user.firstname &&
+      localData.lastname === user.lastname &&
+      localData.profilePicUrl === user.profilePicUrl
+    ) {
+      //TODO - add toast(profile data is unchanged) and maybe disable button
+      return;
+    }
+
+    dispatch(update({ authToken, localData }));
+    //TODO - add toast confirmation
   };
 
   return (
@@ -62,14 +156,24 @@ const ProfilePanel = () => {
               First Name
             </Typography>
           </Stack>
-          {/* TODO - use existing textfield components */}
-          <TextField
-            id="edit-first-name"
-            placeholder="Enter your first name"
-            sx={{
-              flex: 1,
-            }}
-          />
+          <Stack>
+            <StringTextField
+              id="edit-first-name"
+              label={null}
+              value={localData.firstname}
+              placeholder="Enter your first name"
+              autoComplete="given-name"
+              onChange={handleChange}
+              error={errors[idToName["edit-first-name"]] ? true : false}
+            />
+            {errors[idToName["edit-first-name"]] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors[idToName["edit-first-name"]]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -77,14 +181,24 @@ const ProfilePanel = () => {
               Last Name
             </Typography>
           </Stack>
-          {/* TODO - use existing textfield components */}
-          <TextField
-            id="edit-last-name"
-            placeholder="Enter your last name"
-            sx={{
-              flex: 1,
-            }}
-          />
+          <Stack>
+            <StringTextField
+              id="edit-last-name"
+              label={null}
+              value={localData.lastname}
+              placeholder="Enter your last name"
+              autoComplete="family-name"
+              onChange={handleChange}
+              error={errors[idToName["edit-last-name"]] ? true : false}
+            />
+            {errors[idToName["edit-last-name"]] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors[idToName["edit-last-name"]]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -92,17 +206,28 @@ const ProfilePanel = () => {
               Email
             </Typography>
             <Typography variant="h5" component="p">
-              After updating, you'll receive a confirmation email.
+              This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
-          {/* TODO - use existing textfield components */}
-          <TextField
-            id="edit-email"
-            placeholder="Enter your email"
-            sx={{
-              flex: 1,
-            }}
-          />
+          <Stack>
+            <EmailTextField
+              id="edit-email"
+              label={null}
+              value={user.email}
+              placeholder="Enter your email"
+              autoComplete="email"
+              // onChange={handleChange}
+              // error={errors[idToName["edit-email"]] ? true : false}
+              disabled={true}
+            />
+            {errors[idToName["edit-email"]] ? (
+              <Typography variant="h5" component="p" className="input-error">
+                {errors[idToName["edit-email"]]}
+              </Typography>
+            ) : (
+              ""
+            )}
+          </Stack>
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -114,24 +239,28 @@ const ProfilePanel = () => {
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            {/* TODO - Use Avatar component instead of @mui */}
+            {/* TODO - Update placeholder values with redux data */}
             <Avatar
-              alt="Remy Sharp"
-              src="/static/images/avatar/2.jpg"
-              className="icon-button-avatar"
-              style={{ width: "64px", height: "64px" }}
+              src={picture ? picture.src : "/static/images/avatar/2.jpg"}
+              firstName={localData.firstname}
+              lastName={localData.lastname}
+              sx={{
+                width: "64px",
+                height: "64px",
+                border: "none",
+                mr: "8px",
+              }}
             />
             <ButtonSpinner
               level="tertiary"
               label="Delete"
               onClick={handleDeletePicture}
-              isLoading={isLoading}
+              isLoading={loading}
             />
-            {/* TODO - modal popup for update pfp? */}
             <Button
               level="tertiary"
               label="Update"
-              onClick={handleUpdatePicture}
+              onClick={() => setIsOpen("picture")}
               sx={{
                 color: theme.palette.primary.main,
               }}
@@ -152,6 +281,7 @@ const ProfilePanel = () => {
               onClick={handleSaveProfile}
               isLoading={isLoading}
               loadingText="Saving..."
+              disabled={Object.keys(errors).length !== 0 && true}
               sx={{
                 paddingX: "40px",
               }}
@@ -174,7 +304,7 @@ const ProfilePanel = () => {
               <Button
                 level="error"
                 label="Delete account"
-                onClick={() => setIsOpen(true)}
+                onClick={() => setIsOpen("delete")}
               />
             </Box>
           </Stack>
@@ -184,8 +314,8 @@ const ProfilePanel = () => {
       <Modal
         aria-labelledby="modal-delete-account"
         aria-describedby="delete-account-confirmation"
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
+        open={isModalOpen("delete")}
+        onClose={() => setIsOpen("")}
         disablePortal
       >
         <Stack
@@ -222,12 +352,77 @@ const ProfilePanel = () => {
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsOpen("")}
             />
             <ButtonSpinner
               level="error"
               label="Delete account"
               onClick={handleDeleteAccount}
+              isLoading={isLoading}
+            />
+          </Stack>
+        </Stack>
+      </Modal>
+      <Modal
+        aria-labelledby="modal-update-picture"
+        aria-describedby="update-profile-picture"
+        open={isModalOpen("picture")}
+        onClose={handleClosePictureModal}
+        disablePortal
+      >
+        <Stack
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-update-picture" variant="h4" component="h1">
+            Upload Image
+          </Typography>
+          <ImageField
+            id="update-profile-picture"
+            picture={picture?.src}
+            onChange={handlePicture}
+          />
+          {isUploading ? (
+            <ProgressUpload
+              icon={<ImageIcon />}
+              label={picture?.name}
+              size={picture?.size}
+              progress={uploadProgress}
+              onClick={handleCancelUpload}
+            />
+          ) : (
+            ""
+          )}
+          <Stack direction="row" mt="20px" gap="10px" justifyContent="flex-end">
+            <Button
+              level="secondary"
+              label="Edit"
+              disabled
+              sx={{ mr: "auto" }}
+            />
+            <ButtonSpinner
+              level="tertiary"
+              label="Remove"
+              onClick={handleCancelUpload}
+              isLoading={loading}
+            />
+            <ButtonSpinner
+              level="primary"
+              label="Update"
+              onClick={handleUpdatePicture}
               isLoading={isLoading}
             />
           </Stack>

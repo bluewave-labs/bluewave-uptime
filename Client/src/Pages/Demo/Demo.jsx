@@ -29,12 +29,15 @@ import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
 import UploadIcon from "@mui/icons-material/Upload";
 import SendIcon from "@mui/icons-material/Send";
+import ImageIcon from '@mui/icons-material/Image';
 
 // Redux
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
+import ImageField from "../../Components/TextFields/Image";
+import ProgressUpload from "../../Components/ProgressBars";
 
 const cols = [
   {
@@ -413,6 +416,14 @@ const Demo = () => {
           isLoading={isLoading}
           disabled={true}
         />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack justifyContent="center" alignItems="center">
+        <ImageField />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack justifyContent="center" alignItems="center">
+        <ProgressUpload icon={<ImageIcon />} label="image.jpg" size="2 MB"/>
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
     </div>

@@ -2,6 +2,7 @@ const axios = require("axios");
 const ping = require("ping");
 const logger = require("../utils/logger");
 const Check = require("../models/Check");
+const { Console } = require("winston/lib/winston/transports");
 
 class NetworkService {
   constructor(db) {
@@ -149,9 +150,9 @@ class NetworkService {
       const insertedCheck = await check.save();
       return insertedCheck.status;
     } catch (error) {
-      logger.error(`Error wrtiting check for ${job.id}`, {
+      logger.error(`Error wrtiting check for ${check.monitorId}`, {
         service: this.SERVICE_NAME,
-        jobId: job.id,
+        monitorId: check.monitorId,
         error: error,
       });
       return false;

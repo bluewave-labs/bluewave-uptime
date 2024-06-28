@@ -3,9 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  /* color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,6 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* Generalized Stylings */
+
+  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
 
   --env-var-color-1: #101828;
   --env-var-color-2: #475467;
@@ -45,7 +47,7 @@
   --env-var-color-27: #fecf60;
   --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
   --env-var-color-28: #f79009;
-  --env-var-color-29: #667085;
+  --env-var-color-29: #D0D5DD;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
@@ -77,8 +79,6 @@
 
   --env-var-shadow-1: 0px 4px 24px -4px rgba(16, 24, 40, 0.08),
     0px 3px 3px -3px rgba(16, 24, 40, 0.03);
-
-  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 a {

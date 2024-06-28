@@ -10,6 +10,7 @@ import { useTheme } from "@mui/material";
  * @param {function} props.onChange - The function to call when the text field changes.
  * @param {string} props.id - The ID of the text field.
  * @param {string} props.label - The label text for the text field.
+ * @param {string} props.value - The value of the text field.
  * @param {string} props.variant - The variant of the text field.
  * @param {string} props.placeholder - The placeholder text for the text field.
  * @param {ReactNode} props.icon - The icon to display in the text field.
@@ -22,6 +23,7 @@ const StringTextField = ({
   autoComplete,
   id,
   label,
+  value = undefined,
   variant,
   placeholder,
   icon,
@@ -51,6 +53,7 @@ const StringTextField = ({
           className="email-text-field-input"
           id={id}
           variant={variant}
+          value={value}
           placeholder={placeholder}
           autoComplete={autoComplete}
           InputProps={{
