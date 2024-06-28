@@ -94,24 +94,20 @@ const updateUser = async (req, res) => {
   }
 };
 
+
 /**
- * Request a recovery token
+ * Delete a user by ID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const requestRecoveryToken = async (req, res) => {
+const deleteUser = async (req, res) => {
+  const userId = req.params.userId;
   try {
-    // Delete any existing tokens
-    await RecoveryToken.deleteMany({ email: req.body.email });
-    let recoveryToken = new RecoveryToken({
-      email: req.body.email,
-      token: crypto.randomBytes(32).toString("hex"),
-    });
-    await recoveryToken.save();
-    return recoveryToken;
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+    return deletedUser;
   } catch (error) {
     throw error;
   }
