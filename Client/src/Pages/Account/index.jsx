@@ -30,8 +30,8 @@ const Account = ({ open = "profile" }) => {
       //TODO - breakpoints for responsive design
       minWidth={theme.spacing(55)}
       maxWidth="1200px"
-      py={theme.spacing(5)}
-      px={theme.spacing(10)}
+      py={theme.content.pY}
+      px={theme.content.pX}
       className="account"
     >
       <TabContext value={tab}>

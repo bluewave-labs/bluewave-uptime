@@ -1,5 +1,7 @@
+import { Stack, Typography } from "@mui/material";
 import "./flexibileTextField.css";
 import React from "react";
+import { useTheme } from "@emotion/react";
 
 const FlexibileTextField = ({
   id,
@@ -8,19 +10,27 @@ const FlexibileTextField = ({
   placeholder,
   value,
   onChange,
+  error,
 }) => {
+  const theme = useTheme();
   return (
-    <div className="flexibile-textfield">
-      <div className="flexibile-textfield-title">{title}</div>
+    <Stack className="flexible-textfield" gap={theme.gap.small}>
+      <Typography component="h2">{title}</Typography>
       <input
         id={id}
         type={type}
-        className="flexibile-textfield-input"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
       />
-    </div>
+      {error ? (
+        <Typography component="p" className="input-error">
+          {error}
+        </Typography>
+      ) : (
+        ""
+      )}
+    </Stack>
   );
 };
 
