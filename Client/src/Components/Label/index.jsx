@@ -124,7 +124,7 @@ ColoredLabel.propTypes = {
  * <StatusLabel status="Active" />
  */
 
-const StatusLabel = ({ status }) => {
+const StatusLabel = ({ status, customStyles }) => {
   const theme = useTheme();
 
   const colorLookup = {
@@ -132,13 +132,15 @@ const StatusLabel = ({ status }) => {
     Waiting: theme.palette.labelRed.color,
     New: theme.palette.labelOrange.color,
     Active: theme.palette.labelGreen.color,
+    Down: theme.palette.error.main,  // Assuming theme.palette.error.main is red
+    
   };
 
   // Look up the color for the status, default to labelGray if not found
   const color = colorLookup[status] || theme.palette.labelGray.color;
 
   return (
-    <BaseLabel label={status}>
+    <BaseLabel label={status} styles={customStyles}>
       <Box
         width={12}
         height={12}
@@ -152,6 +154,7 @@ const StatusLabel = ({ status }) => {
 
 StatusLabel.propTypes = {
   status: PropTypes.oneOf(["Seen", "Waiting", "New", "Active"]),
+  customStyles: PropTypes.object,
 };
 
 export { ColoredLabel, StatusLabel };

@@ -36,12 +36,13 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-  createData(<StatusLabel status="Down" />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-  createData(<StatusLabel status="Down" />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-  createData(<StatusLabel status="Down" />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-  createData(<StatusLabel status="Cannot resolve" />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-  createData(<StatusLabel status="Down" />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
+  createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
+  createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
+  createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
+  createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
+  createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
 ];
+
 
 export default function CustomizedTables() {
   return (
