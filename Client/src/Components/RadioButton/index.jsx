@@ -18,28 +18,37 @@
  * @returns {JSX.Element} - The rendered RadioButton component.
  */
 
-import { FormControlLabel, Radio } from "@mui/material";
-import React from "react";
-import "./index.css";
 import PropTypes from "prop-types";
+import { FormControlLabel, Radio, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import "./index.css";
 
 function RadioButton(props) {
+  const theme = useTheme();
   return (
-    <div className="custom-radio-button">
-      <FormControlLabel
-        checked={props.checked}
-        value={props.value}
-        control={<Radio id={props.id} size={props.size} />}
-        onChange={props.onChange}
-        label={
-          <div>
-            <div className="service-check-list-title">{props.title}</div>
-            <div className="service-check-list-desc">{props.desc}</div>
-          </div>
-        }
-        labelPlacement="end"
-      />
-    </div>
+    <FormControlLabel
+      className="custom-radio-button"
+      checked={props.checked}
+      value={props.value}
+      control={
+        <Radio
+          id={props.id}
+          size={props.size}
+          sx={{ color: theme.palette.secondary.main }}
+        />
+      }
+      onChange={props.onChange}
+      label={
+        <>
+          <Typography component="p">{props.title}</Typography>
+          <Typography component="h6" mt="2px">
+            {props.desc}
+          </Typography>
+        </>
+      }
+      labelPlacement="end"
+      sx={{ margin: 0, alignItems: "flex-start" }}
+    />
   );
 }
 

@@ -107,9 +107,7 @@ const PasswordPanel = () => {
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Current password
-            </Typography>
+            <Typography component="h1">Current password</Typography>
           </Stack>
           <Stack>
             <PasswordTextField
@@ -123,7 +121,7 @@ const PasswordPanel = () => {
               error={errors[idToName["edit-current-password"]] ? true : false}
             />
             {errors[idToName["edit-current-password"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-current-password"]]}
               </Typography>
             ) : (
@@ -133,9 +131,7 @@ const PasswordPanel = () => {
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              New password
-            </Typography>
+            <Typography component="h1">New password</Typography>
           </Stack>
           <Stack>
             <PasswordTextField
@@ -149,7 +145,7 @@ const PasswordPanel = () => {
               error={errors[idToName["edit-new-password"]] ? true : false}
             />
             {errors[idToName["edit-new-password"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-new-password"]]}
               </Typography>
             ) : (
@@ -159,9 +155,7 @@ const PasswordPanel = () => {
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Confirm new password
-            </Typography>
+            <Typography component="h1">Confirm new password</Typography>
           </Stack>
           <Stack>
             <PasswordTextField
@@ -175,7 +169,7 @@ const PasswordPanel = () => {
               error={errors[idToName["edit-confirm-password"]] ? true : false}
             />
             {errors[idToName["edit-confirm-password"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-confirm-password"]]}
               </Typography>
             ) : (

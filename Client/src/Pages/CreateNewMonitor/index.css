@@ -1,80 +1,65 @@
-.monitors,
-.new-monitor {
-  width: 70vw;
-  padding: 4vw;
+.create-monitor-form h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large-plus);
+  color: var(--env-var-color-1);
+}
+.create-monitor-form h1.MuiTypography-root,
+.create-monitor-form h2.MuiTypography-root {
+  font-weight: 600;
+}
+.create-monitor-form h2.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+}
+.create-monitor-form p.MuiTypography-root,
+#monitor-frequencies {
+  font-size: var(--env-var-font-size-medium);
+}
+.create-monitor-form h2.MuiTypography-root,
+.create-monitor-form h6.MuiTypography-root,
+.create-monitor-form p.MuiTypography-root,
+#monitor-frequencies {
+  color: var(--env-var-color-2);
+}
+.create-monitor-form h6.MuiTypography-root {
+  font-size: var(--env-var-font-size-small-plus);
+  opacity: 0.8;
 }
 
-.monitors-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.create-monitor-form .error-container {
+  position: relative;
+}
+.create-monitor-form .error-container p.MuiTypography-root.input-error {
+  color: var(--env-var-color-24);
+  opacity: 0.8;
+  position: absolute;
+  top: 0;
 }
 
-.monitors-bar-title {
-  font-size: 24px;
-  font-weight: 700;
-}
+/* for testing, will remove later */
+/* .config-box:has(.error-container):has(.input-error) {
+  border-color: var(--env-var-color-24);
+} */
 
-.monitors-stats {
-  display: flex;
-  gap: 24px;
+.create-monitor-form .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input {
+  padding: var(--env-var-spacing-1);
+}
+.create-monitor-form .MuiInputBase-root:has(#monitor-frequencies) {
+  min-width: 300px;
+  width: 100%;
+  height: 34px;
+  border: 1px solid var(--env-var-color-4);
+  border-radius: var(--env-var-radius-1);
+  overflow: hidden;
+}
+.create-monitor-form .MuiInputBase-root:has(#monitor-frequencies) fieldset {
+  outline: none;
+  border: none;
 }
 
 .monitors-gaps-medium {
   height: var(--env-var-spacing-2);
 }
-
 .monitors-gaps-small-plus {
   height: var(--env-var-spacing-1-plus);
-}
-
-.new-monitor-header {
-  color: var(--env-var-color-1);
-  font-size: var(--env-var-font-size-large-plus);
-  font-weight: 600;
-}
-
-.service-check-list-title {
-  color: var(--env-var-color-5);
-  font-size: var(--env-var-font-size-medium);
-}
-
-.service-check-list-desc {
-  color: var(--env-var-color-25);
-  font-size: var(--env-var-font-size-small);
-}
-
-.host-status-box-text {
-  font-size: var(--env-var-font-size-medium);
-}
-
-.monitors-dropdown-holder {
-  padding-left: 30px;
-}
-
-#ports-list {
-  width: 172.92px;
-  height: 12px;
-  font-size: var(--env-var-font-size-small);
-  align-items: center;
-}
-
-.incident-notif-config-title,
-.adv-setting-title {
-  color: var(--env-var-color-5);
-  font-size: var(--env-var-font-size-medium);
-}
-
-.adv-setting-title {
-  font-weight: 500;
-}
-
-.config-box-inputs,
-.service-check-list,
-.incident-notif-config,
-.advanced-setting-config,
-.proxy-setting-config {
-  padding-right: 40px;
 }
 
 .monitors-create-button-holder {

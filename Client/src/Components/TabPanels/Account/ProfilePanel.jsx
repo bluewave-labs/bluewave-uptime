@@ -152,9 +152,7 @@ const ProfilePanel = () => {
       <form className="edit-profile-form" noValidate spellCheck="false">
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              First name
-            </Typography>
+            <Typography component="h1">First name</Typography>
           </Stack>
           <Stack>
             <StringTextField
@@ -167,7 +165,7 @@ const ProfilePanel = () => {
               error={errors[idToName["edit-first-name"]] ? true : false}
             />
             {errors[idToName["edit-first-name"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-first-name"]]}
               </Typography>
             ) : (
@@ -177,9 +175,7 @@ const ProfilePanel = () => {
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Last name
-            </Typography>
+            <Typography component="h1">Last name</Typography>
           </Stack>
           <Stack>
             <StringTextField
@@ -192,7 +188,7 @@ const ProfilePanel = () => {
               error={errors[idToName["edit-last-name"]] ? true : false}
             />
             {errors[idToName["edit-last-name"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-last-name"]]}
               </Typography>
             ) : (
@@ -202,10 +198,8 @@ const ProfilePanel = () => {
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Email
-            </Typography>
-            <Typography variant="h5" component="p">
+            <Typography component="h1">Email</Typography>
+            <Typography component="p">
               This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
@@ -221,7 +215,7 @@ const ProfilePanel = () => {
               disabled={true}
             />
             {errors[idToName["edit-email"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-email"]]}
               </Typography>
             ) : (
@@ -231,10 +225,8 @@ const ProfilePanel = () => {
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Your photo
-            </Typography>
-            <Typography variant="h5" component="p">
+            <Typography component="h1">Your photo</Typography>
+            <Typography component="p">
               This photo will be displayed in your profile page.
             </Typography>
           </Stack>
@@ -292,10 +284,8 @@ const ProfilePanel = () => {
       <form className="delete-profile-form" noValidate spellCheck="false">
         <div className="delete-profile-form__wrapper">
           <Stack direction="column" gap="15px">
-            <Typography variant="h4" component="h1">
-              Delete account
-            </Typography>
-            <Typography variant="h5" component="p">
+            <Typography component="h1">Delete account</Typography>
+            <Typography component="p">
               Note that deleting your account will remove all data from our
               system. This is permanent and non-recoverable.
             </Typography>
@@ -335,14 +325,10 @@ const ProfilePanel = () => {
             },
           }}
         >
-          <Typography id="modal-delete-account" variant="h4" component="h1">
+          <Typography id="modal-delete-account" component="h1">
             Really delete this account?
           </Typography>
-          <Typography
-            id="delete-account-confirmation"
-            variant="h5"
-            component="p"
-          >
+          <Typography id="delete-account-confirmation" component="p">
             If you delete your account, you will no longer be able to sign in,
             and all of your data will be deleted. Deleting your account is
             permanent and non-recoverable action.
@@ -386,7 +372,7 @@ const ProfilePanel = () => {
             },
           }}
         >
-          <Typography id="modal-update-picture" variant="h4" component="h1">
+          <Typography id="modal-update-picture" component="h1">
             Upload Image
           </Typography>
           <ImageField
