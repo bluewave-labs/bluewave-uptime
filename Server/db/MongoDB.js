@@ -396,7 +396,7 @@ const getChecks = async (monitorId) => {
 const deleteChecks = async (monitorId) => {
   try {
     const result = await Check.deleteMany({ monitorId });
-    return result;
+    return result.deletedCount;
   } catch (error) {
     throw error;
   }
@@ -519,6 +519,13 @@ const deleteAlert = async (alertId) => {
   }
 };
 
+/**
+ * Deletes alerts by monitor ID.
+ *
+ * @param {string} monitorId - The ID of the monitor.
+ * @returns {Promise} A promise that resolves to the result of the delete operation.
+ * @throws {Error} If an error occurs while deleting the alerts.
+ */
 const deleteAlertByMonitorId = async (monitorId) => {
   try {
     const result = await Alert.deleteMany({ monitorId });

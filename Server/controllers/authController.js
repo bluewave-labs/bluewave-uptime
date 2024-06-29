@@ -236,6 +236,15 @@ const resetPasswordController = async (req, res, next) => {
   }
 };
 
+/**
+ * Deletes a user and all associated monitors, checks, and alerts.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Object} The response object with success status and message.
+ * @throws {Error} If user validation fails or user is not found in the database.
+ */
 const deleteUserController = async (req, res, next) => {
   try {
     // Validate user
@@ -247,22 +256,29 @@ const deleteUserController = async (req, res, next) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
-    // Step 1: Find all monitors associated with the user
+    // 1. Find all the monitors associated with the user id
     const monitors = await req.db.getMonitorsByUserId(req.params.userId);
-
-    // Step 2: For each monitor, delete all associated checks and alerts
-    if (monitors) {
-      for (const monitor of monitors) {
-        await req.db.deleteChecks(monitor.id);
-        await req.db.deleteAlertByMonitorId(monitor.id);
-      }
+    
+    // 2. Delete jobs associated with each monitor
+    for (const monitor of monitors) {
+      await req.jobQueue.deleteJob(monitor);
     }
-
-    // Step 3: Delete all monitors associated with the user
+    
+    // 3. Delete all checks associated with each monitor
+    for (const monitor of monitors) {
+      await req.db.deleteChecks(monitor._id);
+    }
+    
+    // 4. Delete all alerts associated with each monitor
+    for (const monitor of monitors) {
+      await req.db.deleteAlertByMonitorId(monitor._id);
+    }
+    
+    // 5. Delete each monitor
     await req.db.deleteMonitorsByUserId(req.params.userId);
-
-    // Step 4: Finally, delete the user
-    await req.db.deleteUser(req.params.userId);
+    
+    // 6. Delete the user by id
+    await req.db.deleteUserById(req.params.userId);
 
     return res.status(200).json({
       success: true,
