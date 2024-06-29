@@ -86,6 +86,16 @@ const theme = createTheme({
     borderThick: 2,
     boxShadow: shadow,
   },
+  content: {
+    pX: "80px",
+    pY: "40px"
+  },
+  gap: {
+    small: "8px",
+    medium: "12px",
+    large: "24px",
+    xl: "40px"
+  }
 });
 
 export default theme;

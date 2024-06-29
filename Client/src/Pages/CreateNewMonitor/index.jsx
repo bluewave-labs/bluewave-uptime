@@ -5,17 +5,19 @@ import React, { useState } from "react";
 import RadioButton from "../../Components/RadioButton";
 import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox";
 import Button from "../../Components/Button";
-import { MenuItem, Select, Typography } from "@mui/material";
+import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { createMonitorValidation } from "../../Validation/validation";
 import { createMonitor } from "../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 
 const CreateNewMonitor = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const [errors, setErrors] = useState({});
 
@@ -120,21 +122,31 @@ const CreateNewMonitor = () => {
   const frequencies = [1, 2, 3, 4, 5];
 
   return (
-    <form onSubmit={handleCreateNewMonitor} noValidate spellCheck="false">
-      <div className="new-monitor-header">Create new monitor</div>
+    <form
+      className="create-monitor-form"
+      onSubmit={handleCreateNewMonitor}
+      noValidate
+      spellCheck="false"
+      style={{
+        maxWidth: "1200px",
+        flex: 1,
+        padding: `${theme.content.pY} ${theme.content.pX}`,
+      }}
+    >
+      <Typography component="h1">Create new monitor</Typography>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
         leftLayout={
-          <div className="config-box-desc">
-            <div className="config-box-desc-title">General settings</div>
-            <div className="config-box-desc-text">
+          <Stack gap={theme.gap.small}>
+            <Typography component="h2">General settings</Typography>
+            <Typography component="p">
               Here you can select the URL of the host, together with the type of
               monitor.
-            </div>
-          </div>
+            </Typography>
+          </Stack>
         }
         rightLayout={
-          <div className="config-box-inputs">
+          <Stack gap={theme.gap.xl}>
             <FlexibileTextField
               id="monitor-url"
               title="URL to monitor"
@@ -144,66 +156,57 @@ const CreateNewMonitor = () => {
               onChange={(event) =>
                 handleChange(event, "url", setGeneralSettings)
               }
+              error={errors["url"]}
             />
-            {errors["url"] ? (
-              <Typography variant="h5" component="p" className="input-error">
-                {errors["url"]}
-              </Typography>
-            ) : (
-              ""
-            )}
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-name"
-              title="Friendly name (optional)"
+              title={
+                <>
+                  Friendly name <span>(optional)</span>
+                </>
+              }
               type="text"
               placeholder="Google"
               value={generalSettings.name}
               onChange={(event) =>
                 handleChange(event, "name", setGeneralSettings)
               }
+              error={errors["name"]}
             />
-            {errors["name"] ? (
-              <Typography variant="h5" component="p" className="input-error">
-                {errors["name"]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </div>
+          </Stack>
         }
       />
       <div className="monitors-gaps-medium"></div>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
         leftLayout={
-          <div className="config-box-desc">
-            <div className="config-box-desc-title">Checks to perform</div>
-            <div className="config-box-desc-text">
+          <Stack gap={theme.gap.small}>
+            <Typography component="h2">Checks to perform</Typography>
+            <Typography component="p">
               You can always add or remove checks after adding your site.
-            </div>
-          </div>
+            </Typography>
+          </Stack>
         }
         rightLayout={
-          <div className="service-check-list">
+          <Stack gap={theme.gap.large}>
             <RadioButton
               id="monitor-checks-http"
               title="HTTP/website monitoring"
               desc="Use HTTP(s) to monitor your website or API endpoint."
+              size="small"
               value="http"
               checked={checks.type === "http"}
               onChange={(event) => handleChange(event, "type", setChecks)}
             />
-            <div className="monitors-gaps-medium"></div>
             <RadioButton
               id="monitor-checks-ping"
               title="Ping monitoring"
               desc="Check whether your server is available or not."
+              size="small"
               value="ping"
               checked={checks.type === "ping"}
               onChange={(event) => handleChange(event, "type", setChecks)}
             />
-            <div className="monitors-gaps-medium"></div>
             {/* TODO */}
             {/* <RadioButton
               id="monitor-checks-port"
@@ -231,14 +234,16 @@ const CreateNewMonitor = () => {
                 ))}
               </Select>
             </div> */}
-            {errors["type"] ? (
-              <Typography variant="h5" component="p" className="input-error">
-                {errors["type"]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </div>
+            <Box className="error-container">
+              {errors["type"] ? (
+                <Typography component="p" className="input-error">
+                  {errors["type"]}
+                </Typography>
+              ) : (
+                ""
+              )}
+            </Box>
+          </Stack>
         }
       />
       {/* TODO */}
@@ -300,29 +305,47 @@ const CreateNewMonitor = () => {
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
         leftLayout={
-          <div className="config-box-desc">
-            <div className="config-box-desc-title">Advanced settings</div>
-          </div>
+          <Stack gap={theme.gap.small}>
+            <Typography component="h2">Advanced settings</Typography>
+          </Stack>
         }
         rightLayout={
-          <div className="advanced-setting-config">
-            <div className="adv-setting-title">Check frequency</div>
-            <div className="monitors-gaps-small"></div>
-            <Select
-              id="monitor-frequencies"
-              value={advancedSettings.frequency || 1}
-              inputProps={{ id: "monitor-frequencies-select" }}
-              onChange={(event) =>
-                handleChange(event, "frequency", setAdvancedSettings)
-              }
-            >
-              {frequencies.map((freq) => (
-                <MenuItem key={`port-${freq}`} value={freq}>
-                  {freq} {freq === 1 ? "minute" : "minutes"}
-                </MenuItem>
-              ))}
-            </Select>
-            <div className="monitors-gaps-medium"></div>
+          <Stack gap={theme.gap.large}>
+            {/* TODO - refactor select component */}
+            <Box>
+              <Typography component="p" mb={theme.gap.small}>
+                Check frequency
+              </Typography>
+              <Select
+                id="monitor-frequencies"
+                value={advancedSettings.frequency || 1}
+                inputProps={{ id: "monitor-frequencies-select" }}
+                onChange={(event) =>
+                  handleChange(event, "frequency", setAdvancedSettings)
+                }
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      marginTop: "10px"
+                    },
+                  },
+                }}
+              >
+                {frequencies.map((freq) => (
+                  <MenuItem
+                    key={`port-${freq}`}
+                    value={freq}
+                    sx={{
+                      fontSize: "13px",
+                      borderRadius: `${theme.shape.borderRadius}px`,
+                      margin: "5px",
+                    }}
+                  >
+                    {freq} {freq === 1 ? "minute" : "minutes"}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
             {/* TODO */}
             {/* <FlexibileTextField
               id="monitor-settings-retries"
@@ -353,7 +376,7 @@ const CreateNewMonitor = () => {
                 handleChange(event, "redirects", setAdvancedSettings)
               }
             /> */}
-          </div>
+          </Stack>
         }
       />
       {/* TODO */}
@@ -406,6 +429,7 @@ const CreateNewMonitor = () => {
           label="Create new monitor"
           sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
           onClick={handleCreateNewMonitor}
+          disabled={Object.keys(errors).length !== 0 && true}
         />
       </div>
     </form>
