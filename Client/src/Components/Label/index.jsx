@@ -153,7 +153,7 @@ const StatusLabel = ({ status, customStyles }) => {
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf(["Seen", "Waiting", "New", "Active"]),
+  status: PropTypes.oneOf(["Seen", "Waiting", "New", "Active", "Down", "Cannot resolve"]),
   customStyles: PropTypes.object,
 };
 

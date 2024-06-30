@@ -57,7 +57,7 @@ export default function CustomizedTables() {
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
-            <StyledTableRow key={row.name}>
+            <StyledTableRow key={index}>
               <StyledTableCell component="th" scope="row">
                 {row.name}
               </StyledTableCell>
