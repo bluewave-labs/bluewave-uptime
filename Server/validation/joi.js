@@ -14,6 +14,7 @@ const registerValidation = joi.object({
   lastname: joi.string().required(),
   email: joi.string().email().required(),
   password: joi.string().min(8).required(),
+  profileImage: joi.any(),
 });
 
 const editUserParamValidation = joi.object({

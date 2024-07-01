@@ -63,15 +63,6 @@ export const update = createAsyncThunk(
   }
 );
 
-export const deleteAccount = createAsyncThunk(
-  "auth/delete",
-  async (form, thunkApi) => {
-    try {
-      //TODO
-    } catch (error) {}
-  }
-);
-
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
