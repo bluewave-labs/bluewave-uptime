@@ -74,7 +74,7 @@ Once it's filed:
 
 ## Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for CONTRIBUTING.md, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community understand your enhancements and find related suggestions.
+This section guides you through submitting an enhancement suggestion for the application, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community understand your enhancements and find related suggestions.
 
 - Make sure that you are using the latest version.
 - Find out if the functionality is already covered, maybe by an individual configuration.
