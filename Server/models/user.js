@@ -20,8 +20,9 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePicUrl: {
-      type: String,
+    profileImage: {
+      data: Buffer,
+      contentType: String,
     },
     isActive: {
       type: Boolean,
