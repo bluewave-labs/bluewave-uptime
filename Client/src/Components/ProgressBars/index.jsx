@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import "./index.css";
 
 /**
@@ -21,7 +22,14 @@ import "./index.css";
  * @returns {JSX.Element} The rendered component.
  */
 
-const ProgressUpload = ({ icon, label, size, progress = 0, onClick }) => {
+const ProgressUpload = ({
+  icon,
+  label,
+  size,
+  progress = 0,
+  onClick,
+  error,
+}) => {
   const theme = useTheme();
   return (
     <Box
@@ -34,8 +42,15 @@ const ProgressUpload = ({ icon, label, size, progress = 0, onClick }) => {
         border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
       }}
     >
-      <Stack direction="row" mb="10px" gap="10px" alignItems="flex-end">
-        {icon ? (
+      <Stack
+        direction="row"
+        mb={error ? "0" : "10px"}
+        gap="10px"
+        alignItems={error ? "center" : "flex-end"}
+      >
+        {error ? (
+          <ErrorOutlineOutlinedIcon />
+        ) : icon ? (
           <IconButton
             sx={{
               backgroundColor: theme.palette.otherColors.white,
@@ -50,26 +65,36 @@ const ProgressUpload = ({ icon, label, size, progress = 0, onClick }) => {
         ) : (
           ""
         )}
-        <Box>
-          <Typography variant="h4" component="h2" mb="5px">
-            {label}
+        {error ? (
+          <Typography component="p" className="input-error">
+            {error}
           </Typography>
-          <Typography variant="h4" component="p">
-            {size}
-          </Typography>
-        </Box>
+        ) : (
+          <Box>
+            <Typography component="h2" mb="5px">
+              {error ? error : label}
+            </Typography>
+            <Typography component="p">{!error && size}</Typography>
+          </Box>
+        )}
         <IconButton
           onClick={onClick}
-          sx={{
-            alignSelf: "flex-start",
-            ml: "auto",
-            mr: "-5px",
-            mt: "-5px",
-            padding: "5px",
-            "&:focus": {
-              outline: "none",
-            },
-          }}
+          sx={
+            !error
+              ? {
+                  alignSelf: "flex-start",
+                  ml: "auto",
+                  mr: "-5px",
+                  mt: "-5px",
+                  padding: "5px",
+                  "&:focus": {
+                    outline: "none",
+                  },
+                }
+              : {
+                  ml: "auto",
+                }
+          }
         >
           <CloseIcon
             sx={{
@@ -78,25 +103,29 @@ const ProgressUpload = ({ icon, label, size, progress = 0, onClick }) => {
           />
         </IconButton>
       </Stack>
-      <Stack direction="row" alignItems="center">
-        <Box sx={{ width: "100%", mr: "10px" }}>
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              width: "100%",
-              height: "10px",
-              borderRadius: theme.shape.borderRadius,
-              maxWidth: "500px",
-              backgroundColor: theme.palette.otherColors.graishWhite,
-            }}
-          />
-        </Box>
-        <Typography variant="h4" component="p" sx={{ minWidth: "max-content" }}>
-          {progress}
-          <span>%</span>
-        </Typography>
-      </Stack>
+      {!error ? (
+        <Stack direction="row" alignItems="center">
+          <Box sx={{ width: "100%", mr: "10px" }}>
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{
+                width: "100%",
+                height: "10px",
+                borderRadius: `${theme.shape.borderRadius}px`,
+                maxWidth: "500px",
+                backgroundColor: theme.palette.otherColors.graishWhite,
+              }}
+            />
+          </Box>
+          <Typography component="p" sx={{ minWidth: "max-content" }}>
+            {progress}
+            <span>%</span>
+          </Typography>
+        </Stack>
+      ) : (
+        ""
+      )}
     </Box>
   );
 };
