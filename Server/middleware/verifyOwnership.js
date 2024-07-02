@@ -18,6 +18,17 @@ const verifyOwnership = (Model, paramName) => {
         throw error;
       }
 
+      // Special case for User model, as it will not have a `userId` field as other docs will
+      if (Model.modelName === "User") {
+        if (userId.toString() !== doc._id.toString()) {
+          const error = new Error(errorMessages.VERIFY_OWNER_UNAUTHORIZED);
+          error.status = 403;
+          throw error;
+        }
+        next();
+        return;
+      }
+
       // If the userID does not match the document's userID, return a 403 error
       if (userId.toString() !== doc.userId.toString()) {
         console.log(userId.toString(), doc.userId.toString());
@@ -26,9 +37,11 @@ const verifyOwnership = (Model, paramName) => {
         throw error;
       }
       next();
+      return;
     } catch (error) {
       error.service = SERVICE_NAME;
       next(error);
+      return;
     }
   };
 };
