@@ -19,6 +19,7 @@ import "./index.css";
  * @param {string} props.size - The size information for the progress item.
  * @param {number} props.progress - The current progress value (0-100).
  * @param {function} props.onClick - The function to handle click events on the remove button.
+ * @param {string} props.error - Error message to display if there's an error (optional).
  * @returns {JSX.Element} The rendered component.
  */
 
@@ -136,6 +137,7 @@ ProgressUpload.propTypes = {
   size: PropTypes.string.isRequired, // Size information for the progress item
   progress: PropTypes.number.isRequired, // Current progress value (0-100)
   onClick: PropTypes.func.isRequired, // Function to handle click events on the remove button
+  error: PropTypes.string, // Error message to display if there's an error (optional)
 };
 
 export default ProgressUpload;
