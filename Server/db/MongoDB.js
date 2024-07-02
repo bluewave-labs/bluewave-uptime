@@ -166,7 +166,10 @@ const resetPassword = async (req, res) => {
 const checkAdmin = async (req, res) => {
   try {
     const admin = await UserModel.findOne({ role: "admin" });
-    console.log(admin);
+    if (admin !== null) {
+      return true;
+    }
+    return false;
   } catch (error) {
     throw error;
   }

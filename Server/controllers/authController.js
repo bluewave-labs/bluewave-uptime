@@ -161,7 +161,12 @@ const userEditController = async (req, res, next) => {
 
 const checkAdminController = async (req, res) => {
   try {
-    await req.db.checkAdmin(req, res);
+    const adminExists = await req.db.checkAdmin(req, res);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_ADMIN_EXISTS,
+      data: adminExists,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
