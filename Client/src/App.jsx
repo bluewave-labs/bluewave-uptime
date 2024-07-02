@@ -19,8 +19,11 @@ import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ToastComponent from "./Components/Toast";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [adminExists, setAdminExists] = useState(false); // Assuming admin exists by default
+
   return (
     <>
       <Routes>
