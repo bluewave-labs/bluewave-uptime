@@ -1,0 +1,13 @@
+.maintenance-checklist-card {
+  max-width: 314;
+  margin: auto;
+  padding: 2;
+  box-shadow: 3;
+}
+
+.maintenance-checklist-box {
+  height: 100;
+  background-color: grey;
+  border-radius: 1px;
+  margin-bottom: 2px;
+}
