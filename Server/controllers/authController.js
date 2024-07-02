@@ -7,7 +7,7 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
-  userDeleteValidation
+  deleteUserParamValidation
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -248,16 +248,16 @@ const resetPasswordController = async (req, res, next) => {
 const deleteUserController = async (req, res, next) => {
   try {
     // Validate user
-    await userDeleteValidation.validateAsync(req.params.userId);
+    await deleteUserParamValidation.validateAsync(req.body);
 
     // Check if the user exists
-    const user = await req.db.getUserById(req.params.userId);
+    const user = await req.db.getUserByEmail(req);
     if (!user) {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
     // 1. Find all the monitors associated with the user id
-    const monitors = await req.db.getMonitorsByUserId(req.params.userId);
+    const monitors = await req.db.getMonitorsByUserId(req);
     
     // 2. Delete jobs associated with each monitor
     for (const monitor of monitors) {
@@ -275,10 +275,10 @@ const deleteUserController = async (req, res, next) => {
     }
     
     // 5. Delete each monitor
-    await req.db.deleteMonitorsByUserId(req.params.userId);
+    await req.db.deleteMonitorsByUserId(user._id);
     
     // 6. Delete the user by id
-    await req.db.deleteUserById(req.params.userId);
+    await req.db.deleteUser(req);
 
     return res.status(200).json({
       success: true,
