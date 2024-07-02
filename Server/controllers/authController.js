@@ -152,6 +152,24 @@ const userEditController = async (req, res, next) => {
 };
 
 /**
+ * Checks to see if an admin account exists
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+
+const checkAdminController = async (req, res) => {
+  try {
+    await req.db.checkAdmin(req, res);
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
  * Returns a recovery token
  * @async
  * @param {Express.Request} req
@@ -238,6 +256,7 @@ module.exports = {
   registerController,
   loginController,
   userEditController,
+  checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,

@@ -163,6 +163,15 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const checkAdmin = async (req, res) => {
+  try {
+    const admin = await UserModel.findOne({ role: "admin" });
+    console.log(admin);
+  } catch (error) {
+    throw error;
+  }
+};
+
 //****************************************
 //  Monitors
 //****************************************
@@ -502,6 +511,7 @@ module.exports = {
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
+  checkAdmin,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
