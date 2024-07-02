@@ -3,7 +3,7 @@
 
 First off, thanks for taking the time to contribute! ❤️
 
-All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how Uptime Manager project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions. 🎉
+All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how the Uptime Manager project handles them. Please make sure to read the relevant section before making your contribution. It will make it much easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions. 🎉
 
 > And if you like the project, but don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
 > - Star the project
@@ -15,23 +15,19 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 - [I Have a Question](#i-have-a-question)
 - [I Want To Contribute](#i-want-to-contribute)
-- [Reporting Bugs](#reporting-bugs)
 - [Suggesting Enhancements](#suggesting-enhancements)
-- [Design Guidelines][#design-guidelines]
-- [Styleguides](#Developer-guide-for-issue-lifecycle-process)
-
 
 ## I Have a Question
 
-> If you want to ask a question, we assume that you have read the available readme.md files. In the near future we'll come up with a proper installation and usage document.
+If you'd like to ask a question, we assume that you have read the available readme.md files. In the near future we'll come up with a proper installation and usage document.
 
-Before you ask a question, it is best to search for existing [Issues](/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
+Before you ask a question, search for existing [Issues](/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
 
 If you then still feel the need to ask a question and need clarification, we recommend the following:
 
 - Open an [Issue](/issues/new).
 - Provide as much context as you can about what you're running into.
-- Provide project and platform versions (nodejs, MongoDB, etc), depending on what seems relevant.
+- Provide project and platform versions (NodeJs, MongoDB, etc), depending on what seems relevant.
 
 We will then take care of the issue as soon as possible.
 
@@ -42,7 +38,6 @@ We will then take care of the issue as soon as possible.
 > When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project license.
 
 ### Reporting Bugs
-
 
 #### Before Submitting a Bug Report
 
@@ -67,8 +62,8 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 We use GitHub issues to track bugs and errors. If you run into an issue with the project:
 
 - Open an [Issue](/issues/new). (Since we can't be sure at this point whether it is a bug or not, we ask you not to talk about a bug yet and not to label the issue.)
-- Explain the behavior you would expect and the actual behavior.
-- Please provide as much context as possible and describe the *reproduction steps* that someone else can follow to recreate the issue on their own. This usually includes your code. For good bug reports you should isolate the problem and create a reduced test case.
+- Explain the behaviour you would expect and the actual behaviour.
+- Please provide as much context as possible and describe the *reproduction steps* that someone else can follow to recreate the issue on their own. This usually includes your code. For good bug reports, you should isolate the problem and create a reduced test case.
 - Provide the information you collected in the previous section.
 
 Once it's filed:
@@ -77,9 +72,9 @@ Once it's filed:
 - A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `needs-repro`. Bugs with the `needs-repro` tag will not be addressed until they are reproduced.
 - If the team is able to reproduce the issue, it will be marked `needs-fix`, as well as possibly other tags (such as `critical`), and the issue will be left to be [implemented by someone](#your-first-code-contribution).
 
-### Suggesting Enhancements
+## Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for CONTRIBUTING.md, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community to understand your suggestion and find related suggestions.
+This section guides you through submitting an enhancement suggestion for the application, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community understand your enhancements and find related suggestions.
 
 - Make sure that you are using the latest version.
 - Find out if the functionality is already covered, maybe by an individual configuration.
@@ -96,18 +91,14 @@ Enhancement suggestions are tracked as [GitHub issues](/issues).
 - You may want to **include screenshots and animated GIFs** which help you demonstrate the steps or point out the part which the suggestion is related to.
 - **Explain why this enhancement would be useful** to most CONTRIBUTING.md users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
-### Design guidelines 
-
 We have a Figma file that includes: 
 
 - All the dashboard elements and components
 - The design guideline for the app
 
 You can see it [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). Since it is read-only, we encourage you to copy to your own Figma page, then work on it.
-
-### Developer Guide for Issue Lifecycle Process
  
-[This document](https://docs.google.com/document/d/1Gy3LiimGUNoSiWAMbwyK3SeMADcCMjCLu6cQYoawtSE/edit#heading=h.1lj2lgut6m7h) outlines the process every developer should follow for managing the issues lifecycle. 
+[This document](https://docs.google.com/document/d/1Gy3LiimGUNoSiWAMbwyK3SeMADcCMjCLu6cQYoawtSE/edit#heading=h.1lj2lgut6m7h) outlines the process every developer should follow for managing the issues lifecycle. Also make sure you read the [document about how to make a good pull request](/PULLREQUESTS.md).
 
 ## Attribution
 This guide is based on the **contributing.md**. [Make your own](https://contributing.md/)!
