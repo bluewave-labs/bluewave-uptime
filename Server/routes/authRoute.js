@@ -10,12 +10,14 @@ const {
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
+  checkAdminController,
 } = require("../controllers/authController");
 
 //Auth routes
 router.post("/register", upload.single("profileImage"), registerController);
 router.post("/login", loginController);
 router.post("/user/:userId", verifyJWT, userEditController);
+router.get("/users/admin", checkAdminController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);
