@@ -150,7 +150,23 @@ const createMonitorValidation = joi.object({
   }),
 });
 
+const imageValidation = joi.object({
+  type: joi.string().valid("image/jpeg", "image/png").messages({
+    "any.only": "Invalid file format.",
+    "string.empty": "File type required.",
+  }),
+  size: joi
+    .number()
+    .max(3 * 1024 * 1024)
+    .messages({
+      "number.base": "File size must be a number.",
+      "number.max": "File size must be less than 3 MB.",
+      "number.empty": "File size required.",
+    }),
+});
+
 export {
+  imageValidation,
   createMonitorValidation,
   registerValidation,
   loginValidation,

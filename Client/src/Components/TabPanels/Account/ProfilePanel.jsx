@@ -7,7 +7,10 @@ import Button from "../../Button";
 import EmailTextField from "../../TextFields/Email/EmailTextField";
 import StringTextField from "../../TextFields/Text/TextField";
 import Avatar from "../../Avatar";
-import { editProfileValidation } from "../../../Validation/validation";
+import {
+  editProfileValidation,
+  imageValidation,
+} from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../../Features/Auth/authSlice";
 import ImageField from "../../TextFields/Image";
@@ -76,11 +79,29 @@ const ProfilePanel = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const handlePicture = (event) => {
+    clearError("picture");
     const pic = event.target.files[0];
     console.log(pic);
     //TODO - add setPicture state to localData
     setPicture({ name: pic.name, type: pic.type, size: formatBytes(pic.size) });
     setIsUploading(true);
+
+    const { error } = imageValidation.validate(
+      {
+        type: pic.type,
+        size: pic.size,
+      },
+      { abortEarly: false }
+    );
+
+    if (error) {
+      setErrors((prev) => {
+        const updatedErrors = { ...prev };
+        updatedErrors["picture"] = error.details[0].message;
+        return updatedErrors;
+      });
+      return;
+    }
 
     setTimeout(() => {
       //TODO - add setPicture state to localData
@@ -98,20 +119,28 @@ const ProfilePanel = () => {
   };
   const formatBytes = (bytes) => {
     if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " MB";
+    const megabytes = bytes / (1024 * 1024);
+    return megabytes.toFixed(2) + " MB";
+  };
+  const clearError = (err) => {
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (updatedErrors[err]) delete updatedErrors[err];
+      return updatedErrors;
+    });
   };
   const handleCancelUpload = () => {
     //TODO - add setPicture state to localData
-    setPicture(null);
+    setPicture();
     setUploadProgress(0);
     setIsUploading(false);
+    clearError("picture");
   };
   const handleClosePictureModal = () => {
     setIsOpen("");
     setUploadProgress(0);
     setIsUploading(false);
+    clearError("picture");
   };
 
   //TODO - revisit once localData is set up properly
@@ -353,7 +382,6 @@ const ProfilePanel = () => {
         aria-describedby="update-profile-picture"
         open={isModalOpen("picture")}
         onClose={handleClosePictureModal}
-        disablePortal
       >
         <Stack
           sx={{
@@ -387,6 +415,7 @@ const ProfilePanel = () => {
               size={picture?.size}
               progress={uploadProgress}
               onClick={handleCancelUpload}
+              error={errors["picture"]}
             />
           ) : (
             ""

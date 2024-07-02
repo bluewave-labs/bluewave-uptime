@@ -56,6 +56,7 @@ const successMessages = {
   AUTH_CREATE_RECOVERY_TOKEN: "Recovery token created successfully",
   AUTH_VERIFY_RECOVERY_TOKEN: "Recovery token verified successfully",
   AUTH_RESET_PASSWORD: "Password reset successfully",
+  AUTH_ADMIN_CHECK: "Admin check completed successfully",
 
   // Check Controller
   CHECK_CREATE: "Check created successfully",
