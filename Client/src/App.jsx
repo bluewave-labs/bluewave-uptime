@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 // import "./App.css";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Login";
@@ -17,29 +17,9 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
-import ToastComponent from "./Components/Toast";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import { useState, useEffect } from "react";
-import axios from "axios";
 
 function App() {
-  const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
-  const [adminExists, setAdminExists] = useState(false); // Assuming admin exists by default
-
-  useEffect(() => {
-    const checkAdminExists = async () => {
-      try {
-        // Replace this URL with your actual API endpoint
-        const response = await axios.get(`${BASE_URL}/auth/users/admin`);
-        console.log(response);
-      } catch (error) {
-        console.error("Failed to check admin existence:", error);
-      }
-    };
-
-    checkAdminExists();
-  }, []);
-
   return (
     <>
       <Routes>

@@ -14,6 +14,7 @@ import { registerValidation } from "../../Validation/validation";
 
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
+import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -36,6 +37,14 @@ const Register = () => {
     lastname: "",
     email: "",
     password: "",
+  });
+
+  useEffect(() => {
+    axios.get(BASE_URL + "/auth/users/admin").then((response) => {
+      if (response.data.data === true) {
+        navigate("/login");
+      }
+    });
   });
 
   useEffect(() => {
