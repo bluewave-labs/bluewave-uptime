@@ -40,12 +40,17 @@ const Register = () => {
   });
 
   useEffect(() => {
-    axios.get(BASE_URL + "/auth/users/admin").then((response) => {
-      if (response.data.data === true) {
-        navigate("/login");
-      }
-    });
-  });
+    axios
+      .get(BASE_URL + "/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === true) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [navigate]);
 
   useEffect(() => {
     const { error } = registerValidation.validate(form, {
