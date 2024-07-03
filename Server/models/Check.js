@@ -50,6 +50,7 @@ CheckSchema.pre("save", async function (next) {
         // TODO issue alert
         console.log("Monitor went up");
       }
+      monitor.status = this.status;
       await monitor.save();
     }
   } catch (error) {
