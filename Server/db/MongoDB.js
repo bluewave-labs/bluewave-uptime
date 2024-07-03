@@ -42,9 +42,7 @@ const insertUser = async (req, res) => {
     }
     const newUser = new UserModel(userData);
     await newUser.save();
-    return await UserModel.findOne({ _id: newUser._id })
-      .select("-password")
-      .select("-profileImage"); // .select() doesn't work with create, need to save then find
+    return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
   } catch (error) {
     if (error.code === DUPLICATE_KEY_CODE) {
       throw new Error(errorMessages.DB_USER_EXISTS);
@@ -67,10 +65,8 @@ const insertUser = async (req, res) => {
 const getUserByEmail = async (req, res) => {
   try {
     // Need the password to be able to compare, removed .select()
-    // PW hash is removed in controller
-    const user = await UserModel.findOne({ email: req.body.email }).select(
-      "-profileImage"
-    );
+    // We can strip the hash before returing the user
+    const user = await UserModel.findOne({ email: req.body.email });
     if (user) {
       return user;
     } else {
@@ -106,9 +102,7 @@ const updateUser = async (req, res) => {
       candidateUserId,
       candidateUser,
       { new: true } // Returns updated user instead of pre-update user
-    )
-      .select("-password")
-      .select("-profileImage");
+    ).select("-password");
     return updatedUser;
   } catch (error) {
     throw error;

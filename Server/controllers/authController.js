@@ -55,7 +55,11 @@ const registerController = async (req, res, next) => {
       service: SERVICE_NAME,
       userId: newUser._id,
     });
-    const token = issueToken(newUser._doc);
+
+    const userForToken = { ...newUser._doc };
+    delete userForToken.profileImage;
+
+    const token = issueToken(userForToken);
 
     // Sending email to user with pre defined template
     const template = registerTemplate("https://www.bluewavelabs.ca");
@@ -69,7 +73,7 @@ const registerController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
-      data: token,
+      data: { user: newUser, token: token },
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -108,7 +112,7 @@ const loginController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
-      data: token,
+      data: { user: userWithoutPassword, token: token },
     });
   } catch (error) {
     error.status = 500;
