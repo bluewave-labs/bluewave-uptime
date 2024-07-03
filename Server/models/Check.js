@@ -31,19 +31,25 @@ const CheckSchema = mongoose.Schema(
   }
 );
 
+/**
+ * When a check is created, we should update the stauts of the associated monitor
+ * if it has changed.  Monitor starts with default status: true
+ */
+
 CheckSchema.pre("save", async function (next) {
   const monitor = await mongoose.model("Monitor").findById(this.monitorId);
+  if (monitor.status !== this.status) {
+    if (monitor.status === true && this.status === false) {
+      // TODO issue alert
+      console.log("Monitor went down");
+    }
 
-  if (monitor.status === true && this.status === false) {
-    console.log("Monitor went down");
+    if (monitor.status === false && this.status === true) {
+      // TODO issue alert
+      console.log("Monitor went up");
+    }
+    await monitor.save();
   }
-
-  if (monitor.status === false && this.status === true) {
-    console.log("Monitor went up");
-  }
-
-  monitor.status = this.status;
-  await monitor.save();
 
   next;
 });
