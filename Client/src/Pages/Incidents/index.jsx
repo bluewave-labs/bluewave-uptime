@@ -1,3 +1,4 @@
+import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import { styled, useTheme } from '@mui/material/styles';
@@ -108,7 +109,14 @@ function Filter() {
       getOptionLabel={(option) => option.title}
       filterOptions={filterOptions}
       sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="Filter by status" />}
+      disableClearable  // This disables the clearable (x) button
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Filter by Status"
+          InputProps={{ ...params.InputProps, endAdornment: null }} // Hides the end adornment (arrow icon)
+        />
+      )}
     />
   );
 }
