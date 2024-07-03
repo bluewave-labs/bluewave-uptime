@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { StatusLabel } from "../../Components/Label/";
+import TuneIcon from '@mui/icons-material/Tune'; // Import TuneIcon
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,10 +40,10 @@ const filterOptions = createFilterOptions({
   stringify: (option) => option.title,
 });
 
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
+const titles = [
+  { title: 'Down' },
+  { title: 'Cannot resolve'},
+  { title: 'Clear / show all'},
 ];
 
 function createData(name, date, message) {
@@ -72,7 +73,7 @@ export default function CustomizedTables() {
         },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: theme.spacing(2) }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: theme.spacing(2) }}>
         <Filter />
       </Box>
       <TableContainer component={Paper}>
@@ -105,16 +106,30 @@ function Filter() {
   return (
     <Autocomplete
       id="filter-demo"
-      options={top100Films}
+      options={titles}
       getOptionLabel={(option) => option.title}
       filterOptions={filterOptions}
-      sx={{ width: 300 }}
-      disableClearable  // This disables the clearable (x) button
+      sx={{
+        width: 170, // Adjust width as needed
+        '& .MuiAutocomplete-inputRoot': {
+          height: '50px', // Adjust the height of the input field
+        },
+        '& .MuiAutocomplete-listbox': {
+          maxHeight: '200px', // Adjust the max height of the dropdown list
+        },
+      }}
+      disableClearable
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Filter by Status"
-          InputProps={{ ...params.InputProps, endAdornment: null }} // Hides the end adornment (arrow icon)
+          size="small" 
+          label={
+            <React.Fragment>
+              <TuneIcon sx={{ marginRight: '0.5rem', position: 'relative', top: '6px' }} /> 
+              Filter by status
+            </React.Fragment>
+          }
+          InputProps={{ ...params.InputProps, endAdornment: null }}
         />
       )}
     />
