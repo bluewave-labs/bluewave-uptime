@@ -37,21 +37,25 @@ const CheckSchema = mongoose.Schema(
  */
 
 CheckSchema.pre("save", async function (next) {
-  const monitor = await mongoose.model("Monitor").findById(this.monitorId);
-  if (monitor.status !== this.status) {
-    if (monitor.status === true && this.status === false) {
-      // TODO issue alert
-      console.log("Monitor went down");
-    }
+  try {
+    const monitor = await mongoose.model("Monitor").findById(this.monitorId);
+    if (monitor && monitor.status !== this.status) {
+      if (monitor.status === true && this.status === false) {
+        // TODO issue alert
+        console.log("Monitor went down");
+      }
 
-    if (monitor.status === false && this.status === true) {
-      // TODO issue alert
-      console.log("Monitor went up");
+      if (monitor.status === false && this.status === true) {
+        // TODO issue alert
+        console.log("Monitor went up");
+      }
+      await monitor.save();
     }
-    await monitor.save();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    next();
   }
-
-  next;
 });
 
 module.exports = mongoose.model("Check", CheckSchema);
