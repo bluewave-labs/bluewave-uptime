@@ -1,3 +1,5 @@
+import TextField from '@mui/material/TextField';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import { styled, useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,16 +22,27 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(1)': {
+  '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  '&:nth-of-type(n+1)': {
+  '&:nth-of-type(even)': {
     backgroundColor: theme.palette.common.white,
   },
   '&:last-child td, &:last-child th': {
     border: 0,
   },
 }));
+
+const filterOptions = createFilterOptions({
+  matchFrom: 'start',
+  stringify: (option) => option.title,
+});
+
+const top100Films = [
+  { title: 'The Shawshank Redemption', year: 1994 },
+  { title: 'The Dark Knight', year: 2008 },
+  { title: '12 Angry Men', year: 1957 },
+];
 
 function createData(name, date, message) {
   return { name, date, message };
@@ -58,6 +71,9 @@ export default function CustomizedTables() {
         },
       }}
     >
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: theme.spacing(2) }}>
+        <Filter />
+      </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -81,5 +97,18 @@ export default function CustomizedTables() {
         </Table>
       </TableContainer>
     </Box>
+  );
+}
+
+function Filter() {
+  return (
+    <Autocomplete
+      id="filter-demo"
+      options={top100Films}
+      getOptionLabel={(option) => option.title}
+      filterOptions={filterOptions}
+      sx={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} label="Filter by status" />}
+    />
   );
 }
