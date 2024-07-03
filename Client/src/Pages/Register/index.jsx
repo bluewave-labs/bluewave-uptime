@@ -37,6 +37,7 @@ const Register = () => {
     lastname: "",
     email: "",
     password: "",
+    role: "",
   });
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const Register = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [navigate]);
+  }, [form, navigate]);
 
   useEffect(() => {
     const { error } = registerValidation.validate(form, {
@@ -76,8 +77,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await registerValidation.validateAsync(form, { abortEarly: false });
-      const action = await dispatch(register(form));
+      const adminForm = { ...form, role: "admin" };
+      await registerValidation.validateAsync(adminForm, { abortEarly: false });
+      const action = await dispatch(register(adminForm));
 
       if (action.meta.requestStatus === "fulfilled") {
         const token = action.payload.data;
