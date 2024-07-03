@@ -153,6 +153,29 @@ const userEditController = async (req, res, next) => {
 };
 
 /**
+ * Checks to see if an admin account exists
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+
+const checkAdminController = async (req, res) => {
+  try {
+    const adminExists = await req.db.checkAdmin(req, res);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_ADMIN_EXISTS,
+      data: adminExists,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
  * Returns a recovery token
  * @async
  * @param {Express.Request} req
@@ -294,6 +317,7 @@ module.exports = {
   registerController,
   loginController,
   userEditController,
+  checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,

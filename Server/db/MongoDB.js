@@ -32,7 +32,15 @@ const connect = async () => {
  */
 const insertUser = async (req, res) => {
   try {
-    const newUser = new UserModel({ ...req.body });
+    const userData = { ...req.body };
+    console.log(req.file);
+    if (req.file) {
+      userData.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+    const newUser = new UserModel(userData);
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
   } catch (error) {
@@ -180,6 +188,18 @@ const resetPassword = async (req, res) => {
     } else {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const checkAdmin = async (req, res) => {
+  try {
+    const admin = await UserModel.findOne({ role: "admin" });
+    if (admin !== null) {
+      return true;
+    }
+    return false;
   } catch (error) {
     throw error;
   }
@@ -547,6 +567,7 @@ module.exports = {
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
+  checkAdmin,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,

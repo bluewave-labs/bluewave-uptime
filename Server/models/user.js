@@ -20,8 +20,9 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePicUrl: {
-      type: String,
+    profileImage: {
+      data: Buffer,
+      contentType: String,
     },
     isActive: {
       type: Boolean,
@@ -30,6 +31,11 @@ const UserSchema = mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    role: {
+      type: String,
+      default: "user",
+      enum: ["user", "admin"],
     },
   },
   {
