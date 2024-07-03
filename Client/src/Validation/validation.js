@@ -22,6 +22,9 @@ const registerValidation = joi.object({
     "string.min": "Password must be at least 8 characters",
     "string.empty": "Password is required",
   }),
+  role: joi.string().required().messages({
+    "string.empty": "Role is required",
+  }),
 });
 
 const loginValidation = joi.object({
