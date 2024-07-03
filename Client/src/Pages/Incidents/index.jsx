@@ -10,8 +10,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography'; 
 import { StatusLabel } from "../../Components/Label/";
-import TuneIcon from '@mui/icons-material/Tune'; // Import TuneIcon
+import TuneIcon from '@mui/icons-material/Tune'; 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,7 +74,10 @@ export default function CustomizedTables() {
         },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: theme.spacing(2) }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing(2) }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: 600, fontSize: 16 }}>
+          Incident History
+        </Typography>
         <Filter />
       </Box>
       <TableContainer component={Paper}>
@@ -110,12 +114,12 @@ function Filter() {
       getOptionLabel={(option) => option.title}
       filterOptions={filterOptions}
       sx={{
-        width: 170, // Adjust width as needed
+        width: 170, 
         '& .MuiAutocomplete-inputRoot': {
-          height: '50px', // Adjust the height of the input field
+          height: '50px',
         },
         '& .MuiAutocomplete-listbox': {
-          maxHeight: '200px', // Adjust the max height of the dropdown list
+          maxHeight: '200px', 
         },
       }}
       disableClearable
