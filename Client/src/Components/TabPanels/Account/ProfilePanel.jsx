@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
@@ -16,7 +16,7 @@ import { update } from "../../../Features/Auth/authSlice";
 import ImageField from "../../TextFields/Image";
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
-import { bytesToUrl, checkImage, formatBytes } from "../../../Utils/fileUtils";
+import { bufferTo64, formatBytes } from "../../../Utils/fileUtils";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -43,7 +43,7 @@ const ProfilePanel = () => {
     //Disabled for now, will revisit in the future
     // email: user.email,
     //TODO - upload picture
-    profilePicUrl: { src: user.profilePicUrl },
+    profileImage: { file: user.profileImage },
   });
   const [errors, setErrors] = useState({});
   const clearError = (err) => {
@@ -55,6 +55,26 @@ const ProfilePanel = () => {
   };
   const [isOpen, setIsOpen] = useState("");
   const isModalOpen = (name) => isOpen === name;
+
+  //maybe move this to Avatar component?
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    const fetchImage = async () => {
+      if (
+        localData.profileImage.file &&
+        localData.profileImage.file.contentType
+      ) {
+        try {
+          const base64 = await bufferTo64(localData.profileImage.file.data);
+          setImage(base64);
+        } catch (error) {
+          console.error("Error converting buffer to base64:", error);
+        }
+      }
+    };
+
+    fetchImage();
+  }, [localData.profileImage.file]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -90,11 +110,12 @@ const ProfilePanel = () => {
       setProgress((prev) => ({ ...prev, isLoading: true }));
       setLocalData((prev) => ({
         ...prev,
-        profilePicUrl: {
+        profileImage: {
+          ...prev.profileImage,
           name: pic.name,
           type: pic.type,
           size: formatBytes(pic.size),
-          src: "",
+          toUpload: pic,
         },
       }));
 
@@ -116,13 +137,12 @@ const ProfilePanel = () => {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        const arrayBuffer = reader.result;
-        const bytes = new Uint8Array(arrayBuffer);
+        const base64 = reader.result;
         setLocalData((prev) => ({
           ...prev,
-          profilePicUrl: {
-            ...prev.profilePicUrl,
-            src: bytes,
+          profileImage: {
+            ...prev.profileImage,
+            src: base64,
           },
         }));
 
@@ -136,44 +156,61 @@ const ProfilePanel = () => {
             }
             return { ...prev, value: prev.value + buffer };
           });
-        }, 150);
+        }, 120);
       };
-      reader.readAsArrayBuffer(pic);
+      reader.readAsDataURL(pic);
     }
   };
   const removePicture = () => {
     clearError("picture");
     setLocalData((prev) => ({
       ...prev,
-      profilePicUrl: { src: user.profilePicUrl },
+      profileImage: { file: "" },
     }));
-    //interrupt interval if modal closes prior to completing the process
+    //interrupt interval if image upload is canceled prior to completing the process
     clearInterval(intervalRef.current);
     setProgress({ value: 0, isLoading: false });
   };
   const closePictureModal = () => {
-    removePicture();
+    clearError("picture");
+    setLocalData((prev) => ({
+      ...prev,
+      profileImage: { file: user.profileImage },
+    }));
+    //interrupt interval if modal closes prior to completing the process
+    clearInterval(intervalRef.current);
+    setProgress({ value: 0, isLoading: false });
     setIsOpen("");
   };
   const handleUpdatePicture = () => {
     setProgress({ value: 0, isLoading: false });
     setIsOpen("");
   };
+  const handleDeletePicture = () => {
+    setImage(null);
+    setLocalData((prev) => ({
+      ...prev,
+      profileImage: { file: "", toUpload: "" },
+    }));
+  };
   //TODO - implement delete account function
   const handleDeleteAccount = () => {};
-  //TODO - implement save profile function
   const handleSaveProfile = (event) => {
     event.preventDefault();
     if (
       localData.firstname === user.firstname &&
       localData.lastname === user.lastname &&
-      localData.profilePicUrl === user.profilePicUrl
+      localData.profileImage.toUpload === user.profileImage
     ) {
       //TODO - add toast(profile data is unchanged) and maybe disable button
       return;
     }
 
-    dispatch(update({ authToken, localData }));
+    const toUpdate = {
+      ...localData,
+      profileImage: localData.profileImage.toUpload,
+    };
+    dispatch(update({ authToken, toUpdate }));
     //TODO - add toast confirmation
   };
 
@@ -263,8 +300,10 @@ const ProfilePanel = () => {
           <Stack className="row-stack" direction="row" alignItems="center">
             <Avatar
               src={
-               localData.profilePicUrl
-                  ? bytesToUrl(localData.profilePicUrl?.src)
+                localData.profileImage?.src
+                  ? localData.profileImage?.src
+                  : image
+                  ? image
                   : "/static/images/avatar/2.jpg"
               }
               firstName={user?.firstname}
@@ -279,7 +318,7 @@ const ProfilePanel = () => {
             <Button
               level="tertiary"
               label="Delete"
-              onClick={removePicture}
+              onClick={handleDeletePicture}
             />
             <Button
               level="tertiary"
@@ -411,15 +450,21 @@ const ProfilePanel = () => {
           </Typography>
           <ImageField
             id="update-profile-picture"
-            picture={bytesToUrl(localData.profilePicUrl?.src)}
+            picture={
+              localData.profileImage?.src
+                ? localData.profileImage?.src
+                : localData.profileImage?.file
+                ? image
+                : ""
+            }
             loading={progress.isLoading && progress.value !== 100}
             onChange={handlePicture}
           />
           {progress.isLoading || progress.value !== 0 ? (
             <ProgressUpload
               icon={<ImageIcon />}
-              label={localData.profilePicUrl?.name}
-              size={localData.profilePicUrl?.size}
+              label={localData.profileImage?.name}
+              size={localData.profileImage?.size}
               progress={progress.value}
               onClick={removePicture}
               error={errors["picture"]}
@@ -434,16 +479,11 @@ const ProfilePanel = () => {
               disabled
               sx={{ mr: "auto" }}
             />
+            <Button level="tertiary" label="Remove" onClick={removePicture} />
             <Button
-              level="tertiary"
-              label="Remove"
-              onClick={removePicture}
-            />
-            <ButtonSpinner
               level="primary"
               label="Update"
               onClick={handleUpdatePicture}
-              isLoading={isLoading}
               disabled={
                 (Object.keys(errors).length !== 0 && errors?.picture) ||
                 progress.value !== 100

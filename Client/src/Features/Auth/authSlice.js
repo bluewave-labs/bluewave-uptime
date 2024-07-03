@@ -41,7 +41,7 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
 export const update = createAsyncThunk(
   "auth/update",
   async (data, thunkApi) => {
-    const { authToken: token, localData: form } = data;
+    const { authToken: token, toUpdate: form } = data;
     const user = jwtDecode(token);
     try {
       //1.5s delay to show loading spinner
@@ -50,7 +50,7 @@ export const update = createAsyncThunk(
       const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, form, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       return res.data;
