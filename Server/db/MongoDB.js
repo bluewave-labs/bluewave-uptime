@@ -107,6 +107,9 @@ const deleteUser = async (req, res) => {
   const userId = req.params.userId;
   try {
     const deletedUser = await UserModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
     return deletedUser;
   } catch (error) {
     throw error;
