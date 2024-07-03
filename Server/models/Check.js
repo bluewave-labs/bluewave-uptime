@@ -31,4 +31,21 @@ const CheckSchema = mongoose.Schema(
   }
 );
 
+CheckSchema.pre("save", async function (next) {
+  const monitor = await mongoose.model("Monitor").findById(this.monitorId);
+
+  if (monitor.status === true && this.status === false) {
+    console.log("Monitor went down");
+  }
+
+  if (monitor.status === false && this.status === true) {
+    console.log("Monitor went up");
+  }
+
+  monitor.status = this.status;
+  await monitor.save();
+
+  next;
+});
+
 module.exports = mongoose.model("Check", CheckSchema);
