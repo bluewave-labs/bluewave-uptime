@@ -34,6 +34,7 @@ const CheckSchema = mongoose.Schema(
 /**
  * When a check is created, we should update the stauts of the associated monitor
  * if it has changed.  Monitor starts with default status: true
+ * @param {function} next - Callback to proceed to the next middleware.
  */
 
 CheckSchema.pre("save", async function (next) {
