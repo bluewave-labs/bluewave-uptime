@@ -4,6 +4,7 @@ import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "./index.css";
+import { checkImage } from "../../../Utils/fileUtils";
 
 /**
  * @param {Object} props - The component props.
@@ -13,7 +14,7 @@ import "./index.css";
  * @returns {JSX.Element} The rendered component.
  */
 
-const ImageField = ({ id, picture, onChange }) => {
+const ImageField = ({ id, picture, loading, onChange }) => {
   const theme = useTheme();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -26,7 +27,7 @@ const ImageField = ({ id, picture, onChange }) => {
 
   return (
     <>
-      {!picture ? (
+      {!checkImage(picture) || loading ? (
         <>
           <Box
             className="image-field-wrapper"
