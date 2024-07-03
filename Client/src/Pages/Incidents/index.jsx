@@ -10,10 +10,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography'; 
+import Typography from '@mui/material/Typography';
 import { StatusLabel } from "../../Components/Label/";
-import TuneIcon from '@mui/icons-material/Tune'; 
+import TuneIcon from '@mui/icons-material/Tune';
 
+/**
+ * Creates a styled TableCell component.
+ * @param {object} theme - The theme object.
+ * @returns {JSX.Element} The styled TableCell component.
+ */
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.action.hover,
@@ -24,6 +29,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
+/**
+ * Creates a styled TableRow component.
+ * @param {object} theme - The theme object.
+ * @returns {JSX.Element} The styled TableRow component.
+ */
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -41,26 +51,38 @@ const filterOptions = createFilterOptions({
   stringify: (option) => option.title,
 });
 
+
 const titles = [
   { title: 'Down' },
-  { title: 'Cannot resolve'},
-  { title: 'Clear / show all'},
+  { title: 'Cannot resolve' },
+  { title: 'Clear / show all' },
 ];
 
+/**
+ * Creates a data object for the table row.
+ * @param {JSX.Element} name - The status label JSX element.
+ * @param {string} date - The date and time string.
+ * @param {string} message - The message string.
+ * @returns {object} The data object containing name, date, and message.
+ */
 function createData(name, date, message) {
   return { name, date, message };
 }
 
-const rows = [
-  createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-  createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-  createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-  createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-  createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-];
-
+/**
+ * Customized table component displaying incident history.
+ * @returns {JSX.Element} The JSX element representing the customized table.
+ */
 export default function CustomizedTables() {
   const theme = useTheme();
+
+  const rows = [
+    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
+    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
+    createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
+    createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
+    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
+  ];
 
   return (
     <Box
@@ -106,6 +128,10 @@ export default function CustomizedTables() {
   );
 }
 
+/**
+ * Filter component with autocomplete for status filtering.
+ * @returns {JSX.Element} The JSX element representing the filter component.
+ */
 function Filter() {
   return (
     <Autocomplete
@@ -114,22 +140,22 @@ function Filter() {
       getOptionLabel={(option) => option.title}
       filterOptions={filterOptions}
       sx={{
-        width: 170, 
+        width: 170,
         '& .MuiAutocomplete-inputRoot': {
           height: '50px',
         },
         '& .MuiAutocomplete-listbox': {
-          maxHeight: '200px', 
+          maxHeight: '200px',
         },
       }}
       disableClearable
       renderInput={(params) => (
         <TextField
           {...params}
-          size="small" 
+          size="small"
           label={
             <React.Fragment>
-              <TuneIcon sx={{ marginRight: '0.5rem', position: 'relative', top: '6px' }} /> 
+              <TuneIcon sx={{ marginRight: '0.5rem', position: 'relative', top: '6px' }} />
               Filter by status
             </React.Fragment>
           }
