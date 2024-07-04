@@ -9,6 +9,7 @@
 }
 
 .monitors-bar {
+  margin-top: calc(2 * var(--env-var-spacing-2));
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,6 +21,7 @@
 }
 
 .monitors-stats {
+  margin-top: var(--env-var-spacing-2);
   display: flex;
   gap: 24px;
 }
