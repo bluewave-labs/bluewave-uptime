@@ -88,9 +88,16 @@ const getUserByEmail = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const candidateUserId = req.params.userId;
-  const candidateUser = req.body;
 
   try {
+    const candidateUser = { ...req.body };
+    if (req.file) {
+      candidateUser.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+
     const updatedUser = await UserModel.findByIdAndUpdate(
       candidateUserId,
       candidateUser,

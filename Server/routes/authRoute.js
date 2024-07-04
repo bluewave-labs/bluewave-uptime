@@ -17,7 +17,12 @@ const {
 //Auth routes
 router.post("/register", upload.single("profileImage"), registerController);
 router.post("/login", loginController);
-router.post("/user/:userId", verifyJWT, userEditController);
+router.post(
+  "/user/:userId",
+  upload.single("profileImage"),
+  verifyJWT,
+  userEditController
+);
 router.get("/users/admin", checkAdminController);
 router.delete("/user/:userId", verifyJWT, deleteUserController);
 

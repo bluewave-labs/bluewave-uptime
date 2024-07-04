@@ -25,7 +25,7 @@ const editUserParamValidation = joi.object({
 const editUserBodyValidation = joi.object({
   firstname: joi.string(),
   lastname: joi.string(),
-  profilePicUrl: joi.string(),
+  profileImage: joi.any(),
   role: joi.string(),
 });
 
