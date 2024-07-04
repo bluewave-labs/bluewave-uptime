@@ -18,6 +18,7 @@ import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Details from "./Pages/Details";
 
 function App() {
   return (
@@ -40,6 +41,10 @@ function App() {
           <Route
             path="incidents"
             element={<ProtectedRoute Component={Incidents} />}
+          />
+          <Route
+            path="details"
+            element={<ProtectedRoute Component={Details} />}
           />
           <Route
             path="status"
