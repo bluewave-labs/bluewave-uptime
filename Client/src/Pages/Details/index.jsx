@@ -80,6 +80,50 @@ export default function CustomizedTables() {
         },
       }}
     >
+      <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: theme.spacing(4) }}>
+        {[...Array(4)].map((_, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: '223.35px',
+              height: '87px',
+              borderRadius: '4px',
+              border: '1px solid',
+              borderColor: '#EAECF0',
+              padding: theme.spacing(1),
+              textAlign: 'left',
+              boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.05)',
+              backdropFilter: 'blur(2px)',
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'Roboto',
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '24px',
+                color: '#1570EF',
+                marginBottom: theme.spacing(1),
+              }}
+            >
+              Currently up for
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: 'Roboto',
+                fontWeight: 600,
+                fontSize: '13px',
+                lineHeight: '20px',
+                color: '#344054',
+              }}
+            >
+              4h 30m 2s
+            </Typography>
+          </Box>
+        ))}
+      </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing(2) }}>
         <Typography variant="h6" component="div" sx={{ fontWeight: 600, fontSize: 16 }}>
           History
