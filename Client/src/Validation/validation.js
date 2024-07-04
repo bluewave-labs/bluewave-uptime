@@ -22,6 +22,9 @@ const registerValidation = joi.object({
     "string.min": "Password must be at least 8 characters",
     "string.empty": "Password is required",
   }),
+  role: joi.string().required().messages({
+    "string.empty": "Role is required",
+  }),
 });
 
 const loginValidation = joi.object({
@@ -133,12 +136,40 @@ const editPasswordValidation = joi.object({
 });
 
 const createMonitorValidation = joi.object({
-  url: joi.string().trim().messages({ "string.empty": "*Url is required." }),
-  name: joi.string().trim().messages({ "string.empty": "*Name is required." }),
-  type: joi.string().trim().messages({ "string.empty": "*Type is required." }),
+  url: joi
+    .string()
+    .trim()
+    .messages({ "string.empty": "*This field is required." }),
+  name: joi.string().trim().max(50).allow("").messages({
+    "string.max": "*This field should not exceed the 50 characters limit.",
+  }),
+  type: joi
+    .string()
+    .trim()
+    .messages({ "string.empty": "*This field is required." }),
+  frequency: joi.number().messages({
+    "number.base": "*Frequency must be a number.",
+    "any.required": "*Frequency is required.",
+  }),
+});
+
+const imageValidation = joi.object({
+  type: joi.string().valid("image/jpeg", "image/png").messages({
+    "any.only": "Invalid file format.",
+    "string.empty": "File type required.",
+  }),
+  size: joi
+    .number()
+    .max(3 * 1024 * 1024)
+    .messages({
+      "number.base": "File size must be a number.",
+      "number.max": "File size must be less than 3 MB.",
+      "number.empty": "File size required.",
+    }),
 });
 
 export {
+  imageValidation,
   createMonitorValidation,
   registerValidation,
   loginValidation,

@@ -63,23 +63,12 @@ export const update = createAsyncThunk(
   }
 );
 
-export const deleteAccount = createAsyncThunk(
-  "auth/delete",
-  async (form, thunkApi) => {
-    try {
-      //TODO
-    } catch (error) {}
-  }
-);
-
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
-  state.authToken = action.payload.data;
-  const decodedToken = jwtDecode(action.payload.data);
-  const user = { ...decodedToken };
-  state.user = user;
+  state.authToken = action.payload.data.token;
+  state.user = action.payload.data.user;
 };
 const handleAuthRejected = (state, action) => {
   state.isLoading = false;

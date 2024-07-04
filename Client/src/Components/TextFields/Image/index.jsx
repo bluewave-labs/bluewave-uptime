@@ -27,77 +27,78 @@ const ImageField = ({ id, picture, onChange }) => {
   return (
     <>
       {!picture ? (
-        <Box
-          className="image-field-wrapper"
-          mt="20px"
-          sx={{
-            position: "relative",
-            height: "fit-content",
-            border: "dashed",
-            borderRadius: `${theme.shape.borderRadius}px`,
-            borderColor: isDragging
-              ? theme.palette.primary.main
-              : theme.palette.otherColors.graishWhite,
-            borderWidth: "2px",
-            transition: "0.2s",
-            "&:hover": {
-              borderColor: theme.palette.primary.main,
-              backgroundColor: "hsl(215, 87%, 51%, 0.05)",
-            },
-          }}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDragLeave}
-        >
-          <TextField
-            id={id}
-            type="file"
-            onChange={onChange}
+        <>
+          <Box
+            className="image-field-wrapper"
+            mt="20px"
             sx={{
-              width: "100%",
-              "& .MuiInputBase-input[type='file']": {
-                opacity: 0,
-                cursor: "pointer",
-                maxWidth: "500px",
-                minHeight: "175px"
-              },
-              "& fieldset": {
-                padding: 0,
-                border: "none",
+              position: "relative",
+              height: "fit-content",
+              border: "dashed",
+              borderRadius: `${theme.shape.borderRadius}px`,
+              borderColor: isDragging
+                ? theme.palette.primary.main
+                : theme.palette.otherColors.graishWhite,
+              borderWidth: "2px",
+              transition: "0.2s",
+              "&:hover": {
+                borderColor: theme.palette.primary.main,
+                backgroundColor: "hsl(215, 87%, 51%, 0.05)",
               },
             }}
-          />
-          <Stack
-            className="custom-file-text"
-            alignItems="center"
-            gap="10px"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: "-1",
-              width: "100%",
-            }}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDragLeave}
           >
-            <IconButton
+            <TextField
+              id={id}
+              type="file"
+              onChange={onChange}
               sx={{
-                pointerEvents: "none",
-                borderRadius: `${theme.shape.borderRadius}px`,
-                border: `solid ${theme.shape.borderThick}px ${theme.palette.otherColors.graishWhite}`,
-                boxShadow: theme.shape.boxShadow,
+                width: "100%",
+                "& .MuiInputBase-input[type='file']": {
+                  opacity: 0,
+                  cursor: "pointer",
+                  maxWidth: "500px",
+                  minHeight: "175px",
+                },
+                "& fieldset": {
+                  padding: 0,
+                  border: "none",
+                },
+              }}
+            />
+            <Stack
+              className="custom-file-text"
+              alignItems="center"
+              gap="4px"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: "-1",
+                width: "100%",
               }}
             >
-              <CloudUploadIcon />
-            </IconButton>
-            <Typography variant="h4" component="h2">
-              <span>Click to upload</span> or drag and drop
-            </Typography>
-            <Typography variant="h4" component="p">
-              (max. 800x400px)
-            </Typography>
-          </Stack>
-        </Box>
+              <IconButton
+                sx={{
+                  pointerEvents: "none",
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  border: `solid ${theme.shape.borderThick}px ${theme.palette.otherColors.graishWhite}`,
+                  boxShadow: theme.shape.boxShadow,
+                }}
+              >
+                <CloudUploadIcon />
+              </IconButton>
+              <Typography component="h2">
+                <span>Click to upload</span> or drag and drop
+              </Typography>
+              <Typography component="p">(maximum size: 3MB)</Typography>
+            </Stack>
+          </Box>
+          <Typography component="p">Supported formats: JPG, PNG</Typography>
+        </>
       ) : (
         <Stack direction="row" justifyContent="center">
           <Box
@@ -107,10 +108,9 @@ const ImageField = ({ id, picture, onChange }) => {
               borderRadius: "50%",
               overflow: "hidden",
               backgroundImage: `url(${picture})`,
-              backgroundSize: "cover"
+              backgroundSize: "cover",
             }}
-          >
-          </Box>
+          ></Box>
         </Stack>
       )}
     </>

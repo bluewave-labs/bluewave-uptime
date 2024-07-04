@@ -14,6 +14,7 @@ import { registerValidation } from "../../Validation/validation";
 
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
+import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
@@ -36,7 +37,21 @@ const Register = () => {
     lastname: "",
     email: "",
     password: "",
+    role: "",
   });
+
+  useEffect(() => {
+    axios
+      .get(BASE_URL + "/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === true) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [form, navigate]);
 
   useEffect(() => {
     const { error } = registerValidation.validate(form, {
@@ -62,8 +77,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await registerValidation.validateAsync(form, { abortEarly: false });
-      const action = await dispatch(register(form));
+      const adminForm = { ...form, role: "admin" };
+      await registerValidation.validateAsync(adminForm, { abortEarly: false });
+      const action = await dispatch(register(adminForm));
 
       if (action.meta.requestStatus === "fulfilled") {
         const token = action.payload.data;

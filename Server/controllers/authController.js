@@ -7,6 +7,7 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
+  deleteUserParamValidation
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -55,7 +56,11 @@ const registerController = async (req, res, next) => {
       service: SERVICE_NAME,
       userId: newUser._id,
     });
-    const token = issueToken(newUser._doc);
+
+    const userForToken = { ...newUser._doc };
+    delete userForToken.profileImage;
+
+    const token = issueToken(userForToken);
 
     // Sending email to user with pre defined template
     const template = registerTemplate("https://www.bluewavelabs.ca");
@@ -69,7 +74,7 @@ const registerController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
-      data: token,
+      data: { user: newUser, token: token },
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -108,7 +113,7 @@ const loginController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
-      data: token,
+      data: { user: userWithoutPassword, token: token },
     });
   } catch (error) {
     error.status = 500;
@@ -143,6 +148,29 @@ const userEditController = async (req, res, next) => {
       success: true,
       msg: successMessages.AUTH_UPDATE_USER,
       data: updatedUser,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
+ * Checks to see if an admin account exists
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+
+const checkAdminController = async (req, res) => {
+  try {
+    const adminExists = await req.db.checkAdmin(req, res);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_ADMIN_EXISTS,
+      data: adminExists,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -235,19 +263,49 @@ const resetPasswordController = async (req, res, next) => {
   }
 };
 
+/**
+ * Deletes a user and all associated monitors, checks, and alerts.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Object} The response object with success status and message.
+ * @throws {Error} If user validation fails or user is not found in the database.
+ */
 const deleteUserController = async (req, res, next) => {
   try {
-    // Validate user ID
-    await editUserParamValidation.validateAsync(req.params);
+    // Validate user
+    await deleteUserParamValidation.validateAsync(req.body);
 
     // Check if the user exists
-    const user = await req.db.getUserById(req.params.userId);
+    const user = await req.db.getUserByEmail(req);
     if (!user) {
-      throw new Error(errorMessages.AUTH_USER_NOT_FOUND);
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
-    // Delete the user
-    await req.db.deleteUser(req.params.userId);
+    // 1. Find all the monitors associated with the user id
+    const monitors = await req.db.getMonitorsByUserId(req);
+    
+    // 2. Delete jobs associated with each monitor
+    for (const monitor of monitors) {
+      await req.jobQueue.deleteJob(monitor);
+    }
+    
+    // 3. Delete all checks associated with each monitor
+    for (const monitor of monitors) {
+      await req.db.deleteChecks(monitor._id);
+    }
+    
+    // 4. Delete all alerts associated with each monitor
+    for (const monitor of monitors) {
+      await req.db.deleteAlertByMonitorId(monitor._id);
+    }
+    
+    // 5. Delete each monitor
+    await req.db.deleteMonitorsByUserId(user._id);
+    
+    // 6. Delete the user by id
+    await req.db.deleteUser(req);
 
     return res.status(200).json({
       success: true,
@@ -263,17 +321,9 @@ module.exports = {
   registerController,
   loginController,
   userEditController,
+  checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
   deleteUserController,
-};
-
-module.exports = {
-  registerController,
-  loginController,
-  userEditController,
-  recoveryRequestController,
-  validateRecoveryTokenController,
-  resetPasswordController,
 };

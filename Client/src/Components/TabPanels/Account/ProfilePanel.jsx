@@ -7,7 +7,10 @@ import Button from "../../Button";
 import EmailTextField from "../../TextFields/Email/EmailTextField";
 import StringTextField from "../../TextFields/Text/TextField";
 import Avatar from "../../Avatar";
-import { editProfileValidation } from "../../../Validation/validation";
+import {
+  editProfileValidation,
+  imageValidation,
+} from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
 import { update } from "../../../Features/Auth/authSlice";
 import ImageField from "../../TextFields/Image";
@@ -76,11 +79,29 @@ const ProfilePanel = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const handlePicture = (event) => {
+    clearError("picture");
     const pic = event.target.files[0];
     console.log(pic);
     //TODO - add setPicture state to localData
     setPicture({ name: pic.name, type: pic.type, size: formatBytes(pic.size) });
     setIsUploading(true);
+
+    const { error } = imageValidation.validate(
+      {
+        type: pic.type,
+        size: pic.size,
+      },
+      { abortEarly: false }
+    );
+
+    if (error) {
+      setErrors((prev) => {
+        const updatedErrors = { ...prev };
+        updatedErrors["picture"] = error.details[0].message;
+        return updatedErrors;
+      });
+      return;
+    }
 
     setTimeout(() => {
       //TODO - add setPicture state to localData
@@ -98,20 +119,28 @@ const ProfilePanel = () => {
   };
   const formatBytes = (bytes) => {
     if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " MB";
+    const megabytes = bytes / (1024 * 1024);
+    return megabytes.toFixed(2) + " MB";
+  };
+  const clearError = (err) => {
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (updatedErrors[err]) delete updatedErrors[err];
+      return updatedErrors;
+    });
   };
   const handleCancelUpload = () => {
     //TODO - add setPicture state to localData
-    setPicture(null);
+    setPicture();
     setUploadProgress(0);
     setIsUploading(false);
+    clearError("picture");
   };
   const handleClosePictureModal = () => {
     setIsOpen("");
     setUploadProgress(0);
     setIsUploading(false);
+    clearError("picture");
   };
 
   //TODO - revisit once localData is set up properly
@@ -152,9 +181,7 @@ const ProfilePanel = () => {
       <form className="edit-profile-form" noValidate spellCheck="false">
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              First name
-            </Typography>
+            <Typography component="h1">First name</Typography>
           </Stack>
           <Stack>
             <StringTextField
@@ -167,7 +194,7 @@ const ProfilePanel = () => {
               error={errors[idToName["edit-first-name"]] ? true : false}
             />
             {errors[idToName["edit-first-name"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-first-name"]]}
               </Typography>
             ) : (
@@ -177,9 +204,7 @@ const ProfilePanel = () => {
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Last name
-            </Typography>
+            <Typography component="h1">Last name</Typography>
           </Stack>
           <Stack>
             <StringTextField
@@ -192,7 +217,7 @@ const ProfilePanel = () => {
               error={errors[idToName["edit-last-name"]] ? true : false}
             />
             {errors[idToName["edit-last-name"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-last-name"]]}
               </Typography>
             ) : (
@@ -202,10 +227,8 @@ const ProfilePanel = () => {
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Email
-            </Typography>
-            <Typography variant="h5" component="p">
+            <Typography component="h1">Email</Typography>
+            <Typography component="p">
               This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
@@ -221,7 +244,7 @@ const ProfilePanel = () => {
               disabled={true}
             />
             {errors[idToName["edit-email"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-email"]]}
               </Typography>
             ) : (
@@ -231,10 +254,8 @@ const ProfilePanel = () => {
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Your photo
-            </Typography>
-            <Typography variant="h5" component="p">
+            <Typography component="h1">Your photo</Typography>
+            <Typography component="p">
               This photo will be displayed in your profile page.
             </Typography>
           </Stack>
@@ -292,10 +313,8 @@ const ProfilePanel = () => {
       <form className="delete-profile-form" noValidate spellCheck="false">
         <div className="delete-profile-form__wrapper">
           <Stack direction="column" gap="15px">
-            <Typography variant="h4" component="h1">
-              Delete account
-            </Typography>
-            <Typography variant="h5" component="p">
+            <Typography component="h1">Delete account</Typography>
+            <Typography component="p">
               Note that deleting your account will remove all data from our
               system. This is permanent and non-recoverable.
             </Typography>
@@ -335,14 +354,10 @@ const ProfilePanel = () => {
             },
           }}
         >
-          <Typography id="modal-delete-account" variant="h4" component="h1">
+          <Typography id="modal-delete-account" component="h1">
             Really delete this account?
           </Typography>
-          <Typography
-            id="delete-account-confirmation"
-            variant="h5"
-            component="p"
-          >
+          <Typography id="delete-account-confirmation" component="p">
             If you delete your account, you will no longer be able to sign in,
             and all of your data will be deleted. Deleting your account is
             permanent and non-recoverable action.
@@ -367,7 +382,6 @@ const ProfilePanel = () => {
         aria-describedby="update-profile-picture"
         open={isModalOpen("picture")}
         onClose={handleClosePictureModal}
-        disablePortal
       >
         <Stack
           sx={{
@@ -386,7 +400,7 @@ const ProfilePanel = () => {
             },
           }}
         >
-          <Typography id="modal-update-picture" variant="h4" component="h1">
+          <Typography id="modal-update-picture" component="h1">
             Upload Image
           </Typography>
           <ImageField
@@ -401,6 +415,7 @@ const ProfilePanel = () => {
               size={picture?.size}
               progress={uploadProgress}
               onClick={handleCancelUpload}
+              error={errors["picture"]}
             />
           ) : (
             ""
