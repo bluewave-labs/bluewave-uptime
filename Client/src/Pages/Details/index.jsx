@@ -82,7 +82,7 @@ export default function CustomizedTables() {
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing(2) }}>
         <Typography variant="h6" component="div" sx={{ fontWeight: 600, fontSize: 16 }}>
-          Incident History
+          History
         </Typography>
       </Box>
       <TableContainer component={Paper}>
