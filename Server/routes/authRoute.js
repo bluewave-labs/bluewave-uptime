@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const { verifyJWT } = require("../middleware/verifyJWT");
+const { verifyOwnership } = require("../middleware/verifyOwnership");
 const multer = require("multer");
 const upload = multer();
+const User = require("../models/user");
 
 const {
   registerController,
@@ -24,7 +26,7 @@ router.post(
   userEditController
 );
 router.get("/users/admin", checkAdminController);
-router.delete("/user/:userId", verifyJWT, deleteUserController);
+router.delete("/user/:userId", verifyJWT, verifyOwnership(User, "userId") , deleteUserController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);
