@@ -14,6 +14,10 @@ const MonitorSchema = mongoose.Schema(
     description: {
       type: String,
     },
+    status: {
+      type: Boolean,
+      default: true,
+    },
     type: {
       type: String,
       required: true,
