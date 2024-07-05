@@ -1,7 +1,7 @@
-import BarChart from "../Charts/BarChart/BarChart";
 import PropTypes from "prop-types";
 import Host from "../Host/";
 import HostStatus from "../HostStatus";
+import ResponseTimeChart from "../Charts/ResponseTimeChart";
 /**
  * HostsTable displays the current status of monitor
  *
@@ -59,7 +59,7 @@ const HostsTable = ({ monitors }) => {
                 <td className="tbody-row-cell">{host}</td>
                 <td className="tbody-row-cell">{status}</td>
                 <td className="tbody-row-cell">
-                  <BarChart checks={monitor.checks} />
+                  <ResponseTimeChart checks={monitor.checks} />
                 </td>
                 <td className="tbody-row-cell actions-cell">
                   {monitor.actions}
