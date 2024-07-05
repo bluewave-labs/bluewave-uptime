@@ -9,6 +9,7 @@ import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import SearchTextField from "../../Components/TextFields/Search/SearchTextField";
 import HostsTable from "../../Components/HostsTable";
 import Pagination from "../../Components/Pagination";
+import MonitorTable from "../../Components/MonitorTable";
 
 const Monitors = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Monitors = () => {
 
   return (
     <div className="monitors">
+      <MonitorTable monitors={monitorState.monitors} />
       <div className="monitors-bar">
         <div className="monitors-bar-title">
           Hello, {authState.user.firstname}
