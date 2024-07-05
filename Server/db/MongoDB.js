@@ -68,8 +68,8 @@ const getUserByEmail = async (req, res) => {
   try {
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
-    const user = await UserModel.findOne(
-      { email: req.body.email }.select("-profileImage")
+    const user = await UserModel.findOne({ email: req.body.email }).select(
+      "-profileImage"
     );
     if (user) {
       return user;
