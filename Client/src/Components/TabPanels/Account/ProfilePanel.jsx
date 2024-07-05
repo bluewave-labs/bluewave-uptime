@@ -30,30 +30,28 @@ const ProfilePanel = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
+  //redux state
   const { user, authToken, isLoading } = useSelector((state) => state.auth);
+
   const idToName = {
     "edit-first-name": "firstname",
     "edit-last-name": "lastname",
     // Disabled for now, will revisit in the future
     // "edit-email": "email",
   };
+
+  // Local state for form data, errors, and file handling
   const [localData, setLocalData] = useState({
     firstname: user.firstname,
     lastname: user.lastname,
-    // Disabled for now, will revisit in the future
-    // email: user.email,
-    profileImage: user.profileImage,
+    // email: user.email, // Disabled for now
   });
-
   const [errors, setErrors] = useState({});
-  const clearError = (err) => {
-    setErrors((prev) => {
-      const updatedErrors = { ...prev };
-      if (updatedErrors[err]) delete updatedErrors[err];
-      return updatedErrors;
-    });
-  };
+  const [file, setFile] = useState();
+  const intervalRef = useRef(null);
+  const [progress, setProgress] = useState({ value: 0, isLoading: false });
 
+  // Handles input field changes and performs validation
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idToName[id];
@@ -65,9 +63,7 @@ const ProfilePanel = () => {
     validateField({ [name]: value }, editProfileValidation, name);
   };
 
-  const [file, setFile] = useState();
-  const intervalRef = useRef(null);
-  const [progress, setProgress] = useState({ value: 0, isLoading: false });
+  // Handles image file
   const handlePicture = (event) => {
     const pic = event.target.files[0];
     let error = validateField(
@@ -83,7 +79,7 @@ const ProfilePanel = () => {
       size: formatBytes(pic.size),
     });
 
-    //TODO - potentitally remove once image compression functions are implemented above
+    //TODO - potentitally remove once image compression functions are implemented
     intervalRef.current = setInterval(() => {
       const buffer = 12;
       setProgress((prev) => {
@@ -96,6 +92,7 @@ const ProfilePanel = () => {
     }, 120);
   };
 
+  // Validates input against provided schema and updates error state
   const validateField = (toValidate, schema, name = "picture") => {
     const { error } = schema.validate(toValidate, { abortEarly: false });
     setErrors((prev) => {
@@ -107,56 +104,68 @@ const ProfilePanel = () => {
     if (error) return true;
   };
 
+  // Clears specific error from errors state
+  const clearError = (err) => {
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (updatedErrors[err]) delete updatedErrors[err];
+      return updatedErrors;
+    });
+  };
+
+  // Resets picture-related states and clears interval
   const removePicture = () => {
-    clearError("picture");
+    errors["picture"] && clearError("picture");
     setFile({ src: "placeholder" });
-    //interrupt interval if image upload is canceled prior to completing the process
-    clearInterval(intervalRef.current);
+    clearInterval(intervalRef.current); // interrupt interval if image upload is canceled prior to completing the process
     setProgress({ value: 0, isLoading: false });
   };
+
+  // Closes the picture update modal and resets related states
   const closePictureModal = () => {
     removePicture();
     setIsOpen("");
   };
 
+  // Updates profile image displayed on UI
   const handleUpdatePicture = () => {
     setProgress({ value: 0, isLoading: false });
     setLocalData((prev) => ({
       ...prev,
-      profileImage: null,
+      file: file.src,
     }));
     setIsOpen("");
   };
-  const handleDeletePicture = () => {
-    setFile({ src: "placeholder" });
-    setLocalData((prev) => ({
-      ...prev,
-      profileImage: null,
-    }));
-  };
 
-  //TODO - implement delete account function
-  const handleDeleteAccount = () => {};
+  // Handles form submission to update user profile
   const handleSaveProfile = (event) => {
     event.preventDefault();
-    if (
-      localData.firstname === user.firstname &&
-      localData.lastname === user.lastname &&
-      localData.profileImage === user.profileImage
-    ) {
-      //TODO - add toast(profile data is unchanged) and maybe disable button
-      return;
-    }
+    // if (
+    //   localData.firstname === user.firstname &&
+    //   localData.lastname === user.lastname
+    // ) {
+    //   // TODO: Add toast/notification for unchanged profile data
+    //   return;
+    // }
 
     dispatch(update({ authToken, localData }));
-    //TODO - add toast confirmation
+    // TODO: Add toast/notification for profile update success
   };
 
-  //modal controllers
+  // Removes current profile image from UI
+  const handleDeletePicture = () => {
+    setFile({ src: "placeholder" });
+    // TODO - implement delete picture function
+  };
+
+  // Initiates the account deletion process
+  const handleDeleteAccount = () => {
+    //TODO - implement delete account function
+  };
+
+  // Modal state and control functions
   const [isOpen, setIsOpen] = useState("");
   const isModalOpen = (name) => isOpen === name;
-
-  // console.log(document.querySelector('input[type="file"]')?.files[0]);
 
   return (
     <TabPanel value="profile">
@@ -385,8 +394,8 @@ const ProfilePanel = () => {
           {progress.isLoading || progress.value !== 0 || errors["picture"] ? (
             <ProgressUpload
               icon={<ImageIcon />}
-              label={file.name}
-              size={file.size}
+              label={file?.name}
+              size={file?.size}
               progress={progress.value}
               onClick={removePicture}
               error={errors["picture"]}

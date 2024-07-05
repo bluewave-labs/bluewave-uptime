@@ -23,24 +23,25 @@ const Avatar = ({ src, small, sx }) => {
   const border = small ? 1 : 3;
 
   const [image, setImage] = useState();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (user.profileImage.data && user.profileImage.contentType) {
-          const url = await bufferToUrl(user.profileImage);
-          setImage(url);
-        }
-      } catch (error) {
-        console.error("Error converting buffer to URL: ", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       if (user.profileImage.data && user.profileImage.contentType) {
+  //         const url = await bufferToUrl(user.profileImage);
+  //         setImage(url);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error converting buffer to URL: ", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [user]);
+  //   fetchData();
+  // }, [user]);
 
   return (
     <MuiAvatar
       alt={`${user?.firstname} ${user?.lastname}`}
+      children={`${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}`}
       src={
         src === "placeholder"
           ? "/static/images/avatar/2.jpg"
@@ -66,11 +67,7 @@ const Avatar = ({ src, small, sx }) => {
         ...style,
         ...sx,
       }}
-    >
-      {src === undefined
-        ? `${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}`
-        : null}
-    </MuiAvatar>
+    />
   );
 };
 
