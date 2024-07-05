@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import SearchTextField from "../../Components/TextFields/Search/SearchTextField";
-import HostsTable from "../../Components/HostsTable";
-import Pagination from "../../Components/Pagination";
 import MonitorTable from "../../Components/MonitorTable";
 
 const Monitors = () => {
@@ -26,10 +24,8 @@ const Monitors = () => {
   }, 0);
 
   const down = monitorState.monitors.length - up;
-
   return (
     <div className="monitors">
-      <MonitorTable monitors={monitorState.monitors} />
       <div className="monitors-bar">
         <div className="monitors-bar-title">
           Hello, {authState.user.firstname}
@@ -62,10 +58,9 @@ const Monitors = () => {
             <SearchTextField />
           </div>
         </div>
-        <div className="monitors-v-gaping"></div>
-        <HostsTable monitors={monitorState.monitors} />
-        <div className="monitors-v-gaping"></div>
-        <Pagination />
+        <div className="monitors-v-gaping" />
+        <MonitorTable monitors={monitorState.monitors} />
+        <div className="monitors-v-gaping" />
       </div>
     </div>
   );

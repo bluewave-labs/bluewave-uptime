@@ -54,7 +54,7 @@ const ResponseTimeChart = ({ checks = [] }) => {
     <div className="chart-container">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart width={150} height={40} data={normalizedChecks}>
-          <Bar maxBarSize={10} dataKey="responseTime">
+          <Bar maxBarSize={10} dataKey="responseTime" isAnimationActive={false}>
             {normalizedChecks.map((check, index) => (
               <Cell
                 key={`cell-${index}`}

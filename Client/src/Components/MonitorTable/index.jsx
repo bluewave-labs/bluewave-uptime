@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { DataGrid } from "@mui/x-data-grid";
 import OpenIt from "../../assets/Images/Icon-open-in-tab-gray.png";
 import ResponseTimeChart from "../Charts/ResponseTimeChart";
-
+import { useState, useEffect } from "react";
 const Host = ({ params }) => {
   return (
     <div className="host-row">
@@ -22,7 +22,6 @@ const Host = ({ params }) => {
 };
 
 const Status = ({ params }) => {
-  console.log(params.value.status);
   return (
     <div className="host-status">
       <div
@@ -69,53 +68,52 @@ const cols = [
   },
 ];
 
-let rows = [];
-
 const MonitorTable = ({ monitors = [] }) => {
-  rows = monitors.map((monitor) => {
-    return {
-      id: monitor._id,
-      host: {
-        title: monitor.name,
-        url: monitor.url,
-        precentage: 100,
-        percentageColor:
-          monitor.status === true
-            ? "var(--env-var-color-17)"
-            : "var(--env-var-color-19)",
-      },
-      status: {
-        status: monitor.status === true ? "Up" : "Down",
-        backgroundColor:
-          monitor.status === true
-            ? "var(--env-var-color-20)"
-            : "var(--env-var-color-21)",
-        statusDotColor:
-          monitor.status === true
-            ? "var(--env-var-color-17)"
-            : "var(--env-var-color-19)",
-      },
-      response: {
-        checks: monitor.checks,
-      },
-    };
-  });
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    const mappedRows = monitors.map((monitor) => {
+      return {
+        id: monitor._id,
+        host: {
+          title: monitor.name,
+          url: monitor.url,
+          precentage: 100,
+          percentageColor:
+            monitor.status === true
+              ? "var(--env-var-color-17)"
+              : "var(--env-var-color-19)",
+        },
+        status: {
+          status: monitor.status === true ? "Up" : "Down",
+          backgroundColor:
+            monitor.status === true
+              ? "var(--env-var-color-20)"
+              : "var(--env-var-color-21)",
+          statusDotColor:
+            monitor.status === true
+              ? "var(--env-var-color-17)"
+              : "var(--env-var-color-19)",
+        },
+        response: {
+          checks: monitor.checks,
+        },
+      };
+    });
+    setRows(mappedRows);
+  }, [monitors]);
 
   return (
-    <div style={{ border: "1px solid red" }}>
-      <h1>Monitor Table</h1>
-      <DataGrid
-        autoHeight
-        columns={cols}
-        rows={rows}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-      />
-    </div>
+    <DataGrid
+      autoHeight
+      columns={cols}
+      rows={rows}
+      initialState={{
+        pagination: {
+          paginationModel: { page: 0, pageSize: 10 },
+        },
+      }}
+      pageSizeOptions={[5, 10]}
+    />
   );
 };
 
