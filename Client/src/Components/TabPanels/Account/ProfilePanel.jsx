@@ -16,7 +16,7 @@ import { update } from "../../../Features/Auth/authSlice";
 import ImageField from "../../TextFields/Image";
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
-import { bufferTo64, formatBytes } from "../../../Utils/fileUtils";
+import { formatBytes } from "../../../Utils/fileUtils";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -34,17 +34,17 @@ const ProfilePanel = () => {
   const idToName = {
     "edit-first-name": "firstname",
     "edit-last-name": "lastname",
-    //Disabled for now, will revisit in the future
+    // Disabled for now, will revisit in the future
     // "edit-email": "email",
   };
   const [localData, setLocalData] = useState({
     firstname: user.firstname,
     lastname: user.lastname,
-    //Disabled for now, will revisit in the future
+    // Disabled for now, will revisit in the future
     // email: user.email,
-    //TODO - upload picture
-    profileImage: { file: user.profileImage },
+    profileImage: user.profileImage,
   });
+
   const [errors, setErrors] = useState({});
   const clearError = (err) => {
     setErrors((prev) => {
@@ -53,28 +53,9 @@ const ProfilePanel = () => {
       return updatedErrors;
     });
   };
+
   const [isOpen, setIsOpen] = useState("");
   const isModalOpen = (name) => isOpen === name;
-
-  //maybe move this to Avatar component?
-  const [image, setImage] = useState("");
-  useEffect(() => {
-    const fetchImage = async () => {
-      if (
-        localData.profileImage.file &&
-        localData.profileImage.file.contentType
-      ) {
-        try {
-          const base64 = await bufferTo64(localData.profileImage.file.data);
-          setImage(base64);
-        } catch (error) {
-          console.error("Error converting buffer to base64:", error);
-        }
-      }
-    };
-
-    fetchImage();
-  }, [localData.profileImage.file]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -84,71 +65,37 @@ const ProfilePanel = () => {
       [name]: value,
     }));
 
-    const validation = editProfileValidation.validate(
-      { [name]: value },
-      { abortEarly: false }
-    );
-
-    setErrors((prev) => {
-      const updatedErrors = { ...prev };
-
-      if (validation.error) {
-        updatedErrors[name] = validation.error.details[0].message;
-      } else {
-        delete updatedErrors[name];
-      }
-      return updatedErrors;
-    });
+    validateField({ [name]: value }, editProfileValidation, name);
   };
+
+  //holds file info
+  const [file, setFile] = useState({});
   const [progress, setProgress] = useState({ value: 0, isLoading: false });
   const intervalRef = useRef(null);
   const handlePicture = (event) => {
     const pic = event.target.files[0];
-    //reset errors if any
-    clearError("picture");
+    let error = validateField(
+      { type: pic.type, size: pic.size },
+      imageValidation
+    );
+    if (error) return;
+
     if (pic) {
       setProgress((prev) => ({ ...prev, isLoading: true }));
-      setLocalData((prev) => ({
-        ...prev,
-        profileImage: {
-          ...prev.profileImage,
-          name: pic.name,
-          type: pic.type,
-          size: formatBytes(pic.size),
-          toUpload: pic,
-        },
-      }));
+      setFile({ pic: pic, name: pic.name, size: formatBytes(pic.size) });
 
-      const { error } = imageValidation.validate(
-        {
-          type: pic.type,
-          size: pic.size,
-        },
-        { abortEarly: false }
-      );
-
-      if (error) {
-        setErrors((prev) => ({
-          ...prev,
-          ["picture"]: error.details[0].message,
-        }));
-        return;
-      }
-
+      //read image
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onload = () => {
         const base64 = reader.result;
-        setLocalData((prev) => ({
+        setFile((prev) => ({
           ...prev,
-          profileImage: {
-            ...prev.profileImage,
-            src: base64,
-          },
+          src: base64,
         }));
 
         //TODO - potentitally remove once image compression functions are implemented above
         intervalRef.current = setInterval(() => {
-          const buffer = 8;
+          const buffer = 12;
           setProgress((prev) => {
             if (prev.value + buffer >= 100) {
               clearInterval(intervalRef.current);
@@ -161,36 +108,42 @@ const ProfilePanel = () => {
       reader.readAsDataURL(pic);
     }
   };
+
+  const validateField = (toValidate, schema, name = "picture") => {
+    const { error } = schema.validate(toValidate, { abortEarly: false });
+    setErrors((prev) => {
+      const prevErrors = { ...prev };
+      if (error) prevErrors[name] = error.details[0].message;
+      else delete prevErrors[name];
+      return prevErrors;
+    });
+    if (error) return true;
+  };
+
   const removePicture = () => {
     clearError("picture");
-    setLocalData((prev) => ({
-      ...prev,
-      profileImage: { file: "" },
-    }));
+    setFile({});
     //interrupt interval if image upload is canceled prior to completing the process
     clearInterval(intervalRef.current);
     setProgress({ value: 0, isLoading: false });
   };
   const closePictureModal = () => {
-    clearError("picture");
-    setLocalData((prev) => ({
-      ...prev,
-      profileImage: { file: user.profileImage },
-    }));
-    //interrupt interval if modal closes prior to completing the process
-    clearInterval(intervalRef.current);
-    setProgress({ value: 0, isLoading: false });
+    removePicture();
     setIsOpen("");
   };
   const handleUpdatePicture = () => {
     setProgress({ value: 0, isLoading: false });
+    setLocalData((prev) => ({
+      ...prev,
+      profileImage: file.pic,
+    }));
+    setFile({});
     setIsOpen("");
   };
   const handleDeletePicture = () => {
-    setImage(null);
     setLocalData((prev) => ({
       ...prev,
-      profileImage: { file: "", toUpload: "" },
+      profileImage: "",
     }));
   };
   //TODO - implement delete account function
@@ -200,17 +153,13 @@ const ProfilePanel = () => {
     if (
       localData.firstname === user.firstname &&
       localData.lastname === user.lastname &&
-      localData.profileImage.toUpload === user.profileImage
+      localData.profileImage === user.profileImage
     ) {
       //TODO - add toast(profile data is unchanged) and maybe disable button
       return;
     }
 
-    const toUpdate = {
-      ...localData,
-      profileImage: localData.profileImage.toUpload,
-    };
-    dispatch(update({ authToken, toUpdate }));
+    dispatch(update({ authToken, localData }));
     //TODO - add toast confirmation
   };
 
@@ -299,19 +248,8 @@ const ProfilePanel = () => {
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
             <Avatar
-              src={
-                localData.profileImage?.src
-                  ? localData.profileImage?.src
-                  : image
-                  ? image
-                  : "/static/images/avatar/2.jpg"
-              }
-              firstName={user?.firstname}
-              lastName={user?.lastname}
+              src={file?.src ? file.src : ""}
               sx={{
-                width: "64px",
-                height: "64px",
-                border: "none",
                 mr: "8px",
               }}
             />
@@ -450,21 +388,15 @@ const ProfilePanel = () => {
           </Typography>
           <ImageField
             id="update-profile-picture"
-            picture={
-              localData.profileImage?.src
-                ? localData.profileImage?.src
-                : localData.profileImage?.file
-                ? image
-                : ""
-            }
+            picture={file?.src ? file?.src : ""}
             loading={progress.isLoading && progress.value !== 100}
             onChange={handlePicture}
           />
-          {progress.isLoading || progress.value !== 0 ? (
+          {progress.isLoading || progress.value !== 0 || errors["picture"] ? (
             <ProgressUpload
               icon={<ImageIcon />}
-              label={localData.profileImage?.name}
-              size={localData.profileImage?.size}
+              label={file.name}
+              size={file.size}
               progress={progress.value}
               onClick={removePicture}
               error={errors["picture"]}

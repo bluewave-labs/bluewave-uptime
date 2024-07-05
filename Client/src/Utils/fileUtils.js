@@ -21,5 +21,3 @@ export const bufferTo64 = (bufferData) => {
     reader.readAsDataURL(blob);
   });
 };
-
-

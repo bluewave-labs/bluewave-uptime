@@ -41,7 +41,7 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
 export const update = createAsyncThunk(
   "auth/update",
   async (data, thunkApi) => {
-    const { authToken: token, toUpdate: form } = data;
+    const { authToken: token, localData: form } = data;
     const user = jwtDecode(token);
     try {
       //1.5s delay to show loading spinner
