@@ -54,9 +54,6 @@ const ProfilePanel = () => {
     });
   };
 
-  const [isOpen, setIsOpen] = useState("");
-  const isModalOpen = (name) => isOpen === name;
-
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idToName[id];
@@ -68,9 +65,8 @@ const ProfilePanel = () => {
     validateField({ [name]: value }, editProfileValidation, name);
   };
 
-  const fileRef = useRef();
+  const [file, setFile] = useState();
   const intervalRef = useRef(null);
-  const [src, setSrc] = useState();
   const [progress, setProgress] = useState({ value: 0, isLoading: false });
   const handlePicture = (event) => {
     const pic = event.target.files[0];
@@ -81,7 +77,11 @@ const ProfilePanel = () => {
     if (error) return;
 
     setProgress((prev) => ({ ...prev, isLoading: true }));
-    setSrc(URL.createObjectURL(fileRef.current.files[0]));
+    setFile({
+      src: URL.createObjectURL(pic),
+      name: pic.name,
+      size: formatBytes(pic.size),
+    });
 
     //TODO - potentitally remove once image compression functions are implemented above
     intervalRef.current = setInterval(() => {
@@ -109,11 +109,7 @@ const ProfilePanel = () => {
 
   const removePicture = () => {
     clearError("picture");
-    if (fileRef.current && fileRef.current.files[0]) {
-      fileRef.current.value = "";
-      URL.revokeObjectURL(fileRef.current?.files[0]);
-      setSrc();
-    }
+    setFile({ src: "placeholder" });
     //interrupt interval if image upload is canceled prior to completing the process
     clearInterval(intervalRef.current);
     setProgress({ value: 0, isLoading: false });
@@ -127,16 +123,16 @@ const ProfilePanel = () => {
     setProgress({ value: 0, isLoading: false });
     setLocalData((prev) => ({
       ...prev,
-      profileImage: fileRef.current?.files[0],
+      profileImage: null,
     }));
     setIsOpen("");
   };
   const handleDeletePicture = () => {
+    setFile({ src: "placeholder" });
     setLocalData((prev) => ({
       ...prev,
       profileImage: null,
     }));
-    setSrc(null);
   };
 
   //TODO - implement delete account function
@@ -155,6 +151,12 @@ const ProfilePanel = () => {
     dispatch(update({ authToken, localData }));
     //TODO - add toast confirmation
   };
+
+  //modal controllers
+  const [isOpen, setIsOpen] = useState("");
+  const isModalOpen = (name) => isOpen === name;
+
+  // console.log(document.querySelector('input[type="file"]')?.files[0]);
 
   return (
     <TabPanel value="profile">
@@ -240,7 +242,7 @@ const ProfilePanel = () => {
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            <Avatar src={src} sx={{ mr: "8px" }} />
+            <Avatar src={file?.src} sx={{ mr: "8px" }} />
             <Button
               level="tertiary"
               label="Delete"
@@ -376,16 +378,15 @@ const ProfilePanel = () => {
           </Typography>
           <ImageField
             id="update-profile-picture"
-            src={src}
+            src={file?.src}
             loading={progress.isLoading && progress.value !== 100}
             onChange={handlePicture}
-            ref={fileRef}
           />
           {progress.isLoading || progress.value !== 0 || errors["picture"] ? (
             <ProgressUpload
               icon={<ImageIcon />}
-              label={fileRef.current?.files[0]?.name}
-              size={formatBytes(fileRef.current?.files[0]?.size)}
+              label={file.name}
+              size={file.size}
               progress={progress.value}
               onClick={removePicture}
               error={errors["picture"]}

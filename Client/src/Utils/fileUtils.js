@@ -21,3 +21,11 @@ export const bufferTo64 = (bufferData) => {
     reader.readAsDataURL(blob);
   });
 };
+
+export const bufferToUrl = (buffer) => {
+  console.log(buffer);
+  const blob = new Blob([buffer.data], { type: buffer.contentType });
+  const url = URL.createObjectURL(blob);
+
+  return url;
+};

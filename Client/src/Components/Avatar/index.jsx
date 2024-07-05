@@ -2,7 +2,7 @@ import { Avatar as MuiAvatar } from "@mui/material";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { bufferTo64 } from "../../Utils/fileUtils";
+import { bufferTo64, bufferToUrl } from "../../Utils/fileUtils";
 
 /**
  * @component
@@ -24,24 +24,25 @@ const Avatar = ({ src, small, sx }) => {
 
   const [image, setImage] = useState();
   useEffect(() => {
-    const fetchImage = async () => {
-      if (user.profileImage.data && user.profileImage.contentType) {
-        try {
-          const base64 = await bufferTo64(user.profileImage.data);
-          setImage(base64);
-        } catch (error) {
-          console.error("Error converting buffer to base64:", error);
+    const fetchData = async () => {
+      try {
+        if (user.profileImage.data && user.profileImage.contentType) {
+          const url = await bufferToUrl(user.profileImage);
+          setImage(url);
         }
+      } catch (error) {
+        console.error("Error converting buffer to URL: ", error);
       }
     };
-    fetchImage();
+
+    fetchData();
   }, [user]);
 
   return (
     <MuiAvatar
       alt={`${user?.firstname} ${user?.lastname}`}
       src={
-        src === null
+        src === "placeholder"
           ? "/static/images/avatar/2.jpg"
           : src
           ? src
