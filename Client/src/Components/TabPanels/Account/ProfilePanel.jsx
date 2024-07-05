@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
@@ -68,10 +68,10 @@ const ProfilePanel = () => {
     validateField({ [name]: value }, editProfileValidation, name);
   };
 
-  //holds file info
-  const [file, setFile] = useState({});
-  const [progress, setProgress] = useState({ value: 0, isLoading: false });
+  const fileRef = useRef();
   const intervalRef = useRef(null);
+  const [src, setSrc] = useState();
+  const [progress, setProgress] = useState({ value: 0, isLoading: false });
   const handlePicture = (event) => {
     const pic = event.target.files[0];
     let error = validateField(
@@ -80,33 +80,20 @@ const ProfilePanel = () => {
     );
     if (error) return;
 
-    if (pic) {
-      setProgress((prev) => ({ ...prev, isLoading: true }));
-      setFile({ pic: pic, name: pic.name, size: formatBytes(pic.size) });
+    setProgress((prev) => ({ ...prev, isLoading: true }));
+    setSrc(URL.createObjectURL(fileRef.current.files[0]));
 
-      //read image
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result;
-        setFile((prev) => ({
-          ...prev,
-          src: base64,
-        }));
-
-        //TODO - potentitally remove once image compression functions are implemented above
-        intervalRef.current = setInterval(() => {
-          const buffer = 12;
-          setProgress((prev) => {
-            if (prev.value + buffer >= 100) {
-              clearInterval(intervalRef.current);
-              return { value: 100, isLoading: false };
-            }
-            return { ...prev, value: prev.value + buffer };
-          });
-        }, 120);
-      };
-      reader.readAsDataURL(pic);
-    }
+    //TODO - potentitally remove once image compression functions are implemented above
+    intervalRef.current = setInterval(() => {
+      const buffer = 12;
+      setProgress((prev) => {
+        if (prev.value + buffer >= 100) {
+          clearInterval(intervalRef.current);
+          return { value: 100, isLoading: false };
+        }
+        return { ...prev, value: prev.value + buffer };
+      });
+    }, 120);
   };
 
   const validateField = (toValidate, schema, name = "picture") => {
@@ -122,7 +109,11 @@ const ProfilePanel = () => {
 
   const removePicture = () => {
     clearError("picture");
-    setFile({});
+    if (fileRef.current && fileRef.current.files[0]) {
+      fileRef.current.value = "";
+      URL.revokeObjectURL(fileRef.current?.files[0]);
+      setSrc();
+    }
     //interrupt interval if image upload is canceled prior to completing the process
     clearInterval(intervalRef.current);
     setProgress({ value: 0, isLoading: false });
@@ -131,21 +122,23 @@ const ProfilePanel = () => {
     removePicture();
     setIsOpen("");
   };
+
   const handleUpdatePicture = () => {
     setProgress({ value: 0, isLoading: false });
     setLocalData((prev) => ({
       ...prev,
-      profileImage: file.pic,
+      profileImage: fileRef.current?.files[0],
     }));
-    setFile({});
     setIsOpen("");
   };
   const handleDeletePicture = () => {
     setLocalData((prev) => ({
       ...prev,
-      profileImage: "",
+      profileImage: null,
     }));
+    setSrc(null);
   };
+
   //TODO - implement delete account function
   const handleDeleteAccount = () => {};
   const handleSaveProfile = (event) => {
@@ -247,12 +240,7 @@ const ProfilePanel = () => {
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            <Avatar
-              src={file?.src ? file.src : ""}
-              sx={{
-                mr: "8px",
-              }}
-            />
+            <Avatar src={src} sx={{ mr: "8px" }} />
             <Button
               level="tertiary"
               label="Delete"
@@ -388,15 +376,16 @@ const ProfilePanel = () => {
           </Typography>
           <ImageField
             id="update-profile-picture"
-            picture={file?.src ? file?.src : ""}
+            src={src}
             loading={progress.isLoading && progress.value !== 100}
             onChange={handlePicture}
+            ref={fileRef}
           />
           {progress.isLoading || progress.value !== 0 || errors["picture"] ? (
             <ProgressUpload
               icon={<ImageIcon />}
-              label={file.name}
-              size={file.size}
+              label={fileRef.current?.files[0]?.name}
+              size={formatBytes(fileRef.current?.files[0]?.size)}
               progress={progress.value}
               onClick={removePicture}
               error={errors["picture"]}

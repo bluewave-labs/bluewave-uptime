@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import PropTypes from "prop-types";
 import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
@@ -9,12 +9,12 @@ import { checkImage } from "../../../Utils/fileUtils";
 /**
  * @param {Object} props - The component props.
  * @param {string} props.id - The unique identifier for the input field.
- * @param {string} props.picture - The URL of the image to display.
+ * @param {string} props.src - The URL of the image to display.
  * @param {function} props.onChange - The function to handle file input change.
  * @returns {JSX.Element} The rendered component.
  */
 
-const ImageField = ({ id, picture, loading, onChange }) => {
+const ImageField = forwardRef(({ id, src, loading, onChange }, ref) => {
   const theme = useTheme();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -26,81 +26,87 @@ const ImageField = ({ id, picture, loading, onChange }) => {
   };
 
   return (
-    <>
-      {!checkImage(picture) || loading ? (
-        <>
-          <Box
-            className="image-field-wrapper"
-            mt="20px"
+    <Box>
+      <Box
+        className="image-field-wrapper"
+        mt="20px"
+        sx={{
+          display: !checkImage(src) || loading ? "block" : "none",
+          position: "relative",
+          height: "fit-content",
+          border: "dashed",
+          borderRadius: `${theme.shape.borderRadius}px`,
+          borderColor: isDragging
+            ? theme.palette.primary.main
+            : theme.palette.otherColors.graishWhite,
+          borderWidth: "2px",
+          transition: "0.2s",
+          "&:hover": {
+            borderColor: theme.palette.primary.main,
+            backgroundColor: "hsl(215, 87%, 51%, 0.05)",
+          },
+        }}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDragLeave}
+      >
+        <TextField
+          id={id}
+          type="file"
+          onChange={onChange}
+          inputRef={ref}
+          sx={{
+            width: "100%",
+            "& .MuiInputBase-input[type='file']": {
+              opacity: 0,
+              cursor: "pointer",
+              maxWidth: "500px",
+              minHeight: "175px",
+            },
+            "& fieldset": {
+              padding: 0,
+              border: "none",
+            },
+          }}
+        />
+        <Stack
+          className="custom-file-text"
+          alignItems="center"
+          gap="4px"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: "-1",
+            width: "100%",
+          }}
+        >
+          <IconButton
             sx={{
-              position: "relative",
-              height: "fit-content",
-              border: "dashed",
+              pointerEvents: "none",
               borderRadius: `${theme.shape.borderRadius}px`,
-              borderColor: isDragging
-                ? theme.palette.primary.main
-                : theme.palette.otherColors.graishWhite,
-              borderWidth: "2px",
-              transition: "0.2s",
-              "&:hover": {
-                borderColor: theme.palette.primary.main,
-                backgroundColor: "hsl(215, 87%, 51%, 0.05)",
-              },
+              border: `solid ${theme.shape.borderThick}px ${theme.palette.otherColors.graishWhite}`,
+              boxShadow: theme.shape.boxShadow,
             }}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDragLeave}
           >
-            <TextField
-              id={id}
-              type="file"
-              onChange={onChange}
-              sx={{
-                width: "100%",
-                "& .MuiInputBase-input[type='file']": {
-                  opacity: 0,
-                  cursor: "pointer",
-                  maxWidth: "500px",
-                  minHeight: "175px",
-                },
-                "& fieldset": {
-                  padding: 0,
-                  border: "none",
-                },
-              }}
-            />
-            <Stack
-              className="custom-file-text"
-              alignItems="center"
-              gap="4px"
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                zIndex: "-1",
-                width: "100%",
-              }}
-            >
-              <IconButton
-                sx={{
-                  pointerEvents: "none",
-                  borderRadius: `${theme.shape.borderRadius}px`,
-                  border: `solid ${theme.shape.borderThick}px ${theme.palette.otherColors.graishWhite}`,
-                  boxShadow: theme.shape.boxShadow,
-                }}
-              >
-                <CloudUploadIcon />
-              </IconButton>
-              <Typography component="h2">
-                <span>Click to upload</span> or drag and drop
-              </Typography>
-              <Typography component="p">(maximum size: 3MB)</Typography>
-            </Stack>
-          </Box>
-          <Typography component="p">Supported formats: JPG, PNG</Typography>
-        </>
-      ) : (
+            <CloudUploadIcon />
+          </IconButton>
+          <Typography component="h2">
+            <span>Click to upload</span> or drag and drop
+          </Typography>
+          <Typography component="p">(maximum size: 3MB)</Typography>
+        </Stack>
+      </Box>
+      <Typography
+        component="p"
+        sx={{
+          display: !checkImage(src) || loading ? "block" : "none",
+        }}
+      >
+        Supported formats: JPG, PNG
+      </Typography>
+      {checkImage(src) && !loading ? (
         <Stack direction="row" justifyContent="center">
           <Box
             sx={{
@@ -108,19 +114,21 @@ const ImageField = ({ id, picture, loading, onChange }) => {
               height: "250px",
               borderRadius: "50%",
               overflow: "hidden",
-              backgroundImage: `url(${picture})`,
+              backgroundImage: `url(${src})`,
               backgroundSize: "cover",
             }}
           ></Box>
         </Stack>
+      ) : (
+        ""
       )}
-    </>
+    </Box>
   );
-};
+});
 
 ImageField.propTypes = {
   id: PropTypes.string.isRequired,
-  picture: PropTypes.string,
+  src: PropTypes.string,
   onChange: PropTypes.func.isRequired,
 };
 

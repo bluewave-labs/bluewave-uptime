@@ -40,7 +40,15 @@ const Avatar = ({ src, small, sx }) => {
   return (
     <MuiAvatar
       alt={`${user?.firstname} ${user?.lastname}`}
-      src={src ? src : user?.profileImage ? image : ""}
+      src={
+        src === null
+          ? "/static/images/avatar/2.jpg"
+          : src
+          ? src
+          : user?.profileImage
+          ? image
+          : "/static/images/avatar/2.jpg"
+      }
       sx={{
         fontSize: small ? "12px" : "20px",
         display: "inline-flex",
