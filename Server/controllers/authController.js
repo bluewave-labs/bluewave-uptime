@@ -274,17 +274,32 @@ const resetPasswordController = async (req, res, next) => {
  */
 const deleteUserController = async (req, res, next) => {
   try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(token)
+    const { _id, email } = decodedToken;
+
+    console.log("USERID: ", _id, " Email: ", email)
+
+    const decodedTokenCastedAsRequest = {
+      params: {
+        userId: _id
+      },
+      body: {
+        email
+      }
+    }
+
     // Validate user
-    await deleteUserParamValidation.validateAsync(req.body);
+    await deleteUserParamValidation.validateAsync(decodedTokenCastedAsRequest.body);
 
     // Check if the user exists
-    const user = await req.db.getUserByEmail(req);
+    const user = await req.db.getUserByEmail(decodedTokenCastedAsRequest);
     if (!user) {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
     // 1. Find all the monitors associated with the user id
-    const monitors = await req.db.getMonitorsByUserId(req);
+    const monitors = await req.db.getMonitorsByUserId(decodedTokenCastedAsRequest);
     
     if (monitors) {
       // 2. Delete jobs associated with each monitor
@@ -306,7 +321,7 @@ const deleteUserController = async (req, res, next) => {
       await req.db.deleteMonitorsByUserId(user._id);
       
       // 6. Delete the user by id
-      await req.db.deleteUser(req);
+      await req.db.deleteUser(decodedTokenCastedAsRequest);
 
       
       return res.status(200).json({
