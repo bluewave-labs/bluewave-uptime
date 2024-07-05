@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.css";
+import WindowFrame from "./../../assets/Images/maintenance_window_frame.svg";
 import { Button } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
@@ -12,7 +13,7 @@ const Incidents = () => {
 
   return (
     <div className="maintenance-checklist-main">
-      <div className="maintenance-image"></div>
+      <img className="maintenance-image" src={WindowFrame} alt="WindowFrame" />
       <div className="maintenance-title">Create a maintenance window to</div>
       <div>
         {maintenanceItems.map((item) => (
