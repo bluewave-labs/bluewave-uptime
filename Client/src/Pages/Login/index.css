@@ -1,0 +1,88 @@
+.login-page {
+  width: var(--env-var-width-1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: var(--env-var-height-1);
+}
+
+.login-form {
+  width: var(--env-var-width-2);
+  margin: 90px auto;
+}
+
+.login-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.login-form-header-logo {
+  margin: 0 auto;
+}
+
+.login-form-v-spacing {
+  height: var(--env-var-spacing-1);
+}
+
+.login-form-v2-spacing {
+  height: var(--env-var-spacing-2);
+}
+
+.login-form-v3-spacing {
+  height: var(--env-var-spacing-3);
+}
+
+.login-form-heading {
+  font-size: var(--env-var-font-size-xlarge);
+  font-weight: 700;
+  color: var(--env-var-color-1);
+}
+
+#login-email-input {
+  width: 308px;
+  height: 11px;
+  font-size: var(--env-var-font-size-medium);
+}
+
+#login-password-input {
+  width: 308px;
+  height: 11px;
+  font-size: var(--env-var-font-size-medium);
+}
+
+.login-form-password-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-form-forgot-password {
+  color: var(--env-var-color-3);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: var(--env-var-font-size-medium);
+}
+
+.google-enter {
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
+  margin-right: 10px;
+}
+
+.new-account-option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--env-var-color-2);
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 600;
+}
+
+.new-account-option-span {
+  margin-left: 5px;
+  color: var(--env-var-color-3);
+  font-size: var(--env-var-font-size-medium);
+  cursor: pointer;
+  font-weight: 700;
+}

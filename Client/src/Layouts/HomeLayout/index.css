@@ -1,0 +1,13 @@
+.main-content {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: max-content;
+  justify-content: flex-start;
+}
+
+.main-content>div:nth-child(2){
+  position: relative;
+  overflow-y: auto;
+  flex: 1;
+}

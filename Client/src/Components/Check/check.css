@@ -1,0 +1,20 @@
+.check {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.check-icon {
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
+}
+
+.check-h-spacing {
+  margin-right: 8px;
+}
+
+.check-label {
+  font-size: var(--env-var-font-size-small);
+  font-weight: 600;
+  color: var(--env-var-color-2);
+}

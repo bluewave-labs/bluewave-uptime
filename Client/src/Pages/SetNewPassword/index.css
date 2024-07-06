@@ -1,0 +1,63 @@
+.set-new-password-page {
+  width: var(--env-var-width-1);
+  display: flex;
+  justify-content: center;
+  min-height: var(--env-var-height-1);
+}
+
+.set-new-password-form {
+  width: var(--env-var-width-2);
+  margin: 90px auto;
+}
+
+.set-new-password-form-header {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.set-new-password-form-gap-large {
+  height: var(--env-var-spacing-3);
+}
+
+.set-new-password-form-gap-medium {
+  height: var(--env-var-spacing-2);
+}
+
+.set-new-password-form-gap-small {
+  height: var(--env-var-spacing-1);
+}
+
+.set-new-password-form-heading {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-1);
+  font-weight: 700;
+}
+
+.set-new-password-form-subheading {
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-2);
+  font-weight: 600;
+}
+
+.set-new-password-back-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.set-new-password-back-button-img {
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
+  margin-right: 5px;
+  align-items: center;
+}
+
+.set-new-password-back-button-text {
+  height: var(--env-var-img-width-1);
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-2);
+  font-weight: 600;
+  align-items: center;
+}

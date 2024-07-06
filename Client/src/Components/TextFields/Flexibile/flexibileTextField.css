@@ -1,0 +1,30 @@
+.flexible-textfield{
+  position: relative;
+}
+.flexible-textfield h2.MuiTypography-root{
+  color: var(--env-var-color-5);
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 400;
+}
+.flexible-textfield h2.MuiTypography-root span{
+  opacity: 0.6;
+}
+.flexible-textfield input {
+  min-width: 300px;
+  height: 34px;
+  padding: 0 var(--env-var-spacing-1);
+  border: 1px solid var(--env-var-color-4);
+  border-radius: var(--env-var-radius-1);
+}
+.flexible-textfield p.MuiTypography-root.input-error {
+  color: var(--env-var-color-24);
+  opacity: 0.8;
+  position: absolute;
+  top: calc(100% + 5px);
+}
+.flexible-textfield:has(p.MuiTypography-root.input-error) input{
+  border-color: var(--env-var-color-24);
+}
+.flexible-textfield input:focus {
+  outline: none;
+}

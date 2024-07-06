@@ -3,14 +3,83 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  /* color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Generalized Stylings */
+
+  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
+
+  --env-var-color-1: #101828;
+  --env-var-color-2: #475467;
+  --env-var-color-3: #1570ef;
+
+  --env-var-color-4: #d0d5dd;
+  --env-var-color-5: #344054;
+  --env-var-color-6: #eaecf0;
+  --env-var-color-7: #7f56d9;
+  --env-var-color-8: #fff;
+  --env-var-color-9: #f2f2f2;
+  --env-var-color-10: #175cd3;
+  --env-var-color-11: #5d6b98;
+  --env-var-color-12: #182230;
+  --env-var-color-13: #f9fafb;
+  --env-var-color-14: #98a2b3;
+  --env-var-color-15: #f2f4f7;
+  --env-var-color-16: #ebebeb;
+  --env-var-color-17: #079455;
+  --env-var-color-18: #ffc301;
+  --env-var-color-19: #f04438;
+  --env-var-color-20: #ecfdf3;
+  --env-var-color-21: hsla(0, 100%, 52%, 0.06);
+  --env-var-color-22: #4e5ba6;
+  --env-var-color-23: #17b26a;
+  --env-var-color-24: #d92d20;
+  --env-var-color-25: #667085;
+  --env-var-color-26: #ff1818;
+
+  --env-var-color-27: #fecf60;
+  --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
+  --env-var-color-28: #f79009;
+  --env-var-color-29: #D0D5DD;
+
+  --env-var-radius-1: 4px;
+  --env-var-radius-2: 8px;
+
+  --env-var-width-1: 100vw;
+  --env-var-width-2: 360px;
+
+  --env-var-height-1: 100vh;
+
+  --env-var-spacing-1: 12px;
+  --env-var-spacing-1-plus: 16px;
+  --env-var-spacing-2: 24px;
+  --env-var-spacing-3: 32px;
+  --env-var-spacing-4: 40px;
+
+  --env-var-font-size-small: 11px;
+  --env-var-font-size-small-plus: 12px;
+  --env-var-font-size-medium: 13px;
+  --env-var-font-size-medium-plus: 14px;
+  --env-var-font-size-large: 16px;
+  --env-var-font-size-large-plus: 24px;
+  --env-var-font-size-xlarge: 30px;
+
+  --env-var-img-width-1: 20px;
+  --env-var-img-width-2: 16px;
+  --env-var-img-width-3: 12px;
+
+  --env-var-default-1: 24px;
+  --env-var-default-2: 40px;
+
+  --env-var-shadow-1: 0px 4px 24px -4px rgba(16, 24, 40, 0.08),
+    0px 3px 3px -3px rgba(16, 24, 40, 0.03);
 }
 
 a {
@@ -18,16 +87,15 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  height: 100%;
 }
 
 h1 {
@@ -46,9 +114,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,9 +129,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
