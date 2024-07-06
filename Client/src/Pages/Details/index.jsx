@@ -2,9 +2,14 @@ import React from 'react';
 import CustomizedTables from '../../Components/CustomizedTables';
 import { Box, Typography, useTheme } from '@mui/material';
 
+/**
+ * Details page component displaying monitor details and related information.
+ * @component
+ */
 const DetailsPage = () => {
   const theme = useTheme();
 
+  // Example monitor data (replace with actual data or fetch from API)
   const monitorData = {
     "_id": "66863aa2437936b46e225d1f",
     "userId": "66863a8f437936b46e225d1a",
@@ -44,11 +49,17 @@ const DetailsPage = () => {
     ]
   };
 
+  /**
+   * Function to calculate uptime duration based on the most recent check.
+   * @param {Array} checks Array of check objects.
+   * @returns {string} Uptime duration in hours, minutes, and seconds.
+   */
   const calculateUptimeDuration = (checks) => {
     if (!checks || checks.length === 0) {
       return 'N/A'; 
     }
 
+    // Sort checks by createdAt descending to get the most recent check first
     checks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const mostRecentCheck = checks[0];
@@ -56,6 +67,7 @@ const DetailsPage = () => {
     const lastCheckedTime = new Date(mostRecentCheck.createdAt);
     let uptimeDuration = currentTime - lastCheckedTime;
 
+    // Calculate hours, minutes, and seconds from uptime duration
     let uptimeHours = Math.floor(uptimeDuration / (1000 * 60 * 60));
     uptimeDuration %= (1000 * 60 * 60);
     let uptimeMinutes = Math.floor(uptimeDuration / (1000 * 60));
@@ -65,30 +77,44 @@ const DetailsPage = () => {
     return `${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`;
   };
 
+  /**
+   * Helper function to get timestamp of the most recent check.
+   * @param {Array} checks Array of check objects.
+   * @returns {string} Timestamp of the most recent check.
+   */
   const getLastCheckedTimestamp = (checks) => {
     if (!checks || checks.length === 0) {
-      return 'N/A';
+      return 'N/A'; // Handle case when no checks are available
     }
 
+    // Sort checks by createdAt descending to get the most recent check first
     checks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const mostRecentCheck = checks[0];
     return new Date(mostRecentCheck.createdAt).toLocaleString();
   };
 
+  /**
+   * Helper function to count incidents (checks with status === false).
+   * @param {Array} checks Array of check objects.
+   * @returns {number} Number of incidents.
+   */
   const countIncidents = (checks) => {
     if (!checks || checks.length === 0) {
-      return 0;
+      return 0; // Handle case when no checks are available
     }
 
+    // Count checks with status === false
     const incidentCount = checks.filter(check => !check.status).length;
     return incidentCount;
   };
 
   return (
     <Box>
+      {/* Customized Tables Component */}
       <CustomizedTables monitor={monitorData} />
 
+      {/* Uptime duration */}
       <Typography
         variant="body1"
         sx={{
@@ -103,6 +129,7 @@ const DetailsPage = () => {
         Up for: {calculateUptimeDuration(monitorData.checks)}
       </Typography>
 
+      {/* Last checked */}
       <Typography
         variant="body2"
         sx={{
@@ -117,6 +144,7 @@ const DetailsPage = () => {
         Last checked: {getLastCheckedTimestamp(monitorData.checks)}
       </Typography>
 
+      {/* Incidents */}
       <Typography
         variant="body1"
         sx={{
