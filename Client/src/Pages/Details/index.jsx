@@ -9,12 +9,9 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { StatusLabel } from "../../Components/Label/";
+import PropTypes from 'prop-types';
 
-/**
- * Creates a styled TableCell component.
- * @param {object} theme - The theme object.
- * @returns {JSX.Element} The styled TableCell component.
- */
+// Styled components
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.action.hover,
@@ -25,11 +22,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-/**
- * Creates a styled TableRow component.
- * @param {object} theme - The theme object.
- * @returns {JSX.Element} The styled TableRow component.
- */
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -42,31 +34,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-/**
- * Creates a data object for the table row.
- * @param {JSX.Element} name - The status label JSX element.
- * @param {string} date - The date and time string.
- * @param {string} message - The message string.
- * @returns {object} The data object containing name, date, and message.
- */
 function createData(name, date, message) {
   return { name, date, message };
 }
 
-/**
- * Customized table component displaying incident history.
- * @returns {JSX.Element} The JSX element representing the customized table.
- */
-export default function CustomizedTables() {
+const CustomizedTables = ({ monitor }) => {
   const theme = useTheme();
 
-  const rows = [
-    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-    createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-    createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-  ];
+  const rows = monitor.checks.map(check => createData(
+    <StatusLabel status={check.status ? "Up" : "Down"} customStyles={{ backgroundColor: check.status ? '#f2f4f7' : '#fff9f9', borderColor: check.status ? '#d2d6de' : '#ffcac6', color: '#344054' }} />,
+    new Date(check.createdAt).toLocaleString(),
+    `HTTP ${check.statusCode} - ${check.status ? 'OK' : 'NOK'}`
+  ));
 
   return (
     <Box
@@ -153,4 +132,18 @@ export default function CustomizedTables() {
       </TableContainer>
     </Box>
   );
-}
+};
+
+CustomizedTables.propTypes = {
+  monitor: PropTypes.shape({
+    checks: PropTypes.arrayOf(
+      PropTypes.shape({
+        status: PropTypes.bool.isRequired,
+        createdAt: PropTypes.string.isRequired,
+        statusCode: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
+};
+
+export default CustomizedTables;
