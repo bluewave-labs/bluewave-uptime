@@ -117,8 +117,8 @@ const CustomizedTables = ({ monitor }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
-              <StyledTableRow key={index}>
+            {rows.map((row) => (
+              <StyledTableRow key={row.name.props.status.key}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
                 </StyledTableCell>
