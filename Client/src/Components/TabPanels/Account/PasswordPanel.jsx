@@ -1,6 +1,7 @@
 import TabPanel from "@mui/lab/TabPanel";
 import React, { useState } from "react";
-import AnnouncementsDualButtonWithIcon from "../../Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
+// import AnnouncementsDualButtonWithIcon from "../../Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
+import AnnouncementsDualButtonWithIcon from "../../Toast/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import { useTheme } from "@emotion/react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";

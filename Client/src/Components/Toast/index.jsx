@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import ComplexAlert from "../../Components/Icons/ComplexAlert/ComplexAlert";
-import AnnouncementsDualButtonWithIcon from "../../Components/Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
+import AnnouncementsDualButtonWithIcon from "./AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import "./index.css";
