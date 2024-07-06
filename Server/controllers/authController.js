@@ -275,7 +275,7 @@ const resetPasswordController = async (req, res, next) => {
 const deleteUserController = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.decode(token)
+    const decodedToken = jwt.verify(token)
     const { _id, email } = decodedToken;
 
     console.log("USERID: ", _id, " Email: ", email)
