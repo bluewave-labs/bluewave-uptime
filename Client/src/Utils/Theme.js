@@ -105,7 +105,7 @@ const theme = createTheme({
     },
     error: {
       color: "#d92d20",
-      bg: "#fffaef",
+      bg: "hsla(0, 100%, 52%, 0.03)",
       border: "#f04438",
     },
     warning: {
