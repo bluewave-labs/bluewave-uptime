@@ -274,43 +274,70 @@ const resetPasswordController = async (req, res, next) => {
  */
 const deleteUserController = async (req, res, next) => {
   try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(token)
+    const { _id, email } = decodedToken;
+
+    console.log("USERID: ", _id, " Email: ", email)
+
+    const decodedTokenCastedAsRequest = {
+      params: {
+        userId: _id
+      },
+      body: {
+        email
+      }
+    }
+
     // Validate user
-    await deleteUserParamValidation.validateAsync(req.body);
+    await deleteUserParamValidation.validateAsync(decodedTokenCastedAsRequest.body);
 
     // Check if the user exists
-    const user = await req.db.getUserByEmail(req);
+    const user = await req.db.getUserByEmail(decodedTokenCastedAsRequest);
     if (!user) {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
     // 1. Find all the monitors associated with the user id
-    const monitors = await req.db.getMonitorsByUserId(req);
+    const monitors = await req.db.getMonitorsByUserId(decodedTokenCastedAsRequest);
     
-    // 2. Delete jobs associated with each monitor
-    for (const monitor of monitors) {
-      await req.jobQueue.deleteJob(monitor);
-    }
-    
-    // 3. Delete all checks associated with each monitor
-    for (const monitor of monitors) {
-      await req.db.deleteChecks(monitor._id);
-    }
-    
-    // 4. Delete all alerts associated with each monitor
-    for (const monitor of monitors) {
-      await req.db.deleteAlertByMonitorId(monitor._id);
-    }
-    
-    // 5. Delete each monitor
-    await req.db.deleteMonitorsByUserId(user._id);
-    
-    // 6. Delete the user by id
-    await req.db.deleteUser(req);
+    if (monitors) {
+      // 2. Delete jobs associated with each monitor
+      for (const monitor of monitors) {
+        await req.jobQueue.deleteJob(monitor);
+      }
+      
+      // 3. Delete all checks associated with each monitor
+      for (const monitor of monitors) {
+        await req.db.deleteChecks(monitor._id);
+      }
+      
+      // 4. Delete all alerts associated with each monitor
+      for (const monitor of monitors) {
+        await req.db.deleteAlertByMonitorId(monitor._id);
+      }
+      
+      // 5. Delete each monitor
+      await req.db.deleteMonitorsByUserId(user._id);
+      
+      // 6. Delete the user by id
+      await req.db.deleteUser(decodedTokenCastedAsRequest);
 
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_DELETE_USER,
-    });
+      
+      return res.status(200).json({
+        success: true,
+        msg: successMessages.AUTH_DELETE_USER,
+      });
+
+    } else {
+
+      return res.status(404).json({
+        success: false,
+        msg: errorMessages.MONITOR_GET_BY_USER_ID,
+      });
+
+    }
+
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
