@@ -28,8 +28,7 @@
   margin: 50px 0;
 }
 .account .MuiDivider-root,
-.account .MuiOutlinedInput-root fieldset,
-.account .announcement-tile {
+.account .MuiOutlinedInput-root fieldset {
   border-color: var(--env-var-color-29);
 }
 .account [class$="-form"] {
@@ -74,36 +73,13 @@
 #input-team-member {
   padding: 10px;
 }
-.edit-password-form__wrapper > .announcement-tile {
-  width: 100%;
-}
-.edit-password-form__wrapper
-  > .announcement-tile
-  .announcement-content-subject {
-  margin-bottom: 2px;
-}
 #edit-new-password + div > button > svg,
 #edit-confirm-password + div > button > svg,
 #edit-current-password + div > button > svg {
   color: var(--env-var-color-29);
 }
-.edit-password-form__wrapper .announcement-tile {
-  margin: 0;
-}
-.edit-password-form__wrapper .announcement-tile .announcement-close {
-  margin-left: auto;
-}
-.MuiBox-root > .announcement-tile {
-  border-color: var(--env-var-color-27);
-  background-color: var(--lighter-env-var-color-27);
-}
-.MuiBox-root > .announcement-tile .announcement-content-body {
-  color: var(--env-var-color-28);
-}
-.MuiBox-root > .announcement-tile .announcement-close svg,
-.edit-password-form__wrapper > .announcement-tile .announcement-close svg {
-  display: none;
-}
+
+
 #org-name-flex-container .Mui-disabled {
   color: var(--env-var-color-2) !important;
 }
