@@ -42,9 +42,9 @@
   justify-content: space-between;
   align-items: flex-start;
 }
-.edit-profile-form__wrapper .MuiStack-root:not(.row-stack),
-.edit-password-form__wrapper .MuiStack-root:not(.row-stack),
-.edit-organization-form__wrapper .MuiStack-root:not(.row-stack) {
+.edit-profile-form__wrapper>.MuiStack-root:not(.row-stack),
+.edit-password-form__wrapper>.MuiStack-root:not(.row-stack),
+.edit-organization-form__wrapper>.MuiStack-root:not(.row-stack) {
   flex-direction: column;
   gap: 8px;
   margin-right: 10px;
