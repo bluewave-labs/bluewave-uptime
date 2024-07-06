@@ -41,13 +41,13 @@
 
 #login-email-input {
   width: 308px;
-  height: 11px;
+  height: 1px;
   font-size: var(--env-var-font-size-medium);
 }
 
 #login-password-input {
   width: 308px;
-  height: 11px;
+  height: 1px;
   font-size: var(--env-var-font-size-medium);
 }
 
