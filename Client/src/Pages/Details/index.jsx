@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import { StatusLabel } from "../../Components/Label/";
 import PropTypes from 'prop-types';
 
-// Styled components
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.action.hover,
@@ -41,11 +40,11 @@ function createData(name, date, message) {
 const CustomizedTables = ({ monitor }) => {
   const theme = useTheme();
 
-  const rows = monitor.checks.map(check => createData(
+  const rows = (monitor && monitor.checks) ? monitor.checks.map(check => createData(
     <StatusLabel status={check.status ? "Up" : "Down"} customStyles={{ backgroundColor: check.status ? '#f2f4f7' : '#fff9f9', borderColor: check.status ? '#d2d6de' : '#ffcac6', color: '#344054' }} />,
     new Date(check.createdAt).toLocaleString(),
     `HTTP ${check.statusCode} - ${check.status ? 'OK' : 'NOK'}`
-  ));
+  )) : [];
 
   return (
     <Box
@@ -142,8 +141,12 @@ CustomizedTables.propTypes = {
         createdAt: PropTypes.string.isRequired,
         statusCode: PropTypes.number.isRequired,
       })
-    ).isRequired,
-  }).isRequired,
+    ),
+  }),
+};
+
+CustomizedTables.defaultProps = {
+  monitor: { checks: [] }, 
 };
 
 export default CustomizedTables;
