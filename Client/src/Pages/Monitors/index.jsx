@@ -9,6 +9,7 @@ import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import SearchTextField from "../../Components/TextFields/Search/SearchTextField";
 import HostsTable from "../../Components/HostsTable";
 import Pagination from "../../Components/Pagination";
+
 const Monitors = () => {
   const navigate = useNavigate();
   const monitorState = useSelector((state) => state.monitors);
