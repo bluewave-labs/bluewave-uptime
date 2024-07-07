@@ -1,6 +1,6 @@
 import "./index.css";
+import { useState } from "react";
 import PropTypes from "prop-types";
-import { DataGrid } from "@mui/x-data-grid";
 import OpenIt from "../../assets/Images/Icon-open-in-tab-gray.png";
 import ResponseTimeChart from "../Charts/ResponseTimeChart";
 import {
@@ -10,6 +10,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableFooter,
+  TablePagination,
   Paper,
 } from "@mui/material";
 
@@ -84,41 +86,55 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
-  const mappedRows = monitors.map((monitor) => {
-    const params = {
-      url: monitor.url,
-      title: monitor.name,
-      precentage: 100,
-      percentageColor:
-        monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
-      status: monitor.status === true ? "up" : "down",
-      backgroundColor:
-        monitor.status === true
-          ? "var(--env-var-color-20)"
-          : "var(--env-var-color-21)",
-      statusDotColor:
-        monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
-    };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    return (
-      <TableRow key={monitor._id}>
-        <TableCell>
-          <Host params={params} />
-        </TableCell>
-        <TableCell>
-          <Status params={params} />
-        </TableCell>
-        <TableCell>
-          <ResponseTimeChart checks={monitor.checks} />
-        </TableCell>
-        <TableCell>TODO Add Actions</TableCell>
-      </TableRow>
-    );
-  });
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const mappedRows = monitors
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((monitor) => {
+      const params = {
+        url: monitor.url,
+        title: monitor.name,
+        precentage: 100,
+        percentageColor:
+          monitor.status === true
+            ? "var(--env-var-color-17)"
+            : "var(--env-var-color-19)",
+        status: monitor.status === true ? "up" : "down",
+        backgroundColor:
+          monitor.status === true
+            ? "var(--env-var-color-20)"
+            : "var(--env-var-color-21)",
+        statusDotColor:
+          monitor.status === true
+            ? "var(--env-var-color-17)"
+            : "var(--env-var-color-19)",
+      };
+
+      return (
+        <TableRow key={monitor._id}>
+          <TableCell>
+            <Host params={params} />
+          </TableCell>
+          <TableCell>
+            <Status params={params} />
+          </TableCell>
+          <TableCell>
+            <ResponseTimeChart checks={monitor.checks} />
+          </TableCell>
+          <TableCell>TODO Add Actions</TableCell>
+        </TableRow>
+      );
+    });
 
   return (
     <TableContainer component={Paper}>
@@ -132,6 +148,18 @@ const MonitorTable = ({ monitors = [] }) => {
           </TableRow>
         </TableHead>
         <TableBody>{mappedRows}</TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              count={monitors.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );
