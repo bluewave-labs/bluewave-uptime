@@ -1,14 +1,11 @@
 import TabPanel from "@mui/lab/TabPanel";
 import React, { useState } from "react";
-// import AnnouncementsDualButtonWithIcon from "../../Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
-import AnnouncementsDualButtonWithIcon from "../../Toast/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import { useTheme } from "@emotion/react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ButtonSpinner from "../../ButtonSpinner";
 import PasswordTextField from "../../TextFields/Password/PasswordTextField";
 import { editPasswordValidation } from "../../../Validation/validation";
+import Alert from "../../Alert";
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -96,13 +93,9 @@ const PasswordPanel = () => {
         spellCheck="false"
       >
         <div className="edit-password-form__wrapper">
-          <AnnouncementsDualButtonWithIcon
-            icon={
-              <InfoOutlinedIcon
-                style={{ fill: theme.palette.secondary.main }}
-              />
-            }
-            subject="SSO login"
+          <Alert
+            variant="info"
+            title="SSO login"
             body="Since you logged in via SSO, you cannot reset or modify your password."
           />
         </div>
@@ -181,8 +174,8 @@ const PasswordPanel = () => {
         <div className="edit-password-form__wrapper">
           <Stack></Stack>
           <Box sx={{ flex: 1 }}>
-            <AnnouncementsDualButtonWithIcon
-              icon={<WarningAmberOutlinedIcon style={{ fill: "#f79009" }} />}
+            <Alert
+              variant="warning"
               body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
             />
           </Box>
