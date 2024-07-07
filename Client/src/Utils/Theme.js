@@ -88,14 +88,32 @@ const theme = createTheme({
   },
   content: {
     pX: "80px",
-    pY: "40px"
+    pY: "40px",
   },
   gap: {
     small: "8px",
     medium: "12px",
+    ml: "16px",
     large: "24px",
-    xl: "40px"
-  }
+    xl: "40px",
+  },
+  alert: {
+    info: {
+      color: secondaryMain,
+      bg: otherColorsWhite,
+      border: "#d0d5dd",
+    },
+    error: {
+      color: "#d92d20",
+      bg: "hsla(0, 100%, 52%, 0.03)",
+      border: "#f04438",
+    },
+    warning: {
+      color: "#f79009",
+      bg: "#fffaef",
+      border: "#fecf60"
+    },
+  },
 });
 
 export default theme;
