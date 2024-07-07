@@ -278,8 +278,6 @@ const deleteUserController = async (req, res, next) => {
     const decodedToken = jwt.decode(token)
     const { _id, email } = decodedToken;
 
-    console.log("USERID: ", _id, " Email: ", email)
-
     const decodedTokenCastedAsRequest = {
       params: {
         userId: _id
