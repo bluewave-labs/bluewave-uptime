@@ -46,6 +46,10 @@ const newPasswordValidation = joi.object({
   confirm: joi.string(),
 });
 
+const deleteUserParamValidation = joi.object({
+  email: joi.string().email().required(),
+});
+
 //****************************************
 // Monitors
 //****************************************
@@ -161,4 +165,5 @@ module.exports = {
   createCheckBodyValidation,
   getChecksParamValidation,
   deleteChecksParamValidation,
+  deleteUserParamValidation
 };

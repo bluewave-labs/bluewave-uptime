@@ -115,6 +115,28 @@ const updateUser = async (req, res) => {
   }
 };
 
+
+/**
+ * Delete a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+const deleteUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
+    return deletedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
 /**
  * Request a recovery token
  * @async
@@ -314,6 +336,21 @@ const deleteAllMonitors = async (req, res) => {
   try {
     const deletedCount = await Monitor.deleteMany({});
     return deletedCount.deletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete all monitors associated with a user ID
+ * @async
+ * @param {string} userId - The ID of the user whose monitors are to be deleted.
+ * @returns {Promise} A promise that resolves when the operation is complete.
+ */
+const deleteMonitorsByUserId = async (userId) => {
+  try {
+    const result = await Monitor.deleteMany({ userId: userId });
+    return result;
   } catch (error) {
     throw error;
   }
@@ -520,6 +557,13 @@ const deleteAlert = async (alertId) => {
   }
 };
 
+/**
+ * Deletes alerts by monitor ID.
+ *
+ * @param {string} monitorId - The ID of the monitor.
+ * @returns {Promise} A promise that resolves to the result of the delete operation.
+ * @throws {Error} If an error occurs while deleting the alerts.
+ */
 const deleteAlertByMonitorId = async (monitorId) => {
   try {
     const result = await Alert.deleteMany({ monitorId });
@@ -534,6 +578,7 @@ module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
+  deleteUser,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
@@ -555,4 +600,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
+  deleteMonitorsByUserId
 };
