@@ -30,3 +30,9 @@
   box-shadow: none;
   background-color: transparent;
 }
+
+#menu-appbar svg {
+  width: 16px;
+  height: 16px;
+  color: var(--env-var-color-25);
+}
