@@ -47,10 +47,16 @@ export const update = createAsyncThunk(
       //1.5s delay to show loading spinner
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, form, {
+      const fd = new FormData();
+      const imageResult = await axios.get(form.file, { responseType: "blob" });
+      fd.append("firstname", form.firstname);
+      fd.append("lastname", form.lastname);
+      fd.append("profileImage", imageResult.data);
+
+      const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, fd, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       return res.data;

@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
+import Avatar from "../Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
@@ -161,12 +161,7 @@ function NavBar() {
                 sx={{ p: 0 }}
               >
                 <div className="icon-button-toggle">
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="/static/images/avatar/2.jpg"
-                    className="icon-button-avatar"
-                    style={{ width: "25px", height: "25px" }}
-                  />
+                  <Avatar small={true} sx={{ mr: "8px" }} />
                   <div className="icon-button-toggle-title">
                     {authState.user.firstname} {authState.user.lastname}
                   </div>

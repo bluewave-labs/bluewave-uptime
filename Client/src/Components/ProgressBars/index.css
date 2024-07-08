@@ -17,7 +17,8 @@
   padding-left: 2px;
 }
 .progress-bar-container:has(p.input-error){
-  border-color: var(--env-var-color-24);
+  border-color: var(--env-var-color-19);
+  background-color: var(--env-var-color-21);
   padding: 8px var(--env-var-spacing-1-plus);
 }
 .progress-bar-container p.input-error{
