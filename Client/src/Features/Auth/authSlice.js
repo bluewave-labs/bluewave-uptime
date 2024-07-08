@@ -48,7 +48,7 @@ export const update = createAsyncThunk(
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const fd = new FormData();
-      const imageResult = await axios.get(form.file);
+      const imageResult = await axios.get(form.file, { responseType: "blob" });
       fd.append("firstname", form.firstname);
       fd.append("lastname", form.lastname);
       fd.append("profileImage", imageResult.data);

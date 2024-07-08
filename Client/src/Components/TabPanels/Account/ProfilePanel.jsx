@@ -116,7 +116,6 @@ const ProfilePanel = () => {
   // Resets picture-related states and clears interval
   const removePicture = () => {
     errors["picture"] && clearError("picture");
-    setFile({ src: "placeholder" });
     clearInterval(intervalRef.current); // interrupt interval if image upload is canceled prior to completing the process
     setProgress({ value: 0, isLoading: false });
   };
@@ -154,7 +153,6 @@ const ProfilePanel = () => {
 
   // Removes current profile image from UI
   const handleDeletePicture = () => {
-    setFile({ src: "placeholder" });
     // TODO - implement delete picture function
   };
 
