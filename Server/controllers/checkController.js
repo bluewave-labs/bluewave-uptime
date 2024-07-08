@@ -42,13 +42,13 @@ const getChecks = async (req, res, next) => {
     return;
   }
 
-  let limitedTo = null;
+  let limit = null;
 
   try {
     if (req.query && req.query.limit) {
-      limitedTo = parseInt(req.query.limit);
+      limit = parseInt(req.query.limit);
     }
-    const checks = await req.db.getChecks(req.params.monitorId, limitedTo);
+    const checks = await req.db.getChecks(req.params.monitorId, limit);
     return res
       .status(200)
       .json({ success: true, msg: successMessages.CHECK_GET, data: checks });
