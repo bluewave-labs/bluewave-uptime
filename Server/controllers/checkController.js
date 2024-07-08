@@ -4,7 +4,7 @@ const {
   getChecksParamValidation,
   deleteChecksParamValidation,
 } = require("../validation/joi");
-const { successMessages } = require("../utils/messages");
+const { successMessages, errorMessages } = require("../utils/messages");
 const SERVICE_NAME = "check";
 
 const createCheck = async (req, res, next) => {
@@ -44,9 +44,15 @@ const getChecks = async (req, res, next) => {
 
   try {
     const checks = await req.db.getChecks(req.params.monitorId);
-    return res
-      .status(200)
-      .json({ success: true, msg: successMessages.CHECK_GET, data: checks });
+    if (checks) {
+      return res
+        .status(200)
+        .json({ success: true, msg: successMessages.CHECK_GET, data: checks });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, msg: errorMessages.CHECKS_NOT_FOUND, data: [] })
+    }
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
