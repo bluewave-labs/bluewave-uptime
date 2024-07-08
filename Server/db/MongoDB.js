@@ -414,9 +414,13 @@ const createCheck = async (checkData) => {
  * @throws {Error}
  */
 
-const getChecks = async (monitorId) => {
+const getChecks = async (monitorId, limitedTo) => {
   try {
-    const checks = await Check.find({ monitorId }).sort({ createdAt: -1 }).limit(25);
+    if (limitedTo) {
+      const checks = await Check.find({ monitorId }).sort({ createdAt: -1 }).limit(limitedTo);
+      return checks;
+    }
+    const checks = await Check.find({ monitorId })
     return checks;
   } catch (error) {
     throw error;
