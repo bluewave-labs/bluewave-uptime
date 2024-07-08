@@ -38,6 +38,9 @@ const errorMessages = {
   JOB_QUEUE_WORKER_CLOSE: "Error closing worker",
   JOB_QUEUE_DELETE_JOB: "Job not found in queue",
   JOB_QUEUE_OBLITERATE: "Error obliterating queue",
+
+  // Checks Error
+  CHECKS_NOT_FOUND: "No Checks found for this monitor",
 };
 
 const successMessages = {

@@ -26,7 +26,7 @@ router.post(
   userEditController
 );
 router.get("/users/admin", checkAdminController);
-router.delete("/user", verifyJWT, verifyOwnership(User, "userId") , deleteUserController);
+router.delete("/user/:userId", verifyJWT, verifyOwnership(User, "userId") , deleteUserController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);
