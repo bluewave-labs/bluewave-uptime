@@ -15,6 +15,7 @@ import {
   Tabs,
   Typography,
   Stack,
+  Box,
 } from "@mui/material";
 import { ColoredLabel, StatusLabel } from "../../Components/Label/";
 import Avatar from "../../Components/Avatar/";
@@ -38,6 +39,7 @@ import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
 import ImageField from "../../Components/TextFields/Image";
 import ProgressUpload from "../../Components/ProgressBars";
+import Alert from "../../Components/Alert";
 
 const cols = [
   {
@@ -424,6 +426,29 @@ const Demo = () => {
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <Stack justifyContent="center" alignItems="center">
         <ProgressUpload icon={<ImageIcon />} label="image.jpg" size="2 MB" />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack justifyContent="center" alignItems="center">
+        <Box width="500px">
+          <Alert
+            variant="info"
+            title="SSO login"
+            body="Since you logged in via SSO, you cannot reset or modify your password."
+          />
+        </Box>
+        <Box width="500px" mt="5px">
+          <Alert
+            variant="warning"
+            body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
+          />
+        </Box>
+        <Box width="500px" mt="5px">
+          <Alert
+            variant="error"
+            title="Error"
+            body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          />
+        </Box>
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
     </div>

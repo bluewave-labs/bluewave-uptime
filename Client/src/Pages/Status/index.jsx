@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const Status = () => {
-    return (
-        <div>Status</div>
-    )
-}
+  return <div>Status</div>;
+};
 
-export default Status
+export default Status;

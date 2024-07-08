@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
 const { error } = require("console");
+const { GenerateAvatarImage } = require("../utils/imageProcessing");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -33,12 +34,16 @@ const connect = async () => {
 const insertUser = async (req, res) => {
   try {
     const userData = { ...req.body };
-    console.log(req.file);
     if (req.file) {
+      // 1.  Save the full size image
       userData.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+
+      // 2.  Get the avatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      userData.avatarImage = avatar;
     }
     const newUser = new UserModel(userData);
     await newUser.save();
@@ -96,10 +101,15 @@ const updateUser = async (req, res) => {
   try {
     const candidateUser = { ...req.body };
     if (req.file) {
+      // 1.  Save the full size image
       candidateUser.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+
+      // 2.  Get the avaatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      candidateUser.avatarImage = avatar;
     }
 
     const updatedUser = await UserModel.findByIdAndUpdate(
@@ -110,6 +120,27 @@ const updateUser = async (req, res) => {
       .select("-password")
       .select("-profileImage");
     return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+const deleteUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
+    return deletedUser;
   } catch (error) {
     throw error;
   }
@@ -320,6 +351,21 @@ const deleteAllMonitors = async (req, res) => {
 };
 
 /**
+ * Delete all monitors associated with a user ID
+ * @async
+ * @param {string} userId - The ID of the user whose monitors are to be deleted.
+ * @returns {Promise} A promise that resolves when the operation is complete.
+ */
+const deleteMonitorsByUserId = async (userId) => {
+  try {
+    const result = await Monitor.deleteMany({ userId: userId });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * Edit a monitor by ID
  * @async
  * @param {Express.Request} req
@@ -520,6 +566,13 @@ const deleteAlert = async (alertId) => {
   }
 };
 
+/**
+ * Deletes alerts by monitor ID.
+ *
+ * @param {string} monitorId - The ID of the monitor.
+ * @returns {Promise} A promise that resolves to the result of the delete operation.
+ * @throws {Error} If an error occurs while deleting the alerts.
+ */
 const deleteAlertByMonitorId = async (monitorId) => {
   try {
     const result = await Alert.deleteMany({ monitorId });
@@ -534,6 +587,7 @@ module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
+  deleteUser,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
@@ -555,4 +609,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
+  deleteMonitorsByUserId,
 };
