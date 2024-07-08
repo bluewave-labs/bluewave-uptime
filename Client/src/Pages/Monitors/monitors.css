@@ -66,24 +66,6 @@
   font-size: var(--env-var-font-size-medium);
 }
 
-.host-list-item {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.host-list-item-open {
-  width: var(--env-var-img-width-2);
-  height: var(--env-var-img-width-2);
-  margin-right: 8px;
-}
-
-.host-list-item-name {
-  font-size: var(--env-var-font-size-medium);
-  font-weight: bold;
-  margin-right: var(--env-var-spacing-1);
-}
-
 .host-list-item-precentage {
   font-size: var(--env-var-font-size-medium);
 }
@@ -99,13 +81,6 @@
   border-radius: var(--env-var-radius-2);
   align-items: center;
   padding: calc(var(--env-var-spacing-1) / 2);
-}
-
-.host-status-box-circle {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-right: calc(var(--env-var-spacing-1) / 2);
 }
 
 .host-actions {

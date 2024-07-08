@@ -1,0 +1,49 @@
+.host-row {
+  display: flex;
+  align-items: center;
+}
+
+.host-open-icon {
+  width: var(--env-var-img-width-2);
+  height: var(--env-var-img-width-2);
+  margin-right: 8px;
+}
+
+.host-name {
+  width: 100px;
+  font-size: var(--env-var-font-size-medium);
+  font-weight: bold;
+  margin-right: var(--env-var-spacing-1);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.host-percentage {
+  font-size: var(--env-var-font-size-medium);
+}
+
+.host-status {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.host-status-details {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--env-var-color-4);
+  border-radius: var(--env-var-radius-2);
+  padding: calc(var(--env-var-spacing-1) / 2);
+}
+
+.host-status-text {
+  font-size: var(--env-var-font-size-medium);
+  line-height: var(--env-var-font-size-medium);
+}
+.host-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: calc(var(--env-var-spacing-1) / 2);
+}
