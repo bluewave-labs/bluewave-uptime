@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
 const { error } = require("console");
+const { GenerateAvatarImage } = require("../utils/imageProcessing");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -33,12 +34,16 @@ const connect = async () => {
 const insertUser = async (req, res) => {
   try {
     const userData = { ...req.body };
-    console.log(req.file);
     if (req.file) {
+      // 1.  Save the full size image
       userData.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+
+      // 2.  Get the avatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      userData.avatarImage = avatar;
     }
     const newUser = new UserModel(userData);
     await newUser.save();
@@ -96,10 +101,15 @@ const updateUser = async (req, res) => {
   try {
     const candidateUser = { ...req.body };
     if (req.file) {
+      // 1.  Save the full size image
       candidateUser.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+
+      // 2.  Get the avaatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      candidateUser.avatarImage = avatar;
     }
 
     const updatedUser = await UserModel.findByIdAndUpdate(
@@ -114,7 +124,6 @@ const updateUser = async (req, res) => {
     throw error;
   }
 };
-
 
 /**
  * Delete a user by ID
@@ -600,5 +609,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
-  deleteMonitorsByUserId
+  deleteMonitorsByUserId,
 };
