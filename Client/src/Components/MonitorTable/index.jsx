@@ -1,7 +1,6 @@
 import "./index.css";
 import { useState } from "react";
 import PropTypes from "prop-types";
-import OpenIt from "../../assets/Images/Icon-open-in-tab-gray.png";
 import ResponseTimeChart from "../Charts/ResponseTimeChart";
 import {
   Table,
@@ -10,12 +9,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableFooter,
-  TablePagination,
   Paper,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
-import SouthRoundedIcon from "@mui/icons-material/SouthRounded";
-import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react"
+import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 /**
  * Host component.
@@ -93,20 +94,15 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   const mappedRows = monitors
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .slice((page - 1) * rowsPerPage, page * rowsPerPage)
     .map((monitor) => {
       const params = {
         url: monitor.url,
@@ -144,36 +140,46 @@ const MonitorTable = ({ monitors = [] }) => {
     });
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Host</TableCell>
-            <TableCell>
-              Status
-              <span>
-                <SouthRoundedIcon />
-              </span>
-            </TableCell>
-            <TableCell>Response Time</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{mappedRows}</TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              count={monitors.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Host</TableCell>
+              <TableCell>
+                Status
+                <span>
+                  <ArrowDownwardRoundedIcon />
+                </span>
+              </TableCell>
+              <TableCell>Response Time</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{mappedRows}</TableBody>
+        </Table>
+      </TableContainer>
+      <Pagination
+        count={Math.ceil(monitors?.length / rowsPerPage)}
+        page={page}
+        onChange={handleChangePage}
+        shape="rounded"
+        renderItem={(item) => (
+          <PaginationItem
+            slots={{
+              previous: ArrowBackRoundedIcon,
+              next: ArrowForwardRoundedIcon,
+            }}
+            {...item}
+            sx={{
+              "&:focus": {
+                outline: "none",
+              },
+            }}
+          />
+        )}
+      />
+    </>
   );
 };
 
