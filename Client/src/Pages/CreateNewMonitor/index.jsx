@@ -11,6 +11,7 @@ import { createMonitorValidation } from "../../Validation/validation";
 import { createMonitor } from "../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
+import WestRoundedIcon from "@mui/icons-material/WestRounded";
 
 const CreateNewMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -133,6 +134,20 @@ const CreateNewMonitor = () => {
         padding: `${theme.content.pY} ${theme.content.pX}`,
       }}
     >
+      <Button
+        level="tertiary"
+        label="Back"
+        img={<WestRoundedIcon />}
+        onClick={() => navigate("/monitors")}
+        sx={{
+          backgroundColor: "#f4f4f4",
+          mb: theme.gap.medium,
+          px: theme.gap.ml,
+          "& svg.MuiSvgIcon-root": {
+            pr: theme.gap.small,
+          },
+        }}
+      />
       <Typography component="h1">Create new monitor</Typography>
       <div className="monitors-gaps-medium"></div>
       <ConfigBox
@@ -326,7 +341,7 @@ const CreateNewMonitor = () => {
                 MenuProps={{
                   PaperProps: {
                     style: {
-                      marginTop: "10px"
+                      marginTop: "10px",
                     },
                   },
                 }}
