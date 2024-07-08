@@ -17,6 +17,7 @@ import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ToastComponent from "./Components/Toast";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Maintenance from "./Pages/Maintenance";
 
 function App() {
   return (
@@ -43,6 +44,10 @@ function App() {
           <Route
             path="integrations"
             element={<ProtectedRoute Component={Integrations} />}
+          />
+          <Route
+            path="maintenance"
+            element={<ProtectedRoute Component={Maintenance} />}
           />
           <Route
             path="settings"

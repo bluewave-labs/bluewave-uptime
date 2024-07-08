@@ -63,6 +63,13 @@ function DashboardMenu() {
         () => handleClick(pathMap["/integrations"], "/integrations")
       )}
       {DashboardMenuButton(
+        AllInclusiveIcon,
+        "Maintenance",
+        "/maintenance",
+        activeButton === "/maintenance",
+        () => handleClick(pathMap["/maintenance"], "/maintenance")
+      )}
+      {DashboardMenuButton(
         SettingsIcon,
         "Settings",
         "/settings",
