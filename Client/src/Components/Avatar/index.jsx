@@ -2,7 +2,6 @@ import { Avatar as MuiAvatar } from "@mui/material";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { bufferTo64, bufferToUrl } from "../../Utils/fileUtils";
 
 /**
  * @component
@@ -32,7 +31,6 @@ const Avatar = ({ src, small, sx }) => {
   return (
     <MuiAvatar
       alt={`${user?.firstname} ${user?.lastname}`}
-      children={`${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}`}
       src={
         src ? src : user?.avatarImage ? image : "/static/images/avatar/2.jpg"
       }
@@ -52,7 +50,9 @@ const Avatar = ({ src, small, sx }) => {
         ...style,
         ...sx,
       }}
-    />
+    >
+      {user.firstname?.charAt(0)}{user.lastname?.charAt(0)}
+    </MuiAvatar>
   );
 };
 
