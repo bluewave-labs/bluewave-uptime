@@ -4,7 +4,7 @@ const {
   getChecksParamValidation,
   deleteChecksParamValidation,
 } = require("../validation/joi");
-const { successMessages, errorMessages } = require("../utils/messages");
+const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "check";
 
 const createCheck = async (req, res, next) => {
