@@ -12,10 +12,25 @@
   cursor: pointer;
 }
 
+.custom-checkbox {
+  width: var(--env-var-img-width-1);
+  height: var(--env-var-img-width-1);
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
 .checkbox-label {
   margin-left: 5px;
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
   font-weight: 600;
   cursor: pointer;
+}
+
+.custom-checkbox-label {
+  margin-left: var(--env-var-font-size-large);
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-5);
+  font-weight: 500;
 }

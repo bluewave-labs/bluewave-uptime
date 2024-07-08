@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 // import "./App.css";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Login";
@@ -6,7 +6,9 @@ import Register from "./Pages/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
+import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
+import CreateNewMonitor from "./Pages/CreateNewMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
@@ -15,7 +17,6 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
-import ToastComponent from "./Components/Toast";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Maintenance from "./Pages/Maintenance";
 
@@ -32,6 +33,10 @@ function App() {
           <Route
             path="/monitors"
             element={<ProtectedRoute Component={Monitors} />}
+          />
+          <Route
+            path="/monitors/create"
+            element={<ProtectedRoute Component={CreateNewMonitor} />}
           />
           <Route
             path="incidents"
@@ -52,6 +57,18 @@ function App() {
           <Route
             path="settings"
             element={<ProtectedRoute Component={Settings} />}
+          />
+          <Route
+            path="account/profile"
+            element={<ProtectedRoute Component={Account} open="profile" />}
+          />
+          <Route
+            path="account/password"
+            element={<ProtectedRoute Component={Account} open="password" />}
+          />
+          <Route
+            path="account/team"
+            element={<ProtectedRoute Component={Account} open="team" />}
           />
         </Route>
 

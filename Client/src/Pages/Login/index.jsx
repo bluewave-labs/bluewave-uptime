@@ -13,6 +13,8 @@ import PasswordTextField from "../../Components/TextFields/Password/PasswordText
 import { loginValidation } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -29,6 +31,19 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    axios
+      .get(BASE_URL + "/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === false) {
+          navigate("/register");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [navigate]);
 
   useEffect(() => {
     const { error } = loginValidation.validate(form, {
@@ -83,6 +98,7 @@ const Login = () => {
   const handleSignupClick = () => {
     navigate("/register");
   };
+
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>

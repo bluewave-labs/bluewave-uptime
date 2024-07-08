@@ -27,6 +27,9 @@ const otherColorsGraishWhiteLight = "#f2f2f2";
 const otherColorsStrongBlue = "#f2f2f2";
 const otherColorsSlateGray = "#667085";
 
+//box shadow
+const shadow =
+  "0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
 // Global Font Family
 const fontFamilyDefault = '"Roboto", "Helvetica", "Arial", sans-serif';
@@ -73,13 +76,43 @@ const theme = createTheme({
       slateGray: otherColorsSlateGray,
     },
   },
-  font :{
+  font: {
     default: {
       font: fontFamilyDefault,
     },
   },
   shape: {
     borderRadius: 4,
+    borderThick: 2,
+    boxShadow: shadow,
+  },
+  content: {
+    pX: "80px",
+    pY: "40px",
+  },
+  gap: {
+    small: "8px",
+    medium: "12px",
+    ml: "16px",
+    large: "24px",
+    xl: "40px",
+  },
+  alert: {
+    info: {
+      color: secondaryMain,
+      bg: otherColorsWhite,
+      border: "#d0d5dd",
+    },
+    error: {
+      color: "#d92d20",
+      bg: "hsla(0, 100%, 52%, 0.03)",
+      border: "#f04438",
+    },
+    warning: {
+      color: "#f79009",
+      bg: "#fffaef",
+      border: "#fecf60"
+    },
   },
 });
 

@@ -1,0 +1,16 @@
+.create-monitor-form .custom-radio-button.MuiFormControlLabel-root {
+  padding: 5px;
+  margin: -5px;
+  border-radius: var(--env-var-radius-1);
+}
+.create-monitor-form .custom-radio-button.MuiFormControlLabel-root:hover {
+  background-color: var(--env-var-color-13);
+}
+.create-monitor-form .custom-radio-button.MuiFormControlLabel-root svg{
+  stroke-width: 0;
+}
+
+.custom-radio-button.MuiFormControlLabel-root .MuiButtonBase-root {
+  margin-right: var(--env-var-spacing-1);
+  padding: 0;
+}

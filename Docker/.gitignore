@@ -1,0 +1,5 @@
+*.sh
+!build_images.sh
+mongo/data/*
+redis/data/*
+*.env

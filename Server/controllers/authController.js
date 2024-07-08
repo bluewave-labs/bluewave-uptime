@@ -7,6 +7,7 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
+  deleteUserParamValidation
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -26,7 +27,8 @@ const {
  */
 const issueToken = (payload) => {
   //TODO Add proper expiration date
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99d" });
+  const tokenTTL = process.env.TOKEN_TTL ? process.env.TOKEN_TTL : "2h";
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
 };
 
 /**
@@ -54,7 +56,11 @@ const registerController = async (req, res, next) => {
       service: SERVICE_NAME,
       userId: newUser._id,
     });
-    const token = issueToken(newUser._doc);
+
+    const userForToken = { ...newUser._doc };
+    delete userForToken.profileImage;
+
+    const token = issueToken(userForToken);
 
     // Sending email to user with pre defined template
     const template = registerTemplate("https://www.bluewavelabs.ca");
@@ -68,7 +74,7 @@ const registerController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
-      data: token,
+      data: { user: newUser, token: token },
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -107,7 +113,7 @@ const loginController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
-      data: token,
+      data: { user: userWithoutPassword, token: token },
     });
   } catch (error) {
     error.status = 500;
@@ -142,6 +148,29 @@ const userEditController = async (req, res, next) => {
       success: true,
       msg: successMessages.AUTH_UPDATE_USER,
       data: updatedUser,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
+ * Checks to see if an admin account exists
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+
+const checkAdminController = async (req, res) => {
+  try {
+    const adminExists = await req.db.checkAdmin(req, res);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_ADMIN_EXISTS,
+      data: adminExists,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -223,23 +252,103 @@ const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
     user = await req.db.resetPassword(req, res);
-    res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.AUTH_RESET_PASSWORD,
-        data: user,
-      });
+    res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_RESET_PASSWORD,
+      data: user,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
   }
 };
+
+/**
+ * Deletes a user and all associated monitors, checks, and alerts.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Object} The response object with success status and message.
+ * @throws {Error} If user validation fails or user is not found in the database.
+ */
+const deleteUserController = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(token)
+    const { _id, email } = decodedToken;
+
+    const decodedTokenCastedAsRequest = {
+      params: {
+        userId: _id
+      },
+      body: {
+        email
+      }
+    }
+
+    // Validate user
+    await deleteUserParamValidation.validateAsync(decodedTokenCastedAsRequest.body);
+
+    // Check if the user exists
+    const user = await req.db.getUserByEmail(decodedTokenCastedAsRequest);
+    if (!user) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
+
+    // 1. Find all the monitors associated with the user id
+    const monitors = await req.db.getMonitorsByUserId(decodedTokenCastedAsRequest);
+    
+    if (monitors) {
+      // 2. Delete jobs associated with each monitor
+      for (const monitor of monitors) {
+        await req.jobQueue.deleteJob(monitor);
+      }
+      
+      // 3. Delete all checks associated with each monitor
+      for (const monitor of monitors) {
+        await req.db.deleteChecks(monitor._id);
+      }
+      
+      // 4. Delete all alerts associated with each monitor
+      for (const monitor of monitors) {
+        await req.db.deleteAlertByMonitorId(monitor._id);
+      }
+      
+      // 5. Delete each monitor
+      await req.db.deleteMonitorsByUserId(user._id);
+      
+      // 6. Delete the user by id
+      await req.db.deleteUser(decodedTokenCastedAsRequest);
+
+      
+      return res.status(200).json({
+        success: true,
+        msg: successMessages.AUTH_DELETE_USER,
+      });
+
+    } else {
+
+      return res.status(404).json({
+        success: false,
+        msg: errorMessages.MONITOR_GET_BY_USER_ID,
+      });
+
+    }
+
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
   userEditController,
+  checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
+  deleteUserController,
 };

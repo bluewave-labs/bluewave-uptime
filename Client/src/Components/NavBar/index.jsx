@@ -18,8 +18,18 @@ import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import LockSvg from "../../assets/icons/lock.svg?react";
+import UserSvg from "../../assets/icons/user.svg?react";
+import TeamSvg from "../../assets/icons/user-two.svg?react";
+import LogoutSvg from "../../assets/icons/logout.svg?react";
 
-const settings = ["Profile", "Team", "Invite Colleagues", "Logout"];
+const settings = ["Profile", "Password", "Team", "Logout"];
+const icons = {
+  Profile: <UserSvg />,
+  Team: <TeamSvg />,
+  Password: <LockSvg />,
+  Logout: <LogoutSvg />,
+};
 
 /**
  * NavBar component
@@ -66,13 +76,13 @@ function NavBar() {
     setAnchorElUser(null);
     switch (setting) {
       case "Profile":
-        console.log("Profile");
+        navigate("/account/profile");
         break;
       case "Team":
-        console.log("Team");
+        navigate("/account/team");
         break;
-      case "Invite Colleagues":
-        console.log("Invite Colleagues");
+      case "Password":
+        navigate("/account/password");
         break;
       case "Logout":
         logout();
@@ -189,10 +199,13 @@ function NavBar() {
                   id="menu-item"
                   key={setting}
                   onClick={() => handleCloseUserMenu(setting)}
+                  sx={{ width: "150px" }}
                 >
+                  {icons[setting]}
                   <Typography
                     fontSize="var(--env-var-font-size-medium)"
                     textAlign="center"
+                    marginLeft="8px"
                   >
                     {setting}
                   </Typography>

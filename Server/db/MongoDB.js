@@ -32,9 +32,19 @@ const connect = async () => {
  */
 const insertUser = async (req, res) => {
   try {
-    const newUser = new UserModel({ ...req.body });
+    const userData = { ...req.body };
+    console.log(req.file);
+    if (req.file) {
+      userData.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+    const newUser = new UserModel(userData);
     await newUser.save();
-    return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
+    return await UserModel.findOne({ _id: newUser._id })
+      .select("-password")
+      .select("-profileImage"); // .select() doesn't work with create, need to save then find
   } catch (error) {
     if (error.code === DUPLICATE_KEY_CODE) {
       throw new Error(errorMessages.DB_USER_EXISTS);
@@ -58,7 +68,9 @@ const getUserByEmail = async (req, res) => {
   try {
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: req.body.email }).select(
+      "-profileImage"
+    );
     if (user) {
       return user;
     } else {
@@ -80,15 +92,46 @@ const getUserByEmail = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const candidateUserId = req.params.userId;
-  const candidateUser = req.body;
 
   try {
+    const candidateUser = { ...req.body };
+    if (req.file) {
+      candidateUser.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+
     const updatedUser = await UserModel.findByIdAndUpdate(
       candidateUserId,
       candidateUser,
       { new: true } // Returns updated user instead of pre-update user
-    ).select("-password");
+    )
+      .select("-password")
+      .select("-profileImage");
     return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+/**
+ * Delete a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+const deleteUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
+    return deletedUser;
   } catch (error) {
     throw error;
   }
@@ -153,11 +196,25 @@ const resetPassword = async (req, res) => {
       // Fetch the user again without the password
       const userWithoutPassword = await UserModel.findOne({
         email: recoveryToken.email,
-      }).select("-password");
+      })
+        .select("-password")
+        .select("-profileImage");
       return userWithoutPassword;
     } else {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const checkAdmin = async (req, res) => {
+  try {
+    const admin = await UserModel.findOne({ role: "admin" });
+    if (admin !== null) {
+      return true;
+    }
+    return false;
   } catch (error) {
     throw error;
   }
@@ -279,6 +336,21 @@ const deleteAllMonitors = async (req, res) => {
   try {
     const deletedCount = await Monitor.deleteMany({});
     return deletedCount.deletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete all monitors associated with a user ID
+ * @async
+ * @param {string} userId - The ID of the user whose monitors are to be deleted.
+ * @returns {Promise} A promise that resolves when the operation is complete.
+ */
+const deleteMonitorsByUserId = async (userId) => {
+  try {
+    const result = await Monitor.deleteMany({ userId: userId });
+    return result;
   } catch (error) {
     throw error;
   }
@@ -485,6 +557,13 @@ const deleteAlert = async (alertId) => {
   }
 };
 
+/**
+ * Deletes alerts by monitor ID.
+ *
+ * @param {string} monitorId - The ID of the monitor.
+ * @returns {Promise} A promise that resolves to the result of the delete operation.
+ * @throws {Error} If an error occurs while deleting the alerts.
+ */
 const deleteAlertByMonitorId = async (monitorId) => {
   try {
     const result = await Alert.deleteMany({ monitorId });
@@ -499,9 +578,11 @@ module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
+  deleteUser,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
+  checkAdmin,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
@@ -519,4 +600,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
+  deleteMonitorsByUserId
 };

@@ -184,15 +184,11 @@ const TeamPanel = () => {
     return count;
   };
   return (
-    <TabPanel value="2">
+    <TabPanel value="team">
       <form className="edit-organization-form">
-        <div
-          className="edit-organization-form__wrapper"
-        >
+        <div className="edit-organization-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Organization name
-            </Typography>
+            <Typography component="h1">Organization name</Typography>
           </Stack>
           <Stack
             id="org-name-flex-container"
@@ -247,7 +243,7 @@ const TeamPanel = () => {
             },
           }}
         >
-          <Typography id="modal-edit-org-name" variant="h4" component="h1">
+          <Typography id="modal-edit-org-name" component="h1">
             Rename this organization?
           </Typography>
           <TextField
@@ -280,9 +276,7 @@ const TeamPanel = () => {
       </Modal>
       <form className="edit-team-form" noValidate spellCheck="false">
         <div className="edit-team-form__wrapper">
-          <Typography variant="h4" component="h1">
-            Team members
-          </Typography>
+          <Typography component="h1">Team members</Typography>
         </div>
         <div className="edit-team-form__wrapper compact">
           <Stack
@@ -488,10 +482,10 @@ const TeamPanel = () => {
             },
           }}
         >
-          <Typography id="modal-invite-member" variant="h4" component="h1">
+          <Typography id="modal-invite-member" component="h1">
             Invite new team member
           </Typography>
-          <Typography id="invite-member-to-team" variant="h5" component="p">
+          <Typography id="invite-member-to-team" component="p">
             When you add a new team member, they will get access to all
             monitors.
           </Typography>

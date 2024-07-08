@@ -1,13 +1,11 @@
 import TabPanel from "@mui/lab/TabPanel";
 import React, { useState } from "react";
-import AnnouncementsDualButtonWithIcon from "../../Announcements/AnnouncementsDualButtonWithIcon/AnnouncementsDualButtonWithIcon";
 import { useTheme } from "@emotion/react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import ButtonSpinner from "../../ButtonSpinner";
 import PasswordTextField from "../../TextFields/Password/PasswordTextField";
 import { editPasswordValidation } from "../../../Validation/validation";
+import Alert from "../../Alert";
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -87,7 +85,7 @@ const PasswordPanel = () => {
   };
 
   return (
-    <TabPanel value="1">
+    <TabPanel value="password">
       <form
         onSubmit={handleSubmit}
         className="edit-password-form"
@@ -95,21 +93,15 @@ const PasswordPanel = () => {
         spellCheck="false"
       >
         <div className="edit-password-form__wrapper">
-          <AnnouncementsDualButtonWithIcon
-            icon={
-              <InfoOutlinedIcon
-                style={{ fill: theme.palette.secondary.main }}
-              />
-            }
-            subject="SSO login"
+          <Alert
+            variant="info"
+            title="SSO login"
             body="Since you logged in via SSO, you cannot reset or modify your password."
           />
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Current password
-            </Typography>
+            <Typography component="h1">Current password</Typography>
           </Stack>
           <Stack>
             <PasswordTextField
@@ -123,7 +115,7 @@ const PasswordPanel = () => {
               error={errors[idToName["edit-current-password"]] ? true : false}
             />
             {errors[idToName["edit-current-password"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-current-password"]]}
               </Typography>
             ) : (
@@ -133,9 +125,7 @@ const PasswordPanel = () => {
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              New password
-            </Typography>
+            <Typography component="h1">New password</Typography>
           </Stack>
           <Stack>
             <PasswordTextField
@@ -149,7 +139,7 @@ const PasswordPanel = () => {
               error={errors[idToName["edit-new-password"]] ? true : false}
             />
             {errors[idToName["edit-new-password"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-new-password"]]}
               </Typography>
             ) : (
@@ -159,9 +149,7 @@ const PasswordPanel = () => {
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
-            <Typography variant="h4" component="h1">
-              Confirm new password
-            </Typography>
+            <Typography component="h1">Confirm new password</Typography>
           </Stack>
           <Stack>
             <PasswordTextField
@@ -175,7 +163,7 @@ const PasswordPanel = () => {
               error={errors[idToName["edit-confirm-password"]] ? true : false}
             />
             {errors[idToName["edit-confirm-password"]] ? (
-              <Typography variant="h5" component="p" className="input-error">
+              <Typography component="p" className="input-error">
                 {errors[idToName["edit-confirm-password"]]}
               </Typography>
             ) : (
@@ -186,8 +174,8 @@ const PasswordPanel = () => {
         <div className="edit-password-form__wrapper">
           <Stack></Stack>
           <Box sx={{ flex: 1 }}>
-            <AnnouncementsDualButtonWithIcon
-              icon={<WarningAmberOutlinedIcon style={{ fill: "#f79009" }} />}
+            <Alert
+              variant="warning"
               body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
             />
           </Box>
