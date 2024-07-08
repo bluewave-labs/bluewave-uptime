@@ -14,6 +14,8 @@ import {
   TablePagination,
   Paper,
 } from "@mui/material";
+import SouthRoundedIcon from "@mui/icons-material/SouthRounded";
+import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react"
 
 /**
  * Host component.
@@ -31,7 +33,7 @@ const Host = ({ params }) => {
   return (
     <div className="host-row">
       <a href={params.url} target="_blank">
-        <img className="host-open-icon" src={OpenIt} alt="OpenIt" />
+        <OpenInNewPage />
       </a>
       <div className="host-name">{params.title}</div>
       <div
@@ -66,7 +68,12 @@ const Status = ({ params }) => {
           className="host-status-dot"
           style={{ backgroundColor: params.statusDotColor }}
         />
-        <span className="host-status-text">{params.status}</span>
+        <span
+          className="host-status-text"
+          style={{ textTransform: "capitalize" }}
+        >
+          {params.status}
+        </span>
       </div>
     </div>
   );
@@ -142,9 +149,14 @@ const MonitorTable = ({ monitors = [] }) => {
         <TableHead>
           <TableRow>
             <TableCell>Host</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>
+              Status
+              <span>
+                <SouthRoundedIcon />
+              </span>
+            </TableCell>
             <TableCell>Response Time</TableCell>
-            <TableCell>Action</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{mappedRows}</TableBody>

@@ -7,6 +7,7 @@
 
 .current-monitors-title-holder {
   display: flex;
+  align-items: center;
 }
 
 .current-monitors-bar {
@@ -18,16 +19,22 @@
   font-size: 1rem;
   font-weight: bold;
   margin-right: var(--env-var-spacing-1);
+  color: var(--env-var-color-1);
 }
 
 .current-monitors-counter {
-  width: var(--env-var-spacing-2);
-  height: var(--env-var-spacing-2);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  min-width: 22px;
+  min-height: 22px;
   background-color: var(--env-var-color-15);
   border: 1px solid var(--env-var-color-6);
   border-radius: 50%;
-  text-align: center;
-  align-items: center;
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 500;
+  color: var(--env-var-color-5);
 }
 
 .monitors-v-gaping {
