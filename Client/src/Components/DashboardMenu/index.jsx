@@ -5,6 +5,7 @@ import Monitors from "../../assets/Images/Icon-monitor-gray.png";
 import Incidents from "../../assets/Images/Icon-warning-gray.png";
 import SensorsIcon from "../../assets/Images/Icon-signal-gray.png";
 import AllInclusiveIcon from "../../assets/Images/Icon-link-gray.png";
+import MaintenanceIcon from "../../assets/Images/Icon-maintenance-gray.png";
 import SettingsIcon from "../../assets/Images/Icon-setting-gray.png";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -61,6 +62,13 @@ function DashboardMenu() {
         "/integrations",
         activeButton === "/integrations",
         () => handleClick(pathMap["/integrations"], "/integrations")
+      )}
+      {DashboardMenuButton(
+        MaintenanceIcon,
+        "Maintenance",
+        "/maintenance",
+        activeButton === "/maintenance",
+        () => handleClick(pathMap["/maintenance"], "/maintenance")
       )}
       {DashboardMenuButton(
         SettingsIcon,
