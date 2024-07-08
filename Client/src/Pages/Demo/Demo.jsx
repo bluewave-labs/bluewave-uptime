@@ -426,10 +426,6 @@ const Demo = () => {
         <ProgressUpload icon={<ImageIcon />} label="image.jpg" size="2 MB" />
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
-      <Stack justifyContent="center" alignItems="center">
-        <Avatar />
-      </Stack>
-      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
     </div>
   );
 };
