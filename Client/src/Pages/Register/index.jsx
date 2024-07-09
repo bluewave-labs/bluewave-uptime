@@ -11,12 +11,9 @@ import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import { registerValidation } from "../../Validation/validation";
-
+import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
-import axios from "axios";
-
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -41,8 +38,8 @@ const Register = () => {
   });
 
   useEffect(() => {
-    axios
-      .get(BASE_URL + "/auth/users/admin")
+    axiosInstance
+      .get("/auth/users/admin")
       .then((response) => {
         if (response.data.data === true) {
           navigate("/login");

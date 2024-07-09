@@ -1,7 +1,6 @@
-import axios from "axios";
+import axiosInstance from "../../Utils/axiosConfig";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const initialState = {
   isLoading: false,
@@ -15,7 +14,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (form, thunkApi) => {
     try {
-      const res = await axios.post(`${BASE_URL}/auth/register`, form);
+      const res = await axiosInstance.post("/auth/register", form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -28,7 +27,7 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   try {
-    const res = await axios.post(`${BASE_URL}/auth/login`, form);
+    const res = await axiosInstance.post(`/auth/login`, form);
     return res.data;
   } catch (error) {
     if (error.response && error.response.data) {
@@ -51,7 +50,7 @@ export const update = createAsyncThunk(
       fd.append("firstname", form.firstname);
       fd.append("lastname", form.lastname);
       if (form.file && form.file !== "") {
-        const imageResult = await axios.get(form.file, {
+        const imageResult = await axiosInstance.get(form.file, {
           responseType: "blob",
         });
         fd.append("profileImage", imageResult.data);
@@ -59,7 +58,7 @@ export const update = createAsyncThunk(
       form.deleteProfileImage &&
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
-      const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, fd, {
+      const res = await axiosInstance.post(`/auth/user/${user._id}`, fd, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
