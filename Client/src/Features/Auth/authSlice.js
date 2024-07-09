@@ -70,6 +70,31 @@ export const update = createAsyncThunk(
   }
 );
 
+export const deleteUser = createAsyncThunk(
+  "auth/delete",
+  async (data, thunkApi) => {
+    const user = jwtDecode(data);
+
+    //1.5s delay to show loading spinner
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    try {
+      const res = await axiosInstance.delete(`/auth/user/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${data}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
@@ -97,6 +122,16 @@ const handleUpdateRejected = (state, action) => {
     ? action.payload.msg
     : "Failed to update profile data.";
 };
+const handleDeleteFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+};
+const handleDeleteRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = false;
+  state.msg = action.payload ? action.payload.msg : "Failed to delete account.";
+};
 
 const authSlice = createSlice({
   name: "auth",
@@ -111,25 +146,37 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Register thunk
     builder
-      // Register thunk
       .addCase(register.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(register.fulfilled, handleAuthFulfilled)
-      .addCase(register.rejected, handleAuthRejected)
-      // Login thunk
+      .addCase(register.rejected, handleAuthRejected);
+
+    // Login thunk
+    builder
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(login.fulfilled, handleAuthFulfilled)
-      .addCase(login.rejected, handleAuthRejected)
-      // Update thunk
+      .addCase(login.rejected, handleAuthRejected);
+
+    // Update thunk
+    builder
       .addCase(update.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(update.fulfilled, handleUpdateFulfilled)
       .addCase(update.rejected, handleUpdateRejected);
+
+    // Delete thunk
+    builder
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUser.fulfilled, handleDeleteFulfilled)
+      .addCase(deleteUser.rejected, handleDeleteRejected);
   },
 });
 

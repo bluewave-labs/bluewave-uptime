@@ -12,11 +12,16 @@ import {
   imageValidation,
 } from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
-import { update } from "../../../Features/Auth/authSlice";
+import {
+  clearAuthState,
+  deleteUser,
+  update,
+} from "../../../Features/Auth/authSlice";
 import ImageField from "../../TextFields/Image";
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
+import { clearMonitorState } from "../../../Features/Monitors/monitorsSlice";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -158,7 +163,12 @@ const ProfilePanel = () => {
 
   // Initiates the account deletion process
   const handleDeleteAccount = () => {
-    //TODO - implement delete account function
+    dispatch(deleteUser(authToken)).then((action) => {
+      if (action.payload.success) {
+        dispatch(clearAuthState());
+        dispatch(clearMonitorState());
+      }
+    });
   };
 
   // Modal state and control functions
