@@ -6,8 +6,14 @@
 const ParseBoolean = (value) => {
   if (value === true || value === "true") {
     return true;
+  } else if (
+    value === false ||
+    value === "false" ||
+    value === null ||
+    value === undefined
+  ) {
+    return false;
   }
-  return false;
 };
 
 module.exports = {
