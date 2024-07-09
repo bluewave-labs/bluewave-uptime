@@ -94,7 +94,7 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const rowsPerPage = 5;
 
   const handleChangePage = (event, newPage) => {
@@ -102,7 +102,7 @@ const MonitorTable = ({ monitors = [] }) => {
   };
 
   const mappedRows = monitors
-    .slice((page - 1) * rowsPerPage, page * rowsPerPage)
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     .map((monitor) => {
       const params = {
         url: monitor.url,
@@ -161,8 +161,8 @@ const MonitorTable = ({ monitors = [] }) => {
       </TableContainer>
       <Pagination
         count={Math.ceil(monitors?.length / rowsPerPage)}
-        page={page}
-        onChange={handleChangePage}
+        page={page + 1}
+        onChange={(event, value) => handleChangePage(event, value - 1)}
         shape="rounded"
         renderItem={(item) => (
           <PaginationItem
