@@ -72,6 +72,10 @@ const ProfilePanel = () => {
     );
     if (error) return;
 
+    setLocalData((prev) => ({
+      ...prev,
+      deleteProfileImage: false,
+    }));
     setProgress((prev) => ({ ...prev, isLoading: true }));
     setFile({
       src: URL.createObjectURL(pic),
@@ -116,13 +120,17 @@ const ProfilePanel = () => {
   // Resets picture-related states and clears interval
   const removePicture = () => {
     errors["picture"] && clearError("picture");
+    setLocalData((prev) => ({
+      ...prev,
+      deleteProfileImage: true,
+    }));
     clearInterval(intervalRef.current); // interrupt interval if image upload is canceled prior to completing the process
     setProgress({ value: 0, isLoading: false });
   };
 
   // Closes the picture update modal and resets related states
   const closePictureModal = () => {
-    removePicture();
+    // removePicture();
     setIsOpen("");
   };
 
@@ -154,6 +162,10 @@ const ProfilePanel = () => {
   // Removes current profile image from UI
   const handleDeletePicture = () => {
     // TODO - implement delete picture function
+    setLocalData((prev) => ({
+      ...prev,
+      deleteProfileImage: true,
+    }));
   };
 
   // Initiates the account deletion process

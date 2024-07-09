@@ -52,6 +52,7 @@ export const update = createAsyncThunk(
       fd.append("firstname", form.firstname);
       fd.append("lastname", form.lastname);
       fd.append("profileImage", imageResult.data);
+      fd.append("deleteProfileImage", form.deleteProfileImage);
 
       const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, fd, {
         headers: {
