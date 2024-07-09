@@ -67,7 +67,6 @@ const Monitors = () => {
         </div>
         <div className="monitors-v-gaping" />
         <MonitorTable monitors={monitorState.monitors} />
-        <div className="monitors-v-gaping" />
       </div>
     </div>
   );
