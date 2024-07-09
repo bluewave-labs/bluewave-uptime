@@ -10,7 +10,7 @@ router.post(
 );
 
 router.get(
-  "/:monitorId",
+  "/:monitorId?limit",
   verifyOwnership(Monitor, "monitorId"),
   checkController.getChecks
 );
