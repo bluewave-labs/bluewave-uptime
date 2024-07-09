@@ -8,8 +8,7 @@ import LeftArrow from "../../assets/Images/arrow-left.png";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { newPasswordValidation } from "../../Validation/validation";
-import axios from "axios";
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+import axiosInstance from "../../Utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 const SetNewPassword = () => {
@@ -33,10 +32,10 @@ const SetNewPassword = () => {
     // TODO show loading spinner
     setIsLoading(true);
     try {
-      await axios.post(`${BASE_URL}/auth/recovery/validate`, {
+      await axiosInstance.post("/auth/recovery/validate", {
         recoveryToken: token,
       });
-      await axios.post(`${BASE_URL}/auth/recovery/reset`, {
+      await axiosInstance.post("/auth/recovery/reset", {
         ...form,
         recoveryToken: token,
       });
