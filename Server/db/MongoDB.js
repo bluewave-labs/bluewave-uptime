@@ -7,8 +7,8 @@ const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
-const { error } = require("console");
 const { GenerateAvatarImage } = require("../utils/imageProcessing");
+const { ParseBoolean } = require("../utils/utils");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -100,7 +100,14 @@ const updateUser = async (req, res) => {
 
   try {
     const candidateUser = { ...req.body };
-    if (req.file) {
+    // ******************************************
+    // Handle profile image
+    // ******************************************
+
+    if (ParseBoolean(candidateUser.deleteProfileImage) === true) {
+      candidateUser.profileImage = null;
+      candidateUser.avatarImage = null;
+    } else if (req.file) {
       // 1.  Save the full size image
       candidateUser.profileImage = {
         data: req.file.buffer,
@@ -111,6 +118,10 @@ const updateUser = async (req, res) => {
       const avatar = await GenerateAvatarImage(req.file);
       candidateUser.avatarImage = avatar;
     }
+
+    // ******************************************
+    // End handling profile image
+    // ******************************************
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       candidateUserId,
