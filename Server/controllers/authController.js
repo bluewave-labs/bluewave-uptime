@@ -108,9 +108,13 @@ const loginController = async (req, res, next) => {
     // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
+    delete userWithoutPassword.avatarImage;
 
     // Happy path, return token
     const token = issueToken(userWithoutPassword);
+    // reset avatar image
+    userWithoutPassword.avatarImage = user.avatarImage;
+
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
@@ -135,6 +139,7 @@ const userEditController = async (req, res, next) => {
     return;
   }
 
+  // TODO is this neccessary any longer? Verify ownership middleware should handle this
   if (req.params.userId !== req.user._id.toString()) {
     const error = new Error(errorMessages.AUTH_UNAUTHORIZED);
     error.status = 401;

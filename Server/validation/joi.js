@@ -26,6 +26,7 @@ const editUserBodyValidation = joi.object({
   firstname: joi.string(),
   lastname: joi.string(),
   profileImage: joi.any(),
+  deleteProfileImage: joi.boolean(),
   role: joi.string(),
 });
 
@@ -165,5 +166,5 @@ module.exports = {
   createCheckBodyValidation,
   getChecksParamValidation,
   deleteChecksParamValidation,
-  deleteUserParamValidation
+  deleteUserParamValidation,
 };
