@@ -6,10 +6,8 @@
 const ParseBoolean = (value) => {
   if (value === true || value === "true") {
     return true;
-  } else if (value === false || value === "false") {
-    return false;
   }
-  throw new Error("Invalid boolean value");
+  return false;
 };
 
 module.exports = {
