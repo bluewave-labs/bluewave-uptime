@@ -49,6 +49,7 @@ export const update = createAsyncThunk(
       const fd = new FormData();
       const imageResult = await axiosInstance.get(form.file, {
         responseType: "blob",
+        baseURL: "",
       });
       fd.append("firstname", form.firstname);
       fd.append("lastname", form.lastname);
