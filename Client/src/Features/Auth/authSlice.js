@@ -48,11 +48,16 @@ export const update = createAsyncThunk(
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const fd = new FormData();
-      const imageResult = await axios.get(form.file, { responseType: "blob" });
       fd.append("firstname", form.firstname);
       fd.append("lastname", form.lastname);
-      fd.append("profileImage", imageResult.data);
-      fd.append("deleteProfileImage", form.deleteProfileImage);
+      if (form.file && form.file !== "") {
+        const imageResult = await axios.get(form.file, {
+          responseType: "blob",
+        });
+        fd.append("profileImage", imageResult.data);
+      }
+      form.deleteProfileImage &&
+        fd.append("deleteProfileImage", form.deleteProfileImage);
 
       const res = await axios.post(`${BASE_URL}/auth/user/${user._id}`, fd, {
         headers: {
