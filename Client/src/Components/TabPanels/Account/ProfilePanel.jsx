@@ -128,6 +128,8 @@ const ProfilePanel = () => {
     setProgress({ value: 0, isLoading: false });
   };
 
+  console.log(localData);
+
   // Closes the picture update modal and resets related states
   const closePictureModal = () => {
     // removePicture();
@@ -261,7 +263,16 @@ const ProfilePanel = () => {
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            <Avatar src={file?.src} sx={{ mr: "8px" }} />
+            <Avatar
+              src={
+                localData?.deleteProfileImage
+                  ? "/static/images/avatar/2.jpg"
+                  : file?.src
+                  ? file.src
+                  : ""
+              }
+              sx={{ mr: "8px" }}
+            />
             <Button
               level="tertiary"
               label="Delete"
@@ -397,7 +408,15 @@ const ProfilePanel = () => {
           </Typography>
           <ImageField
             id="update-profile-picture"
-            src={file?.src}
+            src={
+              localData?.deleteProfileImage
+                ? ""
+                : file?.src
+                ? file.src
+                : user?.avatarImage
+                ? `data:image/png;base64,${user.avatarImage}`
+                : ""
+            }
             loading={progress.isLoading && progress.value !== 100}
             onChange={handlePicture}
           />
