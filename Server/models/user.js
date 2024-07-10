@@ -55,6 +55,16 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  if ("password" in update) {
+    const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
+    update.password = await bcrypt.hash(update.password, salt); // hash is also async, need to eitehr await or use hashSync
+  }
+
+  next();
+});
+
 UserSchema.methods.comparePassword = async function (submittedPassword) {
   res = await bcrypt.compare(submittedPassword, this.password);
   return res;

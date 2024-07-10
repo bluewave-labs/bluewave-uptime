@@ -130,6 +130,7 @@ const updateUser = async (req, res) => {
     )
       .select("-password")
       .select("-profileImage");
+    console.log(updatedUser);
     return updatedUser;
   } catch (error) {
     throw error;
