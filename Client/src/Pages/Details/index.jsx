@@ -60,9 +60,6 @@ const DetailsPage = () => {
       return 'N/A'; 
     }
 
-    // Sort checks by createdAt descending to get the most recent check first
-    checks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
     const mostRecentCheck = checks[0];
     const currentTime = new Date();
     const lastCheckedTime = new Date(mostRecentCheck.createdAt);
@@ -89,9 +86,6 @@ const DetailsPage = () => {
     if (!checks || checks.length === 0) {
       return 'N/A'; // Handle case when no checks are available
     }
-
-    // Sort checks by createdAt descending to get the most recent check first
-    checks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const mostRecentCheck = checks[0];
     return new Date(mostRecentCheck.createdAt).toLocaleString();
