@@ -82,6 +82,7 @@ const ProfilePanel = () => {
       src: URL.createObjectURL(pic),
       name: pic.name,
       size: formatBytes(pic.size),
+      delete: false,
     });
 
     //TODO - potentitally remove once image compression functions are implemented
@@ -121,13 +122,23 @@ const ProfilePanel = () => {
   // Resets picture-related states and clears interval
   const removePicture = () => {
     errors["picture"] && clearError("picture");
+    setFile({ delete: true });
     clearInterval(intervalRef.current); // interrupt interval if image upload is canceled prior to completing the process
     setProgress({ value: 0, isLoading: false });
   };
 
+  // Opens the picture update modal
+  const openPictureModal = () => {
+    setIsOpen("picture");
+    setFile({ delete: localData.deleteProfileImage });
+  };
+
   // Closes the picture update modal and resets related states
   const closePictureModal = () => {
-    removePicture();
+    errors["picture"] && clearError("picture");
+    setFile(); //reset file
+    clearInterval(intervalRef.current); // interrupt interval if image upload is canceled prior to completing the process
+    setProgress({ value: 0, isLoading: false });
     setIsOpen("");
   };
 
@@ -137,20 +148,27 @@ const ProfilePanel = () => {
     setLocalData((prev) => ({
       ...prev,
       file: file.src,
+      deleteProfileImage: false,
     }));
     setIsOpen("");
   };
 
+  console.log(
+    localData.deleteProfileImage === false && localData.file === undefined
+  );
+
   // Handles form submission to update user profile
   const handleSaveProfile = (event) => {
     event.preventDefault();
-    // if (
-    //   localData.firstname === user.firstname &&
-    //   localData.lastname === user.lastname
-    // ) {
-    //   // TODO: Add toast/notification for unchanged profile data
-    //   return;
-    // }
+    if (
+      localData.firstname === user.firstname &&
+      localData.lastname === user.lastname &&
+      localData.deleteProfileImage === undefined &&
+      localData.file === undefined
+    ) {
+      // TODO: Add toast/notification for unchanged profile data
+      return;
+    }
 
     dispatch(update({ authToken, localData }));
     // TODO: Add toast/notification for profile update success
@@ -158,7 +176,10 @@ const ProfilePanel = () => {
 
   // Removes current profile image from UI
   const handleDeletePicture = () => {
-    // TODO - implement delete picture function
+    setLocalData((prev) => ({
+      ...prev,
+      deleteProfileImage: true,
+    }));
   };
 
   // Initiates the account deletion process
@@ -259,7 +280,16 @@ const ProfilePanel = () => {
             </Typography>
           </Stack>
           <Stack className="row-stack" direction="row" alignItems="center">
-            <Avatar src={file?.src} sx={{ mr: "8px" }} />
+            <Avatar
+              src={
+                localData?.deleteProfileImage
+                  ? "/static/images/avatar/2.jpg"
+                  : localData?.file
+                  ? localData.file
+                  : ""
+              }
+              sx={{ mr: "8px" }}
+            />
             <Button
               level="tertiary"
               label="Delete"
@@ -268,7 +298,7 @@ const ProfilePanel = () => {
             <Button
               level="tertiary"
               label="Update"
-              onClick={() => setIsOpen("picture")}
+              onClick={openPictureModal}
               sx={{
                 color: theme.palette.primary.main,
               }}
@@ -395,7 +425,17 @@ const ProfilePanel = () => {
           </Typography>
           <ImageField
             id="update-profile-picture"
-            src={file?.src}
+            src={
+              file?.delete
+                ? ""
+                : file?.src
+                ? file.src
+                : localData?.file
+                ? localData.file
+                : user?.avatarImage
+                ? `data:image/png;base64,${user.avatarImage}`
+                : ""
+            }
             loading={progress.isLoading && progress.value !== 100}
             onChange={handlePicture}
           />
