@@ -272,7 +272,9 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
-    const checks = await Check.find({ monitorId: monitor._id });
+    const checks = await Check.find({ monitorId: monitor._id }).sort({
+      createdAt: -1,
+    });
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
   } catch (error) {

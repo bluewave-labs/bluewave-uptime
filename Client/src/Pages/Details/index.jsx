@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomizedTables from "../../Components/CustomizedTables";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import axiosInstance from "../../Utils/axiosConfig";
 
 /**
  * Details page component displaying monitor details and related information.
  * @component
  */
 const DetailsPage = () => {
-  const monitorState = useSelector((state) => state.monitors);
+  const [monitor, setMonitor] = useState({});
   const { monitorId } = useParams();
-
-  const monitor = monitorState.monitors.find(
-    (monitor) => monitor._id === monitorId
-  );
+  const { authToken } = useSelector((state) => state.auth);
+  useEffect(() => {
+    const fetchMonitor = async () => {
+      const res = await axiosInstance.get(`/monitors/${monitorId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setMonitor(res.data.data);
+    };
+    fetchMonitor();
+  }, [monitorId, authToken]);
 
   const theme = useTheme();
 
