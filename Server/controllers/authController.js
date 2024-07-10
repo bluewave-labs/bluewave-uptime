@@ -31,6 +31,17 @@ const issueToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
 };
 
+const getTokenFromHeaders = (headers) => {
+  const authorizationHeader = headers.authorization;
+  if (!authorizationHeader) throw new Error("No auth headers");
+
+  const parts = authorizationHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer")
+    throw new Error("Invalid auth headers");
+
+  return parts[1];
+};
+
 /**
  * @function
  * @param {express.Request} req
@@ -149,6 +160,32 @@ const userEditController = async (req, res, next) => {
   }
 
   try {
+    // Change Password check
+    if (req.body.password && req.body.newPassword) {
+      const newPassword = req.body.newPassword;
+      const password = req.body.password;
+
+      // Compare password
+      // Get token from headers
+      const token = getTokenFromHeaders(req.headers);
+      // Get email from token
+      const { email } = jwt.verify(token, process.env.JWT_SECRET);
+      // Add user email to body for DB operation
+      req.body.email = email;
+      // Get user
+      const user = await req.db.getUserByEmail(req, res);
+      // Compare passwords
+      const match = await user.comparePassword(req.body.password);
+      // If not a match, throw a 403
+      if (!match) {
+        const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
+        error.status = 403;
+        throw error;
+      }
+      // If a match, update the password
+      req.body.password = req.body.newPassword;
+    }
+
     const updatedUser = await req.db.updateUser(req, res);
     return res.status(200).json({
       success: true,
@@ -280,7 +317,7 @@ const resetPasswordController = async (req, res, next) => {
  */
 const deleteUserController = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = getTokenFromHeaders(req.headers);
     const decodedToken = jwt.decode(token);
     const { _id, email } = decodedToken;
 
