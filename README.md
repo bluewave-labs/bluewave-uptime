@@ -47,7 +47,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
     - <code>POST</code> [/api/v1/auth/recovery/reset](#post-auth-recovery-reset-id)
     ###### Monitors
     - <code>GET</code> [/api/v1/monitors](#get-monitors)
-    - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
+    - <code>GET</code> [/api/v1/monitor/{id}?limit](#get-monitor-id)
     - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
     - <code>POST</code> [/api/v1/monitors](#post-monitors)
     - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
@@ -678,7 +678,7 @@ curl --request GET \
 </details>
 
 <details>
-<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
+<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}?limit</b></summary>
 
 ###### Method/Headers
 
@@ -696,7 +696,7 @@ curl --request GET \
 
 ```
 curl --request GET \
-  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1 \
+  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1?limit=25 \
   --header '<bearer_token>' \
 ```
 
