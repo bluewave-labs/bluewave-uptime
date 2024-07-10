@@ -6,6 +6,8 @@ import ButtonSpinner from "../../ButtonSpinner";
 import PasswordTextField from "../../TextFields/Password/PasswordTextField";
 import { editPasswordValidation } from "../../../Validation/validation";
 import Alert from "../../Alert";
+import { update } from "../../../Features/Auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -15,24 +17,24 @@ import Alert from "../../Alert";
 
 const PasswordPanel = () => {
   const theme = useTheme();
-  //TODO - use redux loading state
-  //!! - currently all loading buttons are tied to the same state
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
-  //for testing, will tweak when I implement redux slice
+  //redux state
+  const { authToken, isLoading } = useSelector((state) => state.auth);
+
   const idToName = {
     "edit-current-password": "password",
-    //TBD - form field naming
-    "edit-new-password": "newpassword",
+    "edit-new-password": "newPassword",
     "edit-confirm-password": "confirm",
   };
+
   const [localData, setLocalData] = useState({
     password: "",
-    newpassword: "",
+    newPassword: "",
     confirm: "",
   });
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false); // password visibility
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -44,7 +46,7 @@ const PasswordPanel = () => {
 
     const validation = editPasswordValidation.validate(
       { [name]: value },
-      { abortEarly: false, context: { newpassword: localData.newpassword } }
+      { abortEarly: false, context: { newPassword: localData.newPassword } }
     );
 
     setErrors((prev) => {
@@ -59,13 +61,12 @@ const PasswordPanel = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsLoading(true);
 
     const { error } = editPasswordValidation.validate(localData, {
       abortEarly: false,
-      context: { newpassword: localData.newpassword },
+      context: { newPassword: localData.newPassword },
     });
 
     if (error) {
@@ -74,14 +75,21 @@ const PasswordPanel = () => {
         newErrors[err.path[0]] = err.message;
       });
       setErrors(newErrors);
-      setIsLoading(false);
     } else {
-      //TODO - submit logic
+      const action = await dispatch(update({ authToken, localData }));
+      if (action.payload.success) {
+        // TODO: Add toast/notification for password update success
+        setLocalData({
+          password: "",
+          newPassword: "",
+          confirm: "",
+        });
+      } else {
+        // TODO: Add toast/notification for password update rejected
+        // TODO: Check for other errors?
+        setErrors({ password: "*" + action.payload.msg + "." });
+      }
     }
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
   };
 
   return (
@@ -111,6 +119,7 @@ const PasswordPanel = () => {
               autoComplete="current-password"
               visibility={showPassword}
               setVisibility={setShowPassword}
+              value={localData.password}
               onChange={handleChange}
               error={errors[idToName["edit-current-password"]] ? true : false}
             />
@@ -135,6 +144,7 @@ const PasswordPanel = () => {
               autoComplete="new-password"
               visibility={showPassword}
               setVisibility={setShowPassword}
+              value={localData.newPassword}
               onChange={handleChange}
               error={errors[idToName["edit-new-password"]] ? true : false}
             />
@@ -159,6 +169,7 @@ const PasswordPanel = () => {
               autoComplete="new-password"
               visibility={showPassword}
               setVisibility={setShowPassword}
+              value={localData.confirm}
               onChange={handleChange}
               error={errors[idToName["edit-confirm-password"]] ? true : false}
             />
@@ -191,7 +202,7 @@ const PasswordPanel = () => {
               loadingText="Saving..."
               disabled={Object.keys(errors).length !== 0 && true}
               sx={{
-                paddingX: "40px",
+                paddingX: theme.gap.xl,
               }}
             />
           </Box>
