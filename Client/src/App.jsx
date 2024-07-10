@@ -18,6 +18,7 @@ import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ToastComponent from "./Components/Toast";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Maintenance from "./Pages/Maintenance";
+import CreateNewMaintenance from "./Pages/Maintenance/CreateNewMaintenance";
 
 function App() {
   return (
@@ -48,6 +49,10 @@ function App() {
           <Route
             path="maintenance"
             element={<ProtectedRoute Component={Maintenance} />}
+          />
+          <Route
+            path="maintenance/createnewmaintenance"
+            element={<ProtectedRoute Component={CreateNewMaintenance} />}
           />
           <Route
             path="settings"

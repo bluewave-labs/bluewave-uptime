@@ -3,6 +3,7 @@ import "./index.css";
 import WindowFrame from "./../../assets/Images/maintenance_window_frame.svg";
 import { Button } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { useNavigate } from "react-router";
 
 const Maintenance = () => {
   const maintenanceItems = [
@@ -10,6 +11,12 @@ const Maintenance = () => {
     { id: 2, text: "Eliminate any misunderstandings" },
     { id: 3, text: "Stop sending alerts in maintenance windows" },
   ];
+
+  const navigate = useNavigate();
+
+  const navigateToNewMaintenance = () => {
+    navigate("/maintenance/createnewmaintenance");
+  };
 
   return (
     <div className="maintenance-checklist-main">
@@ -29,6 +36,7 @@ const Maintenance = () => {
         color="primary"
         className="maintenance-checklist-button"
         sx={{ textTransform: "none" }}
+        onClick={navigateToNewMaintenance}
       >
         Let&apos;s create your maintenance window
       </Button>
