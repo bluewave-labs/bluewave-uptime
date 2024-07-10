@@ -183,13 +183,12 @@ const ProfilePanel = () => {
   };
 
   // Initiates the account deletion process
-  const handleDeleteAccount = () => {
-    dispatch(deleteUser(authToken)).then((action) => {
-      if (action.payload.success) {
-        dispatch(clearAuthState());
-        dispatch(clearMonitorState());
-      }
-    });
+  const handleDeleteAccount = async () => {
+    const action = await dispatch(deleteUser(authToken));
+    if (action.payload.success) {
+      dispatch(clearAuthState());
+      dispatch(clearMonitorState());
+    }
   };
 
   // Modal state and control functions

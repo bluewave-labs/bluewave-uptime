@@ -80,9 +80,6 @@ export const deleteUser = createAsyncThunk(
   async (data, thunkApi) => {
     const user = jwtDecode(data);
 
-    //1.5s delay to show loading spinner
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
     try {
       const res = await axiosInstance.delete(`/auth/user/${user._id}`, {
         headers: { Authorization: `Bearer ${data}` },
