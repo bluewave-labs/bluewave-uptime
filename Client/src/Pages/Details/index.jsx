@@ -53,6 +53,7 @@ const DetailsPage = () => {
    * Function to calculate uptime duration based on the most recent check.
    * @param {Array} checks Array of check objects.
    * @returns {string} Uptime duration in hours, minutes, and seconds.
+   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC. 
    */
   const calculateUptimeDuration = (checks) => {
     if (!checks || checks.length === 0) {
@@ -68,6 +69,7 @@ const DetailsPage = () => {
     let uptimeDuration = currentTime - lastCheckedTime;
 
     // Calculate hours, minutes, and seconds from uptime duration
+    // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
     let uptimeHours = Math.floor(uptimeDuration / (1000 * 60 * 60));
     uptimeDuration %= (1000 * 60 * 60);
     let uptimeMinutes = Math.floor(uptimeDuration / (1000 * 60));
@@ -81,6 +83,7 @@ const DetailsPage = () => {
    * Helper function to get timestamp of the most recent check.
    * @param {Array} checks Array of check objects.
    * @returns {string} Timestamp of the most recent check.
+   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
    */
   const getLastCheckedTimestamp = (checks) => {
     if (!checks || checks.length === 0) {
@@ -98,6 +101,7 @@ const DetailsPage = () => {
    * Helper function to count incidents (checks with status === false).
    * @param {Array} checks Array of check objects.
    * @returns {number} Number of incidents.
+   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
    */
   const countIncidents = (checks) => {
     if (!checks || checks.length === 0) {
@@ -105,6 +109,7 @@ const DetailsPage = () => {
     }
 
     // Count checks with status === false
+    // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
     const incidentCount = checks.filter(check => !check.status).length;
     return incidentCount;
   };
