@@ -1,63 +1,33 @@
-import React from 'react';
-import CustomizedTables from '../../Components/CustomizedTables';
-import { Box, Typography, useTheme } from '@mui/material';
+import React from "react";
+import CustomizedTables from "../../Components/CustomizedTables";
+import { Box, Typography, useTheme } from "@mui/material";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 /**
  * Details page component displaying monitor details and related information.
  * @component
  */
 const DetailsPage = () => {
+  const monitorState = useSelector((state) => state.monitors);
+  const { monitorId } = useParams();
+
+  const monitor = monitorState.monitors.find(
+    (monitor) => monitor._id === monitorId
+  );
+
   const theme = useTheme();
 
   // Example monitor data (replace with actual data or fetch from API)
-  const monitorData = {
-    "_id": "66863aa2437936b46e225d1f",
-    "userId": "66863a8f437936b46e225d1a",
-    "name": "Google",
-    "description": "Google",
-    "status": false,
-    "type": "http",
-    "url": "https://www.google.com/404",
-    "isActive": true,
-    "interval": 60000,
-    "createdAt": "2024-07-04T06:01:06.527Z",
-    "updatedAt": "2024-07-04T06:02:00.250Z",
-    "__v": 0,
-    "checks": [
-      {
-        "_id": "66863ad8437936b46e225d6d",
-        "monitorId": "66863aa2437936b46e225d1f",
-        "status": false,
-        "responseTime": 144,
-        "expiry": "2024-07-04T06:02:00.247Z",
-        "statusCode": 404,
-        "createdAt": "2024-07-04T06:02:00.248Z",
-        "updatedAt": "2024-07-04T06:02:00.248Z",
-        "__v": 0
-      },
-      {
-        "_id": "66863b14437936b46e225d79",
-        "monitorId": "66863aa2437936b46e225d1f",
-        "status": false,
-        "responseTime": 140,
-        "expiry": "2024-07-04T06:03:00.167Z",
-        "statusCode": 404,
-        "createdAt": "2024-07-04T06:03:00.168Z",
-        "updatedAt": "2024-07-04T06:03:00.168Z",
-        "__v": 0
-      }
-    ]
-  };
-
   /**
    * Function to calculate uptime duration based on the most recent check.
    * @param {Array} checks Array of check objects.
    * @returns {string} Uptime duration in hours, minutes, and seconds.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC. 
+   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
    */
   const calculateUptimeDuration = (checks) => {
     if (!checks || checks.length === 0) {
-      return 'N/A'; 
+      return "N/A";
     }
 
     const mostRecentCheck = checks[0];
@@ -68,9 +38,9 @@ const DetailsPage = () => {
     // Calculate hours, minutes, and seconds from uptime duration
     // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
     let uptimeHours = Math.floor(uptimeDuration / (1000 * 60 * 60));
-    uptimeDuration %= (1000 * 60 * 60);
+    uptimeDuration %= 1000 * 60 * 60;
     let uptimeMinutes = Math.floor(uptimeDuration / (1000 * 60));
-    uptimeDuration %= (1000 * 60);
+    uptimeDuration %= 1000 * 60;
     let uptimeSeconds = Math.floor(uptimeDuration / 1000);
 
     return `${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`;
@@ -84,7 +54,7 @@ const DetailsPage = () => {
    */
   const getLastCheckedTimestamp = (checks) => {
     if (!checks || checks.length === 0) {
-      return 'N/A'; // Handle case when no checks are available
+      return "N/A"; // Handle case when no checks are available
     }
 
     const mostRecentCheck = checks[0];
@@ -104,57 +74,57 @@ const DetailsPage = () => {
 
     // Count checks with status === false
     // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
-    const incidentCount = checks.filter(check => !check.status).length;
+    const incidentCount = checks.filter((check) => !check.status).length;
     return incidentCount;
   };
 
   return (
     <Box>
       {/* Customized Tables Component */}
-      <CustomizedTables monitor={monitorData} />
+      <CustomizedTables monitor={monitor} />
 
       {/* Uptime duration */}
       <Typography
         variant="body1"
         sx={{
-          fontFamily: 'Roboto',
+          fontFamily: "Roboto",
           fontWeight: 600,
-          fontSize: '13px',
-          lineHeight: '20px',
-          color: '#344054',
+          fontSize: "13px",
+          lineHeight: "20px",
+          color: "#344054",
           marginTop: theme.spacing(2),
         }}
       >
-        Up for: {calculateUptimeDuration(monitorData.checks)}
+        Up for: {calculateUptimeDuration(monitor.checks)}
       </Typography>
 
       {/* Last checked */}
       <Typography
         variant="body2"
         sx={{
-          fontFamily: 'Roboto',
+          fontFamily: "Roboto",
           fontWeight: 400,
-          fontSize: '16px',
-          lineHeight: '24px',
-          color: '#1570EF',
+          fontSize: "16px",
+          lineHeight: "24px",
+          color: "#1570EF",
           marginBottom: theme.spacing(1),
         }}
       >
-        Last checked: {getLastCheckedTimestamp(monitorData.checks)}
+        Last checked: {getLastCheckedTimestamp(monitor.checks)}
       </Typography>
 
       {/* Incidents */}
       <Typography
         variant="body1"
         sx={{
-          fontFamily: 'Roboto',
+          fontFamily: "Roboto",
           fontWeight: 600,
-          fontSize: '13px',
-          lineHeight: '20px',
-          color: '#344054',
+          fontSize: "13px",
+          lineHeight: "20px",
+          color: "#344054",
         }}
       >
-        Incidents: {countIncidents(monitorData.checks)}
+        Incidents: {countIncidents(monitor.checks)}
       </Typography>
     </Box>
   );
