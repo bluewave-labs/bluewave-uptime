@@ -18,11 +18,9 @@ import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
-<<<<<<< HEAD
 import Details from "./Pages/Details";
-=======
 import Maintenance from "./Pages/Maintenance";
->>>>>>> upstream/master
+
 
 function App() {
   return (
