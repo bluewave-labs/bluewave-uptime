@@ -85,10 +85,7 @@ export const deleteUser = createAsyncThunk(
 
     try {
       const res = await axiosInstance.delete(`/auth/user/${user._id}`, {
-        headers: {
-          Authorization: `Bearer ${data}`,
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { Authorization: `Bearer ${data}` },
       });
       return res.data;
     } catch (error) {
