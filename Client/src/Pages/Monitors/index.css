@@ -1,7 +1,6 @@
 .monitors,
 .new-monitor {
   width: 70vw;
-  padding: 4vw;
 }
 
 .monitors {
@@ -9,13 +8,13 @@
 }
 
 .monitors-bar {
-  margin-top: calc(2 * var(--env-var-spacing-2));
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .monitors-bar-title {
+  color: var(--env-var-color-1);
   font-size: 24px;
   font-weight: 700;
 }

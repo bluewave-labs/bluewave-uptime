@@ -4,16 +4,17 @@ import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "./index.css";
+import { checkImage } from "../../../Utils/fileUtils";
 
 /**
  * @param {Object} props - The component props.
  * @param {string} props.id - The unique identifier for the input field.
- * @param {string} props.picture - The URL of the image to display.
+ * @param {string} props.src - The URL of the image to display.
  * @param {function} props.onChange - The function to handle file input change.
  * @returns {JSX.Element} The rendered component.
  */
 
-const ImageField = ({ id, picture, onChange }) => {
+const ImageField = ({ id, src, loading, onChange }) => {
   const theme = useTheme();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -26,7 +27,7 @@ const ImageField = ({ id, picture, onChange }) => {
 
   return (
     <>
-      {!picture ? (
+      {!checkImage(src) || loading ? (
         <>
           <Box
             className="image-field-wrapper"
@@ -107,7 +108,7 @@ const ImageField = ({ id, picture, onChange }) => {
               height: "250px",
               borderRadius: "50%",
               overflow: "hidden",
-              backgroundImage: `url(${picture})`,
+              backgroundImage: `url(${src})`,
               backgroundSize: "cover",
             }}
           ></Box>
@@ -119,7 +120,7 @@ const ImageField = ({ id, picture, onChange }) => {
 
 ImageField.propTypes = {
   id: PropTypes.string.isRequired,
-  picture: PropTypes.string,
+  src: PropTypes.string,
   onChange: PropTypes.func.isRequired,
 };
 

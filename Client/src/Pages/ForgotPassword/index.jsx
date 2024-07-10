@@ -7,10 +7,8 @@ import Button from "../../Components/Button";
 import LeftArrow from "../../assets/Images/arrow-left.png";
 import { useState, useEffect } from "react";
 import { recoveryValidation } from "../../Validation/validation";
-import axios from "axios";
+import axiosInstance from "../../Utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
-
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -50,7 +48,7 @@ const ForgotPassword = () => {
       if (error !== undefined) {
         throw error;
       }
-      await axios.post(`${BASE_URL}/auth/recovery/request`, form);
+      await axiosInstance.post(`/auth/recovery/request`, form);
       navigate("/check-email");
     } catch (error) {
       //TODO display error (Toast?)

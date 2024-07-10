@@ -10,6 +10,7 @@
   font-size: var(--env-var-font-size-large);
 }
 .create-monitor-form p.MuiTypography-root,
+.create-monitor-form button.MuiButtonBase-root,
 #monitor-frequencies {
   font-size: var(--env-var-font-size-medium);
 }

@@ -1,9 +1,10 @@
 const pathMap = {
-    "/monitors": "Monitors",
-    "/incidents": "Incidents",
-    "/status" : "Status Pages",
-    "/integrations": "Integrations",
-    "/settings" : "Settings"
-}
+  "/monitors": "Monitors",
+  "/incidents": "Incidents",
+  "/status": "Status Pages",
+  "/integrations": "Integrations",
+  "/maintenance": "maintenance",
+  "/settings": "Settings",
+};
 
 export default pathMap;

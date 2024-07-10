@@ -94,6 +94,9 @@ const ProgressUpload = ({
                 }
               : {
                   ml: "auto",
+                  "&:focus": {
+                    outline: "none",
+                  },
                 }
           }
         >
