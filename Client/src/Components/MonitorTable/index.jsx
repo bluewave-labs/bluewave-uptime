@@ -17,6 +17,7 @@ import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Host component.
@@ -94,6 +95,7 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const rowsPerPage = 5;
 
@@ -124,7 +126,13 @@ const MonitorTable = ({ monitors = [] }) => {
       };
 
       return (
-        <TableRow key={monitor._id}>
+        <TableRow
+          sx={{ cursor: "pointer" }}
+          key={monitor._id}
+          onClick={() => {
+            navigate(`/monitors/${monitor._id}`);
+          }}
+        >
           <TableCell>
             <Host params={params} />
           </TableCell>

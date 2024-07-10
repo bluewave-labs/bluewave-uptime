@@ -21,7 +21,6 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Details";
 import Maintenance from "./Pages/Maintenance";
 
-
 function App() {
   return (
     <>
@@ -41,13 +40,14 @@ function App() {
             element={<ProtectedRoute Component={CreateNewMonitor} />}
           />
           <Route
+            path="/monitors/:monitorId/"
+            element={<ProtectedRoute Component={Details} />}
+          />
+          <Route
             path="incidents"
             element={<ProtectedRoute Component={Incidents} />}
           />
-          <Route
-            path="details"
-            element={<ProtectedRoute Component={Details} />}
-          />
+
           <Route
             path="status"
             element={<ProtectedRoute Component={Status} />}
