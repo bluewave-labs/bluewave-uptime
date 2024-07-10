@@ -20,6 +20,7 @@ import {
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
 import { useState } from "react";
+import EditSvg from "../../../assets/icons/edit.svg?react";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -100,37 +101,25 @@ const TeamPanel = () => {
   //TODO - use redux loading state
   //!! - currently all loading buttons are tied to the same state
   const [isLoading, setIsLoading] = useState(false);
+  //TODO - connect to redux
   const [orgStates, setOrgStates] = useState({
     name: "Bluewave Labs",
     isLoading: false,
-    isOpen: false,
+    isEdit: false,
     newName: "",
   });
-  const toggleOrgModal = (state) => {
-    setOrgStates((prev) => ({
-      ...prev,
-      isOpen: state,
-    }));
-  };
-  const toggleOrgLoading = (state) => {
-    setOrgStates((prev) => ({
-      ...prev,
-      isLoading: state,
-    }));
-  };
-  const handleRenameOrg = () => {
-    toggleOrgLoading(true);
 
-    setTimeout(() => {
-      setOrgStates((prev) => ({
-        ...prev,
-        name: prev.newName !== "" ? prev.newName : prev.name,
-        isLoading: false,
-        isOpen: false,
-        newName: "",
-      }));
-    }, 2000);
+  const toggleEdit = () => {
+    setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
   };
+  const handleChange = (event) => {
+    const { value } = event.target;
+    setOrgStates((prev) => ({
+      ...prev,
+      name: value,
+    }));
+  };
+  const handleRename = () => {};
 
   const [teamStates, setTeamStates] = useState({
     members: teamConfig,
@@ -174,7 +163,7 @@ const TeamPanel = () => {
       setIsLoading(false);
     }, 2000);
   };
-  const [toggleInviteModal, setToggleInviteModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const handleInviteMember = () => {};
   const handleMembersQuery = (type) => {
     let count = 0;
@@ -191,24 +180,39 @@ const TeamPanel = () => {
             <Typography component="h1">Organization name</Typography>
           </Stack>
           <Stack
-            id="org-name-flex-container"
             className="row-stack"
             direction="row"
             justifyContent="flex-end"
-            gap="8px"
+            alignItems="center"
+            sx={{ minHeight: "34px", maxHeight: "34px" }}
           >
-            <ButtonSpinner
-              level="tertiary"
-              label={!orgStates.isLoading ? orgStates.name : ""}
-              disabled
-              onClick={() => toggleOrgModal(true)}
-              isLoading={orgStates.isLoading}
+            <TextField
+              value={orgStates.name}
+              onChange={handleChange}
+              disabled={!orgStates.isEdit}
+              sx={{
+                color: theme.palette.otherColors.bluishGray,
+                "& .Mui-disabled": {
+                  WebkitTextFillColor: "initial !important",
+                },
+                "& .Mui-disabled fieldset": {
+                  borderColor: "transparent !important",
+                },
+              }}
+              inputProps={{
+                sx: { textAlign: "end", padding: theme.gap.small },
+              }}
             />
             <Button
-              level="primary"
-              label="Rename"
-              sx={{ paddingX: "30px" }}
-              onClick={() => toggleOrgModal(true)}
+              level={orgStates.isEdit ? "secondary" : "tertiary"}
+              label={orgStates.isEdit ? "Save" : ""}
+              img={!orgStates.isEdit ? <EditSvg /> : ""}
+              onClick={() => toggleEdit()}
+              sx={{
+                minWidth: 0,
+                paddingX: theme.gap.small,
+                ml: orgStates.isEdit ? theme.gap.small : 0,
+              }}
             />
           </Stack>
         </div>
@@ -218,62 +222,6 @@ const TeamPanel = () => {
           sx={{ marginY: theme.spacing(4) }}
         />
       </form>
-      <Modal
-        aria-labelledby="modal-edit-org-name"
-        aria-describedby="edit-organization-name"
-        open={orgStates.isOpen}
-        onClose={() => toggleOrgModal(false)}
-        disablePortal
-      >
-        <Stack
-          gap="20px"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: `${theme.shape.borderRadius}px`,
-            boxShadow: 24,
-            p: "30px",
-            "&:focus": {
-              outline: "none",
-            },
-          }}
-        >
-          <Typography id="modal-edit-org-name" component="h1">
-            Rename this organization?
-          </Typography>
-          <TextField
-            id="edit-organization-name"
-            placeholder={orgStates.name}
-            spellCheck="false"
-            value={orgStates.newName}
-            onChange={(event) =>
-              setOrgStates((prev) => ({
-                ...prev,
-                newName: event.target.value,
-              }))
-            }
-          ></TextField>
-          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
-            <Button
-              level="tertiary"
-              label="Cancel"
-              onClick={() => toggleOrgModal(false)}
-            />
-            <ButtonSpinner
-              level="primary"
-              label="Rename"
-              onClick={handleRenameOrg}
-              isLoading={orgStates.isLoading}
-              sx={{ paddingX: "30px" }}
-            />
-          </Stack>
-        </Stack>
-      </Modal>
       <form className="edit-team-form" noValidate spellCheck="false">
         <div className="edit-team-form__wrapper">
           <Typography component="h1">Team members</Typography>
@@ -308,7 +256,7 @@ const TeamPanel = () => {
             level="primary"
             label="Invite a team member"
             sx={{ paddingX: "30px" }}
-            onClick={() => setToggleInviteModal(true)}
+            onClick={() => setIsOpen(true)}
           />
         </div>
         <div className="edit-team-form__wrapper compact">
@@ -460,8 +408,8 @@ const TeamPanel = () => {
       <Modal
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"
-        open={toggleInviteModal}
-        onClose={() => setToggleInviteModal(false)}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
         disablePortal
       >
         <Stack
@@ -504,7 +452,7 @@ const TeamPanel = () => {
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setToggleInviteModal(false)}
+              onClick={() => setIsOpen(false)}
             />
             <ButtonSpinner
               level="primary"
