@@ -28,7 +28,9 @@ const CurrentStats = ({ monitors }) => {
     }
     return 0;
   }, 0);
-
+  if (monitors.length === 0) {
+    navigate("/monitors/create");
+  }
   return (
     <div>
       <div className="monitors-gaps-medium"></div>
