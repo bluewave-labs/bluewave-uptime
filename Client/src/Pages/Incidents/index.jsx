@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TuneIcon from '@mui/icons-material/Tune';
-import StatusTable from '../../Components/StatusTable'; // Make sure to import the correct path to your IncidentHistoryTable component
+import StatusTable from '../../Components/StatusTable'; 
 
 const filterOptions = createFilterOptions({
   matchFrom: 'start',
