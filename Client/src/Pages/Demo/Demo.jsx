@@ -40,6 +40,8 @@ import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
 import ImageField from "../../Components/TextFields/Image";
 import ProgressUpload from "../../Components/ProgressBars";
 import Alert from "../../Components/Alert";
+import { createToast } from "../../Utils/toastUtils";
+import { ToastContainer } from "react-toastify";
 
 const cols = [
   {
@@ -463,7 +465,7 @@ const Demo = () => {
             variant="info"
             title="We've just released a new feature"
             body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur, ipsum dolor."
-            toast={true}
+            isToast={true}
           />
         </Box>
         <Box width="500px" mt="5px">
@@ -474,8 +476,22 @@ const Demo = () => {
             hasIcon={false}
           />
         </Box>
+        <Box width="500px" mt="5px">
+          <Button
+            level="primary"
+            label="Toast"
+            onClick={() =>
+              createToast({
+                variant: "info",
+                body: "Your password is incorrect.",
+                hasIcon: false,
+              })
+            }
+          />
+        </Box>
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <ToastContainer />
     </div>
   );
 };
