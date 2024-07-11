@@ -86,7 +86,7 @@ const ProfilePanel = () => {
       delete: false,
     });
 
-    //TODO - potentitally remove once image compression functions are implemented
+    //TODO - potentitally remove, will revisit in the future
     intervalRef.current = setInterval(() => {
       const buffer = 12;
       setProgress((prev) => {
