@@ -12,14 +12,31 @@ import PropTypes from "prop-types";
  */
 function FirstComponent({ severity, title, message }) {
   return (
-    <Alert severity={severity} onClose={() => {}}>
+    <Alert
+      severity={severity}
+      onClose={() => {
+        console.log("Close the dialog");
+      }}
+    >
       <AlertTitle>{title}</AlertTitle>
       {message}
       <Stack spacing={0} direction="row">
-        <Button color="secondary" variant="text">
+        <Button
+          color="secondary"
+          variant="text"
+          onClick={() => {
+            console.log("Dismiss");
+          }}
+        >
           Dismiss
         </Button>
-        <Button color="primary" variant="text">
+        <Button
+          color="primary"
+          variant="text"
+          onClick={() => {
+            console.log("view changes");
+          }}
+        >
           View Changes
         </Button>
       </Stack>
@@ -27,7 +44,7 @@ function FirstComponent({ severity, title, message }) {
   );
 }
 FirstComponent.propTypes = {
-  severity: PropTypes.string,
+  severity: PropTypes.oneOf(["success", "info", "warning", "error"]).isRequired,
   title: PropTypes.string,
   message: PropTypes.string,
 };
