@@ -3,7 +3,7 @@ import Alert from "../Components/Alert";
 
 export const createToast = ({ variant, title, body, hasIcon, config = {} }) => {
   const toastConfig = {
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 3000,
     hideProgressBar: true,
     closeButton: false,

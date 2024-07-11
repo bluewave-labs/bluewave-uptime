@@ -124,6 +124,9 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.Toastify__toast-container {
+  width: auto;
+}
 .Toastify [class^="Toastify__toast"] {
   padding: 0;
   margin: 0;

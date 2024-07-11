@@ -8,6 +8,8 @@ import ProfilePanel from "../../Components/TabPanels/Account/ProfilePanel";
 import PasswordPanel from "../../Components/TabPanels/Account/PasswordPanel";
 import TeamPanel from "../../Components/TabPanels/Account/TeamPanel";
 import { useNavigate } from "react-router";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 /**
  * Account component renders a settings page with tabs for Profile, Password, and Team settings.
@@ -73,6 +75,7 @@ const Account = ({ open = "profile" }) => {
         <PasswordPanel />
         <TeamPanel />
       </TabContext>
+      <ToastContainer />
     </Box>
   );
 };
