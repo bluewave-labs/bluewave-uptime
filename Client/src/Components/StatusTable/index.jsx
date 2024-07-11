@@ -58,7 +58,7 @@ function createData(name, date, message) {
  * Customized table component displaying incident history.
  * @returns {JSX.Element} The JSX element representing the customized table.
  */
-export default function IncidentHistoryTable() {
+export default function StatusTable() {
   const theme = useTheme();
 
   const rows = [
