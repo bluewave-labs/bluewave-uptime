@@ -1,3 +1,5 @@
+import * as React from 'react';
+import PropTypes from 'prop-types';
 import { styled, useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -42,30 +44,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 /**
- * Creates a data object for the table row.
- * @param {JSX.Element} name - The status label JSX element.
- * @param {string} date - The date and time string.
- * @param {string} message - The message string.
- * @returns {object} The data object containing name, date, and message.
- */
-function createData(name, date, message) {
-  return { name, date, message };
-}
-
-/**
  * Customized table component displaying incident history.
+ * @param {object} props - The props object.
+ * @param {array} props.data - The array of data objects containing name, date, and message.
  * @returns {JSX.Element} The JSX element representing the customized table.
  */
-export default function StatusTable() {
+export default function StatusTable({ data }) {
   const theme = useTheme();
-
-  const rows = [
-    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-    createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-    createData(<StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, '2024-03-14 21:41:09', 'timeout of 48000ms exceeded'),
-    createData(<StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, '2024-03-14 21:41:09', 'HTTP 350 - NOK'),
-  ];
 
   return (
     <Box
@@ -89,7 +74,7 @@ export default function StatusTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
+            {data.map((row, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
@@ -104,3 +89,11 @@ export default function StatusTable() {
     </Box>
   );
 }
+
+StatusTable.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.node.isRequired,
+    date: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+  })).isRequired,
+};

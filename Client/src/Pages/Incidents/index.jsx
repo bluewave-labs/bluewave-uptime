@@ -5,7 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TuneIcon from '@mui/icons-material/Tune';
-import StatusTable from '../../Components/StatusTable'; 
+import StatusTable from '../../Components/StatusTable';
+import { StatusLabel } from "../../Components/Label/";
 
 const filterOptions = createFilterOptions({
   matchFrom: 'start',
@@ -56,6 +57,14 @@ function Filter() {
   );
 }
 
+const sampleData = [
+  { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'HTTP 350 - NOK' },
+  { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'timeout of 48000ms exceeded' },
+  { name: <StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'timeout of 48000ms exceeded' },
+  { name: <StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'timeout of 48000ms exceeded' },
+  { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'HTTP 350 - NOK' },
+];
+
 /**
  * Customized table component displaying incident history with a filter.
  * @returns {JSX.Element} The JSX element representing the customized table with a filter.
@@ -81,7 +90,7 @@ export default function CustomizedTables() {
         </Typography>
         <Filter />
       </Box>
-      <StatusTable />
+      <StatusTable data={sampleData} />
     </Box>
   );
 }
