@@ -21,7 +21,7 @@ const registerValidation = joi.object({
   password: joi
     .string()
     .min(8)
-    .pattern("^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
+    .pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
     .required()
     .messages({
       "string.min": "Password must be at least 8 characters",
