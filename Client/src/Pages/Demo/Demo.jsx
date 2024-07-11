@@ -470,7 +470,7 @@ const Demo = () => {
           <Alert
             variant="info"
             body="Your password is incorrect."
-            toast={true}
+            isToast={true}
             hasIcon={false}
           />
         </Box>

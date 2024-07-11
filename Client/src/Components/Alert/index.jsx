@@ -27,7 +27,7 @@ const icons = {
  * @returns {JSX.Element}
  */
 
-const Alert = ({ variant, title, body, toast, hasIcon = true, onClick }) => {
+const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
   const theme = useTheme();
   const { bg, border, color } = theme.alert[variant];
   const icon = icons[variant];
@@ -50,7 +50,7 @@ const Alert = ({ variant, title, body, toast, hasIcon = true, onClick }) => {
       <Stack direction="column" gap="2px" sx={{ flex: 1, color: color }}>
         {title && <Box sx={{ fontWeight: "700" }}>{title}</Box>}
         {body && <Box sx={{ fontWeight: "400" }}>{body}</Box>}
-        {hasIcon && toast && (
+        {hasIcon && isToast && (
           <Button
             level="tertiary"
             label="Dismiss"
@@ -72,7 +72,7 @@ const Alert = ({ variant, title, body, toast, hasIcon = true, onClick }) => {
           ></Button>
         )}
       </Stack>
-      {toast && (
+      {isToast && (
         <IconButton
           onClick={onClick}
           sx={{
@@ -83,6 +83,10 @@ const Alert = ({ variant, title, body, toast, hasIcon = true, onClick }) => {
             padding: "5px",
             "&:focus": {
               outline: "none",
+            },
+            "& .MuiTouchRipple-root": {
+              pointerEvents: "none",
+              display: "none",
             },
           }}
         >
