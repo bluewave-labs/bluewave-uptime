@@ -81,8 +81,6 @@ export default function IncidentHistoryTable() {
         },
       }}
     >
-      <Typography variant="h6" component="div" sx={{ fontWeight: 600, fontSize: 16, marginBottom: theme.spacing(2) }}>
-      </Typography>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
