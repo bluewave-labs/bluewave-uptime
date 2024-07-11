@@ -58,6 +58,7 @@ const ProfilePanel = () => {
 
   // Handles input field changes and performs validation
   const handleChange = (event) => {
+    errors["unchanged"] && clearError("unchanged");
     const { value, id } = event.target;
     const name = idToName[id];
     setLocalData((prev) => ({
@@ -163,10 +164,11 @@ const ProfilePanel = () => {
       localData.file === undefined
     ) {
       createToast({
-        variant: "error",
+        variant: "warning",
         body: "Unable to update profile: No changes detected.",
         hasIcon: false,
       });
+      setErrors({ unchanged: "unable to update profile" });
       return;
     }
 
