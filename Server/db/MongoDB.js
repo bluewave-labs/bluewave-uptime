@@ -270,15 +270,26 @@ const getMonitorById = async (req, res) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
+    const limit = req.body.limit;
     const monitors = await Monitor.find({ userId: req.params.userId });
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
-        // Checks are order oldest -> newest
-        const checks = await Check.find({ monitorId: monitor._id }).sort({
-          createdAt: 1,
-        });
-        return { ...monitor.toObject(), checks };
+
+        if(limit) {
+          // Checks are order oldest -> newest
+          const checks = await Check.find({ monitorId: monitor._id }).sort({
+            createdAt: 1,
+          }).limit(limit);;
+          return { ...monitor.toObject(), checks };
+          
+        } else {
+          // Checks are order oldest -> newest
+          const checks = await Check.find({ monitorId: monitor._id }).sort({
+            createdAt: 1,
+          });
+          return { ...monitor.toObject(), checks };
+        }
       })
     );
 
@@ -414,13 +425,9 @@ const createCheck = async (checkData) => {
  * @throws {Error}
  */
 
-const getChecks = async (monitorId, limit) => {
+const getChecks = async (monitorId) => {
   try {
-    if (limit) {
-      const checks = await Check.find({ monitorId }).sort({ createdAt: -1 }).limit(limit);
-      return checks;
-    }
-    const checks = await Check.find({ monitorId })
+    const checks = await Check.find({ monitorId });
     return checks;
   } catch (error) {
     throw error;
