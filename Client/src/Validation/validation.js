@@ -18,10 +18,19 @@ const registerValidation = joi.object({
       "string.empty": "Email is required",
     }),
 
-  password: joi.string().min(8).required().messages({
-    "string.min": "Password must be at least 8 characters",
-    "string.empty": "Password is required",
-  }),
+  password: joi
+    .string()
+    .min(8)
+    .pattern(
+      new RegExp("^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
+    )
+    .required()
+    .messages({
+      "string.min": "Password must be at least 8 characters",
+      "string.empty": "Password is required",
+      "string.pattern.base":
+        "Password must contain at least one uppercase letter, one number, and one special character",
+    }),
 });
 
 const loginValidation = joi.object({

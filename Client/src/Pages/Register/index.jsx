@@ -150,7 +150,7 @@ const Register = () => {
         <div className="register-form-checks">
           <Check text="Must be at least 8 characters" />
           <div className="register-form-v-spacing-small"></div>
-          <Check text="Must contain one special character" />
+          <Check text="Must contain one special character, one number and one uppercase" />
         </div>
         <div className="login-form-v2-spacing" />
         <div className="register-form-actions">
