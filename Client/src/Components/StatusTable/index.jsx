@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { styled, useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -8,12 +9,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Pagination from '../../Components/Pagination'; 
 
-/**
- * Creates a styled TableCell component.
- * @param {object} theme - The theme object.
- * @returns {JSX.Element} The styled TableCell component.
- */
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.action.hover,
@@ -24,11 +21,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-/**
- * Creates a styled TableRow component.
- * @param {object} theme - The theme object.
- * @returns {JSX.Element} The styled TableRow component.
- */
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -41,15 +33,21 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-/**
- * Customized table component displaying incident history.
- * @param {object} props - The props object.
- * @param {array} props.data - The array of data objects containing JSX elements for name, and strings for date and message.
- * @param {array} props.columns - The array of column headers and alignments.
- * @returns {JSX.Element} The JSX element representing the customized table.
- */
+const itemsPerPage = 5; // Number of items per page
+
 export default function StatusTable({ data, columns }) {
   const theme = useTheme();
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate total pages based on data length and items per page
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  // Slice data based on current page and items per page
+  const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <Box
@@ -75,7 +73,7 @@ export default function StatusTable({ data, columns }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, rowIndex) => (
+            {paginatedData.map((row, rowIndex) => (
               <StyledTableRow key={rowIndex}>
                 {columns.map((column, colIndex) => (
                   <StyledTableCell key={colIndex} align={column.align || 'left'}>
@@ -93,6 +91,13 @@ export default function StatusTable({ data, columns }) {
           </TableBody>
         </Table>
       </TableContainer>
+      {totalPages > 1 && (
+        <Pagination
+          page={currentPage}
+          count={totalPages}
+          onPageChange={onPageChange}
+        />
+      )}
     </Box>
   );
 }
