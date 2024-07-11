@@ -44,10 +44,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 /**
  * Customized table component displaying incident history.
  * @param {object} props - The props object.
- * @param {array} props.data - The array of data objects containing name, date, and message.
+ * @param {array} props.data - The array of data objects containing JSX elements for name, and strings for date and message.
+ * @param {array} props.columns - The array of column headers and alignments.
  * @returns {JSX.Element} The JSX element representing the customized table.
  */
-export default function StatusTable({ data }) {
+export default function StatusTable({ data, columns }) {
   const theme = useTheme();
 
   return (
@@ -66,19 +67,27 @@ export default function StatusTable({ data }) {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Status</StyledTableCell>
-              <StyledTableCell align="right">Date & Time</StyledTableCell>
-              <StyledTableCell align="right">Message</StyledTableCell>
+              {columns.map((column, index) => (
+                <StyledTableCell key={index} align={column.align || 'left'}>
+                  {column.header}
+                </StyledTableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell align="right">{row.date}</StyledTableCell>
-                <StyledTableCell align="right">{row.message}</StyledTableCell>
+            {data.map((row, rowIndex) => (
+              <StyledTableRow key={rowIndex}>
+                {columns.map((column, colIndex) => (
+                  <StyledTableCell key={colIndex} align={column.align || 'left'}>
+                    {column.id === 'name' ? (
+                      <div style={row.name.props.customStyles}>
+                        {row.name}
+                      </div>
+                    ) : (
+                      row[column.id]
+                    )}
+                  </StyledTableCell>
+                ))}
               </StyledTableRow>
             ))}
           </TableBody>
@@ -89,9 +98,12 @@ export default function StatusTable({ data }) {
 }
 
 StatusTable.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.node.isRequired,
-    date: PropTypes.string.isRequired,
-    message: PropTypes.string.isRequired,
-  })).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      header: PropTypes.node.isRequired,
+      align: PropTypes.oneOf(['left', 'right', 'center']),
+    })
+  ).isRequired,
 };

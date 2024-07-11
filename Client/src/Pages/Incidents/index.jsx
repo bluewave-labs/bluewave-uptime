@@ -65,6 +65,12 @@ const sampleData = [
   { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'HTTP 350 - NOK' },
 ];
 
+const columns = [
+  { id: 'name', header: 'Status' },
+  { id: 'date', header: 'Date & Time' },
+  { id: 'message', header: 'Message' },
+];
+
 /**
  * Customized table component displaying incident history with a filter.
  * @returns {JSX.Element} The JSX element representing the customized table with a filter.
@@ -90,7 +96,7 @@ export default function CustomizedTables() {
         </Typography>
         <Filter />
       </Box>
-      <StatusTable data={sampleData} />
+      <StatusTable data={sampleData} columns={columns} /> 
     </Box>
   );
 }
