@@ -13,6 +13,7 @@ import axiosInstance from "../../Utils/axiosConfig";
 import { loginValidation } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
+import { createToast } from "../../Utils/toastUtils";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -74,16 +75,29 @@ const Login = () => {
       }
     } catch (error) {
       if (error.name === "ValidationError") {
-        // TODO Handle validation errors
-        console.log(error.details);
-        alert(error);
+        // validation errors
+        createToast({
+          variant: "info",
+          body:
+            error && error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
+          hasIcon: false,
+        });
       } else if (error.response) {
-        // TODO handle dispatch errors
-        alert(error.response.msg);
+        // dispatch errors
+        createToast({
+          variant: "info",
+          body: error.response.msg,
+          hasIcon: false,
+        });
       } else {
-        // TODO handle unknown errors
-        console.log(error);
-        alert("Unknown error");
+        // unknown errors
+        createToast({
+          variant: "info",
+          body: "Unknown error.",
+          hasIcon: false,
+        });
       }
     }
   };
