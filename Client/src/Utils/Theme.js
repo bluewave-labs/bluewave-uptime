@@ -91,6 +91,7 @@ const theme = createTheme({
     pY: "40px",
   },
   gap: {
+    xs: "4px",
     small: "8px",
     medium: "12px",
     ml: "16px",
@@ -101,7 +102,7 @@ const theme = createTheme({
     info: {
       color: secondaryMain,
       bg: otherColorsWhite,
-      border: "#d0d5dd",
+      border: sectionBorder,
     },
     error: {
       color: "#d92d20",
@@ -111,7 +112,7 @@ const theme = createTheme({
     warning: {
       color: "#DC6803",
       bg: "#fffcf5",
-      border: "#fec84b"
+      border: "#fec84b",
     },
   },
 });

@@ -1,0 +1,49 @@
+.field {
+  min-width: 250px;
+}
+.field h1.MuiTypography-root,
+.field h5.MuiTypography-root,
+.field input,
+.field .input-error {
+  font-size: var(--env-var-font-size-medium);
+}
+.field h1.MuiTypography-root,
+.field h5.MuiTypography-root,
+.field input {
+  color: var(--env-var-color-5);
+}
+.field h1.MuiTypography-root {
+  font-weight: 600;
+}
+.field h1.MuiTypography-root span {
+  color: var(--env-var-color-19);
+  margin-left: 1px;
+}
+.field h5.MuiTypography-root {
+  position: relative;
+  opacity: 0.8;
+  padding: var(--env-var-spacing-1-minus);
+  padding-left: 0;
+  border-right: solid 1px var(--env-var-color-29);
+}
+.field .MuiInputBase-root {
+  height: 39px;
+  padding-right: var(--env-var-spacing-1-minus);
+}
+.field input {
+  padding: var(--env-var-spacing-1-minus);
+}
+.field .MuiOutlinedInput-root fieldset {
+  border-color: var(--env-var-color-29);
+  border-radius: var(--env-var-radius-1);
+}
+.field .MuiOutlinedInput-root:hover fieldset {
+  border-color: var(--env-var-color-25);
+}
+.field .input-error {
+  color: var(--env-var-color-24);
+  opacity: 0.8;
+}
+.field:has(.input-error) .MuiOutlinedInput-root fieldset {
+  border-color: #fda29b;
+}
