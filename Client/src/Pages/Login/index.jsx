@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
-import Logomark from "../../assets/Images/Logomark.png";
+import Logomark from "../../assets/Images/bwl-logo.svg";
 import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
 import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";

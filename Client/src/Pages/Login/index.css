@@ -18,7 +18,9 @@
 }
 
 .login-form-header-logo {
-  margin: 0 auto;
+  margin: 30px auto;
+  margin-bottom: 60px;
+  width: 353px;
 }
 
 .login-form-v-spacing {

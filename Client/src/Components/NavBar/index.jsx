@@ -23,6 +23,8 @@ import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 
+import BWULogo from "../../assets/Images/bwl-logo.svg";
+
 const settings = ["Profile", "Password", "Team", "Logout"];
 const icons = {
   Profile: <UserSvg />,
@@ -103,22 +105,11 @@ function NavBar() {
     >
       <Container maxWidth="xxl" sx={{ width: "100%" }}>
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontWeight: theme.typography.fontWeightBold,
-              letterSpacing: theme.spacing(0.3),
-              color: "var(--env-var-color-11)",
-              textDecoration: "none",
-            }}
-          >
-            Peak Watch
-          </Typography>
+          <img
+            id="bw-uptime-logo-dashboard"
+            src={BWULogo}
+            alt="BlueWave Uptime Logo"
+          />
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
