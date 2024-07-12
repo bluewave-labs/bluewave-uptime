@@ -7,7 +7,6 @@ reviews:
   high_level_summary: false
   poem: false
   review_status: true
-  collapse_walkthrough: true
   auto_review:
     enabled: true
     drafts: false
