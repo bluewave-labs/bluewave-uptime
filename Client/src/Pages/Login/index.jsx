@@ -78,7 +78,10 @@ const Login = () => {
         // validation errors
         createToast({
           variant: "info",
-          body: error.details[0].message,
+          body:
+            error && error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
           hasIcon: false,
         });
       } else if (error.response) {
