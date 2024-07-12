@@ -5,7 +5,7 @@ const Monitor = require("../models/Monitor");
 
 router.get("/", monitorController.getAllMonitors);
 router.get("/:monitorId", monitorController.getMonitorById);
-router.get("/user/:userId", monitorController.getMonitorsByUserId);
+router.get("/user/:userId?limit", monitorController.getMonitorsByUserId);
 
 router.post("/", monitorController.createMonitor);
 router.post(

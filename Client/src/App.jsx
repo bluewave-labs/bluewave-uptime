@@ -18,6 +18,8 @@ import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Details from "./Pages/Details";
+import Maintenance from "./Pages/Maintenance";
 
 function App() {
   return (
@@ -38,9 +40,14 @@ function App() {
             element={<ProtectedRoute Component={CreateNewMonitor} />}
           />
           <Route
+            path="/monitors/:monitorId/"
+            element={<ProtectedRoute Component={Details} />}
+          />
+          <Route
             path="incidents"
             element={<ProtectedRoute Component={Incidents} />}
           />
+
           <Route
             path="status"
             element={<ProtectedRoute Component={Status} />}
@@ -48,6 +55,10 @@ function App() {
           <Route
             path="integrations"
             element={<ProtectedRoute Component={Integrations} />}
+          />
+          <Route
+            path="maintenance"
+            element={<ProtectedRoute Component={Maintenance} />}
           />
           <Route
             path="settings"

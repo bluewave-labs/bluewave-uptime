@@ -7,7 +7,8 @@ const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
-const { error } = require("console");
+const { GenerateAvatarImage } = require("../utils/imageProcessing");
+const { ParseBoolean } = require("../utils/utils");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -33,12 +34,16 @@ const connect = async () => {
 const insertUser = async (req, res) => {
   try {
     const userData = { ...req.body };
-    console.log(req.file);
     if (req.file) {
+      // 1.  Save the full size image
       userData.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+
+      // 2.  Get the avatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      userData.avatarImage = avatar;
     }
     const newUser = new UserModel(userData);
     await newUser.save();
@@ -95,12 +100,28 @@ const updateUser = async (req, res) => {
 
   try {
     const candidateUser = { ...req.body };
-    if (req.file) {
+    // ******************************************
+    // Handle profile image
+    // ******************************************
+
+    if (ParseBoolean(candidateUser.deleteProfileImage) === true) {
+      candidateUser.profileImage = null;
+      candidateUser.avatarImage = null;
+    } else if (req.file) {
+      // 1.  Save the full size image
       candidateUser.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+
+      // 2.  Get the avaatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      candidateUser.avatarImage = avatar;
     }
+
+    // ******************************************
+    // End handling profile image
+    // ******************************************
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       candidateUserId,
@@ -109,12 +130,12 @@ const updateUser = async (req, res) => {
     )
       .select("-password")
       .select("-profileImage");
+    console.log(updatedUser);
     return updatedUser;
   } catch (error) {
     throw error;
   }
 };
-
 
 /**
  * Delete a user by ID
@@ -252,7 +273,9 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
-    const checks = await Check.find({ monitorId: monitor._id });
+    const checks = await Check.find({ monitorId: monitor._id }).sort({
+      createdAt: -1,
+    });
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
   } catch (error) {
@@ -270,15 +293,26 @@ const getMonitorById = async (req, res) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
+    const limit = req.body.limit;
     const monitors = await Monitor.find({ userId: req.params.userId });
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
-        // Checks are order oldest -> newest
-        const checks = await Check.find({ monitorId: monitor._id }).sort({
-          createdAt: 1,
-        });
-        return { ...monitor.toObject(), checks };
+
+        if(limit) {
+          // Checks are order oldest -> newest
+          const checks = await Check.find({ monitorId: monitor._id }).sort({
+            createdAt: 1,
+          }).limit(limit);;
+          return { ...monitor.toObject(), checks };
+          
+        } else {
+          // Checks are order oldest -> newest
+          const checks = await Check.find({ monitorId: monitor._id }).sort({
+            createdAt: 1,
+          });
+          return { ...monitor.toObject(), checks };
+        }
       })
     );
 
@@ -416,7 +450,7 @@ const createCheck = async (checkData) => {
 
 const getChecks = async (monitorId) => {
   try {
-    const checks = await Check.find({ monitorId }).sort({ createdAt: -1 }).limit(25);
+    const checks = await Check.find({ monitorId });
     return checks;
   } catch (error) {
     throw error;
@@ -600,5 +634,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
-  deleteMonitorsByUserId
+  deleteMonitorsByUserId,
 };

@@ -119,7 +119,7 @@ const passwordSchema = joi
 const editPasswordValidation = joi.object({
   // TBD - validation for current password ?
   password: passwordSchema,
-  newpassword: passwordSchema,
+  newPassword: passwordSchema,
   confirm: joi
     .string()
     .trim()
@@ -127,8 +127,8 @@ const editPasswordValidation = joi.object({
       "string.empty": "*Password confirmation is required.",
     })
     .custom((value, helpers) => {
-      const { newpassword } = helpers.prefs.context;
-      if (value !== newpassword) {
+      const { newPassword } = helpers.prefs.context;
+      if (value !== newPassword) {
         return helpers.message("*Passwords do not match.");
       }
       return value;

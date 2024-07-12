@@ -7,7 +7,7 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
-  deleteUserParamValidation
+  deleteUserParamValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -29,6 +29,17 @@ const issueToken = (payload) => {
   //TODO Add proper expiration date
   const tokenTTL = process.env.TOKEN_TTL ? process.env.TOKEN_TTL : "2h";
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
+};
+
+const getTokenFromHeaders = (headers) => {
+  const authorizationHeader = headers.authorization;
+  if (!authorizationHeader) throw new Error("No auth headers");
+
+  const parts = authorizationHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer")
+    throw new Error("Invalid auth headers");
+
+  return parts[1];
 };
 
 /**
@@ -59,6 +70,7 @@ const registerController = async (req, res, next) => {
 
     const userForToken = { ...newUser._doc };
     delete userForToken.profileImage;
+    delete userForToken.avatarImage;
 
     const token = issueToken(userForToken);
 
@@ -107,9 +119,13 @@ const loginController = async (req, res, next) => {
     // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
+    delete userWithoutPassword.avatarImage;
 
     // Happy path, return token
     const token = issueToken(userWithoutPassword);
+    // reset avatar image
+    userWithoutPassword.avatarImage = user.avatarImage;
+
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
@@ -134,6 +150,7 @@ const userEditController = async (req, res, next) => {
     return;
   }
 
+  // TODO is this neccessary any longer? Verify ownership middleware should handle this
   if (req.params.userId !== req.user._id.toString()) {
     const error = new Error(errorMessages.AUTH_UNAUTHORIZED);
     error.status = 401;
@@ -143,6 +160,32 @@ const userEditController = async (req, res, next) => {
   }
 
   try {
+    // Change Password check
+    if (req.body.password && req.body.newPassword) {
+      const newPassword = req.body.newPassword;
+      const password = req.body.password;
+
+      // Compare password
+      // Get token from headers
+      const token = getTokenFromHeaders(req.headers);
+      // Get email from token
+      const { email } = jwt.verify(token, process.env.JWT_SECRET);
+      // Add user email to body for DB operation
+      req.body.email = email;
+      // Get user
+      const user = await req.db.getUserByEmail(req, res);
+      // Compare passwords
+      const match = await user.comparePassword(req.body.password);
+      // If not a match, throw a 403
+      if (!match) {
+        const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
+        error.status = 403;
+        throw error;
+      }
+      // If a match, update the password
+      req.body.password = req.body.newPassword;
+    }
+
     const updatedUser = await req.db.updateUser(req, res);
     return res.status(200).json({
       success: true,
@@ -274,21 +317,23 @@ const resetPasswordController = async (req, res, next) => {
  */
 const deleteUserController = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.decode(token)
+    const token = getTokenFromHeaders(req.headers);
+    const decodedToken = jwt.decode(token);
     const { _id, email } = decodedToken;
 
     const decodedTokenCastedAsRequest = {
       params: {
-        userId: _id
+        userId: _id,
       },
       body: {
-        email
-      }
-    }
+        email,
+      },
+    };
 
     // Validate user
-    await deleteUserParamValidation.validateAsync(decodedTokenCastedAsRequest.body);
+    await deleteUserParamValidation.validateAsync(
+      decodedTokenCastedAsRequest.body
+    );
 
     // Check if the user exists
     const user = await req.db.getUserByEmail(decodedTokenCastedAsRequest);
@@ -297,45 +342,42 @@ const deleteUserController = async (req, res, next) => {
     }
 
     // 1. Find all the monitors associated with the user id
-    const monitors = await req.db.getMonitorsByUserId(decodedTokenCastedAsRequest);
-    
+    const monitors = await req.db.getMonitorsByUserId(
+      decodedTokenCastedAsRequest
+    );
+
     if (monitors) {
       // 2. Delete jobs associated with each monitor
       for (const monitor of monitors) {
         await req.jobQueue.deleteJob(monitor);
       }
-      
+
       // 3. Delete all checks associated with each monitor
       for (const monitor of monitors) {
         await req.db.deleteChecks(monitor._id);
       }
-      
+
       // 4. Delete all alerts associated with each monitor
       for (const monitor of monitors) {
         await req.db.deleteAlertByMonitorId(monitor._id);
       }
-      
+
       // 5. Delete each monitor
       await req.db.deleteMonitorsByUserId(user._id);
-      
+
       // 6. Delete the user by id
       await req.db.deleteUser(decodedTokenCastedAsRequest);
 
-      
       return res.status(200).json({
         success: true,
         msg: successMessages.AUTH_DELETE_USER,
       });
-
     } else {
-
       return res.status(404).json({
         success: false,
         msg: errorMessages.MONITOR_GET_BY_USER_ID,
       });
-
     }
-
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

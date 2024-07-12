@@ -7,10 +7,11 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import SearchTextField from "../../Components/TextFields/Search/SearchTextField";
-import HostsTable from "../../Components/HostsTable";
-import Pagination from "../../Components/Pagination";
+import MonitorTable from "../../Components/MonitorTable";
+import { useTheme } from "@emotion/react";
 
 const Monitors = () => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const monitorState = useSelector((state) => state.monitors);
   const authState = useSelector((state) => state.auth);
@@ -25,9 +26,13 @@ const Monitors = () => {
   }, 0);
 
   const down = monitorState.monitors.length - up;
-
   return (
-    <div className="monitors">
+    <div
+      className="monitors"
+      style={{
+        padding: `${theme.content.pY} ${theme.content.pX}`,
+      }}
+    >
       <div className="monitors-bar">
         <div className="monitors-bar-title">
           Hello, {authState.user.firstname}
@@ -38,7 +43,7 @@ const Monitors = () => {
           onClick={() => {
             navigate("/monitors/create");
           }}
-          sx={{ padding: "10px 20px", fontSize: "13px" }}
+          sx={{ padding: "6px 25px", fontSize: "13px" }}
         />
       </div>
 
@@ -60,10 +65,8 @@ const Monitors = () => {
             <SearchTextField />
           </div>
         </div>
-        <div className="monitors-v-gaping"></div>
-        <HostsTable monitors={monitorState.monitors} />
-        <div className="monitors-v-gaping"></div>
-        <Pagination />
+        <div className="monitors-v-gaping" />
+        <MonitorTable monitors={monitorState.monitors} />
       </div>
     </div>
   );

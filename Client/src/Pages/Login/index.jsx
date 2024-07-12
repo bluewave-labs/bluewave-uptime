@@ -3,18 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
-import Logomark from "../../assets/Images/Logomark.png";
+import Logomark from "../../assets/Images/bwl-logo.svg";
 import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
 import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
-
+import axiosInstance from "../../Utils/axiosConfig";
 import { loginValidation } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
-import axios from "axios";
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -33,8 +31,8 @@ const Login = () => {
   });
 
   useEffect(() => {
-    axios
-      .get(BASE_URL + "/auth/users/admin")
+    axiosInstance
+      .get("/auth/users/admin")
       .then((response) => {
         if (response.data.data === false) {
           navigate("/register");

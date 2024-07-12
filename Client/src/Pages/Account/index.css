@@ -79,11 +79,6 @@
   color: var(--env-var-color-29);
 }
 
-
-#org-name-flex-container .Mui-disabled {
-  color: var(--env-var-color-2) !important;
-}
-
 .edit-team-form__wrapper td {
   padding: 10px 0;
   padding-top: 20px;

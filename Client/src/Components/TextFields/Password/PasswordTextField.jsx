@@ -10,6 +10,7 @@ import Visibility from "@mui/icons-material/Visibility";
 /**
  * @component
  * @param {Object} props
+ * @param {string} props.value - The current value of the text field
  * @param {function} props.onChange - The function to call when the text field changes (optional)
  * @param {string} props.id - Unique ID for the text field (optional)
  * @param {string} props.label - The label text displayed above the text field (optional)
@@ -23,6 +24,7 @@ import Visibility from "@mui/icons-material/Visibility";
  * @returns {JSX.Element} - Renders the password text field component with dynamic icon display
  */
 const PasswordTextField = ({
+  value,
   onChange,
   id,
   label = "Password",
@@ -53,6 +55,7 @@ const PasswordTextField = ({
       <div className="password-text-field-title">{label}</div>
       <div className="password-text-field">
         <TextField
+          value={value}
           onChange={onChange}
           type={visibility ? "text" : "password"}
           autoComplete={autoComplete}

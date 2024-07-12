@@ -1,8 +1,6 @@
-import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
-
+import axiosInstance from "../../Utils/axiosConfig";
 const initialState = {
   isLoading: false,
   monitors: [],
@@ -16,7 +14,7 @@ export const createMonitor = createAsyncThunk(
     try {
       const { authToken, monitor } = data;
 
-      const res = await axios.post(`${BASE_URL}/monitors`, monitor, {
+      const res = await axiosInstance.post(`/monitors`, monitor, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
@@ -36,9 +34,7 @@ export const getMonitors = createAsyncThunk(
   "monitors/getMonitors",
   async (token, thunkApi) => {
     try {
-      const res = await axios.get(
-        import.meta.env.VITE_APP_API_BASE_URL + "/monitors"
-      );
+      const res = await axiosInstance.get("/monitors");
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -54,14 +50,11 @@ export const getMonitorsByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await axios.get(
-        import.meta.env.VITE_APP_API_BASE_URL + "/monitors/user/" + user._id,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.get("/monitors/user/" + user._id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {

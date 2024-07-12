@@ -48,7 +48,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
     ###### Monitors
     - <code>GET</code> [/api/v1/monitors](#get-monitors)
     - <code>GET</code> [/api/v1/monitor/{id}](#get-monitor-id)
-    - <code>GET</code> [/api/v1/monitors/user/{userId}](#get-monitors-user-userid)
+    - <code>GET</code> [/api/v1/monitors/user/{userId}?limit](#get-monitors-user-userid)
     - <code>POST</code> [/api/v1/monitors](#post-monitors)
     - <code>POST</code> [/api/v1/monitors/delete/{monitorId}](#post-monitors-del-id)
     - <code>POST</code> [/api/v1/monitors/edit/{monitorId}](#post-monitors-edit-id)
@@ -749,7 +749,7 @@ curl --request GET \
 </details>
 
 <details>
-<summary id='get-monitors-user-userid'><code>GET</code> <b>/api/v1/monitors/user/{userId}</b></summary>
+<summary id='get-monitors-user-userid'><code>GET</code> <b>/api/v1/monitors/user/{userId}?limit</b></summary>
 
 ###### Method/Headers
 
@@ -767,7 +767,7 @@ curl --request GET \
 
 ```
 curl --request GET \
-  --url http://localhost:5000/api/v1/monitors/user/6645079aae0b439371913972 \
+  --url http://localhost:5000/api/v1/monitors/user/6645079aae0b439371913972?limit=25 \
   --header '<bearer_token>' \
 ```
 
