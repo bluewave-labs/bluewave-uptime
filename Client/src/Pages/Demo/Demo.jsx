@@ -512,7 +512,7 @@ const Demo = () => {
           placeholder="Create a password"
         />
         <Field
-          type="website"
+          type="url"
           label="Website"
           placeholder="google.com"
         />

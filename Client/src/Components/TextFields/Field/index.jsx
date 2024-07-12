@@ -11,7 +11,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import "./index.css";
 
 const Field = ({
-  type,
+  type = "text",
   id,
   label,
   isRequired,
@@ -29,60 +29,49 @@ const Field = ({
   return (
     <Stack gap={theme.gap.xs} className={`field field-${type}`}>
       {label && (
-        <Typography component="h1">
+        <Typography component="h3">
           {label}
           {isRequired ? <span>*</span> : ""}
         </Typography>
       )}
       <TextField
-        type={
-          type === "password"
-            ? isVisible
-              ? "text"
-              : type
-            : type === "website"
-            ? "text"
-            : type
-        }
+        type={type === "password" ? (isVisible ? "text" : type) : type}
         id={id}
         autoComplete={autoComplete}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         disabled={disabled}
-        InputProps={
-          type === "website"
-            ? {
-                startAdornment: <Typography component="h5">http://</Typography>,
-              }
-            : type === "password" && {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setVisibility((show) => !show)}
-                      tabIndex={-1}
-                      sx={{
-                        color: theme.palette.section.borderColor,
-                        padding: theme.gap.xs,
-                        "&:focus": {
-                          outline: "none",
-                        },
-                        "& .MuiTouchRipple-root": {
-                          pointerEvents: "none",
-                          display: "none",
-                        },
-                      }}
-                    >
-                      {!isVisible ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }
-        }
+        InputProps={{
+          startAdornment: type === "url" && (
+            <Typography component="h5">https://</Typography>
+          ),
+          endAdornment: type === "password" && (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setVisibility((show) => !show)}
+                tabIndex={-1}
+                sx={{
+                  color: theme.palette.section.borderColor,
+                  padding: theme.gap.xs,
+                  "&:focus": {
+                    outline: "none",
+                  },
+                  "& .MuiTouchRipple-root": {
+                    pointerEvents: "none",
+                    display: "none",
+                  },
+                }}
+              >
+                {!isVisible ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
       {error && (
-        <Typography component="p" className="input-error" mt={theme.gap.xs}>
+        <Typography component="span" className="input-error" mt={theme.gap.xs}>
           {error}
         </Typography>
       )}

@@ -4,9 +4,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
-import EmailTextField from "../../TextFields/Email/EmailTextField";
-import StringTextField from "../../TextFields/Text/TextField";
 import Avatar from "../../Avatar";
+import Field from "../../TextFields/Field";
 import {
   editProfileValidation,
   imageValidation,
@@ -219,47 +218,27 @@ const ProfilePanel = () => {
           <Stack>
             <Typography component="h1">First name</Typography>
           </Stack>
-          <Stack>
-            <StringTextField
-              id="edit-first-name"
-              label={null}
-              value={localData.firstname}
-              placeholder="Enter your first name"
-              autoComplete="given-name"
-              onChange={handleChange}
-              error={errors[idToName["edit-first-name"]] ? true : false}
-            />
-            {errors[idToName["edit-first-name"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-first-name"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            id="edit-first-name"
+            value={localData.firstname}
+            placeholder="Enter your first name"
+            autoComplete="given-name"
+            onChange={handleChange}
+            error={errors[idToName["edit-first-name"]]}
+          />
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
             <Typography component="h1">Last name</Typography>
           </Stack>
-          <Stack>
-            <StringTextField
-              id="edit-last-name"
-              label={null}
-              value={localData.lastname}
-              placeholder="Enter your last name"
-              autoComplete="family-name"
-              onChange={handleChange}
-              error={errors[idToName["edit-last-name"]] ? true : false}
-            />
-            {errors[idToName["edit-last-name"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-last-name"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            id="edit-last-name"
+            placeholder="Enter your last name"
+            autoComplete="family-name"
+            value={localData.lastname}
+            onChange={handleChange}
+            error={errors[idToName["edit-last-name"]]}
+          />
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -268,25 +247,15 @@ const ProfilePanel = () => {
               This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
-          <Stack>
-            <EmailTextField
-              id="edit-email"
-              label={null}
-              value={user.email}
-              placeholder="Enter your email"
-              autoComplete="email"
-              // onChange={handleChange}
-              // error={errors[idToName["edit-email"]] ? true : false}
-              disabled={true}
-            />
-            {errors[idToName["edit-email"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-email"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            id="edit-email"
+            value={user.email}
+            placeholder="Enter your email"
+            autoComplete="email"
+            // onChange={handleChange}
+            // error={errors[idToName["edit-email"]]}
+            disabled={true}
+          />
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
