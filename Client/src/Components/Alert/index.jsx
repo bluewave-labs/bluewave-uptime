@@ -24,6 +24,9 @@ const icons = {
  * @param {'info' | 'error' | 'warning'} props.variant - The type of alert.
  * @param {string} [props.title] - The title of the alert.
  * @param {string} [props.body] - The body text of the alert.
+ * @param {boolean} [props.isToast] - Indicates if the alert is used as a toast notification.
+ * @param {boolean} [props.hasIcon] - Whether to display an icon in the alert.
+ * @param {function} props.onClick - Toast dismiss function.
  * @returns {JSX.Element}
  */
 
@@ -105,6 +108,16 @@ Alert.propTypes = {
   variant: PropTypes.oneOf(["info", "error", "warning"]).isRequired,
   title: PropTypes.string,
   body: PropTypes.string,
+  isToast: PropTypes.bool,
+  hasIcon: PropTypes.bool,
+  onClick: function (props, propName, componentName) {
+    if (props.isToast && !props[propName]) {
+      return new Error(
+        `Prop '${propName}' is required when 'isToast' is true in '${componentName}'.`
+      );
+    }
+    return null;
+  },
 };
 
 export default Alert;
