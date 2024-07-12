@@ -23,6 +23,7 @@ import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
 import { clearMonitorState } from "../../../Features/Monitors/monitorsSlice";
 import { createToast } from "../../../Utils/toastUtils";
+
 /**
  * ProfilePanel component displays a form for editing user profile information
  * and allows for actions like updating profile picture, credentials,
@@ -152,6 +153,7 @@ const ProfilePanel = () => {
       deleteProfileImage: false,
     }));
     setIsOpen("");
+    errors["unchanged"] && clearError("unchanged");
   };
 
   // Handles form submission to update user profile
@@ -194,6 +196,7 @@ const ProfilePanel = () => {
       ...prev,
       deleteProfileImage: true,
     }));
+    errors["unchanged"] && clearError("unchanged");
   };
 
   // Initiates the account deletion process
