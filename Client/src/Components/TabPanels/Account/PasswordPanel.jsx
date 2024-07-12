@@ -8,6 +8,7 @@ import { editPasswordValidation } from "../../../Validation/validation";
 import Alert from "../../Alert";
 import { update } from "../../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { createToast } from "../../../Utils/toastUtils";
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -78,15 +79,23 @@ const PasswordPanel = () => {
     } else {
       const action = await dispatch(update({ authToken, localData }));
       if (action.payload.success) {
-        // TODO: Add toast/notification for password update success
+        createToast({
+          variant: "info",
+          body: "Your password was changed successfully.",
+          hasIcon: false,
+        });
         setLocalData({
           password: "",
           newPassword: "",
           confirm: "",
         });
       } else {
-        // TODO: Add toast/notification for password update rejected
         // TODO: Check for other errors?
+        createToast({
+          variant: "info",
+          body: "Your password input was incorrect.",
+          hasIcon: false,
+        });
         setErrors({ password: "*" + action.payload.msg + "." });
       }
     }

@@ -22,6 +22,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
 import { clearMonitorState } from "../../../Features/Monitors/monitorsSlice";
+import { createToast } from "../../../Utils/toastUtils";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -58,6 +59,7 @@ const ProfilePanel = () => {
 
   // Handles input field changes and performs validation
   const handleChange = (event) => {
+    errors["unchanged"] && clearError("unchanged");
     const { value, id } = event.target;
     const name = idToName[id];
     setLocalData((prev) => ({
@@ -85,7 +87,7 @@ const ProfilePanel = () => {
       delete: false,
     });
 
-    //TODO - potentitally remove once image compression functions are implemented
+    //TODO - potentitally remove, will revisit in the future
     intervalRef.current = setInterval(() => {
       const buffer = 12;
       setProgress((prev) => {
@@ -151,14 +153,11 @@ const ProfilePanel = () => {
       deleteProfileImage: false,
     }));
     setIsOpen("");
+    errors["unchanged"] && clearError("unchanged");
   };
 
-  console.log(
-    localData.deleteProfileImage === false && localData.file === undefined
-  );
-
   // Handles form submission to update user profile
-  const handleSaveProfile = (event) => {
+  const handleSaveProfile = async (event) => {
     event.preventDefault();
     if (
       localData.firstname === user.firstname &&
@@ -166,12 +165,29 @@ const ProfilePanel = () => {
       localData.deleteProfileImage === undefined &&
       localData.file === undefined
     ) {
-      // TODO: Add toast/notification for unchanged profile data
+      createToast({
+        variant: "warning",
+        body: "Unable to update profile: No changes detected.",
+        hasIcon: false,
+      });
+      setErrors({ unchanged: "unable to update profile" });
       return;
     }
 
-    dispatch(update({ authToken, localData }));
-    // TODO: Add toast/notification for profile update success
+    const action = await dispatch(update({ authToken, localData }));
+    if (action.payload.success) {
+      createToast({
+        variant: "info",
+        body: "Your profile data was changed successfully.",
+        hasIcon: false,
+      });
+    } else {
+      createToast({
+        variant: "error",
+        body: "There was an error updating your profile data.",
+        hasIcon: false,
+      });
+    }
   };
 
   // Removes current profile image from UI
@@ -180,6 +196,7 @@ const ProfilePanel = () => {
       ...prev,
       deleteProfileImage: true,
     }));
+    errors["unchanged"] && clearError("unchanged");
   };
 
   // Initiates the account deletion process

@@ -109,9 +109,9 @@ const theme = createTheme({
       border: "#f04438",
     },
     warning: {
-      color: "#f79009",
-      bg: "#fffaef",
-      border: "#fecf60"
+      color: "#DC6803",
+      bg: "#fffcf5",
+      border: "#fec84b"
     },
   },
 });

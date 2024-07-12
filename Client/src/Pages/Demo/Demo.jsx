@@ -40,6 +40,8 @@ import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
 import ImageField from "../../Components/TextFields/Image";
 import ProgressUpload from "../../Components/ProgressBars";
 import Alert from "../../Components/Alert";
+import { createToast } from "../../Utils/toastUtils";
+import { ToastContainer } from "react-toastify";
 
 const cols = [
   {
@@ -421,11 +423,20 @@ const Demo = () => {
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <Stack justifyContent="center" alignItems="center">
-        <ImageField />
+        <ImageField
+          id="test-image-field"
+          onChange={() => console.log("changed")}
+        />
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <Stack justifyContent="center" alignItems="center">
-        <ProgressUpload icon={<ImageIcon />} label="image.jpg" size="2 MB" />
+        <ProgressUpload
+          icon={<ImageIcon />}
+          label="image.jpg"
+          size="2 MB"
+          progress={50}
+          onClick={() => console.log("click")}
+        />
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <Stack justifyContent="center" alignItems="center">
@@ -449,8 +460,38 @@ const Demo = () => {
             body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           />
         </Box>
+        <Box width="500px" mt="5px">
+          <Alert
+            variant="info"
+            title="We've just released a new feature"
+            body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur, ipsum dolor."
+            isToast={true}
+          />
+        </Box>
+        <Box width="500px" mt="5px">
+          <Alert
+            variant="info"
+            body="Your password is incorrect."
+            isToast={true}
+            hasIcon={false}
+          />
+        </Box>
+        <Box width="500px" mt="5px">
+          <Button
+            level="primary"
+            label="Toast"
+            onClick={() =>
+              createToast({
+                variant: "info",
+                body: "Your password is incorrect.",
+                hasIcon: false,
+              })
+            }
+          />
+        </Box>
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <ToastContainer />
     </div>
   );
 };
