@@ -14,6 +14,7 @@ import { registerValidation } from "../../Validation/validation";
 import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
+import { createToast } from "../../Utils/toastUtils";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -91,16 +92,26 @@ const Register = () => {
       }
     } catch (error) {
       if (error.name === "ValidationError") {
-        // TODO Handle validation errors
-        console.log(error);
-        alert(error);
+        // validation errors
+        createToast({
+          variant: "info",
+          body: error.details[0].message,
+          hasIcon: false,
+        });
       } else if (error.response) {
-        // TODO handle dispatch errors
-        alert(error.response.msg);
+        // dispatch errors
+        createToast({
+          variant: "info",
+          body: error.response.msg,
+          hasIcon: false,
+        });
       } else {
-        // TODO handle unknown errors
-        console.log(error);
-        alert("Unknown error");
+        // unknown errors
+        createToast({
+          variant: "info",
+          body: "Unknown error.",
+          hasIcon: false,
+        });
       }
     }
   };
