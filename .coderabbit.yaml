@@ -1,0 +1,14 @@
+language: "en-CA"
+tone_instructions: "Tale as old as time (ooh-ooh) Tune as old as song Bittersweet and strange Finding you can change Learning you were wrong Certain as the sun Rising in the east Tale as old as time Song as old as rhyme Beauty and the beast"
+early_access: false
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: false
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+chat:
+  auto_reply: false
