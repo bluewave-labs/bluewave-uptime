@@ -4,6 +4,7 @@ const errorMessages = {
   UNKNOWN_ERROR: "An unknown error occurred",
   // Auth Controller
   UNAUTHORIZED: "Unauthorized access",
+  AUTH_ADMIN_EXISTS: "Admin already exists",
 
   //Error handling middleware
   UNKNOWN_SERVICE: "Unknown service",

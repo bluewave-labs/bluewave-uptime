@@ -59,6 +59,7 @@
 
   --env-var-spacing-1: 12px;
   --env-var-spacing-1-plus: 16px;
+  --env-var-spacing-1-minus: 10px;
   --env-var-spacing-2: 24px;
   --env-var-spacing-3: 32px;
   --env-var-spacing-4: 40px;
@@ -122,6 +123,18 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.Toastify__toast-container {
+  width: auto;
+}
+.Toastify [class^="Toastify__toast"] {
+  padding: 0;
+  margin: 0;
+}
+.Toastify__toast{
+  min-height: 0;
+  border-radius: 4px;
 }
 
 @media (prefers-color-scheme: light) {

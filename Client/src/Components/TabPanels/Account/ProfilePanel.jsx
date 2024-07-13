@@ -4,9 +4,9 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
-import EmailTextField from "../../TextFields/Email/EmailTextField";
-import StringTextField from "../../TextFields/Text/TextField";
 import Avatar from "../../Avatar";
+import Field from "../../Inputs/Field";
+import ImageField from "../../Inputs/Image";
 import {
   editProfileValidation,
   imageValidation,
@@ -17,11 +17,11 @@ import {
   deleteUser,
   update,
 } from "../../../Features/Auth/authSlice";
-import ImageField from "../../TextFields/Image";
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
 import { clearMonitorState } from "../../../Features/Monitors/monitorsSlice";
+import { createToast } from "../../../Utils/toastUtils";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -58,6 +58,7 @@ const ProfilePanel = () => {
 
   // Handles input field changes and performs validation
   const handleChange = (event) => {
+    errors["unchanged"] && clearError("unchanged");
     const { value, id } = event.target;
     const name = idToName[id];
     setLocalData((prev) => ({
@@ -85,7 +86,7 @@ const ProfilePanel = () => {
       delete: false,
     });
 
-    //TODO - potentitally remove once image compression functions are implemented
+    //TODO - potentitally remove, will revisit in the future
     intervalRef.current = setInterval(() => {
       const buffer = 12;
       setProgress((prev) => {
@@ -151,14 +152,11 @@ const ProfilePanel = () => {
       deleteProfileImage: false,
     }));
     setIsOpen("");
+    errors["unchanged"] && clearError("unchanged");
   };
 
-  console.log(
-    localData.deleteProfileImage === false && localData.file === undefined
-  );
-
   // Handles form submission to update user profile
-  const handleSaveProfile = (event) => {
+  const handleSaveProfile = async (event) => {
     event.preventDefault();
     if (
       localData.firstname === user.firstname &&
@@ -166,12 +164,29 @@ const ProfilePanel = () => {
       localData.deleteProfileImage === undefined &&
       localData.file === undefined
     ) {
-      // TODO: Add toast/notification for unchanged profile data
+      createToast({
+        variant: "warning",
+        body: "Unable to update profile: No changes detected.",
+        hasIcon: false,
+      });
+      setErrors({ unchanged: "unable to update profile" });
       return;
     }
 
-    dispatch(update({ authToken, localData }));
-    // TODO: Add toast/notification for profile update success
+    const action = await dispatch(update({ authToken, localData }));
+    if (action.payload.success) {
+      createToast({
+        variant: "info",
+        body: "Your profile data was changed successfully.",
+        hasIcon: false,
+      });
+    } else {
+      createToast({
+        variant: "error",
+        body: "There was an error updating your profile data.",
+        hasIcon: false,
+      });
+    }
   };
 
   // Removes current profile image from UI
@@ -180,6 +195,7 @@ const ProfilePanel = () => {
       ...prev,
       deleteProfileImage: true,
     }));
+    errors["unchanged"] && clearError("unchanged");
   };
 
   // Initiates the account deletion process
@@ -202,47 +218,27 @@ const ProfilePanel = () => {
           <Stack>
             <Typography component="h1">First name</Typography>
           </Stack>
-          <Stack>
-            <StringTextField
-              id="edit-first-name"
-              label={null}
-              value={localData.firstname}
-              placeholder="Enter your first name"
-              autoComplete="given-name"
-              onChange={handleChange}
-              error={errors[idToName["edit-first-name"]] ? true : false}
-            />
-            {errors[idToName["edit-first-name"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-first-name"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            id="edit-first-name"
+            value={localData.firstname}
+            placeholder="Enter your first name"
+            autoComplete="given-name"
+            onChange={handleChange}
+            error={errors[idToName["edit-first-name"]]}
+          />
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
             <Typography component="h1">Last name</Typography>
           </Stack>
-          <Stack>
-            <StringTextField
-              id="edit-last-name"
-              label={null}
-              value={localData.lastname}
-              placeholder="Enter your last name"
-              autoComplete="family-name"
-              onChange={handleChange}
-              error={errors[idToName["edit-last-name"]] ? true : false}
-            />
-            {errors[idToName["edit-last-name"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-last-name"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            id="edit-last-name"
+            placeholder="Enter your last name"
+            autoComplete="family-name"
+            value={localData.lastname}
+            onChange={handleChange}
+            error={errors[idToName["edit-last-name"]]}
+          />
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>
@@ -251,25 +247,15 @@ const ProfilePanel = () => {
               This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
-          <Stack>
-            <EmailTextField
-              id="edit-email"
-              label={null}
-              value={user.email}
-              placeholder="Enter your email"
-              autoComplete="email"
-              // onChange={handleChange}
-              // error={errors[idToName["edit-email"]] ? true : false}
-              disabled={true}
-            />
-            {errors[idToName["edit-email"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-email"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            id="edit-email"
+            value={user.email}
+            placeholder="Enter your email"
+            autoComplete="email"
+            // onChange={handleChange}
+            // error={errors[idToName["edit-email"]]}
+            disabled={true}
+          />
         </div>
         <div className="edit-profile-form__wrapper">
           <Stack>

@@ -8,11 +8,12 @@ import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
 import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
-import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
 import axiosInstance from "../../Utils/axiosConfig";
 import { loginValidation } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
+import { createToast } from "../../Utils/toastUtils";
+import Field from "../../Components/Inputs/Field";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -74,16 +75,29 @@ const Login = () => {
       }
     } catch (error) {
       if (error.name === "ValidationError") {
-        // TODO Handle validation errors
-        console.log(error.details);
-        alert(error);
+        // validation errors
+        createToast({
+          variant: "info",
+          body:
+            error && error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
+          hasIcon: false,
+        });
       } else if (error.response) {
-        // TODO handle dispatch errors
-        alert(error.response.msg);
+        // dispatch errors
+        createToast({
+          variant: "info",
+          body: error.response.msg,
+          hasIcon: false,
+        });
       } else {
-        // TODO handle unknown errors
-        console.log(error);
-        alert("Unknown error");
+        // unknown errors
+        createToast({
+          variant: "info",
+          body: "Unknown error.",
+          hasIcon: false,
+        });
       }
     }
   };
@@ -107,23 +121,26 @@ const Login = () => {
           <div className="login-form-heading">Log in to your account</div>
         </div>
         <div className="login-form-v3-spacing" />
+
         <div className="login-form-inputs">
-          <EmailTextField
-            onChange={handleInput}
-            error={errors.email ? true : false}
-            helperText={errors.email ? errors.email : ""}
+          <Field
+            type="email"
+            id="login-email-input"
+            label="Email"
             placeholder="Enter your email"
             autoComplete="email"
-            id="login-email-input"
+            onChange={handleInput}
+            error={errors.email}
           />
           <div className="login-form-v2-spacing" />
-          <PasswordTextField
-            onChange={handleInput}
-            error={errors.password ? true : false}
-            helperText={errors.password ? errors.password : ""}
-            placeholder="Password"
-            autoComplete="current-password"
+          <Field
+            type="password"
             id="login-password-input"
+            label="Password"
+            placeholder="Enter your password"
+            autoComplete="current-password"
+            onChange={handleInput}
+            error={errors.password}
           />
         </div>
         <div className="login-form-v3-spacing" />

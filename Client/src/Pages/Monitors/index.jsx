@@ -6,7 +6,7 @@ import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
-import SearchTextField from "../../Components/TextFields/Search/SearchTextField";
+import SearchTextField from "../../Components/Inputs/Search/SearchTextField";
 import MonitorTable from "../../Components/MonitorTable";
 import { useTheme } from "@emotion/react";
 
