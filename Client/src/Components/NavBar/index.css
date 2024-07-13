@@ -30,3 +30,9 @@
   height: 16px;
   color: var(--env-var-color-25);
 }
+
+#bw-uptime-logo-dashboard {
+  width: fit-content;
+  height: 16px;
+  margin-left: 15px;
+}
