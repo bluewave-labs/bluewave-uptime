@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import {
   IconButton,
@@ -12,6 +13,22 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Button from "../../Button";
 import "./index.css";
 import { useState } from "react";
+
+/**
+ * @param {Object} props
+ * @param {string} [props.type] - Type of input field (e.g., 'text', 'password').
+ * @param {string} props.id - ID of the input field.
+ * @param {string} [props.label] - Label for the input field.
+ * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
+ * @param {boolean} [props.isOptional] - Indicates if the field is optional, will display optional text.
+ * @param {boolean} [props.hasCopy] - Indicates if the field supports copying.
+ * @param {string} [props.autoComplete] - Autocomplete value for the input field.
+ * @param {string} [props.placeholder] - Placeholder text for the input field.
+ * @param {string} props.value - Value of the input field.
+ * @param {function} props.onChange - Function called on input change.
+ * @param {string} [props.error] - Error message to display for the input field.
+ * @param {boolean} [props.disabled] - Indicates if the input field is disabled.
+ */
 
 const Field = ({
   type = "text",
@@ -121,6 +138,21 @@ const Field = ({
       )}
     </Stack>
   );
+};
+
+Field.propTypes = {
+  type: PropTypes.oneOf(["text", "password", "url", "email", "description"]),
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  isRequired: PropTypes.bool,
+  isOptional: PropTypes.bool,
+  hasCopy: PropTypes.bool,
+  autoComplete: PropTypes.string,
+  placeholder: PropTypes.string,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default Field;
