@@ -8,7 +8,10 @@ import {
 } from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import Button from "../../Button";
 import "./index.css";
+import { useState } from "react";
 
 const Field = ({
   type = "text",
@@ -18,6 +21,7 @@ const Field = ({
   isOptional,
   isVisible,
   setVisibility,
+  hasCopy,
   autoComplete,
   placeholder,
   value,
@@ -26,6 +30,13 @@ const Field = ({
   disabled,
 }) => {
   const theme = useTheme();
+
+  // TODO - are we using this feature anywhere ?
+  const [copy, setCopy] = useState(false);
+  const handleCopy = () => {
+    setCopy(true);
+    setTimeout(() => setCopy(false), 1000);
+  };
 
   return (
     <Stack gap={theme.gap.xs} className={`field field-${type}`}>
@@ -41,6 +52,8 @@ const Field = ({
         id={id}
         autoComplete={autoComplete}
         placeholder={placeholder}
+        multiline={type === "description"}
+        rows={type === "description" ? 4 : 1}
         value={value}
         onChange={onChange}
         disabled={disabled}
@@ -57,28 +70,48 @@ const Field = ({
               <Typography component="h5">https://</Typography>
             </Stack>
           ),
-          endAdornment: type === "password" && (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setVisibility((show) => !show)}
-                tabIndex={-1}
-                sx={{
-                  color: theme.palette.section.borderColor,
-                  padding: `calc(${theme.gap.xs} / 2)`,
-                  "&:focus": {
-                    outline: "none",
-                  },
-                  "& .MuiTouchRipple-root": {
-                    pointerEvents: "none",
-                    display: "none",
-                  },
-                }}
-              >
-                {!isVisible ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
+          endAdornment:
+            type === "password" ? (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setVisibility((show) => !show)}
+                  tabIndex={-1}
+                  sx={{
+                    color: theme.palette.section.borderColor,
+                    padding: `calc(${theme.gap.xs} / 2)`,
+                    "&:focus": {
+                      outline: "none",
+                    },
+                    "& .MuiTouchRipple-root": {
+                      pointerEvents: "none",
+                      display: "none",
+                    },
+                  }}
+                >
+                  {!isVisible ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ) : (
+              hasCopy && (
+                <InputAdornment position="end">
+                  <Button
+                    level="tertiary"
+                    label={copy ? "Copied" : "Copy"}
+                    img={<ContentCopyIcon />}
+                    onClick={handleCopy}
+                    sx={{
+                      borderLeft: `solid 1px ${theme.palette.section.borderColor}`,
+                      lineHeight: 0,
+                      "& .MuiTouchRipple-root": {
+                        pointerEvents: "none",
+                        display: "none",
+                      },
+                    }}
+                  />
+                </InputAdornment>
+              )
+            ),
         }}
       />
       {error && (
