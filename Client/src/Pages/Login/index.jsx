@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
-import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
 import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
