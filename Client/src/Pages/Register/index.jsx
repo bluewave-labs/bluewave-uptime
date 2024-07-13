@@ -117,7 +117,6 @@ const Register = () => {
     }
   };
 
-  const [visibility, setVisibility] = useState(false);
 
   return (
     <div className="register-page">
@@ -173,8 +172,6 @@ const Register = () => {
             id="register-password-input"
             label="Password"
             isRequired={true}
-            isVisible={visibility}
-            setVisibility={setVisibility}
             placeholder="Create a password"
             autoComplete="current-password"
             error={errors.password}
@@ -187,8 +184,6 @@ const Register = () => {
             id="register-confirm-input"
             label="Confirm password"
             isRequired={true}
-            isVisible={visibility}
-            setVisibility={setVisibility}
             placeholder="Confirm your password"
             autoComplete="current-password"
             error={errors.confirm}

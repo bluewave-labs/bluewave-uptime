@@ -19,8 +19,6 @@ const Field = ({
   label,
   isRequired,
   isOptional,
-  isVisible,
-  setVisibility,
   hasCopy,
   autoComplete,
   placeholder,
@@ -37,6 +35,8 @@ const Field = ({
     setCopy(true);
     setTimeout(() => setCopy(false), 1000);
   };
+
+  const [isVisible, setVisible] = useState(false);
 
   return (
     <Stack gap={theme.gap.xs} className={`field field-${type}`}>
@@ -75,7 +75,7 @@ const Field = ({
               <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle password visibility"
-                  onClick={() => setVisibility((show) => !show)}
+                  onClick={() => setVisible((show) => !show)}
                   tabIndex={-1}
                   sx={{
                     color: theme.palette.section.borderColor,
@@ -94,7 +94,7 @@ const Field = ({
               </InputAdornment>
             ) : (
               hasCopy && (
-                <InputAdornment position="end">
+                <InputAdornment className="copy" position="end">
                   <Button
                     level="tertiary"
                     label={copy ? "Copied" : "Copy"}

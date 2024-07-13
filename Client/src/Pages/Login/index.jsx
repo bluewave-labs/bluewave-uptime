@@ -110,8 +110,6 @@ const Login = () => {
     navigate("/register");
   };
 
-  const [visibility, setVisibility] = useState(false);
-
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
@@ -142,8 +140,6 @@ const Login = () => {
             type="password"
             id="login-password-input"
             label="Password"
-            isVisible={visibility}
-            setVisibility={setVisibility}
             placeholder="Enter your password"
             autoComplete="current-password"
             onChange={handleInput}

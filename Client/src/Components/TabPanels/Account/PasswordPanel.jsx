@@ -35,7 +35,6 @@ const PasswordPanel = () => {
     confirm: "",
   });
   const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false); // password visibility
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -125,8 +124,6 @@ const PasswordPanel = () => {
             id="edit-current-password"
             placeholder="Enter your current password"
             autoComplete="current-password"
-            isVisible={showPassword}
-            setVisibility={setShowPassword}
             value={localData.password}
             onChange={handleChange}
             error={errors[idToName["edit-current-password"]]}
@@ -141,8 +138,6 @@ const PasswordPanel = () => {
             id="edit-new-password"
             placeholder="Enter your new password"
             autoComplete="new-password"
-            isVisible={showPassword}
-            setVisibility={setShowPassword}
             value={localData.newPassword}
             onChange={handleChange}
             error={errors[idToName["edit-new-password"]]}
@@ -157,8 +152,6 @@ const PasswordPanel = () => {
             id="edit-confirm-password"
             placeholder="Reenter your new password"
             autoComplete="new-password"
-            isVisible={showPassword}
-            setVisibility={setShowPassword}
             value={localData.confirm}
             onChange={handleChange}
             error={errors[idToName["edit-confirm-password"]]}

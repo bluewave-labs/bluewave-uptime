@@ -507,8 +507,6 @@ const Demo = () => {
           type="password"
           label="Password"
           isRequired={true}
-          isVisible={visibility}
-          setVisibility={setVisibility}
           placeholder="Create a password"
         />
         <Field

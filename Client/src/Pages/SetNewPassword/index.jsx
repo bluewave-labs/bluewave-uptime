@@ -63,8 +63,6 @@ const SetNewPassword = () => {
     }
   }, [form]);
 
-  const [visibility, setVisibility] = useState(false);
-
   const { token } = useParams();
   return (
     <div className="set-new-password-page">
@@ -90,8 +88,6 @@ const SetNewPassword = () => {
             id="register-password-input"
             label="Password"
             isRequired={true}
-            isVisible={visibility}
-            setVisibility={setVisibility}
             placeholder="••••••••"
             onChange={handleInput}
             error={errors.password}
@@ -102,8 +98,6 @@ const SetNewPassword = () => {
             id="confirm-password-input"
             label="Confirm password"
             isRequired={true}
-            isVisible={visibility}
-            setVisibility={setVisibility}
             placeholder="••••••••"
             onChange={handleInput}
             error={errors.confirm}

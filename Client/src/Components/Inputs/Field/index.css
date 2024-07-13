@@ -36,16 +36,16 @@
 .field .MuiInputBase-root:has(.MuiInputAdornment-root) {
   padding-right: var(--env-var-spacing-1-minus);
 }
-.field .MuiInputBase-root:has(.MuiInputAdornment-root > .MuiButtonBase-root) {
+.field .MuiInputBase-root:has(.copy.MuiInputAdornment-root > .MuiButtonBase-root) {
   padding-right: 0;
 }
-.field .MuiInputBase-root .MuiInputAdornment-root .MuiButtonBase-root {
+.field .MuiInputBase-root .copy.MuiInputAdornment-root .MuiButtonBase-root {
   padding: 0 var(--env-var-spacing-1-minus);
   font-size: var(--env-var-font-size-medium);
   border-radius: 0;
   height: 34px;
 }
-.field .MuiInputBase-root .MuiInputAdornment-root .MuiButtonBase-root svg {
+.field .MuiInputBase-root .copy.MuiInputAdornment-root .MuiButtonBase-root svg {
   width: 20px;
   height: 20px;
   margin-right: 5px;
