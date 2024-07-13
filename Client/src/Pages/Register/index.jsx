@@ -130,7 +130,9 @@ const Register = () => {
             alt="Logomark"
           />
           <div className="register-form-v-spacing-large" />
-          <div className="register-form-heading">Create an account</div>
+          <div className="register-form-heading">
+            Create Uptime Manager admin account
+          </div>
           <div className="register-form-v-spacing-large"></div>
         </div>
         <div className="register-form-v-spacing-40px" />

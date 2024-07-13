@@ -293,19 +293,19 @@ const getMonitorById = async (req, res) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
-    const limit = req.body.limit;
+    const limit = req.query.limit;
     const monitors = await Monitor.find({ userId: req.params.userId });
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
-
-        if(limit) {
+        if (limit) {
           // Checks are order oldest -> newest
-          const checks = await Check.find({ monitorId: monitor._id }).sort({
-            createdAt: 1,
-          }).limit(limit);;
+          const checks = await Check.find({ monitorId: monitor._id })
+            .sort({
+              createdAt: 1,
+            })
+            .limit(limit);
           return { ...monitor.toObject(), checks };
-          
         } else {
           // Checks are order oldest -> newest
           const checks = await Check.find({ monitorId: monitor._id }).sort({
