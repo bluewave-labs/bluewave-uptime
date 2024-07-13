@@ -15,6 +15,7 @@ const Field = ({
   id,
   label,
   isRequired,
+  isOptional,
   isVisible,
   setVisibility,
   autoComplete,
@@ -31,7 +32,8 @@ const Field = ({
       {label && (
         <Typography component="h3">
           {label}
-          {isRequired ? <span>*</span> : ""}
+          {isRequired ? <span className="field-required">*</span> : ""}
+          {isOptional ? <span className="field-optional">(optional)</span> : ""}
         </Typography>
       )}
       <TextField
@@ -44,7 +46,16 @@ const Field = ({
         disabled={disabled}
         InputProps={{
           startAdornment: type === "url" && (
-            <Typography component="h5">https://</Typography>
+            <Stack
+              direction="row"
+              alignItems="center"
+              height="100%"
+              sx={{
+                borderRight: `solid 1px ${theme.palette.section.borderColor}`,
+              }}
+            >
+              <Typography component="h5">https://</Typography>
+            </Stack>
           ),
           endAdornment: type === "password" && (
             <InputAdornment position="end">

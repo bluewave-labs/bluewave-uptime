@@ -15,30 +15,35 @@
 .field h3.MuiTypography-root {
   font-weight: 500;
 }
-.field h3.MuiTypography-root span {
+.field h3.MuiTypography-root span.field-required {
   color: var(--env-var-color-19);
   margin-left: 1px;
+}
+.field h3.MuiTypography-root span.field-optional {
+  opacity: 0.6;
+  margin-left: 4px;
 }
 .field h5.MuiTypography-root {
   position: relative;
   opacity: 0.8;
-  padding: var(--env-var-spacing-1-minus);
-  padding-left: 0;
-  border-right: solid 1px var(--env-var-color-29);
+  padding-right: var(--env-var-spacing-1-minus);
 }
 .field .MuiInputBase-root {
-  height: 35px;
-  overflow: hidden;
+  height: 34px;
 }
 .field .MuiInputBase-root:has(.MuiInputAdornment-root) {
   padding-right: var(--env-var-spacing-1-minus);
 }
 .field input {
+  height: 100%;
   padding: 0 var(--env-var-spacing-1-minus);
 }
 .field .MuiOutlinedInput-root fieldset {
   border-color: var(--env-var-color-29);
   border-radius: var(--env-var-radius-1);
+}
+.field .MuiOutlinedInput-root:hover:not(:has(input:focus)) fieldset {
+  border-color: var(--env-var-color-29);
 }
 .field .input-error {
   color: var(--env-var-color-24);
