@@ -139,7 +139,7 @@
   }
 }
 
-.account .MuiStack-root:has(p.MuiTypography-root.input-error) {
+.account .MuiStack-root:has(span.MuiTypography-root.input-error) {
   position: relative;
 }
 .account .text-field-icon {
@@ -150,11 +150,9 @@
   height: 18px !important;
   opacity: 0.8;
 }
-.account p.MuiTypography-root.input-error {
-  color: var(--env-var-color-24);
-  opacity: 0.8;
+.account span.MuiTypography-root.input-error {
   position: absolute;
-  top: calc(100% + 5px);
+  top: 100%;
 }
 .account .email-text-field,
 .account .password-text-field {

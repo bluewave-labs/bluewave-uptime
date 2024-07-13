@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
-import PasswordTextField from "../../TextFields/Password/PasswordTextField";
+import Field from "../../Inputs/Field";
 import { editPasswordValidation } from "../../../Validation/validation";
 import Alert from "../../Alert";
 import { update } from "../../../Features/Auth/authSlice";
@@ -35,7 +35,6 @@ const PasswordPanel = () => {
     confirm: "",
   });
   const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false); // password visibility
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -120,76 +119,43 @@ const PasswordPanel = () => {
           <Stack>
             <Typography component="h1">Current password</Typography>
           </Stack>
-          <Stack>
-            <PasswordTextField
-              id="edit-current-password"
-              label={null}
-              placeholder="Enter your current password"
-              autoComplete="current-password"
-              visibility={showPassword}
-              setVisibility={setShowPassword}
-              value={localData.password}
-              onChange={handleChange}
-              error={errors[idToName["edit-current-password"]] ? true : false}
-            />
-            {errors[idToName["edit-current-password"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-current-password"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            type="password"
+            id="edit-current-password"
+            placeholder="Enter your current password"
+            autoComplete="current-password"
+            value={localData.password}
+            onChange={handleChange}
+            error={errors[idToName["edit-current-password"]]}
+          />
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
             <Typography component="h1">New password</Typography>
           </Stack>
-          <Stack>
-            <PasswordTextField
-              id="edit-new-password"
-              label={null}
-              placeholder="Enter your new password"
-              autoComplete="new-password"
-              visibility={showPassword}
-              setVisibility={setShowPassword}
-              value={localData.newPassword}
-              onChange={handleChange}
-              error={errors[idToName["edit-new-password"]] ? true : false}
-            />
-            {errors[idToName["edit-new-password"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-new-password"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            type="password"
+            id="edit-new-password"
+            placeholder="Enter your new password"
+            autoComplete="new-password"
+            value={localData.newPassword}
+            onChange={handleChange}
+            error={errors[idToName["edit-new-password"]]}
+          />
         </div>
         <div className="edit-password-form__wrapper">
           <Stack>
             <Typography component="h1">Confirm new password</Typography>
           </Stack>
-          <Stack>
-            <PasswordTextField
-              id="edit-confirm-password"
-              label={null}
-              placeholder="Reenter your new password"
-              autoComplete="new-password"
-              visibility={showPassword}
-              setVisibility={setShowPassword}
-              value={localData.confirm}
-              onChange={handleChange}
-              error={errors[idToName["edit-confirm-password"]] ? true : false}
-            />
-            {errors[idToName["edit-confirm-password"]] ? (
-              <Typography component="p" className="input-error">
-                {errors[idToName["edit-confirm-password"]]}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Stack>
+          <Field
+            type="password"
+            id="edit-confirm-password"
+            placeholder="Reenter your new password"
+            autoComplete="new-password"
+            value={localData.confirm}
+            onChange={handleChange}
+            error={errors[idToName["edit-confirm-password"]]}
+          />
         </div>
         <div className="edit-password-form__wrapper">
           <Stack></Stack>

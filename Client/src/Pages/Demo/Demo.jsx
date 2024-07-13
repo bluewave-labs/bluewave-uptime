@@ -37,11 +37,11 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
-import ImageField from "../../Components/TextFields/Image";
+import ImageField from "../../Components/Inputs/Image";
 import ProgressUpload from "../../Components/ProgressBars";
 import Alert from "../../Components/Alert";
 import { createToast } from "../../Utils/toastUtils";
-import { ToastContainer } from "react-toastify";
+import Field from "../../Components/Inputs/Field";
 
 const cols = [
   {
@@ -203,6 +203,9 @@ const Demo = () => {
       setIsLoading(false);
     }, 4000);
   };
+
+  //fields
+  const [visibility, setVisibility] = useState(false);
   return (
     <div>
       <div style={{ padding: "4rem", border: "1px solid black" }}>
@@ -439,7 +442,7 @@ const Demo = () => {
         />
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
-      <Stack justifyContent="center" alignItems="center">
+      <Stack direction="row" gap="10px" flexWrap="wrap">
         <Box width="500px">
           <Alert
             variant="info"
@@ -447,20 +450,20 @@ const Demo = () => {
             body="Since you logged in via SSO, you cannot reset or modify your password."
           />
         </Box>
-        <Box width="500px" mt="5px">
+        <Box width="500px">
           <Alert
             variant="warning"
             body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
           />
         </Box>
-        <Box width="500px" mt="5px">
+        <Box width="500px">
           <Alert
             variant="error"
             title="Error"
             body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           />
         </Box>
-        <Box width="500px" mt="5px">
+        <Box width="500px">
           <Alert
             variant="info"
             title="We've just released a new feature"
@@ -468,7 +471,7 @@ const Demo = () => {
             isToast={true}
           />
         </Box>
-        <Box width="500px" mt="5px">
+        <Box width="500px">
           <Alert
             variant="info"
             body="Your password is incorrect."
@@ -491,7 +494,28 @@ const Demo = () => {
         </Box>
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
-      <ToastContainer />
+      <Stack direction="row" justifyContent="center" gap="20px">
+        <Field type="text" label="Name" placeholder="Enter a name" />
+        <Field
+          type="email"
+          label="Email"
+          isRequired={true}
+          placeholder="name.surname@companyname.com"
+          error="This is an error message."
+        />
+        <Field
+          type="password"
+          label="Password"
+          isRequired={true}
+          placeholder="Create a password"
+        />
+        <Field
+          type="url"
+          label="Website"
+          placeholder="google.com"
+        />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
     </div>
   );
 };

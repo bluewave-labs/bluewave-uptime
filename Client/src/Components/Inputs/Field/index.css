@@ -1,0 +1,89 @@
+.field {
+  min-width: 250px;
+}
+.field h3.MuiTypography-root,
+.field h5.MuiTypography-root,
+.field input,
+.field textarea,
+.field .input-error {
+  font-size: var(--env-var-font-size-medium);
+}
+.field h3.MuiTypography-root,
+.field h5.MuiTypography-root,
+.field input,
+.field textarea {
+  color: var(--env-var-color-5);
+}
+.field h3.MuiTypography-root {
+  font-weight: 500;
+}
+.field h3.MuiTypography-root span.field-required {
+  color: var(--env-var-color-19);
+  margin-left: 2px;
+}
+.field h3.MuiTypography-root span.field-optional {
+  opacity: 0.6;
+  margin-left: 4px;
+}
+.field h5.MuiTypography-root {
+  position: relative;
+  opacity: 0.8;
+  padding-right: var(--env-var-spacing-1-minus);
+}
+.field .MuiInputBase-root:has(input) {
+  height: 34px;
+}
+.field .MuiInputBase-root:has(.MuiInputAdornment-root) {
+  padding-right: var(--env-var-spacing-1-minus);
+}
+.field .MuiInputBase-root:has(.copy.MuiInputAdornment-root > .MuiButtonBase-root) {
+  padding-right: 0;
+}
+.field .MuiInputBase-root .copy.MuiInputAdornment-root .MuiButtonBase-root {
+  padding: 0 var(--env-var-spacing-1-minus);
+  font-size: var(--env-var-font-size-medium);
+  border-radius: 0;
+  height: 34px;
+}
+.field .MuiInputBase-root .copy.MuiInputAdornment-root .MuiButtonBase-root svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+.field .MuiInputBase-root .MuiInputAdornment-root .MuiButtonBase-root:hover {
+  border-color: var(--env-var-color-29);
+}
+.field input {
+  height: 100%;
+  padding: 0 var(--env-var-spacing-1-minus);
+}
+.field .MuiInputBase-root:has(textarea) {
+  padding: var(--env-var-spacing-1-minus);
+}
+.field .MuiOutlinedInput-root fieldset {
+  border-color: var(--env-var-color-29);
+  border-radius: var(--env-var-radius-1);
+}
+.field:not(:has(.input-error))
+  .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus))
+  fieldset {
+  border-color: var(--env-var-color-29);
+}
+.field .input-error {
+  color: var(--env-var-color-24);
+  opacity: 0.8;
+}
+.field:has(.input-error) .MuiOutlinedInput-root fieldset {
+  border-color: var(--env-var-color-19);
+}
+
+.register-page .field .MuiOutlinedInput-root fieldset,
+.register-page .field input,
+.login-page .field .MuiOutlinedInput-root fieldset,
+.login-page .field input,
+.forgot-password-page .field .MuiOutlinedInput-root fieldset,
+.forgot-password-page .field input,
+.set-new-password-page .field .MuiOutlinedInput-root fieldset,
+.set-new-password-page .field input {
+  border-radius: var(--env-var-radius-2);
+}
