@@ -17,10 +17,9 @@
   text-align: center;
 }
 
-.login-form-header-logo {
+#login-form-header-logo {
   margin: 30px auto;
   margin-bottom: 60px;
-  width: 353px;
 }
 
 .login-form-v-spacing {

@@ -32,7 +32,7 @@
 }
 
 #bw-uptime-logo-dashboard {
+  width: fit-content;
   height: 16px;
-  float: left;
   margin-left: 15px;
 }
