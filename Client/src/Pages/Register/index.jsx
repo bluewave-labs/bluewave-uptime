@@ -36,18 +36,18 @@ const Register = () => {
     role: "",
   });
 
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/auth/users/admin")
-  //     .then((response) => {
-  //       if (response.data.data === true) {
-  //         navigate("/login");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [form, navigate]);
+  useEffect(() => {
+    axiosInstance
+      .get("/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === true) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [form, navigate]);
 
   useEffect(() => {
     const { error } = registerValidation.validate(form, {
