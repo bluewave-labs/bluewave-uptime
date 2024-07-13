@@ -5,7 +5,8 @@ import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
 import Avatar from "../../Avatar";
-import Field from "../../TextFields/Field";
+import Field from "../../Inputs/Field";
+import ImageField from "../../Inputs/Image";
 import {
   editProfileValidation,
   imageValidation,
@@ -16,7 +17,6 @@ import {
   deleteUser,
   update,
 } from "../../../Features/Auth/authSlice";
-import ImageField from "../../TextFields/Image";
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";

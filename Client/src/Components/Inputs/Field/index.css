@@ -80,6 +80,10 @@
 .register-page .field .MuiOutlinedInput-root fieldset,
 .register-page .field input,
 .login-page .field .MuiOutlinedInput-root fieldset,
-.login-page .field input {
+.login-page .field input,
+.forgot-password-page .field .MuiOutlinedInput-root fieldset,
+.forgot-password-page .field input,
+.set-new-password-page .field .MuiOutlinedInput-root fieldset,
+.set-new-password-page .field input {
   border-radius: var(--env-var-radius-2);
 }

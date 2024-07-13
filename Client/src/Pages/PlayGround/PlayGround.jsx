@@ -2,7 +2,7 @@ import React from "react";
 import PlayGroundCharts from "./PlayGround-Charts";
 import PlayGroundPopupModals from "./PlayGround-Popup-Modals";
 import PlayGroundTooltips from "./PlayGround-Tooltips";
-import Field from "../../Components/TextFields/Field";
+import Field from "../../Components/Inputs/Field";
 
 // This Component is just for the development and test
 // purposes and just to see what my components look like while development

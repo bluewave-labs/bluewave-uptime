@@ -12,7 +12,7 @@ import { loginValidation } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
-import Field from "../../Components/TextFields/Field";
+import Field from "../../Components/Inputs/Field";
 
 const Login = () => {
   const dispatch = useDispatch();

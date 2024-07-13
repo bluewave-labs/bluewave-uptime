@@ -11,7 +11,7 @@ import { createMonitor } from "../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
-import Field from "../../Components/TextFields/Field";
+import Field from "../../Components/Inputs/Field";
 
 const CreateNewMonitor = () => {
   const MS_PER_MINUTE = 60000;

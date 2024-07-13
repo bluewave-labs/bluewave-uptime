@@ -12,7 +12,7 @@ import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
-import Field from "../../Components/TextFields/Field";
+import Field from "../../Components/Inputs/Field";
 
 const Register = () => {
   const dispatch = useDispatch();

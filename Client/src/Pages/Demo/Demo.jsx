@@ -37,11 +37,11 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
-import ImageField from "../../Components/TextFields/Image";
+import ImageField from "../../Components/Inputs/Image";
 import ProgressUpload from "../../Components/ProgressBars";
 import Alert from "../../Components/Alert";
 import { createToast } from "../../Utils/toastUtils";
-import Field from "../../Components/TextFields/Field";
+import Field from "../../Components/Inputs/Field";
 
 const cols = [
   {

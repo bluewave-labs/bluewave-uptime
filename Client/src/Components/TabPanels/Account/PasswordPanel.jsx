@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
-import Field from "../../TextFields/Field";
+import Field from "../../Inputs/Field";
 import { editPasswordValidation } from "../../../Validation/validation";
 import Alert from "../../Alert";
 import { update } from "../../../Features/Auth/authSlice";
