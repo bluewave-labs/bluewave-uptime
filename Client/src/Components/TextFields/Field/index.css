@@ -17,7 +17,7 @@
 }
 .field h3.MuiTypography-root span.field-required {
   color: var(--env-var-color-19);
-  margin-left: 1px;
+  margin-left: 2px;
 }
 .field h3.MuiTypography-root span.field-optional {
   opacity: 0.6;
@@ -42,7 +42,9 @@
   border-color: var(--env-var-color-29);
   border-radius: var(--env-var-radius-1);
 }
-.field .MuiOutlinedInput-root:hover:not(:has(input:focus)) fieldset {
+.field:not(:has(.input-error))
+  .MuiOutlinedInput-root:hover:not(:has(input:focus))
+  fieldset {
   border-color: var(--env-var-color-29);
 }
 .field .input-error {
@@ -50,5 +52,12 @@
   opacity: 0.8;
 }
 .field:has(.input-error) .MuiOutlinedInput-root fieldset {
-  border-color: #fda29b;
+  border-color: var(--env-var-color-19);
+}
+
+.register-page .field .MuiOutlinedInput-root fieldset,
+.register-page .field input,
+.login-page .field .MuiOutlinedInput-root fieldset,
+.login-page .field input {
+  border-radius: var(--env-var-radius-2);
 }

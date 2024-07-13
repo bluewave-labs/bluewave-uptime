@@ -65,7 +65,7 @@ const Field = ({
                 tabIndex={-1}
                 sx={{
                   color: theme.palette.section.borderColor,
-                  padding: theme.gap.xs,
+                  padding: `calc(${theme.gap.xs} / 2)`,
                   "&:focus": {
                     outline: "none",
                   },
