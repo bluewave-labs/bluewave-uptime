@@ -51,7 +51,7 @@ function App() {
             element={<ProtectedRoute Component={Maintenance} />}
           />
           <Route
-            path="maintenance/createnewmaintenance"
+            path="maintenance/create"
             element={<ProtectedRoute Component={CreateNewMaintenance} />}
           />
           <Route
