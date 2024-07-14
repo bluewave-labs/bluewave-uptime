@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 // import "./App.css";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Login";
@@ -6,7 +6,9 @@ import Register from "./Pages/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
+import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
+import CreateNewMonitor from "./Pages/CreateNewMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
@@ -15,10 +17,12 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import CheckEmail from "./Pages/CheckEmail";
 import SetNewPassword from "./Pages/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
-import ToastComponent from "./Components/Toast";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Details from "./Pages/Details";
 import Maintenance from "./Pages/Maintenance";
 import CreateNewMaintenance from "./Pages/Maintenance/CreateNewMaintenance";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -35,9 +39,18 @@ function App() {
             element={<ProtectedRoute Component={Monitors} />}
           />
           <Route
+            path="/monitors/create"
+            element={<ProtectedRoute Component={CreateNewMonitor} />}
+          />
+          <Route
+            path="/monitors/:monitorId/"
+            element={<ProtectedRoute Component={Details} />}
+          />
+          <Route
             path="incidents"
             element={<ProtectedRoute Component={Incidents} />}
           />
+
           <Route
             path="status"
             element={<ProtectedRoute Component={Status} />}
@@ -58,6 +71,18 @@ function App() {
             path="settings"
             element={<ProtectedRoute Component={Settings} />}
           />
+          <Route
+            path="account/profile"
+            element={<ProtectedRoute Component={Account} open="profile" />}
+          />
+          <Route
+            path="account/password"
+            element={<ProtectedRoute Component={Account} open="password" />}
+          />
+          <Route
+            path="account/team"
+            element={<ProtectedRoute Component={Account} open="team" />}
+          />
         </Route>
 
         <Route exact path="/login" element={<Login />} />
@@ -74,6 +99,7 @@ function App() {
           element={<NewPasswordConfirmed />}
         />
       </Routes>
+      <ToastContainer />
     </>
   );
 }

@@ -87,12 +87,6 @@ const getMonitorsByUserId = async (req, res, next) => {
     const userId = req.params.userId;
     const monitors = await req.db.getMonitorsByUserId(req, res);
 
-    if (monitors && monitors.length === 0) {
-      const err = new Error(errorMessages.MONITOR_GET_BY_USER_ID);
-      err.status = 404;
-      throw err;
-    }
-
     return res.json({
       success: true,
       msg: successMessages.MONITOR_GET_BY_USER_ID(userId),
@@ -214,6 +208,10 @@ const editMonitor = async (req, res, next) => {
 
   try {
     const editedMonitor = await req.db.editMonitor(req, res);
+    // Delete the old job(editedMonitor has the same ID as the old monitor)
+    await req.jobQueue.deleteJob(editedMonitor);
+    // Add the new job back to the queue
+    await req.jobQueue.addJob(editedMonitor._id, editedMonitor);
     return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_EDIT,

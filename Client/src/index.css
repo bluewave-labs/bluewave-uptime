@@ -14,6 +14,8 @@
 
   /* Generalized Stylings */
 
+  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
+
   --env-var-color-1: #101828;
   --env-var-color-2: #475467;
   --env-var-color-3: #1570ef;
@@ -56,11 +58,14 @@
   --env-var-height-1: 100vh;
 
   --env-var-spacing-1: 12px;
+  --env-var-spacing-1-plus: 16px;
+  --env-var-spacing-1-minus: 10px;
   --env-var-spacing-2: 24px;
   --env-var-spacing-3: 32px;
   --env-var-spacing-4: 40px;
 
   --env-var-font-size-small: 11px;
+  --env-var-font-size-small-plus: 12px;
   --env-var-font-size-medium: 13px;
   --env-var-font-size-medium-plus: 14px;
   --env-var-font-size-large: 16px;
@@ -118,6 +123,18 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.Toastify__toast-container {
+  width: auto;
+}
+.Toastify [class^="Toastify__toast"] {
+  padding: 0;
+  margin: 0;
+}
+.Toastify__toast{
+  min-height: 0;
+  border-radius: 4px;
 }
 
 @media (prefers-color-scheme: light) {

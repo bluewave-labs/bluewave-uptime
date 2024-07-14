@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
-import Logomark from "../../assets/Images/Logomark.png";
-import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
+import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
-import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
-
+import axiosInstance from "../../Utils/axiosConfig";
 import { loginValidation } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
+import { createToast } from "../../Utils/toastUtils";
+import Field from "../../Components/Inputs/Field";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -29,6 +29,19 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    axiosInstance
+      .get("/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === false) {
+          navigate("/register");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [navigate]);
 
   useEffect(() => {
     const { error } = loginValidation.validate(form, {
@@ -61,16 +74,29 @@ const Login = () => {
       }
     } catch (error) {
       if (error.name === "ValidationError") {
-        // TODO Handle validation errors
-        console.log(error.details);
-        alert(error);
+        // validation errors
+        createToast({
+          variant: "info",
+          body:
+            error && error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
+          hasIcon: false,
+        });
       } else if (error.response) {
-        // TODO handle dispatch errors
-        alert(error.response.msg);
+        // dispatch errors
+        createToast({
+          variant: "info",
+          body: error.response.msg,
+          hasIcon: false,
+        });
       } else {
-        // TODO handle unknown errors
-        console.log(error);
-        alert("Unknown error");
+        // unknown errors
+        createToast({
+          variant: "info",
+          body: "Unknown error.",
+          hasIcon: false,
+        });
       }
     }
   };
@@ -83,37 +109,37 @@ const Login = () => {
   const handleSignupClick = () => {
     navigate("/register");
   };
+
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="login-form-header">
-          <img
-            className="login-form-header-logo"
-            src={Logomark}
-            alt="Logomark"
-          />
+          <Logomark id="login-form-header-logo" alt="Logomark" />
           <div className="login-form-v-spacing" />
           <div className="login-form-heading">Log in to your account</div>
         </div>
         <div className="login-form-v3-spacing" />
+
         <div className="login-form-inputs">
-          <EmailTextField
-            onChange={handleInput}
-            error={errors.email ? true : false}
-            helperText={errors.email ? errors.email : ""}
+          <Field
+            type="email"
+            id="login-email-input"
+            label="Email"
             placeholder="Enter your email"
             autoComplete="email"
-            id="login-email-input"
+            onChange={handleInput}
+            error={errors.email}
           />
           <div className="login-form-v2-spacing" />
-          <PasswordTextField
-            onChange={handleInput}
-            error={errors.password ? true : false}
-            helperText={errors.password ? errors.password : ""}
-            placeholder="Password"
-            autoComplete="current-password"
+          <Field
+            type="password"
             id="login-password-input"
+            label="Password"
+            placeholder="Enter your password"
+            autoComplete="current-password"
+            onChange={handleInput}
+            error={errors.password}
           />
         </div>
         <div className="login-form-v3-spacing" />

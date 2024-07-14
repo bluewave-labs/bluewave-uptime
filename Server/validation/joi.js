@@ -14,6 +14,8 @@ const registerValidation = joi.object({
   lastname: joi.string().required(),
   email: joi.string().email().required(),
   password: joi.string().min(8).required(),
+  profileImage: joi.any(),
+  role: joi.string().required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -23,7 +25,11 @@ const editUserParamValidation = joi.object({
 const editUserBodyValidation = joi.object({
   firstname: joi.string(),
   lastname: joi.string(),
-  profilePicUrl: joi.string(),
+  profileImage: joi.any(),
+  newPassword: joi.string().min(8),
+  password: joi.string().min(8),
+  deleteProfileImage: joi.boolean(),
+  role: joi.string(),
 });
 
 const recoveryValidation = joi.object({
@@ -41,6 +47,10 @@ const newPasswordValidation = joi.object({
   recoveryToken: joi.string().required(),
   password: joi.string().min(8).required(),
   confirm: joi.string(),
+});
+
+const deleteUserParamValidation = joi.object({
+  email: joi.string().email().required(),
 });
 
 //****************************************
@@ -158,4 +168,5 @@ module.exports = {
   createCheckBodyValidation,
   getChecksParamValidation,
   deleteChecksParamValidation,
+  deleteUserParamValidation,
 };

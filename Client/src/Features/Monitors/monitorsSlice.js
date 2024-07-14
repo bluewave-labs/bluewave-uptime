@@ -1,7 +1,6 @@
-import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-
+import axiosInstance from "../../Utils/axiosConfig";
 const initialState = {
   isLoading: false,
   monitors: [],
@@ -9,16 +8,39 @@ const initialState = {
   msg: null,
 };
 
+export const createMonitor = createAsyncThunk(
+  "monitors/createMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+
+      const res = await axiosInstance.post(`/monitors`, monitor, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 export const getMonitors = createAsyncThunk(
   "monitors/getMonitors",
   async (token, thunkApi) => {
     try {
-      const res = await axios.get(
-        import.meta.env.VITE_APP_API_BASE_URL + "/monitors"
-      );
+      const res = await axiosInstance.get("/monitors");
       return res.data;
     } catch (error) {
-      return thunkApi.rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -28,8 +50,8 @@ export const getMonitorsByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await axios.get(
-        import.meta.env.VITE_APP_API_BASE_URL + "/monitors/user/" + user._id,
+      const res = await axiosInstance.get(
+        `/monitors/user/${user._id}?limit=25`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,7 +60,10 @@ export const getMonitorsByUserId = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
-      return thunkApi.rejectWithValue(error.response.data);
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -70,8 +95,10 @@ const monitorsSlice = createSlice({
       })
       .addCase(getMonitors.rejected, (state, action) => {
         state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Getting montiors failed";
       })
       // *****************************************************
       // Monitors by userId
@@ -86,10 +113,30 @@ const monitorsSlice = createSlice({
         state.monitors = action.payload.data;
       })
       .addCase(getMonitorsByUserId.rejected, (state, action) => {
-        console.log(action);
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Getting montiors failed";
+      })
+
+      // *****************************************************
+      // Create Monitor
+      // *****************************************************
+      .addCase(createMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createMonitor.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
+      })
+      .addCase(createMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to create monitor";
       });
   },
 });

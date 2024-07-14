@@ -15,6 +15,7 @@ import {
   Tabs,
   Typography,
   Stack,
+  Box,
 } from "@mui/material";
 import { ColoredLabel, StatusLabel } from "../../Components/Label/";
 import Avatar from "../../Components/Avatar/";
@@ -29,12 +30,18 @@ import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
 import UploadIcon from "@mui/icons-material/Upload";
 import SendIcon from "@mui/icons-material/Send";
+import ImageIcon from "@mui/icons-material/Image";
 
 // Redux
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getMonitors } from "../../Features/Monitors/monitorsSlice";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
+import ImageField from "../../Components/Inputs/Image";
+import ProgressUpload from "../../Components/ProgressBars";
+import Alert from "../../Components/Alert";
+import { createToast } from "../../Utils/toastUtils";
+import Field from "../../Components/Inputs/Field";
 
 const cols = [
   {
@@ -196,6 +203,9 @@ const Demo = () => {
       setIsLoading(false);
     }, 4000);
   };
+
+  //fields
+  const [visibility, setVisibility] = useState(false);
   return (
     <div>
       <div style={{ padding: "4rem", border: "1px solid black" }}>
@@ -412,6 +422,97 @@ const Demo = () => {
           onClick={handleButtonSpinnerClick}
           isLoading={isLoading}
           disabled={true}
+        />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack justifyContent="center" alignItems="center">
+        <ImageField
+          id="test-image-field"
+          onChange={() => console.log("changed")}
+        />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack justifyContent="center" alignItems="center">
+        <ProgressUpload
+          icon={<ImageIcon />}
+          label="image.jpg"
+          size="2 MB"
+          progress={50}
+          onClick={() => console.log("click")}
+        />
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack direction="row" gap="10px" flexWrap="wrap">
+        <Box width="500px">
+          <Alert
+            variant="info"
+            title="SSO login"
+            body="Since you logged in via SSO, you cannot reset or modify your password."
+          />
+        </Box>
+        <Box width="500px">
+          <Alert
+            variant="warning"
+            body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
+          />
+        </Box>
+        <Box width="500px">
+          <Alert
+            variant="error"
+            title="Error"
+            body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          />
+        </Box>
+        <Box width="500px">
+          <Alert
+            variant="info"
+            title="We've just released a new feature"
+            body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur, ipsum dolor."
+            isToast={true}
+          />
+        </Box>
+        <Box width="500px">
+          <Alert
+            variant="info"
+            body="Your password is incorrect."
+            isToast={true}
+            hasIcon={false}
+          />
+        </Box>
+        <Box width="500px" mt="5px">
+          <Button
+            level="primary"
+            label="Toast"
+            onClick={() =>
+              createToast({
+                variant: "info",
+                body: "Your password is incorrect.",
+                hasIcon: false,
+              })
+            }
+          />
+        </Box>
+      </Stack>
+      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
+      <Stack direction="row" justifyContent="center" gap="20px">
+        <Field type="text" label="Name" placeholder="Enter a name" />
+        <Field
+          type="email"
+          label="Email"
+          isRequired={true}
+          placeholder="name.surname@companyname.com"
+          error="This is an error message."
+        />
+        <Field
+          type="password"
+          label="Password"
+          isRequired={true}
+          placeholder="Create a password"
+        />
+        <Field
+          type="url"
+          label="Website"
+          placeholder="google.com"
         />
       </Stack>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />

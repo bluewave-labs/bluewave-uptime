@@ -1,0 +1,169 @@
+.account h1.MuiTypography-root,
+.account p.MuiTypography-root,
+.account input,
+.account button,
+.account td,
+.account .MuiSelect-select {
+  font-size: var(--env-var-font-size-medium);
+}
+.account h1.MuiTypography-root,
+.account p.MuiTypography-root,
+.account input,
+.account .MuiSelect-select {
+  color: var(--env-var-color-2);
+}
+.account h1.MuiTypography-root {
+  font-weight: 600;
+}
+.account .MuiStack-root:not(.table-stack) {
+  flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+}
+.account .MuiTabPanel-root {
+  padding: 0;
+  margin-top: 50px;
+}
+.account .MuiDivider-root:not(.short-divider) {
+  margin: 50px 0;
+}
+.account .MuiDivider-root,
+.account .MuiOutlinedInput-root fieldset {
+  border-color: var(--env-var-color-29);
+}
+.account [class$="-form"] {
+  width: inherit;
+}
+.account [class$="__wrapper"],
+.account [class$="__wrapper compact"] {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.edit-profile-form__wrapper>.MuiStack-root:not(.row-stack),
+.edit-password-form__wrapper>.MuiStack-root:not(.row-stack),
+.edit-organization-form__wrapper>.MuiStack-root:not(.row-stack) {
+  flex-direction: column;
+  gap: 8px;
+  margin-right: 10px;
+}
+.edit-profile-form__wrapper p.MuiTypography-root,
+.delete-profile-form__wrapper p.MuiTypography-root {
+  opacity: 0.6;
+}
+#modal-delete-account,
+#modal-edit-org-name,
+#modal-invite-member {
+  font-size: var(--env-var-font-size-large);
+}
+.edit-profile-form__wrapper:not(:first-of-type),
+.edit-password-form__wrapper:not(:first-of-type),
+.edit-team-form__wrapper:not(:first-of-type) {
+  margin-top: var(--env-var-spacing-4);
+}
+.edit-team-form__wrapper.compact {
+  margin-top: var(--env-var-spacing-3);
+  justify-content: flex-start;
+  align-items: center;
+}
+.edit-profile-form__wrapper input,
+.edit-password-form__wrapper input,
+#edit-organization-name,
+#input-team-member {
+  padding: 10px;
+}
+#edit-new-password + div > button > svg,
+#edit-confirm-password + div > button > svg,
+#edit-current-password + div > button > svg {
+  color: var(--env-var-color-29);
+}
+
+.edit-team-form__wrapper td {
+  padding: 10px 0;
+  padding-top: 20px;
+  vertical-align: text-top;
+}
+.edit-team-form__wrapper th {
+  padding: var(--env-var-spacing-1) 0;
+}
+.edit-team-form__wrapper th:first-of-type {
+  padding-left: 20px;
+}
+.edit-team-form__wrapper td {
+  color: var(--env-var-color-25);
+}
+
+#select-actions,
+#select-role {
+  padding: 5px 0;
+  padding-left: 15px;
+  padding-right: 50px;
+  line-height: 1.75;
+}
+.MuiInputBase-root:has(#select-actions) fieldset,
+.MuiInputBase-root:has(#select-role) fieldset {
+  border-color: #a1a7b1;
+  margin: -1px;
+  border-width: 1px;
+}
+.MuiInputBase-root:has(#select-actions):hover fieldset,
+.MuiInputBase-root:has(#select-role):hover fieldset {
+  border-color: var(--env-var-color-2);
+}
+
+.MuiStack-root:has(.MuiBox-root > .members-query) .MuiBox-root {
+  cursor: pointer;
+}
+.members-query {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--env-var-color-3);
+  background-color: #e0e9fd;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 50%;
+}
+
+/* for testing, will remove later */
+@media only screen and (max-width: 1600px) {
+  .edit-profile-form__wrapper .MuiStack-root:not(.row-stack),
+  .edit-password-form__wrapper .MuiStack-root:not(.row-stack),
+  .edit-organization-form__wrapper .MuiStack-root:not(.row-stack) {
+    margin-right: 30px;
+  }
+}
+
+.account .MuiStack-root:has(span.MuiTypography-root.input-error) {
+  position: relative;
+}
+.account .text-field-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px !important;
+  height: 18px !important;
+  opacity: 0.8;
+}
+.account span.MuiTypography-root.input-error {
+  position: absolute;
+  top: 100%;
+}
+.account .email-text-field,
+.account .password-text-field {
+  margin: 0;
+}
+
+.edit-profile-form__wrapper .MuiFormControl-root,
+.edit-password-form__wrapper .MuiFormControl-root {
+  width: 100%;
+}
+.edit-profile-form__wrapper .MuiStack-root:has(.MuiFormControl-root),
+.edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root) {
+  margin: 0;
+}

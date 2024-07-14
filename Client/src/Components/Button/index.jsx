@@ -48,10 +48,11 @@ const levelConfig = {
  * <Button type="submit" level="error" label="Error" disabled sx={{marginTop: "1rem"}}/>
  */
 
-const Button = ({ type, level, label, disabled, img, onClick, sx }) => {
+const Button = ({ id, type, level, label, disabled, img, onClick, sx }) => {
   const { variant, color } = levelConfig[level];
   return (
     <MuiButton
+      id={id}
       type={type}
       variant={variant}
       color={color}
@@ -72,6 +73,7 @@ const Button = ({ type, level, label, disabled, img, onClick, sx }) => {
 };
 
 Button.propTypes = {
+  id: PropTypes.string,
   type: PropTypes.string,
   level: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,

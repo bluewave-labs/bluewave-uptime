@@ -17,8 +17,8 @@
   text-align: center;
 }
 
-.login-form-header-logo {
-  margin: 0 auto;
+#login-form-header-logo {
+  margin-bottom: 60px;
 }
 
 .login-form-v-spacing {
@@ -39,11 +39,9 @@
   color: var(--env-var-color-1);
 }
 
-#login-email-input {
-  width: 308px;
-  height: 11px;
-  font-size: var(--env-var-font-size-medium);
-}
+/* .login-form-inputs .field h3.MuiTypography-root{
+  font-weight: 600;
+} */
 
 .login-form-password-options {
   display: flex;

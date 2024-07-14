@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
+import Avatar from "../Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
@@ -18,8 +18,20 @@ import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import LockSvg from "../../assets/icons/lock.svg?react";
+import UserSvg from "../../assets/icons/user.svg?react";
+import TeamSvg from "../../assets/icons/user-two.svg?react";
+import LogoutSvg from "../../assets/icons/logout.svg?react";
 
-const settings = ["Profile", "Team", "Invite Colleagues", "Logout"];
+import BWULogo from "../../assets/Images/bwl-logo.svg?react";
+
+const settings = ["Profile", "Password", "Team", "Logout"];
+const icons = {
+  Profile: <UserSvg />,
+  Team: <TeamSvg />,
+  Password: <LockSvg />,
+  Logout: <LogoutSvg />,
+};
 
 /**
  * NavBar component
@@ -66,13 +78,13 @@ function NavBar() {
     setAnchorElUser(null);
     switch (setting) {
       case "Profile":
-        console.log("Profile");
+        navigate("/account/profile");
         break;
       case "Team":
-        console.log("Team");
+        navigate("/account/team");
         break;
-      case "Invite Colleagues":
-        console.log("Invite Colleagues");
+      case "Password":
+        navigate("/account/password");
         break;
       case "Logout":
         logout();
@@ -93,22 +105,7 @@ function NavBar() {
     >
       <Container maxWidth="xxl" sx={{ width: "100%" }}>
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontWeight: theme.typography.fontWeightBold,
-              letterSpacing: theme.spacing(0.3),
-              color: "var(--env-var-color-11)",
-              textDecoration: "none",
-            }}
-          >
-            Peak Watch
-          </Typography>
+          <BWULogo id="bw-uptime-logo-dashboard" alt="BlueWave Uptime Logo" />
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -151,12 +148,7 @@ function NavBar() {
                 sx={{ p: 0 }}
               >
                 <div className="icon-button-toggle">
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="/static/images/avatar/2.jpg"
-                    className="icon-button-avatar"
-                    style={{ width: "25px", height: "25px" }}
-                  />
+                  <Avatar small={true} sx={{ mr: "8px" }} />
                   <div className="icon-button-toggle-title">
                     {authState.user.firstname} {authState.user.lastname}
                   </div>
@@ -189,10 +181,13 @@ function NavBar() {
                   id="menu-item"
                   key={setting}
                   onClick={() => handleCloseUserMenu(setting)}
+                  sx={{ width: "150px" }}
                 >
+                  {icons[setting]}
                   <Typography
                     fontSize="var(--env-var-font-size-medium)"
                     textAlign="center"
+                    marginLeft="8px"
                   >
                     {setting}
                   </Typography>

@@ -7,7 +7,8 @@ const RecoveryToken = require("../models/RecoveryToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
-const { error } = require("console");
+const { GenerateAvatarImage } = require("../utils/imageProcessing");
+const { ParseBoolean } = require("../utils/utils");
 const connect = async () => {
   try {
     await mongoose.connect(process.env.DB_CONNECTION_STRING);
@@ -32,9 +33,23 @@ const connect = async () => {
  */
 const insertUser = async (req, res) => {
   try {
-    const newUser = new UserModel({ ...req.body });
+    const userData = { ...req.body };
+    if (req.file) {
+      // 1.  Save the full size image
+      userData.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+
+      // 2.  Get the avatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      userData.avatarImage = avatar;
+    }
+    const newUser = new UserModel(userData);
     await newUser.save();
-    return await UserModel.findOne({ _id: newUser._id }).select("-password"); // .select() doesn't work with create, need to save then find
+    return await UserModel.findOne({ _id: newUser._id })
+      .select("-password")
+      .select("-profileImage"); // .select() doesn't work with create, need to save then find
   } catch (error) {
     if (error.code === DUPLICATE_KEY_CODE) {
       throw new Error(errorMessages.DB_USER_EXISTS);
@@ -58,7 +73,9 @@ const getUserByEmail = async (req, res) => {
   try {
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: req.body.email }).select(
+      "-profileImage"
+    );
     if (user) {
       return user;
     } else {
@@ -80,15 +97,62 @@ const getUserByEmail = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const candidateUserId = req.params.userId;
-  const candidateUser = req.body;
 
   try {
+    const candidateUser = { ...req.body };
+    // ******************************************
+    // Handle profile image
+    // ******************************************
+
+    if (ParseBoolean(candidateUser.deleteProfileImage) === true) {
+      candidateUser.profileImage = null;
+      candidateUser.avatarImage = null;
+    } else if (req.file) {
+      // 1.  Save the full size image
+      candidateUser.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+
+      // 2.  Get the avaatar sized image
+      const avatar = await GenerateAvatarImage(req.file);
+      candidateUser.avatarImage = avatar;
+    }
+
+    // ******************************************
+    // End handling profile image
+    // ******************************************
+
     const updatedUser = await UserModel.findByIdAndUpdate(
       candidateUserId,
       candidateUser,
       { new: true } // Returns updated user instead of pre-update user
-    ).select("-password");
+    )
+      .select("-password")
+      .select("-profileImage");
+    console.log(updatedUser);
     return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete a user by ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<UserModel>}
+ * @throws {Error}
+ */
+const deleteUser = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
+    return deletedUser;
   } catch (error) {
     throw error;
   }
@@ -153,11 +217,25 @@ const resetPassword = async (req, res) => {
       // Fetch the user again without the password
       const userWithoutPassword = await UserModel.findOne({
         email: recoveryToken.email,
-      }).select("-password");
+      })
+        .select("-password")
+        .select("-profileImage");
       return userWithoutPassword;
     } else {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const checkAdmin = async (req, res) => {
+  try {
+    const admin = await UserModel.findOne({ role: "admin" });
+    if (admin !== null) {
+      return true;
+    }
+    return false;
   } catch (error) {
     throw error;
   }
@@ -195,7 +273,9 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
-    const checks = await Check.find({ monitorId: monitor._id });
+    const checks = await Check.find({ monitorId: monitor._id }).sort({
+      createdAt: -1,
+    });
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
   } catch (error) {
@@ -213,15 +293,26 @@ const getMonitorById = async (req, res) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
+    const limit = req.query.limit;
     const monitors = await Monitor.find({ userId: req.params.userId });
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
-        // Checks are order oldest -> newest
-        const checks = await Check.find({ monitorId: monitor._id }).sort({
-          createdAt: 1,
-        });
-        return { ...monitor.toObject(), checks };
+        if (limit) {
+          // Checks are order oldest -> newest
+          const checks = await Check.find({ monitorId: monitor._id })
+            .sort({
+              createdAt: 1,
+            })
+            .limit(limit);
+          return { ...monitor.toObject(), checks };
+        } else {
+          // Checks are order oldest -> newest
+          const checks = await Check.find({ monitorId: monitor._id }).sort({
+            createdAt: 1,
+          });
+          return { ...monitor.toObject(), checks };
+        }
       })
     );
 
@@ -279,6 +370,21 @@ const deleteAllMonitors = async (req, res) => {
   try {
     const deletedCount = await Monitor.deleteMany({});
     return deletedCount.deletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Delete all monitors associated with a user ID
+ * @async
+ * @param {string} userId - The ID of the user whose monitors are to be deleted.
+ * @returns {Promise} A promise that resolves when the operation is complete.
+ */
+const deleteMonitorsByUserId = async (userId) => {
+  try {
+    const result = await Monitor.deleteMany({ userId: userId });
+    return result;
   } catch (error) {
     throw error;
   }
@@ -485,6 +591,13 @@ const deleteAlert = async (alertId) => {
   }
 };
 
+/**
+ * Deletes alerts by monitor ID.
+ *
+ * @param {string} monitorId - The ID of the monitor.
+ * @returns {Promise} A promise that resolves to the result of the delete operation.
+ * @throws {Error} If an error occurs while deleting the alerts.
+ */
 const deleteAlertByMonitorId = async (monitorId) => {
   try {
     const result = await Alert.deleteMany({ monitorId });
@@ -499,9 +612,11 @@ module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
+  deleteUser,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
+  checkAdmin,
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
@@ -519,4 +634,5 @@ module.exports = {
   editAlert,
   deleteAlert,
   deleteAlertByMonitorId,
+  deleteMonitorsByUserId,
 };

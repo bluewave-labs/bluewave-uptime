@@ -4,18 +4,15 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/Logomark.png";
-import EmailTextField from "../../Components/TextFields/Email/EmailTextField";
-import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
-import StringTextField from "../../Components/TextFields/Text/TextField";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import { registerValidation } from "../../Validation/validation";
-
+import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
-
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+import { createToast } from "../../Utils/toastUtils";
+import Field from "../../Components/Inputs/Field";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -36,7 +33,21 @@ const Register = () => {
     lastname: "",
     email: "",
     password: "",
+    role: "",
   });
+
+  useEffect(() => {
+    axiosInstance
+      .get("/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === true) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [form, navigate]);
 
   useEffect(() => {
     const { error } = registerValidation.validate(form, {
@@ -62,8 +73,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await registerValidation.validateAsync(form, { abortEarly: false });
-      const action = await dispatch(register(form));
+      const adminForm = { ...form, role: "admin" };
+      await registerValidation.validateAsync(adminForm, { abortEarly: false });
+      const action = await dispatch(register(adminForm));
 
       if (action.meta.requestStatus === "fulfilled") {
         const token = action.payload.data;
@@ -78,19 +90,33 @@ const Register = () => {
       }
     } catch (error) {
       if (error.name === "ValidationError") {
-        // TODO Handle validation errors
-        console.log(error);
-        alert(error);
+        // validation errors
+        createToast({
+          variant: "info",
+          body:
+            error && error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
+          hasIcon: false,
+        });
       } else if (error.response) {
-        // TODO handle dispatch errors
-        alert(error.response.msg);
+        // dispatch errors
+        createToast({
+          variant: "info",
+          body: error.response.msg,
+          hasIcon: false,
+        });
       } else {
-        // TODO handle unknown errors
-        console.log(error);
-        alert("Unknown error");
+        // unknown errors
+        createToast({
+          variant: "info",
+          body: "Unknown error.",
+          hasIcon: false,
+        });
       }
     }
   };
+
 
   return (
     <div className="register-page">
@@ -103,47 +129,65 @@ const Register = () => {
             alt="Logomark"
           />
           <div className="register-form-v-spacing-large" />
-          <div className="register-form-heading">Create an account</div>
+          <div className="register-form-heading">
+            Create Uptime Manager admin account
+          </div>
           <div className="register-form-v-spacing-large"></div>
         </div>
         <div className="register-form-v-spacing-40px" />
         <div className="register-form-inputs">
-          <StringTextField
-            onChange={handleInput}
-            error={errors.firstname ? true : false}
-            helperText={errors.firstname ? errors.firstname : ""}
-            label="First name*"
-            placeholder="Enter your first name"
+          <Field
             id="register-firstname-input"
+            label="Name"
+            isRequired={true}
+            placeholder="Talha"
+            autoComplete="given-name"
+            onChange={handleInput}
+            error={errors.firstname}
           />
           <div className="login-form-v2-spacing" />
-          <StringTextField
-            onChange={handleInput}
-            error={errors.lastname ? true : false}
-            helperText={errors.lastname ? errors.lastname : ""}
-            label="Last name*"
-            placeholder="Enter your last name"
+          <Field
             id="register-lastname-input"
+            label="Surname"
+            isRequired={true}
+            placeholder="Bolat"
+            autoComplete="family-name"
+            onChange={handleInput}
+            error={errors.lastname}
           />
           <div className="login-form-v2-spacing" />
-          <EmailTextField
-            onChange={handleInput}
-            label="Email*"
-            error={errors.email ? true : false}
-            helperText={errors.email ? errors.email : ""}
-            placeholder="Enter your email"
-            autoComplete="email"
+          <Field
+            type="email"
             id="register-email-input"
+            label="Email"
+            isRequired={true}
+            placeholder="name.surname@companyname.com"
+            autoComplete="email"
+            onChange={handleInput}
+            error={errors.email}
           />
           <div className="login-form-v2-spacing" />
-          <PasswordTextField
-            onChange={handleInput}
-            label="Password*"
-            error={errors.password ? true : false}
-            helperText={errors.password ? errors.password : ""}
+          <Field
+            type="password"
+            id="register-password-input"
+            label="Password"
+            isRequired={true}
             placeholder="Create a password"
             autoComplete="current-password"
-            id="register-password-input"
+            error={errors.password}
+            onChange={handleInput}
+          />
+          <div className="login-form-v2-spacing" />
+          {/* TODO - hook up to form state and run checks */}
+          <Field
+            type="password"
+            id="register-confirm-input"
+            label="Confirm password"
+            isRequired={true}
+            placeholder="Confirm your password"
+            autoComplete="current-password"
+            error={errors.confirm}
+            onChange={handleInput}
           />
         </div>
         <div className="login-form-v2-spacing" />

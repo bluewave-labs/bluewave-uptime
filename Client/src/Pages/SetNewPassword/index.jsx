@@ -1,16 +1,15 @@
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
 import LockIcon from "../../assets/Images/lock-icon.png";
-import PasswordTextField from "../../Components/TextFields/Password/PasswordTextField";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import LeftArrow from "../../assets/Images/arrow-left.png";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { newPasswordValidation } from "../../Validation/validation";
-import axios from "axios";
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+import axiosInstance from "../../Utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import Field from "../../Components/Inputs/Field";
 
 const SetNewPassword = () => {
   const navigate = useNavigate();
@@ -33,10 +32,10 @@ const SetNewPassword = () => {
     // TODO show loading spinner
     setIsLoading(true);
     try {
-      await axios.post(`${BASE_URL}/auth/recovery/validate`, {
+      await axiosInstance.post("/auth/recovery/validate", {
         recoveryToken: token,
       });
-      await axios.post(`${BASE_URL}/auth/recovery/reset`, {
+      await axiosInstance.post("/auth/recovery/reset", {
         ...form,
         recoveryToken: token,
       });
@@ -84,22 +83,24 @@ const SetNewPassword = () => {
         </div>
         <div className="set-new-password-form-gap-large"></div>
         <div className="set-new-password-form-content">
-          <PasswordTextField
-            label="Password"
-            onChange={handleInput}
-            error={errors.password !== undefined ? true : false}
-            helperText={errors.password !== undefined ? errors.password : ""}
-            placeholder="••••••••"
+          <Field
+            type="password"
             id="register-password-input"
+            label="Password"
+            isRequired={true}
+            placeholder="••••••••"
+            onChange={handleInput}
+            error={errors.password}
           />
           <div className="set-new-password-form-gap-medium"></div>
-          <PasswordTextField
-            label="Confirm password"
-            onChange={handleInput}
-            error={errors.confirm !== undefined ? true : false}
-            helperText={errors.confirm !== undefined ? errors.confirm : ""}
-            placeholder="••••••••"
+          <Field
+            type="password"
             id="confirm-password-input"
+            label="Confirm password"
+            isRequired={true}
+            placeholder="••••••••"
+            onChange={handleInput}
+            error={errors.confirm}
           />
           <div className="set-new-password-form-gap-medium"></div>
           <div className="set-new-password-form-checks">

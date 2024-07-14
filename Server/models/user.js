@@ -20,8 +20,12 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    profilePicUrl: {
+    avatarImage: {
       type: String,
+    },
+    profileImage: {
+      data: Buffer,
+      contentType: String,
     },
     isActive: {
       type: Boolean,
@@ -30,6 +34,11 @@ const UserSchema = mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    role: {
+      type: String,
+      default: "user",
+      enum: ["user", "admin"],
     },
   },
   {
@@ -43,6 +52,16 @@ UserSchema.pre("save", async function (next) {
   }
   const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
   this.password = await bcrypt.hash(this.password, salt); // hash is also async, need to eitehr await or use hashSync
+  next();
+});
+
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  if ("password" in update) {
+    const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
+    update.password = await bcrypt.hash(update.password, salt); // hash is also async, need to eitehr await or use hashSync
+  }
+
   next();
 });
 

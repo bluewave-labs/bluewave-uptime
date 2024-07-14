@@ -5,12 +5,6 @@
   justify-content: center;
 }
 
-.icon-button-avatar {
-  width: 25px;
-  height: 25px;
-  margin-right: var(--env-var-spacing-1);
-}
-
 .icon-button-toggle-title {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
@@ -29,4 +23,16 @@
   outline: none;
   box-shadow: none;
   background-color: transparent;
+}
+
+#menu-appbar svg {
+  width: 16px;
+  height: 16px;
+  color: var(--env-var-color-25);
+}
+
+#bw-uptime-logo-dashboard {
+  width: fit-content;
+  height: 16px;
+  margin-left: 15px;
 }

@@ -7,6 +7,7 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
+  deleteUserParamValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -26,7 +27,19 @@ const {
  */
 const issueToken = (payload) => {
   //TODO Add proper expiration date
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99d" });
+  const tokenTTL = process.env.TOKEN_TTL ? process.env.TOKEN_TTL : "2h";
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
+};
+
+const getTokenFromHeaders = (headers) => {
+  const authorizationHeader = headers.authorization;
+  if (!authorizationHeader) throw new Error("No auth headers");
+
+  const parts = authorizationHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer")
+    throw new Error("Invalid auth headers");
+
+  return parts[1];
 };
 
 /**
@@ -47,6 +60,21 @@ const registerController = async (req, res, next) => {
     return;
   }
 
+  // Check if an admin user exists, if so, error
+  try {
+    const admin = await req.db.checkAdmin(req, res);
+    console.log(admin);
+    if (admin === true) {
+      throw new Error(errorMessages.AUTH_ADMIN_EXISTS);
+    }
+  } catch (error) {
+    console.log("WEEEEEEE", error.message);
+    error.service = SERVICE_NAME;
+    error.status = 403;
+    next(error);
+    return;
+  }
+
   // Create a new user
   try {
     const newUser = await req.db.insertUser(req, res);
@@ -54,7 +82,12 @@ const registerController = async (req, res, next) => {
       service: SERVICE_NAME,
       userId: newUser._id,
     });
-    const token = issueToken(newUser._doc);
+
+    const userForToken = { ...newUser._doc };
+    delete userForToken.profileImage;
+    delete userForToken.avatarImage;
+
+    const token = issueToken(userForToken);
 
     // Sending email to user with pre defined template
     const template = registerTemplate("https://www.bluewavelabs.ca");
@@ -68,7 +101,7 @@ const registerController = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
-      data: token,
+      data: { user: newUser, token: token },
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -101,13 +134,17 @@ const loginController = async (req, res, next) => {
     // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
+    delete userWithoutPassword.avatarImage;
 
     // Happy path, return token
     const token = issueToken(userWithoutPassword);
+    // reset avatar image
+    userWithoutPassword.avatarImage = user.avatarImage;
+
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
-      data: token,
+      data: { user: userWithoutPassword, token: token },
     });
   } catch (error) {
     error.status = 500;
@@ -128,6 +165,7 @@ const userEditController = async (req, res, next) => {
     return;
   }
 
+  // TODO is this neccessary any longer? Verify ownership middleware should handle this
   if (req.params.userId !== req.user._id.toString()) {
     const error = new Error(errorMessages.AUTH_UNAUTHORIZED);
     error.status = 401;
@@ -137,11 +175,60 @@ const userEditController = async (req, res, next) => {
   }
 
   try {
+    // Change Password check
+    if (req.body.password && req.body.newPassword) {
+      const newPassword = req.body.newPassword;
+      const password = req.body.password;
+
+      // Compare password
+      // Get token from headers
+      const token = getTokenFromHeaders(req.headers);
+      // Get email from token
+      const { email } = jwt.verify(token, process.env.JWT_SECRET);
+      // Add user email to body for DB operation
+      req.body.email = email;
+      // Get user
+      const user = await req.db.getUserByEmail(req, res);
+      // Compare passwords
+      const match = await user.comparePassword(req.body.password);
+      // If not a match, throw a 403
+      if (!match) {
+        const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
+        error.status = 403;
+        throw error;
+      }
+      // If a match, update the password
+      req.body.password = req.body.newPassword;
+    }
+
     const updatedUser = await req.db.updateUser(req, res);
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_UPDATE_USER,
       data: updatedUser,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+/**
+ * Checks to see if an admin account exists
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ */
+
+const checkAdminController = async (req, res) => {
+  try {
+    const adminExists = await req.db.checkAdmin(req, res);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_ADMIN_EXISTS,
+      data: adminExists,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -223,23 +310,102 @@ const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
     user = await req.db.resetPassword(req, res);
-    res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.AUTH_RESET_PASSWORD,
-        data: user,
-      });
+    res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_RESET_PASSWORD,
+      data: user,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
   }
 };
+
+/**
+ * Deletes a user and all associated monitors, checks, and alerts.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Object} The response object with success status and message.
+ * @throws {Error} If user validation fails or user is not found in the database.
+ */
+const deleteUserController = async (req, res, next) => {
+  try {
+    const token = getTokenFromHeaders(req.headers);
+    const decodedToken = jwt.decode(token);
+    const { _id, email } = decodedToken;
+
+    const decodedTokenCastedAsRequest = {
+      params: {
+        userId: _id,
+      },
+      body: {
+        email,
+      },
+    };
+
+    // Validate user
+    await deleteUserParamValidation.validateAsync(
+      decodedTokenCastedAsRequest.body
+    );
+
+    // Check if the user exists
+    const user = await req.db.getUserByEmail(decodedTokenCastedAsRequest);
+    if (!user) {
+      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+    }
+
+    // 1. Find all the monitors associated with the user id
+    const monitors = await req.db.getMonitorsByUserId(
+      decodedTokenCastedAsRequest
+    );
+
+    if (monitors) {
+      // 2. Delete jobs associated with each monitor
+      for (const monitor of monitors) {
+        await req.jobQueue.deleteJob(monitor);
+      }
+
+      // 3. Delete all checks associated with each monitor
+      for (const monitor of monitors) {
+        await req.db.deleteChecks(monitor._id);
+      }
+
+      // 4. Delete all alerts associated with each monitor
+      for (const monitor of monitors) {
+        await req.db.deleteAlertByMonitorId(monitor._id);
+      }
+
+      // 5. Delete each monitor
+      await req.db.deleteMonitorsByUserId(user._id);
+
+      // 6. Delete the user by id
+      await req.db.deleteUser(decodedTokenCastedAsRequest);
+
+      return res.status(200).json({
+        success: true,
+        msg: successMessages.AUTH_DELETE_USER,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        msg: errorMessages.MONITOR_GET_BY_USER_ID,
+      });
+    }
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
   userEditController,
+  checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
+  deleteUserController,
 };

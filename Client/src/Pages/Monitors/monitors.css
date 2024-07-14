@@ -1,0 +1,100 @@
+.current-monitors {
+  margin-top: var(--env-var-spacing-2);
+  border: 1px solid #eaecf0;
+  padding: 40px;
+  border-radius: 4px;
+}
+
+.current-monitors-title-holder {
+  display: flex;
+  align-items: center;
+}
+
+.current-monitors-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.current-monitors-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-right: var(--env-var-spacing-1);
+  color: var(--env-var-color-1);
+}
+
+.current-monitors-counter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  min-width: 22px;
+  min-height: 22px;
+  background-color: var(--env-var-color-15);
+  border: 1px solid var(--env-var-color-6);
+  border-radius: 50%;
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 500;
+  color: var(--env-var-color-5);
+}
+
+.monitors-v-gaping {
+  height: var(--env-var-spacing-3);
+}
+
+.current-monitors-table {
+  width: 100%;
+  text-align: left;
+}
+
+.current-monitors-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  border: 1px solid var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+}
+
+.current-monitors-table th,
+.current-monitors-table td {
+  border: 1px solid var(--env-var-color-16);
+  border-left: none;
+  border-right: none;
+  padding: 8px;
+}
+
+.theader-row {
+  background-color: var(--env-var-color-13);
+  color: var(--env-var-color-2);
+  font-weight: 500;
+}
+
+.theader-row td {
+  padding: var(--env-var-spacing-1) var(--env-var-spacing-2);
+  font-size: var(--env-var-font-size-medium);
+}
+
+.host-list-item-precentage {
+  font-size: var(--env-var-font-size-medium);
+}
+
+.tbody-row td {
+  padding: var(--env-var-spacing-2) var(--env-var-img-width-2);
+}
+
+.host-status-box {
+  display: flex;
+  width: fit-content;
+  border: 1px solid var(--env-var-color-4);
+  border-radius: var(--env-var-radius-2);
+  align-items: center;
+  padding: calc(var(--env-var-spacing-1) / 2);
+}
+
+.host-actions {
+  margin: auto;
+  cursor: pointer;
+}
+
+.tbody-row-cell.actions-cell {
+  padding-left: 30px;
+}
