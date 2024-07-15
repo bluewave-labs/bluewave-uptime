@@ -8,15 +8,24 @@ import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import axiosInstance from "../../Utils/axiosConfig";
-import { loginValidation, credentials } from "../../Validation/validation";
+import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import Field from "../../Components/Inputs/Field";
+import {
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useTheme } from "@emotion/react";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const idMap = {
     "login-email-input": "email",
@@ -115,15 +124,22 @@ const Login = () => {
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <div className="login-form-header">
-          <Logomark id="login-form-header-logo" alt="Logomark" />
-          <div className="login-form-v-spacing" />
-          <div className="login-form-heading">Log in to your account</div>
-        </div>
-        <div className="login-form-v3-spacing" />
-
-        <div className="login-form-inputs">
+      <form
+        className="login-form"
+        onSubmit={handleSubmit}
+        style={{ marginBottom: theme.gap.xxl }}
+      >
+        <Stack gap={theme.gap.large} direction="column">
+          <Logomark alt="Logomark" />
+          <Button
+            level="secondary"
+            label="Sign in with Google"
+            sx={{ fontWeight: "600", mt: theme.gap.xxl }}
+            img={<img className="google-enter" src={Google} alt="Google" />}
+          />
+          <Divider>
+            <Typography>or</Typography>
+          </Divider>
           <Field
             type="email"
             id="login-email-input"
@@ -135,52 +151,56 @@ const Login = () => {
             onChange={handleChange}
             error={errors.email}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             type="password"
             id="login-password-input"
             label="Password"
             isRequired={true}
-            placeholder="Enter your password"
+            placeholder="••••••••••"
             autoComplete="current-password"
             value={form.password}
             onChange={handleChange}
             error={errors.password}
           />
-        </div>
-        <div className="login-form-v3-spacing" />
-        <div className="login-form-password-options">
-          <CheckBox />
-          <div className="login-form-forgot-password">Forgot password</div>
-        </div>
-        <div className="login-form-v3-spacing" />
-        <div className="login-form-actions">
-          <Button
-            type="submit"
-            level="primary"
-            label="Sign in"
-            sx={{ width: "100%" }}
-          />
-          <div className="login-form-v-spacing" />
-          <Button
-            level="secondary"
-            label="Sign in with Google"
-            sx={{ width: "100%", color: "#344054", fontWeight: "700" }}
-            img={<img className="google-enter" src={Google} alt="Google" />}
-          />
-        </div>
-        <div className="login-form-v3-spacing" />
-        <div className="new-account-option">
-          Don’t have an account?
-          <span
-            onClick={() => {
-              navigate("/register");
-            }}
-            className="new-account-option-span"
+          <Stack direction="row" justifyContent="space-between">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  sx={{
+                    padding: 0,
+                    "& .MuiTouchRipple-root": {
+                      pointerEvents: "none",
+                      display: "none",
+                    },
+                  }}
+                />
+              }
+              label="Remember me"
+            />
+            <span>Forgot password</span>
+          </Stack>
+        </Stack>
+        <Stack gap={theme.gap.ml} mt={theme.gap.large}>
+          <Button type="submit" level="primary" label="Sign in" />
+          <Stack
+            direction="row"
+            justifyContent="center"
+            gap="5px"
+            mt={theme.gap.ml}
           >
-            Sign up
-          </span>
-        </div>
+            <Typography component="p" sx={{ alignSelf: "center" }}>
+              Don't have an account?
+            </Typography>
+            <span
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Sign up
+            </span>
+          </Stack>
+        </Stack>
       </form>
     </div>
   );
