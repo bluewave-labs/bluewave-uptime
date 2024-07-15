@@ -8,7 +8,6 @@ const mongoose = require("mongoose");
  * @property {Object} bestPractices - Metrics related to best practices category.
  * @property {Object} seo - Metrics related to SEO category.
  * @property {Object} performance - Metrics related to performance category.
- * @property {Date} timestamp - Timestamp when the metrics were recorded.
  */
 
 const MetricsSchema = mongoose.Schema(
@@ -33,10 +32,6 @@ const MetricsSchema = mongoose.Schema(
     performance: {
       type: Object,
       required: true,
-    },
-    timestamp: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
