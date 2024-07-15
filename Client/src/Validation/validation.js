@@ -62,8 +62,8 @@ const credentials = joi.object({
       "string.empty": "Password confirmation is required",
     })
     .custom((value, helpers) => {
-      const { newPassword } = helpers.prefs.context;
-      if (value !== newPassword) {
+      const { password } = helpers.prefs.context;
+      if (value !== password) {
         return helpers.message("Passwords do not match");
       }
       return value;

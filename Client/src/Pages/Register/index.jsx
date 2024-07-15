@@ -7,16 +7,18 @@ import Logomark from "../../assets/Images/Logomark.png";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
-import { registerValidation } from "../../Validation/validation";
+import { credentials } from "../../Validation/validation";
 import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
 import Field from "../../Components/Inputs/Field";
+import { useTheme } from "@emotion/react";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   // TODO If possible, change the IDs of these fields to match the backend
   const idMap = {
@@ -24,104 +26,113 @@ const Register = () => {
     "register-lastname-input": "lastname",
     "register-email-input": "email",
     "register-password-input": "password",
+    "register-confirm-input": "confirm",
   };
-
-  const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
     email: "",
     password: "",
+    confirm: "",
     role: "",
   });
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    axiosInstance
-      .get("/auth/users/admin")
-      .then((response) => {
-        if (response.data.data === true) {
-          navigate("/login");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [form, navigate]);
-
-  useEffect(() => {
-    const { error } = registerValidation.validate(form, {
-      abortEarly: false,
-    });
-
-    if (error) {
-      // Creates an error object in the format { field: message }
-      const validationErrors = error.details.reduce((acc, err) => {
-        return { ...acc, [err.path[0]]: err.message };
-      }, {});
-      setErrors(validationErrors);
-    } else {
-      setErrors({});
-    }
-  }, [form]);
-
-  const handleInput = (e) => {
-    const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
-    setForm(newForm);
-  };
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get("/auth/users/admin")
+  //     .then((response) => {
+  //       if (response.data.data === true) {
+  //         navigate("/login");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [form, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const adminForm = { ...form, role: "admin" };
-      await registerValidation.validateAsync(adminForm, { abortEarly: false });
-      const action = await dispatch(register(adminForm));
 
-      if (action.meta.requestStatus === "fulfilled") {
+    const adminForm = { ...form, role: "admin" };
+    const { error } = credentials.validate(adminForm, {
+      abortEarly: false,
+      context: { password: form.password },
+    });
+
+    if (error) {
+      // validation errors
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      createToast({
+        variant: "info",
+        body:
+          error.details && error.details.length > 0
+            ? error.details[0].message
+            : "Error validating data.",
+        hasIcon: false,
+      });
+    } else {
+      delete adminForm.confirm;
+      const action = await dispatch(register(adminForm));
+      if (action.payload.success) {
         const token = action.payload.data;
         localStorage.setItem("token", token);
         navigate("/");
-      }
-
-      if (action.meta.requestStatus === "rejected") {
-        const error = new Error("Request rejected");
-        error.response = action.payload;
-        throw error;
-      }
-    } catch (error) {
-      if (error.name === "ValidationError") {
-        // validation errors
         createToast({
           variant: "info",
-          body:
-            error && error.details && error.details.length > 0
-              ? error.details[0].message
-              : "Error validating data.",
-          hasIcon: false,
-        });
-      } else if (error.response) {
-        // dispatch errors
-        createToast({
-          variant: "info",
-          body: error.response.msg,
+          body: "Welcome! Your account was created successfully.",
           hasIcon: false,
         });
       } else {
-        // unknown errors
-        createToast({
-          variant: "info",
-          body: "Unknown error.",
-          hasIcon: false,
-        });
+        if (action.payload) {
+          // dispatch errors
+          createToast({
+            variant: "info",
+            body: action.payload.msg,
+            hasIcon: false,
+          });
+        } else {
+          // unknown errors
+          createToast({
+            variant: "info",
+            body: "Unknown error.",
+            hasIcon: false,
+          });
+        }
       }
     }
   };
 
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idMap[id];
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    const { error } = credentials.validate(
+      { [name]: value },
+      { abortEarly: false, context: { password: form.password } }
+    );
+
+    setErrors((prev) => {
+      const prevErrors = { ...prev };
+      if (error) prevErrors[name] = error.details[0].message;
+      else delete prevErrors[name];
+      return prevErrors;
+    });
+  };
 
   return (
     <div className="register-page">
       <BackgroundPattern></BackgroundPattern>
-      <form className="register-form" onSubmit={handleSubmit}>
+      <form className="register-form" onSubmit={handleSubmit} noValidate>
         <div className="register-form-header">
           <img
             className="register-form-header-logo"
@@ -142,7 +153,8 @@ const Register = () => {
             isRequired={true}
             placeholder="Talha"
             autoComplete="given-name"
-            onChange={handleInput}
+            value={form.firstname}
+            onChange={handleChange}
             error={errors.firstname}
           />
           <div className="login-form-v2-spacing" />
@@ -152,7 +164,8 @@ const Register = () => {
             isRequired={true}
             placeholder="Bolat"
             autoComplete="family-name"
-            onChange={handleInput}
+            value={form.lastname}
+            onChange={handleChange}
             error={errors.lastname}
           />
           <div className="login-form-v2-spacing" />
@@ -163,7 +176,8 @@ const Register = () => {
             isRequired={true}
             placeholder="name.surname@companyname.com"
             autoComplete="email"
-            onChange={handleInput}
+            value={form.email}
+            onChange={handleChange}
             error={errors.email}
           />
           <div className="login-form-v2-spacing" />
@@ -174,8 +188,9 @@ const Register = () => {
             isRequired={true}
             placeholder="Create a password"
             autoComplete="current-password"
+            value={form.password}
+            onChange={handleChange}
             error={errors.password}
-            onChange={handleInput}
           />
           <div className="login-form-v2-spacing" />
           {/* TODO - hook up to form state and run checks */}
@@ -186,8 +201,9 @@ const Register = () => {
             isRequired={true}
             placeholder="Confirm your password"
             autoComplete="current-password"
+            value={form.confirm}
+            onChange={handleChange}
             error={errors.confirm}
-            onChange={handleInput}
           />
         </div>
         <div className="login-form-v2-spacing" />

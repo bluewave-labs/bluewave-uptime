@@ -204,6 +204,22 @@ const ProfilePanel = () => {
     if (action.payload.success) {
       dispatch(clearAuthState());
       dispatch(clearMonitorState());
+    } else {
+      if (action.payload) {
+        // dispatch errors
+        createToast({
+          variant: "info",
+          body: action.payload.msg,
+          hasIcon: false,
+        });
+      } else {
+        // unknown errors
+        createToast({
+          variant: "info",
+          body: "Unknown error.",
+          hasIcon: false,
+        });
+      }
     }
   };
 
