@@ -50,11 +50,14 @@ export const getMonitorsByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await axiosInstance.get("/monitors/user/" + user._id, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axiosInstance.get(
+        `/monitors/user/${user._id}?limit=25`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {

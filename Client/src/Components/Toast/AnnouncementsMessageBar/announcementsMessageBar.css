@@ -1,8 +1,0 @@
-.announcement-messagebar-body {
-  margin: 20px;
-  font-size: var(--env-var-font-size-medium);
-  padding: 0 16px 0 0;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-}

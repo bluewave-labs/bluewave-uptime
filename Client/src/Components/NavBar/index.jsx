@@ -23,7 +23,7 @@ import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 
-import BWULogo from "../../assets/Images/bwl-logo.svg";
+import BWULogo from "../../assets/Images/bwl-logo.svg?react";
 
 const settings = ["Profile", "Password", "Team", "Logout"];
 const icons = {
@@ -105,11 +105,7 @@ function NavBar() {
     >
       <Container maxWidth="xxl" sx={{ width: "100%" }}>
         <Toolbar disableGutters>
-          <img
-            id="bw-uptime-logo-dashboard"
-            src={BWULogo}
-            alt="BlueWave Uptime Logo"
-          />
+          <BWULogo id="bw-uptime-logo-dashboard" alt="BlueWave Uptime Logo" />
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton

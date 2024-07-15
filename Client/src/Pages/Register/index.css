@@ -1,5 +1,4 @@
 .register-page {
-  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
   min-height: var(--env-var-height-1);
@@ -38,16 +37,6 @@
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
   font-weight: 600;
-}
-
-#register-firstname-input,
-#register-lastname-input,
-#register-email-input,
-#register-password-input {
-  font-size: var(--env-var-font-size-medium);
-  width: 294px;
-  height: 11px;
-  padding: 12px 14px;
 }
 
 .register-bottom-spacing {

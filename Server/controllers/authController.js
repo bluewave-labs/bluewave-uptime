@@ -60,6 +60,21 @@ const registerController = async (req, res, next) => {
     return;
   }
 
+  // Check if an admin user exists, if so, error
+  try {
+    const admin = await req.db.checkAdmin(req, res);
+    console.log(admin);
+    if (admin === true) {
+      throw new Error(errorMessages.AUTH_ADMIN_EXISTS);
+    }
+  } catch (error) {
+    console.log("WEEEEEEE", error.message);
+    error.service = SERVICE_NAME;
+    error.status = 403;
+    next(error);
+    return;
+  }
+
   // Create a new user
   try {
     const newUser = await req.db.insertUser(req, res);

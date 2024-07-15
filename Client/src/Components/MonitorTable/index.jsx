@@ -1,23 +1,8 @@
 import "./index.css";
-import { useState } from "react";
 import PropTypes from "prop-types";
 import ResponseTimeChart from "../Charts/ResponseTimeChart";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Pagination,
-  PaginationItem,
-} from "@mui/material";
-import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import BasicTable from "../BasicTable";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import { useNavigate } from "react-router-dom";
 
 /**
  * Host component.
@@ -95,100 +80,42 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
-  const navigate = useNavigate();
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 5;
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const mappedRows = monitors
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    .map((monitor) => {
-      const params = {
-        url: monitor.url,
-        title: monitor.name,
-        precentage: 100,
-        percentageColor:
-          monitor.status === true
-            ? "var(--env-var-color-17)"
-            : "var(--env-var-color-19)",
-        status: monitor.status === true ? "up" : "down",
-        backgroundColor:
-          monitor.status === true
-            ? "var(--env-var-color-20)"
-            : "var(--env-var-color-21)",
-        statusDotColor:
-          monitor.status === true
-            ? "var(--env-var-color-17)"
-            : "var(--env-var-color-19)",
-      };
-
-      return (
-        <TableRow
-          sx={{ cursor: "pointer" }}
-          key={monitor._id}
-          onClick={() => {
-            navigate(`/monitors/${monitor._id}`);
-          }}
-        >
-          <TableCell>
-            <Host params={params} />
-          </TableCell>
-          <TableCell>
-            <Status params={params} />
-          </TableCell>
-          <TableCell>
-            <ResponseTimeChart checks={monitor.checks} />
-          </TableCell>
-          <TableCell>TODO Add Actions</TableCell>
-        </TableRow>
-      );
+  const headers = [
+    { id: 1, name: "Host" },
+    { id: 2, name: "Status" },
+    { id: 3, name: "Response Time" },
+    { id: 4, name: "Actions" },
+  ];
+  const data = [];
+  monitors.forEach((monitor) => {
+    const params = {
+      url: monitor.url,
+      title: monitor.name,
+      precentage: 100,
+      percentageColor:
+        monitor.status === true
+          ? "var(--env-var-color-17)"
+          : "var(--env-var-color-19)",
+      status: monitor.status === true ? "up" : "down",
+      backgroundColor:
+        monitor.status === true
+          ? "var(--env-var-color-20)"
+          : "var(--env-var-color-21)",
+      statusDotColor:
+        monitor.status === true
+          ? "var(--env-var-color-17)"
+          : "var(--env-var-color-19)",
+    };
+    data.push({ id: data.length + 1, data: <Host params={params} /> });
+    data.push({ id: data.length + 1, data: <Status params={params} /> });
+    data.push({
+      id: data.length + 1,
+      data: <ResponseTimeChart checks={monitor.checks} />,
     });
+    data.push({ id: data.length + 1, data: "TODO" });
+  });
 
-  return (
-    <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Host</TableCell>
-              <TableCell>
-                Status
-                <span>
-                  <ArrowDownwardRoundedIcon />
-                </span>
-              </TableCell>
-              <TableCell>Response Time</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{mappedRows}</TableBody>
-        </Table>
-      </TableContainer>
-      <Pagination
-        count={Math.ceil(monitors?.length / rowsPerPage)}
-        page={page + 1}
-        onChange={(event, value) => handleChangePage(event, value - 1)}
-        shape="rounded"
-        renderItem={(item) => (
-          <PaginationItem
-            slots={{
-              previous: ArrowBackRoundedIcon,
-              next: ArrowForwardRoundedIcon,
-            }}
-            {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-            }}
-          />
-        )}
-      />
-    </>
-  );
+  return <BasicTable headers={headers} rowItems={data} paginated={true} />;
 };
 
 MonitorTable.propTypes = {

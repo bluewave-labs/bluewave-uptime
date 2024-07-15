@@ -20,6 +20,8 @@ import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Details";
 import Maintenance from "./Pages/Maintenance";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -92,6 +94,7 @@ function App() {
           element={<NewPasswordConfirmed />}
         />
       </Routes>
+      <ToastContainer />
     </>
   );
 }

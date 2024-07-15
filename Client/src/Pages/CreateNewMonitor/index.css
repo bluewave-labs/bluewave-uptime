@@ -55,6 +55,13 @@
   outline: none;
   border: none;
 }
+.create-monitor-form .MuiStack-root:has(span.MuiTypography-root.input-error) {
+  position: relative;
+}
+.create-monitor-form span.MuiTypography-root.input-error {
+  position: absolute;
+  top: 100%;
+}
 
 .monitors-gaps-medium {
   height: var(--env-var-spacing-2);

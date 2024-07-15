@@ -1,6 +1,5 @@
 import "./index.css";
 import ConfigBox from "../../Components/ConfigBox";
-import FlexibileTextField from "../../Components/TextFields/Flexibile/FlexibileTextField";
 import React, { useState } from "react";
 import RadioButton from "../../Components/RadioButton";
 import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox";
@@ -12,6 +11,7 @@ import { createMonitor } from "../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
+import Field from "../../Components/Inputs/Field";
 
 const CreateNewMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -86,6 +86,7 @@ const CreateNewMonitor = () => {
     //obj to submit
     let monitor = {
       ...generalSettings,
+      url: "https://" + generalSettings.url,
       ...checks,
     };
 
@@ -162,25 +163,22 @@ const CreateNewMonitor = () => {
         }
         rightLayout={
           <Stack gap={theme.gap.xl}>
-            <FlexibileTextField
-              id="monitor-url"
-              title="URL to monitor"
+            <Field
               type="url"
-              placeholder="https://google.com"
+              id="monitor-url"
+              label="URL to monitor"
+              placeholder="google.com"
               value={generalSettings.url}
               onChange={(event) =>
                 handleChange(event, "url", setGeneralSettings)
               }
               error={errors["url"]}
             />
-            <FlexibileTextField
-              id="monitor-name"
-              title={
-                <>
-                  Friendly name <span>(optional)</span>
-                </>
-              }
+            <Field
               type="text"
+              id="monitor-name"
+              label="Friendly name"
+              isOptional={true}
               placeholder="Google"
               value={generalSettings.name}
               onChange={(event) =>
