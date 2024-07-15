@@ -123,13 +123,9 @@ const Login = () => {
   return (
     <div className="login-page">
       <BackgroundPattern></BackgroundPattern>
-      <form
-        className="login-form"
-        onSubmit={handleSubmit}
-        style={{ marginBottom: theme.gap.xxl }}
-      >
+      <form className="login-form" onSubmit={handleSubmit}>
         <Stack gap={theme.gap.large} direction="column">
-          <Logomark alt="Logomark" />
+          <Logomark alt="BlueWave Uptime Icon" />
           <Button
             level="secondary"
             label="Sign in with Google"

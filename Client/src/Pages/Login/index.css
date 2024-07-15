@@ -2,16 +2,10 @@
   width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
-  align-items: center;
   height: 100vh;
 }
 .login-page svg rect {
   fill: none;
-}
-.login-page h1.MuiTypography-root {
-  font-size: 30px;
-  font-weight: 600;
-  color: var(--env-var-color-1);
 }
 .login-page p.MuiTypography-root,
 .login-page span,
@@ -52,6 +46,10 @@
 /* .login-form-inputs .field h3.MuiTypography-root{
   font-weight: 600;
 } */
+
+.login-form{
+  margin-top: 102px;
+}
 
 .google-enter {
   width: var(--env-var-img-width-1);

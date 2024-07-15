@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
-import Logomark from "../../assets/Images/Logomark.png";
+import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
@@ -14,6 +14,7 @@ import { register } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
 import Field from "../../Components/Inputs/Field";
 import { useTheme } from "@emotion/react";
+import { Divider, Stack, Typography } from "@mui/material";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -133,54 +134,48 @@ const Register = () => {
     <div className="register-page">
       <BackgroundPattern></BackgroundPattern>
       <form className="register-form" onSubmit={handleSubmit} noValidate>
-        <div className="register-form-header">
-          <img
-            className="register-form-header-logo"
-            src={Logomark}
-            alt="Logomark"
+        <Stack gap={theme.gap.large} direction="column">
+          <Logomark alt="BlueWave Uptime Icon" />
+          <Button
+            level="secondary"
+            label="Sign up with Google"
+            sx={{ fontWeight: 600, mt: theme.gap.xxl }}
+            img={<img className="google-enter" src={Google} alt="Google" />}
           />
-          <div className="register-form-v-spacing-large" />
-          <div className="register-form-heading">
-            Create Uptime Manager admin account
-          </div>
-          <div className="register-form-v-spacing-large"></div>
-        </div>
-        <div className="register-form-v-spacing-40px" />
-        <div className="register-form-inputs">
+          <Divider>
+            <Typography>or</Typography>
+          </Divider>
           <Field
             id="register-firstname-input"
             label="Name"
             isRequired={true}
-            placeholder="Talha"
+            placeholder="Daniel"
             autoComplete="given-name"
             value={form.firstname}
             onChange={handleChange}
             error={errors.firstname}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             id="register-lastname-input"
             label="Surname"
             isRequired={true}
-            placeholder="Bolat"
+            placeholder="Cojocea"
             autoComplete="family-name"
             value={form.lastname}
             onChange={handleChange}
             error={errors.lastname}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             type="email"
             id="register-email-input"
             label="Email"
             isRequired={true}
-            placeholder="name.surname@companyname.com"
+            placeholder="daniel.cojocea@domain.com"
             autoComplete="email"
             value={form.email}
             onChange={handleChange}
             error={errors.email}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             type="password"
             id="register-password-input"
@@ -192,8 +187,6 @@ const Register = () => {
             onChange={handleChange}
             error={errors.password}
           />
-          <div className="login-form-v2-spacing" />
-          {/* TODO - hook up to form state and run checks */}
           <Field
             type="password"
             id="register-confirm-input"
@@ -205,32 +198,19 @@ const Register = () => {
             onChange={handleChange}
             error={errors.confirm}
           />
-        </div>
-        <div className="login-form-v2-spacing" />
-        <div className="register-form-checks">
-          <Check text="Must be at least 8 characters" />
-          <div className="register-form-v-spacing-small"></div>
-          <Check text="Must contain one special character" />
-        </div>
-        <div className="login-form-v2-spacing" />
-        <div className="register-form-actions">
+          <Stack gap={theme.gap.small}>
+            <Check text="Must be at least 8 characters" />
+            <Check text="Must contain one special character" />
+            <Check text="Must contain at least one upper and lower character" />
+          </Stack>
           <Button
             type="submit"
             level="primary"
             label="Get started"
-            sx={{ width: "100%" }}
+            sx={{ marginBottom: theme.gap.large }}
           />
-          <div className="login-form-v-spacing" />
-          <Button
-            disabled={true}
-            level="secondary"
-            label="Sign up with Google"
-            sx={{ width: "100%", color: "#344054", fontWeight: "700" }}
-            img={<img className="google-enter" src={Google} alt="Google" />}
-          />
-        </div>
+        </Stack>
       </form>
-      <div className="register-bottom-spacing"></div>
     </div>
   );
 };
