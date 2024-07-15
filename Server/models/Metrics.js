@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 
+/**
+ * Mongoose schema for storing metrics from Google Lighthouse.
+ * @typedef {Object} MetricsSchema
+ * @property {mongoose.Schema.Types.ObjectId} monitorId - Reference to the Monitor model.
+ * @property {number} accessibility - Accessibility score.
+ * @property {number} bestPractices - Best practices score.
+ * @property {number} seo - SEO score.
+ * @property {number} performance - Performance score.
+ */
+
 const MetricsSchema = mongoose.Schema(
   {
     monitorId: {
@@ -28,5 +38,10 @@ const MetricsSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+/**
+ * Mongoose model for storing metrics from Google Lighthouse.
+ * @typedef {mongoose.Model<MetricsSchema>} LighthouseMetricsModel
+ */
 
 module.exports = mongoose.model("LighthouseMetrics", MetricsSchema);
