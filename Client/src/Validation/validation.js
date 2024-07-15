@@ -1,5 +1,78 @@
 import joi from "joi";
 
+const nameSchema = joi
+  .string()
+  .max(50)
+  .trim()
+  .pattern(new RegExp("^[A-Za-z]+$"))
+  .messages({
+    "string.empty": "Name is required",
+    "string.max": "Name must be less than 50 characters long",
+    "string.pattern.base": "Name must contain only letters",
+  });
+
+const passwordSchema = joi
+  .string()
+  .trim()
+  .min(8)
+  .messages({
+    "string.empty": "Password is required",
+    "string.min": "Password must be at least 8 characters long",
+  })
+  .custom((value, helpers) => {
+    if (!/[A-Z]/.test(value)) {
+      return helpers.message(
+        "Password must contain at least one uppercase letter"
+      );
+    }
+    if (!/[a-z]/.test(value)) {
+      return helpers.message(
+        "Password must contain at least one lowercase letter"
+      );
+    }
+    if (!/\d/.test(value)) {
+      return helpers.message("Password must contain at least one number");
+    }
+    if (!/[!@#$%^&*]/.test(value)) {
+      return helpers.message(
+        "Password must contain at least one special character"
+      );
+    }
+
+    return value;
+  });
+
+const credentials = joi.object({
+  firstname: nameSchema,
+  lastname: nameSchema,
+  email: joi
+    .string()
+    .trim()
+    .email({ tlds: { allow: false } })
+    .messages({
+      "string.empty": "Email is required",
+      "string.email": "Must be a valid email address",
+    }),
+  password: passwordSchema,
+  newPassword: passwordSchema,
+  confirm: joi
+    .string()
+    .trim()
+    .messages({
+      "string.empty": "Password confirmation is required",
+    })
+    .custom((value, helpers) => {
+      const { newPassword } = helpers.prefs.context;
+      if (value !== newPassword) {
+        return helpers.message("Passwords do not match");
+      }
+      return value;
+    }),
+  role: joi.string().messages({
+    "string.empty": "Role is required",
+  }),
+});
+
 const registerValidation = joi.object({
   firstname: joi.string().required().messages({
     "string.empty": "First name is required",
@@ -85,37 +158,6 @@ const editProfileValidation = joi.object({
     }),
 });
 
-const passwordSchema = joi
-  .string()
-  .trim()
-  .min(8)
-  .messages({
-    "string.empty": "*Password is required.",
-    "string.min": "*Password must be at least 8 characters long.",
-  })
-  .custom((value, helpers) => {
-    if (!/[A-Z]/.test(value)) {
-      return helpers.message(
-        "*Password must contain at least one uppercase letter."
-      );
-    }
-    if (!/[a-z]/.test(value)) {
-      return helpers.message(
-        "*Password must contain at least one lowercase letter."
-      );
-    }
-    if (!/\d/.test(value)) {
-      return helpers.message("*Password must contain at least one number.");
-    }
-    if (!/[!@#$%^&*]/.test(value)) {
-      return helpers.message(
-        "*Password must contain at least one special character."
-      );
-    }
-
-    return value;
-  });
-
 const editPasswordValidation = joi.object({
   // TBD - validation for current password ?
   password: passwordSchema,
@@ -124,7 +166,7 @@ const editPasswordValidation = joi.object({
     .string()
     .trim()
     .messages({
-      "string.empty": "*Password confirmation is required.",
+      "string.empty": "Password confirmation is required",
     })
     .custom((value, helpers) => {
       const { newPassword } = helpers.prefs.context;
@@ -169,6 +211,7 @@ const imageValidation = joi.object({
 });
 
 export {
+  credentials,
   imageValidation,
   createMonitorValidation,
   registerValidation,

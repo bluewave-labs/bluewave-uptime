@@ -8,7 +8,7 @@ import CheckBox from "../../Components/Checkbox/Checkbox";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
 import axiosInstance from "../../Utils/axiosConfig";
-import { loginValidation } from "../../Validation/validation";
+import { loginValidation, credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
@@ -23,12 +23,11 @@ const Login = () => {
     "login-password-input": "password",
   };
 
-  const [errors, setErrors] = useState({});
-
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     axiosInstance
@@ -43,71 +42,74 @@ const Login = () => {
       });
   }, [navigate]);
 
-  useEffect(() => {
-    const { error } = loginValidation.validate(form, {
-      abortEarly: false,
-    });
-
-    if (error) {
-      // Creates an error object in the format { field: message }
-      const validationErrors = error.details.reduce((acc, err) => {
-        return { ...acc, [err.path[0]]: err.message };
-      }, {});
-      setErrors(validationErrors);
-    } else {
-      setErrors({});
-    }
-  }, [form]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await loginValidation.validateAsync(form, { abortEarly: false });
+
+    const { error } = credentials.validate(form, { abortEarly: false });
+
+    if (error) {
+      // validation errors
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      createToast({
+        variant: "info",
+        body:
+          error.details && error.details.length > 0
+            ? error.details[0].message
+            : "Error validating data.",
+        hasIcon: false,
+      });
+    } else {
       const action = await dispatch(login(form));
-      if (action.meta.requestStatus === "fulfilled") {
+      if (action.payload.success) {
         navigate("/monitors");
-      }
-      if (action.meta.requestStatus === "rejected") {
-        const error = new Error("Request rejected");
-        error.response = action.payload;
-        throw error;
-      }
-    } catch (error) {
-      if (error.name === "ValidationError") {
-        // validation errors
         createToast({
           variant: "info",
-          body:
-            error && error.details && error.details.length > 0
-              ? error.details[0].message
-              : "Error validating data.",
-          hasIcon: false,
-        });
-      } else if (error.response) {
-        // dispatch errors
-        createToast({
-          variant: "info",
-          body: error.response.msg,
+          body: "Welcome back! You're successfully logged in.",
           hasIcon: false,
         });
       } else {
-        // unknown errors
-        createToast({
-          variant: "info",
-          body: "Unknown error.",
-          hasIcon: false,
-        });
+        if (action.payload) {
+          // dispatch errors
+          createToast({
+            variant: "info",
+            body: action.payload.msg,
+            hasIcon: false,
+          });
+        } else {
+          // unknown errors
+          createToast({
+            variant: "info",
+            body: "Unknown error.",
+            hasIcon: false,
+          });
+        }
       }
     }
   };
 
-  const handleInput = (e) => {
-    const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
-    setForm(newForm);
-  };
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idMap[id];
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-  const handleSignupClick = () => {
-    navigate("/register");
+    const { error } = credentials.validate(
+      { [name]: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const prevErrors = { ...prev };
+      if (error) prevErrors[name] = error.details[0].message;
+      else delete prevErrors[name];
+      return prevErrors;
+    });
   };
 
   return (
@@ -126,9 +128,11 @@ const Login = () => {
             type="email"
             id="login-email-input"
             label="Email"
+            isRequired={true}
             placeholder="Enter your email"
             autoComplete="email"
-            onChange={handleInput}
+            value={form.email}
+            onChange={handleChange}
             error={errors.email}
           />
           <div className="login-form-v2-spacing" />
@@ -136,9 +140,11 @@ const Login = () => {
             type="password"
             id="login-password-input"
             label="Password"
+            isRequired={true}
             placeholder="Enter your password"
             autoComplete="current-password"
-            onChange={handleInput}
+            value={form.password}
+            onChange={handleChange}
             error={errors.password}
           />
         </div>
