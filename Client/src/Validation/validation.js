@@ -139,44 +139,6 @@ const newPasswordValidation = joi.object({
   }),
 });
 
-const editProfileValidation = joi.object({
-  firstname: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
-    "string.empty": "*First name is required.",
-    "string.pattern.base": "*First name must contain only letters.",
-  }),
-  lastname: joi.string().trim().pattern(new RegExp("^[A-Za-z]+$")).messages({
-    "string.empty": "*Last name is required.",
-    "string.pattern.base": "*Last name must contain only letters.",
-  }),
-  email: joi
-    .string()
-    .trim()
-    .email({ tlds: { allow: false } })
-    .messages({
-      "string.empty": "*Email is required.",
-      "string.email": "*Invalid email address.",
-    }),
-});
-
-const editPasswordValidation = joi.object({
-  // TBD - validation for current password ?
-  password: passwordSchema,
-  newPassword: passwordSchema,
-  confirm: joi
-    .string()
-    .trim()
-    .messages({
-      "string.empty": "Password confirmation is required",
-    })
-    .custom((value, helpers) => {
-      const { newPassword } = helpers.prefs.context;
-      if (value !== newPassword) {
-        return helpers.message("*Passwords do not match.");
-      }
-      return value;
-    }),
-});
-
 const createMonitorValidation = joi.object({
   url: joi
     .string()
@@ -218,6 +180,4 @@ export {
   loginValidation,
   recoveryValidation,
   newPasswordValidation,
-  editPasswordValidation,
-  editProfileValidation,
 };

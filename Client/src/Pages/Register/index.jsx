@@ -40,18 +40,18 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
 
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/auth/users/admin")
-  //     .then((response) => {
-  //       if (response.data.data === true) {
-  //         navigate("/login");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [form, navigate]);
+  useEffect(() => {
+    axiosInstance
+      .get("/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === true) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [form, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -7,10 +7,7 @@ import Button from "../../Button";
 import Avatar from "../../Avatar";
 import Field from "../../Inputs/Field";
 import ImageField from "../../Inputs/Image";
-import {
-  editProfileValidation,
-  imageValidation,
-} from "../../../Validation/validation";
+import { credentials, imageValidation } from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearAuthState,
@@ -66,7 +63,7 @@ const ProfilePanel = () => {
       [name]: value,
     }));
 
-    validateField({ [name]: value }, editProfileValidation, name);
+    validateField({ [name]: value }, credentials, name);
   };
 
   // Handles image file
@@ -165,8 +162,8 @@ const ProfilePanel = () => {
       localData.file === undefined
     ) {
       createToast({
-        variant: "warning",
-        body: "Unable to update profile: No changes detected.",
+        variant: "info",
+        body: "Unable to update profile — no changes detected.",
         hasIcon: false,
       });
       setErrors({ unchanged: "unable to update profile" });

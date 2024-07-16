@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
@@ -50,9 +50,17 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
       }}
     >
       {hasIcon && <Box sx={{ color: color }}>{icon}</Box>}
-      <Stack direction="column" gap="2px" sx={{ flex: 1, color: color }}>
-        {title && <Box sx={{ fontWeight: "700" }}>{title}</Box>}
-        {body && <Box sx={{ fontWeight: "400" }}>{body}</Box>}
+      <Stack direction="column" gap="2px" sx={{ flex: 1 }}>
+        {title && (
+          <Typography sx={{ fontWeight: "700", color: `${color} !important` }}>
+            {title}
+          </Typography>
+        )}
+        {body && (
+          <Typography sx={{ fontWeight: "400", color: `${color} !important` }}>
+            {body}
+          </Typography>
+        )}
         {hasIcon && isToast && (
           <Button
             level="tertiary"
