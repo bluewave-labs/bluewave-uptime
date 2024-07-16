@@ -220,7 +220,8 @@ const resetPassword = async (req, res) => {
       })
         .select("-password")
         .select("-profileImage");
-      return userWithoutPassword;
+      const token = issueToken(userWithoutPassword);
+      return token;
     } else {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
