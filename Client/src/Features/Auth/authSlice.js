@@ -182,11 +182,6 @@ const handleForgotRejected = (state, action) => {
     ? action.payload.msg
     : "Failed to send reset instructions.";
 };
-const handleNewPasswordFulfilled = (state, action) => {
-  state.isLoading = false;
-  state.success = action.payload.success;
-  state.msg = action.payload.msg;
-};
 const handleNewPasswordRejected = (state, action) => {
   state.isLoading = false;
   state.success = false;
@@ -253,7 +248,7 @@ const authSlice = createSlice({
       .addCase(setNewPassword.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(setNewPassword.fulfilled, handleNewPasswordFulfilled)
+      .addCase(setNewPassword.fulfilled, handleAuthFulfilled)
       .addCase(setNewPassword.rejected, handleNewPasswordRejected);
   },
 });
