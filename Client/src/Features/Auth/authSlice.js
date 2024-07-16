@@ -96,6 +96,21 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (form, thunkApi) => {
+    try {
+      const res = await axiosInstance.post("/auth/recovery/request", form);
+      return res.data;
+    } catch (error) {
+      if (error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
@@ -132,6 +147,18 @@ const handleDeleteRejected = (state, action) => {
   state.isLoading = false;
   state.success = false;
   state.msg = action.payload ? action.payload.msg : "Failed to delete account.";
+};
+const handleForgotPasswordFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+};
+const handleForgotPasswordRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = false;
+  state.msg = action.payload
+    ? action.payload.msg
+    : "Failed to send reset instructions.";
 };
 
 const authSlice = createSlice({
@@ -178,6 +205,14 @@ const authSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, handleDeleteFulfilled)
       .addCase(deleteUser.rejected, handleDeleteRejected);
+
+    // Forgot password thunk
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(forgotPassword.fulfilled, handleForgotPasswordFulfilled)
+      .addCase(forgotPassword.rejected, handleForgotPasswordRejected);
   },
 });
 

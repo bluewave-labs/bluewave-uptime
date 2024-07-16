@@ -1,8 +1,7 @@
 .forgot-password-page {
-  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
-  min-height: var(--env-var-height-1);
+  height: var(--env-var-height-1);
 }
 
 .forgot-password-form {
