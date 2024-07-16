@@ -12,7 +12,7 @@ const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
-const pageSpeedCheckRoutes = require("./routes/pageSpeedCheckRoutes");
+const pageSpeedCheckRoutes = require("./routes/pageSpeedCheckRoute");
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
