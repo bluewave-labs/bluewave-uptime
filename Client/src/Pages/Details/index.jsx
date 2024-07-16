@@ -105,7 +105,11 @@ const DetailsPage = () => {
     }, 0);
   };
 
-  return <BasicTable data={data} paginated={false} />;
+  return (
+    <div>
+      <BasicTable data={data} paginated={true} />
+    </div>
+  );
 };
 
 export default DetailsPage;

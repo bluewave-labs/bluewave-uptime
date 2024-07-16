@@ -77,9 +77,13 @@ const BasicTable = ({ data, paginated }) => {
     setPage(0); // Reset to first page after changing rows per page
   };
 
-  let displayData = paginated
-    ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    : data.rows;
+  let displayData = [];
+
+  if (data && data.rows) {
+    displayData = paginated
+      ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : data.rows;
+  }
 
   if (!data || !data.cols || !data.rows) {
     return <div>No data</div>;
