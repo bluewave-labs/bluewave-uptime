@@ -1,9 +1,9 @@
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
-import LockIcon from "../../assets/Images/lock-icon.png";
+import LockIcon from "../../assets/icons/lock-button-icon.svg?react";
 import Check from "../../Components/Check/Check";
 import ButtonSpinner from "../../Components/ButtonSpinner";
-import LeftArrow from "../../assets/Images/arrow-left.png";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { credentials } from "../../Validation/validation";
@@ -12,10 +12,14 @@ import Field from "../../Components/Inputs/Field";
 import { useDispatch, useSelector } from "react-redux";
 import { setNewPassword } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
+import { Stack, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import Button from "../../Components/Button";
 
 const SetNewPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const [errors, setErrors] = useState({});
   const [form, setForm] = useState({
@@ -112,21 +116,16 @@ const SetNewPassword = () => {
     <div className="set-new-password-page">
       <BackgroundPattern />
       <form className="set-new-password-form" onSubmit={handleSubmit}>
-        <div className="set-new-password-form-header">
-          <img
-            className="set-new-password-form-header-logo"
-            src={LockIcon}
-            alt="LockIcon"
-          />
-          <div className="set-new-password-form-gap-medium" />
-          <div className="set-new-password-form-heading">Set new password</div>
-          <div className="set-new-password-form-gap-small" />
-          <div className="set-new-password-form-subheading">
+        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
+          <LockIcon alt="lock icon" style={{ fill: "white" }} />
+          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
+            Set new password
+          </Typography>
+          <Typography sx={{ textAlign: "center" }}>
             Your new password must be different to previously used passwords.
-          </div>
-        </div>
-        <div className="set-new-password-form-gap-large"></div>
-        <div className="set-new-password-form-content">
+          </Typography>
+        </Stack>
+        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
           <Field
             type="password"
             id="register-password-input"
@@ -137,7 +136,6 @@ const SetNewPassword = () => {
             onChange={handleChange}
             error={errors.password}
           />
-          <div className="set-new-password-form-gap-medium"></div>
           <Field
             type="password"
             id="confirm-password-input"
@@ -148,38 +146,61 @@ const SetNewPassword = () => {
             onChange={handleChange}
             error={errors.confirm}
           />
-          <div className="set-new-password-form-gap-medium"></div>
-          <div className="set-new-password-form-checks">
-            <Check text="Must be at least 8 characters" />
-            <div className="set-new-password-form-gap-small"></div>
-            <Check text="Must contain one special character" />
-          </div>
-          <div className="set-new-password-form-gap-medium"></div>
+          <Stack gap={theme.gap.small}>
+            <Check
+              text="Must be at least 8 characters long"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : form.password.length < 8
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain one special character and a number"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
+                      form.password
+                    )
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain at least one upper and lower character"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
+                  ? "error"
+                  : "success"
+              }
+            />
+          </Stack>
           <ButtonSpinner
             disabled={Object.keys(errors).length !== 0}
             isLoading={isLoading}
             onClick={handleSubmit}
             level="primary"
             label="Reset password"
-            sx={{
-              width: "100%",
-              fontSize: "13px",
-              fontWeight: "200",
-              height: "35px",
-            }}
           />
-        </div>
-        <div className="set-new-password-form-gap-medium"></div>
-        <div className="set-new-password-back-button">
-          <img
-            className="set-new-password-back-button-img"
-            src={LeftArrow}
-            alt="LeftArrow"
+          <Button
+            level="tertiary"
+            label="Back to log in"
+            img={<ArrowBackRoundedIcon />}
+            sx={{ alignSelf: "center", width: "fit-content" }}
+            onClick={() => navigate("/login")}
           />
-          <div className="set-new-password-back-button-text">
-            Back to log in
-          </div>
-        </div>
+        </Stack>
       </form>
     </div>
   );
