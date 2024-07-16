@@ -54,6 +54,7 @@ const DetailsPage = () => {
         lastDownTimestamp = null;
       }
     });
+    lastDownTimestamp = null;
     return longestDuration;
   };
 
