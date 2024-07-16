@@ -293,7 +293,7 @@ const getMonitorById = async (req, res) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
-    const limit = req.query.limit;
+    const limit = req.query ? req.query.limit : undefined;
     const monitors = await Monitor.find({ userId: req.params.userId });
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
