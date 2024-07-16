@@ -15,7 +15,7 @@ const Maintenance = () => {
   const navigate = useNavigate();
 
   const navigateToNewMaintenance = () => {
-    navigate("/maintenance/createnewmaintenance");
+    navigate("/maintenance/create");
   };
 
   return (
