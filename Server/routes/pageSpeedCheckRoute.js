@@ -14,11 +14,13 @@ const {
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
+
 router.post(
   "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   createPageSpeedCheck
 );
+
 
 /**
  * @route GET /:monitorId
@@ -27,6 +29,7 @@ router.post(
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
+
 router.get(
   "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
@@ -40,10 +43,12 @@ router.get(
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-router.post(
-  "/delete/:monitorId",
+
+router.delete(
+  "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   deletePageSpeedCheck
 );
+
 
 module.exports = router;

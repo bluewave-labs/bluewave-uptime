@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CustomizedTables from "../../Components/CustomizedTables";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -27,7 +26,6 @@ const DetailsPage = () => {
 
   const theme = useTheme();
 
-  // Example monitor data (replace with actual data or fetch from API)
   /**
    * Function to calculate uptime duration based on the most recent check.
    * @param {Array} checks Array of check objects.
