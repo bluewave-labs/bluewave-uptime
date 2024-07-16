@@ -17,45 +17,52 @@ import PropTypes from "prop-types";
  *
  * @component
  * @param {Object} props - Component props.
- * @param {Array} props.headers - Array of header titles for the table.
- * @param {Array} props.rowItems - Array of row data objects for the table.
- * @param {boolean} props.paginated - Flag to enable pagination.
- * @param {function} props.handleClick - Function to handle click on row.
+ * @param {Object} props.data - Data for the table including columns and rows.
+ *   @param {Array} props.data.cols - Array of objects for column headers.
+ *     @param {number} props.data.cols[].id - Unique identifier for the column.
+ *     @param {string} props.data.cols[].name - Name of the column to display as header.
+ *   @param {Array} props.data.rows - Array of row objects.
+ *     @param {number} props.data.rows[].id - Unique identifier for the row.
+ *     @param {Array} props.data.rows[].data - Array of cell data objects for the row.
+ *       @param {number} props.data.rows[].data[].id - Unique identifier for the cell.
+ *       @param {JSX.Element} props.data.rows[].data[].data - The content to display in the cell.
+ *       @param {function} props.data.rows.data.handleClick - Function to call when the row is clicked.
+ * @param {boolean} [props.paginated=false] - Flag to enable pagination.
  *
  * @example
+ * const data = {
+ *   cols: [
+ *     { id: 1, name: "First Col" },
+ *     { id: 2, name: "Second Col" },
+ *     { id: 3, name: "Third Col" },
+ *     { id: 4, name: "Fourth Col" },
+ *   ],
+ *   rows: [
+ *     {
+ *       id: 1,
+ *       data: [
+ *         { id: 1, data: <div>Data for Row 1 Col 1</div> },
+ *         { id: 2, data: <div>Data for Row 1 Col 2</div> },
+ *         { id: 3, data: <div>Data for Row 1 Col 3</div> },
+ *         { id: 4, data: <div>Data for Row 1 Col 4</div> },
+ *       ],
+ *     },
+ *     {
+ *       id: 2,
+ *       data: [
+ *         { id: 5, data: <div>Data for Row 2 Col 1</div> },
+ *         { id: 6, data: <div>Data for Row 2 Col 2</div> },
+ *         { id: 7, data: <div>Data for Row 2 Col 3</div> },
+ *         { id: 8, data: <div>Data for Row 2 Col 4</div> },
+ *       ],
+ *     },
+ *   ],
+ * };
  *
- * Headers is an array of objets that have a unique ID and a name
- * Rows is an array of objects that have a unique ID and some data to display
- * Row data can be any valid React node
- * Rows are split into groups according to the number of headers, so if you have 3 headers then
- * Rows will go under the index % 3 column.
- * ie:  Row 0 -> col 0 % 3 = 0
- * ie:  Row 1 -> col 1 % 3 = 1
- * ie:  Row 2 -> col 2 % 3 = 2
- * ie:  Row 3 -> col 3 % 3 = 0
- *
- * Thus items are put in their correct columns
- *
- *
- * const headers = [
- *   { id: 1, name: "ID" },
- *   { id: 2, name: "Name" },
- *   { id: 3, name: "Age" },
- * ];
- * const rows = [
- *   { id: 1, data: <span>999</span> },
- *   { id: 2, data: <div>Alex Holliday</div> },
- *   { id: 3, data: <div>5</div> },
- *   // More rows...
- * ];
- *
- * ROW CLICK HANDLING
- * If you want to set a listener for a row click, you can add a handleClick function to FIRST ITEM IN EACH ROW
- *
- * <BasicTable headers={headers} rows={rows} paginated={true} />
+ * <BasicTable data={data} rows={rows} paginated={true} />
  */
 
-const BasicTable = ({ headers, rowItems, paginated }) => {
+const BasicTable = ({ data, paginated }) => {
   // Add headers to props validation
 
   const [page, setPage] = useState(0);
@@ -70,19 +77,9 @@ const BasicTable = ({ headers, rowItems, paginated }) => {
     setPage(0); // Reset to first page after changing rows per page
   };
 
-  const numOfCols = headers.length;
-
-  const groupedRowItems = rowItems.reduce((acc, item, idx) => {
-    const rowIndex = Math.floor((item.id - 1) / numOfCols);
-    if (!acc[rowIndex]) acc[rowIndex] = { items: [], idx };
-    acc[rowIndex].items.push({ item });
-    return acc;
-  }, {});
-
-  const paginatedRowsKeys = Object.keys(groupedRowItems).slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  let displayData = paginated
+    ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    : data.rows;
 
   return (
     <>
@@ -90,56 +87,37 @@ const BasicTable = ({ headers, rowItems, paginated }) => {
         <Table>
           <TableHead>
             <TableRow>
-              {headers.map((header) => {
-                return <TableCell key={header.id}>{header.name}</TableCell>;
-              })}
+              {data.cols.map((col) => (
+                <TableCell key={col.id}>{col.name}</TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginated === false &&
-              Object.keys(groupedRowItems).map((key) => {
-                return (
-                  <TableRow
-                    onClick={() => {
-                      groupedRowItems[key].items[0].item.handleClick
-                        ? groupedRowItems[key].items[0].item.handleClick()
-                        : null;
-                    }}
-                    key={groupedRowItems[key].idx}
-                  >
-                    {groupedRowItems[key].items.map(({ item }) => {
-                      return <TableCell key={item.id}>{item.data}</TableCell>;
-                    })}
-                  </TableRow>
-                );
-              })}
-            {paginated === true &&
-              paginatedRowsKeys.map((key) => (
+            {displayData.map((row) => {
+              return (
                 <TableRow
-                  onClick={() => {
-                    groupedRowItems[key].items[0].item.handleClick
-                      ? groupedRowItems[key].items[0].item.handleClick()
-                      : null;
-                  }}
-                  key={groupedRowItems[key].idx}
+                  sx={{ cursor: row.handleClick ? "pointer" : "default" }}
+                  key={row.id}
+                  onClick={row.handleClick ? row.handleClick : null}
                 >
-                  {groupedRowItems[key].items.map(({ item }) => (
-                    <TableCell key={item.id}>{item.data}</TableCell>
-                  ))}
+                  {row.data.map((cell) => {
+                    return <TableCell key={cell.id}>{cell.data}</TableCell>;
+                  })}
                 </TableRow>
-              ))}
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
       {paginated === true && (
         <TablePagination
+          rowsPerPageOptions={[1, 5, 10, 25]}
           component="div"
-          count={Object.keys(groupedRowItems).length}
+          count={data.rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[1, 5, 10]}
         />
       )}
     </>
@@ -147,20 +125,8 @@ const BasicTable = ({ headers, rowItems, paginated }) => {
 };
 
 BasicTable.propTypes = {
-  headers: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      name: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  rowItems: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      data: PropTypes.node,
-    })
-  ).isRequired,
+  data: PropTypes.object.isRequired,
   paginated: PropTypes.bool,
-  handleClick: PropTypes.func,
 };
 
 export default BasicTable;
