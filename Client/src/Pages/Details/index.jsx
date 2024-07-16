@@ -31,28 +31,31 @@ const DetailsPage = () => {
   /**
    * Function to calculate uptime duration based on the most recent check.
    * @param {Array} checks Array of check objects.
-   * @returns {string} Uptime duration in hours, minutes, and seconds.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
+   * @returns {number} Uptime duration in ms.
    */
   const calculateUptimeDuration = (checks) => {
     if (!checks || checks.length === 0) {
-      return "N/A";
+      return 0;
     }
 
-    const mostRecentCheck = checks[0];
-    const currentTime = new Date();
-    const lastCheckedTime = new Date(mostRecentCheck.createdAt);
-    let uptimeDuration = currentTime - lastCheckedTime;
+    let longestDuration = 0;
+    let lastDownTimestamp = null;
+    let currentDuration = longestDuration;
 
-    // Calculate hours, minutes, and seconds from uptime duration
-    // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
-    let uptimeHours = Math.floor(uptimeDuration / (1000 * 60 * 60));
-    uptimeDuration %= 1000 * 60 * 60;
-    let uptimeMinutes = Math.floor(uptimeDuration / (1000 * 60));
-    uptimeDuration %= 1000 * 60;
-    let uptimeSeconds = Math.floor(uptimeDuration / 1000);
-
-    return `${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`;
+    // Loop over the checks to find the most recent uptime duration
+    checks.forEach((check) => {
+      if (check.status === false) {
+        lastDownTimestamp = check.createdAt;
+      } else if (check.status === true && lastDownTimestamp) {
+        currentDuration = check.createdAt - lastDownTimestamp;
+        if (currentDuration > longestDuration) {
+          longestDuration = currentDuration;
+        }
+        lastDownTimestamp = null;
+      }
+    });
+    lastDownTimestamp = null;
+    return longestDuration;
   };
 
   /**
