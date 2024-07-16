@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ResponseTimeChart from "../Charts/ResponseTimeChart";
 import BasicTable from "../BasicTable";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Host component.
@@ -80,6 +81,8 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
+  const navigate = useNavigate();
+
   const headers = [
     { id: 1, name: "Host" },
     { id: 2, name: "Status" },
@@ -106,8 +109,17 @@ const MonitorTable = ({ monitors = [] }) => {
           ? "var(--env-var-color-17)"
           : "var(--env-var-color-19)",
     };
-    data.push({ id: data.length + 1, data: <Host params={params} /> });
-    data.push({ id: data.length + 1, data: <Status params={params} /> });
+    data.push({
+      id: data.length + 1,
+      data: <Host params={params} />,
+      handleClick: () => {
+        navigate(`/monitors/${monitor._id}`);
+      },
+    });
+    data.push({
+      id: data.length + 1,
+      data: <Status params={params} />,
+    });
     data.push({
       id: data.length + 1,
       data: <ResponseTimeChart checks={monitor.checks} />,
