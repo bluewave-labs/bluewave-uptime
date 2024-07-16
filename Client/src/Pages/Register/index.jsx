@@ -243,6 +243,7 @@ const Register = () => {
             level="primary"
             label="Get started"
             sx={{ marginBottom: theme.gap.large }}
+            disabled={Object.keys(errors).length !== 0 && true}
           />
         </Stack>
       </form>

@@ -67,17 +67,6 @@
   justify-content: flex-start;
   align-items: center;
 }
-.edit-profile-form__wrapper input,
-.edit-password-form__wrapper input,
-#edit-organization-name,
-#input-team-member {
-  padding: 10px;
-}
-#edit-new-password + div > button > svg,
-#edit-confirm-password + div > button > svg,
-#edit-current-password + div > button > svg {
-  color: var(--env-var-color-29);
-}
 
 .edit-team-form__wrapper td {
   padding: 10px 0;

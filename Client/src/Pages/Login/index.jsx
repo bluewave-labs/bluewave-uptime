@@ -177,7 +177,12 @@ const Login = () => {
           </Stack>
         </Stack>
         <Stack gap={theme.gap.ml} mt={theme.gap.large}>
-          <Button type="submit" level="primary" label="Sign in" />
+          <Button
+            type="submit"
+            level="primary"
+            label="Sign in"
+            disabled={Object.keys(errors).length !== 0 && true}
+          />
           <Stack
             direction="row"
             justifyContent="center"
