@@ -77,13 +77,9 @@ const BasicTable = ({ data, paginated }) => {
     setPage(0); // Reset to first page after changing rows per page
   };
 
-  let paginatedData = [];
-  if (paginated) {
-    paginatedData = data.rows.slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage
-    );
-  }
+  let displayData = paginated
+    ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    : data.rows;
 
   return (
     <>
@@ -97,34 +93,19 @@ const BasicTable = ({ data, paginated }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginated === false &&
-              data.rows.map((row) => {
-                return (
-                  <TableRow
-                    sx={{ cursor: row.handleClick ? "pointer" : "default" }}
-                    key={row.id}
-                    onClick={row.handleClick ? row.handleClick : null}
-                  >
-                    {row.data.map((cell) => {
-                      return <TableCell key={cell.id}>{cell.data}</TableCell>;
-                    })}
-                  </TableRow>
-                );
-              })}
-            {paginated === true &&
-              paginatedData.map((row) => {
-                return (
-                  <TableRow
-                    sx={{ cursor: row.handleClick ? "pointer" : "default" }}
-                    key={row.id}
-                    onClick={row.handleClick ? row.handleClick : null}
-                  >
-                    {row.data.map((cell) => {
-                      return <TableCell key={cell.id}>{cell.data}</TableCell>;
-                    })}
-                  </TableRow>
-                );
-              })}
+            {displayData.map((row) => {
+              return (
+                <TableRow
+                  sx={{ cursor: row.handleClick ? "pointer" : "default" }}
+                  key={row.id}
+                  onClick={row.handleClick ? row.handleClick : null}
+                >
+                  {row.data.map((cell) => {
+                    return <TableCell key={cell.id}>{cell.data}</TableCell>;
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
