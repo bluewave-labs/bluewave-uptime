@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { verifyOwnership } = require("../middleware/verifyOwnership");
-const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute")
+const Monitor = require("../models/Monitor");
 
 /**
  * @route POST /:monitorId
