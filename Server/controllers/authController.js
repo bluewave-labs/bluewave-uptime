@@ -310,7 +310,7 @@ const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
     const user = await req.db.resetPassword(req, res);
-    const token = issueToken(user);
+    const token = issueToken(user._doc);
     res.status(200).json({
       success: true,
       msg: successMessages.AUTH_RESET_PASSWORD,
