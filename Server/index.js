@@ -72,7 +72,7 @@ const startApp = async () => {
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
   app.use("/api/v1/alerts", verifyJWT, alertRouter);
-  app.use("/api/v1/pagespeed", verifyJWT, pageSpeedRouter);
+  app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
   //Temporary route for testing, remove later
   app.use("/api/v1/job", queueRouter);
 

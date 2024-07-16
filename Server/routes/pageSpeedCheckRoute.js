@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { verifyOwnership } = require("../middleware/verifyOwnership");
-const PageSpeedCheck = require("../models/PageSpeedCheck");
+const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute")
 
 /**
  * @route POST /:monitorId
@@ -11,7 +11,7 @@ const PageSpeedCheck = require("../models/PageSpeedCheck");
  */
 router.post(
   "/:monitorId",
-  verifyOwnership(PageSpeedCheck, "monitorId"),
+  verifyOwnership(Monitor, "monitorId"),
   () => {
     console.log("Create check");
   }
@@ -26,7 +26,7 @@ router.post(
  */
 router.get(
   "/:monitorId",
-  verifyOwnership(PageSpeedCheck, "monitorId"),
+  verifyOwnership(Monitor, "monitorId"),
   () => {
     console.log("Get checks");
   }
@@ -41,7 +41,7 @@ router.get(
  */
 router.post(
   "/delete/:monitorId",
-  verifyOwnership(PageSpeedCheck, "monitorId"),
+  verifyOwnership(Monitor, "monitorId"),
   () => {
     console.log("Delete checks");
   }
