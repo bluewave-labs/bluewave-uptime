@@ -199,9 +199,44 @@ const Register = () => {
             error={errors.confirm}
           />
           <Stack gap={theme.gap.small}>
-            <Check text="Must be at least 8 characters" />
-            <Check text="Must contain one special character" />
-            <Check text="Must contain at least one upper and lower character" />
+            <Check
+              text="Must be at least 8 characters long"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : form.password.length < 8
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain one special character and a number"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
+                      form.password
+                    )
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain at least one upper and lower character"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
+                  ? "error"
+                  : "success"
+              }
+            />
           </Stack>
           <Button
             type="submit"

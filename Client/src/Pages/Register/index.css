@@ -18,13 +18,19 @@
   color: var(--env-var-color-2);
   opacity: 0.8;
 }
-.register-page button {
+.register-page button:not(.MuiIconButton-root) {
   height: 34px;
   border-radius: var(--env-var-radius-2);
   line-height: 0;
 }
 .register-page svg rect {
   fill: none;
+}
+.register-page
+  .MuiFormControl-root:has(#register-password-input)
+  + span.MuiTypography-root {
+    display: none;
+    visibility: hidden;
 }
 
 .register-form {

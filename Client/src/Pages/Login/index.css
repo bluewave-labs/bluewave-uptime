@@ -16,7 +16,7 @@
   color: var(--env-var-color-2);
   opacity: 0.8;
 }
-.login-page button {
+.login-page button:not(.MuiIconButton-root)  {
   height: 34px;
   border-radius: var(--env-var-radius-2);
   line-height: 0;
