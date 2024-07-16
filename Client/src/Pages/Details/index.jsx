@@ -27,64 +27,62 @@ const DetailsPage = () => {
 
   const theme = useTheme();
 
-  // Example monitor data (replace with actual data or fetch from API)
   /**
    * Function to calculate uptime duration based on the most recent check.
    * @param {Array} checks Array of check objects.
-   * @returns {string} Uptime duration in hours, minutes, and seconds.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
+   * @returns {number} Uptime duration in ms.
    */
   const calculateUptimeDuration = (checks) => {
     if (!checks || checks.length === 0) {
-      return "N/A";
+      return 0;
     }
 
-    const mostRecentCheck = checks[0];
-    const currentTime = new Date();
-    const lastCheckedTime = new Date(mostRecentCheck.createdAt);
-    let uptimeDuration = currentTime - lastCheckedTime;
+    let longestDuration = 0;
+    let lastDownTimestamp = null;
+    let currentDuration = longestDuration;
 
-    // Calculate hours, minutes, and seconds from uptime duration
-    // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
-    let uptimeHours = Math.floor(uptimeDuration / (1000 * 60 * 60));
-    uptimeDuration %= 1000 * 60 * 60;
-    let uptimeMinutes = Math.floor(uptimeDuration / (1000 * 60));
-    uptimeDuration %= 1000 * 60;
-    let uptimeSeconds = Math.floor(uptimeDuration / 1000);
-
-    return `${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`;
+    // Loop over the checks to find the most recent uptime duration
+    checks.forEach((check) => {
+      if (check.status === false) {
+        lastDownTimestamp = check.createdAt;
+      } else if (check.status === true && lastDownTimestamp) {
+        currentDuration = check.createdAt - lastDownTimestamp;
+        if (currentDuration > longestDuration) {
+          longestDuration = currentDuration;
+        }
+        lastDownTimestamp = null;
+      }
+    });
+    lastDownTimestamp = null;
+    return longestDuration;
   };
 
   /**
    * Helper function to get timestamp of the most recent check.
    * @param {Array} checks Array of check objects.
-   * @returns {string} Timestamp of the most recent check.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
+   * @returns {number} Timestamp of the most recent check.
    */
   const getLastCheckedTimestamp = (checks) => {
     if (!checks || checks.length === 0) {
-      return "N/A"; // Handle case when no checks are available
+      return 0; // Handle case when no checks are available
     }
 
     const mostRecentCheck = checks[0];
-    return new Date(mostRecentCheck.createdAt).toLocaleString();
+    return mostRecentCheck.createdAt;
   };
 
   /**
    * Helper function to count incidents (checks with status === false).
    * @param {Array} checks Array of check objects.
    * @returns {number} Number of incidents.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
    */
   const countIncidents = (checks) => {
     if (!checks || checks.length === 0) {
       return 0; // Handle case when no checks are available
     }
-
-    // Count checks with status === false
-    // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
-    const incidentCount = checks.filter((check) => !check.status).length;
-    return incidentCount;
+    return checks.reduce((acc, check) => {
+      check.status === false ? (acc += 1) : acc;
+    }, 0);
   };
 
   return (
