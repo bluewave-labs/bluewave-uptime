@@ -83,14 +83,17 @@ const Status = ({ params }) => {
 const MonitorTable = ({ monitors = [] }) => {
   const navigate = useNavigate();
 
-  const headers = [
-    { id: 1, name: "Host" },
-    { id: 2, name: "Status" },
-    { id: 3, name: "Response Time" },
-    { id: 4, name: "Actions" },
-  ];
-  const data = [];
-  monitors.forEach((monitor) => {
+  const data = {
+    cols: [
+      { id: 1, name: "Host" },
+      { id: 2, name: "Status" },
+      { id: 3, name: "Response Time" },
+      { id: 4, name: "Actions" },
+    ],
+    rows: [],
+  };
+
+  data.rows = monitors.map((monitor, idx) => {
     const params = {
       url: monitor.url,
       title: monitor.name,
@@ -109,37 +112,20 @@ const MonitorTable = ({ monitors = [] }) => {
           ? "var(--env-var-color-17)"
           : "var(--env-var-color-19)",
     };
-    data.push({
-      id: data.length + 1,
-      data: <Host params={params} />,
-      handleClick: () => {
-        navigate(`/monitors/${monitor._id}`);
-      },
-    });
-    data.push({
-      id: data.length + 1,
-      data: <Status params={params} />,
-    });
-    data.push({
-      id: data.length + 1,
-      data: <Host params={params} />,
-      handleClick: () => {
-        console.log(monitor._id);
-      },
-    });
-    data.push({
-      id: data.length + 1,
-      data: <Status params={params} />,
-    });
-    data.push({
-      id: data.length + 1,
 
-      data: <ResponseTimeChart checks={monitor.checks} />,
-    });
-    data.push({ id: data.length + 1, itemId: monitor._id, data: "TODO" });
+    return {
+      id: monitor._id,
+      handleClick: () => navigate(`/monitors/${monitor._id}`),
+      data: [
+        { id: idx, data: <Host params={params} /> },
+        { id: idx + 1, data: <Status params={params} /> },
+        { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
+        { id: idx + 3, data: "TODO" },
+      ],
+    };
   });
 
-  return <BasicTable headers={headers} rowItems={data} paginated={true} />;
+  return <BasicTable data={data} paginated={true} />;
 };
 
 MonitorTable.propTypes = {

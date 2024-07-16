@@ -27,7 +27,6 @@ const DetailsPage = () => {
 
   const theme = useTheme();
 
-  // Example monitor data (replace with actual data or fetch from API)
   /**
    * Function to calculate uptime duration based on the most recent check.
    * @param {Array} checks Array of check objects.
