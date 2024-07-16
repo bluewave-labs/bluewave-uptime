@@ -19,7 +19,7 @@ const NewPasswordConfirmed = () => {
     dispatch(clearAuthState());
     dispatch(clearMonitorState());
     navigate("/login");
-  }
+  };
 
   return (
     <div className="password-confirmed-page">
@@ -36,7 +36,11 @@ const NewPasswordConfirmed = () => {
           </Typography>
         </Stack>
         <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Button level="primary" label="Continue" />
+          <Button
+            level="primary"
+            label="Continue"
+            onClick={() => navigate("/monitors")}
+          />
           <Button
             level="tertiary"
             label="Back to log in"
