@@ -111,6 +111,28 @@ export const forgotPassword = createAsyncThunk(
   }
 );
 
+export const setNewPassword = createAsyncThunk(
+  "auth/setNewPassword",
+  async (data, thunkApi) => {
+    const { token, form } = data;
+    try {
+      await axiosInstance.post("/auth/recovery/validate", {
+        recoveryToken: token,
+      });
+      const res = await axiosInstance.post("/auth/recovery/reset", {
+        ...form,
+        recoveryToken: token,
+      });
+      return res.data;
+    } catch (error) {
+      if (error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
@@ -148,12 +170,24 @@ const handleDeleteRejected = (state, action) => {
   state.success = false;
   state.msg = action.payload ? action.payload.msg : "Failed to delete account.";
 };
-const handleForgotPasswordFulfilled = (state, action) => {
+const handleForgotFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
 };
-const handleForgotPasswordRejected = (state, action) => {
+const handleForgotRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = false;
+  state.msg = action.payload
+    ? action.payload.msg
+    : "Failed to send reset instructions.";
+};
+const handleNewPasswordFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+};
+const handleNewPasswordRejected = (state, action) => {
   state.isLoading = false;
   state.success = false;
   state.msg = action.payload
@@ -211,8 +245,16 @@ const authSlice = createSlice({
       .addCase(forgotPassword.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(forgotPassword.fulfilled, handleForgotPasswordFulfilled)
-      .addCase(forgotPassword.rejected, handleForgotPasswordRejected);
+      .addCase(forgotPassword.fulfilled, handleForgotFulfilled)
+      .addCase(forgotPassword.rejected, handleForgotRejected);
+
+    // Set new password thunk
+    builder
+      .addCase(setNewPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(setNewPassword.fulfilled, handleNewPasswordFulfilled)
+      .addCase(setNewPassword.rejected, handleNewPasswordRejected);
   },
 });
 

@@ -2,72 +2,116 @@ import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPatt
 import "./index.css";
 import LockIcon from "../../assets/Images/lock-icon.png";
 import Check from "../../Components/Check/Check";
-import Button from "../../Components/Button";
+import ButtonSpinner from "../../Components/ButtonSpinner";
 import LeftArrow from "../../assets/Images/arrow-left.png";
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { newPasswordValidation } from "../../Validation/validation";
-import axiosInstance from "../../Utils/axiosConfig";
+import { useState } from "react";
+import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Field from "../../Components/Inputs/Field";
+import { useDispatch, useSelector } from "react-redux";
+import { setNewPassword } from "../../Features/Auth/authSlice";
+import { createToast } from "../../Utils/toastUtils";
 
 const SetNewPassword = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [errors, setErrors] = useState({});
-  const [form, setForm] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [form, setForm] = useState({
+    password: "",
+    confirm: "",
+  });
 
   const idMap = {
     "register-password-input": "password",
     "confirm-password-input": "confirm",
   };
 
-  const handleInput = (e) => {
-    const fieldName = idMap[e.target.id];
-    setForm({ ...form, [fieldName]: e.target.value });
-    console.log(errors);
-  };
+  const { isLoading } = useSelector((state) => state.auth);
+  const { token } = useParams();
 
-  const handleSubmit = async () => {
-    // TODO show loading spinner
-    setIsLoading(true);
-    try {
-      await axiosInstance.post("/auth/recovery/validate", {
-        recoveryToken: token,
-      });
-      await axiosInstance.post("/auth/recovery/reset", {
-        ...form,
-        recoveryToken: token,
-      });
-      navigate("/new-password-confirmed");
-    } catch (error) {
-      // TODO display error (Toast?)
-      alert(error.response.data.msg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    const { error } = newPasswordValidation.validate(form, {
+    const passwordForm = { ...form };
+    const { error } = credentials.validate(passwordForm, {
       abortEarly: false,
+      context: { password: form.password },
     });
 
     if (error) {
-      const validationErrors = error.details.reduce((acc, err) => {
-        return { ...acc, [err.path[0]]: err.message };
-      }, {});
-      setErrors(validationErrors);
+      // validation errors
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      createToast({
+        variant: "info",
+        body:
+          error.details && error.details.length > 0
+            ? error.details[0].message
+            : "Error validating data.",
+        hasIcon: false,
+      });
     } else {
-      setErrors({});
+      delete passwordForm.confirm;
+      const action = await dispatch(
+        setNewPassword({ token: token, form: passwordForm })
+      );
+      if (action.payload.success) {
+        navigate("/new-password-confirmed");
+        createToast({
+          variant: "info",
+          body: "Your password was reset successfully.",
+          hasIcon: false,
+        });
+      } else {
+        if (action.payload) {
+          // dispatch errors
+          createToast({
+            variant: "info",
+            body: action.payload.msg,
+            hasIcon: false,
+          });
+        } else {
+          // unknown errors
+          createToast({
+            variant: "info",
+            body: "Unknown error.",
+            hasIcon: false,
+          });
+        }
+      }
     }
-  }, [form]);
+  };
 
-  const { token } = useParams();
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idMap[id];
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    const { error } = credentials.validate(
+      { [name]: value },
+      { abortEarly: false, context: { password: form.password } }
+    );
+
+    setErrors((prev) => {
+      const prevErrors = { ...prev };
+      if (error) prevErrors[name] = error.details[0].message;
+      else delete prevErrors[name];
+      return prevErrors;
+    });
+  };
+
   return (
     <div className="set-new-password-page">
       <BackgroundPattern />
-      <div className="set-new-password-form">
+      <form className="set-new-password-form" onSubmit={handleSubmit}>
         <div className="set-new-password-form-header">
           <img
             className="set-new-password-form-header-logo"
@@ -89,7 +133,8 @@ const SetNewPassword = () => {
             label="Password"
             isRequired={true}
             placeholder="••••••••"
-            onChange={handleInput}
+            value={form.password}
+            onChange={handleChange}
             error={errors.password}
           />
           <div className="set-new-password-form-gap-medium"></div>
@@ -99,7 +144,8 @@ const SetNewPassword = () => {
             label="Confirm password"
             isRequired={true}
             placeholder="••••••••"
-            onChange={handleInput}
+            value={form.confirm}
+            onChange={handleChange}
             error={errors.confirm}
           />
           <div className="set-new-password-form-gap-medium"></div>
@@ -109,8 +155,9 @@ const SetNewPassword = () => {
             <Check text="Must contain one special character" />
           </div>
           <div className="set-new-password-form-gap-medium"></div>
-          <Button
-            disabled={Object.keys(errors).length !== 0 || isLoading === true}
+          <ButtonSpinner
+            disabled={Object.keys(errors).length !== 0}
+            isLoading={isLoading}
             onClick={handleSubmit}
             level="primary"
             label="Reset password"
@@ -133,7 +180,7 @@ const SetNewPassword = () => {
             Back to log in
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
