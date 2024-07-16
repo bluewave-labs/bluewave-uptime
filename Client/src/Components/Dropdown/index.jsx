@@ -11,7 +11,7 @@ const Dropdown = (props) => {
       value={props.value}
       onChange={props.onChange}
       // Add isOptionEqualToValue prop
-      isOptionEqualToValue={(option, value) => option.name === value}
+      isOptionEqualToValue={(option, value) => option.name === value.name}
       renderInput={(params) => <TextField {...params} label={props.label} />}
     />
   );
@@ -23,7 +23,7 @@ Dropdown.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.object.isRequired,
 };
 
 export default Dropdown;
