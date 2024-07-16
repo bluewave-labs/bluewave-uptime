@@ -9,13 +9,9 @@ const Monitor = require("../models/Monitor");
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-router.post(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  () => {
-    console.log("Create check");
-  }
-);
+router.post("/:monitorId", verifyOwnership(Monitor, "monitorId"), () => {
+  console.log("Create check");
+});
 
 /**
  * @route GET /:monitorId
@@ -24,13 +20,9 @@ router.post(
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-router.get(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  () => {
-    console.log("Get checks");
-  }
-);
+router.get("/:monitorId", verifyOwnership(Monitor, "monitorId"), () => {
+  console.log("Get checks");
+});
 
 /**
  * @route POST /delete/:monitorId
@@ -39,12 +31,8 @@ router.get(
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-router.post(
-  "/delete/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  () => {
-    console.log("Delete checks");
-  }
-);
+router.delete("/:monitorId", verifyOwnership(Monitor, "monitorId"), () => {
+  console.log("Delete checks");
+});
 
 module.exports = router;
