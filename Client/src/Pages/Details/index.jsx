@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CustomizedTables from "../../Components/CustomizedTables";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
