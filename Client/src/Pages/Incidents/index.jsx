@@ -1,22 +1,21 @@
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TuneIcon from '@mui/icons-material/Tune';
-import StatusTable from '../../Components/StatusTable';
+import * as React from "react";
+import TextField from "@mui/material/TextField";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TuneIcon from "@mui/icons-material/Tune";
 import { StatusLabel } from "../../Components/Label/";
 
 const filterOptions = createFilterOptions({
-  matchFrom: 'start',
+  matchFrom: "start",
   stringify: (option) => option.title,
 });
 
 const titles = [
-  { title: 'Down' },
-  { title: 'Cannot resolve' },
-  { title: 'Clear / show all' },
+  { title: "Down" },
+  { title: "Cannot resolve" },
+  { title: "Clear / show all" },
 ];
 
 /**
@@ -32,11 +31,11 @@ function Filter() {
       filterOptions={filterOptions}
       sx={{
         width: 170,
-        '& .MuiAutocomplete-inputRoot': {
-          height: '50px',
+        "& .MuiAutocomplete-inputRoot": {
+          height: "50px",
         },
-        '& .MuiAutocomplete-listbox': {
-          maxHeight: '200px',
+        "& .MuiAutocomplete-listbox": {
+          maxHeight: "200px",
         },
       }}
       disableClearable
@@ -46,7 +45,9 @@ function Filter() {
           size="small"
           label={
             <React.Fragment>
-              <TuneIcon sx={{ marginRight: '0.5rem', position: 'relative', top: '6px' }} />
+              <TuneIcon
+                sx={{ marginRight: "0.5rem", position: "relative", top: "6px" }}
+              />
               Filter by status
             </React.Fragment>
           }
@@ -58,17 +59,82 @@ function Filter() {
 }
 
 const sampleData = [
-  { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'HTTP 350 - NOK' },
-  { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'timeout of 48000ms exceeded' },
-  { name: <StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'timeout of 48000ms exceeded' },
-  { name: <StatusLabel status="Cannot resolve" customStyles={{ backgroundColor: '#f2f4f7', borderColor: '#d2d6de', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'timeout of 48000ms exceeded' },
-  { name: <StatusLabel status="Down" customStyles={{ backgroundColor: '#fff9f9', borderColor: '#ffcac6', color: '#344054' }} />, date: '2024-03-14 21:41:09', message: 'HTTP 350 - NOK' },
+  {
+    name: (
+      <StatusLabel
+        status="Down"
+        customStyles={{
+          backgroundColor: "#fff9f9",
+          borderColor: "#ffcac6",
+          color: "#344054",
+        }}
+      />
+    ),
+    date: "2024-03-14 21:41:09",
+    message: "HTTP 350 - NOK",
+  },
+  {
+    name: (
+      <StatusLabel
+        status="Down"
+        customStyles={{
+          backgroundColor: "#fff9f9",
+          borderColor: "#ffcac6",
+          color: "#344054",
+        }}
+      />
+    ),
+    date: "2024-03-14 21:41:09",
+    message: "timeout of 48000ms exceeded",
+  },
+  {
+    name: (
+      <StatusLabel
+        status="Cannot resolve"
+        customStyles={{
+          backgroundColor: "#f2f4f7",
+          borderColor: "#d2d6de",
+          color: "#344054",
+        }}
+      />
+    ),
+    date: "2024-03-14 21:41:09",
+    message: "timeout of 48000ms exceeded",
+  },
+  {
+    name: (
+      <StatusLabel
+        status="Cannot resolve"
+        customStyles={{
+          backgroundColor: "#f2f4f7",
+          borderColor: "#d2d6de",
+          color: "#344054",
+        }}
+      />
+    ),
+    date: "2024-03-14 21:41:09",
+    message: "timeout of 48000ms exceeded",
+  },
+  {
+    name: (
+      <StatusLabel
+        status="Down"
+        customStyles={{
+          backgroundColor: "#fff9f9",
+          borderColor: "#ffcac6",
+          color: "#344054",
+        }}
+      />
+    ),
+    date: "2024-03-14 21:41:09",
+    message: "HTTP 350 - NOK",
+  },
 ];
 
 const columns = [
-  { id: 'name', header: 'Status' },
-  { id: 'date', header: 'Date & Time' },
-  { id: 'message', header: 'Message' },
+  { id: "name", header: "Status" },
+  { id: "date", header: "Date & Time" },
+  { id: "message", header: "Message" },
 ];
 
 /**
@@ -82,21 +148,33 @@ export default function CustomizedTables() {
     <Box
       sx={{
         marginTop: theme.spacing(4),
-        marginX: 'auto',
-        width: '80%',
+        marginX: "auto",
+        width: "80%",
         paddingX: theme.spacing(6),
-        [theme.breakpoints.down('md')]: {
-          width: '100%',
+        [theme.breakpoints.down("md")]: {
+          width: "100%",
         },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing(2) }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600, fontSize: 16 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: theme.spacing(2),
+        }}
+      >
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ fontWeight: 600, fontSize: 16 }}
+        >
           Incident History
         </Typography>
         <Filter />
       </Box>
-      <StatusTable data={sampleData} columns={columns} /> 
+      {/* TODO Replace with BasicTable */}
+      {/* <StatusTable data={sampleData} columns={columns} /> */}
     </Box>
   );
 }
