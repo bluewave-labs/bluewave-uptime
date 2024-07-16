@@ -6,10 +6,20 @@ import Button from "../../Components/Button";
 import { Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { clearAuthState } from "../../Features/Auth/authSlice";
+import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
 
 const NewPasswordConfirmed = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleNavigate = () => {
+    dispatch(clearAuthState());
+    dispatch(clearMonitorState());
+    navigate("/login");
+  }
 
   return (
     <div className="password-confirmed-page">
@@ -32,7 +42,7 @@ const NewPasswordConfirmed = () => {
             label="Back to log in"
             img={<ArrowBackRoundedIcon />}
             sx={{ alignSelf: "center", width: "fit-content" }}
-            onClick={() => navigate("/login")}
+            onClick={handleNavigate}
           />
         </Stack>
       </form>
