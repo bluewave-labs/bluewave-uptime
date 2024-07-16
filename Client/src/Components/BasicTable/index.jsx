@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
  * @param {Array} props.headers - Array of header titles for the table.
  * @param {Array} props.rowItems - Array of row data objects for the table.
  * @param {boolean} props.paginated - Flag to enable pagination.
+ * @param {function} props.handleClick - Function to handle click on row.
  *
  * @example
  *
@@ -47,6 +48,10 @@ import PropTypes from "prop-types";
  *   { id: 3, data: <div>5</div> },
  *   // More rows...
  * ];
+ *
+ * ROW CLICK HANDLING
+ * If you want to set a listener for a row click, you can add a handleClick function to FIRST ITEM IN EACH ROW
+ *
  * <BasicTable headers={headers} rows={rows} paginated={true} />
  */
 
@@ -94,7 +99,14 @@ const BasicTable = ({ headers, rowItems, paginated }) => {
             {paginated === false &&
               Object.keys(groupedRowItems).map((key) => {
                 return (
-                  <TableRow key={groupedRowItems[key].idx}>
+                  <TableRow
+                    onClick={() => {
+                      groupedRowItems[key].items[0].item.handleClick
+                        ? groupedRowItems[key].items[0].item.handleClick()
+                        : null;
+                    }}
+                    key={groupedRowItems[key].idx}
+                  >
                     {groupedRowItems[key].items.map(({ item }) => {
                       return <TableCell key={item.id}>{item.data}</TableCell>;
                     })}
@@ -103,7 +115,14 @@ const BasicTable = ({ headers, rowItems, paginated }) => {
               })}
             {paginated === true &&
               paginatedRowsKeys.map((key) => (
-                <TableRow key={groupedRowItems[key].idx}>
+                <TableRow
+                  onClick={() => {
+                    groupedRowItems[key].items[0].item.handleClick
+                      ? groupedRowItems[key].items[0].item.handleClick()
+                      : null;
+                  }}
+                  key={groupedRowItems[key].idx}
+                >
                   {groupedRowItems[key].items.map(({ item }) => (
                     <TableCell key={item.id}>{item.data}</TableCell>
                   ))}
@@ -141,6 +160,7 @@ BasicTable.propTypes = {
     })
   ).isRequired,
   paginated: PropTypes.bool,
+  handleClick: PropTypes.func,
 };
 
 export default BasicTable;

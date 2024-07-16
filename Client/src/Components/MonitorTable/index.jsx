@@ -122,9 +122,21 @@ const MonitorTable = ({ monitors = [] }) => {
     });
     data.push({
       id: data.length + 1,
+      data: <Host params={params} />,
+      handleClick: () => {
+        console.log(monitor._id);
+      },
+    });
+    data.push({
+      id: data.length + 1,
+      data: <Status params={params} />,
+    });
+    data.push({
+      id: data.length + 1,
+
       data: <ResponseTimeChart checks={monitor.checks} />,
     });
-    data.push({ id: data.length + 1, data: "TODO" });
+    data.push({ id: data.length + 1, itemId: monitor._id, data: "TODO" });
   });
 
   return <BasicTable headers={headers} rowItems={data} paginated={true} />;
