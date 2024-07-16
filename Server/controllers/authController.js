@@ -309,11 +309,12 @@ const validateRecoveryTokenController = async (req, res, next) => {
 const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
-    const response = await req.db.resetPassword(req, res);
+    const user = await req.db.resetPassword(req, res);
+    const token = issueToken(user);
     res.status(200).json({
       success: true,
       msg: successMessages.AUTH_RESET_PASSWORD,
-      data: response,
+      data: { user, token },
     });
   } catch (error) {
     error.service = SERVICE_NAME;
