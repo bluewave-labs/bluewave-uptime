@@ -61,33 +61,29 @@ const DetailsPage = () => {
   /**
    * Helper function to get timestamp of the most recent check.
    * @param {Array} checks Array of check objects.
-   * @returns {string} Timestamp of the most recent check.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
+   * @returns {number} Timestamp of the most recent check.
    */
   const getLastCheckedTimestamp = (checks) => {
     if (!checks || checks.length === 0) {
-      return "N/A"; // Handle case when no checks are available
+      return 0; // Handle case when no checks are available
     }
 
     const mostRecentCheck = checks[0];
-    return new Date(mostRecentCheck.createdAt).toLocaleString();
+    return mostRecentCheck.createdAt;
   };
 
   /**
    * Helper function to count incidents (checks with status === false).
    * @param {Array} checks Array of check objects.
    * @returns {number} Number of incidents.
-   * TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
    */
   const countIncidents = (checks) => {
     if (!checks || checks.length === 0) {
       return 0; // Handle case when no checks are available
     }
-
-    // Count checks with status === false
-    // TODO - NEED TO REVISIT THIS FOR PROPER LOGIC.
-    const incidentCount = checks.filter((check) => !check.status).length;
-    return incidentCount;
+    return checks.reduce((acc, check) => {
+      check.status === false ? (acc += 1) : acc;
+    }, 0);
   };
 
   return (
