@@ -47,7 +47,7 @@
   --env-var-color-27: #fecf60;
   --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
   --env-var-color-28: #f79009;
-  --env-var-color-29: #D0D5DD;
+  --env-var-color-29: #d0d5dd;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
@@ -128,11 +128,14 @@ button:focus-visible {
 .Toastify__toast-container {
   width: auto;
 }
+.Toastify__toast-body .alert{
+  min-width: 150px;
+}
 .Toastify [class^="Toastify__toast"] {
   padding: 0;
   margin: 0;
 }
-.Toastify__toast{
+.Toastify__toast {
   min-height: 0;
   border-radius: 4px;
 }

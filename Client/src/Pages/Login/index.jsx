@@ -173,7 +173,9 @@ const Login = () => {
               }
               label="Remember me"
             />
-            <span>Forgot password</span>
+            <span onClick={() => navigate("/forgot-password")}>
+              Forgot password
+            </span>
           </Stack>
         </Stack>
         <Stack gap={theme.gap.ml} mt={theme.gap.large}>

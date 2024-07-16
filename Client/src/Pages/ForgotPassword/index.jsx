@@ -50,6 +50,7 @@ const ForgotPassword = () => {
     } else {
       const action = await dispatch(forgotPassword(form));
       if (action.payload.success) {
+        sessionStorage.setItem("email", form.email);
         navigate("/check-email");
         createToast({
           variant: "info",
@@ -100,7 +101,7 @@ const ForgotPassword = () => {
   return (
     <div className="forgot-password-page">
       <BackgroundPattern></BackgroundPattern>
-      <form className="forgot-password-form">
+      <form className="forgot-password-form" onSubmit={handleSubmit}>
         <Stack direction="column" alignItems="center" gap={theme.gap.small}>
           <Logomark alt="Logomark" style={{ fill: "white" }} />
           <Typography component="h1" sx={{ mt: theme.gap.ml }}>
