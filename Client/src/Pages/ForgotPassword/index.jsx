@@ -1,8 +1,8 @@
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
 import React from "react";
-import Logomark from "../../assets/Images/key-password.png";
-import LeftArrow from "../../assets/Images/arrow-left.png";
+import Logomark from "../../assets/icons/key.svg?react";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +11,14 @@ import { createToast } from "../../Utils/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotPassword } from "../../Features/Auth/authSlice";
 import ButtonSpinner from "../../Components/ButtonSpinner";
+import { Stack, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import Button from "../../Components/Button";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const { isLoading } = useSelector((state) => state.auth);
   const [errors, setErrors] = useState({});
@@ -96,22 +100,17 @@ const ForgotPassword = () => {
   return (
     <div className="forgot-password-page">
       <BackgroundPattern></BackgroundPattern>
-      <div className="forgot-password-form">
-        <div className="forgot-password-form-header">
-          <img
-            className="forgot-password-form-header-logo"
-            src={Logomark}
-            alt="Logomark"
-          />
-          <div className="forgot-password-v-gap-medium"></div>
-          <div className="forgot-password-form-heading">Forgot password?</div>
-          <div className="forgot-password-v-gap-small"></div>
-          <div className="forgot-password-form-subheading">
-            No worries, we’ll send you reset instructions.
-          </div>
-        </div>
-        <div className="forgot-password-v-gap-large"></div>
-        <div className="forgot-password-body">
+      <form className="forgot-password-form">
+        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
+          <Logomark alt="Logomark" style={{ fill: "white" }} />
+          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
+            Forgot password?
+          </Typography>
+          <Typography>
+            No worries, we'll send you reset instructions.
+          </Typography>
+        </Stack>
+        <Stack gap={theme.gap.ml} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
           <Field
             type="email"
             id="forgot-password-email-input"
@@ -122,29 +121,23 @@ const ForgotPassword = () => {
             onChange={handleChange}
             error={errors.email}
           />
-          <div className="forgot-password-v-gap-medium"></div>
           <ButtonSpinner
             disabled={errors.email !== undefined}
             onClick={handleSubmit}
             isLoading={isLoading}
             level="primary"
             label="Reset password"
-            sx={{
-              width: "100%",
-              fontSize: "13px",
-            }}
+            sx={{ mb: theme.gap.medium }}
           />
-        </div>
-        <div className="forgot-password-v-gap-large"></div>
-        <div className="forgot-password-back-button">
-          <img
-            className="forgot-password-back-button-img"
-            src={LeftArrow}
-            alt="LeftArrow"
+          <Button
+            level="tertiary"
+            label="Back to log in"
+            img={<ArrowBackRoundedIcon />}
+            sx={{ alignSelf: "center", width: "fit-content" }}
+            onClick={() => navigate("/login")}
           />
-          <div className="forgot-password-back-button-text">Back to log in</div>
-        </div>
-      </div>
+        </Stack>
+      </form>
     </div>
   );
 };

@@ -3,70 +3,29 @@
   justify-content: center;
   height: var(--env-var-height-1);
 }
-
-.forgot-password-form {
-  width: var(--env-var-width-2);
-  margin: 90px auto;
+.forgot-password-page button:not(.MuiIconButton-root) {
+  height: 34px;
+  border-radius: var(--env-var-radius-2);
+  line-height: 0;
 }
-
-.forgot-password-form-header {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.forgot-password-form-header-logo {
-  margin: 0 auto;
-}
-
-.forgot-password-v-gap-large {
-  height: var(--env-var-spacing-3);
-}
-
-.forgot-password-v-gap-medium {
-  height: var(--env-var-spacing-2);
-}
-
-.forgot-password-v-gap-small {
-  height: var(--env-var-spacing-1);
-}
-
-.forgot-password-form-heading {
+.forgot-password-page h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
-  font-weight: 700;
   color: var(--env-var-color-1);
+  font-weight: 600;
 }
-
-.forgot-password-form-subheading {
+.forgot-password-page p.MuiTypography-root,
+.forgot-password-page button {
   font-size: var(--env-var-font-size-medium);
-  font-weight: 500;
+}
+.forgot-password-page p.MuiTypography-root {
   color: var(--env-var-color-2);
 }
-
-.forgot-password-body {
-  width: var(--env-var-width-2);
-}
-
-#forgot-password-email-input {
-  width: 308px;
-  height: 11px;
-  font-size: var(--env-var-font-size-medium);
-}
-
-.forgot-password-back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.forgot-password-back-button-img {
-  width: var(--env-var-img-width-1);
-  height: var(--env-var-img-width-1);
+.forgot-password-page button svg{
   margin-right: 5px;
 }
 
-.forgot-password-back-button-text {
-  font-size: var(--env-var-font-size-medium);
-  font-weight: 500;
-  color: var(--env-var-color-2);
+
+.forgot-password-form {
+  margin-top: 65px;
+  width: var(--env-var-width-2);
 }
