@@ -1,54 +1,41 @@
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
-import React from "react";
-import SuccessIcon from "../../assets/Images/success-icon.png";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ConfirmIcon from "../../assets/icons/confirm-icon.svg?react";
 import Button from "../../Components/Button";
-import LeftArrow from "../../assets/Images/arrow-left.png";
+import { Stack, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import { useNavigate } from "react-router";
 
 const NewPasswordConfirmed = () => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
   return (
     <div className="password-confirmed-page">
       <BackgroundPattern />
-      <div className="password-confirmed-form">
-        <div className="password-confirmed-form-header">
-          <img
-            className="password-confirmed-form-header-logo"
-            src={SuccessIcon}
-            alt="SuccessIcon"
-          />
-          <div className="password-confirmed-v-gap-medium"></div>
-          <div className="password-confirmed-form-heading">Password reset</div>
-          <div className="password-confirmed-v-gap-small"></div>
-          <div className="password-confirmed-form-subheading">
+      <form className="password-confirmed-form">
+        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
+          <ConfirmIcon alt="confirm icon" style={{ fill: "white" }} />
+          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
+            Password reset
+          </Typography>
+          <Typography sx={{ textAlign: "center" }}>
             Your password has been successfully reset. Click below to log in
             magically.
-          </div>
-        </div>
-        <div className="password-confirmed-v-gap-large"></div>
-        <div className="password-confirmed-body">
+          </Typography>
+        </Stack>
+        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
+          <Button level="primary" label="Continue" />
           <Button
-            level="primary"
-            label="Continue"
-            sx={{
-              width: "100%",
-              fontSize: "13px",
-              fontWeight: "200",
-              height: "44px",
-            }}
+            level="tertiary"
+            label="Back to log in"
+            img={<ArrowBackRoundedIcon />}
+            sx={{ alignSelf: "center", width: "fit-content" }}
+            onClick={() => navigate("/login")}
           />
-        </div>
-        <div className="password-confirmed-v-gap-large"></div>
-        <div className="password-confirmed-back-button">
-          <img
-            className="password-confirmed-back-button-img"
-            src={LeftArrow}
-            alt="LeftArrow"
-          />
-          <div className="password-confirmed-back-button-text">
-            Back to log in
-          </div>
-        </div>
-      </div>
+        </Stack>
+      </form>
     </div>
   );
 };
