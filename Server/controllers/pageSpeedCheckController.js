@@ -2,6 +2,14 @@ const PageSpeedCheck = require("../models/PageSpeedCheck");
 const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "pagespeed";
 
+/**
+ * Gets all PageSpeedChecks for a monitor
+ * @async
+ * @param {Express.Request} req - The request object
+ * @param {Express.Response} res - The response object
+ * @param {Function} next - The next middleware function
+ * @returns {Promise<Express.Response>}
+ */
 const getPageSpeedChecks = async (req, res, next) => {
   try {
     return res.status(200).json({ msg: "Hit getPageSpeedChecks" });
@@ -11,6 +19,14 @@ const getPageSpeedChecks = async (req, res, next) => {
   }
 };
 
+/**
+ * Creates a new PageSpeedCheck for a monitor
+ * @async
+ * @param {Express.Request} req - The request object
+ * @param {Express.Response} res - The response object
+ * @param {Function} next - The next middleware function
+ * @returns {Promise<Express.Response>}
+ */
 const createPageSpeedCheck = async (req, res, next) => {
   try {
     return res.status(200).json({ msg: "Hit createPageSpeedCheck" });
@@ -20,6 +36,14 @@ const createPageSpeedCheck = async (req, res, next) => {
   }
 };
 
+/**
+ * Deletes all PageSpeedChecks for a monitor
+ * @async
+ * @param {Express.Request} req - The request object
+ * @param {Express.Response} res - The response object
+ * @param {Function} next - The next middleware function
+ * @returns {Promise<Express.Response>}
+ */
 const deletePageSpeedCheck = async (req, res, next) => {
   try {
     return res.status(200).json({ msg: "Hit deletePageSpeedCheck" });
