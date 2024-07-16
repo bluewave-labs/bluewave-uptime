@@ -187,7 +187,7 @@ const handleNewPasswordRejected = (state, action) => {
   state.success = false;
   state.msg = action.payload
     ? action.payload.msg
-    : "Failed to send reset instructions.";
+    : "Failed to reset password.";
 };
 
 const authSlice = createSlice({
