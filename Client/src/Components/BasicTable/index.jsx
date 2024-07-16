@@ -81,6 +81,10 @@ const BasicTable = ({ data, paginated }) => {
     ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     : data.rows;
 
+  if (!data || !data.cols || !data.rows) {
+    return <div>No data</div>;
+  }
+
   return (
     <>
       <TableContainer component={Paper}>
