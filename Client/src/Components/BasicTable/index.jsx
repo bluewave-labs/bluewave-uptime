@@ -26,7 +26,7 @@ import PropTypes from "prop-types";
  *     @param {Array} props.data.rows[].data - Array of cell data objects for the row.
  *       @param {number} props.data.rows[].data[].id - Unique identifier for the cell.
  *       @param {JSX.Element} props.data.rows[].data[].data - The content to display in the cell.
- *       @param {functio} props.data.rows.data.handleClick - Function to call when the row is clicked.
+ *       @param {function} props.data.rows.data.handleClick - Function to call when the row is clicked.
  * @param {boolean} [props.paginated=false] - Flag to enable pagination.
  *
  * @example
