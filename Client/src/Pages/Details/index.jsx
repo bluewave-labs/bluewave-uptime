@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
+import MonitorDetailsAreaChart from "../../Components/Charts/MonitorDetailsAreaChart";
 import StatusLabel from "../../Components/StatusLabel";
 
 const formatDuration = (ms) => {
@@ -167,6 +168,9 @@ const DetailsPage = () => {
           value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
         />
         <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
+      </div>
+      <div style={{ height: "10rem" }}>
+        <MonitorDetailsAreaChart checks={monitor.checks} />
       </div>
       <Typography component="h1" mb={theme.gap.small}>
         History
