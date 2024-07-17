@@ -1,9 +1,8 @@
 const router = require("express").Router();
-const Joi = require("joi");
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const Monitor = require("../models/Monitor");
 const { createPageSpeedCheck, getPageSpeedChecks, deletePageSpeedCheck } = require("../controllers/pageSpeedCheckController");
-const { getMonitorByIdValidation } = require("../validation/joi"); 
+ 
 
 /**
  * @route POST /pagespeed/:monitorId
@@ -15,20 +14,7 @@ const { getMonitorByIdValidation } = require("../validation/joi");
 router.post(
   "/pagespeed/:monitorId",
   verifyOwnership(Monitor, "monitorId"), 
-  async (req, res, next) => {
-    try {
-      // Validate monitorId parameter
-      const { error } = getMonitorByIdValidation.validate(req.params);
-      if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-      }
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  },
-  createPageSpeedCheck 
+  createPageSpeedCheck
 );
 
 /**
@@ -41,20 +27,7 @@ router.post(
 router.get(
   "/pagespeed/:monitorId",
   verifyOwnership(Monitor, "monitorId"), 
-  async (req, res, next) => {
-    try {
-      // Validate monitorId parameter
-      const { error } = getMonitorByIdValidation.validate(req.params);
-      if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-      }
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  },
-  getPageSpeedChecks 
+  getPageSpeedChecks
 );
 
 /**
@@ -67,20 +40,7 @@ router.get(
 router.delete(
   "/pagespeed/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
-  async (req, res, next) => {
-    try {
-      // Validate monitorId parameter
-      const { error } = getMonitorByIdValidation.validate(req.params);
-      if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-      }
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  },
-  deletePageSpeedCheck 
+  deletePageSpeedCheck
 );
 
 module.exports = router;
