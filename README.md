@@ -14,7 +14,7 @@ BlueWave Uptime is an open source server monitoring application. It is a tool us
 
 ## Contributing
 
-You are welcome to provide contributions to the project. It uses React on the FE, and Nodejs and MongoDB on the BE, hence if you are comfortable with working with those technologies, you are encouraged to send your PRs. Please read [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md)
+You are welcome to provide contributions to the project. It uses React on the FE, and Nodejs and MongoDB on the BE, hence if you are comfortable with working with those technologies, you are encouraged to send your PRs. Please read [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md). Once you start contributing, we'd be happy to add you to our weekly team calls as well.
 
 Note that We have a Figma file that includes:
 
