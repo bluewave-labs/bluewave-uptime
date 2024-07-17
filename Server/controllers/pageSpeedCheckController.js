@@ -14,7 +14,7 @@ const { pageSpeedCheckValidation } = require("../validation/joi");
 const getPageSpeedChecks = async (req, res, next) => {
   try {
     // Validate monitorId parameter
-    const { error } = pageSpeedCheckValidation.validate(req.params);
+    const { error } = pageSpeedCheckValidation.validateAsync(req.params);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
@@ -36,7 +36,7 @@ const getPageSpeedChecks = async (req, res, next) => {
 const createPageSpeedCheck = async (req, res, next) => {
   try {
     // Validate monitorId parameter
-    const { error } = pageSpeedCheckValidation.validate(req.params);
+    const { error } = pageSpeedCheckValidation.validateAsync(req.params);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
@@ -59,7 +59,7 @@ const createPageSpeedCheck = async (req, res, next) => {
 const deletePageSpeedCheck = async (req, res, next) => {
   try {
     // Validate monitorId parameter
-    const { error } = pageSpeedCheckValidation.validate(req.params);
+    const { error } = pageSpeedCheckValidation.validateAsync(req.params);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
