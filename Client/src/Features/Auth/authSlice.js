@@ -96,6 +96,43 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (form, thunkApi) => {
+    try {
+      const res = await axiosInstance.post("/auth/recovery/request", form);
+      return res.data;
+    } catch (error) {
+      if (error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const setNewPassword = createAsyncThunk(
+  "auth/setNewPassword",
+  async (data, thunkApi) => {
+    const { token, form } = data;
+    try {
+      await axiosInstance.post("/auth/recovery/validate", {
+        recoveryToken: token,
+      });
+      const res = await axiosInstance.post("/auth/recovery/reset", {
+        ...form,
+        recoveryToken: token,
+      });
+      return res.data;
+    } catch (error) {
+      if (error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const handleAuthFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
@@ -132,6 +169,25 @@ const handleDeleteRejected = (state, action) => {
   state.isLoading = false;
   state.success = false;
   state.msg = action.payload ? action.payload.msg : "Failed to delete account.";
+};
+const handleForgotFulfilled = (state, action) => {
+  state.isLoading = false;
+  state.success = action.payload.success;
+  state.msg = action.payload.msg;
+};
+const handleForgotRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = false;
+  state.msg = action.payload
+    ? action.payload.msg
+    : "Failed to send reset instructions.";
+};
+const handleNewPasswordRejected = (state, action) => {
+  state.isLoading = false;
+  state.success = false;
+  state.msg = action.payload
+    ? action.payload.msg
+    : "Failed to reset password.";
 };
 
 const authSlice = createSlice({
@@ -178,6 +234,22 @@ const authSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, handleDeleteFulfilled)
       .addCase(deleteUser.rejected, handleDeleteRejected);
+
+    // Forgot password thunk
+    builder
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(forgotPassword.fulfilled, handleForgotFulfilled)
+      .addCase(forgotPassword.rejected, handleForgotRejected);
+
+    // Set new password thunk
+    builder
+      .addCase(setNewPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(setNewPassword.fulfilled, handleAuthFulfilled)
+      .addCase(setNewPassword.rejected, handleNewPasswordRejected);
   },
 });
 

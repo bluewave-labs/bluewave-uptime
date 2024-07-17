@@ -1,44 +1,38 @@
 .register-page {
   display: flex;
   justify-content: center;
-  min-height: var(--env-var-height-1);
+  height: var(--env-var-height-1);
+}
+.register-page h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-1);
+  font-weight: 600;
+  opacity: 0.5;
+}
+.register-page p.MuiTypography-root,
+.register-page span,
+.register-page button {
+  font-size: var(--env-var-font-size-medium);
+}
+.register-page p.MuiTypography-root {
+  color: var(--env-var-color-2);
+  opacity: 0.8;
+}
+.register-page button:not(.MuiIconButton-root) {
+  height: 34px;
+  border-radius: var(--env-var-radius-2);
+  line-height: 0;
+}
+.register-page svg rect {
+  fill: none;
+}
+.register-page
+  .MuiFormControl-root:has(#register-password-input)
+  + span.MuiTypography-root {
+    display: none;
+    visibility: hidden;
 }
 
 .register-form {
-  width: var(--env-var-width-2);
-  margin: 140px auto;
-}
-
-.register-form-header {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.register-form-header-logo {
-  margin: 0 auto;
-}
-
-.register-form-v-spacing-large {
-  height: var(--env-var-spacing-3);
-}
-
-.register-form-v-spacing-small {
-  height: var(--env-var-spacing-1);
-}
-
-.register-form-heading {
-  font-size: var(--env-var-font-size-large);
-  font-weight: 700;
-  color: var(--env-var-color-1);
-}
-
-.register-form-subheading {
-  font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
-  font-weight: 600;
-}
-
-.register-bottom-spacing {
-  height: 50px;
+  margin-top: 95px;
 }

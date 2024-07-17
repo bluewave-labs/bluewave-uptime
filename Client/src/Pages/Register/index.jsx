@@ -3,20 +3,23 @@ import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
-import Logomark from "../../assets/Images/Logomark.png";
+import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
-import { registerValidation } from "../../Validation/validation";
+import { credentials } from "../../Validation/validation";
 import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
 import { register } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
 import Field from "../../Components/Inputs/Field";
+import { useTheme } from "@emotion/react";
+import { Divider, Stack, Typography } from "@mui/material";
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   // TODO If possible, change the IDs of these fields to match the backend
   const idMap = {
@@ -24,17 +27,18 @@ const Register = () => {
     "register-lastname-input": "lastname",
     "register-email-input": "email",
     "register-password-input": "password",
+    "register-confirm-input": "confirm",
   };
-
-  const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
     email: "",
     password: "",
+    confirm: "",
     role: "",
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     axiosInstance
@@ -49,124 +53,129 @@ const Register = () => {
       });
   }, [form, navigate]);
 
-  useEffect(() => {
-    const { error } = registerValidation.validate(form, {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const adminForm = { ...form, role: "admin" };
+    const { error } = credentials.validate(adminForm, {
       abortEarly: false,
+      context: { password: form.password },
     });
 
     if (error) {
-      // Creates an error object in the format { field: message }
-      const validationErrors = error.details.reduce((acc, err) => {
-        return { ...acc, [err.path[0]]: err.message };
-      }, {});
-      setErrors(validationErrors);
+      // validation errors
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      createToast({
+        variant: "info",
+        body:
+          error.details && error.details.length > 0
+            ? error.details[0].message
+            : "Error validating data.",
+        hasIcon: false,
+      });
     } else {
-      setErrors({});
-    }
-  }, [form]);
-
-  const handleInput = (e) => {
-    const newForm = { ...form, [idMap[e.target.id]]: e.target.value };
-    setForm(newForm);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const adminForm = { ...form, role: "admin" };
-      await registerValidation.validateAsync(adminForm, { abortEarly: false });
+      delete adminForm.confirm;
       const action = await dispatch(register(adminForm));
-
-      if (action.meta.requestStatus === "fulfilled") {
+      if (action.payload.success) {
         const token = action.payload.data;
         localStorage.setItem("token", token);
         navigate("/");
-      }
-
-      if (action.meta.requestStatus === "rejected") {
-        const error = new Error("Request rejected");
-        error.response = action.payload;
-        throw error;
-      }
-    } catch (error) {
-      if (error.name === "ValidationError") {
-        // validation errors
         createToast({
           variant: "info",
-          body:
-            error && error.details && error.details.length > 0
-              ? error.details[0].message
-              : "Error validating data.",
-          hasIcon: false,
-        });
-      } else if (error.response) {
-        // dispatch errors
-        createToast({
-          variant: "info",
-          body: error.response.msg,
+          body: "Welcome! Your account was created successfully.",
           hasIcon: false,
         });
       } else {
-        // unknown errors
-        createToast({
-          variant: "info",
-          body: "Unknown error.",
-          hasIcon: false,
-        });
+        if (action.payload) {
+          // dispatch errors
+          createToast({
+            variant: "info",
+            body: action.payload.msg,
+            hasIcon: false,
+          });
+        } else {
+          // unknown errors
+          createToast({
+            variant: "info",
+            body: "Unknown error.",
+            hasIcon: false,
+          });
+        }
       }
     }
   };
 
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idMap[id];
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    const { error } = credentials.validate(
+      { [name]: value },
+      { abortEarly: false, context: { password: form.password } }
+    );
+
+    setErrors((prev) => {
+      const prevErrors = { ...prev };
+      if (error) prevErrors[name] = error.details[0].message;
+      else delete prevErrors[name];
+      return prevErrors;
+    });
+  };
 
   return (
     <div className="register-page">
       <BackgroundPattern></BackgroundPattern>
-      <form className="register-form" onSubmit={handleSubmit}>
-        <div className="register-form-header">
-          <img
-            className="register-form-header-logo"
-            src={Logomark}
-            alt="Logomark"
+      <form className="register-form" onSubmit={handleSubmit} noValidate>
+        <Stack gap={theme.gap.large} direction="column">
+          <Logomark alt="BlueWave Uptime Icon" />
+          <Button
+            level="secondary"
+            label="Sign up with Google"
+            sx={{ fontWeight: 600, mt: theme.gap.xxl }}
+            img={<img className="google-enter" src={Google} alt="Google" />}
           />
-          <div className="register-form-v-spacing-large" />
-          <div className="register-form-heading">
-            Create Uptime Manager admin account
-          </div>
-          <div className="register-form-v-spacing-large"></div>
-        </div>
-        <div className="register-form-v-spacing-40px" />
-        <div className="register-form-inputs">
+          <Divider>
+            <Typography>or</Typography>
+          </Divider>
           <Field
             id="register-firstname-input"
             label="Name"
             isRequired={true}
-            placeholder="Talha"
+            placeholder="Daniel"
             autoComplete="given-name"
-            onChange={handleInput}
+            value={form.firstname}
+            onChange={handleChange}
             error={errors.firstname}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             id="register-lastname-input"
             label="Surname"
             isRequired={true}
-            placeholder="Bolat"
+            placeholder="Cojocea"
             autoComplete="family-name"
-            onChange={handleInput}
+            value={form.lastname}
+            onChange={handleChange}
             error={errors.lastname}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             type="email"
             id="register-email-input"
             label="Email"
             isRequired={true}
-            placeholder="name.surname@companyname.com"
+            placeholder="daniel.cojocea@domain.com"
             autoComplete="email"
-            onChange={handleInput}
+            value={form.email}
+            onChange={handleChange}
             error={errors.email}
           />
-          <div className="login-form-v2-spacing" />
           <Field
             type="password"
             id="register-password-input"
@@ -174,11 +183,10 @@ const Register = () => {
             isRequired={true}
             placeholder="Create a password"
             autoComplete="current-password"
+            value={form.password}
+            onChange={handleChange}
             error={errors.password}
-            onChange={handleInput}
           />
-          <div className="login-form-v2-spacing" />
-          {/* TODO - hook up to form state and run checks */}
           <Field
             type="password"
             id="register-confirm-input"
@@ -186,35 +194,59 @@ const Register = () => {
             isRequired={true}
             placeholder="Confirm your password"
             autoComplete="current-password"
+            value={form.confirm}
+            onChange={handleChange}
             error={errors.confirm}
-            onChange={handleInput}
           />
-        </div>
-        <div className="login-form-v2-spacing" />
-        <div className="register-form-checks">
-          <Check text="Must be at least 8 characters" />
-          <div className="register-form-v-spacing-small"></div>
-          <Check text="Must contain one special character" />
-        </div>
-        <div className="login-form-v2-spacing" />
-        <div className="register-form-actions">
+          <Stack gap={theme.gap.small}>
+            <Check
+              text="Must be at least 8 characters long"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : form.password.length < 8
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain one special character and a number"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
+                      form.password
+                    )
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain at least one upper and lower character"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
+                  ? "error"
+                  : "success"
+              }
+            />
+          </Stack>
           <Button
             type="submit"
             level="primary"
             label="Get started"
-            sx={{ width: "100%" }}
+            sx={{ marginBottom: theme.gap.large }}
+            disabled={Object.keys(errors).length !== 0 && true}
           />
-          <div className="login-form-v-spacing" />
-          <Button
-            disabled={true}
-            level="secondary"
-            label="Sign up with Google"
-            sx={{ width: "100%", color: "#344054", fontWeight: "700" }}
-            img={<img className="google-enter" src={Google} alt="Google" />}
-          />
-        </div>
+        </Stack>
       </form>
-      <div className="register-bottom-spacing"></div>
     </div>
   );
 };
