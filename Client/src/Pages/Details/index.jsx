@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
-
+import MonitorDetailsAreaChart from "../../Components/Charts/MonitorDetailsAreaChart";
 /**
  * Details page component displaying monitor details and related information.
  * @component
@@ -107,6 +107,9 @@ const DetailsPage = () => {
 
   return (
     <div>
+      <div style={{ height: "10rem" }}>
+        <MonitorDetailsAreaChart checks={monitor.checks} />
+      </div>
       <BasicTable data={data} paginated={true} />
     </div>
   );
