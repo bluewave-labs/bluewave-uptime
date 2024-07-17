@@ -1,6 +1,11 @@
 const PageSpeedCheck = require("../models/PageSpeedCheck");
 const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "pagespeed";
+const {
+  getPageSpeedCheckParamValidation,
+  createPageSpeedCheckParamValidation,
+  deletePageSpeedCheckParamValidation,
+} = require("../validation/joi");
 
 /**
  * Gets all PageSpeedChecks for a monitor
@@ -12,9 +17,14 @@ const SERVICE_NAME = "pagespeed";
  */
 const getPageSpeedChecks = async (req, res, next) => {
   try {
+    // Validate monitorId parameter
+    await getPageSpeedCheckParamValidation.validateAsync(req.params);
+
     return res.status(200).json({ msg: "Hit getPageSpeedChecks" });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    if (error.isJoi) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
     next(error);
   }
 };
@@ -29,8 +39,14 @@ const getPageSpeedChecks = async (req, res, next) => {
  */
 const createPageSpeedCheck = async (req, res, next) => {
   try {
+    // Validate monitorId parameter
+    await createPageSpeedCheckParamValidation.validateAsync(req.params);
+
     return res.status(200).json({ msg: "Hit createPageSpeedCheck" });
   } catch (error) {
+    if (error.isJoi) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
     error.service = SERVICE_NAME;
     next(error);
   }
@@ -46,8 +62,14 @@ const createPageSpeedCheck = async (req, res, next) => {
  */
 const deletePageSpeedCheck = async (req, res, next) => {
   try {
+    // Validate monitorId parameter
+    await deletePageSpeedCheckParamValidation.validateAsync(req.params);
+
     return res.status(200).json({ msg: "Hit deletePageSpeedCheck" });
   } catch (error) {
+    if (error.isJoi) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
     error.service = SERVICE_NAME;
     next(error);
   }
