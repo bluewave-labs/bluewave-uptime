@@ -4,6 +4,7 @@ import ResponseTimeChart from "../Charts/ResponseTimeChart";
 import BasicTable from "../BasicTable";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import { useNavigate } from "react-router-dom";
+import StatusLabel from "../StatusLabel";
 
 /**
  * Host component.
@@ -29,39 +30,6 @@ const Host = ({ params }) => {
         style={{ color: params.percentageColor }}
       >
         {params.precentage}%
-      </div>
-    </div>
-  );
-};
-
-/**
- * Status component.
- * This subcomponent receives a params object and displays the status details of a monitor.
- *
- * @component
- * @param {Object} params - An object containing the following properties:
- * @param {string} params.backgroundColor - The background color of the status box.
- * @param {string} params.statusDotColor - The color of the status dot.
- * @param {string} params.status - The status text to display.
- * @returns {React.ElementType} Returns a div element with the host status.
- */
-const Status = ({ params }) => {
-  return (
-    <div className="host-status">
-      <div
-        className="host-status-details"
-        style={{ backgroundColor: params.backgroundColor }}
-      >
-        <div
-          className="host-status-dot"
-          style={{ backgroundColor: params.statusDotColor }}
-        />
-        <span
-          className="host-status-text"
-          style={{ textTransform: "capitalize" }}
-        >
-          {params.status}
-        </span>
       </div>
     </div>
   );
@@ -118,7 +86,7 @@ const MonitorTable = ({ monitors = [] }) => {
       handleClick: () => navigate(`/monitors/${monitor._id}`),
       data: [
         { id: idx, data: <Host params={params} /> },
-        { id: idx + 1, data: <Status params={params} /> },
+        { id: idx + 1, data: <StatusLabel params={params} /> },
         { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
         { id: idx + 3, data: "TODO" },
       ],
@@ -132,7 +100,6 @@ MonitorTable.propTypes = {
   monitors: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-Status.propTypes = { params: PropTypes.object.isRequired };
 Host.propTypes = { params: PropTypes.object.isRequired };
 
 export default MonitorTable;
