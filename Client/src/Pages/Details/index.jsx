@@ -1,10 +1,40 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
 import MonitorDetailsAreaChart from "../../Components/Charts/MonitorDetailsAreaChart";
+import StatusLabel from "../../Components/StatusLabel";
+
+const formatDuration = (ms) => {
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  let dateStr = "";
+
+  days && (dateStr += `${days}d `);
+  hours && (dateStr += `${hours % 24}h `);
+  minutes && (dateStr += `${minutes % 60}m `);
+  seconds && (dateStr += `${seconds % 60}s `);
+
+  dateStr === "" && (dateStr = "0s");
+
+  return dateStr;
+};
+
+const StatBox = ({ title, value }) => {
+  return (
+    <Box>
+      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h4">{value}</Typography>
+    </Box>
+  );
+};
+
 /**
  * Details page component displaying monitor details and related information.
  * @component
@@ -29,10 +59,22 @@ const DetailsPage = () => {
           { id: 3, name: "Message" },
         ],
         rows: res.data.data.checks.map((check, idx) => {
+          const params = {
+            status: check.status === true ? "up" : "down",
+            backgroundColor:
+              check.status === true
+                ? "var(--env-var-color-20)"
+                : "var(--env-var-color-21)",
+            statusDotColor:
+              check.status === true
+                ? "var(--env-var-color-17)"
+                : "var(--env-var-color-19)",
+          };
+
           return {
             id: check._id,
             data: [
-              { id: idx, data: check.status ? "Up" : "Down" },
+              { id: idx, data: <StatusLabel params={params} /> },
               { id: idx + 1, data: new Date(check.createdAt).toLocaleString() },
               { id: idx + 2, data: check.statusCode },
             ],
@@ -52,43 +94,47 @@ const DetailsPage = () => {
    * @param {Array} checks Array of check objects.
    * @returns {number} Uptime duration in ms.
    */
+
+  // TODO:  This can be done more efficiently by iteratting backwards
+  //      and breaking when the first down check is found, calculate current time - downtime
   const calculateUptimeDuration = (checks) => {
     if (!checks || checks.length === 0) {
       return 0;
     }
 
-    let longestDuration = 0;
-    let lastDownTimestamp = null;
-    let currentDuration = longestDuration;
+    const arr = [...checks];
 
-    // Loop over the checks to find the most recent uptime duration
-    checks.forEach((check) => {
+    let lastDownTimestamp = null;
+    let lastUpTimestamp = null;
+
+    arr.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    arr.forEach((check) => {
       if (check.status === false) {
-        lastDownTimestamp = check.createdAt;
-      } else if (check.status === true && lastDownTimestamp) {
-        currentDuration = check.createdAt - lastDownTimestamp;
-        if (currentDuration > longestDuration) {
-          longestDuration = currentDuration;
-        }
-        lastDownTimestamp = null;
+        lastDownTimestamp = new Date(check.createdAt);
+      } else if (check.status === true) {
+        lastUpTimestamp = new Date(check.createdAt);
       }
     });
-    lastDownTimestamp = null;
-    return longestDuration;
+
+    if (lastDownTimestamp === null) {
+      return new Date() - new Date(arr[0].createdAt);
+    } else if (lastUpTimestamp === null) {
+      return 0;
+    } else if (lastDownTimestamp && lastUpTimestamp) {
+      return lastUpTimestamp - lastDownTimestamp;
+    }
   };
 
   /**
-   * Helper function to get timestamp of the most recent check.
+   * Helper function to get duration since last check
    * @param {Array} checks Array of check objects.
    * @returns {number} Timestamp of the most recent check.
    */
-  const getLastCheckedTimestamp = (checks) => {
+  const getLastChecked = (checks) => {
     if (!checks || checks.length === 0) {
       return 0; // Handle case when no checks are available
     }
-
-    const mostRecentCheck = checks[0];
-    return mostRecentCheck.createdAt;
+    return new Date() - new Date(checks[0].createdAt);
   };
 
   /**
@@ -101,18 +147,41 @@ const DetailsPage = () => {
       return 0; // Handle case when no checks are available
     }
     return checks.reduce((acc, check) => {
-      check.status === false ? (acc += 1) : acc;
+      return check.status === false ? (acc += 1) : acc;
     }, 0);
   };
 
   return (
-    <div>
+    <div
+      className="monitor-details"
+      style={{
+        padding: `${theme.content.pY} ${theme.content.pX}`,
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <StatBox
+          title="Currently up for"
+          value={formatDuration(calculateUptimeDuration(monitor.checks))}
+        />
+        <StatBox
+          title="Last checked"
+          value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
+        />
+        <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
+      </div>
       <div style={{ height: "10rem" }}>
         <MonitorDetailsAreaChart checks={monitor.checks} />
       </div>
+      <Typography component="h1" mb={theme.gap.small}>
+        History
+      </Typography>
       <BasicTable data={data} paginated={true} />
     </div>
   );
 };
 
+StatBox.propTypes = {
+  title: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
 export default DetailsPage;

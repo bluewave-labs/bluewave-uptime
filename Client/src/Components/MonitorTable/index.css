@@ -1,4 +1,4 @@
-.host-row {
+/* .host-row {
   display: flex;
   align-items: center;
 }
@@ -109,4 +109,4 @@
 .monitors .MuiPagination-root ul li:last-child button::before {
   content: "Next";
   margin-right: 15px;
-}
+} */
