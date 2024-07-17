@@ -8,6 +8,6 @@
 
 .main-content>div:nth-child(2){
   position: relative;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   flex: 1;
 }
