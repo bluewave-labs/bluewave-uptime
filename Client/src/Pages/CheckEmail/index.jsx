@@ -1,5 +1,5 @@
-import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import React, { useEffect, useState } from "react";
 import EmailIcon from "../../assets/icons/email.svg?react";
 import Button from "../../Components/Button";
@@ -95,7 +95,11 @@ const CheckEmail = () => {
 
   return (
     <div className="check-email-page">
-      <BackgroundPattern />
+      <img
+        className="background-pattern-svg"
+        src={background}
+        alt="background pattern"
+      />
       <form className="check-email-form">
         <Stack direction="column" alignItems="center" gap={theme.gap.small}>
           <EmailIcon alt="EmailIcon" style={{ fill: "white" }} />

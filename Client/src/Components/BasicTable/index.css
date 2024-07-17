@@ -2,7 +2,6 @@
   display: flex;
   align-items: center;
 }
-
 .MuiTable-root .host-row a {
   width: var(--env-var-img-width-2);
   height: var(--env-var-img-width-2);
@@ -16,6 +15,12 @@
 }
 .MuiTable-root .host-row .host-percentage {
   font-size: var(--env-var-font-size-small);
+}
+
+.MuiTable-root .label {
+  border-color: var(--env-var-color-4);
+  border-radius: var(--env-var-radius-2);
+  padding: calc(var(--env-var-spacing-1) / 2);
 }
 
 .MuiTable-root .host-name {

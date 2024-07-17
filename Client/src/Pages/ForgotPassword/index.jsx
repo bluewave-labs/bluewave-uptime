@@ -1,6 +1,5 @@
-import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
-import React from "react";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import Logomark from "../../assets/icons/key.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useState } from "react";
@@ -100,7 +99,11 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password-page">
-      <BackgroundPattern></BackgroundPattern>
+      <img
+        className="background-pattern-svg"
+        src={background}
+        alt="background pattern"
+      />
       <form className="forgot-password-form" onSubmit={handleSubmit}>
         <Stack direction="column" alignItems="center" gap={theme.gap.small}>
           <Logomark alt="Logomark" style={{ fill: "white" }} />

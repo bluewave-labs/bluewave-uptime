@@ -1,6 +1,5 @@
 import React from "react";
 import PlayGroundCharts from "./PlayGround-Charts";
-import PlayGroundPopupModals from "./PlayGround-Popup-Modals";
 import PlayGroundTooltips from "./PlayGround-Tooltips";
 import Field from "../../Components/Inputs/Field";
 
@@ -78,8 +77,6 @@ function PlayGround() {
       </div>
       <hr />
       <PlayGroundCharts />
-      <hr />
-      <PlayGroundPopupModals />
       <hr />
       <PlayGroundTooltips />
     </div>

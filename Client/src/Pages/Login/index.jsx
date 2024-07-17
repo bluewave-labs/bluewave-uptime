@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./index.css";
-import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import Button from "../../Components/Button";
 import Google from "../../assets/Images/Google.png";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import axiosInstance from "../../Utils/axiosConfig";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
@@ -122,7 +122,11 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      <BackgroundPattern></BackgroundPattern>
+      <img
+        className="background-pattern-svg"
+        src={background}
+        alt="background pattern"
+      />
       <form className="login-form" onSubmit={handleSubmit}>
         <Stack gap={theme.gap.large} direction="column">
           <Logomark alt="BlueWave Uptime Icon" />
