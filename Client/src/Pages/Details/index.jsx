@@ -3,6 +3,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../Utils/axiosConfig";
+import BasicTable from "../../Components/BasicTable";
 
 /**
  * Details page component displaying monitor details and related information.
@@ -10,6 +11,7 @@ import axiosInstance from "../../Utils/axiosConfig";
  */
 const DetailsPage = () => {
   const [monitor, setMonitor] = useState({});
+  const [data, setData] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
   useEffect(() => {
@@ -20,6 +22,25 @@ const DetailsPage = () => {
         },
       });
       setMonitor(res.data.data);
+      const data = {
+        cols: [
+          { id: 1, name: "Status" },
+          { id: 2, name: "Date & Time" },
+          { id: 3, name: "Message" },
+        ],
+        rows: res.data.data.checks.map((check, idx) => {
+          return {
+            id: check._id,
+            data: [
+              { id: idx, data: check.status ? "Up" : "Down" },
+              { id: idx + 1, data: new Date(check.createdAt).toLocaleString() },
+              { id: idx + 2, data: check.statusCode },
+            ],
+          };
+        }),
+      };
+
+      setData(data);
     };
     fetchMonitor();
   }, [monitorId, authToken]);
@@ -85,54 +106,9 @@ const DetailsPage = () => {
   };
 
   return (
-    <Box>
-      {/* Customized Tables Component */}
-      <CustomizedTables monitor={monitor} />
-
-      {/* Uptime duration */}
-      <Typography
-        variant="body1"
-        sx={{
-          fontFamily: "Roboto",
-          fontWeight: 600,
-          fontSize: "13px",
-          lineHeight: "20px",
-          color: "#344054",
-          marginTop: theme.spacing(2),
-        }}
-      >
-        Up for: {calculateUptimeDuration(monitor.checks)}
-      </Typography>
-
-      {/* Last checked */}
-      <Typography
-        variant="body2"
-        sx={{
-          fontFamily: "Roboto",
-          fontWeight: 400,
-          fontSize: "16px",
-          lineHeight: "24px",
-          color: "#1570EF",
-          marginBottom: theme.spacing(1),
-        }}
-      >
-        Last checked: {getLastCheckedTimestamp(monitor.checks)}
-      </Typography>
-
-      {/* Incidents */}
-      <Typography
-        variant="body1"
-        sx={{
-          fontFamily: "Roboto",
-          fontWeight: 600,
-          fontSize: "13px",
-          lineHeight: "20px",
-          color: "#344054",
-        }}
-      >
-        Incidents: {countIncidents(monitor.checks)}
-      </Typography>
-    </Box>
+    <div>
+      <BasicTable data={data} paginated={true} />
+    </div>
   );
 };
 
