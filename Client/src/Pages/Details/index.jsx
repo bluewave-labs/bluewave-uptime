@@ -101,28 +101,15 @@ const DetailsPage = () => {
     if (!checks || checks.length === 0) {
       return 0;
     }
-
-    const arr = [...checks];
-
-    let lastDownTimestamp = null;
-    let lastUpTimestamp = null;
-
-    arr.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    arr.forEach((check) => {
-      if (check.status === false) {
-        lastDownTimestamp = new Date(check.createdAt);
-      } else if (check.status === true) {
-        lastUpTimestamp = new Date(check.createdAt);
+    const latestCheck = new Date(checks[0].createdAt);
+    let latestDownCheck = 0;
+    for (let i = 0; i < checks.length; i++) {
+      if (checks[i].status === false) {
+        latestDownCheck = new Date(checks[i].createdAt);
+        break;
       }
-    });
-
-    if (lastDownTimestamp === null) {
-      return new Date() - new Date(arr[0].createdAt);
-    } else if (lastUpTimestamp === null) {
-      return 0;
-    } else if (lastDownTimestamp && lastUpTimestamp) {
-      return lastUpTimestamp - lastDownTimestamp;
     }
+    return latestCheck - latestDownCheck;
   };
 
   /**
