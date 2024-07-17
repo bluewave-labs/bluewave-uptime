@@ -7,6 +7,8 @@ import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
 import MonitorDetailsAreaChart from "../../Components/Charts/MonitorDetailsAreaChart";
 import StatusLabel from "../../Components/StatusLabel";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Button from "../../Components/Button";
 
 const formatDuration = (ms) => {
   const seconds = Math.floor(ms / 1000);
@@ -155,6 +157,22 @@ const DetailsPage = () => {
           value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
         />
         <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography component="h1" mb={theme.gap.small}>
+          Response Times
+        </Typography>
+        <ButtonGroup>
+          <Button level="secondary" label="Day" />
+          <Button level="secondary" label="Week" />
+          <Button level="secondary" label="Month" />
+        </ButtonGroup>
       </div>
       <div style={{ height: "10rem" }}>
         <MonitorDetailsAreaChart checks={monitor.checks} />
