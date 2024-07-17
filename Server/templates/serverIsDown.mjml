@@ -1,8 +1,4 @@
-import React from "react";
-
-const ServerIsUp = () => {
-  const { html, errors } = render(
-    <mjml>
+<mjml>
       <mj-head>
         <mj-font
           name="Roboto"
@@ -32,9 +28,9 @@ const ServerIsUp = () => {
               font-weight="500"
               padding="0px"
               font-size="18px"
-              color="green"
+              color="red"
             >
-              Google.com is up
+              Google.com is down
             </mj-text>
             <mj-divider border-width="2px" border-color="#616161"></mj-divider>
           </mj-column>
@@ -45,8 +41,8 @@ const ServerIsUp = () => {
               <p>Hello Alex!</p>
               <p>
                 {" "}
-                Your latest incident is resolved and your monitored service is
-                up again.
+                We detected an incident on one of your monitors. Your service is
+                currently down. We'll send a message to you once it is up again.{" "}
               </p>
               <p>
                 <b>Monitor name:</b> Google.com
@@ -59,12 +55,6 @@ const ServerIsUp = () => {
               </p>
               <p>
                 <b>Start date:</b> Jun 8, 2024 8:15pm
-              </p>
-              <p>
-                <b>Resolved date:</b> Jun 8, 2024 8:15pm
-              </p>
-              <p>
-                <b>Duration:</b>3 minutes and 15 seconds
               </p>
             </mj-text>
           </mj-column>
@@ -80,14 +70,3 @@ const ServerIsUp = () => {
         </mj-section>
       </mj-body>
     </mjml>
-  );
-
-  if (errors.length > 0) {
-    console.error("MJML Errors:", errors);
-    return null; // Handle errors gracefully
-  }
-
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
-};
-
-export default ServerIsUp;

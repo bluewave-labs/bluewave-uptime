@@ -1,9 +1,5 @@
-import React from "react";
-
-const ServerIsDown = () => {
-  const { html, errors } = render(
-    <mjml>
-      <mj-head>
+<mjml>
+<mj-head>
         <mj-font
           name="Roboto"
           href="https://fonts.googleapis.com/css?family=Roboto:300,500"
@@ -32,9 +28,9 @@ const ServerIsDown = () => {
               font-weight="500"
               padding="0px"
               font-size="18px"
-              color="red"
+              color="green"
             >
-              Google.com is down
+              Google.com is up
             </mj-text>
             <mj-divider border-width="2px" border-color="#616161"></mj-divider>
           </mj-column>
@@ -45,8 +41,8 @@ const ServerIsDown = () => {
               <p>Hello Alex!</p>
               <p>
                 {" "}
-                We detected an incident on one of your monitors. Your service is
-                currently down. We'll send a message to you once it is up again.{" "}
+                Your latest incident is resolved and your monitored service is
+                up again.
               </p>
               <p>
                 <b>Monitor name:</b> Google.com
@@ -59,6 +55,12 @@ const ServerIsDown = () => {
               </p>
               <p>
                 <b>Start date:</b> Jun 8, 2024 8:15pm
+              </p>
+              <p>
+                <b>Resolved date:</b> Jun 8, 2024 8:15pm
+              </p>
+              <p>
+                <b>Duration:</b>3 minutes and 15 seconds
               </p>
             </mj-text>
           </mj-column>
@@ -74,14 +76,3 @@ const ServerIsDown = () => {
         </mj-section>
       </mj-body>
     </mjml>
-  );
-
-  if (errors.length > 0) {
-    console.error("MJML Errors:", errors);
-    return null; // Handle errors gracefully
-  }
-
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
-};
-
-export default ServerIsDown;
