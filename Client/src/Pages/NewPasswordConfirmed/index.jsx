@@ -1,5 +1,5 @@
-import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ConfirmIcon from "../../assets/icons/confirm-icon.svg?react";
 import Button from "../../Components/Button";
@@ -23,7 +23,11 @@ const NewPasswordConfirmed = () => {
 
   return (
     <div className="password-confirmed-page">
-      <BackgroundPattern />
+      <img
+        className="background-pattern-svg"
+        src={background}
+        alt="background pattern"
+      />
       <form className="password-confirmed-form">
         <Stack direction="column" alignItems="center" gap={theme.gap.small}>
           <ConfirmIcon alt="confirm icon" style={{ fill: "white" }} />

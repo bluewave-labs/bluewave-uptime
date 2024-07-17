@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
 import MonitorDetailsAreaChart from "../../Components/Charts/MonitorDetailsAreaChart";
-import StatusLabel from "../../Components/StatusLabel";
+import { StatusLabel } from "../../Components/Label";
 
 const formatDuration = (ms) => {
   const seconds = Math.floor(ms / 1000);
@@ -60,7 +60,7 @@ const DetailsPage = () => {
         ],
         rows: res.data.data.checks.map((check, idx) => {
           const params = {
-            status: check.status === true ? "up" : "down",
+            status: check.status === true ? "Up" : "Down",
             backgroundColor:
               check.status === true
                 ? "var(--env-var-color-20)"
@@ -74,7 +74,18 @@ const DetailsPage = () => {
           return {
             id: check._id,
             data: [
-              { id: idx, data: <StatusLabel params={params} /> },
+              {
+                id: idx,
+                data: (
+                  <StatusLabel
+                    status={params.status}
+                    dot={params.statusDotColor}
+                    customStyles={{
+                      backgroundColor: params.backgroundColor,
+                    }}
+                  />
+                ),
+              },
               { id: idx + 1, data: new Date(check.createdAt).toLocaleString() },
               { id: idx + 2, data: check.statusCode },
             ],

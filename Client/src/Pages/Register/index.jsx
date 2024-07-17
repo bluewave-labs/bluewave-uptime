@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./index.css";
-import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
@@ -132,7 +132,11 @@ const Register = () => {
 
   return (
     <div className="register-page">
-      <BackgroundPattern></BackgroundPattern>
+      <img
+        className="background-pattern-svg"
+        src={background}
+        alt="background pattern"
+      />
       <form className="register-form" onSubmit={handleSubmit} noValidate>
         <Stack gap={theme.gap.large} direction="column">
           <Logomark alt="BlueWave Uptime Icon" />

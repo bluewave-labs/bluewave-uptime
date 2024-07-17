@@ -21,7 +21,6 @@ import { ColoredLabel, StatusLabel } from "../../Components/Label/";
 import Avatar from "../../Components/Avatar/";
 import ProgressStepper from "../../Components/ProgressStepper";
 import avatarImage from "../../assets/Images/avatar_placeholder.png";
-import Section from "../../Components/Section";
 import { DataGrid } from "@mui/x-data-grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -204,8 +203,6 @@ const Demo = () => {
     }, 4000);
   };
 
-  //fields
-  const [visibility, setVisibility] = useState(false);
   return (
     <div>
       <div style={{ padding: "4rem", border: "1px solid black" }}>
@@ -287,6 +284,7 @@ const Demo = () => {
         <StatusLabel status="Waiting" />
         <StatusLabel status="New" />
         <StatusLabel status="Active" />
+        <StatusLabel status="Up" />
       </div>
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <h4 id="avatar">Avatar</h4>
@@ -374,9 +372,6 @@ const Demo = () => {
       <div>
         <ProgressStepper steps={steps}></ProgressStepper>
       </div>
-      <Divider sx={{ margin: `${theme.spacing(2)}` }} />
-      <h4 id="section">Section</h4>
-      <Section monitors={demoMonitors} />
       <Divider sx={{ margin: `${theme.spacing(2)}` }} />
       <h4 id="section">Loading Buttons</h4>
       <Stack direction="row" justifyContent="center" spacing={3}>

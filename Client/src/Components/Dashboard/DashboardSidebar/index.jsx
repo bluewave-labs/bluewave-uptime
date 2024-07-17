@@ -1,7 +1,7 @@
-import DashboardMenu from "../../Components/DashboardMenu";
+import DashboardMenu from "../DashboardMenu";
 import SvgIcon from "@mui/material/SvgIcon";
 import "./index.css";
-import SupportIcon from "../../assets/Images/Icon-support-gray.png";
+import SupportIcon from "../../../assets/Images/Icon-support-gray.png";
 
 /**
  * @component

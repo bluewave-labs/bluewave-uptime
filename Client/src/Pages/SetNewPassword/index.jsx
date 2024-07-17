@@ -1,5 +1,5 @@
-import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import LockIcon from "../../assets/icons/lock-button-icon.svg?react";
 import Check from "../../Components/Check/Check";
 import ButtonSpinner from "../../Components/ButtonSpinner";
@@ -114,7 +114,11 @@ const SetNewPassword = () => {
 
   return (
     <div className="set-new-password-page">
-      <BackgroundPattern />
+      <img
+        className="background-pattern-svg"
+        src={background}
+        alt="background pattern"
+      />
       <form className="set-new-password-form" onSubmit={handleSubmit}>
         <Stack direction="column" alignItems="center" gap={theme.gap.small}>
           <LockIcon alt="lock icon" style={{ fill: "white" }} />
