@@ -5,6 +5,7 @@ import BasicTable from "../BasicTable";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import { useNavigate } from "react-router-dom";
 import StatusLabel from "../StatusLabel";
+import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 
 /**
  * Host component.
@@ -54,7 +55,17 @@ const MonitorTable = ({ monitors = [] }) => {
   const data = {
     cols: [
       { id: 1, name: "Host" },
-      { id: 2, name: "Status" },
+      {
+        id: 2,
+        name: (
+          <>
+            Status
+            <span>
+              <ArrowDownwardRoundedIcon />
+            </span>
+          </>
+        ),
+      },
       { id: 3, name: "Response Time" },
       { id: 4, name: "Actions" },
     ],
