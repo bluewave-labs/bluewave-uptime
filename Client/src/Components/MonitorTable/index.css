@@ -27,29 +27,6 @@
   white-space: nowrap;
 }
 
-.host-status {
-  width: fit-content;
-}
-
-.host-status-details {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--env-var-color-4);
-  border-radius: var(--env-var-radius-2);
-  padding: calc(var(--env-var-spacing-1) / 2);
-}
-
-.host-status-text {
-  font-size: var(--env-var-font-size-medium);
-  line-height: var(--env-var-font-size-medium);
-}
-.host-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-right: calc(var(--env-var-spacing-1) / 2);
-}
-
 .monitors .MuiPaper-root:has(table.MuiTable-root) {
   box-shadow: none;
   border: solid 1px var(--env-var-color-16);

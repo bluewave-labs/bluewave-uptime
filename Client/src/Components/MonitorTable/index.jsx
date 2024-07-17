@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import ResponseTimeChart from "../Charts/ResponseTimeChart";
 import BasicTable from "../BasicTable";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
+import { useNavigate } from "react-router-dom";
+import StatusLabel from "../StatusLabel";
 
 /**
  * Host component.
@@ -34,39 +36,6 @@ const Host = ({ params }) => {
 };
 
 /**
- * Status component.
- * This subcomponent receives a params object and displays the status details of a monitor.
- *
- * @component
- * @param {Object} params - An object containing the following properties:
- * @param {string} params.backgroundColor - The background color of the status box.
- * @param {string} params.statusDotColor - The color of the status dot.
- * @param {string} params.status - The status text to display.
- * @returns {React.ElementType} Returns a div element with the host status.
- */
-const Status = ({ params }) => {
-  return (
-    <div className="host-status">
-      <div
-        className="host-status-details"
-        style={{ backgroundColor: params.backgroundColor }}
-      >
-        <div
-          className="host-status-dot"
-          style={{ backgroundColor: params.statusDotColor }}
-        />
-        <span
-          className="host-status-text"
-          style={{ textTransform: "capitalize" }}
-        >
-          {params.status}
-        </span>
-      </div>
-    </div>
-  );
-};
-
-/**
  * MonitorTable component.
  * Takes an array of monitor objects and displays them in a table.
  * Each row in the table represents a monitor and includes the host, status, response time, and action.
@@ -80,14 +49,19 @@ const Status = ({ params }) => {
  * @returns {React.Component} Returns a table with the monitor data.
  */
 const MonitorTable = ({ monitors = [] }) => {
-  const headers = [
-    { id: 1, name: "Host" },
-    { id: 2, name: "Status" },
-    { id: 3, name: "Response Time" },
-    { id: 4, name: "Actions" },
-  ];
-  const data = [];
-  monitors.forEach((monitor) => {
+  const navigate = useNavigate();
+
+  const data = {
+    cols: [
+      { id: 1, name: "Host" },
+      { id: 2, name: "Status" },
+      { id: 3, name: "Response Time" },
+      { id: 4, name: "Actions" },
+    ],
+    rows: [],
+  };
+
+  data.rows = monitors.map((monitor, idx) => {
     const params = {
       url: monitor.url,
       title: monitor.name,
@@ -106,23 +80,26 @@ const MonitorTable = ({ monitors = [] }) => {
           ? "var(--env-var-color-17)"
           : "var(--env-var-color-19)",
     };
-    data.push({ id: data.length + 1, data: <Host params={params} /> });
-    data.push({ id: data.length + 1, data: <Status params={params} /> });
-    data.push({
-      id: data.length + 1,
-      data: <ResponseTimeChart checks={monitor.checks} />,
-    });
-    data.push({ id: data.length + 1, data: "TODO" });
+
+    return {
+      id: monitor._id,
+      handleClick: () => navigate(`/monitors/${monitor._id}`),
+      data: [
+        { id: idx, data: <Host params={params} /> },
+        { id: idx + 1, data: <StatusLabel params={params} /> },
+        { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
+        { id: idx + 3, data: "TODO" },
+      ],
+    };
   });
 
-  return <BasicTable headers={headers} rowItems={data} paginated={true} />;
+  return <BasicTable data={data} paginated={true} />;
 };
 
 MonitorTable.propTypes = {
   monitors: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-Status.propTypes = { params: PropTypes.object.isRequired };
 Host.propTypes = { params: PropTypes.object.isRequired };
 
 export default MonitorTable;

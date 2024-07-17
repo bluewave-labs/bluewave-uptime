@@ -63,6 +63,10 @@ const Button = ({ id, type, level, label, disabled, img, onClick, sx }) => {
         "&:focus": {
           outline: "none",
         },
+        "& .MuiTouchRipple-root": {
+          pointerEvents: "none",
+          display: "none",
+        },
         ...sx,
       }}
     >

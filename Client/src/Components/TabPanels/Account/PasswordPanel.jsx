@@ -4,7 +4,7 @@ import { useTheme } from "@emotion/react";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Field from "../../Inputs/Field";
-import { editPasswordValidation } from "../../../Validation/validation";
+import { credentials } from "../../../Validation/validation";
 import Alert from "../../Alert";
 import { update } from "../../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,9 +44,9 @@ const PasswordPanel = () => {
       [name]: value,
     }));
 
-    const validation = editPasswordValidation.validate(
+    const validation = credentials.validate(
       { [name]: value },
-      { abortEarly: false, context: { newPassword: localData.newPassword } }
+      { abortEarly: false, context: { password: localData.newPassword } }
     );
 
     setErrors((prev) => {
@@ -64,9 +64,9 @@ const PasswordPanel = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { error } = editPasswordValidation.validate(localData, {
+    const { error } = credentials.validate(localData, {
       abortEarly: false,
-      context: { newPassword: localData.newPassword },
+      context: { password: localData.newPassword },
     });
 
     if (error) {

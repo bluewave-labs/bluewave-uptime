@@ -1,6 +1,8 @@
 import "./check.css";
-import React from "react";
-import CheckGrey from "../../assets/Images/Check-icon-grey.png";
+import PropTypes from "prop-types";
+import CheckGrey from "../../assets/icons/check.svg?react";
+import { Stack, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
 
 /**
  * `Check` is a functional React component that displays a check icon and a label.
@@ -8,6 +10,7 @@ import CheckGrey from "../../assets/Images/Check-icon-grey.png";
  * @component
  * @param {Object} props - The properties that define the `Check` component.
  * @param {string} props.text - The text to be displayed as the label next to the check icon.
+ * @param {'info' | 'error' | 'success'} [props.variant='info'] - The variant of the check component, affecting its styling.
  *
  * @example
  * // To use this component, import it and use it in your JSX like this:
@@ -15,14 +18,30 @@ import CheckGrey from "../../assets/Images/Check-icon-grey.png";
  *
  * @returns {React.Element} The `Check` component with a check icon and a label, defined by the `text` prop.
  */
-const Check = ({ text }) => {
+const Check = ({ text, variant = "info" }) => {
+  const theme = useTheme();
   return (
-    <div className="check">
-      <img className="check-icon" src={CheckGrey} alt="un-checked" />
-      <div className="check-h-spacing" />
-      <label className="check-label">{text}</label>
-    </div>
+    <Stack
+      direction="row"
+      gap={theme.gap.small}
+      className={`check${
+        variant === "error"
+          ? " check-error"
+          : variant === "success"
+          ? " check-success"
+          : " check-info"
+      }`}
+      alignItems="center"
+    >
+      <CheckGrey alt="form checks" />
+      <Typography component="span">{text}</Typography>
+    </Stack>
   );
+};
+
+Check.propTypes = {
+  text: PropTypes.string.isRequired,
+  variant: PropTypes.oneOf(["info", "error", "success"]),
 };
 
 export default Check;

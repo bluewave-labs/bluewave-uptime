@@ -36,7 +36,8 @@
 .field .MuiInputBase-root:has(.MuiInputAdornment-root) {
   padding-right: var(--env-var-spacing-1-minus);
 }
-.field .MuiInputBase-root:has(.copy.MuiInputAdornment-root > .MuiButtonBase-root) {
+.field
+  .MuiInputBase-root:has(.copy.MuiInputAdornment-root > .MuiButtonBase-root) {
   padding-right: 0;
 }
 .field .MuiInputBase-root .copy.MuiInputAdornment-root .MuiButtonBase-root {
@@ -64,7 +65,7 @@
   border-color: var(--env-var-color-29);
   border-radius: var(--env-var-radius-1);
 }
-.field:not(:has(.input-error))
+.field:not(:has(.Mui-disabled)):not(:has(.input-error))
   .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus))
   fieldset {
   border-color: var(--env-var-color-29);

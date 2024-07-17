@@ -1,56 +1,143 @@
 import BackgroundPattern from "../../Components/BackgroundPattern/BackgroundPattern";
 import "./index.css";
-import React from "react";
-import EmailIcon from "../../assets/Images/email.png";
+import React, { useEffect, useState } from "react";
+import EmailIcon from "../../assets/icons/email.svg?react";
 import Button from "../../Components/Button";
-import LeftArrow from "../../assets/Images/arrow-left.png";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import { Stack, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { createToast } from "../../Utils/toastUtils";
+import { forgotPassword } from "../../Features/Auth/authSlice";
 
 const CheckEmail = () => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState();
+  const [disabled, setDisabled] = useState(false);
+  useEffect(() => {
+    setEmail(sessionStorage.getItem("email"));
+  }, []);
+
+  // TODO - fix
+  const openMail = () => {
+    window.location.href = "mailto:";
+  };
+
+  const toastFail = [
+    {
+      variant: "info",
+      body: "Email not found.",
+      hasIcon: false,
+    },
+    {
+      variant: "info",
+      body: "Redirecting in 3...",
+      hasIcon: false,
+    },
+    {
+      variant: "info",
+      body: "Redirecting in 2...",
+      hasIcon: false,
+    },
+    {
+      variant: "info",
+      body: "Redirecting in 1...",
+      hasIcon: false,
+    },
+  ];
+
+  const resendToken = async () => {
+    setDisabled(true); // prevent resent button from being spammed
+    if (!email) {
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < toastFail.length) {
+          createToast(toastFail[index]);
+          index++;
+        } else {
+          clearInterval(interval);
+          navigate("/forgot-password");
+        }
+      }, 1000);
+    } else {
+      const form = { email: email };
+      const action = await dispatch(forgotPassword(form));
+      if (action.payload.success) {
+        createToast({
+          variant: "info",
+          body: `Instructions sent to ${form.email}.`,
+          hasIcon: false,
+        });
+        setDisabled(false);
+      } else {
+        if (action.payload) {
+          // dispatch errors
+          createToast({
+            variant: "info",
+            body: action.payload.msg,
+            hasIcon: false,
+          });
+        } else {
+          // unknown errors
+          createToast({
+            variant: "info",
+            body: "Unknown error.",
+            hasIcon: false,
+          });
+        }
+      }
+    }
+  };
+
   return (
     <div className="check-email-page">
       <BackgroundPattern />
-      <div className="check-email-form">
-        <div className="check-email-form-header">
-          <img
-            className="check-email-form-header-logo"
-            src={EmailIcon}
-            alt="EmailIcon"
-          />
-          <div className="check-email-v-gap-medium"></div>
-          <div className="check-email-form-heading">Check your email</div>
-          <div className="check-email-v-gap-small"></div>
-          <div className="check-email-form-subheading">
-            We sent a password reset link to <span>username@email.com</span>
-          </div>
-        </div>
-        <div className="check-email-v-gap-large"></div>
-        <div className="check-email-body">
+      <form className="check-email-form">
+        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
+          <EmailIcon alt="EmailIcon" style={{ fill: "white" }} />
+          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
+            Check your email
+          </Typography>
+          <Typography sx={{ width: "max-content" }}>
+            We sent a password reset link to{" "}
+            <Typography component="span">
+              {email || "username@email.com"}
+            </Typography>
+          </Typography>
+        </Stack>
+        <Stack gap={theme.gap.ml} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
+          <Button level="primary" label="Open email app" onClick={openMail} />
+          <Typography sx={{ alignSelf: "center", mb: theme.gap.medium }}>
+            Didn't receive the email?{" "}
+            <Typography
+              component="span"
+              onClick={resendToken}
+              sx={{
+                color: theme.palette.primary.main,
+                letterSpacing: "-0.1px",
+                userSelect: "none",
+                pointerEvents: disabled ? "none" : "auto",
+                cursor: disabled ? "default" : "pointer",
+                opacity: disabled ? 0.5 : 1,
+              }}
+            >
+              Click to resend
+            </Typography>
+          </Typography>
+
           <Button
-            level="primary"
-            label="Open email app"
-            sx={{
-              width: "100%",
-              fontSize: "13px",
-              fontWeight: "200",
-              height: "44px",
-            }}
+            level="tertiary"
+            label="Back to log in"
+            img={<ArrowBackRoundedIcon />}
+            sx={{ alignSelf: "center", width: "fit-content" }}
+            onClick={() => navigate("/login")}
           />
-        </div>
-        <div className="check-email-v-gap-large"></div>
-        <div className="check-email-resend">
-          Didn’t receive the email?
-          <span> Click to resend</span>
-        </div>
-        <div className="check-email-v-gap-large"></div>
-        <div className="check-email-back-button">
-          <img
-            className="check-email-back-button-img"
-            src={LeftArrow}
-            alt="LeftArrow"
-          />
-          <div className="check-email-back-button-text">Back to log in</div>
-        </div>
-      </div>
+        </Stack>
+      </form>
     </div>
   );
 };

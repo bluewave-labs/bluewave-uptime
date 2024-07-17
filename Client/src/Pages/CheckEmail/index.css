@@ -1,83 +1,34 @@
 .check-email-page {
-  width: var(--env-var-width-1);
   display: flex;
   justify-content: center;
-  min-height: var(--env-var-height-1);
+  height: var(--env-var-height-1);
+}
+.check-email-page button:not(.MuiIconButton-root) {
+  height: 34px;
+  border-radius: var(--env-var-radius-2);
+  line-height: 0;
+}
+.check-email-page h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-1);
+  font-weight: 600;
+}
+.check-email-page p.MuiTypography-root,
+.check-email-page button,
+.check-email-page span.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+}
+.check-email-page span.MuiTypography-root {
+  font-weight: 600;
+}
+.check-email-page p.MuiTypography-root {
+  color: var(--env-var-color-2);
+}
+.check-email-page button svg {
+  margin-right: 5px;
 }
 
 .check-email-form {
+  margin-top: 65px;
   width: var(--env-var-width-2);
-  margin: 90px auto;
-}
-
-.check-email-form-header {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.check-email-v-gap-large {
-  height: var(--env-var-spacing-3);
-}
-
-.check-email-v-gap-medium {
-  height: var(--env-var-spacing-2);
-}
-
-.check-email-v-gap-small {
-  height: var(--env-var-spacing-1);
-}
-
-.check-email-form-heading {
-  font-size: var(--env-var-font-size-large);
-  font-weight: 700;
-  color: var(--env-var-color-1);
-}
-
-.check-email-form-subheading {
-  font-size: var(--env-var-font-size-medium);
-  font-weight: 400;
-  color: var(--env-var-color-2);
-}
-
-.check-email-form-subheading span {
-  font-weight: 700;
-}
-
-.check-email-body {
-  width: var(--env-var-width-2);
-}
-
-.check-email-resend {
-  font-size: var(--env-var-font-size-medium);
-  font-weight: 400;
-  color: var(--env-var-color-2);
-  text-align: center;
-  cursor: pointer;
-}
-
-.check-email-resend span {
-  font-weight: 700;
-  color: var(--env-var-color-3);
-}
-
-.check-email-back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.check-email-back-button-img {
-  width: var(--env-var-img-width-1);
-  height: var(--env-var-img-width-1);
-  margin-right: 5px;
-  align-items: center;
-}
-
-.check-email-back-button-text {
-  height: var(--env-var-img-width-1);
-  font-size: var(--env-var-font-size-medium);
-  font-weight: 500;
-  color: var(--env-var-color-2);
-  align-items: center;
 }
