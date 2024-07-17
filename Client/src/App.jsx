@@ -22,6 +22,10 @@ import Details from "./Pages/Details";
 import Maintenance from "./Pages/Maintenance";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import WelcomeEmail from "./Templates/WelcomeEmail";
+import ServerIsUp from "./Templates/ServerIsUp";
+import ServerIsDown from "./Templates/ServerIsDown";
+import PasswordReset from "./Templates/PasswordReset";
 
 function App() {
   return (
