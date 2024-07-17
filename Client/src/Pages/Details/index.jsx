@@ -106,7 +106,15 @@ const DetailsPage = () => {
   };
 
   return (
-    <div>
+    <div
+      className="monitor-details"
+      style={{
+        padding: `${theme.content.pY} ${theme.content.pX}`,
+      }}
+    >
+      <Typography component="h1" mb={theme.gap.small}>
+        History
+      </Typography>
       <BasicTable data={data} paginated={true} />
     </div>
   );

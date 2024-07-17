@@ -67,6 +67,9 @@
   color: var(--env-var-color-5);
   padding: 6px var(--env-var-spacing-2);
 }
+.MuiTable-root .MuiTableBody-root .MuiTableRow-root {
+  height: 50px;
+}
 
 .MuiPaper-root + .MuiPagination-root {
   flex: 1;
