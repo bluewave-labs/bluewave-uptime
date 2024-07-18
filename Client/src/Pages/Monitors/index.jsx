@@ -27,7 +27,7 @@ import ResponseTimeChart from "../../Components/Charts/ResponseTimeChart";
 const Host = ({ params }) => {
   return (
     <div className="host-row">
-      <a href={params.url} target="_blank">
+      <a href={params.url} target="_blank" rel="noreferrer">
         <OpenInNewPage />
       </a>
       <div className="host-name">{params.title}</div>
