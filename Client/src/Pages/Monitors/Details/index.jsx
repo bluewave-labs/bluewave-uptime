@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../Utils/axiosConfig";
 import BasicTable from "../../../Components/BasicTable";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import { StatusLabel } from "../../../Components/Label";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
+import WestRoundedIcon from "@mui/icons-material/WestRounded";
+import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
+import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
+import SettingsIcon from "../../../assets/icons/settings.svg?react";
+import "./index.css";
 
 const formatDuration = (ms) => {
   const seconds = Math.floor(ms / 1000);
@@ -30,7 +35,7 @@ const formatDuration = (ms) => {
 
 const StatBox = ({ title, value }) => {
   return (
-    <Box>
+    <Box className="stat-box">
       <Typography variant="h6">{title}</Typography>
       <Typography variant="h4">{value}</Typography>
     </Box>
@@ -103,6 +108,7 @@ const DetailsPage = () => {
   }, [monitorId, authToken]);
 
   const theme = useTheme();
+  const navigate = useNavigate();
 
   /**
    * Function to calculate uptime duration based on the most recent check.
@@ -163,52 +169,99 @@ const DetailsPage = () => {
         padding: `${theme.content.pY} ${theme.content.pX}`,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <StatBox
-          title="Currently up for"
-          value={formatDuration(calculateUptimeDuration(monitor.checks))}
-        />
-        <StatBox
-          title="Last checked"
-          value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
-        />
-        <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+      <Button
+        level="tertiary"
+        label="Back to Monitors"
+        img={<WestRoundedIcon />}
+        onClick={() => navigate("/monitors")}
+        sx={{
+          backgroundColor: "#f4f4f4",
+          mb: theme.gap.medium,
+          px: theme.gap.ml,
+          "& svg.MuiSvgIcon-root": {
+            pr: theme.gap.small,
+          },
         }}
-      >
-        <Typography component="h1" mb={theme.gap.small}>
-          Response Times
-        </Typography>
-        <ButtonGroup>
+      />
+      <Stack gap={theme.gap.xl}>
+        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+          <GreenCheck />
+          <Box>
+            <Typography component="h1" sx={{ lineHeight: 1 }}>
+              {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+            </Typography>
+            <Typography mt={theme.gap.small}>
+              <Typography component="span">Your site is up.</Typography>{" "}
+              Checking every 5 minutes. Last time checked 2 minutes ago.
+            </Typography>
+          </Box>
           <Button
-            level="secondary"
-            label="Day"
-            onClick={() => setFilter("day")}
+            level="tertiary"
+            label="Configure"
+            img={<SettingsIcon />}
+            sx={{
+              ml: "auto",
+              alignSelf: "flex-end",
+              backgroundColor: "#f4f4f4",
+              px: theme.gap.ml,
+              "& svg": {
+                pr: theme.gap.xs,
+              },
+            }}
           />
-          <Button
-            level="secondary"
-            label="Week"
-            onClick={() => setFilter("week")}
+        </Stack>
+        <Stack direction="row" justifyContent="space-between">
+          <StatBox
+            title="Currently up for"
+            value={formatDuration(calculateUptimeDuration(monitor.checks))}
           />
-          <Button
-            level="secondary"
-            label="Month"
-            onClick={() => setFilter("month")}
+          <StatBox
+            title="Last checked"
+            value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
           />
-        </ButtonGroup>
-      </div>
-      <div style={{ height: "33vh" }}>
-        <MonitorDetailsAreaChart checks={monitor.checks} filter={filter} />
-      </div>
-      <Typography component="h1" mb={theme.gap.small}>
-        History
-      </Typography>
-      <BasicTable data={data} paginated={true} />
+          <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
+        </Stack>
+        <Box>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            mb={theme.gap.ml}
+          >
+            <Typography component="h2" mb={theme.gap.small}>
+              Response Times
+            </Typography>
+            <ButtonGroup>
+              <Button
+                level="secondary"
+                label="Day"
+                onClick={() => setFilter("day")}
+                sx={{ backgroundColor: filter === "day" && "#f4f4f4" }}
+              />
+              <Button
+                level="secondary"
+                label="Week"
+                onClick={() => setFilter("week")}
+                sx={{ backgroundColor: filter === "week" && "#f4f4f4" }}
+              />
+              <Button
+                level="secondary"
+                label="Month"
+                onClick={() => setFilter("month")}
+                sx={{ backgroundColor: filter === "month" && "#f4f4f4" }}
+              />
+            </ButtonGroup>
+          </Stack>
+          <Box sx={{ height: "200px" }}>
+            <MonitorDetailsAreaChart checks={monitor.checks} filter={filter} />
+          </Box>
+        </Box>
+        <Box>
+          <Typography component="h2" mb={theme.gap.ml}>
+            History
+          </Typography>
+          <BasicTable data={data} paginated={true} />
+        </Box>
+      </Stack>
     </div>
   );
 };

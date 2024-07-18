@@ -124,3 +124,6 @@
 .MuiPaper-root + .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
   background-color: var(--env-var-color-15);
 }
+.MuiPaper-root + .MuiPagination-root div.MuiPaginationItem-root{
+  user-select: none;
+}
