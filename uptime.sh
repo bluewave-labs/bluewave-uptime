@@ -26,7 +26,7 @@ echo
 echo "Writing to ./Docker/client.env"
 echo
 
-echo "VITE_API_BASE_URL=\"$input_url\"" > ./Docker/client.env
+echo "VITE_APP_API_BASE_URL=\"$input_url\"" > ./Docker/client.env
 
 echo "Configuring server"
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' '*'
