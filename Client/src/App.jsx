@@ -1,24 +1,24 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 // import "./App.css";
 import NotFound from "./Pages/NotFound";
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
+import Login from "./Pages/Auth/Login";
+import Register from "./Pages/Auth/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
-import CreateNewMonitor from "./Pages/CreateNewMonitor";
+import CreateMonitor from "./Pages/Monitors/CreateMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
 import Settings from "./Pages/Settings";
-import ForgotPassword from "./Pages/ForgotPassword";
-import CheckEmail from "./Pages/CheckEmail";
-import SetNewPassword from "./Pages/SetNewPassword";
-import NewPasswordConfirmed from "./Pages/NewPasswordConfirmed";
+import ForgotPassword from "./Pages/Auth/ForgotPassword";
+import CheckEmail from "./Pages/Auth/CheckEmail";
+import SetNewPassword from "./Pages/Auth/SetNewPassword";
+import NewPasswordConfirmed from "./Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import Details from "./Pages/Details";
+import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -39,7 +39,7 @@ function App() {
           />
           <Route
             path="/monitors/create"
-            element={<ProtectedRoute Component={CreateNewMonitor} />}
+            element={<ProtectedRoute Component={CreateMonitor} />}
           />
           <Route
             path="/monitors/:monitorId/"

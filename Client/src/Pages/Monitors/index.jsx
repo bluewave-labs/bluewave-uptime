@@ -1,5 +1,4 @@
 import "./index.css";
-import "./monitors.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";

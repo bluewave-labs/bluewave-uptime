@@ -1,9 +1,0 @@
-#dashboard-setting-menu-item {
-  width: 135px;
-  padding: 6px;
-  margin: 5px 12px;
-}
-
-#menu-appbar {
-  padding: var(--env-var-spacing-1);
-}
