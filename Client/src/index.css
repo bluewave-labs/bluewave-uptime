@@ -128,7 +128,7 @@ button:focus-visible {
 .Toastify__toast-container {
   width: auto;
 }
-.Toastify__toast-body .alert{
+.Toastify__toast-body .alert {
   min-width: 150px;
 }
 .Toastify [class^="Toastify__toast"] {
@@ -138,6 +138,14 @@ button:focus-visible {
 .Toastify__toast {
   min-height: 0;
   border-radius: 4px;
+}
+
+.background-pattern-svg {
+  position: absolute;
+  top: -5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
 }
 
 @media (prefers-color-scheme: light) {
