@@ -162,9 +162,7 @@ const ProfilePanel = () => {
       localData.file === undefined
     ) {
       createToast({
-        variant: "info",
         body: "Unable to update profile — no changes detected.",
-        hasIcon: false,
       });
       setErrors({ unchanged: "unable to update profile" });
       return;
@@ -173,15 +171,11 @@ const ProfilePanel = () => {
     const action = await dispatch(update({ authToken, localData }));
     if (action.payload.success) {
       createToast({
-        variant: "info",
         body: "Your profile data was changed successfully.",
-        hasIcon: false,
       });
     } else {
       createToast({
-        variant: "error",
         body: "There was an error updating your profile data.",
-        hasIcon: false,
       });
     }
   };
@@ -205,16 +199,12 @@ const ProfilePanel = () => {
       if (action.payload) {
         // dispatch errors
         createToast({
-          variant: "info",
           body: action.payload.msg,
-          hasIcon: false,
         });
       } else {
         // unknown errors
         createToast({
-          variant: "info",
           body: "Unknown error.",
-          hasIcon: false,
         });
       }
     }
