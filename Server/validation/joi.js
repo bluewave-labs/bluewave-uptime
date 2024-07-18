@@ -145,6 +145,21 @@ const deleteChecksParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+//****************************************
+// PageSpeedCheckValidation
+//****************************************
+const getPageSpeedCheckParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const createPageSpeedCheckParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const deletePageSpeedCheckParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
 module.exports = {
   loginValidation,
   registerValidation,
@@ -169,4 +184,7 @@ module.exports = {
   getChecksParamValidation,
   deleteChecksParamValidation,
   deleteUserParamValidation,
+  getPageSpeedCheckParamValidation,
+  createPageSpeedCheckParamValidation,
+  deletePageSpeedCheckParamValidation,
 };

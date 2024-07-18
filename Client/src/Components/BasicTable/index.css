@@ -1,0 +1,126 @@
+.MuiTable-root .host-row {
+  display: flex;
+  align-items: center;
+}
+.MuiTable-root .host-row a {
+  width: var(--env-var-img-width-2);
+  height: var(--env-var-img-width-2);
+  color: var(--env-var-color-5);
+  margin-right: 10px;
+  margin-bottom: 2px;
+}
+.MuiTable-root .host-row a svg {
+  width: var(--env-var-font-size-large);
+  height: var(--env-var-font-size-large);
+}
+.MuiTable-root .host-row .host-percentage {
+  font-size: var(--env-var-font-size-small);
+}
+
+.MuiTable-root .label {
+  border-color: var(--env-var-color-4);
+  border-radius: var(--env-var-radius-2);
+  padding: calc(var(--env-var-spacing-1) / 2);
+}
+
+.MuiTable-root .host-name {
+  width: fit-content;
+  margin-right: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.MuiPaper-root:has(table.MuiTable-root) {
+  box-shadow: none;
+  border: solid 1px var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+}
+.MuiTable-root
+  .MuiTableBody-root
+  .MuiTableRow-root:last-child
+  .MuiTableCell-root {
+  border: none;
+}
+.MuiTable-root .MuiTableHead-root,
+.MuiTable-root .MuiTableRow-root:hover {
+  background-color: var(--env-var-color-13);
+}
+.MuiTable-root .MuiTableHead-root .MuiTableCell-root,
+.MuiTable-root .MuiTableBody-root .MuiTableCell-root {
+  font-size: var(--env-var-font-size-medium);
+}
+.MuiTable-root .MuiTableHead-root .MuiTableCell-root {
+  padding: var(--env-var-spacing-1) var(--env-var-spacing-2);
+  font-weight: 500;
+  color: var(--env-var-color-2);
+}
+.MuiTable-root .MuiTableHead-root span {
+  display: inline-block;
+  height: 17px;
+  width: 20px;
+  overflow: hidden;
+  margin-bottom: -3px;
+  margin-left: 3px;
+}
+.MuiTable-root .MuiTableHead-root span svg {
+  width: 20px;
+  height: 20px;
+}
+.MuiTable-root .MuiTableBody-root .MuiTableCell-root {
+  color: var(--env-var-color-5);
+  padding: 6px var(--env-var-spacing-2);
+}
+.MuiTable-root .MuiTableBody-root .MuiTableRow-root {
+  height: 50px;
+}
+
+.MuiPaper-root + .MuiPagination-root {
+  flex: 1;
+  margin-top: 35px;
+  border: solid 1px var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
+}
+.MuiPaper-root + .MuiPagination-root ul {
+  justify-content: center;
+}
+.MuiPaper-root + .MuiPagination-root ul li button {
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-5);
+  font-weight: 500;
+}
+.MuiPaper-root + .MuiPagination-root ul li:first-child {
+  margin-right: auto;
+}
+.MuiPaper-root + .MuiPagination-root ul li:last-child {
+  margin-left: auto;
+}
+.MuiPaper-root + .MuiPagination-root ul li:first-child button,
+.MuiPaper-root + .MuiPagination-root ul li:last-child button {
+  border: solid 1px var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+}
+.MuiPaper-root + .MuiPagination-root ul li:first-child button {
+  padding: 0 var(--env-var-spacing-1) 0 var(--env-var-spacing-1-plus);
+}
+.MuiPaper-root + .MuiPagination-root ul li:last-child button {
+  padding: 0 var(--env-var-spacing-1-plus) 0 var(--env-var-spacing-1);
+}
+.MuiPaper-root + .MuiPagination-root ul li:first-child button::after,
+.MuiPaper-root + .MuiPagination-root ul li:last-child button::before {
+  position: relative;
+  display: inline-block;
+}
+.MuiPaper-root + .MuiPagination-root ul li:first-child button::after {
+  content: "Previous";
+  margin-left: 15px;
+}
+.MuiPaper-root + .MuiPagination-root ul li:last-child button::before {
+  content: "Next";
+  margin-right: 15px;
+}
+.MuiPaper-root + .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
+  background-color: var(--env-var-color-15);
+}
