@@ -1,54 +1,46 @@
 const router = require("express").Router();
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const Monitor = require("../models/Monitor");
-const {
-  getPageSpeedChecks,
-  createPageSpeedCheck,
-  deletePageSpeedCheck,
-} = require("../controllers/pageSpeedCheckController");
+const { createPageSpeedCheck, getPageSpeedChecks, deletePageSpeedCheck } = require("../controllers/pageSpeedCheckController");
+ 
 
 /**
- * @route POST /:monitorId
+ * @route POST /pagespeed/:monitorId
  * @description Create a new PageSpeedCheck for a monitor
  * @access Private
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-
 router.post(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
+  "/pagespeed/:monitorId",
+  verifyOwnership(Monitor, "monitorId"), 
   createPageSpeedCheck
 );
 
-
 /**
- * @route GET /:monitorId
+ * @route GET /pagespeed/:monitorId
  * @description Get all PageSpeedChecks for a monitor
  * @access Private
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-
 router.get(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
+  "/pagespeed/:monitorId",
+  verifyOwnership(Monitor, "monitorId"), 
   getPageSpeedChecks
 );
 
 /**
- * @route POST /delete/:monitorId
+ * @route DELETE /pagespeed/:monitorId
  * @description Delete all PageSpeedChecks for a monitor
  * @access Private
  * @param {string} monitorId - The ID of the monitor
  * @middleware verifyOwnership - Ensures the user owns the monitor
  */
-
 router.delete(
-  "/:monitorId",
+  "/pagespeed/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   deletePageSpeedCheck
 );
-
 
 module.exports = router;

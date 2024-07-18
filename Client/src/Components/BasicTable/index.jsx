@@ -6,10 +6,14 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TablePagination,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import "./index.css";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 /**
  * BasicTable Component
@@ -66,15 +70,10 @@ const BasicTable = ({ data, paginated }) => {
   // Add headers to props validation
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const rowsPerPage = 5;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to first page after changing rows per page
   };
 
   let displayData = [];
@@ -118,14 +117,29 @@ const BasicTable = ({ data, paginated }) => {
         </Table>
       </TableContainer>
       {paginated === true && (
-        <TablePagination
-          rowsPerPageOptions={[1, 5, 10, 25]}
-          component="div"
-          count={data.rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+        <Pagination
+          count={Math.ceil(data.rows.length / rowsPerPage)}
+          page={page + 1}
+          onChange={(event, value) => handleChangePage(event, value - 1)}
+          shape="rounded"
+          renderItem={(item) => (
+            <PaginationItem
+              slots={{
+                previous: ArrowBackRoundedIcon,
+                next: ArrowForwardRoundedIcon,
+              }}
+              {...item}
+              sx={{
+                "&:focus": {
+                  outline: "none",
+                },
+                "& .MuiTouchRipple-root": {
+                  pointerEvents: "none",
+                  display: "none",
+                },
+              }}
+            />
+          )}
         />
       )}
     </>

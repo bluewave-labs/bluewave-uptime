@@ -27,10 +27,10 @@ const BaseLabel = ({ label, styles, children }) => {
   const padding = theme.spacing(1 * 0.75, 2);
 
   return (
-    <div
+    <Box
       className="label"
-      style={{
-        borderRadius: borderRadius,
+      sx={{
+        borderRadius: `${borderRadius}px`,
         borderColor: theme.palette.tertiary.main,
         color: theme.palette.tertiary.main,
         padding: padding,
@@ -39,7 +39,7 @@ const BaseLabel = ({ label, styles, children }) => {
     >
       {children}
       {label}
-    </div>
+    </Box>
   );
 };
 
@@ -118,13 +118,14 @@ ColoredLabel.propTypes = {
  * @component
  * @param {Object} props
  * @param {'Seen' | 'Waiting' | 'New' | 'Active'} props.status - The status for the label
+ * @param {string} props.dot - The color of the dot
  * @returns {JSX.Element}
  * @example
  * // Render an active label
  * <StatusLabel status="Active" />
  */
 
-const StatusLabel = ({ status, customStyles }) => {
+const StatusLabel = ({ status, dot, customStyles }) => {
   const theme = useTheme();
 
   const colorLookup = {
@@ -132,8 +133,7 @@ const StatusLabel = ({ status, customStyles }) => {
     Waiting: theme.palette.labelRed.color,
     New: theme.palette.labelOrange.color,
     Active: theme.palette.labelGreen.color,
-    Down: theme.palette.error.main,  // Assuming theme.palette.error.main is red
-    
+    Down: theme.palette.error.main, // Assuming theme.palette.error.main is red
   };
 
   // Look up the color for the status, default to labelGray if not found
@@ -142,18 +142,26 @@ const StatusLabel = ({ status, customStyles }) => {
   return (
     <BaseLabel label={status} styles={customStyles}>
       <Box
-        width={12}
-        height={12}
-        bgcolor={color}
+        width={7}
+        height={7}
+        bgcolor={dot || color}
         borderRadius="50%"
-        marginRight={1}
+        marginRight="5px"
       />
     </BaseLabel>
   );
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf(["Seen", "Waiting", "New", "Active", "Down", "Cannot resolve"]),
+  status: PropTypes.oneOf([
+    "Seen",
+    "Waiting",
+    "New",
+    "Active",
+    "Up",
+    "Down",
+    "Cannot resolve",
+  ]),
   customStyles: PropTypes.object,
 };
 
