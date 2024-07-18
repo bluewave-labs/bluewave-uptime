@@ -1,19 +1,18 @@
 import "./index.css";
-import ConfigBox from "../../Components/ConfigBox";
+import ConfigBox from "../../../Components/ConfigBox";
 import React, { useState } from "react";
-import RadioButton from "../../Components/RadioButton";
-import CustomizableCheckBox from "../../Components/Checkbox/CustomizableCheckbox";
-import Button from "../../Components/Button";
+import RadioButton from "../../../Components/RadioButton";
+import Button from "../../../Components/Button";
 import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { createMonitorValidation } from "../../Validation/validation";
-import { createMonitor } from "../../Features/Monitors/monitorsSlice";
+import { createMonitorValidation } from "../../../Validation/validation";
+import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
-import Field from "../../Components/Inputs/Field";
+import Field from "../../../Components/Inputs/Field";
 
-const CreateNewMonitor = () => {
+const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -81,7 +80,7 @@ const CreateNewMonitor = () => {
   //   }));
   // };
 
-  const handleCreateNewMonitor = async (event) => {
+  const handleCreateMonitor = async (event) => {
     event.preventDefault();
     //obj to submit
     let monitor = {
@@ -126,7 +125,7 @@ const CreateNewMonitor = () => {
   return (
     <form
       className="create-monitor-form"
-      onSubmit={handleCreateNewMonitor}
+      onSubmit={handleCreateMonitor}
       noValidate
       spellCheck="false"
       style={{
@@ -441,7 +440,7 @@ const CreateNewMonitor = () => {
           level="primary"
           label="Create new monitor"
           sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
-          onClick={handleCreateNewMonitor}
+          onClick={handleCreateMonitor}
           disabled={Object.keys(errors).length !== 0 && true}
         />
       </div>
@@ -449,4 +448,4 @@ const CreateNewMonitor = () => {
   );
 };
 
-export default CreateNewMonitor;
+export default CreateMonitor;

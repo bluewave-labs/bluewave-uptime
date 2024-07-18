@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../Utils/axiosConfig";
-import BasicTable from "../../Components/BasicTable";
-import MonitorDetailsAreaChart from "../../Components/Charts/MonitorDetailsAreaChart";
-import { StatusLabel } from "../../Components/Label";
+import axiosInstance from "../../../Utils/axiosConfig";
+import BasicTable from "../../../Components/BasicTable";
+import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
+import { StatusLabel } from "../../../Components/Label";
 
 const formatDuration = (ms) => {
   const seconds = Math.floor(ms / 1000);
