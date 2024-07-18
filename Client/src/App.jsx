@@ -4,7 +4,6 @@ import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import HomeLayout from "./Layouts/HomeLayout";
-import Demo from "./Pages/Demo/Demo";
 import PlayGround from "./Pages/PlayGround/PlayGround";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
@@ -82,7 +81,6 @@ function App() {
 
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
-        <Route exact path="/demo" element={<Demo />} />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
         <Route path="*" element={<NotFound />} />
         <Route path="/playground" element={<PlayGround />} />
