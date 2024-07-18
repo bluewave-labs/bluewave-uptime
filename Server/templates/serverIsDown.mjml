@@ -40,9 +40,8 @@
             <mj-text>
               <p>Hello Alex!</p>
               <p>
-                {" "}
                 We detected an incident on one of your monitors. Your service is
-                currently down. We'll send a message to you once it is up again.{" "}
+                currently down. We'll send a message to you once it is up again.
               </p>
               <p>
                 <b>Monitor name:</b> Google.com

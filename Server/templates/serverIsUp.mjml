@@ -40,7 +40,6 @@
             <mj-text>
               <p>Hello Alex!</p>
               <p>
-                {" "}
                 Your latest incident is resolved and your monitored service is
                 up again.
               </p>
