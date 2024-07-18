@@ -1,6 +1,6 @@
 import NavBar from "../../Components/NavBar";
 import { Outlet } from "react-router";
-import DashboardSidebar from "../../Components/DashboardSidebar";
+import DashboardSidebar from "../../Components/Dashboard/DashboardSidebar";
 import "./index.css";
 
 const HomeLayout = () => {

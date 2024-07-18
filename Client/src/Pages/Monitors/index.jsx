@@ -1,14 +1,45 @@
 import "./index.css";
-import "./monitors.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
-import SearchTextField from "../../Components/Inputs/Search/SearchTextField";
-import MonitorTable from "../../Components/MonitorTable";
 import { useTheme } from "@emotion/react";
+import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
+import BasicTable from "../../Components/BasicTable";
+import { StatusLabel } from "../../Components/Label";
+import ResponseTimeChart from "../../Components/Charts/ResponseTimeChart";
+
+/**
+ * Host component.
+ * This subcomponent receives a params object and displays the host details.
+ *
+ * @component
+ * @param {Object} params - An object containing the following properties:
+ * @param {string} params.url - The URL of the host.
+ * @param {string} params.title - The name of the host.
+ * @param {string} params.percentageColor - The color of the percentage text.
+ * @param {number} params.precentage - The percentage to display.
+ * @returns {React.ElementType} Returns a div element with the host details.
+ */
+const Host = ({ params }) => {
+  return (
+    <div className="host-row">
+      <a href={params.url} target="_blank" rel="noreferrer">
+        <OpenInNewPage />
+      </a>
+      <div className="host-name">{params.title}</div>
+      <div
+        className="host-percentage"
+        style={{ color: params.percentageColor }}
+      >
+        {params.precentage}%
+      </div>
+    </div>
+  );
+};
 
 const Monitors = () => {
   const theme = useTheme();
@@ -26,6 +57,70 @@ const Monitors = () => {
   }, 0);
 
   const down = monitorState.monitors.length - up;
+
+  const data = {
+    cols: [
+      { id: 1, name: "Host" },
+      {
+        id: 2,
+        name: (
+          <>
+            Status
+            <span>
+              <ArrowDownwardRoundedIcon />
+            </span>
+          </>
+        ),
+      },
+      { id: 3, name: "Response Time" },
+      { id: 4, name: "Actions" },
+    ],
+    rows: [],
+  };
+
+  data.rows = monitorState.monitors.map((monitor, idx) => {
+    const params = {
+      url: monitor.url,
+      title: monitor.name,
+      precentage: 100,
+      percentageColor:
+        monitor.status === true
+          ? "var(--env-var-color-17)"
+          : "var(--env-var-color-19)",
+      status: monitor.status === true ? "Up" : "Down",
+      backgroundColor:
+        monitor.status === true
+          ? "var(--env-var-color-20)"
+          : "var(--env-var-color-21)",
+      statusDotColor:
+        monitor.status === true
+          ? "var(--env-var-color-17)"
+          : "var(--env-var-color-19)",
+    };
+
+    return {
+      id: monitor._id,
+      handleClick: () => navigate(`/monitors/${monitor._id}`),
+      data: [
+        { id: idx, data: <Host params={params} /> },
+        {
+          id: idx + 1,
+          data: (
+            <StatusLabel
+              status={params.status}
+              dot={params.statusDotColor}
+              customStyles={{
+                backgroundColor: params.backgroundColor,
+              }}
+            />
+          ),
+        },
+        { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
+        { id: idx + 3, data: "TODO" },
+      ],
+    };
+  });
+
   return (
     <div
       className="monitors"
@@ -62,11 +157,11 @@ const Monitors = () => {
             </div>
           </div>
           <div className="current-monitors-search-bar">
-            <SearchTextField />
+            {/* TODO - add search bar */}
           </div>
         </div>
         <div className="monitors-v-gaping" />
-        <MonitorTable monitors={monitorState.monitors} />
+        <BasicTable data={data} paginated={true} />
       </div>
     </div>
   );
