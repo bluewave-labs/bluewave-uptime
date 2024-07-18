@@ -85,37 +85,42 @@ const CreateMonitor = () => {
     //obj to submit
     let monitor = {
       ...generalSettings,
-      url: "https://" + generalSettings.url,
+      url:
+        checks.type === "http"
+          ? "https://" + generalSettings.url
+          : generalSettings.url,
       ...checks,
     };
 
-    const { error } = createMonitorValidation.validate(monitor, {
-      abortEarly: false,
-    });
+    console.log(monitor);
 
-    if (error) {
-      const newErrors = {};
-      error.details.forEach((err) => {
-        newErrors[err.path[0]] = err.message;
-      });
-      setErrors(newErrors);
-    } else {
-      monitor = {
-        ...monitor,
-        description: monitor.name,
-        userId: user._id,
-        // ...advancedSettings, // TODO frequency should be interval, then we can use spread
-        interval: advancedSettings.frequency * MS_PER_MINUTE,
-      };
-      try {
-        const action = await dispatch(createMonitor({ authToken, monitor }));
-        if (action.meta.requestStatus === "fulfilled") {
-          navigate("/monitors");
-        }
-      } catch (error) {
-        alert(error);
-      }
-    }
+    // const { error } = createMonitorValidation.validate(monitor, {
+    //   abortEarly: false,
+    // });
+
+    // if (error) {
+    //   const newErrors = {};
+    //   error.details.forEach((err) => {
+    //     newErrors[err.path[0]] = err.message;
+    //   });
+    //   setErrors(newErrors);
+    // } else {
+    //   monitor = {
+    //     ...monitor,
+    //     description: monitor.name,
+    //     userId: user._id,
+    //     // ...advancedSettings, // TODO frequency should be interval, then we can use spread
+    //     interval: advancedSettings.frequency * MS_PER_MINUTE,
+    //   };
+    //   try {
+    //     const action = await dispatch(createMonitor({ authToken, monitor }));
+    //     if (action.meta.requestStatus === "fulfilled") {
+    //       navigate("/monitors");
+    //     }
+    //   } catch (error) {
+    //     alert(error);
+    //   }
+    // }
   };
 
   //select values
