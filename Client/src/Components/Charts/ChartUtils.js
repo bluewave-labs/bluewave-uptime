@@ -39,6 +39,8 @@ export const NormalizeData = (checks, rangeMin, rangeMax) => {
 
     return normalizedChecks;
   } else {
-    return checks;
+    return checks.map((check) => {
+      return { ...check, originalResponseTime: check.responseTime };
+    });
   }
 };
