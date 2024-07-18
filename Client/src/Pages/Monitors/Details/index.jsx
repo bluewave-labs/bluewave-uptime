@@ -124,6 +124,9 @@ const DetailsPage = () => {
         break;
       }
     }
+    if (latestDownCheck === 0) {
+      return Date.now() - new Date(checks[checks.length - 1].createdAt);
+    }
     return latestCheck - latestDownCheck;
   };
 
