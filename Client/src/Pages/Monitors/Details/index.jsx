@@ -7,6 +7,8 @@ import axiosInstance from "../../../Utils/axiosConfig";
 import BasicTable from "../../../Components/BasicTable";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import { StatusLabel } from "../../../Components/Label";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Button from "../../../Components/Button";
 
 const formatDuration = (ms) => {
   const seconds = Math.floor(ms / 1000);
@@ -44,6 +46,8 @@ const DetailsPage = () => {
   const [data, setData] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
+  const [filter, setFilter] = useState("day");
+
   useEffect(() => {
     const fetchMonitor = async () => {
       const res = await axiosInstance.get(`/monitors/${monitorId}`, {
@@ -167,8 +171,36 @@ const DetailsPage = () => {
         />
         <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
       </div>
-      <div style={{ height: "10rem" }}>
-        <MonitorDetailsAreaChart checks={monitor.checks} />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography component="h1" mb={theme.gap.small}>
+          Response Times
+        </Typography>
+        <ButtonGroup>
+          <Button
+            level="secondary"
+            label="Day"
+            onClick={() => setFilter("day")}
+          />
+          <Button
+            level="secondary"
+            label="Week"
+            onClick={() => setFilter("week")}
+          />
+          <Button
+            level="secondary"
+            label="Month"
+            onClick={() => setFilter("month")}
+          />
+        </ButtonGroup>
+      </div>
+      <div style={{ height: "33vh" }}>
+        <MonitorDetailsAreaChart checks={monitor.checks} filter={filter} />
       </div>
       <Typography component="h1" mb={theme.gap.small}>
         History

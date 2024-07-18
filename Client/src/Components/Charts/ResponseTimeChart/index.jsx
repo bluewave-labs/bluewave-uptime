@@ -4,7 +4,7 @@ import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
 import { NormalizeData } from "../ChartUtils";
 
 const ResponseTimeChart = ({ checks = [] }) => {
-  const normalizedChecks = NormalizeData(checks);
+  const normalizedChecks = NormalizeData(checks, 1, 100);
   return (
     <div className="chart-container">
       <ResponsiveContainer width="100%" height="100%">
