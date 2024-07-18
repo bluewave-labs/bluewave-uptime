@@ -4,7 +4,6 @@ import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import HomeLayout from "./Layouts/HomeLayout";
-import PlayGround from "./Pages/PlayGround/PlayGround";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
@@ -83,7 +82,6 @@ function App() {
         <Route exact path="/register" element={<Register />} />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
         <Route path="*" element={<NotFound />} />
-        <Route path="/playground" element={<PlayGround />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/set-new-password/:token" element={<SetNewPassword />} />
