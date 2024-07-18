@@ -79,9 +79,7 @@ const PasswordPanel = () => {
       const action = await dispatch(update({ authToken, localData }));
       if (action.payload.success) {
         createToast({
-          variant: "info",
           body: "Your password was changed successfully.",
-          hasIcon: false,
         });
         setLocalData({
           password: "",
@@ -91,9 +89,7 @@ const PasswordPanel = () => {
       } else {
         // TODO: Check for other errors?
         createToast({
-          variant: "info",
           body: "Your password input was incorrect.",
-          hasIcon: false,
         });
         setErrors({ password: "*" + action.payload.msg + "." });
       }

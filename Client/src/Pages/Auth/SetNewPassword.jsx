@@ -52,12 +52,10 @@ const SetNewPassword = () => {
       });
       setErrors(newErrors);
       createToast({
-        variant: "info",
         body:
           error.details && error.details.length > 0
             ? error.details[0].message
             : "Error validating data.",
-        hasIcon: false,
       });
     } else {
       delete passwordForm.confirm;
@@ -67,24 +65,18 @@ const SetNewPassword = () => {
       if (action.payload.success) {
         navigate("/new-password-confirmed");
         createToast({
-          variant: "info",
           body: "Your password was reset successfully.",
-          hasIcon: false,
         });
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }

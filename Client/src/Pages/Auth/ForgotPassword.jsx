@@ -52,24 +52,18 @@ const ForgotPassword = () => {
         sessionStorage.setItem("email", form.email);
         navigate("/check-email");
         createToast({
-          variant: "info",
           body: `Instructions sent to ${form.email}.`,
-          hasIcon: false,
         });
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }

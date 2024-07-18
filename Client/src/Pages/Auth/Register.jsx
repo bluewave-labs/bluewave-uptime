@@ -70,12 +70,10 @@ const Register = () => {
       });
       setErrors(newErrors);
       createToast({
-        variant: "info",
         body:
           error.details && error.details.length > 0
             ? error.details[0].message
             : "Error validating data.",
-        hasIcon: false,
       });
     } else {
       delete adminForm.confirm;
@@ -85,24 +83,18 @@ const Register = () => {
         localStorage.setItem("token", token);
         navigate("/");
         createToast({
-          variant: "info",
           body: "Welcome! Your account was created successfully.",
-          hasIcon: false,
         });
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }

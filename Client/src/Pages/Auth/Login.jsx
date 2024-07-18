@@ -63,36 +63,28 @@ const Login = () => {
       });
       setErrors(newErrors);
       createToast({
-        variant: "info",
         body:
           error.details && error.details.length > 0
             ? error.details[0].message
             : "Error validating data.",
-        hasIcon: false,
       });
     } else {
       const action = await dispatch(login(form));
       if (action.payload.success) {
         navigate("/monitors");
         createToast({
-          variant: "info",
           body: "Welcome back! You're successfully logged in.",
-          hasIcon: false,
         });
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }
