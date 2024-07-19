@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import "./index.css";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
-import Check from "../../Components/Check/Check";
-import Button from "../../Components/Button";
-import { credentials } from "../../Validation/validation";
-import axiosInstance from "../../Utils/axiosConfig";
-import { useDispatch } from "react-redux";
-import { register } from "../../Features/Auth/authSlice";
-import { createToast } from "../../Utils/toastUtils";
-import Field from "../../Components/Inputs/Field";
 import { useTheme } from "@emotion/react";
 import { Stack, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+
+import "../index.css";
+import background from "../../../assets/Images/background_pattern_decorative.png";
+import Logomark from "../../../assets/Images/bwl-logo-2.svg?react";
+import Check from "../../../Components/Check/Check";
+import Button from "../../../Components/Button";
+import { credentials } from "../../../Validation/validation";
+import axiosInstance from "../../../Utils/axiosConfig";
+import { register } from "../../../Features/Auth/authSlice";
+import { createToast } from "../../../Utils/toastUtils";
+import Field from "../../../Components/Inputs/Field";
 
 const Register = () => {
   const dispatch = useDispatch();

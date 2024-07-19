@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 // import "./App.css";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
-import Register from "./Pages/Auth/Register";
+import Register from "./Pages/Auth/Register/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
