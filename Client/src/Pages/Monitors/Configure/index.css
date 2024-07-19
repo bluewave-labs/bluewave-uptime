@@ -43,6 +43,14 @@
 .configure-monitor .config-box .MuiStack-root {
   flex: 1;
 }
+.configure-monitor .MuiStack-root:has(span.MuiTypography-root.input-error) {
+  position: relative;
+}
+.configure-monitor span.MuiTypography-root.input-error {
+  position: absolute;
+  top: 100%;
+}
+
 .MuiInputBase-root:has(#monitor-interval) {
   height: 34px;
 }

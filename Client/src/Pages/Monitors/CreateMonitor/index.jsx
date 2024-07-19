@@ -5,7 +5,7 @@ import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
 import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { createMonitorValidation } from "../../../Validation/validation";
+import { monitorValidation } from "../../../Validation/validation";
 import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
@@ -37,7 +37,7 @@ const CreateMonitor = () => {
   // });
   //Advanced Settings Form
   const [advancedSettings, setAdvancedSettings] = useState({
-    frequency: 1,
+    interval: 1,
     // retries: "",
     // codes: "",
     // redirects: "",
@@ -57,7 +57,7 @@ const CreateMonitor = () => {
       [id]: checkbox ? true : value,
     }));
 
-    const validation = createMonitorValidation.validate(
+    const validation = monitorValidation.validate(
       { [id]: value },
       { abortEarly: false }
     );
@@ -92,7 +92,7 @@ const CreateMonitor = () => {
       ...checks,
     };
 
-    const { error } = createMonitorValidation.validate(monitor, {
+    const { error } = monitorValidation.validate(monitor, {
       abortEarly: false,
     });
 
@@ -107,8 +107,8 @@ const CreateMonitor = () => {
         ...monitor,
         description: monitor.name,
         userId: user._id,
-        // ...advancedSettings, // TODO frequency should be interval, then we can use spread
-        interval: advancedSettings.frequency * MS_PER_MINUTE,
+        // ...advancedSettings
+        interval: advancedSettings.interval * MS_PER_MINUTE,
       };
       try {
         const action = await dispatch(createMonitor({ authToken, monitor }));
@@ -333,10 +333,10 @@ const CreateMonitor = () => {
               </Typography>
               <Select
                 id="monitor-frequencies"
-                value={advancedSettings.frequency || 1}
+                value={advancedSettings.interval || 1}
                 inputProps={{ id: "monitor-frequencies-select" }}
                 onChange={(event) =>
-                  handleChange(event, "frequency", setAdvancedSettings)
+                  handleChange(event, "interval", setAdvancedSettings)
                 }
                 MenuProps={{
                   PaperProps: {

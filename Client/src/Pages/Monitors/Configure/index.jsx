@@ -14,6 +14,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import "./index.css";
+import { monitorValidation } from "../../../Validation/validation";
 
 const formatDurationRounded = (ms) => {
   const seconds = Math.floor(ms / 1000);
@@ -66,6 +67,14 @@ const Configure = () => {
   const { authToken } = useSelector((state) => state.auth);
   const { monitorId } = useParams();
 
+  const idMap = {
+    "monitor-url": "url",
+    "monitor-name": "name",
+    "monitor-type": "type",
+    "monitor-interval": "interval",
+  };
+
+  const [config, setConfig] = useState();
   const [monitor, setMonitor] = useState();
   const [errors, setErrors] = useState({});
   useEffect(() => {
@@ -76,16 +85,44 @@ const Configure = () => {
         },
       });
       let data = res.data.data;
+      setConfig(data);
       setMonitor({
         name: data.name,
         url: data.url.replace(/^https?:\/\//, ""),
         type: data.type,
         interval: data.interval / MS_PER_MINUTE,
-        status: data.status,
       });
     };
     fetchMonitor();
   }, [monitorId, authToken]);
+
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idMap[id];
+    setMonitor((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    const validation = monitorValidation.validate(
+      { [name]: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+
+      if (validation.error)
+        updatedErrors[name] = validation.error.details[0].message;
+      else delete updatedErrors[name];
+      return updatedErrors;
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // TODO
+  };
 
   const frequencies = [1, 2, 3, 4, 5];
 
@@ -114,25 +151,25 @@ const Configure = () => {
       <form className="configure-monitor-form" noValidate spellCheck="false">
         <Stack gap={theme.gap.xl}>
           <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-            {monitor?.status ? <GreenCheck /> : <RedCheck />}
+            {config?.status ? <GreenCheck /> : <RedCheck />}
             <Box>
               <Typography component="h1" sx={{ lineHeight: 1 }}>
-                {monitor?.url.replace(/^https?:\/\//, "") || "..."}
+                {config?.url.replace(/^https?:\/\//, "") || "..."}
               </Typography>
               <Typography mt={theme.gap.small}>
                 <Typography
                   component="span"
                   sx={{
-                    color: monitor?.status
+                    color: config?.status
                       ? "var(--env-var-color-17)"
                       : "var(--env-var-color-24)",
                   }}
                 >
-                  Your site is {monitor?.status ? "up" : "down"}.
+                  Your site is {config?.status ? "up" : "down"}.
                 </Typography>{" "}
-                Checking every {formatDurationRounded(monitor?.interval)}. Last
+                Checking every {formatDurationRounded(config?.interval)}. Last
                 time checked{" "}
-                {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
+                {formatDurationRounded(getLastChecked(config?.checks))} ago.
               </Typography>
             </Box>
             <Stack
@@ -185,7 +222,9 @@ const Configure = () => {
                 id="monitor-url"
                 label="URL to monitor"
                 placeholder="google.com"
-                value={monitor?.url}
+                value={monitor?.url || ""}
+                onChange={handleChange}
+                error={errors["url"]}
               />
               <Field
                 type="text"
@@ -193,7 +232,9 @@ const Configure = () => {
                 label="Friendly name"
                 isOptional={true}
                 placeholder="Google"
-                value={monitor?.name}
+                value={monitor?.name || ""}
+                onChange={handleChange}
+                error={errors["name"]}
               />
             </Stack>
           </Stack>
