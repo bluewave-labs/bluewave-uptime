@@ -1,125 +1,59 @@
 const fs = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
 const { compile } = require("handlebars");
 const { mjml2html } = require("mjml");
 
-// Fetching Templates
+class EmailService {
+  constructor() {
+    this.loadTemplate = (templateName) => {
+      const templatePath = path.join(
+        __dirname,
+        `../templates/${templateName}.mjml`
+      );
+      const templateContent = fs.readFileSync(templatePath, "utf8");
+      return compile(templateContent);
+    };
 
-// Welcome Email Template
-const welcomeEmailTemplatePath = path.join(
-  __dirname,
-  "../templates/welcomeEmail.mjml"
-);
-const welcomeEmailTemplateContent = fs.readFileSync(
-  welcomeEmailTemplatePath,
-  "utf8"
-);
-const welcomeEmailTemplate = compile(welcomeEmailTemplateContent);
+    // TODO  Load less used templates in their respective functions
+    this.templateLookup = {
+      welcomeEmailTemplate: this.loadTemplate("welcomeEmail"),
+      employeeActivationTemplate: this.loadTemplate("employeeActivation"),
+      noIncidentsThisWeekTemplate: this.loadTemplate("noIncidentsThisWeek"),
+      serverIsDownTemplate: this.loadTemplate("serverIsDown"),
+      serverIsUpTemplate: this.loadTemplate("serverIsUp"),
+      passwordResetTemplate: this.loadTemplate("passwordReset"),
+    };
 
-// Employee Activation Email Template
-const employeeActivationTemplatePath = path.join(
-  __dirname,
-  "../templates/employeeActivation.mjml"
-);
-const employeeActivationTemplateContent = fs.readFileSync(
-  employeeActivationTemplatePath,
-  "utf8"
-);
-const employeeActivation = compile(employeeActivationTemplateContent);
+    this.transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_SERVICE_HOST,
+      port: process.env.EMAIL_SERVICE_PORT,
+      secure: true, // Use `true` for port 465, `false` for all other ports
+      auth: {
+        user: process.env.EMAIL_SERVICE_USERNAME,
+        pass: process.env.EMAIL_SERVICE_PASSWORD,
+      },
+    });
+  }
 
-// No Incident This Week Template
-const noIncidentsThisWeekTemplatePath = path.join(
-  __dirname,
-  "../templates/noIncidentsThisWeek.mjml"
-);
-const noIncidentsThisWeekTemplateContent = fs.readFileSync(
-  noIncidentsThisWeekTemplatePath,
-  "utf8"
-);
-const noIncidentsThisWeek = compile(noIncidentsThisWeekTemplateContent);
+  buildAndSendEmail = async (template, context, to, subject) => {
+    const buildHtml = (template, context) => {
+      const mjml = this.templateLookup[template](context);
+      const html = mjml2html(mjml);
+      return html;
+    };
 
-// Server is Down Template
-const serverIsDownTemplatePath = path.join(
-  __dirname,
-  "../templates/serverIsDown.mjml"
-);
-const serverIsDownTemplateContent = fs.readFileSync(
-  serverIsDownTemplatePath,
-  "utf8"
-);
-const serverIsDown = compile(serverIsDownTemplateContent);
-
-// Server is Up Template
-const serverIsUpTemplatePath = path.join(
-  __dirname,
-  "../templates/serverIsUp.mjml"
-);
-const serverIsUpTemplateContent = fs.readFileSync(
-  serverIsUpTemplatePath,
-  "utf8"
-);
-const serverIsUp = compile(serverIsUpTemplateContent);
-
-// Password Reset Template
-const passwordResetTemplatePath = path.join(
-  __dirname,
-  "../templates/passwordReset.mjml"
-);
-const passwordResetTemplateContent = fs.readFileSync(
-  passwordResetTemplatePath,
-  "utf8"
-);
-const passwordReset = compile(passwordResetTemplateContent);
-
-// *** Application specific functions ***
-
-function sendWelcomeEmail(context) {
-  const mjml = welcomeEmailTemplate(context);
-  const html = mjml2html(mjml);
-
-  return html;
+    const sendEmail = async (to, subject, html) => {
+      const info = await this.transporter.sendMail({
+        to: to,
+        subject: subject,
+        html: html,
+      });
+      return info;
+    };
+    const info = await sendEmail(to, subject, buildHtml(template, context));
+    return info.messageId;
+  };
 }
 
-function sendEmployeeActivationEmail(context) {
-  const mjml = employeeActivation(context);
-  const html = mjml2html(mjml);
-
-  return html;
-}
-
-function sendNoIncidentsThisWeekEmail(context) {
-  const mjml = noIncidentsThisWeek(context);
-  const html = mjml2html(mjml);
-
-  return html;
-}
-
-function sendServerIsDownEmail(context) {
-  const mjml = serverIsDown(context);
-  const html = mjml2html(mjml);
-
-  return html;
-}
-
-function sendServerIsUpEmail(context) {
-  const mjml = serverIsUp(context);
-  const html = mjml2html(mjml);
-
-  return html;
-}
-
-function sendPasswordResetEmail(context) {
-  const mjml = passwordReset(context);
-  const html = mjml2html(mjml);
-
-  return html;
-}
-
-module.exports = {
-  sendWelcomeEmail,
-  sendEmployeeActivationEmail,
-  sendNoIncidentsThisWeekEmail,
-  sendServerIsDownEmail,
-  sendServerIsUpEmail,
-  sendPasswordResetEmail,
-};
+module.exports = EmailService;
