@@ -23,6 +23,7 @@ import { useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -504,6 +505,7 @@ const TeamPanel = () => {
                 style: { padding: 0 },
               },
             }}
+            IconComponent={KeyboardArrowDownIcon}
             sx={{ mt: theme.gap.xs }}
           >
             <MenuItem disableRipple id="role-default" value="">

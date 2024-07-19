@@ -237,6 +237,7 @@ const DetailsPage = () => {
             level="tertiary"
             label="Configure"
             img={<SettingsIcon />}
+            onClick={() => navigate(`/monitors/configure/${monitorId}`)}
             sx={{
               ml: "auto",
               alignSelf: "flex-end",

@@ -21,6 +21,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
+import Configure from "./Pages/Monitors/Configure";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -44,6 +45,10 @@ function App() {
           <Route
             path="/monitors/:monitorId/"
             element={<ProtectedRoute Component={Details} />}
+          />
+          <Route
+            path="/monitors/configure/:monitorId/"
+            element={<ProtectedRoute Component={Configure} />}
           />
           <Route
             path="incidents"

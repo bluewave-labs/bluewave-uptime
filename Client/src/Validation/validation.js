@@ -73,7 +73,7 @@ const credentials = joi.object({
   }),
 });
 
-const createMonitorValidation = joi.object({
+const monitorValidation = joi.object({
   url: joi
     .string()
     .trim()
@@ -85,7 +85,7 @@ const createMonitorValidation = joi.object({
     .string()
     .trim()
     .messages({ "string.empty": "*This field is required." }),
-  frequency: joi.number().messages({
+  interval: joi.number().messages({
     "number.base": "*Frequency must be a number.",
     "any.required": "*Frequency is required.",
   }),
@@ -106,4 +106,4 @@ const imageValidation = joi.object({
     }),
 });
 
-export { credentials, imageValidation, createMonitorValidation };
+export { credentials, imageValidation, monitorValidation };
