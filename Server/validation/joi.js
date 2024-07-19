@@ -1,6 +1,18 @@
 const joi = require("joi");
 
 //****************************************
+// Custom Validators
+//****************************************
+
+const roleValidatior = (role) => (value, helpers) => {
+  console.log(role);
+  if (!value.includes(role)) {
+    throw new joi.ValidationError(`You do not have ${role} authorization`);
+  }
+  return value;
+};
+
+//****************************************
 // Auth
 //****************************************
 
@@ -85,6 +97,20 @@ const newPasswordValidation = joi.object({
 
 const deleteUserParamValidation = joi.object({
   email: joi.string().email().required(),
+});
+
+const inviteRoleValidation = joi.object({
+  roles: joi.custom(roleValidatior("admin")).required(),
+});
+
+const inviteBodyValidation = joi.object({
+  email: joi.string().trim().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Must be a valid email address",
+  }),
+  role: joi.string().required().messages({
+    "string.empty": "Role is required",
+  }),
 });
 
 //****************************************
@@ -195,11 +221,14 @@ const deletePageSpeedCheckParamValidation = joi.object({
 });
 
 module.exports = {
+  roleValidatior,
   loginValidation,
   registerValidation,
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
+  inviteRoleValidation,
+  inviteBodyValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
