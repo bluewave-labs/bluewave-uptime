@@ -59,7 +59,7 @@ const startApp = async () => {
   app.use((req, res, next) => {
     req.db = db;
     req.jobQueue = jobQueue;
-    req.emailSerivce = emailSerivce;
+    req.emailService = emailService;
     next();
   });
 
@@ -109,7 +109,7 @@ const startApp = async () => {
   // Create services
   await connectDbAndRunServer(app, db);
   const jobQueue = await JobQueue.createJobQueue(db);
-  const emailSerivce = new EmailService();
+  const emailService = new EmailService();
 
   const cleanup = async () => {
     console.log("Shutting down gracefully");

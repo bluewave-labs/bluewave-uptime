@@ -14,10 +14,6 @@ require("dotenv").config();
 const { errorMessages, successMessages } = require("../utils/messages");
 var jwt = require("jsonwebtoken");
 const SERVICE_NAME = "auth";
-const { sendEmail } = require("../utils/sendEmail");
-const {
-  registerTemplate,
-} = require("../utils/emailTemplates/registerTemplate");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -89,15 +85,12 @@ const registerController = async (req, res, next) => {
 
     const token = issueToken(userForToken);
 
-    // Sending email to user with pre defined template
-    const template = registerTemplate("https://www.bluewavelabs.ca");
-    await sendEmail(
-      [newUser.email],
-      "Welcome to Uptime Monitor",
-      template,
-      "Registered."
+    req.emailService.buildAndSendEmail(
+      "welcomeEmailTemplate",
+      { name: newUser.firstName },
+      newUser.email,
+      "Welcome to Uptime Monitor"
     );
-
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
@@ -243,7 +236,7 @@ const checkAdminController = async (req, res) => {
  * @param {Express.Request} req
  * @property {Object} req.body
  * @property {string} req.body.email
- * @param {Express.Response} res
+ * @property {EmailService} req.body.emailService
  * @returns {Promise<Express.Response>}
  */
 const recoveryRequestController = async (req, res, next) => {
@@ -252,18 +245,23 @@ const recoveryRequestController = async (req, res, next) => {
     const user = await req.db.getUserByEmail(req, res);
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
-      await sendEmail(
-        [req.body.email],
-        "Uptime Monitor Password Recovery",
-        `<a clicktracking="off" href='${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}'>Click here to reset your password</a>`,
-        `Recovery token: ${recoveryToken.token}`
+      const name = user.firstName;
+      const email = req.body.email;
+      const url = `${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}`;
+
+      const msgId = await req.emailService.buildAndSendEmail(
+        "passwordResetTemplate",
+        { name, email, url },
+        email,
+        "Bluewaves Uptime Password Resest"
       );
+
       return res.status(200).json({
         success: true,
         msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
+        data: msgId,
       });
     }
-    // TODO Email token to user
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
