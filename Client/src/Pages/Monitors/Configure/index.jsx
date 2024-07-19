@@ -285,35 +285,40 @@ const Configure = () => {
               <Typography component="h2">Advanced settings</Typography>
             </Box>
             <Stack gap={theme.gap.xl}>
-              <Select
-                id="monitor-interval"
-                value={monitor?.interval || 1}
-                inputProps={{ id: "monitor-interval-select" }}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      marginTop: "10px",
+              <Box>
+                <Typography component="p" mb={theme.gap.small}>
+                  Check frequency
+                </Typography>
+                <Select
+                  id="monitor-interval"
+                  value={monitor?.interval || 1}
+                  inputProps={{ id: "monitor-interval-select" }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        marginTop: "10px",
+                      },
                     },
-                  },
-                }}
-                IconComponent={KeyboardArrowDownIcon}
-                onChange={(event) => handleChange(event, "interval")}
-              >
-                {frequencies.map((freq) => (
-                  <MenuItem
-                    key={`port-${freq}`}
-                    value={freq}
-                    disableRipple
-                    sx={{
-                      fontSize: "13px",
-                      borderRadius: `${theme.shape.borderRadius}px`,
-                      margin: theme.gap.xs,
-                    }}
-                  >
-                    {freq} {freq === 1 ? "minute" : "minutes"}
-                  </MenuItem>
-                ))}
-              </Select>
+                  }}
+                  IconComponent={KeyboardArrowDownIcon}
+                  onChange={(event) => handleChange(event, "interval")}
+                >
+                  {frequencies.map((freq) => (
+                    <MenuItem
+                      key={`port-${freq}`}
+                      value={freq}
+                      disableRipple
+                      sx={{
+                        fontSize: "13px",
+                        borderRadius: `${theme.shape.borderRadius}px`,
+                        margin: theme.gap.xs,
+                      }}
+                    >
+                      {freq} {freq === 1 ? "minute" : "minutes"}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
             </Stack>
           </Stack>
         </Stack>

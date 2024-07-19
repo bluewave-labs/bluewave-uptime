@@ -53,6 +53,7 @@
 
 .MuiInputBase-root:has(#monitor-interval) {
   height: 34px;
+  width: 100%;
 }
 #monitor-interval {
   padding: 0 10px;
