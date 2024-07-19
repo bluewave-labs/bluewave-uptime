@@ -42,8 +42,8 @@ const Register = ({ isAdmin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const form = { ...form, role: isAdmin ? "admin" : "user" };
-    const { error } = credentials.validate(form, {
+    const registerForm = { ...form, role: isAdmin ? "admin" : "user" };
+    const { error } = credentials.validate(registerForm, {
       abortEarly: false,
       context: { password: form.password },
     });
@@ -62,8 +62,8 @@ const Register = ({ isAdmin }) => {
             : "Error validating data.",
       });
     } else {
-      delete form.confirm;
-      const action = await dispatch(register(form));
+      delete registerForm.confirm;
+      const action = await dispatch(register(registerForm));
       if (action.payload.success) {
         const token = action.payload.data;
         localStorage.setItem("token", token);
