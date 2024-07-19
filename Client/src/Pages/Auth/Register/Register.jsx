@@ -230,5 +230,4 @@ const Register = ({ isAdmin }) => {
   );
 };
 
-const WrappedRegister = withAdminCheck(Register);
-export default WrappedRegister;
+export default Register;
