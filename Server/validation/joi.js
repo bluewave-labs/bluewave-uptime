@@ -154,6 +154,10 @@ const getPageSpeedCheckParamValidation = joi.object({
 
 const createPageSpeedCheckParamValidation = joi.object({
   monitorId: joi.string().required(),
+  accessibility: joi.number().required().min(0).max(100),
+  bestPractices: joi.number().required().min(0).max(100),
+  seo: joi.number().required().min(0).max(100),
+  performance: joi.number().required().min(0).max(100),
 });
 
 const deletePageSpeedCheckParamValidation = joi.object({
