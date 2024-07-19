@@ -33,9 +33,7 @@
 .monitor-details p.MuiTypography-root {
   color: var(--env-var-color-2);
 }
-.monitor-details p.MuiTypography-root span.MuiTypography-root {
-  color: var(--env-var-color-17);
-}
+
 .monitor-details .stat-box {
   flex: 1;
   min-width: 100px;

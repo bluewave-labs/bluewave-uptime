@@ -33,6 +33,33 @@ const formatDuration = (ms) => {
   return dateStr;
 };
 
+const formatDurationRounded = (ms) => {
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  let time = "";
+  if (days > 0) {
+    time += `${days} day${days !== 1 ? "s" : ""}`;
+    return time;
+  }
+  if (hours > 0) {
+    time += `${hours} hour${hours !== 1 ? "s" : ""}`;
+    return time;
+  }
+  if (minutes > 0) {
+    time += `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+    return time;
+  }
+  if (seconds > 0) {
+    time += `${seconds} second${seconds !== 1 ? "s" : ""}`;
+    return time;
+  }
+
+  return time;
+};
+
 const StatBox = ({ title, value }) => {
   return (
     <Box className="stat-box">
@@ -185,14 +212,25 @@ const DetailsPage = () => {
       />
       <Stack gap={theme.gap.xl}>
         <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          <GreenCheck />
+          {monitor?.status ? <GreenCheck /> : <RedCheck />}
           <Box>
             <Typography component="h1" sx={{ lineHeight: 1 }}>
               {monitor.url?.replace(/^https?:\/\//, "") || "..."}
             </Typography>
             <Typography mt={theme.gap.small}>
-              <Typography component="span">Your site is up.</Typography>{" "}
-              Checking every 5 minutes. Last time checked 2 minutes ago.
+              <Typography
+                component="span"
+                sx={{
+                  color: monitor?.status
+                    ? "var(--env-var-color-17)"
+                    : "var(--env-var-color-24)",
+                }}
+              >
+                Your site is {monitor?.status ? "up" : "down"}.
+              </Typography>{" "}
+              Checking every {formatDurationRounded(monitor?.interval)}. Last
+              time checked{" "}
+              {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
             </Typography>
           </Box>
           <Button
