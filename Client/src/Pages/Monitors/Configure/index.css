@@ -8,10 +8,12 @@
   font-weight: 600;
 }
 .configure-monitor h2.MuiTypography-root,
-.configure-monitor .config-box p.MuiTypography-root {
+.configure-monitor .config-box p.MuiTypography-root,
+.configure-monitor .MuiSelect-select {
   color: var(--env-var-color-5);
 }
-.configure-monitor p.MuiTypography-root {
+.configure-monitor p.MuiTypography-root,
+.configure-monitor .MuiSelect-select {
   font-size: var(--env-var-font-size-medium);
 }
 .configure-monitor h6.MuiTypography-root {
@@ -40,4 +42,16 @@
 .configure-monitor .config-box .MuiBox-root,
 .configure-monitor .config-box .MuiStack-root {
   flex: 1;
+}
+.MuiInputBase-root:has(#monitor-interval) {
+  height: 34px;
+}
+#monitor-interval {
+  padding: 0 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.MuiInputBase-root:not(.Mui-focused):has(#monitor-interval):hover fieldset {
+  border-color: var(--env-var-color-29);
 }
