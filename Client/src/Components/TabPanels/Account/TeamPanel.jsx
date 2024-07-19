@@ -21,6 +21,8 @@ import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
 import { useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
+import Field from "../../Inputs/Field";
+import { credentials } from "../../../Validation/validation";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -106,18 +108,10 @@ const TeamPanel = () => {
     name: "Bluewave Labs",
     isLoading: false,
     isEdit: false,
-    newName: "",
   });
 
   const toggleEdit = () => {
     setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
-  };
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setOrgStates((prev) => ({
-      ...prev,
-      name: value,
-    }));
   };
   const handleRename = () => {};
 
@@ -163,8 +157,44 @@ const TeamPanel = () => {
       setIsLoading(false);
     }, 2000);
   };
+
+  const [toInvite, setToInvite] = useState({
+    email: "",
+    role: "",
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    setToInvite((prev) => ({
+      ...prev,
+      email: value,
+    }));
+
+    const validation = credentials.validate(
+      { email: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+
+      if (validation.error) {
+        updatedErrors.email = validation.error.details[0].message;
+      } else {
+        delete updatedErrors.email;
+      }
+      return updatedErrors;
+    });
+  };
   const [isOpen, setIsOpen] = useState(false);
   const handleInviteMember = () => {};
+  const closeInviteModal = () => {
+    setIsOpen(false);
+    setToInvite({ email: "", role: "" });
+    setErrors({});
+  };
+
   const handleMembersQuery = (type) => {
     let count = 0;
     teamStates.members.forEach((member) => {
@@ -188,7 +218,12 @@ const TeamPanel = () => {
           >
             <TextField
               value={orgStates.name}
-              onChange={handleChange}
+              onChange={(event) =>
+                setOrgStates((prev) => ({
+                  ...prev,
+                  name: event.target.value,
+                }))
+              }
               disabled={!orgStates.isEdit}
               sx={{
                 color: theme.palette.otherColors.bluishGray,
@@ -409,7 +444,7 @@ const TeamPanel = () => {
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={closeInviteModal}
         disablePortal
       >
         <Stack
@@ -433,22 +468,76 @@ const TeamPanel = () => {
           <Typography id="modal-invite-member" component="h1">
             Invite new team member
           </Typography>
-          <Typography id="invite-member-to-team" component="p">
+          <Typography
+            id="invite-member-to-team"
+            component="p"
+            sx={{ mb: theme.gap.medium }}
+          >
             When you add a new team member, they will get access to all
             monitors.
           </Typography>
-          <TextField
+          <Field
+            type="email"
             id="input-team-member"
-            spellCheck="false"
-            // value={orgStates.newName}
-            // onChange={(event) =>
-            //   setOrgStates((prev) => ({
-            //     ...prev,
-            //     newName: event.target.value,
-            //   }))
-            // }
-          ></TextField>
-          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            placeholder="Email"
+            value={toInvite.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <Select
+            id="team-member-role"
+            value={toInvite.role}
+            onChange={(event) =>
+              setToInvite((prev) => ({
+                ...prev,
+                role: event.target.value,
+              }))
+            }
+            displayEmpty
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  marginTop: theme.gap.xs,
+                },
+              },
+              MenuListProps: {
+                style: { padding: 0 },
+              },
+            }}
+            sx={{ mt: theme.gap.xs }}
+          >
+            <MenuItem disableRipple id="role-default" value="">
+              Select role
+            </MenuItem>
+            <MenuItem
+              disableRipple
+              value="admin"
+              sx={{
+                fontSize: "13px",
+                borderRadius: `${theme.shape.borderRadius}px`,
+                margin: theme.gap.xs,
+              }}
+            >
+              Admin
+            </MenuItem>
+            <MenuItem
+              disableRipple
+              value="user"
+              sx={{
+                fontSize: "13px",
+                borderRadius: `${theme.shape.borderRadius}px`,
+                margin: theme.gap.xs,
+              }}
+            >
+              User
+            </MenuItem>
+          </Select>
+          <Stack
+            direction="row"
+            gap={theme.gap.small}
+            mt={theme.gap.ml}
+            justifyContent="flex-end"
+          >
             <Button
               level="tertiary"
               label="Cancel"
