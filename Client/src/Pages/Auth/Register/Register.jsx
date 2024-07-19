@@ -15,7 +15,8 @@ import Field from "../../../Components/Inputs/Field";
 import withAdminCheck from "../../../HOC/withAdminCheck";
 import { register } from "../../../Features/Auth/authSlice";
 
-const Register = () => {
+const Register = ({ isAdmin }) => {
+  console.log(isAdmin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -42,8 +43,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const adminForm = { ...form, role: "admin" };
-    const { error } = credentials.validate(adminForm, {
+    const form = { ...form, role: isAdmin ? "admin" : "user" };
+    const { error } = credentials.validate(form, {
       abortEarly: false,
       context: { password: form.password },
     });
@@ -62,8 +63,8 @@ const Register = () => {
             : "Error validating data.",
       });
     } else {
-      delete adminForm.confirm;
-      const action = await dispatch(register(adminForm));
+      delete form.confirm;
+      const action = await dispatch(register(form));
       if (action.payload.success) {
         const token = action.payload.data;
         localStorage.setItem("token", token);
@@ -119,7 +120,7 @@ const Register = () => {
         <Stack gap={theme.gap.small} alignItems="center">
           <Logomark alt="BlueWave Uptime Icon" />
           <Typography component="h1" sx={{ mt: theme.gap.xl }}>
-            Create admin account
+            Create{isAdmin ? " admin " : " "}account
           </Typography>
         </Stack>
         <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>

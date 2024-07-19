@@ -19,7 +19,7 @@ const withAdminCheck = (WrappedComponent) => {
           console.log(error);
         });
     }, [navigate]);
-    return <WrappedComponent {...props} />;
+    return <WrappedComponent {...props} isAdmin={true} />;
   };
   const wrappedComponentName =
     WrappedComponent.displayName || WrappedComponent.name || "Component";
