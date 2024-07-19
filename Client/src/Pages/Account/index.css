@@ -41,9 +41,9 @@
   justify-content: space-between;
   align-items: flex-start;
 }
-.edit-profile-form__wrapper>.MuiStack-root:not(.row-stack),
-.edit-password-form__wrapper>.MuiStack-root:not(.row-stack),
-.edit-organization-form__wrapper>.MuiStack-root:not(.row-stack) {
+.edit-profile-form__wrapper > .MuiStack-root:not(.row-stack),
+.edit-password-form__wrapper > .MuiStack-root:not(.row-stack),
+.edit-organization-form__wrapper > .MuiStack-root:not(.row-stack) {
   flex-direction: column;
   gap: 8px;
   margin-right: 10px;
@@ -139,7 +139,7 @@
   height: 18px !important;
   opacity: 0.8;
 }
-.account span.MuiTypography-root.input-error {
+.account:not(:has(#modal-invite-member)) span.MuiTypography-root.input-error {
   position: absolute;
   top: 100%;
 }
@@ -155,4 +155,21 @@
 .edit-profile-form__wrapper .MuiStack-root:has(.MuiFormControl-root),
 .edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root) {
   margin: 0;
+}
+
+#role-default {
+  display: none;
+  visibility: none;
+}
+.MuiInputBase-root:has(#team-member-role) {
+  height: 34px;
+}
+#team-member-role {
+  padding: 0 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.MuiInputBase-root:not(.Mui-focused):has(#team-member-role):hover fieldset {
+  border-color: var(--env-var-color-29);
 }

@@ -255,7 +255,8 @@ const ProfilePanel = () => {
             value={user.email}
             placeholder="Enter your email"
             autoComplete="email"
-            // onChange={handleChange}
+            // TODO - add onChange
+            onChange={() => console.log("Disabled.")}
             // error={errors[idToName["edit-email"]]}
             disabled={true}
           />
