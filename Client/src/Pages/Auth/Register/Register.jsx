@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Stack, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
 
 import "../index.css";
 import background from "../../../assets/Images/background_pattern_decorative.png";
@@ -12,11 +13,9 @@ import Button from "../../../Components/Button";
 import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import Field from "../../../Components/Inputs/Field";
-import withAdminCheck from "../../../HOC/withAdminCheck";
 import { register } from "../../../Features/Auth/authSlice";
 
 const Register = ({ isAdmin }) => {
-  console.log(isAdmin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -229,5 +228,7 @@ const Register = ({ isAdmin }) => {
     </div>
   );
 };
-
+Register.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default Register;

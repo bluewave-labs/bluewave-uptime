@@ -7,7 +7,6 @@ const withAdminCheck = (WrappedComponent) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      console.log("admin check");
       axiosInstance
         .get("/auth/users/admin")
         .then((response) => {
