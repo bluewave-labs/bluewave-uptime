@@ -6,7 +6,6 @@ import background from "../../assets/Images/background_pattern_decorative.png";
 import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import Check from "../../Components/Check/Check";
 import Button from "../../Components/Button";
-import Google from "../../assets/Images/Google.png";
 import { credentials } from "../../Validation/validation";
 import axiosInstance from "../../Utils/axiosConfig";
 import { useDispatch } from "react-redux";
@@ -14,7 +13,7 @@ import { register } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
 import Field from "../../Components/Inputs/Field";
 import { useTheme } from "@emotion/react";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -70,12 +69,10 @@ const Register = () => {
       });
       setErrors(newErrors);
       createToast({
-        variant: "info",
         body:
           error.details && error.details.length > 0
             ? error.details[0].message
             : "Error validating data.",
-        hasIcon: false,
       });
     } else {
       delete adminForm.confirm;
@@ -85,24 +82,18 @@ const Register = () => {
         localStorage.setItem("token", token);
         navigate("/");
         createToast({
-          variant: "info",
           body: "Welcome! Your account was created successfully.",
-          hasIcon: false,
         });
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }
@@ -138,17 +129,13 @@ const Register = () => {
         alt="background pattern"
       />
       <form className="register-form" onSubmit={handleSubmit} noValidate>
-        <Stack gap={theme.gap.large} direction="column">
+        <Stack gap={theme.gap.small} alignItems="center">
           <Logomark alt="BlueWave Uptime Icon" />
-          <Button
-            level="secondary"
-            label="Sign up with Google"
-            sx={{ fontWeight: 600, mt: theme.gap.xxl }}
-            img={<img className="google-enter" src={Google} alt="Google" />}
-          />
-          <Divider>
-            <Typography>or</Typography>
-          </Divider>
+          <Typography component="h1" sx={{ mt: theme.gap.xl }}>
+            Create admin account
+          </Typography>
+        </Stack>
+        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
           <Field
             id="register-firstname-input"
             label="Name"

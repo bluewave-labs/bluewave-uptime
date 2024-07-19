@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
 import Button from "../../Components/Button";
-import Google from "../../assets/Images/Google.png";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import axiosInstance from "../../Utils/axiosConfig";
 import { credentials } from "../../Validation/validation";
@@ -12,13 +11,7 @@ import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import Field from "../../Components/Inputs/Field";
-import {
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Checkbox, FormControlLabel, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
 const Login = () => {
@@ -63,36 +56,28 @@ const Login = () => {
       });
       setErrors(newErrors);
       createToast({
-        variant: "info",
         body:
           error.details && error.details.length > 0
             ? error.details[0].message
             : "Error validating data.",
-        hasIcon: false,
       });
     } else {
       const action = await dispatch(login(form));
       if (action.payload.success) {
         navigate("/monitors");
         createToast({
-          variant: "info",
           body: "Welcome back! You're successfully logged in.",
-          hasIcon: false,
         });
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }
@@ -128,17 +113,13 @@ const Login = () => {
         alt="background pattern"
       />
       <form className="login-form" onSubmit={handleSubmit}>
-        <Stack gap={theme.gap.large} direction="column">
+        <Stack gap={theme.gap.small} alignItems="center">
           <Logomark alt="BlueWave Uptime Icon" />
-          <Button
-            level="secondary"
-            label="Sign in with Google"
-            sx={{ fontWeight: "600", mt: theme.gap.xxl }}
-            img={<img className="google-enter" src={Google} alt="Google" />}
-          />
-          <Divider>
-            <Typography>or</Typography>
-          </Divider>
+          <Typography component="h1" sx={{ mt: theme.gap.xl }}>
+            Login to Your Account
+          </Typography>
+        </Stack>
+        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
           <Field
             type="email"
             id="login-email-input"
@@ -186,7 +167,7 @@ const Login = () => {
           <Button
             type="submit"
             level="primary"
-            label="Sign in"
+            label="Continue"
             disabled={Object.keys(errors).length !== 0 && true}
           />
           <Stack

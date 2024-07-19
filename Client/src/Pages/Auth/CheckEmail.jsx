@@ -29,24 +29,16 @@ const CheckEmail = () => {
 
   const toastFail = [
     {
-      variant: "info",
       body: "Email not found.",
-      hasIcon: false,
     },
     {
-      variant: "info",
       body: "Redirecting in 3...",
-      hasIcon: false,
     },
     {
-      variant: "info",
       body: "Redirecting in 2...",
-      hasIcon: false,
     },
     {
-      variant: "info",
       body: "Redirecting in 1...",
-      hasIcon: false,
     },
   ];
 
@@ -68,25 +60,19 @@ const CheckEmail = () => {
       const action = await dispatch(forgotPassword(form));
       if (action.payload.success) {
         createToast({
-          variant: "info",
           body: `Instructions sent to ${form.email}.`,
-          hasIcon: false,
         });
         setDisabled(false);
       } else {
         if (action.payload) {
           // dispatch errors
           createToast({
-            variant: "info",
             body: action.payload.msg,
-            hasIcon: false,
           });
         } else {
           // unknown errors
           createToast({
-            variant: "info",
             body: "Unknown error.",
-            hasIcon: false,
           });
         }
       }

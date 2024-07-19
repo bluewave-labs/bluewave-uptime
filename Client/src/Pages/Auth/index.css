@@ -12,6 +12,7 @@
   height: var(--env-var-height-1);
 }
 .register-page h1.MuiTypography-root,
+.login-page h1.MuiTypography-root,
 .set-new-password-page h1.MuiTypography-root,
 .password-confirmed-page h1.MuiTypography-root,
 .forgot-password-page h1.MuiTypography-root,
@@ -97,11 +98,6 @@
   visibility: hidden;
 }
 
-/* REGISTER */
-.register-page h1.MuiTypography-root {
-  opacity: 0.5;
-}
-
 /* ///// */
 /* LOGIN */
 /* ///// */
@@ -122,12 +118,6 @@
 .login-page .MuiFormControlLabel-root .MuiTypography-root {
   color: var(--env-var-color-5);
   user-select: none;
-}
-
-.google-enter {
-  width: var(--env-var-img-width-1);
-  height: var(--env-var-img-width-1);
-  margin-right: 10px;
 }
 
 /* /////////// */

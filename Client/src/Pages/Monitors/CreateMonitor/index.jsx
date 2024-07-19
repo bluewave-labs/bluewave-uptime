@@ -85,7 +85,10 @@ const CreateMonitor = () => {
     //obj to submit
     let monitor = {
       ...generalSettings,
-      url: "https://" + generalSettings.url,
+      url:
+        checks.type === "http"
+          ? "https://" + generalSettings.url
+          : generalSettings.url,
       ...checks,
     };
 

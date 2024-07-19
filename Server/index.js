@@ -13,6 +13,80 @@ const { handleErrors } = require("./middleware/handleErrors");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
 const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
+const nodemailer = require("nodemailer");
+
+const fs = require("fs");
+const path = require("path");
+const { compile } = require("handlebars");
+const { mjml2html } = require("mjml");
+
+// Fetching Templates
+
+// Welcome Email Template
+const welcomeEmailTemplatePath = path.join(
+  __dirname,
+  "./templates/welcomeEmail.mjml"
+);
+const welcomeEmailTemplateContent = fs.readFileSync(
+  welcomeEmailTemplatePath,
+  "utf8"
+);
+const welcomeEmailTemplate = compile(welcomeEmailTemplateContent);
+
+// Employee Activation Email Template
+const employeeActivationTemplatePath = path.join(
+  __dirname,
+  "./templates/employeeActivation.mjml"
+);
+const employeeActivationTemplateContent = fs.readFileSync(
+  employeeActivationTemplatePath,
+  "utf8"
+);
+const employeeActivation = compile(employeeActivationTemplateContent);
+
+// No Incident This Week Template
+const noIncidentsThisWeekTemplatePath = path.join(
+  __dirname,
+  "./templates/noIncidentsThisWeek.mjml"
+);
+const noIncidentsThisWeekTemplateContent = fs.readFileSync(
+  noIncidentsThisWeekTemplatePath,
+  "utf8"
+);
+const noIncidentsThisWeek = compile(noIncidentsThisWeekTemplateContent);
+
+// Server is Down Template
+const serverIsDownTemplatePath = path.join(
+  __dirname,
+  "./templates/serverIsDown.mjml"
+);
+const serverIsDownTemplateContent = fs.readFileSync(
+  serverIsDownTemplatePath,
+  "utf8"
+);
+const serverIsDown = compile(serverIsDownTemplateContent);
+
+// Server is Up Template
+const serverIsUpTemplatePath = path.join(
+  __dirname,
+  "./templates/serverIsUp.mjml"
+);
+const serverIsUpTemplateContent = fs.readFileSync(
+  serverIsUpTemplatePath,
+  "utf8"
+);
+const serverIsUp = compile(serverIsUpTemplateContent);
+
+// Password Reset Template
+const passwordResetTemplatePath = path.join(
+  __dirname,
+  "./templates/passwordReset.mjml"
+);
+const passwordResetTemplateContent = fs.readFileSync(
+  passwordResetTemplatePath,
+  "utf8"
+);
+const passwordReset = compile(passwordResetTemplateContent);
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
@@ -85,6 +159,45 @@ const startApp = async () => {
       logger.error(error.message);
       return res.status(500).json({ message: error.message });
     }
+  });
+
+  // Nodemailer code here
+  const transporter = nodemailer.createTransport({
+    host: "127.0.0.1",
+    port: 1025,
+    auth: {
+      user: "project.1",
+      pass: "secret.1",
+    },
+  });
+
+  app.use("/api/v1/mail", (req, res) => {
+    console.log("Started");
+    // Replacing varibales
+    const context = { name: "Alex" };
+
+    // The Template must be replaced according to the scenario and the response we need to give
+    const mjml = welcomeEmailTemplate(context);
+    const html = mjml2html(mjml);
+
+    // Define mail options
+    const mailOptions = {
+      from: "BlueWave Uptime <bluewaveuptime@gmail.com>", // sender address
+      to: "muhammadkhalilzadeh1998@gmailc.com", // list of receivers
+      subject: "Testing template emails", // Subject line
+      html: html, // html body
+    };
+
+    // Send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res
+          .status(500)
+          .send({ message: "Error sending email", error: error });
+      }
+      console.log(info);
+      res.status(200).send({ message: "Email sent successfully", info: info });
+    });
   });
 
   /**

@@ -6,14 +6,32 @@ const joi = require("joi");
 
 const loginValidation = joi.object({
   email: joi.string().email().required(),
-  password: joi.string().min(8).required(),
+  password: joi
+    .string()
+    .min(8)
+    .required()
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
+    ),
 });
 
 const registerValidation = joi.object({
-  firstname: joi.string().required(),
-  lastname: joi.string().required(),
+  firstname: joi
+    .string()
+    .required()
+    .pattern(/^[A-Za-z]+$/),
+  lastname: joi
+    .string()
+    .required()
+    .pattern(/^[A-Za-z]+$/),
   email: joi.string().email().required(),
-  password: joi.string().min(8).required(),
+  password: joi
+    .string()
+    .min(8)
+    .required()
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
+    ),
   profileImage: joi.any(),
   role: joi.string().required(),
 });
@@ -23,11 +41,21 @@ const editUserParamValidation = joi.object({
 });
 
 const editUserBodyValidation = joi.object({
-  firstname: joi.string(),
-  lastname: joi.string(),
+  firstname: joi.string().pattern(/^[A-Za-z]+$/),
+  lastname: joi.string().pattern(/^[A-Za-z]+$/),
   profileImage: joi.any(),
-  newPassword: joi.string().min(8),
-  password: joi.string().min(8),
+  newPassword: joi
+    .string()
+    .min(8)
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
+    ),
+  password: joi
+    .string()
+    .min(8)
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
+    ),
   deleteProfileImage: joi.boolean(),
   role: joi.string(),
 });
@@ -45,7 +73,13 @@ const recoveryTokenValidation = joi.object({
 
 const newPasswordValidation = joi.object({
   recoveryToken: joi.string().required(),
-  password: joi.string().min(8).required(),
+  password: joi
+    .string()
+    .min(8)
+    .required()
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
+    ),
   confirm: joi.string(),
 });
 

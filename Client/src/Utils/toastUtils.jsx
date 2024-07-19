@@ -11,7 +11,13 @@ import Alert from "../Components/Alert";
  * @param {object} [props.config] - Additional configuration props for the toast.
  */
 
-export const createToast = ({ variant, title, body, hasIcon, config = {} }) => {
+export const createToast = ({
+  variant = "info",
+  title,
+  body,
+  hasIcon = false,
+  config = {},
+}) => {
   const toastConfig = {
     position: "bottom-right",
     autoClose: 3000,
@@ -36,9 +42,9 @@ export const createToast = ({ variant, title, body, hasIcon, config = {} }) => {
 };
 
 createToast.propTypes = {
-  variant: PropTypes.oneOf(["info", "error", "warning"]).isRequired,
+  variant: PropTypes.oneOf(["info", "error", "warning"]),
   title: PropTypes.string,
-  body: PropTypes.string,
+  body: PropTypes.string.isRequired,
   hasIcon: PropTypes.bool,
   config: PropTypes.object,
 };
