@@ -13,6 +13,9 @@ const { handleErrors } = require("./middleware/handleErrors");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
 const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
+const nodemailer = require("nodemailer");
+
+const emailService = require("./service/emailService");
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
@@ -85,6 +88,41 @@ const startApp = async () => {
       logger.error(error.message);
       return res.status(500).json({ message: error.message });
     }
+  });
+
+  // Nodemailer code here
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_SERVICE_HOST,
+    port: process.env.EMAIL_SERVICE_PORT,
+    auth: {
+      user: process.env.EMAIL_SERVICE_USERNAME,
+      pass: process.env.EMAIL_SERVICE_PASSWORD,
+    },
+  });
+
+  app.use("/api/v1/mail", (req, res) => {
+    console.log("Started");
+    // Replacing varibales
+    const context = { name: "Alex" };
+
+    // Define mail options
+    const mailOptions = {
+      from: "BlueWave Uptime <bluewaveuptime@gmail.com>", // sender address
+      to: "muhammadkhalilzadeh1998@gmailc.com", // list of receivers
+      subject: "Testing template emails", // Subject line
+      html: emailService.sendWelcomeEmail(context), // html body
+    };
+
+    // Send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res
+          .status(500)
+          .send({ message: "Error sending email", error: error });
+      }
+      console.log(info);
+      res.status(200).send({ message: "Email sent successfully", info: info });
+    });
   });
 
   /**

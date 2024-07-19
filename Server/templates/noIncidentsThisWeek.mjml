@@ -20,7 +20,7 @@
     <mj-section>
       <mj-column width="100%">
         <mj-text>
-          <p>Hello Alex!</p>
+          <p>Hello {{name}}!</p>
           <p>There were no incidents this week. Good job!</p>
           <p><b>Current monitors:</b></p>
           <p><b>Google:</b> 100% availability</p>

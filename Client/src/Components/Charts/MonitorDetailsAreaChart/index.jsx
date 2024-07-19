@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { NormalizeData } from "../ChartUtils";
+import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div style={{ backgroundColor: "white" }}>
+      <div className="area-tooltip">
         <p>
           {new Date(label).toLocaleDateString("en-US", {
             weekday: "short", // Mon
@@ -80,7 +81,7 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
         data={normalizedChecks}
         margin={{
           top: 10,
-          right: 30,
+          right: 0,
           left: 0,
           bottom: 0,
         }}
@@ -89,6 +90,7 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
           dataKey="createdAt"
           tickFormatter={formatDate}
           tick={{ fontSize: "13px" }}
+          tickLine={false}
         />
         <Tooltip content={<CustomToolTip />} />
         <Area

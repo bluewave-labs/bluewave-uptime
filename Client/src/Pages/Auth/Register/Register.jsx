@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import "./index.css";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
-import Check from "../../Components/Check/Check";
-import Button from "../../Components/Button";
-import { credentials } from "../../Validation/validation";
-import axiosInstance from "../../Utils/axiosConfig";
-import { useDispatch } from "react-redux";
-import { register } from "../../Features/Auth/authSlice";
-import { createToast } from "../../Utils/toastUtils";
-import Field from "../../Components/Inputs/Field";
 import { useTheme } from "@emotion/react";
 import { Stack, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
 
-const Register = () => {
+import "../index.css";
+import background from "../../../assets/Images/background_pattern_decorative.png";
+import Logomark from "../../../assets/Images/bwl-logo-2.svg?react";
+import Check from "../../../Components/Check/Check";
+import Button from "../../../Components/Button";
+import { credentials } from "../../../Validation/validation";
+import { createToast } from "../../../Utils/toastUtils";
+import Field from "../../../Components/Inputs/Field";
+import { register } from "../../../Features/Auth/authSlice";
+
+const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -39,24 +39,11 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    axiosInstance
-      .get("/auth/users/admin")
-      .then((response) => {
-        if (response.data.data === true) {
-          navigate("/login");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [form, navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const adminForm = { ...form, role: "admin" };
-    const { error } = credentials.validate(adminForm, {
+    const registerForm = { ...form, role: isAdmin ? "admin" : "user" };
+    const { error } = credentials.validate(registerForm, {
       abortEarly: false,
       context: { password: form.password },
     });
@@ -75,8 +62,8 @@ const Register = () => {
             : "Error validating data.",
       });
     } else {
-      delete adminForm.confirm;
-      const action = await dispatch(register(adminForm));
+      delete registerForm.confirm;
+      const action = await dispatch(register(registerForm));
       if (action.payload.success) {
         const token = action.payload.data;
         localStorage.setItem("token", token);
@@ -132,7 +119,7 @@ const Register = () => {
         <Stack gap={theme.gap.small} alignItems="center">
           <Logomark alt="BlueWave Uptime Icon" />
           <Typography component="h1" sx={{ mt: theme.gap.xl }}>
-            Create admin account
+            Create{isAdmin ? " admin " : " "}account
           </Typography>
         </Stack>
         <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
@@ -241,5 +228,7 @@ const Register = () => {
     </div>
   );
 };
-
+Register.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default Register;

@@ -58,14 +58,11 @@ const Button = ({ id, type, level, label, disabled, img, onClick, sx }) => {
       color={color}
       disabled={disabled}
       onClick={onClick}
+      disableRipple
       sx={{
         textTransform: "none",
         "&:focus": {
           outline: "none",
-        },
-        "& .MuiTouchRipple-root": {
-          pointerEvents: "none",
-          display: "none",
         },
         ...sx,
       }}
