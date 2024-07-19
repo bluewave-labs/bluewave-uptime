@@ -2,7 +2,6 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import RadioButton from "../../../Components/RadioButton";
@@ -65,6 +64,7 @@ const Configure = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { authToken } = useSelector((state) => state.auth);
+  const { monitors } = useSelector((state) => state.monitors);
   const { monitorId } = useParams();
 
   const idMap = {
@@ -78,13 +78,8 @@ const Configure = () => {
   const [monitor, setMonitor] = useState();
   const [errors, setErrors] = useState({});
   useEffect(() => {
-    const fetchMonitor = async () => {
-      const res = await axiosInstance.get(`/monitors/${monitorId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      let data = res.data.data;
+    const fetchMonitor = () => {
+      const data = monitors.find((monitor) => monitor._id === monitorId);
       setConfig(data);
       setMonitor({
         name: data.name,
