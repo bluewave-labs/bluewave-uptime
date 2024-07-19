@@ -39,10 +39,26 @@ const getPageSpeedChecks = async (req, res, next) => {
  */
 const createPageSpeedCheck = async (req, res, next) => {
   try {
-    // Validate monitorId parameter
-    await createPageSpeedCheckParamValidation.validateAsync(req.params);
+    // Validate monitorId parameter and request body
+    const { monitorId } = req.params;
+    const { accessibility, bestPractices, seo, performance } = req.body;
+    
+    await createPageSpeedCheckParamValidation.validateAsync({ monitorId, accessibility, bestPractices, seo, performance });
 
-    return res.status(200).json({ msg: "Hit createPageSpeedCheck" });
+    const newPageSpeedCheck = new PageSpeedCheck({
+      monitorId,
+      accessibility,
+      bestPractices,
+      seo,
+      performance,
+    });
+
+    await newPageSpeedCheck.save();
+
+    return res.status(201).json({
+      msg: successMessages.CREATED,
+      data: newPageSpeedCheck,
+    });
   } catch (error) {
     if (error.isJoi) {
       return res.status(400).json({ error: error.details[0].message });
