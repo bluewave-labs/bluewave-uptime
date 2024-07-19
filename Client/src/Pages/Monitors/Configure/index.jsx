@@ -70,8 +70,8 @@ const Configure = () => {
   const idMap = {
     "monitor-url": "url",
     "monitor-name": "name",
-    "monitor-type": "type",
-    "monitor-interval": "interval",
+    "monitor-checks-http": "type",
+    "monitor-checks-ping": "type",
   };
 
   const [config, setConfig] = useState();
@@ -96,9 +96,9 @@ const Configure = () => {
     fetchMonitor();
   }, [monitorId, authToken]);
 
-  const handleChange = (event) => {
+  const handleChange = (event, name) => {
     const { value, id } = event.target;
-    const name = idMap[id];
+    if (!name) name = idMap[id];
     setMonitor((prev) => ({
       ...prev,
       [name]: value,
@@ -258,6 +258,7 @@ const Configure = () => {
                 size="small"
                 value="http"
                 checked={monitor?.type === "http"}
+                onChange={handleChange}
               />
               <RadioButton
                 id="monitor-checks-ping"
@@ -266,6 +267,7 @@ const Configure = () => {
                 size="small"
                 value="ping"
                 checked={monitor?.type === "ping"}
+                onChange={handleChange}
               />
               <Box className="error-container">
                 {errors["type"] ? (
@@ -291,6 +293,7 @@ const Configure = () => {
               <Select
                 id="monitor-interval"
                 value={monitor?.interval || 1}
+                inputProps={{ id: "monitor-interval-select" }}
                 MenuProps={{
                   PaperProps: {
                     style: {
@@ -299,6 +302,7 @@ const Configure = () => {
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
+                onChange={(event) => handleChange(event, "interval")}
               >
                 {frequencies.map((freq) => (
                   <MenuItem
