@@ -1,17 +1,36 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useTheme } from "@emotion/react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 
 import "./index.css";
-import { useTheme } from "@emotion/react";
 
 /**
- * Configure component displays monitor configurations and allows for editing actions.
+ * Configure page displays monitor configurations and allows for editing actions.
  * @component
  */
 const Configure = () => {
   const navigate = useNavigate();
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const [monitor, setMonitor] = useState();
+  const { monitorId } = useParams();
+  const { authToken } = useSelector((state) => state.auth);
+  useEffect(() => {
+    const fetchMonitor = async () => {
+      const res = await axiosInstance.get(`/monitors/${monitorId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setMonitor(res.data.data);
+    };
+    fetchMonitor();
+  }, [monitorId, authToken]);
 
   return (
     <div
