@@ -4,6 +4,7 @@ const SERVICE_NAME = "pagespeed";
 const {
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
+  createPageSpeedCheckBodyValidation,
   deletePageSpeedCheckParamValidation,
 } = require("../validation/joi");
 
@@ -39,11 +40,14 @@ const getPageSpeedChecks = async (req, res, next) => {
  */
 const createPageSpeedCheck = async (req, res, next) => {
   try {
-    // Validate monitorId parameter and request body
+    // Validate monitorId parameter
+    await createPageSpeedCheckParamValidation.validateAsync(req.params);
+
+    // Validate request body
+    await createPageSpeedCheckBodyValidation.validateAsync(req.body);
+
     const { monitorId } = req.params;
     const { accessibility, bestPractices, seo, performance } = req.body;
-    
-    await createPageSpeedCheckParamValidation.validateAsync({ monitorId, accessibility, bestPractices, seo, performance });
 
     const newPageSpeedCheck = new PageSpeedCheck({
       monitorId,
