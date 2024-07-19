@@ -14,6 +14,7 @@ const {
   resetPasswordController,
   checkAdminController,
   deleteUserController,
+  inviteController,
 } = require("../controllers/authController");
 
 //Auth routes
@@ -32,6 +33,8 @@ router.delete(
   verifyOwnership(User, "userId"),
   deleteUserController
 );
+
+router.post("/invite", verifyJWT, inviteController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);

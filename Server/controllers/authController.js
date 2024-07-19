@@ -214,6 +214,10 @@ const userEditController = async (req, res, next) => {
   }
 };
 
+const inviteController = async (req, res) => {
+  return res.status(200).json({ success: true, msg: "Invite sent" });
+};
+
 /**
  * Checks to see if an admin account exists
  * @async
@@ -404,6 +408,7 @@ module.exports = {
   registerController,
   loginController,
   userEditController,
+  inviteController,
   checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
