@@ -182,12 +182,23 @@ const deleteChecksParamValidation = joi.object({
 //****************************************
 // PageSpeedCheckValidation
 //****************************************
+
 const getPageSpeedCheckParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+//Validation schema for the monitorId parameter
 const createPageSpeedCheckParamValidation = joi.object({
   monitorId: joi.string().required(),
+});
+
+//Validation schema for the monitorId body
+const createPageSpeedCheckBodyValidation = joi.object({
+  monitorId: joi.string().required(),
+  accessibility: joi.number().required().min(0).max(100),
+  bestPractices: joi.number().required().min(0).max(100),
+  seo: joi.number().required().min(0).max(100),
+  performance: joi.number().required().min(0).max(100),
 });
 
 const deletePageSpeedCheckParamValidation = joi.object({
@@ -221,4 +232,5 @@ module.exports = {
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
   deletePageSpeedCheckParamValidation,
+  createPageSpeedCheckBodyValidation,
 };

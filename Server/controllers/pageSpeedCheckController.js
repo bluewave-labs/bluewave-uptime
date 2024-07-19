@@ -4,6 +4,7 @@ const SERVICE_NAME = "pagespeed";
 const {
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
+  createPageSpeedCheckBodyValidation,
   deletePageSpeedCheckParamValidation,
 } = require("../validation/joi");
 
@@ -42,7 +43,26 @@ const createPageSpeedCheck = async (req, res, next) => {
     // Validate monitorId parameter
     await createPageSpeedCheckParamValidation.validateAsync(req.params);
 
-    return res.status(200).json({ msg: "Hit createPageSpeedCheck" });
+    // Validate request body
+    await createPageSpeedCheckBodyValidation.validateAsync(req.body);
+
+    const { monitorId } = req.params;
+    const { accessibility, bestPractices, seo, performance } = req.body;
+
+    const newPageSpeedCheck = new PageSpeedCheck({
+      monitorId,
+      accessibility,
+      bestPractices,
+      seo,
+      performance,
+    });
+
+    await newPageSpeedCheck.save();
+
+    return res.status(201).json({
+      msg: successMessages.CREATED,
+      data: newPageSpeedCheck,
+    });
   } catch (error) {
     if (error.isJoi) {
       return res.status(400).json({ error: error.details[0].message });
