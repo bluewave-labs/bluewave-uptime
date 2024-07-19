@@ -13,7 +13,8 @@ const {
   validateRecoveryTokenController,
   resetPasswordController,
   checkAdminController,
-  deleteUserController
+  deleteUserController,
+  inviteController,
 } = require("../controllers/authController");
 
 //Auth routes
@@ -26,7 +27,14 @@ router.post(
   userEditController
 );
 router.get("/users/admin", checkAdminController);
-router.delete("/user/:userId", verifyJWT, verifyOwnership(User, "userId") , deleteUserController);
+router.delete(
+  "/user/:userId",
+  verifyJWT,
+  verifyOwnership(User, "userId"),
+  deleteUserController
+);
+
+router.post("/invite", verifyJWT, inviteController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);

@@ -8,6 +8,8 @@ const {
   recoveryTokenValidation,
   newPasswordValidation,
   deleteUserParamValidation,
+  inviteRoleValidation,
+  inviteBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -214,6 +216,21 @@ const userEditController = async (req, res, next) => {
   }
 };
 
+const inviteController = async (req, res, next) => {
+  try {
+    // Only admins can invite
+    const token = getTokenFromHeaders(req.headers);
+    const { role } = jwt.decode(token);
+    await inviteRoleValidation.validateAsync({ roles: role });
+    await inviteBodyValidation.validateAsync(req.body);
+    return res.status(200).json({ success: true, msg: "Invite sent" });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
 /**
  * Checks to see if an admin account exists
  * @async
@@ -404,6 +421,7 @@ module.exports = {
   registerController,
   loginController,
   userEditController,
+  inviteController,
   checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
