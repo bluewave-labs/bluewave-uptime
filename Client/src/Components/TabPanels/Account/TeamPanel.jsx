@@ -23,7 +23,10 @@ import { useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import axiosInstance from "../../../Utils/axiosConfig";
+import { createToast } from "../../../Utils/toastUtils";
+import { useSelector } from "react-redux";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -159,6 +162,7 @@ const TeamPanel = () => {
     }, 2000);
   };
 
+  const { authToken } = useSelector((state) => state.auth);
   const [toInvite, setToInvite] = useState({
     email: "",
     role: "",
@@ -189,7 +193,40 @@ const TeamPanel = () => {
     });
   };
   const [isOpen, setIsOpen] = useState(false);
-  const handleInviteMember = () => {};
+  const handleInviteMember = async () => {
+    if (toInvite.role !== "user" || toInvite !== "admin")
+      setToInvite((prev) => ({ ...prev, role: "user" }));
+
+    const { error } = credentials.validate(
+      { email: toInvite.email },
+      {
+        abortEarly: false,
+      }
+    );
+
+    if (error) {
+      setErrors((prev) => ({ ...prev, email: error.details[0].message }));
+    } else
+      try {
+        await axiosInstance.post(
+          "/auth/invite",
+          {
+            email: toInvite.email,
+            role: toInvite.role,
+          },
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+
+        closeInviteModal();
+        createToast({
+          body: "Member invited. They will receive an email with details on how to create their account.",
+        });
+      } catch (error) {
+        createToast({
+          body: error.message || "Unknown error.",
+        });
+      }
+  };
   const closeInviteModal = () => {
     setIsOpen(false);
     setToInvite({ email: "", role: "" });
@@ -543,13 +580,14 @@ const TeamPanel = () => {
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setIsOpen(false)}
+              onClick={closeInviteModal}
             />
             <ButtonSpinner
               level="primary"
               label="Send invite"
               onClick={handleInviteMember}
               isLoading={isLoading}
+              disabled={Object.keys(errors).length !== 0}
             />
           </Stack>
         </Stack>
