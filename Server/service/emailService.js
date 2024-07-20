@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
 const { compile } = require("handlebars");
-const { mjml2html } = require("mjml");
+const mjml2html = require("mjml");
 
 /**
  * Represents an email service that can load templates, build, and send emails.
@@ -68,7 +68,7 @@ class EmailService {
   buildAndSendEmail = async (template, context, to, subject) => {
     const buildHtml = (template, context) => {
       const mjml = this.templateLookup[template](context);
-      const html = mjml2html(mjml);
+      const html = mjml2html(mjml).html;
       return html;
     };
 
