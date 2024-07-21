@@ -21,6 +21,7 @@ import { useState } from "react";
  * @param {string} [props.label] - Label for the input field.
  * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
  * @param {boolean} [props.isOptional] - Indicates if the field is optional, will display optional text.
+ * @param {string} [props.optionalLabel] - Optional label for the input field.
  * @param {boolean} [props.hasCopy] - Indicates if the field supports copying.
  * @param {string} [props.autoComplete] - Autocomplete value for the input field.
  * @param {string} [props.placeholder] - Placeholder text for the input field.
@@ -36,6 +37,7 @@ const Field = ({
   label,
   isRequired,
   isOptional,
+  optionalLabel,
   hasCopy,
   autoComplete,
   placeholder,
@@ -61,7 +63,13 @@ const Field = ({
         <Typography component="h3">
           {label}
           {isRequired ? <span className="field-required">*</span> : ""}
-          {isOptional ? <span className="field-optional">(optional)</span> : ""}
+          {isOptional ? (
+            <span className="field-optional">
+              {optionalLabel || "(optional)"}
+            </span>
+          ) : (
+            ""
+          )}
         </Typography>
       )}
       <TextField
@@ -146,6 +154,7 @@ Field.propTypes = {
   label: PropTypes.string,
   isRequired: PropTypes.bool,
   isOptional: PropTypes.bool,
+  optionalLabel: PropTypes.string,
   hasCopy: PropTypes.bool,
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,
