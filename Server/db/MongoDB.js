@@ -274,7 +274,7 @@ const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
     const checks = await Check.find({ monitorId: monitor._id }).sort({
-      createdAt: -1,
+      createdAt: 1,
     });
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
@@ -299,15 +299,16 @@ const getMonitorsByUserId = async (req, res) => {
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
         if (limit) {
-          // Checks are order oldest -> newest
+          // Checks are order newest -> oldest
           const checks = await Check.find({ monitorId: monitor._id })
             .sort({
-              createdAt: 1,
+              createdAt: -1,
             })
             .limit(limit);
           return { ...monitor.toObject(), checks };
         } else {
-          // Checks are order oldest -> newest
+          // Checks are order newest -> oldest
+          // TODO is this ever used?
           const checks = await Check.find({ monitorId: monitor._id }).sort({
             createdAt: 1,
           });
