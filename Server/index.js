@@ -85,7 +85,7 @@ const startApp = async () => {
 
   app.use("/api/v1/mail", async (req, res) => {
     try {
-      const id = await req.emailSerivce.buildAndSendEmail(
+      const id = await req.emailService.buildAndSendEmail(
         "welcomeEmailTemplate",
         {
           name: "Alex",
