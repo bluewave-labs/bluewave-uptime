@@ -20,6 +20,7 @@ import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import ErrorPage from "./Pages/Errors";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
         />
+        <Route exact path="/error" element={<ErrorPage />} />
       </Routes>
       <ToastContainer />
     </>
