@@ -43,8 +43,8 @@ const passwordSchema = joi
   });
 
 const credentials = joi.object({
-  firstname: nameSchema,
-  lastname: nameSchema,
+  firstName: nameSchema,
+  lastName: nameSchema,
   email: joi
     .string()
     .trim()

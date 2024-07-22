@@ -28,11 +28,11 @@ const loginValidation = joi.object({
 });
 
 const registerValidation = joi.object({
-  firstname: joi
+  firstName: joi
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
-  lastname: joi
+  lastName: joi
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
@@ -53,8 +53,8 @@ const editUserParamValidation = joi.object({
 });
 
 const editUserBodyValidation = joi.object({
-  firstname: joi.string().pattern(/^[A-Za-z]+$/),
-  lastname: joi.string().pattern(/^[A-Za-z]+$/),
+  firstName: joi.string().pattern(/^[A-Za-z]+$/),
+  lastName: joi.string().pattern(/^[A-Za-z]+$/),
   profileImage: joi.any(),
   newPassword: joi
     .string()

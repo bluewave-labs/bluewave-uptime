@@ -22,16 +22,16 @@ const Register = ({ isAdmin }) => {
 
   // TODO If possible, change the IDs of these fields to match the backend
   const idMap = {
-    "register-firstname-input": "firstname",
-    "register-lastname-input": "lastname",
+    "register-firstname-input": "firstName",
+    "register-lastname-input": "lastName",
     "register-email-input": "email",
     "register-password-input": "password",
     "register-confirm-input": "confirm",
   };
 
   const [form, setForm] = useState({
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirm: "",
@@ -129,9 +129,9 @@ const Register = ({ isAdmin }) => {
             isRequired={true}
             placeholder="Daniel"
             autoComplete="given-name"
-            value={form.firstname}
+            value={form.firstName}
             onChange={handleChange}
-            error={errors.firstname}
+            error={errors.firstName}
           />
           <Field
             id="register-lastname-input"
@@ -139,9 +139,9 @@ const Register = ({ isAdmin }) => {
             isRequired={true}
             placeholder="Cojocea"
             autoComplete="family-name"
-            value={form.lastname}
+            value={form.lastName}
             onChange={handleChange}
-            error={errors.lastname}
+            error={errors.lastName}
           />
           <Field
             type="email"
