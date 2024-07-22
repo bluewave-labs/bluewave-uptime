@@ -213,10 +213,23 @@ const inviteController = async (req, res, next) => {
   try {
     // Only admins can invite
     const token = getTokenFromHeaders(req.headers);
-    const { role } = jwt.decode(token);
+    const { role, firstname } = jwt.decode(token);
     await inviteRoleValidation.validateAsync({ roles: role });
     await inviteBodyValidation.validateAsync(req.body);
-    return res.status(200).json({ success: true, msg: "Invite sent" });
+    const inviteToken = await req.db.requestInviteToken(req, res);
+    req.emailService.buildAndSendEmail(
+      "employeeActivationTemplate",
+      {
+        name: firstname,
+        link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+      },
+      req.body.email,
+      "Welcome to Uptime Monitor"
+    );
+
+    return res
+      .status(200)
+      .json({ success: true, msg: "Invite sent", data: inviteToken });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
