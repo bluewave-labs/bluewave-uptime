@@ -90,6 +90,36 @@ const BasicTable = ({ data, paginated, reversed }) => {
     return <div>No data</div>;
   }
 
+  let paginationComponent = <></>;
+  if (paginated === true && displayData.length > rowsPerPage) {
+    paginationComponent = (
+      <Pagination
+        count={Math.ceil(data.rows.length / rowsPerPage)}
+        page={page + 1}
+        onChange={(event, value) => handleChangePage(event, value - 1)}
+        shape="rounded"
+        renderItem={(item) => (
+          <PaginationItem
+            slots={{
+              previous: ArrowBackRoundedIcon,
+              next: ArrowForwardRoundedIcon,
+            }}
+            {...item}
+            sx={{
+              "&:focus": {
+                outline: "none",
+              },
+              "& .MuiTouchRipple-root": {
+                pointerEvents: "none",
+                display: "none",
+              },
+            }}
+          />
+        )}
+      />
+    );
+  }
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -118,32 +148,8 @@ const BasicTable = ({ data, paginated, reversed }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {paginated === true && (
-        <Pagination
-          count={Math.ceil(data.rows.length / rowsPerPage)}
-          page={page + 1}
-          onChange={(event, value) => handleChangePage(event, value - 1)}
-          shape="rounded"
-          renderItem={(item) => (
-            <PaginationItem
-              slots={{
-                previous: ArrowBackRoundedIcon,
-                next: ArrowForwardRoundedIcon,
-              }}
-              {...item}
-              sx={{
-                "&:focus": {
-                  outline: "none",
-                },
-                "& .MuiTouchRipple-root": {
-                  pointerEvents: "none",
-                  display: "none",
-                },
-              }}
-            />
-          )}
-        />
-      )}
+
+      {paginationComponent}
     </>
   );
 };
