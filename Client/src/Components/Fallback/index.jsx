@@ -25,6 +25,7 @@ const Fallback = ({ title, checks, link = "/" }) => {
   return (
     <Stack
       className={`fallback__${title.trim().split(" ")[0]}`}
+      alignItems="center"
       gap={theme.gap.xl}
     >
       <Skeleton />

@@ -1,5 +1,5 @@
 [class*="fallback__"] {
-  width: 255px;
+  width: fit-content;
   margin: auto;
   margin-top: 100px;
 }
@@ -18,6 +18,11 @@
 [class*="fallback__"] button.MuiButtonBase-root {
   height: 34px;
 }
-[class*="fallback__"] .check span.MuiTypography-root {
+[class*="fallback__"] .check span.MuiTypography-root,
+[class*="fallback__"] button.MuiButtonBase-root {
   font-size: var(--env-var-font-size-medium);
+}
+
+.fallback__status > .MuiStack-root {
+  margin-left: var(--env-var-spacing-2);
 }
