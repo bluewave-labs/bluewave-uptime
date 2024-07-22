@@ -428,6 +428,18 @@ const deleteUserController = async (req, res, next) => {
   }
 };
 
+const getAllUsersController = async (req, res) => {
+  try {
+    const allUsers = await req.db.getAllUsers(req, res);
+    res
+      .status(200)
+      .json({ success: true, msg: "Got all users", data: allUsers });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
@@ -438,4 +450,5 @@ module.exports = {
   validateRecoveryTokenController,
   resetPasswordController,
   deleteUserController,
+  getAllUsersController,
 };

@@ -159,6 +159,17 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await UserModel.find()
+      .select("-password")
+      .select("-profileImage");
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const requestInviteToken = async (req, res) => {
   try {
     await InviteToken.deleteMany({ email: req.body.email });
@@ -629,6 +640,7 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  getAllUsers,
   requestInviteToken,
   requestRecoveryToken,
   validateRecoveryToken,
