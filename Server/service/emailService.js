@@ -66,10 +66,10 @@ class EmailService {
    * @returns {Promise<string>} A promise that resolves to the messageId of the sent email.
    */
   buildAndSendEmail = async (template, context, to, subject) => {
-    const buildHtml = (template, context) => {
+    const buildHtml = async (template, context) => {
       const mjml = this.templateLookup[template](context);
-      const html = mjml2html(mjml).html;
-      return html;
+      const html = await mjml2html(mjml);
+      return html.html;
     };
 
     const sendEmail = async (to, subject, html) => {
@@ -80,7 +80,11 @@ class EmailService {
       });
       return info;
     };
-    const info = await sendEmail(to, subject, buildHtml(template, context));
+    const info = await sendEmail(
+      to,
+      subject,
+      await buildHtml(template, context)
+    );
     return info.messageId;
   };
 }
