@@ -5,7 +5,6 @@ const joi = require("joi");
 //****************************************
 
 const roleValidatior = (role) => (value, helpers) => {
-  console.log(role);
   if (!value.includes(role)) {
     throw new joi.ValidationError(`You do not have ${role} authorization`);
   }

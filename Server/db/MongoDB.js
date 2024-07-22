@@ -4,6 +4,7 @@ const UserModel = require("../models/user");
 const Check = require("../models/Check");
 const Alert = require("../models/Alert");
 const RecoveryToken = require("../models/RecoveryToken");
+const InviteToken = require("../models/InviteToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
@@ -153,6 +154,20 @@ const deleteUser = async (req, res) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
     return deletedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const requestInviteToken = async (req, res) => {
+  try {
+    await InviteToken.deleteMany({ email: req.body.email });
+    let inviteToken = new InviteToken({
+      email: req.body.email,
+      token: crypto.randomBytes(32).toString("hex"),
+    });
+    await inviteToken.save();
+    return inviteToken;
   } catch (error) {
     throw error;
   }
@@ -614,6 +629,7 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  requestInviteToken,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
