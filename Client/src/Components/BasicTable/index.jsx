@@ -32,6 +32,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
  *       @param {JSX.Element} props.data.rows[].data[].data - The content to display in the cell.
  *       @param {function} props.data.rows.data.handleClick - Function to call when the row is clicked.
  * @param {boolean} [props.paginated=false] - Flag to enable pagination.
+ * @param {boolean} [props.reversed=false] - Flag to enable reverse order.
  *
  * @example
  * const data = {
@@ -66,7 +67,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
  * <BasicTable data={data} rows={rows} paginated={true} />
  */
 
-const BasicTable = ({ data, paginated }) => {
+const BasicTable = ({ data, paginated, reversed }) => {
   // Add headers to props validation
 
   const [page, setPage] = useState(0);
@@ -79,9 +80,10 @@ const BasicTable = ({ data, paginated }) => {
   let displayData = [];
 
   if (data && data.rows) {
+    let rows = reversed ? [...data.rows].reverse() : data.rows;
     displayData = paginated
-      ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      : data.rows;
+      ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : rows;
   }
 
   if (!data || !data.cols || !data.rows) {
@@ -149,6 +151,7 @@ const BasicTable = ({ data, paginated }) => {
 BasicTable.propTypes = {
   data: PropTypes.object.isRequired,
   paginated: PropTypes.bool,
+  reversed: PropTypes.bool,
 };
 
 export default BasicTable;

@@ -298,7 +298,7 @@ const DetailsPage = () => {
           <Typography component="h2" mb={theme.gap.ml}>
             History
           </Typography>
-          <BasicTable data={data} paginated={true} />
+          <BasicTable data={data} paginated={true} reversed={true} />
         </Box>
       </Stack>
     </div>
