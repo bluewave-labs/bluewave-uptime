@@ -1,0 +1,40 @@
+.error-page,
+.error-template,
+.error-title,
+.error-description {
+  justify-content: center;
+  align-items: center;
+}
+
+.error-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.error-template {
+  min-height: 170px;
+}
+
+.error-title,
+.error-description {
+  text-align: center;
+}
+
+.error-title {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-5);
+  font-weight: 600;
+}
+
+.error-description {
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 500;
+}
+
+.error-page-gap-medium {
+  height: var(--env-var-spacing-2);
+}
+
+.error-page-gap-xlarge {
+  height: calc(var(--env-var-spacing-4) + var(--env-var-spacing-2));
+}
