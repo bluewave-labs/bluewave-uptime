@@ -1,1 +1,35 @@
 /*Notfoundpage styles*/
+.not-found-page,
+.not-found-template,
+#not-found-title,
+#not-found-description {
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.not-found-template {
+  min-height: 170px;
+}
+
+#not-found-title,
+#not-found-description {
+  text-align: center;
+}
+
+#not-found-title {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-5);
+  font-weight: 600;
+  margin-bottom: var(--env-var-spacing-2);
+}
+
+#not-found-description {
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 500;
+  margin-bottom: calc(var(--env-var-spacing-4) + var(--env-var-spacing-2));
+}

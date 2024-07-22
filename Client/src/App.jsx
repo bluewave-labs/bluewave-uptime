@@ -18,8 +18,8 @@ import NewPasswordConfirmed from "./Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
-import withAdminCheck from "./HOC/withAdminCheck";
-import Configure from "./Pages/Monitors/Configure";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -81,7 +81,8 @@ function App() {
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
-        <Route path="*" element={<NotFound />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="/not-found" element={<NotFound />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/check-email" element={<CheckEmail />} />
         <Route path="/set-new-password/:token" element={<SetNewPassword />} />
