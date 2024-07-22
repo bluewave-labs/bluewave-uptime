@@ -27,7 +27,7 @@ echo
 echo "Writing to ./Docker/client.env"
 echo
 
-echo "VITE_APP_API_BASE_URL=\"$input_url\"" > ./Docker/client.env
+echo "VITE_APP_API_BASE_URL=\"$input_url\"" > ./Client/.env
 
 echo "Configuring server"
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' '*'
@@ -96,7 +96,6 @@ echo "Writing to ./Docker/server.env"
 echo
 
 {
-    echo "SERVER_BASE_URL=\"$input_url\""
     echo "CLIENT_HOST=\"$client_host\""
     echo "JWT_SECRET=\"$jwt_secret\""
     echo "DB_TYPE=\"$db_type\""
