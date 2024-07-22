@@ -12,6 +12,7 @@ import { useTheme } from "@emotion/react";
  * @param {Object} props - The properties that define the `Check` component.
  * @param {string} props.text - The text to be displayed as the label next to the check icon.
  * @param {'info' | 'error' | 'success'} [props.variant='info'] - The variant of the check component, affecting its styling.
+ * @param {boolean} [props.outlined] - Whether the check icon should be outlined or not.
  *
  * @example
  * // To use this component, import it and use it in your JSX like this:
@@ -47,6 +48,7 @@ const Check = ({ text, variant = "info", outlined = false }) => {
 Check.propTypes = {
   text: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(["info", "error", "success"]),
+  outlined: PropTypes.bool,
 };
 
 export default Check;
