@@ -21,8 +21,6 @@ import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
 import Configure from "./Pages/Monitors/Configure";
 
-import ErrorPage from "./Pages/Errors";
-
 function App() {
   return (
     <>
@@ -91,7 +89,6 @@ function App() {
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
         />
-        <Route exact path="/error" element={<ErrorPage />} />
       </Routes>
       <ToastContainer />
     </>
