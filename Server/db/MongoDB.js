@@ -131,7 +131,6 @@ const updateUser = async (req, res) => {
     )
       .select("-password")
       .select("-profileImage");
-    console.log(updatedUser);
     return updatedUser;
   } catch (error) {
     throw error;
@@ -346,7 +345,21 @@ const getMonitorsByUserId = async (req, res) => {
  * @returns {Promise<Monitor>}
  * @throws {Error}
  */
-const getMonitorByIdForIncidents = async (req, res, next) => {};
+const getMonitorByIdForIncidents = async (req, res, next) => {
+  try {
+    const monitor = await Monitor.findById(req.params.monitorId);
+    const checks = await Check.find({
+      monitorId: monitor._id,
+      status: false,
+    }).sort({
+      createdAt: 1,
+    });
+    const monitorWithChecks = { ...monitor.toObject(), checks };
+    return monitorWithChecks;
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * Get monitors by UserID
@@ -356,7 +369,26 @@ const getMonitorByIdForIncidents = async (req, res, next) => {};
  * @returns {Promise<Array<Monitor>>}
  * @throws {Error}
  */
-const getMonitorsByUserIdForIncidents = async (req, res, next) => {};
+const getMonitorsByUserIdForIncidents = async (req, res) => {
+  try {
+    const monitors = await Monitor.find({ userId: req.params.userId });
+    // Map each monitor to include its associated checks
+    const monitorsWithChecks = await Promise.all(
+      monitors.map(async (monitor) => {
+        const checks = await Check.find({
+          monitorId: monitor._id,
+          status: false,
+        }).sort({
+          createdAt: 1,
+        });
+        return { ...monitor.toObject(), checks };
+      })
+    );
+    return monitorsWithChecks;
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * Create a monitor
@@ -468,7 +500,6 @@ const editMonitor = async (req, res) => {
 
 const createCheck = async (checkData) => {
   try {
-    console.log(checkData);
     const check = await new Check({ ...checkData }).save();
     return check;
   } catch (error) {
@@ -657,6 +688,8 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
+  getMonitorByIdForIncidents,
+  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
