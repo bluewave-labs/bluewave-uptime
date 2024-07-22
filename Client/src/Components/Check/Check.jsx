@@ -1,6 +1,7 @@
 import "./check.css";
 import PropTypes from "prop-types";
 import CheckGrey from "../../assets/icons/check.svg?react";
+import CheckOutlined from "../../assets/icons/check-outlined.svg?react";
 import { Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
@@ -18,12 +19,12 @@ import { useTheme } from "@emotion/react";
  *
  * @returns {React.Element} The `Check` component with a check icon and a label, defined by the `text` prop.
  */
-const Check = ({ text, variant = "info" }) => {
+const Check = ({ text, variant = "info", outlined = false }) => {
   const theme = useTheme();
   return (
     <Stack
       direction="row"
-      gap={theme.gap.small}
+      gap={outlined ? theme.gap.medium : theme.gap.small}
       className={`check${
         variant === "error"
           ? " check-error"
@@ -33,7 +34,11 @@ const Check = ({ text, variant = "info" }) => {
       }`}
       alignItems="center"
     >
-      <CheckGrey alt="form checks" />
+      {outlined ? (
+        <CheckOutlined alt="check" />
+      ) : (
+        <CheckGrey alt="form checks" />
+      )}
       <Typography component="span">{text}</Typography>
     </Stack>
   );
