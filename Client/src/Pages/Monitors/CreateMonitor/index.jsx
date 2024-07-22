@@ -87,7 +87,10 @@ const CreateMonitor = () => {
         checks.type === "http"
           ? "https://" + generalSettings.url
           : generalSettings.url,
-      name: generalSettings.name || generalSettings.url,
+      name:
+        generalSettings.name === ""
+          ? generalSettings.url
+          : generalSettings.name,
       ...checks,
     };
 
