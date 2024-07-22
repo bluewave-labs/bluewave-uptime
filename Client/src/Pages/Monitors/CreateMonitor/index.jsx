@@ -1,5 +1,4 @@
 import "./index.css";
-import ConfigBox from "../../../Components/ConfigBox";
 import React, { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
