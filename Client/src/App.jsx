@@ -18,8 +18,9 @@ import NewPasswordConfirmed from "./Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import withAdminCheck from "./HOC/withAdminCheck";
+import Configure from "./Pages/Monitors/Configure";
+
 import ErrorPage from "./Pages/Errors";
 
 function App() {
