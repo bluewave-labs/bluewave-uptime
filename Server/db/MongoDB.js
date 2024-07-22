@@ -339,6 +339,26 @@ const getMonitorsByUserId = async (req, res) => {
 };
 
 /**
+ * Get monitors by UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Monitor>}
+ * @throws {Error}
+ */
+const getMonitorByIdForIncidents = async (req, res, next) => {};
+
+/**
+ * Get monitors by UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Array<Monitor>>}
+ * @throws {Error}
+ */
+const getMonitorsByUserIdForIncidents = async (req, res, next) => {};
+
+/**
  * Create a monitor
  * @async
  * @param {Express.Request} req

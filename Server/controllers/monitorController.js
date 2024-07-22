@@ -98,6 +98,21 @@ const getMonitorsByUserId = async (req, res, next) => {
   }
 };
 
+const getMonitorByIdForIncidents = async (req, res, next) => {
+  try {
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+const getMonitorsByUserIdForIncidents = async (req, res, next) => {
+  try {
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 /**
  * Creates a new monitor
  * @async
