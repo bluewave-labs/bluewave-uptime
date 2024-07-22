@@ -36,16 +36,16 @@ const ProfilePanel = () => {
   const { user, authToken, isLoading } = useSelector((state) => state.auth);
 
   const idToName = {
-    "edit-first-name": "firstname",
-    "edit-last-name": "lastname",
+    "edit-first-name": "firstName",
+    "edit-last-name": "lastName",
     // Disabled for now, will revisit in the future
     // "edit-email": "email",
   };
 
   // Local state for form data, errors, and file handling
   const [localData, setLocalData] = useState({
-    firstname: user.firstname,
-    lastname: user.lastname,
+    firstName: user.firstName,
+    lastName: user.lastName,
     // email: user.email, // Disabled for now
   });
   const [errors, setErrors] = useState({});
@@ -156,8 +156,8 @@ const ProfilePanel = () => {
   const handleSaveProfile = async (event) => {
     event.preventDefault();
     if (
-      localData.firstname === user.firstname &&
-      localData.lastname === user.lastname &&
+      localData.firstName === user.firstName &&
+      localData.lastName === user.lastName &&
       localData.deleteProfileImage === undefined &&
       localData.file === undefined
     ) {
@@ -223,7 +223,7 @@ const ProfilePanel = () => {
           </Stack>
           <Field
             id="edit-first-name"
-            value={localData.firstname}
+            value={localData.firstName}
             placeholder="Enter your first name"
             autoComplete="given-name"
             onChange={handleChange}
@@ -238,7 +238,7 @@ const ProfilePanel = () => {
             id="edit-last-name"
             placeholder="Enter your last name"
             autoComplete="family-name"
-            value={localData.lastname}
+            value={localData.lastName}
             onChange={handleChange}
             error={errors[idToName["edit-last-name"]]}
           />

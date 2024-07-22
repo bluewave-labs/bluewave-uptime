@@ -47,8 +47,8 @@ export const update = createAsyncThunk(
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const fd = new FormData();
-      form.firstname && fd.append("firstname", form.firstname);
-      form.lastname && fd.append("lastname", form.lastname);
+      form.firstName && fd.append("firstName", form.firstName);
+      form.lastName && fd.append("lastName", form.lastName);
       form.password && fd.append("password", form.password);
       form.newPassword && fd.append("newPassword", form.newPassword);
       if (form.file && form.file !== "") {
