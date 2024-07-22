@@ -149,6 +149,10 @@ button:focus-visible {
   z-index: -1;
 }
 
+.MuiTouchRipple-root {
+  display: none;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
