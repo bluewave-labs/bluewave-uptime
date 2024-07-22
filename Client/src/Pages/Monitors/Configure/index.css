@@ -64,3 +64,9 @@
 .MuiInputBase-root:not(.Mui-focused):has(#monitor-interval):hover fieldset {
   border-color: var(--env-var-color-29);
 }
+
+.configure-monitor-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--env-var-spacing-4);
+}

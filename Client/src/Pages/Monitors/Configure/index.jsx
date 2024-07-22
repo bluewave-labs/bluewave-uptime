@@ -144,185 +144,183 @@ const Configure = () => {
         }}
       />
       <form className="configure-monitor-form" noValidate spellCheck="false">
-        <Stack gap={theme.gap.xl}>
-          <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-            {config?.status ? <GreenCheck /> : <RedCheck />}
-            <Box>
-              <Typography component="h1" sx={{ lineHeight: 1 }}>
-                {config?.url.replace(/^https?:\/\//, "") || "..."}
-              </Typography>
-              <Typography mt={theme.gap.small}>
-                <Typography
-                  component="span"
-                  sx={{
-                    color: config?.status
-                      ? "var(--env-var-color-17)"
-                      : "var(--env-var-color-24)",
-                  }}
-                >
-                  Your site is {config?.status ? "up" : "down"}.
-                </Typography>{" "}
-                Checking every {formatDurationRounded(config?.interval)}. Last
-                time checked{" "}
-                {formatDurationRounded(getLastChecked(config?.checks))} ago.
-              </Typography>
-            </Box>
-            <Stack
-              direction="row"
-              gap={theme.gap.medium}
+        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+          {config?.status ? <GreenCheck /> : <RedCheck />}
+          <Box>
+            <Typography component="h1" sx={{ lineHeight: 1 }}>
+              {config?.url.replace(/^https?:\/\//, "") || "..."}
+            </Typography>
+            <Typography mt={theme.gap.small}>
+              <Typography
+                component="span"
+                sx={{
+                  color: config?.status
+                    ? "var(--env-var-color-17)"
+                    : "var(--env-var-color-24)",
+                }}
+              >
+                Your site is {config?.status ? "up" : "down"}.
+              </Typography>{" "}
+              Checking every {formatDurationRounded(config?.interval)}. Last
+              time checked{" "}
+              {formatDurationRounded(getLastChecked(config?.checks))} ago.
+            </Typography>
+          </Box>
+          <Stack
+            direction="row"
+            gap={theme.gap.medium}
+            sx={{
+              ml: "auto",
+              alignSelf: "flex-end",
+            }}
+          >
+            <Button
+              level="tertiary"
+              label="Pause"
+              img={<PauseCircleOutlineIcon />}
               sx={{
-                ml: "auto",
-                alignSelf: "flex-end",
+                backgroundColor: "#f4f4f4",
+                pl: theme.gap.small,
+                pr: theme.gap.medium,
+                "& svg": {
+                  pr: theme.gap.xs,
+                },
               }}
-            >
-              <Button
-                level="tertiary"
-                label="Pause"
-                img={<PauseCircleOutlineIcon />}
-                sx={{
-                  backgroundColor: "#f4f4f4",
-                  pl: theme.gap.small,
-                  pr: theme.gap.medium,
-                  "& svg": {
-                    pr: theme.gap.xs,
-                  },
-                }}
-              />
-              <Button
-                level="error"
-                label="Remove"
-                sx={{
-                  boxShadow: "none",
-                  px: theme.gap.ml,
-                }}
-              />
-            </Stack>
-          </Stack>
-          <Stack
-            className="config-box"
-            direction="row"
-            justifyContent="space-between"
-            gap={theme.gap.xxl}
-          >
-            <Box>
-              <Typography component="h2">General settings</Typography>
-              <Typography component="p" sx={{ mt: theme.gap.small }}>
-                Here you can select the URL of the host, together with the type
-                of monitor.
-              </Typography>
-            </Box>
-            <Stack gap={theme.gap.xl}>
-              <Field
-                type="url"
-                id="monitor-url"
-                label="URL to monitor"
-                placeholder="google.com"
-                value={monitor?.url || ""}
-                onChange={handleChange}
-                error={errors["url"]}
-              />
-              <Field
-                type="text"
-                id="monitor-name"
-                label="Friendly name"
-                isOptional={true}
-                placeholder="Google"
-                value={monitor?.name || ""}
-                onChange={handleChange}
-                error={errors["name"]}
-              />
-            </Stack>
-          </Stack>
-          <Stack
-            className="config-box"
-            direction="row"
-            justifyContent="space-between"
-            gap={theme.gap.xxl}
-          >
-            <Box>
-              <Typography component="h2">Checks to perform</Typography>
-              <Typography component="p" sx={{ mt: theme.gap.small }}>
-                You can always add or remove checks after adding your site.
-              </Typography>
-            </Box>
-            <Stack gap={theme.gap.xl}>
-              <RadioButton
-                id="monitor-checks-http"
-                title="HTTP/website monitoring"
-                desc="Use HTTP(s) to monitor your website or API endpoint."
-                size="small"
-                value="http"
-                checked={monitor?.type === "http"}
-                onChange={handleChange}
-              />
-              <RadioButton
-                id="monitor-checks-ping"
-                title="Ping monitoring"
-                desc="Check whether your server is available or not."
-                size="small"
-                value="ping"
-                checked={monitor?.type === "ping"}
-                onChange={handleChange}
-              />
-              <Box className="error-container">
-                {errors["type"] ? (
-                  <Typography component="p" className="input-error">
-                    {errors["type"]}
-                  </Typography>
-                ) : (
-                  ""
-                )}
-              </Box>
-            </Stack>
-          </Stack>
-          <Stack
-            className="config-box"
-            direction="row"
-            justifyContent="space-between"
-            gap={theme.gap.xxl}
-          >
-            <Box>
-              <Typography component="h2">Advanced settings</Typography>
-            </Box>
-            <Stack gap={theme.gap.xl}>
-              <Box>
-                <Typography component="p" mb={theme.gap.small}>
-                  Check frequency
-                </Typography>
-                <Select
-                  id="monitor-interval"
-                  value={monitor?.interval || 1}
-                  inputProps={{ id: "monitor-interval-select" }}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        marginTop: "10px",
-                      },
-                    },
-                  }}
-                  IconComponent={KeyboardArrowDownIcon}
-                  onChange={(event) => handleChange(event, "interval")}
-                >
-                  {frequencies.map((freq) => (
-                    <MenuItem
-                      key={`port-${freq}`}
-                      value={freq}
-                      disableRipple
-                      sx={{
-                        fontSize: "13px",
-                        borderRadius: `${theme.shape.borderRadius}px`,
-                        margin: theme.gap.xs,
-                      }}
-                    >
-                      {freq} {freq === 1 ? "minute" : "minutes"}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
-            </Stack>
+            />
+            <Button
+              level="error"
+              label="Remove"
+              sx={{
+                boxShadow: "none",
+                px: theme.gap.ml,
+              }}
+            />
           </Stack>
         </Stack>
-        <Stack direction="row" justifyContent="flex-end" mt={theme.gap.xl}>
+        <Stack
+          className="config-box"
+          direction="row"
+          justifyContent="space-between"
+          gap={theme.gap.xxl}
+        >
+          <Box>
+            <Typography component="h2">General settings</Typography>
+            <Typography component="p" sx={{ mt: theme.gap.small }}>
+              Here you can select the URL of the host, together with the type of
+              monitor.
+            </Typography>
+          </Box>
+          <Stack gap={theme.gap.xl}>
+            <Field
+              type="url"
+              id="monitor-url"
+              label="URL to monitor"
+              placeholder="google.com"
+              value={monitor?.url || ""}
+              onChange={handleChange}
+              error={errors["url"]}
+            />
+            <Field
+              type="text"
+              id="monitor-name"
+              label="Friendly name"
+              isOptional={true}
+              placeholder="Google"
+              value={monitor?.name || ""}
+              onChange={handleChange}
+              error={errors["name"]}
+            />
+          </Stack>
+        </Stack>
+        <Stack
+          className="config-box"
+          direction="row"
+          justifyContent="space-between"
+          gap={theme.gap.xxl}
+        >
+          <Box>
+            <Typography component="h2">Checks to perform</Typography>
+            <Typography component="p" sx={{ mt: theme.gap.small }}>
+              You can always add or remove checks after adding your site.
+            </Typography>
+          </Box>
+          <Stack gap={theme.gap.xl}>
+            <RadioButton
+              id="monitor-checks-http"
+              title="HTTP/website monitoring"
+              desc="Use HTTP(s) to monitor your website or API endpoint."
+              size="small"
+              value="http"
+              checked={monitor?.type === "http"}
+              onChange={handleChange}
+            />
+            <RadioButton
+              id="monitor-checks-ping"
+              title="Ping monitoring"
+              desc="Check whether your server is available or not."
+              size="small"
+              value="ping"
+              checked={monitor?.type === "ping"}
+              onChange={handleChange}
+            />
+            <Box className="error-container">
+              {errors["type"] ? (
+                <Typography component="p" className="input-error">
+                  {errors["type"]}
+                </Typography>
+              ) : (
+                ""
+              )}
+            </Box>
+          </Stack>
+        </Stack>
+        <Stack
+          className="config-box"
+          direction="row"
+          justifyContent="space-between"
+          gap={theme.gap.xxl}
+        >
+          <Box>
+            <Typography component="h2">Advanced settings</Typography>
+          </Box>
+          <Stack gap={theme.gap.xl}>
+            <Box>
+              <Typography component="p" mb={theme.gap.small}>
+                Check frequency
+              </Typography>
+              <Select
+                id="monitor-interval"
+                value={monitor?.interval || 1}
+                inputProps={{ id: "monitor-interval-select" }}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      marginTop: "10px",
+                    },
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
+                onChange={(event) => handleChange(event, "interval")}
+              >
+                {frequencies.map((freq) => (
+                  <MenuItem
+                    key={`port-${freq}`}
+                    value={freq}
+                    disableRipple
+                    sx={{
+                      fontSize: "13px",
+                      borderRadius: `${theme.shape.borderRadius}px`,
+                      margin: theme.gap.xs,
+                    }}
+                  >
+                    {freq} {freq === 1 ? "minute" : "minutes"}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+          </Stack>
+        </Stack>
+        <Stack direction="row" justifyContent="flex-end">
           <Button level="primary" label="Save" sx={{ px: theme.gap.ml }} />
         </Stack>
       </form>

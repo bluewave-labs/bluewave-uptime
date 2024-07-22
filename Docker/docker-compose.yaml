@@ -3,7 +3,7 @@ services:
   client:
     image: uptime_client:latest
     ports:
-      - "5173:5173"
+      - "80:5173"
     env_file:
       - client.env
     depends_on:
