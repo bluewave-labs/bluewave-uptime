@@ -7,6 +7,11 @@ class PageSpeedService {
     this.SERVICE_NAME = "PageSpeedService";
   }
 
+  /**
+   * Runs a PageSpeed check using Google Lighthouse API.
+   * @param {string} url - The URL to check.
+   * @returns {Promise<Object>} The results from the PageSpeed API.
+   */
   async runPageSpeedCheck(url) {
     try {
       const response = await axios.get(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}`);
@@ -20,6 +25,11 @@ class PageSpeedService {
     }
   }
 
+  /**
+   * Creates a new PageSpeedCheck document.
+   * @param {Object} data - The data for the new PageSpeedCheck.
+   * @returns {Promise<PageSpeedCheck>} The created PageSpeedCheck document.
+   */
   async createPageSpeedCheck(data) {
     const newPageSpeedCheck = new PageSpeedCheck(data);
     return await newPageSpeedCheck.save();
