@@ -282,19 +282,28 @@ const TeamPanel = () => {
                 level="secondary"
                 label="All"
                 onClick={() => setFilter("all")}
-                sx={{ backgroundColor: filter === "all" && "#f4f4f4" }}
+                sx={{
+                  backgroundColor:
+                    filter === "all" && theme.palette.otherColors.fillGray,
+                }}
               />
               <Button
                 level="secondary"
                 label="Administrator"
                 onClick={() => setFilter("admin")}
-                sx={{ backgroundColor: filter === "admin" && "#f4f4f4" }}
+                sx={{
+                  backgroundColor:
+                    filter === "admin" && theme.palette.otherColors.fillGray,
+                }}
               />
               <Button
                 level="secondary"
                 label="Member"
                 onClick={() => setFilter("user")}
-                sx={{ backgroundColor: filter === "user" && "#f4f4f4" }}
+                sx={{
+                  backgroundColor:
+                    filter === "user" && theme.palette.otherColors.fillGray,
+                }}
               />
             </ButtonGroup>
           </Stack>

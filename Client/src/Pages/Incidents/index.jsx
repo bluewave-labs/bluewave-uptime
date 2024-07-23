@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Select, MenuItem, Typography, ButtonGroup } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  Typography,
+  ButtonGroup,
+  Stack,
+} from "@mui/material";
 
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
+import { useTheme } from "@emotion/react";
+
+import "./index.css";
 
 const Incidents = () => {
+  const theme = useTheme();
   const authState = useSelector((state) => state.auth);
   const [monitors, setMonitors] = useState({});
   const [selectedMonitor, setSelectedMonitor] = useState("0");
@@ -65,6 +75,11 @@ const Incidents = () => {
     .sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     })
+    .filter((incident) => {
+      if (filter === "all") return true;
+      else if (filter === "resolve") return incident.statusCode === 5000;
+      else if (filter === "down") return incident.status === false;
+    })
     .map((incident, idx) => {
       const params = {
         status: "Down",
@@ -94,41 +109,57 @@ const Incidents = () => {
   data.rows = incidents;
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={{ display: "flex" }}>
-          <Typography>Incident history for: </Typography>
-          <Select value={selectedMonitor} onChange={handleSelect}>
-            <MenuItem value={"0"}>All servers</MenuItem>
-            {Object.values(monitors).map((monitor) => {
-              return (
-                <MenuItem key={monitor._id} value={monitor._id}>
-                  {monitor.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </div>
-        <ButtonGroup>
+    <Stack
+      className="incidents"
+      gap={theme.gap.large}
+      style={{
+        padding: `${theme.content.pY} ${theme.content.pX}`,
+      }}
+    >
+      <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
+        <Typography component="h1">Incident history for: </Typography>
+        <Select value={selectedMonitor} onChange={handleSelect}>
+          <MenuItem value={"0"}>All servers</MenuItem>
+          {Object.values(monitors).map((monitor) => {
+            return (
+              <MenuItem key={monitor._id} value={monitor._id}>
+                {monitor.name}
+              </MenuItem>
+            );
+          })}
+        </Select>
+        <ButtonGroup sx={{ ml: "auto" }}>
           <Button
             level="secondary"
             label="All"
             onClick={() => setFilter("all")}
+            sx={{
+              backgroundColor:
+                filter === "all" && theme.palette.otherColors.fillGray,
+            }}
           />
           <Button
             level="secondary"
             label="Down"
             onClick={() => setFilter("down")}
+            sx={{
+              backgroundColor:
+                filter === "down" && theme.palette.otherColors.fillGray,
+            }}
           />
           <Button
             level="secondary"
             label="Cannot Resolve"
             onClick={() => setFilter("resolve")}
+            sx={{
+              backgroundColor:
+                filter === "resolve" && theme.palette.otherColors.fillGray,
+            }}
           />
         </ButtonGroup>
-      </div>
+      </Stack>
       <BasicTable data={data} paginated={true} />
-    </div>
+    </Stack>
   );
 };
 
