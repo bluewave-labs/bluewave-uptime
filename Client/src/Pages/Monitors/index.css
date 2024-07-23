@@ -5,6 +5,7 @@
 
 .monitors {
   font-family: var(--env-var-font-familt-1);
+  background-color: var(--env-var-color-30);
 }
 
 .monitors-bar {
@@ -23,6 +24,7 @@
   margin-top: var(--env-var-spacing-2);
   display: flex;
   gap: 24px;
+  height: 100px;
 }
 
 .monitors-gaps-medium {

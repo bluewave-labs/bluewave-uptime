@@ -133,6 +133,7 @@ const CreateMonitor = () => {
       style={{
         maxWidth: "1200px",
         padding: `${theme.content.pY} ${theme.content.pX}`,
+        backgroundColor: "var(--env-var-color-30)",
       }}
     >
       <Button
