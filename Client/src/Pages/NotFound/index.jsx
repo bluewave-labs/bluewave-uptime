@@ -2,7 +2,7 @@ import Button from "../../Components/Button";
 import "./index.css";
 import React from "react";
 import PropTypes from "prop-types";
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 /**
  * Support for defaultProps will be removed from function components in a future major release
@@ -31,8 +31,8 @@ const DefaultValue = {
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
   return (
-    <div className="not-found-page">
-      <div className="not-found-template">
+    <Stack className="not-found-page">
+      <Stack className="not-found-template">
         <Typography id="not-found-title">{title}</Typography>
         <Typography id="not-found-description">{desc}</Typography>
         <div
@@ -46,8 +46,8 @@ const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
             sx={{ fontSize: "var(--env-var-font-size-medium)" }}
           />
         </div>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };
 
