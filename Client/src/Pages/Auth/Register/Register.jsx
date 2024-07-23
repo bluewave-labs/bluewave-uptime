@@ -14,10 +14,12 @@ import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import Field from "../../../Components/Inputs/Field";
 import { register } from "../../../Features/Auth/authSlice";
+import { useParams } from "react-router-dom";
 
 const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { token } = useParams();
   const theme = useTheme();
 
   // TODO If possible, change the IDs of these fields to match the backend
@@ -35,14 +37,14 @@ const Register = ({ isAdmin }) => {
     email: "",
     password: "",
     confirm: "",
-    role: "",
+    role: [],
   });
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const registerForm = { ...form, role: isAdmin ? "admin" : "user" };
+    const registerForm = { ...form, role: isAdmin ? ["admin"] : [] };
     const { error } = credentials.validate(registerForm, {
       abortEarly: false,
       context: { password: form.password },
