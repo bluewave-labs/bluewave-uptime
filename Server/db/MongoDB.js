@@ -46,6 +46,7 @@ const insertUser = async (req, res) => {
       const avatar = await GenerateAvatarImage(req.file);
       userData.avatarImage = avatar;
     }
+    console.log(userData);
     const newUser = new UserModel(userData);
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })
@@ -174,6 +175,7 @@ const requestInviteToken = async (req, res) => {
     await InviteToken.deleteMany({ email: req.body.email });
     let inviteToken = new InviteToken({
       email: req.body.email,
+      role: req.body.role,
       token: crypto.randomBytes(32).toString("hex"),
     });
     await inviteToken.save();
