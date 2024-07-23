@@ -1,0 +1,36 @@
+.maintenance-checklist-main {
+  max-width: 350px;
+  min-height: 390px;
+  margin: auto;
+  padding: 5px;
+}
+
+.maintenance-image {
+  width: 280px;
+  height: 150px;
+  background-color: whitesmoke;
+  border-radius: 10px;
+}
+
+.maintenance-title {
+  color: var(--env-var-color-2);
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-bottom: 30px;
+}
+
+.checklist-item {
+  font-size: 13px;
+  color: var(--env-var-color-2);
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.checklist-item-text {
+  margin-left: 10px;
+}
+
+.maintenance-checklist-main .maintenance-checklist-button {
+  margin-top: 30px;
+}
