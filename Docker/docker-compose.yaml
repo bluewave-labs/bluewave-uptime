@@ -4,8 +4,6 @@ services:
     image: uptime_client:latest
     ports:
       - "80:5173"
-    env_file:
-      - client.env
     depends_on:
       - server
   server:
