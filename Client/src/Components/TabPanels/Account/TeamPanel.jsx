@@ -3,8 +3,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import {
   Box,
   ButtonGroup,
-  Checkbox,
   Divider,
+  IconButton,
   MenuItem,
   Modal,
   Select,
@@ -23,6 +23,7 @@ import axiosInstance from "../../../Utils/axiosConfig";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
+import Remove from "../../../assets/icons/trash-bin.svg?react";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -78,6 +79,7 @@ const TeamPanel = () => {
         { id: 1, name: "NAME" },
         { id: 2, name: "EMAIL" },
         { id: 3, name: "ROLE" },
+        { id: 4, name: "ACTION" },
       ],
       rows: team?.map((member, idx) => {
         return {
@@ -100,8 +102,25 @@ const TeamPanel = () => {
             },
             { id: idx + 1, data: member.email },
             {
+              // TODO - Add select dropdown
               id: idx + 2,
               data: member.role[0] === "admin" ? "Administrator" : "Member",
+            },
+            {
+              // TODO - Add delete onClick
+              id: idx + 3,
+              data: (
+                <IconButton
+                  aria-label="remove member"
+                  sx={{
+                    "&:focus": {
+                      outline: "none",
+                    },
+                  }}
+                >
+                  <Remove />
+                </IconButton>
+              ),
             },
           ],
         };
