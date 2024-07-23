@@ -158,7 +158,7 @@ const Incidents = () => {
           />
         </ButtonGroup>
       </Stack>
-      <BasicTable data={data} paginated={true} />
+      <BasicTable data={data} paginated={true} rowsPerPage={12}/>
     </Stack>
   );
 };
