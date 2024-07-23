@@ -8,8 +8,6 @@ RUN npm install
 
 COPY ./Client .
 
-COPY ./Docker/client.env .env
-
 RUN npm run build
 
 RUN npm install -g serve

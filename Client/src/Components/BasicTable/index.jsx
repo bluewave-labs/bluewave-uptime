@@ -91,7 +91,7 @@ const BasicTable = ({ data, paginated, reversed }) => {
   }
 
   let paginationComponent = <></>;
-  if (paginated === true && displayData.length > rowsPerPage) {
+  if (paginated === true && data.rows.length > rowsPerPage) {
     paginationComponent = (
       <Pagination
         count={Math.ceil(data.rows.length / rowsPerPage)}

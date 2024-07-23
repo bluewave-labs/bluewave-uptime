@@ -1,5 +1,4 @@
 import "./index.css";
-import ConfigBox from "../../../Components/ConfigBox";
 import React, { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
@@ -84,11 +83,14 @@ const CreateMonitor = () => {
     event.preventDefault();
     //obj to submit
     let monitor = {
-      ...generalSettings,
       url:
         checks.type === "http"
           ? "https://" + generalSettings.url
           : generalSettings.url,
+      name:
+        generalSettings.name === ""
+          ? generalSettings.url
+          : generalSettings.name,
       ...checks,
     };
 
@@ -126,14 +128,10 @@ const CreateMonitor = () => {
   const frequencies = [1, 2, 3, 4, 5];
 
   return (
-    <form
-      className="create-monitor-form"
-      onSubmit={handleCreateMonitor}
-      noValidate
-      spellCheck="false"
+    <div
+      className="create-monitor"
       style={{
         maxWidth: "1200px",
-        flex: 1,
         padding: `${theme.content.pY} ${theme.content.pX}`,
       }}
     >
@@ -151,19 +149,21 @@ const CreateMonitor = () => {
           },
         }}
       />
-      <Typography component="h1">Create new monitor</Typography>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <Stack gap={theme.gap.small}>
+      <form
+        className="create-monitor-form"
+        onSubmit={handleCreateMonitor}
+        noValidate
+        spellCheck="false"
+      >
+        <Typography component="h1">Create new monitor</Typography>
+        <Stack className="config-box">
+          <Box>
             <Typography component="h2">General settings</Typography>
-            <Typography component="p">
+            <Typography component="p" mt={theme.gap.small}>
               Here you can select the URL of the host, together with the type of
               monitor.
             </Typography>
-          </Stack>
-        }
-        rightLayout={
+          </Box>
           <Stack gap={theme.gap.xl}>
             <Field
               type="url"
@@ -189,20 +189,14 @@ const CreateMonitor = () => {
               error={errors["name"]}
             />
           </Stack>
-        }
-      />
-      <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <Stack gap={theme.gap.small}>
+        </Stack>
+        <Stack className="config-box">
+          <Box>
             <Typography component="h2">Checks to perform</Typography>
-            <Typography component="p">
+            <Typography component="p" mt={theme.gap.small}>
               You can always add or remove checks after adding your site.
             </Typography>
-          </Stack>
-        }
-        rightLayout={
+          </Box>
           <Stack gap={theme.gap.large}>
             <RadioButton
               id="monitor-checks-http"
@@ -231,7 +225,6 @@ const CreateMonitor = () => {
               checked={checks.type === "port"}
               onChange={(event) => handleChange(event, "type", setChecks)}
             />
-            <div className="monitors-gaps-small-plus"></div>
             <div className="monitors-dropdown-holder">
               <Select
                 id="monitor-ports"
@@ -259,11 +252,9 @@ const CreateMonitor = () => {
               )}
             </Box>
           </Stack>
-        }
-      />
-      {/* TODO */}
-      {/* <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
+        </Stack>
+        {/* TODO */}
+        {/* 
       <ConfigBox
         leftLayout={
           <div className="config-box-desc">
@@ -278,7 +269,6 @@ const CreateMonitor = () => {
             <div className="incident-notif-config-title">
               When there is a new incident,
             </div>
-            <div className="monitors-gaps-medium"></div>
             <div className="incident-notif-config-checks">
               <CustomizableCheckBox
                 id="monitor-notify-sms"
@@ -286,21 +276,18 @@ const CreateMonitor = () => {
                 isChecked={notifications.viaSms}
                 handleChange={() => handleCheck("viaSms", setNotifications)}
               />
-              <div className="monitors-gaps-medium"></div>
               <CustomizableCheckBox
                 id="monitor-notify-email"
                 title="Notify via email (to current email address)"
                 isChecked={notifications.viaEmail}
                 handleChange={() => handleCheck("viaEmail", setNotifications)}
               />
-              <div className="monitors-gaps-medium"></div>
               <CustomizableCheckBox
                 id="monitor-notify-other"
                 title="Notify via email (to another email address below)"
                 isChecked={notifications.viaOther}
                 handleChange={() => handleCheck("viaOther", setNotifications)}
               />
-              <div className="monitors-gaps-small-plus"></div>
               <div className="monitors-dropdown-holder">
                 <FlexibileTextField
                   id="monitor-notify-other-email"
@@ -316,15 +303,10 @@ const CreateMonitor = () => {
           </div>
         }
       /> */}
-      <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <Stack gap={theme.gap.small}>
+        <Stack className="config-box">
+          <Box>
             <Typography component="h2">Advanced settings</Typography>
-          </Stack>
-        }
-        rightLayout={
+          </Box>
           <Stack gap={theme.gap.large}>
             {/* TODO - refactor select component */}
             <Box>
@@ -371,7 +353,6 @@ const CreateMonitor = () => {
                 handleChange(event, "retries", setAdvancedSettings)
               }
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-settings-codes"
               title="Accepted status codes"
@@ -381,7 +362,6 @@ const CreateMonitor = () => {
                 handleChange(event, "codes", setAdvancedSettings)
               }
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-settings-redirects"
               title="Maximum redirects"
@@ -392,11 +372,9 @@ const CreateMonitor = () => {
               }
             /> */}
           </Stack>
-        }
-      />
-      {/* TODO */}
-      {/* <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
+        </Stack>
+        {/* TODO */}
+        {/*
       <ConfigBox
         leftLayout={
           <div className="config-box-desc">
@@ -411,21 +389,18 @@ const CreateMonitor = () => {
               isChecked={proxy.enabled}
               handleChange={() => handleCheck("enabled", setProxy)}
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-proxy-protocol"
               title="Proxy protocol"
               value={proxy.protocol}
               onChange={(event) => handleChange(event, "protocol", setProxy)}
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-proxy-address"
               title="Proxy address"
               value={proxy.address}
               onChange={(event) => handleChange(event, "address", setProxy)}
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-proxy-port"
               title="Proxy port"
@@ -435,19 +410,17 @@ const CreateMonitor = () => {
           </div>
         }
       /> */}
-      <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-small"></div>
-      <div className="monitors-create-button-holder">
-        <Button
-          id="create-new-monitor-btn"
-          level="primary"
-          label="Create new monitor"
-          sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
-          onClick={handleCreateMonitor}
-          disabled={Object.keys(errors).length !== 0 && true}
-        />
-      </div>
-    </form>
+        <Stack direction="row" justifyContent="flex-end">
+          <Button
+            id="create-new-monitor-btn"
+            level="primary"
+            label="Create new monitor"
+            onClick={handleCreateMonitor}
+            disabled={Object.keys(errors).length !== 0 && true}
+          />
+        </Stack>
+      </form>
+    </div>
   );
 };
 
