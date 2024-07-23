@@ -6,6 +6,7 @@ const errorMessages = {
   // Auth Controller
   UNAUTHORIZED: "Unauthorized access",
   AUTH_ADMIN_EXISTS: "Admin already exists",
+  AUTH_INVITE_NOT_FOUND: "Invite not found",
 
   //Error handling middleware
   UNKNOWN_SERVICE: "Unknown service",

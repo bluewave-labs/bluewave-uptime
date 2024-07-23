@@ -10,6 +10,7 @@ const {
   deleteUserParamValidation,
   inviteRoleValidation,
   inviteBodyValidation,
+  inviteVerifciationBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -237,6 +238,21 @@ const inviteController = async (req, res, next) => {
   }
 };
 
+const inviteVerifyController = async (req, res, next) => {
+  try {
+    await inviteVerifciationBodyValidation.validateAsync(req.body);
+    const invite = await req.db.getInviteToken(req, res);
+
+    res
+      .status(200)
+      .json({ status: "success", msg: "Invite verified", data: invite });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
 /**
  * Checks to see if an admin account exists
  * @async
@@ -445,6 +461,7 @@ module.exports = {
   loginController,
   userEditController,
   inviteController,
+  inviteVerifyController,
   checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,

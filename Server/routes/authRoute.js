@@ -17,6 +17,7 @@ const {
   getAllUsersController,
   deleteUserController,
   inviteController,
+  inviteVerifyController,
 } = require("../controllers/authController");
 
 //Auth routes
@@ -38,6 +39,7 @@ router.delete(
 );
 
 router.post("/invite", verifyJWT, inviteController);
+router.post("/invite/verify", inviteVerifyController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);

@@ -68,7 +68,7 @@ const credentials = joi.object({
       }
       return value;
     }),
-  role: joi.array().required(),
+  role: joi.array(),
 });
 
 const monitorValidation = joi.object({

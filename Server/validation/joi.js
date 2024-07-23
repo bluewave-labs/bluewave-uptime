@@ -112,6 +112,10 @@ const inviteBodyValidation = joi.object({
   }),
 });
 
+const inviteVerifciationBodyValidation = joi.object({
+  token: joi.string().required(),
+});
+
 //****************************************
 // Monitors
 //****************************************
@@ -239,6 +243,7 @@ module.exports = {
   newPasswordValidation,
   inviteRoleValidation,
   inviteBodyValidation,
+  inviteVerifciationBodyValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,

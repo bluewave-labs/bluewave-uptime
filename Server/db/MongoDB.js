@@ -185,6 +185,21 @@ const requestInviteToken = async (req, res) => {
   }
 };
 
+const getInviteToken = async (req, res) => {
+  try {
+    console.log(req.body.token);
+    const invite = await InviteToken.findOneAndDelete({
+      token: req.body.token,
+    });
+    if (invite === null) {
+      throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
+    }
+    return invite;
+  } catch (error) {
+    throw error;
+  }
+};
+
 /**
  * Request a recovery token
  * @async
@@ -695,6 +710,7 @@ module.exports = {
   deleteUser,
   getAllUsers,
   requestInviteToken,
+  getInviteToken,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
