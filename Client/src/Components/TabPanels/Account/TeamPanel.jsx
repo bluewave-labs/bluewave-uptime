@@ -2,8 +2,8 @@ import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
 import {
   Box,
+  ButtonGroup,
   Checkbox,
-  Container,
   Divider,
   MenuItem,
   Modal,
@@ -45,8 +45,9 @@ const TeamPanel = () => {
     email: "",
     role: "",
   });
-  const [teamStates, setTeamStates] = useState({});
   const [tableData, setTableData] = useState({});
+  const [members, setMembers] = useState([]);
+  const [filter, setFilter] = useState("all");
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -55,30 +56,8 @@ const TeamPanel = () => {
         const response = await axiosInstance.get("/auth/users", {
           headers: { Authorization: `Bearer ${authToken}` },
         });
-        setTeamStates({ members: response.data.data, filters: "" });
 
-        const data = {
-          cols: [
-            { id: 1, name: "NAME" },
-            { id: 2, name: "EMAIL" },
-            { id: 3, name: "ROLE" },
-          ],
-          rows: response.data.data.map((member, idx) => {
-            return {
-              id: member._id,
-              data: [
-                { id: idx, data: member.firstName + " " + member.lastName },
-                { id: idx + 1, data: member.email },
-                {
-                  id: idx + 2,
-                  data: member.role[0] === "admin" ? "Administrator" : "Member",
-                },
-              ],
-            };
-          }),
-        };
-
-        setTableData(data);
+        setMembers(response.data.data);
       } catch (error) {
         createToast({
           body: error.message || "Error fetching team members.",
@@ -89,40 +68,60 @@ const TeamPanel = () => {
     fetchTeam();
   }, []);
 
+  useEffect(() => {
+    let team = members;
+    if (filter !== "all")
+      team = members.filter((member) => member.role[0] === filter);
+
+    const data = {
+      cols: [
+        { id: 1, name: "NAME" },
+        { id: 2, name: "EMAIL" },
+        { id: 3, name: "ROLE" },
+      ],
+      rows: team?.map((member, idx) => {
+        return {
+          id: member._id,
+          data: [
+            {
+              id: idx,
+              data: (
+                <Stack>
+                  <Typography
+                    style={{ color: theme.palette.otherColors.blackish }}
+                  >
+                    {member.firstName + " " + member.lastName}
+                  </Typography>
+                  <Typography sx={{ opacity: 0.6 }}>
+                    Created {new Date(member.createdAt).toLocaleDateString()}
+                  </Typography>
+                </Stack>
+              ),
+            },
+            { id: idx + 1, data: member.email },
+            {
+              id: idx + 2,
+              data: member.role[0] === "admin" ? "Administrator" : "Member",
+            },
+          ],
+        };
+      }),
+    };
+
+    setTableData(data);
+  }, [members, filter]);
+
   // RENAME ORGANIZATION
   const toggleEdit = () => {
     setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
   };
   const handleRename = () => {};
 
-  // TABLE ACTIONS
-  const handleMembersQuery = (type) => {
-    let count = 0;
-    tableData.rows?.forEach((member) => {
-      type === "" ? count++ : member.data[2].data === type ? count++ : "";
-    });
-    return count;
-  };
-
-  // const handleCheckCell = (id) => {
-  //   const updatedTeamStates = [...teamStates.members];
-  //   updatedTeamStates[id] = {
-  //     ...updatedTeamStates[id],
-  //     isChecked: !updatedTeamStates[id].isChecked,
-  //   };
-  //   setTeamStates((prev) => ({
-  //     ...prev,
-  //     members: updatedTeamStates,
-  //   }));
-  // };
-  // const handleFilter = (filter) => {
-  //   setTeamStates((prev) => ({
-  //     ...prev,
-  //     filter: filter,
-  //   }));
-  // };
   //TODO - implement save team function
   const handleSaveTeam = () => {};
+
+  // INVITE MEMBER
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -148,8 +147,6 @@ const TeamPanel = () => {
     });
   };
 
-  // INVITE MEMBER
-  const [isOpen, setIsOpen] = useState(false);
   const handleInviteMember = async () => {
     if (toInvite.role !== "user" || toInvite !== "admin")
       setToInvite((prev) => ({ ...prev, role: "user" }));
@@ -193,87 +190,94 @@ const TeamPanel = () => {
   return (
     <TabPanel value="team">
       <form className="edit-organization-form">
-        <div className="edit-organization-form__wrapper">
-          <Stack>
-            <Typography component="h1">Organization name</Typography>
-          </Stack>
-          <Stack
-            className="row-stack"
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
-            sx={{ minHeight: "34px", maxHeight: "34px" }}
-          >
-            <TextField
-              value={orgStates.name}
-              onChange={(event) =>
-                setOrgStates((prev) => ({
-                  ...prev,
-                  name: event.target.value,
-                }))
-              }
-              disabled={!orgStates.isEdit}
-              sx={{
-                color: theme.palette.otherColors.bluishGray,
-                "& .Mui-disabled": {
-                  WebkitTextFillColor: "initial !important",
-                },
-                "& .Mui-disabled fieldset": {
-                  borderColor: "transparent !important",
-                },
-              }}
-              inputProps={{
-                sx: { textAlign: "end", padding: theme.gap.small },
-              }}
-            />
-            <Button
-              level={orgStates.isEdit ? "secondary" : "tertiary"}
-              label={orgStates.isEdit ? "Save" : ""}
-              img={!orgStates.isEdit ? <EditSvg /> : ""}
-              onClick={() => toggleEdit()}
-              sx={{
-                minWidth: 0,
-                paddingX: theme.gap.small,
-                ml: orgStates.isEdit ? theme.gap.small : 0,
-              }}
-            />
-          </Stack>
-        </div>
-        <Divider
-          aria-hidden="true"
-          className="short-divider"
-          sx={{ marginY: theme.spacing(4) }}
-        />
+        <Box sx={{ alignSelf: "flex-start" }}>
+          <Typography component="h1">Organization name</Typography>
+        </Box>
+        <Stack
+          className="row-stack"
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center"
+          sx={{ height: "34px" }}
+        >
+          <TextField
+            value={orgStates.name}
+            onChange={(event) =>
+              setOrgStates((prev) => ({
+                ...prev,
+                name: event.target.value,
+              }))
+            }
+            disabled={!orgStates.isEdit}
+            sx={{
+              color: theme.palette.otherColors.bluishGray,
+              "& .Mui-disabled": {
+                WebkitTextFillColor: "initial !important",
+              },
+              "& .Mui-disabled fieldset": {
+                borderColor: "transparent !important",
+              },
+            }}
+            inputProps={{
+              sx: { textAlign: "end", padding: theme.gap.small },
+            }}
+          />
+          <Button
+            level={orgStates.isEdit ? "secondary" : "tertiary"}
+            label={orgStates.isEdit ? "Save" : ""}
+            img={!orgStates.isEdit ? <EditSvg /> : ""}
+            onClick={() => toggleEdit()}
+            sx={{
+              minWidth: 0,
+              paddingX: theme.gap.small,
+              ml: orgStates.isEdit ? theme.gap.small : 0,
+            }}
+          />
+        </Stack>
       </form>
-      <form className="edit-team-form" noValidate spellCheck="false">
-        <div className="edit-team-form__wrapper">
-          <Typography component="h1">Team members</Typography>
-        </div>
-        <div className="edit-team-form__wrapper compact">
+      <Divider
+        aria-hidden="true"
+        className="short-divider"
+        sx={{ marginY: theme.spacing(4) }}
+      />
+      <form
+        className="edit-team-form"
+        noValidate
+        spellCheck="false"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: theme.gap.large,
+        }}
+      >
+        <Typography component="h1">Team members</Typography>
+        <Stack direction="row" justifyContent="space-between">
           <Stack
             direction="row"
-            gap="20px"
-            alignItems="center"
+            alignItems="flex-end"
+            gap={theme.gap.medium}
             sx={{ fontSize: "14px" }}
           >
-            <Box onClick={() => handleFilter("")}>
-              All
-              <span className="members-query">
-                <span>{handleMembersQuery("")}</span>
-              </span>
-            </Box>
-            <Box onClick={() => handleFilter("admin")}>
-              Administrator
-              <span className="members-query">
-                <span>{handleMembersQuery("Administrator")}</span>
-              </span>
-            </Box>
-            <Box onClick={() => handleFilter("member")}>
-              Member
-              <span className="members-query">
-                <span>{handleMembersQuery("Member")}</span>
-              </span>
-            </Box>
+            <ButtonGroup>
+              <Button
+                level="secondary"
+                label="All"
+                onClick={() => setFilter("all")}
+                sx={{ backgroundColor: filter === "all" && "#f4f4f4" }}
+              />
+              <Button
+                level="secondary"
+                label="Administrator"
+                onClick={() => setFilter("admin")}
+                sx={{ backgroundColor: filter === "admin" && "#f4f4f4" }}
+              />
+              <Button
+                level="secondary"
+                label="Member"
+                onClick={() => setFilter("user")}
+                sx={{ backgroundColor: filter === "user" && "#f4f4f4" }}
+              />
+            </ButtonGroup>
           </Stack>
           <Button
             level="primary"
@@ -281,9 +285,8 @@ const TeamPanel = () => {
             sx={{ paddingX: "30px" }}
             onClick={() => setIsOpen(true)}
           />
-        </div>
+        </Stack>
         <BasicTable data={tableData} paginated={false} reversed={true} />
-        <Divider aria-hidden="true" width="0" />
         <Stack direction="row" justifyContent="flex-end">
           <Box width="fit-content">
             <ButtonSpinner
@@ -292,6 +295,7 @@ const TeamPanel = () => {
               onClick={handleSaveTeam}
               isLoading={false}
               loadingText="Saving..."
+              disabled={true}
               sx={{
                 paddingX: "40px",
               }}
