@@ -38,7 +38,7 @@ const Account = ({ open = "profile" }) => {
         <Box
           sx={{
             borderBottom: 1,
-            borderColor: theme.palette.section.borderColor,
+            borderColor: "var(--env-var-color-16)",
             "& .MuiTabs-root": { height: "fit-content", minHeight: "0" },
           }}
         >
