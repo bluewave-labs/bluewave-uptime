@@ -49,6 +49,7 @@ const Register = ({ isAdmin }) => {
             token,
           });
           const { role, email } = res.data.data;
+          console.log(role);
           setForm({ ...form, email, role });
         } catch (error) {
           console.log(error);
@@ -60,8 +61,7 @@ const Register = ({ isAdmin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const registerForm = { ...form, role: isAdmin ? ["admin"] : [] };
+    const registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
     const { error } = credentials.validate(registerForm, {
       abortEarly: false,
       context: { password: form.password },

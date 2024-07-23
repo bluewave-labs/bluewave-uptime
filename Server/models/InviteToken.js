@@ -8,7 +8,7 @@ const InviteTokenSchema = mongoose.Schema(
       unique: true,
     },
     role: {
-      type: String,
+      type: Array,
       required: true,
     },
     token: {
