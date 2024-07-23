@@ -172,7 +172,6 @@ const getAllUsers = async (req, res) => {
 
 const requestInviteToken = async (req, res) => {
   try {
-    console.log(req.body.role);
     await InviteToken.deleteMany({ email: req.body.email });
     let inviteToken = new InviteToken({
       email: req.body.email,
@@ -188,8 +187,7 @@ const requestInviteToken = async (req, res) => {
 
 const getInviteToken = async (req, res) => {
   try {
-    console.log(req.body.token);
-    const invite = await InviteToken.findOne({
+    const invite = await InviteToken.findOneAndDelete({
       token: req.body.token,
     });
     if (invite === null) {
