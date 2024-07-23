@@ -44,7 +44,7 @@ const TeamPanel = () => {
   });
   const [toInvite, setToInvite] = useState({
     email: "",
-    role: "",
+    role: [""],
   });
   const [tableData, setTableData] = useState({});
   const [members, setMembers] = useState([]);
@@ -72,7 +72,7 @@ const TeamPanel = () => {
   useEffect(() => {
     let team = members;
     if (filter !== "all")
-      team = members.filter((member) => member.role[0] === filter);
+      team = members.filter((member) => member.role.includes(filter));
 
     const data = {
       cols: [
@@ -104,7 +104,7 @@ const TeamPanel = () => {
             {
               // TODO - Add select dropdown
               id: idx + 2,
-              data: member.role[0] === "admin" ? "Administrator" : "Member",
+              data: member.role.includes("admin") ? "Administrator" : "Member",
             },
             {
               // TODO - Add delete onClick
@@ -167,8 +167,8 @@ const TeamPanel = () => {
   };
 
   const handleInviteMember = async () => {
-    if (toInvite.role !== "user" || toInvite !== "admin")
-      setToInvite((prev) => ({ ...prev, role: "user" }));
+    if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
+      setToInvite((prev) => ({ ...prev, role: ["user"] }));
 
     const { error } = credentials.validate(
       { email: toInvite.email },
@@ -185,7 +185,7 @@ const TeamPanel = () => {
           "/auth/invite",
           {
             email: toInvite.email,
-            role: toInvite.role,
+            role: [toInvite.role],
           },
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
@@ -202,7 +202,7 @@ const TeamPanel = () => {
   };
   const closeInviteModal = () => {
     setIsOpen(false);
-    setToInvite({ email: "", role: "" });
+    setToInvite({ email: "", role: [""] });
     setErrors({});
   };
 
@@ -368,11 +368,11 @@ const TeamPanel = () => {
           />
           <Select
             id="team-member-role"
-            value={toInvite.role}
+            value={toInvite.role[0]}
             onChange={(event) =>
               setToInvite((prev) => ({
                 ...prev,
-                role: event.target.value,
+                role: [event.target.value],
               }))
             }
             displayEmpty
