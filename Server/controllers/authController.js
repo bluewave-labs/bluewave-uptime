@@ -10,6 +10,7 @@ const {
   deleteUserParamValidation,
   inviteRoleValidation,
   inviteBodyValidation,
+  inviteVerifciationBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -58,20 +59,21 @@ const registerController = async (req, res, next) => {
     return;
   }
 
-  // Check if an admin user exists, if so, error
-  try {
-    const admin = await req.db.checkAdmin(req, res);
-    console.log(admin);
-    if (admin === true) {
-      throw new Error(errorMessages.AUTH_ADMIN_EXISTS);
-    }
-  } catch (error) {
-    console.log("WEEEEEEE", error.message);
-    error.service = SERVICE_NAME;
-    error.status = 403;
-    next(error);
-    return;
-  }
+  // TODO  Can there be more than one admin?
+  // // Check if an admin user exists, if so, error
+  // try {
+  //   const admin = await req.db.checkAdmin(req, res);
+  //   console.log(admin);
+  //   if (admin === true) {
+  //     throw new Error(errorMessages.AUTH_ADMIN_EXISTS);
+  //   }
+  // } catch (error) {
+  //   console.log("WEEEEEEE", error.message);
+  //   error.service = SERVICE_NAME;
+  //   error.status = 403;
+  //   next(error);
+  //   return;
+  // }
 
   // Create a new user
   try {
@@ -230,6 +232,21 @@ const inviteController = async (req, res, next) => {
     return res
       .status(200)
       .json({ success: true, msg: "Invite sent", data: inviteToken });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
+const inviteVerifyController = async (req, res, next) => {
+  try {
+    await inviteVerifciationBodyValidation.validateAsync(req.body);
+    const invite = await req.db.getInviteToken(req, res);
+
+    res
+      .status(200)
+      .json({ status: "success", msg: "Invite verified", data: invite });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -445,6 +462,7 @@ module.exports = {
   loginController,
   userEditController,
   inviteController,
+  inviteVerifyController,
   checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,

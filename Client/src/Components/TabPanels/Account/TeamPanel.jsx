@@ -185,7 +185,7 @@ const TeamPanel = () => {
           "/auth/invite",
           {
             email: toInvite.email,
-            role: [toInvite.role],
+            role: toInvite.role,
           },
           { headers: { Authorization: `Bearer ${authToken}` } }
         );

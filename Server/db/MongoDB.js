@@ -46,6 +46,7 @@ const insertUser = async (req, res) => {
       const avatar = await GenerateAvatarImage(req.file);
       userData.avatarImage = avatar;
     }
+    console.log(userData);
     const newUser = new UserModel(userData);
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })
@@ -174,10 +175,25 @@ const requestInviteToken = async (req, res) => {
     await InviteToken.deleteMany({ email: req.body.email });
     let inviteToken = new InviteToken({
       email: req.body.email,
+      role: req.body.role,
       token: crypto.randomBytes(32).toString("hex"),
     });
     await inviteToken.save();
     return inviteToken;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getInviteToken = async (req, res) => {
+  try {
+    const invite = await InviteToken.findOneAndDelete({
+      token: req.body.token,
+    });
+    if (invite === null) {
+      throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
+    }
+    return invite;
   } catch (error) {
     throw error;
   }
@@ -693,6 +709,7 @@ module.exports = {
   deleteUser,
   getAllUsers,
   requestInviteToken,
+  getInviteToken,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,

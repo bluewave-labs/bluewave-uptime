@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Stack, Typography } from "@mui/material";
@@ -15,13 +15,13 @@ import { createToast } from "../../../Utils/toastUtils";
 import Field from "../../../Components/Inputs/Field";
 import { register } from "../../../Features/Auth/authSlice";
 import { useParams } from "react-router-dom";
+import axiosInstance from "../../../Utils/axiosConfig";
 
 const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
   const theme = useTheme();
-
   // TODO If possible, change the IDs of these fields to match the backend
   const idMap = {
     "register-firstname-input": "firstName",
@@ -41,10 +41,27 @@ const Register = ({ isAdmin }) => {
   });
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    const fetchInvite = async () => {
+      if (token !== undefined) {
+        try {
+          const res = await axiosInstance.post(`/auth/invite/verify`, {
+            token,
+          });
+          const { role, email } = res.data.data;
+          console.log(role);
+          setForm({ ...form, email, role });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchInvite();
+  }, [token]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const registerForm = { ...form, role: isAdmin ? ["admin"] : [] };
+    const registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
     const { error } = credentials.validate(registerForm, {
       abortEarly: false,
       context: { password: form.password },
