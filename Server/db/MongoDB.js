@@ -4,6 +4,7 @@ const UserModel = require("../models/user");
 const Check = require("../models/Check");
 const Alert = require("../models/Alert");
 const RecoveryToken = require("../models/RecoveryToken");
+const InviteToken = require("../models/InviteToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
 const { errorMessages, successMessages } = require("../utils/messages");
@@ -130,7 +131,6 @@ const updateUser = async (req, res) => {
     )
       .select("-password")
       .select("-profileImage");
-    console.log(updatedUser);
     return updatedUser;
   } catch (error) {
     throw error;
@@ -153,6 +153,31 @@ const deleteUser = async (req, res) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
     return deletedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await UserModel.find()
+      .select("-password")
+      .select("-profileImage");
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const requestInviteToken = async (req, res) => {
+  try {
+    await InviteToken.deleteMany({ email: req.body.email });
+    let inviteToken = new InviteToken({
+      email: req.body.email,
+      token: crypto.randomBytes(32).toString("hex"),
+    });
+    await inviteToken.save();
+    return inviteToken;
   } catch (error) {
     throw error;
   }
@@ -274,7 +299,7 @@ const getMonitorById = async (req, res) => {
   try {
     const monitor = await Monitor.findById(req.params.monitorId);
     const checks = await Check.find({ monitorId: monitor._id }).sort({
-      createdAt: -1,
+      createdAt: 1,
     });
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
@@ -299,15 +324,16 @@ const getMonitorsByUserId = async (req, res) => {
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
         if (limit) {
-          // Checks are order oldest -> newest
+          // Checks are order newest -> oldest
           const checks = await Check.find({ monitorId: monitor._id })
             .sort({
-              createdAt: 1,
+              createdAt: -1,
             })
             .limit(limit);
           return { ...monitor.toObject(), checks };
         } else {
-          // Checks are order oldest -> newest
+          // Checks are order newest -> oldest
+          // TODO is this ever used?
           const checks = await Check.find({ monitorId: monitor._id }).sort({
             createdAt: 1,
           });
@@ -316,6 +342,59 @@ const getMonitorsByUserId = async (req, res) => {
       })
     );
 
+    return monitorsWithChecks;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get monitors by UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Monitor>}
+ * @throws {Error}
+ */
+const getMonitorByIdForIncidents = async (req, res, next) => {
+  try {
+    const monitor = await Monitor.findById(req.params.monitorId);
+    const checks = await Check.find({
+      monitorId: monitor._id,
+      status: false,
+    }).sort({
+      createdAt: 1,
+    });
+    const monitorWithChecks = { ...monitor.toObject(), checks };
+    return monitorWithChecks;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get monitors by UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Array<Monitor>>}
+ * @throws {Error}
+ */
+const getMonitorsByUserIdForIncidents = async (req, res) => {
+  try {
+    const monitors = await Monitor.find({ userId: req.params.userId });
+    // Map each monitor to include its associated checks
+    const monitorsWithChecks = await Promise.all(
+      monitors.map(async (monitor) => {
+        const checks = await Check.find({
+          monitorId: monitor._id,
+          status: false,
+        }).sort({
+          createdAt: 1,
+        });
+        return { ...monitor.toObject(), checks };
+      })
+    );
     return monitorsWithChecks;
   } catch (error) {
     throw error;
@@ -432,7 +511,6 @@ const editMonitor = async (req, res) => {
 
 const createCheck = async (checkData) => {
   try {
-    console.log(checkData);
     const check = await new Check({ ...checkData }).save();
     return check;
   } catch (error) {
@@ -613,6 +691,8 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  getAllUsers,
+  requestInviteToken,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
@@ -620,6 +700,8 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
+  getMonitorByIdForIncidents,
+  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,

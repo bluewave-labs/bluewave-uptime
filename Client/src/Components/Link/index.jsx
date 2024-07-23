@@ -15,13 +15,21 @@ const Link = ({ level, label, url }) => {
 
   const levelConfig = {
     primary: {},
-    secondary: {},
+    secondary: {
+      color: theme.palette.otherColors.bluishGray,
+      sx: {
+        ":hover": {
+          color: theme.palette.otherColors.bluishGray,
+        },
+      },
+    },
     tertiary: {
       color: theme.palette.tertiary.main,
       sx: {
         textDecoration: "underline",
         textDecorationStyle: "dashed",
         textDecorationColor: theme.palette.primary.main,
+        textUnderlineOffset: "1px",
         ":hover": {
           color: theme.palette.tertiary.main,
           textDecorationColor: theme.palette.primary.main,
@@ -33,7 +41,13 @@ const Link = ({ level, label, url }) => {
   };
   const { sx, color } = levelConfig[level];
   return (
-    <MuiLink href={url} sx={sx} color={color}>
+    <MuiLink
+      href={url}
+      sx={{ width: "fit-content", ...sx }}
+      color={color}
+      target="_blank"
+      rel="noreferrer"
+    >
       {label}
     </MuiLink>
   );

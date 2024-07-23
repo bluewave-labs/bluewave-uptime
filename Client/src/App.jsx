@@ -1,8 +1,10 @@
 import { Routes, Route } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 // import "./App.css";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
-import Register from "./Pages/Auth/Register";
+import Register from "./Pages/Auth/Register/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors";
@@ -18,11 +20,11 @@ import NewPasswordConfirmed from "./Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import ErrorPage from "./Pages/Errors";
+import withAdminCheck from "./HOC/withAdminCheck";
+import Configure from "./Pages/Monitors/Configure";
 
 function App() {
+  const AdminCheckedRegister = withAdminCheck(Register);
   return (
     <>
       <Routes>
@@ -43,6 +45,10 @@ function App() {
           <Route
             path="/monitors/:monitorId/"
             element={<ProtectedRoute Component={Details} />}
+          />
+          <Route
+            path="/monitors/configure/:monitorId/"
+            element={<ProtectedRoute Component={Configure} />}
           />
           <Route
             path="incidents"
@@ -80,7 +86,9 @@ function App() {
         </Route>
 
         <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register" element={<Register />} />
+
+        <Route exact path="/register" element={<AdminCheckedRegister />} />
+        <Route exact path="/register/:token" element={<Register />} />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
         <Route path="*" element={<NotFound />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

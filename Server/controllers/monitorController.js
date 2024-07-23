@@ -99,6 +99,60 @@ const getMonitorsByUserId = async (req, res, next) => {
 };
 
 /**
+ * Returns monitor with matching ID and incidents
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+const getMonitorByIdForIncidents = async (req, res, next) => {
+  try {
+    await getMonitorByIdValidation.validateAsync(req.params);
+
+    let monitorWithIncidents = await req.db.getMonitorByIdForIncidents(
+      req,
+      res
+    );
+
+    return res.json({
+      success: true,
+      msg: successMessages.MONTIOR_GET_BY_ID,
+      data: monitorWithIncidents,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+/**
+ * Returns all monitors with incidents that belong to User with UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+const getMonitorsByUserIdForIncidents = async (req, res, next) => {
+  try {
+    await getMonitorsByUserIdValidation.validateAsync(req.params);
+    let monitorsWithIncidents = await req.db.getMonitorsByUserIdForIncidents(
+      req,
+      res
+    );
+    return res.json({
+      success: true,
+      msg: successMessages.MONITOR_GET_BY_USER_ID(req.params.userId),
+      data: monitorsWithIncidents,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+/**
  * Creates a new monitor
  * @async
  * @param {Express.Request} req
@@ -227,6 +281,8 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
+  getMonitorByIdForIncidents,
+  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,

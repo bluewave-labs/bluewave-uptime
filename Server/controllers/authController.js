@@ -8,16 +8,14 @@ const {
   recoveryTokenValidation,
   newPasswordValidation,
   deleteUserParamValidation,
+  inviteRoleValidation,
+  inviteBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
 const { errorMessages, successMessages } = require("../utils/messages");
 var jwt = require("jsonwebtoken");
 const SERVICE_NAME = "auth";
-const { sendEmail } = require("../utils/sendEmail");
-const {
-  registerTemplate,
-} = require("../utils/emailTemplates/registerTemplate");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -89,15 +87,12 @@ const registerController = async (req, res, next) => {
 
     const token = issueToken(userForToken);
 
-    // Sending email to user with pre defined template
-    const template = registerTemplate("https://www.bluewavelabs.ca");
-    await sendEmail(
-      [newUser.email],
-      "Welcome to Uptime Monitor",
-      template,
-      "Registered."
+    req.emailService.buildAndSendEmail(
+      "welcomeEmailTemplate",
+      { name: newUser.firstName },
+      newUser.email,
+      "Welcome to Uptime Monitor"
     );
-
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
@@ -214,6 +209,34 @@ const userEditController = async (req, res, next) => {
   }
 };
 
+const inviteController = async (req, res, next) => {
+  try {
+    // Only admins can invite
+    const token = getTokenFromHeaders(req.headers);
+    const { role, firstname } = jwt.decode(token);
+    await inviteRoleValidation.validateAsync({ roles: role });
+    await inviteBodyValidation.validateAsync(req.body);
+    const inviteToken = await req.db.requestInviteToken(req, res);
+    req.emailService.buildAndSendEmail(
+      "employeeActivationTemplate",
+      {
+        name: firstname,
+        link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+      },
+      req.body.email,
+      "Welcome to Uptime Monitor"
+    );
+
+    return res
+      .status(200)
+      .json({ success: true, msg: "Invite sent", data: inviteToken });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
+
 /**
  * Checks to see if an admin account exists
  * @async
@@ -243,7 +266,7 @@ const checkAdminController = async (req, res) => {
  * @param {Express.Request} req
  * @property {Object} req.body
  * @property {string} req.body.email
- * @param {Express.Response} res
+ * @property {EmailService} req.body.emailService
  * @returns {Promise<Express.Response>}
  */
 const recoveryRequestController = async (req, res, next) => {
@@ -252,18 +275,23 @@ const recoveryRequestController = async (req, res, next) => {
     const user = await req.db.getUserByEmail(req, res);
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
-      await sendEmail(
-        [req.body.email],
-        "Uptime Monitor Password Recovery",
-        `<a clicktracking="off" href='${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}'>Click here to reset your password</a>`,
-        `Recovery token: ${recoveryToken.token}`
+      const name = user.firstName;
+      const email = req.body.email;
+      const url = `${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}`;
+
+      const msgId = await req.emailService.buildAndSendEmail(
+        "passwordResetTemplate",
+        { name, email, url },
+        email,
+        "Bluewaves Uptime Password Resest"
       );
+
       return res.status(200).json({
         success: true,
         msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
+        data: msgId,
       });
     }
-    // TODO Email token to user
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -400,13 +428,27 @@ const deleteUserController = async (req, res, next) => {
   }
 };
 
+const getAllUsersController = async (req, res) => {
+  try {
+    const allUsers = await req.db.getAllUsers(req, res);
+    res
+      .status(200)
+      .json({ success: true, msg: "Got all users", data: allUsers });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
   userEditController,
+  inviteController,
   checkAdminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
   deleteUserController,
+  getAllUsersController,
 };

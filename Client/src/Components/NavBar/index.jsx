@@ -150,7 +150,7 @@ function NavBar() {
                 <div className="icon-button-toggle">
                   <Avatar small={true} sx={{ mr: "8px" }} />
                   <div className="icon-button-toggle-title">
-                    {authState.user.firstname} {authState.user.lastname}
+                    {authState.user.firstName} {authState.user.lastName}
                   </div>
                   <img
                     className="icon-button-toggle-pic"
