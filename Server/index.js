@@ -16,6 +16,7 @@ const { connectDbAndRunServer } = require("./configs/db");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
 const EmailService = require("./service/emailService");
+const PageSpeedService = require("./service/pageSpeedService");
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
@@ -60,6 +61,7 @@ const startApp = async () => {
     req.db = db;
     req.jobQueue = jobQueue;
     req.emailService = emailService;
+    req.pageSpeedService = pageSpeedService;
     next();
   });
 
@@ -110,6 +112,7 @@ const startApp = async () => {
   await connectDbAndRunServer(app, db);
   const jobQueue = await JobQueue.createJobQueue(db);
   const emailService = new EmailService();
+  const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {
     console.log("Shutting down gracefully");
