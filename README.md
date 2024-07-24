@@ -302,19 +302,20 @@ Example:
 
 ##### Method/Headers
 
-> | Method/Headers | Value            |
-> | -------------- | ---------------- |
-> | Method         | POST             |
-> | content-type   | application/json |
+> | Method/Headers | Value               |
+> | -------------- | ------------------- |
+> | Method         | POST                |
+> | content-type   | multipart/form-data |
 
-##### Body
+##### Form
 
-> | Name      | Type     | Notes               |
-> | --------- | -------- | ------------------- |
-> | firstname | `string` |                     |
-> | lastname  | `string` |
-> | email     | `string` | Valid email address |
-> | password  | `string` | Min 8 chars         |
+> | Name      | Type            | Notes                                           |
+> | --------- | --------------- | ----------------------------------------------- |
+> | firstName | `string`        |                                                 |
+> | lastName  | `string`        |                                                 |
+> | email     | `string`        | Valid email address                             |
+> | password  | `string`        | Min 8 chars, One Upper, one number, one special |
+> | role      | `Array<string>` | Array of user roles                             |
 
 ##### Response Payload
 
