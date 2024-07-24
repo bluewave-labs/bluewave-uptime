@@ -2,9 +2,11 @@ const errorMessages = {
   // General Errors:
   FRIENDLY_ERROR: "Something went wrong...",
   UNKNOWN_ERROR: "An unknown error occurred",
+
   // Auth Controller
   UNAUTHORIZED: "Unauthorized access",
   AUTH_ADMIN_EXISTS: "Admin already exists",
+  AUTH_INVITE_NOT_FOUND: "Invite not found",
 
   //Error handling middleware
   UNKNOWN_SERVICE: "Unknown service",

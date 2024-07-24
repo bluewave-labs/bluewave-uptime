@@ -42,6 +42,7 @@ You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgD
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
     - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
+    - <code>GET</code> [/api/v1/auth/users](#get-all-users-id)
     - <code>POST</code> [/api/v1/auth/recovery/request](#post-auth-recovery-request-id)
     - <code>POST</code> [/api/v1/auth/recovery/validate](#post-auth-recovery-validate-id)
     - <code>POST</code> [/api/v1/auth/recovery/reset](#post-auth-recovery-reset-id)
@@ -448,6 +449,55 @@ curl --request POST \
     "updatedAt": "2024-05-27T19:21:51.747Z",
     "__v": 0
   }
+}
+```
+
+</details>
+
+<details>
+<summary id='#get-all-users-id'><code>GET</code><b>/api/v1/auth/users</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value |
+> | -------------- | ----- |
+> | Method         | GET   |
+
+###### Response Payload
+
+> | Type          | Notes                                 |
+> | ------------- | ------------------------------------- |
+> | `Array<User>` | Returns an array containing all users |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/auth/users \
+  --header 'Authorization: <bearer_token>\
+  --header 'User-Agent: insomnia/2023.5.8'
+```
+
+##### Sample Resonse
+
+```json
+{
+  "success": true,
+  "msg": "Got all users",
+  "data": [
+    {
+      "_id": "669e90072d5663d25808bc7b",
+      "firstName": "Alex",
+      "lastName": "Holliday",
+      "email": "test@test.com",
+      "isActive": true,
+      "isVerified": false,
+      "role": ["admin"],
+      "createdAt": "2024-07-22T16:59:51.695Z",
+      "updatedAt": "2024-07-22T16:59:51.695Z",
+      "__v": 0
+    }
+  ]
 }
 ```
 

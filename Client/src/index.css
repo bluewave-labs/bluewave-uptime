@@ -1,6 +1,5 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
 
   /* color-scheme: light dark;
@@ -48,6 +47,7 @@
   --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
   --env-var-color-28: #f79009;
   --env-var-color-29: #d0d5dd;
+  --env-var-color-30: #fcfcfd;
 
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
@@ -58,12 +58,15 @@
   --env-var-height-1: 100vh;
   --env-var-height-2: 34px;
 
+  --env-var-nav-bar-height: 64px;
+
   --env-var-spacing-1: 12px;
   --env-var-spacing-1-plus: 16px;
   --env-var-spacing-1-minus: 10px;
   --env-var-spacing-2: 24px;
   --env-var-spacing-3: 32px;
   --env-var-spacing-4: 40px;
+  --env-var-spacing-5: 65px;
 
   --env-var-font-size-small: 11px;
   --env-var-font-size-small-plus: 12px;
@@ -147,6 +150,10 @@ button:focus-visible {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: -1;
+}
+
+.MuiTouchRipple-root {
+  display: none;
 }
 
 @media (prefers-color-scheme: light) {

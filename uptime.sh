@@ -5,9 +5,10 @@ default_db_type="MongoDB"
 default_db_connection_string="mongodb://mongodb:27017/uptime_db"
 default_redis_host="redis"
 default_redis_port=6379
-default_system_email_address="veysel.boybay@outlook.com"
-default_login_page_url="https://www.bluewavelabs.ca/" 
 default_token_ttl="99d"
+
+default_system_email_host="smtp.gmail.com"
+default_system_email_port=465
 
 echo "Welcome to the Uptime Monitor Setup Script! \n"
 echo
@@ -26,7 +27,7 @@ echo
 echo "Writing to ./Docker/client.env"
 echo
 
-echo "VITE_APP_API_BASE_URL=\"$input_url\"" > ./Docker/client.env
+echo "VITE_APP_API_BASE_URL=\"$input_url\"" > ./Client/.env
 
 echo "Configuring server"
 printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' '*'
@@ -62,23 +63,29 @@ redis_port="${redis_port:-$default_redis_port}"
 echo "Redis Port: $redis_port"
 echo
 
-read -p "Enter your System Email Address [$default_system_email_address]: " system_email_address
-system_email_address="${system_email_address:-$default_system_email_address}"
-echo "System Email Address: $system_email_address"
+read -p "Enter your system email host [$default_system_email_host]: " system_email_host
+system_email_host="${system_email_host:-$default_system_email_host}"
+echo "System email host: $system_email_host"
 echo
+
+read -p "Enter your system email port [$default_system_email_port]: " system_email_port
+system_email_port="${system_email_port:-$default_system_email_port}"
+echo "System email port: $system_email_port"
+echo
+
+read -p "Enter your system email address: " system_email_address
+echo "System email address: $system_email_address"
+echo
+
+read -p "Enter your system email password: " system_email_password
+echo "System email password: $system_email_password"
+echo
+
+
 
 read -p "Enter your Token TTL [$default_token_ttl]: " token_ttl
 token_ttl="${token_ttl:-$default_token_ttl}"
 echo "Token TTL: $token_ttl"
-echo
-
-read -p "Enter your Login Page URL [$default_login_page_url]: " login_page_url
-login_page_url="${login_page_url:-$default_login_page_url}"
-echo "Login Page URL: $login_page_url"
-echo
-
-read -p "Enter your Sendgrid API key: " sendgrid_api_key
-echo "Sendgrid API key: $sendgrid_api_key"
 echo
 
 read -p "Enter your Pagespeed API key: " pagespeed_api_key
@@ -89,17 +96,17 @@ echo "Writing to ./Docker/server.env"
 echo
 
 {
-    echo "SERVER_BASE_URL=\"$input_url\""
     echo "CLIENT_HOST=\"$client_host\""
     echo "JWT_SECRET=\"$jwt_secret\""
     echo "DB_TYPE=\"$db_type\""
     echo "DB_CONNECTION_STRING=\"$db_connection_string\""
     echo "REDIS_HOST=\"$redis_host\""
     echo "REDIS_PORT=$redis_port"
+    echo "SYSTEM_EMAIL_HOST=\"$system_email_host\""
+    echo "SYSTEM_EMAIL_PORT=$system_email_port"
     echo "SYSTEM_EMAIL_ADDRESS=\"$system_email_address\""
-    echo "LOGIN_PAGE_URL=\"$login_page_url\""
+    echo "SYSTEM_EMAIL_PASSWORD=\"$system_email_password\""
     echo "TOKEN_TTL=\"$token_ttl\""
-    echo "SENDGRID_API_KEY=\"$sendgrid_api_key\""
     echo "PAGESPEED_API_KEY=\"$pagespeed_api_key\""
 } > ./Docker/server.env
 

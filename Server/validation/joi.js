@@ -1,6 +1,17 @@
 const joi = require("joi");
 
 //****************************************
+// Custom Validators
+//****************************************
+
+const roleValidatior = (role) => (value, helpers) => {
+  if (!value.includes(role)) {
+    throw new joi.ValidationError(`You do not have ${role} authorization`);
+  }
+  return value;
+};
+
+//****************************************
 // Auth
 //****************************************
 
@@ -16,11 +27,11 @@ const loginValidation = joi.object({
 });
 
 const registerValidation = joi.object({
-  firstname: joi
+  firstName: joi
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
-  lastname: joi
+  lastName: joi
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
@@ -33,7 +44,7 @@ const registerValidation = joi.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
     ),
   profileImage: joi.any(),
-  role: joi.string().required(),
+  role: joi.array().required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -41,8 +52,8 @@ const editUserParamValidation = joi.object({
 });
 
 const editUserBodyValidation = joi.object({
-  firstname: joi.string().pattern(/^[A-Za-z]+$/),
-  lastname: joi.string().pattern(/^[A-Za-z]+$/),
+  firstName: joi.string().pattern(/^[A-Za-z]+$/),
+  lastName: joi.string().pattern(/^[A-Za-z]+$/),
   profileImage: joi.any(),
   newPassword: joi
     .string()
@@ -57,7 +68,7 @@ const editUserBodyValidation = joi.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
     ),
   deleteProfileImage: joi.boolean(),
-  role: joi.string(),
+  role: joi.array(),
 });
 
 const recoveryValidation = joi.object({
@@ -85,6 +96,22 @@ const newPasswordValidation = joi.object({
 
 const deleteUserParamValidation = joi.object({
   email: joi.string().email().required(),
+});
+
+const inviteRoleValidation = joi.object({
+  roles: joi.custom(roleValidatior("admin")).required(),
+});
+
+const inviteBodyValidation = joi.object({
+  email: joi.string().trim().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Must be a valid email address",
+  }),
+  role: joi.array().required(),
+});
+
+const inviteVerifciationBodyValidation = joi.object({
+  token: joi.string().required(),
 });
 
 //****************************************
@@ -182,12 +209,23 @@ const deleteChecksParamValidation = joi.object({
 //****************************************
 // PageSpeedCheckValidation
 //****************************************
+
 const getPageSpeedCheckParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+//Validation schema for the monitorId parameter
 const createPageSpeedCheckParamValidation = joi.object({
   monitorId: joi.string().required(),
+});
+
+//Validation schema for the monitorId body
+const createPageSpeedCheckBodyValidation = joi.object({
+  monitorId: joi.string().required(),
+  accessibility: joi.number().required().min(0).max(100),
+  bestPractices: joi.number().required().min(0).max(100),
+  seo: joi.number().required().min(0).max(100),
+  performance: joi.number().required().min(0).max(100),
 });
 
 const deletePageSpeedCheckParamValidation = joi.object({
@@ -195,11 +233,15 @@ const deletePageSpeedCheckParamValidation = joi.object({
 });
 
 module.exports = {
+  roleValidatior,
   loginValidation,
   registerValidation,
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
+  inviteRoleValidation,
+  inviteBodyValidation,
+  inviteVerifciationBodyValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
@@ -221,4 +263,5 @@ module.exports = {
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
   deletePageSpeedCheckParamValidation,
+  createPageSpeedCheckBodyValidation,
 };
