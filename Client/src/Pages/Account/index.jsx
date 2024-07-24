@@ -8,14 +8,13 @@ import ProfilePanel from "../../Components/TabPanels/Account/ProfilePanel";
 import PasswordPanel from "../../Components/TabPanels/Account/PasswordPanel";
 import TeamPanel from "../../Components/TabPanels/Account/TeamPanel";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 /**
  * Account component renders a settings page with tabs for Profile, Password, and Team settings.
  * @param {string} [props.open] - Specifies the initially open tab: 'profile', 'password', or 'team'.
  * @returns {JSX.Element}
  */
-
-const tabList = ["Profile", "Password", "Team"];
 
 const Account = ({ open = "profile" }) => {
   const theme = useTheme();
@@ -24,6 +23,10 @@ const Account = ({ open = "profile" }) => {
   const handleTabChange = (event, newTab) => {
     navigate(`/account/${newTab}`);
   };
+
+  let tabList = ["Profile", "Password", "Team"];
+  const { user } = useSelector((state) => state.auth);
+  if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
 
   return (
     <Box
@@ -71,7 +74,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-        <TeamPanel />
+       { user.role.includes("admin") && <TeamPanel />}
       </TabContext>
     </Box>
   );
