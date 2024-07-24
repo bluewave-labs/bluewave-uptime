@@ -31,21 +31,15 @@ const DefaultValue = {
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
   return (
-    <Stack className="not-found-page">
-      <Stack className="not-found-template">
-        <Typography id="not-found-title">{title}</Typography>
-        <Typography id="not-found-description">{desc}</Typography>
-        <div
-          className="button-container"
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <Button
-            label="Go to the main dashboard"
-            level="primary"
-            id="not-found-page-action"
-            sx={{ fontSize: "var(--env-var-font-size-medium)" }}
-          />
-        </div>
+    <Stack className="not-found-page" justifyContent="center">
+      <Stack gap="20px" alignItems="center">
+        <Typography component="h1">{title}</Typography>
+        <Typography>{desc}</Typography>
+        <Button
+          label="Go to the main dashboard"
+          level="primary"
+          sx={{ mt: "24px" }}
+        />
       </Stack>
     </Stack>
   );
