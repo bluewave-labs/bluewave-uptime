@@ -1,0 +1,19 @@
+.select-component > .MuiSelect-select {
+  height: 34px !important;
+  display: flex !important;
+  align-items: center;
+}
+.MuiInputBase-root:has(> .MuiSelect-select) {
+  min-width: 150px;
+}
+.MuiInputBase-root:has(> .MuiSelect-select),
+.MuiMenu-List .MuiMenuItem-root {
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-5);
+}
+.MuiInputBase-root:has(> .MuiSelect-select) fieldset {
+  border-color: var(--env-var-color-29);
+}
+.MuiInputBase-root:not(.Mui-focused):has(> .MuiSelect-select):hover fieldset {
+  border-color: var(--env-var-color-29);
+}
