@@ -319,22 +319,22 @@ Example:
 
 ##### Response Payload
 
-> | Type | Notes                              |
-> | ---- | ---------------------------------- |
-> | JWT  | JSON Web Token containing a `User` |
+> | Type | Notes          |
+> | ---- | -------------- |
+> | User | User data      |
+> | JWT  | JSON web token |
 
 ##### Sample CURL request
 
 ```
 curl --request POST \
   --url http://localhost:5000/api/v1/auth/register \
-  --header 'Content-Type: application/json' \
-  --data '{
-	"firstname" : "User First Name",
-	"lastname": "User Last Name",
-	"email" : "user@gmail.com",
-	"password": "user_password"
-}'
+  --header 'Content-Type: multipart/form-data' \
+  --form firstName=Alex \
+  --form lastName=Hollidaty \
+  --form email=ajhollid@gmail.com \
+  --form 'password=Testtest1!' \
+  --form 'role[]=admin'
 ```
 
 ##### Sample Response
@@ -342,8 +342,22 @@ curl --request POST \
 ```json
 {
   "success": true,
-  "msg": "User created",
-  "data": "<encoded_user>"
+  "msg": "User created successfully",
+  "data": {
+    "user": {
+      "_id": "66a1425b873da2207443f192",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "name@gmail.com",
+      "isActive": true,
+      "isVerified": false,
+      "role": ["admin"],
+      "createdAt": "2024-07-24T18:05:15.852Z",
+      "updatedAt": "2024-07-24T18:05:15.852Z",
+      "__v": 0
+    },
+    "token": "<token>"
+  }
 }
 ```
 
@@ -364,23 +378,25 @@ curl --request POST \
 > | Name     | Type     | Notes               |
 > | -------- | -------- | ------------------- |
 > | email    | `string` | Valid email address |
-> | password | `string` | Min 8 chars         |
+> | password | `string` |                     |
 
 ##### Response Payload
 
-> | Type | Notes                              |
-> | ---- | ---------------------------------- |
-> | JWT  | JSON Web Token Containing a `User` |
+> | Type | Notes          |
+> | ---- | -------------- |
+> | User | User data      |
+> | JWT  | JSON web token |
 
 ##### Sample CURL request
 
 ```
 curl --request POST \
   --url http://localhost:5000/api/v1/auth/login \
+  --header 'Authorization: Bearer undefined' \
   --header 'Content-Type: application/json' \
   --data '{
-	"email" : "user@gmail.com",
-	"password": "user_password"
+	"email" : "name@gmail.com",
+	"password": "Testtest1!"
 }'
 ```
 
@@ -388,9 +404,25 @@ curl --request POST \
 
 ```json
 {
-  "success": true,
-  "msg": "Found user",
-  "data": "<encoded_user>"
+{
+	"success": true,
+	"msg": "User logged in successfully",
+	"data": {
+		"user": {
+      "_id": "66a1425b873da2207443f192",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "name@gmail.com",
+      "isActive": true,
+      "isVerified": false,
+      "role": ["admin"],
+      "createdAt": "2024-07-24T18:05:15.852Z",
+      "updatedAt": "2024-07-24T18:05:15.852Z",
+      "__v": 0
+		},
+		"token": "<token>"
+	}
+}
 }
 ```
 
