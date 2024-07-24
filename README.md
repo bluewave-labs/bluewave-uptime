@@ -433,18 +433,20 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value               |
+> | -------------- | ------------------- |
+> | Method         | POST                |
+> | content-type   | multipart/form-data |
 
-##### Body
+##### Form
 
-> | Name          | Type     | Notes       |
-> | ------------- | -------- | ----------- |
-> | firstname     | `string` |             |
-> | lastname      | `string` |             |
-> | profilePicUrl | `string` |             |
-> | password      | `string` | Min 8 chars |
+> | Name        | Type     | Notes                       |
+> | ----------- | -------- | --------------------------- |
+> | firstName   | `string` | Optional                    |
+> | lastName    | `string` | Optional                    |
+> | profileIame | `file`   | Optional                    |
+> | password    | `string` | Required to change password |
+> | newPassword | `string` | Required to change password |
 
 ###### Response Payload
 
@@ -456,13 +458,14 @@ curl --request POST \
 
 ```
 curl --request POST \
-  --url http://localhost:5000/api/v1/auth/user/6654d156634754f789e1f10e \
+  --url http://localhost:5000/api/v1/auth/user/66a1425b873da2207443f192 \
   --header 'Authorization: <bearer_token>' \
-  --header 'Content-Type: application/json' \
-  --data '{
-	"firstname": "First Name",
-  "lastname: "Last Name"
-}'
+  --header 'Content-Type: multipart/form-data' \
+  --form firstName=Test \
+  --form lastName=Test \
+  --form profileImage=@/home/user/Desktop/cat.jpg \
+  --form 'newPassword=Testtest1!' \
+  --form 'password=Testtest2!'
 ```
 
 ###### Sample Response
@@ -470,17 +473,19 @@ curl --request POST \
 ```json
 {
   "success": true,
-  "msg": "User updated",
+  "msg": "User updated successfully",
   "data": {
-    "_id": "6654d156634754f789e1f10e",
-    "firstname": "First Name",
-    "lastname": "Last Name",
-    "email": "me@gmail.com",
+    "_id": "66a1425b873da2207443f192",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "name@gmail.com",
     "isActive": true,
     "isVerified": false,
-    "createdAt": "2024-05-27T18:30:46.358Z",
-    "updatedAt": "2024-05-27T19:21:51.747Z",
-    "__v": 0
+    "role": ["admin"],
+    "createdAt": "2024-07-24T18:05:15.852Z",
+    "updatedAt": "2024-07-24T18:31:32.314Z",
+    "__v": 0,
+    "avatarImage": "<Base64 Image>"
   }
 }
 ```
