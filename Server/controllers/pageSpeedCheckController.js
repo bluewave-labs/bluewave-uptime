@@ -54,12 +54,19 @@ const createPageSpeedCheck = async (req, res, next) => {
     // Run the PageSpeed check
     const pageSpeedResults = await pageSpeedService.runPageSpeedCheck(url);
 
+    // Extract categories scores
+    const categories = pageSpeedResults.lighthouseResult?.categories;
+
+    if (!categories) {
+      throw new Error('Categories not found in PageSpeed results');
+    }
+
     const newPageSpeedCheck = await pageSpeedService.createPageSpeedCheck({
       monitorId,
-      accessibility: pageSpeedResults.lighthouseResult.categories.accessibility.score * 100,
-      bestPractices: pageSpeedResults.lighthouseResult.categories.best-practices.score * 100,
-      seo: pageSpeedResults.lighthouseResult.categories.seo.score * 100,
-      performance: pageSpeedResults.lighthouseResult.categories.performance.score * 100,
+      accessibility: (categories.accessibility?.score || 0) * 100,
+      bestPractices: (categories["best-practices"]?.score || 0) * 100,
+      seo: (categories.seo?.score || 0) * 100,
+      performance: (categories.performance?.score || 0) * 100,
     });
 
     return res.status(201).json({
