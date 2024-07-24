@@ -24,6 +24,22 @@ import "./index.css";
  * @param {function} props.onChange - The function to handle onChange event.
  * @param {object} props.sx - The custom styles object for MUI Select component.
  * @returns {JSX.Element}
+ *
+ * @example
+ * const frequencies = [
+ * { _id: 1, name: "1 minute" },
+ * { _id: 2, name: "2 minutes" },
+ * { _id: 3, name: "3 minutes" },
+ * ];
+ *
+ * <Select
+ *  id="frequency-id"
+ *  label="Check frequency"
+ *  placeholder
+ *  value={value}
+ *  onChange={handleChange}
+ *  items={frequencies}
+ * />
  */
 
 const Select = ({
