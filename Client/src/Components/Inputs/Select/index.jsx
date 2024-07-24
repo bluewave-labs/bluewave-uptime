@@ -19,7 +19,7 @@ import "./index.css";
  * @param {boolean} props.isHidden - Whether the placeholder should be hidden.
  * @param {string} props.value - The currently selected value.
  * @param {object[]} props.items - The array of items to populate in the select dropdown.
- *    @param {string} props.items._id - The unique identifier of each item.
+ *    @param {(string | number)} props.items._id - The unique identifier of each item.
  *    @param {string} props.items.name - The display name of each item.
  * @param {function} props.onChange - The function to handle onChange event.
  * @param {object} props.sx - The custom styles object for MUI Select component.
