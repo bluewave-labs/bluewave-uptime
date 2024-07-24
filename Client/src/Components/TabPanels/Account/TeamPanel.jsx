@@ -5,9 +5,7 @@ import {
   ButtonGroup,
   Divider,
   IconButton,
-  MenuItem,
   Modal,
-  Select,
   Stack,
   TextField,
   Typography,
@@ -18,12 +16,12 @@ import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import axiosInstance from "../../../Utils/axiosConfig";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
 import Remove from "../../../assets/icons/trash-bin.svg?react";
+import Select from "../../Inputs/Select";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -44,7 +42,7 @@ const TeamPanel = () => {
   });
   const [toInvite, setToInvite] = useState({
     email: "",
-    role: [""],
+    role: ["0"],
   });
   const [tableData, setTableData] = useState({});
   const [members, setMembers] = useState([]);
@@ -202,7 +200,7 @@ const TeamPanel = () => {
   };
   const closeInviteModal = () => {
     setIsOpen(false);
-    setToInvite({ email: "", role: [""] });
+    setToInvite({ email: "", role: ["0"] });
     setErrors({});
   };
 
@@ -377,6 +375,8 @@ const TeamPanel = () => {
           />
           <Select
             id="team-member-role"
+            placeholder="Select role"
+            isHidden={true}
             value={toInvite.role[0]}
             onChange={(event) =>
               setToInvite((prev) => ({
@@ -384,46 +384,11 @@ const TeamPanel = () => {
                 role: [event.target.value],
               }))
             }
-            displayEmpty
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  marginTop: theme.gap.xs,
-                },
-              },
-              MenuListProps: {
-                style: { padding: 0 },
-              },
-            }}
-            IconComponent={KeyboardArrowDownIcon}
-            sx={{ mt: theme.gap.xs }}
-          >
-            <MenuItem disableRipple id="role-default" value="">
-              Select role
-            </MenuItem>
-            <MenuItem
-              disableRipple
-              value="admin"
-              sx={{
-                fontSize: "13px",
-                borderRadius: `${theme.shape.borderRadius}px`,
-                margin: theme.gap.xs,
-              }}
-            >
-              Admin
-            </MenuItem>
-            <MenuItem
-              disableRipple
-              value="user"
-              sx={{
-                fontSize: "13px",
-                borderRadius: `${theme.shape.borderRadius}px`,
-                margin: theme.gap.xs,
-              }}
-            >
-              User
-            </MenuItem>
-          </Select>
+            items={[
+              { _id: "admin", name: "admin" },
+              { _id: "user", name: "user" },
+            ]}
+          />
           <Stack
             direction="row"
             gap={theme.gap.small}
