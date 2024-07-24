@@ -54,7 +54,6 @@ const Incidents = () => {
     fetchIncidents();
   }, [authState]);
 
-  console.log(monitors);
   const handleSelect = (event) => {
     setSelectedMonitor(event.target.value);
   };
