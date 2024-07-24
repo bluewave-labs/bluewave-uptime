@@ -119,7 +119,6 @@ const Incidents = () => {
           value={selectedMonitor}
           onChange={handleSelect}
           items={Object.values(monitors)}
-          field="name"
         />
         <ButtonGroup sx={{ ml: "auto" }}>
           <Button

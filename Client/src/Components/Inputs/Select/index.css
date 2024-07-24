@@ -1,13 +1,17 @@
-.select-component > .MuiSelect-select {
+.select-wrapper .select-component > .MuiSelect-select {
+  padding: 0 10px;
   height: 34px !important;
   display: flex !important;
   align-items: center;
+  text-transform: capitalize;
+  line-height: 1;
 }
-.MuiInputBase-root:has(> .MuiSelect-select) {
+.select-wrapper .MuiInputBase-root:has(> .MuiSelect-select) {
   min-width: 150px;
 }
-.MuiInputBase-root:has(> .MuiSelect-select),
-.MuiMenu-List .MuiMenuItem-root {
+.select-wrapper .MuiInputBase-root:has(> .MuiSelect-select),
+.MuiMenu-List .MuiMenuItem-root,
+.select-wrapper h3.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
 }

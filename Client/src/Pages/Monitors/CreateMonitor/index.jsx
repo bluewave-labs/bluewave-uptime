@@ -2,7 +2,7 @@ import "./index.css";
 import React, { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
-import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { Box, MenuItem, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import Field from "../../../Components/Inputs/Field";
+import Select from "../../../Components/Inputs/Select";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -125,7 +126,13 @@ const CreateMonitor = () => {
 
   //select values
   // const ports = ["Port 1", "Port 2", "Port 3"];
-  const frequencies = [1, 2, 3, 4, 5];
+  const frequencies = [
+    { _id: 1, name: "1 minute" },
+    { _id: 2, name: "2 minutes" },
+    { _id: 3, name: "3 minutes" },
+    { _id: 4, name: "4 minutes" },
+    { _id: 5, name: "5 minutes" },
+  ];
 
   return (
     <div
@@ -308,41 +315,15 @@ const CreateMonitor = () => {
             <Typography component="h2">Advanced settings</Typography>
           </Box>
           <Stack gap={theme.gap.large}>
-            {/* TODO - refactor select component */}
-            <Box>
-              <Typography component="p" mb={theme.gap.small}>
-                Check frequency
-              </Typography>
-              <Select
-                id="monitor-frequencies"
-                value={advancedSettings.interval || 1}
-                inputProps={{ id: "monitor-frequencies-select" }}
-                onChange={(event) =>
-                  handleChange(event, "interval", setAdvancedSettings)
-                }
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      marginTop: "10px",
-                    },
-                  },
-                }}
-              >
-                {frequencies.map((freq) => (
-                  <MenuItem
-                    key={`port-${freq}`}
-                    value={freq}
-                    sx={{
-                      fontSize: "13px",
-                      borderRadius: `${theme.shape.borderRadius}px`,
-                      margin: "5px",
-                    }}
-                  >
-                    {freq} {freq === 1 ? "minute" : "minutes"}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
+            <Select
+              id="monitor-interval"
+              label="Check frequency"
+              value={advancedSettings.interval || 1}
+              onChange={(event) =>
+                handleChange(event, "interval", setAdvancedSettings)
+              }
+              items={frequencies}
+            />
             {/* TODO */}
             {/* <FlexibileTextField
               id="monitor-settings-retries"

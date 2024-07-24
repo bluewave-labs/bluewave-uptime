@@ -1,10 +1,11 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import Button from "../../Components/Button";
-
-import "./index.css";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
+import Select from "../../Components/Inputs/Select";
+
+import "./index.css";
 
 const Settings = () => {
   const theme = useTheme();
@@ -37,22 +38,19 @@ const Settings = () => {
             </Typography>
           </Box>
           <Stack gap={theme.gap.xl}>
-            {/* TODO - build select component */}
-            <Field
-              type="text"
+            <Select
               id="display-timezone"
               label="Display timezone"
-              placeholder="America / Toronto"
-              value=""
-              onChange={() => console.log("Disabled")}
+              value="est"
+              onChange={() => console.log("disabled")}
+              items={[{ _id: "est", name: "America / Toronto" }]}
             />
-            <Field
-              type="text"
+            <Select
               id="server-timezone"
               label="Server timezone"
-              placeholder="America / Toronto"
-              value=""
-              onChange={() => console.log("Disabled")}
+              value="est"
+              onChange={() => console.log("disabled")}
+              items={[{ _id: "est", name: "America / Toronto" }]}
             />
           </Stack>
         </Stack>

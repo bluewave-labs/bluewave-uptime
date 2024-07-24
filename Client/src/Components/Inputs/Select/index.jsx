@@ -1,6 +1,11 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import { MenuItem, Select as MuiSelect } from "@mui/material";
+import {
+  MenuItem,
+  Select as MuiSelect,
+  Stack,
+  Typography,
+} from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import "./index.css";
@@ -9,6 +14,7 @@ import "./index.css";
  * @component
  * @param {object} props
  * @param {string} props.id - The ID attribute for the select element.
+ * @param {string} props.placeholder - The label of the select element.
  * @param {string} props.placeholder - The placeholder text when no option is selected.
  * @param {boolean} props.isHidden - Whether the placeholder should be hidden.
  * @param {string} props.value - The currently selected value.
@@ -20,7 +26,16 @@ import "./index.css";
  * @returns {JSX.Element}
  */
 
-const Select = ({ id, placeholder, isHidden, value, items, onChange, sx }) => {
+const Select = ({
+  id,
+  label,
+  placeholder,
+  isHidden,
+  value,
+  items,
+  onChange,
+  sx,
+}) => {
   const theme = useTheme();
   const itemStyles = {
     fontSize: "var(--env-var-font-size-medium)",
@@ -31,61 +46,66 @@ const Select = ({ id, placeholder, isHidden, value, items, onChange, sx }) => {
   };
 
   return (
-    <MuiSelect
-      id={id}
-      className="select-component"
-      value={value}
-      onChange={onChange}
-      displayEmpty
-      MenuProps={{
-        PaperProps: {
-          style: {
-            marginTop: theme.gap.xs,
+    <Stack gap={theme.gap.xs} className="select-wrapper">
+      {label && <Typography component="h3">{label}</Typography>}
+      <MuiSelect
+        className="select-component"
+        value={value}
+        onChange={onChange}
+        displayEmpty
+        inputProps={{ id: id }}
+        MenuProps={{
+          PaperProps: {
+            className: "select-dropdown",
+            style: {
+              marginTop: theme.gap.xs,
+            },
           },
-        },
-        MenuListProps: {
-          style: { padding: 0 },
-        },
-      }}
-      IconComponent={KeyboardArrowDownIcon}
-      sx={{ ...sx }}
-    >
-      {placeholder && (
-        <MenuItem
-          className="select-placeholder"
-          value="0"
-          sx={{
-            display: isHidden ? "none" : "flex",
-            visibility: isHidden ? "none" : "visible",
-            ...itemStyles,
-          }}
-        >
-          {placeholder}
-        </MenuItem>
-      )}
-      {items.map((item) => (
-        <MenuItem
-          value={item._id}
-          key={`${id}-${item._id}`}
-          sx={{
-            ...itemStyles,
-          }}
-        >
-          {item.name}
-        </MenuItem>
-      ))}
-    </MuiSelect>
+          MenuListProps: {
+            style: { padding: 0 },
+          },
+        }}
+        IconComponent={KeyboardArrowDownIcon}
+        sx={{ ...sx }}
+      >
+        {placeholder && (
+          <MenuItem
+            className="select-placeholder"
+            value="0"
+            sx={{
+              display: isHidden ? "none" : "flex",
+              visibility: isHidden ? "none" : "visible",
+              ...itemStyles,
+            }}
+          >
+            {placeholder}
+          </MenuItem>
+        )}
+        {items.map((item) => (
+          <MenuItem
+            value={item._id}
+            key={`${id}-${item._id}`}
+            sx={{
+              ...itemStyles,
+            }}
+          >
+            {item.name}
+          </MenuItem>
+        ))}
+      </MuiSelect>
+    </Stack>
   );
 };
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
+  label: PropTypes.string,
   placeholder: PropTypes.string,
   isHidden: PropTypes.bool,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      _id: PropTypes.string.isRequired,
+      _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       name: PropTypes.string.isRequired,
     })
   ).isRequired,
