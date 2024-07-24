@@ -513,7 +513,6 @@ curl --request POST \
 curl --request GET \
   --url http://localhost:5000/api/v1/auth/users \
   --header 'Authorization: <bearer_token>\
-  --header 'User-Agent: insomnia/2023.5.8'
 ```
 
 ##### Sample Resonse
@@ -525,9 +524,9 @@ curl --request GET \
   "data": [
     {
       "_id": "669e90072d5663d25808bc7b",
-      "firstName": "Alex",
-      "lastName": "Holliday",
-      "email": "test@test.com",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "name@gmail.com",
       "isActive": true,
       "isVerified": false,
       "role": ["admin"],
