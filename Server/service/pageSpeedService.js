@@ -14,15 +14,14 @@ class PageSpeedService {
    */
   async runPageSpeedCheck(url) {
     try {
-      const response = await axios.get(
-        `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed`,
-        {
-          params: {
-            url: url,
-            categories: 'performance,accessibility,best-practices,seo',
-          }
-        }
-      );
+      const response = await axios({
+        method: 'get',
+        url: 'https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed',
+        params: {
+          url: url,
+          categories: 'performance,accessibility,best-practices,seo',
+        },
+      });
       return response.data;
     } catch (error) {
       logger.error(`Error running PageSpeed check for ${url}`, {
