@@ -137,6 +137,12 @@ const monitorValidation = joi.object({
   interval: joi.number(),
 });
 
+const editMonitorBodyValidation = joi.object({
+  name: joi.string(),
+  description: joi.string(),
+  interval: joi.number(),
+});
+
 //****************************************
 // Alerts
 //****************************************
@@ -245,6 +251,7 @@ module.exports = {
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
+  editMonitorBodyValidation,
   editUserParamValidation,
   editUserBodyValidation,
   createAlertParamValidation,
