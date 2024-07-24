@@ -51,9 +51,9 @@ function NavBar() {
   const authState = useSelector((state) => state.auth);
 
   let settings = ["Profile", "Password", "Team", "Logout"];
-  if (authState.user.role[0] !== "admin")
+  if (!authState.user.role.includes("admin"))
     settings = ["Profile", "Password", "Logout"];
-  
+
   /**
    * Handles opening the user menu.
    *

@@ -26,7 +26,7 @@ const Account = ({ open = "profile" }) => {
 
   let tabList = ["Profile", "Password", "Team"];
   const { user } = useSelector((state) => state.auth);
-  if (user.role[0] !== "admin") tabList = ["Profile", "Password"];
+  if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
 
   return (
     <Box
@@ -74,7 +74,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-       { user.role[0] === "admin" && <TeamPanel />}
+       { user.role.includes("admin") && <TeamPanel />}
       </TabContext>
     </Box>
   );
