@@ -1,5 +1,7 @@
 const PageSpeedCheck = require("../models/PageSpeedCheck");
+const PageSpeedService = require("../service/pageSpeedService");
 const { successMessages } = require("../utils/messages");
+const pageSpeedService = new PageSpeedService();
 const SERVICE_NAME = "pagespeed";
 const {
   getPageSpeedCheckParamValidation,
@@ -47,17 +49,18 @@ const createPageSpeedCheck = async (req, res, next) => {
     await createPageSpeedCheckBodyValidation.validateAsync(req.body);
 
     const { monitorId } = req.params;
-    const { accessibility, bestPractices, seo, performance } = req.body;
+    const { url } = req.body;
 
-    const newPageSpeedCheck = new PageSpeedCheck({
+    // Run the PageSpeed check
+    const pageSpeedResults = await pageSpeedService.runPageSpeedCheck(url);
+
+    const newPageSpeedCheck = await pageSpeedService.createPageSpeedCheck({
       monitorId,
-      accessibility,
-      bestPractices,
-      seo,
-      performance,
+      accessibility: pageSpeedResults.lighthouseResult.categories.accessibility.score * 100,
+      bestPractices: pageSpeedResults.lighthouseResult.categories.best-practices.score * 100,
+      seo: pageSpeedResults.lighthouseResult.categories.seo.score * 100,
+      performance: pageSpeedResults.lighthouseResult.categories.performance.score * 100,
     });
-
-    await newPageSpeedCheck.save();
 
     return res.status(201).json({
       msg: successMessages.CREATED,
