@@ -126,6 +126,7 @@ const Monitors = () => {
       className="monitors"
       style={{
         padding: `${theme.content.pY} ${theme.content.pX}`,
+        backgroundColor: "var(--env-var-color-30)",
       }}
     >
       <div className="monitors-bar">
