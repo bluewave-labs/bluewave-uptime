@@ -25,7 +25,6 @@ import LogoutSvg from "../../assets/icons/logout.svg?react";
 
 import BWULogo from "../../assets/Images/bwl-logo.svg?react";
 
-const settings = ["Profile", "Password", "Team", "Logout"];
 const icons = {
   Profile: <UserSvg />,
   Team: <TeamSvg />,
@@ -51,6 +50,10 @@ function NavBar() {
   const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
 
+  let settings = ["Profile", "Password", "Team", "Logout"];
+  if (authState.user.role[0] !== "admin")
+    settings = ["Profile", "Password", "Logout"];
+  
   /**
    * Handles opening the user menu.
    *
