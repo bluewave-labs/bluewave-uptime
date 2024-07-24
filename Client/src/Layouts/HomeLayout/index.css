@@ -6,7 +6,7 @@
   justify-content: flex-start;
 }
 
-.main-content>div:nth-child(2){
+.main-content > div:nth-child(2) {
   position: relative;
   /* overflow-y: auto; */
   flex: 1;

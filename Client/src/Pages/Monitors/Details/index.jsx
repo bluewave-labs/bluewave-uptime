@@ -203,6 +203,7 @@ const DetailsPage = () => {
       className="monitor-details"
       style={{
         padding: `${theme.content.pY} ${theme.content.pX}`,
+        backgroundColor: "var(--env-var-color-30)",
       }}
     >
       <Button

@@ -99,8 +99,9 @@ function NavBar() {
       position="sticky"
       sx={{
         width: "100%",
-        backgroundColor: "white",
-        boxShadow: "var(--env-var-shadow-1)",
+        backgroundColor: "transparent",
+        boxShadow: "none",
+        borderBottom: "1px solid var(--color-border-0)",
       }}
     >
       <Container maxWidth="xxl" sx={{ width: "100%" }}>
