@@ -1,4 +1,8 @@
 /* NavBar Component Styles*/
+.css-14ds6td-MuiPaper-root-MuiAppBar-root {
+  height: var(--env-var-nav-bar-height);
+}
+
 .icon-button-toggle {
   display: flex;
   align-items: center;
