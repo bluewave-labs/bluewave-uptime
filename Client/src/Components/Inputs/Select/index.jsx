@@ -35,7 +35,7 @@ import "./index.css";
  * <Select
  *  id="frequency-id"
  *  label="Check frequency"
- *  placeholder
+ *  placeholder="Select frequency"
  *  value={value}
  *  onChange={handleChange}
  *  items={frequencies}
