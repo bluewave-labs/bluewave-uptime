@@ -130,7 +130,7 @@ const Monitors = () => {
     >
       <div className="monitors-bar">
         <div className="monitors-bar-title">
-          Hello, {authState.user.firstname}
+          Hello, {authState.user.firstName}
         </div>
         <Button
           level="primary"

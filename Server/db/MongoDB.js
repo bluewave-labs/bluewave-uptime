@@ -46,6 +46,7 @@ const insertUser = async (req, res) => {
       const avatar = await GenerateAvatarImage(req.file);
       userData.avatarImage = avatar;
     }
+    console.log(userData);
     const newUser = new UserModel(userData);
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })
@@ -131,7 +132,6 @@ const updateUser = async (req, res) => {
     )
       .select("-password")
       .select("-profileImage");
-    console.log(updatedUser);
     return updatedUser;
   } catch (error) {
     throw error;
@@ -175,10 +175,25 @@ const requestInviteToken = async (req, res) => {
     await InviteToken.deleteMany({ email: req.body.email });
     let inviteToken = new InviteToken({
       email: req.body.email,
+      role: req.body.role,
       token: crypto.randomBytes(32).toString("hex"),
     });
     await inviteToken.save();
     return inviteToken;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getInviteToken = async (req, res) => {
+  try {
+    const invite = await InviteToken.findOneAndDelete({
+      token: req.body.token,
+    });
+    if (invite === null) {
+      throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
+    }
+    return invite;
   } catch (error) {
     throw error;
   }
@@ -350,6 +365,59 @@ const getMonitorsByUserId = async (req, res) => {
 };
 
 /**
+ * Get monitors by UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Monitor>}
+ * @throws {Error}
+ */
+const getMonitorByIdForIncidents = async (req, res, next) => {
+  try {
+    const monitor = await Monitor.findById(req.params.monitorId);
+    const checks = await Check.find({
+      monitorId: monitor._id,
+      status: false,
+    }).sort({
+      createdAt: 1,
+    });
+    const monitorWithChecks = { ...monitor.toObject(), checks };
+    return monitorWithChecks;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get monitors by UserID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Array<Monitor>>}
+ * @throws {Error}
+ */
+const getMonitorsByUserIdForIncidents = async (req, res) => {
+  try {
+    const monitors = await Monitor.find({ userId: req.params.userId });
+    // Map each monitor to include its associated checks
+    const monitorsWithChecks = await Promise.all(
+      monitors.map(async (monitor) => {
+        const checks = await Check.find({
+          monitorId: monitor._id,
+          status: false,
+        }).sort({
+          createdAt: 1,
+        });
+        return { ...monitor.toObject(), checks };
+      })
+    );
+    return monitorsWithChecks;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * Create a monitor
  * @async
  * @param {Express.Request} req
@@ -459,7 +527,6 @@ const editMonitor = async (req, res) => {
 
 const createCheck = async (checkData) => {
   try {
-    console.log(checkData);
     const check = await new Check({ ...checkData }).save();
     return check;
   } catch (error) {
@@ -642,6 +709,7 @@ module.exports = {
   deleteUser,
   getAllUsers,
   requestInviteToken,
+  getInviteToken,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
@@ -649,6 +717,8 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
+  getMonitorByIdForIncidents,
+  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,

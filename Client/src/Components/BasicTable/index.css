@@ -77,7 +77,6 @@
 }
 
 .MuiPaper-root + .MuiPagination-root {
-  flex: 1;
   margin-top: 35px;
   border: solid 1px var(--env-var-color-16);
   border-radius: var(--env-var-radius-1);

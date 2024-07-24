@@ -44,7 +44,7 @@ const registerValidation = joi.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
     ),
   profileImage: joi.any(),
-  role: joi.string().required(),
+  role: joi.array().required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -68,7 +68,7 @@ const editUserBodyValidation = joi.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
     ),
   deleteProfileImage: joi.boolean(),
-  role: joi.string(),
+  role: joi.array(),
 });
 
 const recoveryValidation = joi.object({
@@ -107,9 +107,11 @@ const inviteBodyValidation = joi.object({
     "string.empty": "Email is required",
     "string.email": "Must be a valid email address",
   }),
-  role: joi.string().required().messages({
-    "string.empty": "Role is required",
-  }),
+  role: joi.array().required(),
+});
+
+const inviteVerifciationBodyValidation = joi.object({
+  token: joi.string().required(),
 });
 
 //****************************************
@@ -239,6 +241,7 @@ module.exports = {
   newPasswordValidation,
   inviteRoleValidation,
   inviteBodyValidation,
+  inviteVerifciationBodyValidation,
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,

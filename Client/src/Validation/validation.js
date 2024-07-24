@@ -68,9 +68,7 @@ const credentials = joi.object({
       }
       return value;
     }),
-  role: joi.string().messages({
-    "string.empty": "Role is required",
-  }),
+  role: joi.array(),
 });
 
 const monitorValidation = joi.object({

@@ -26,6 +26,7 @@ const otherColorsWhite = "#fff";
 const otherColorsGraishWhiteLight = "#f2f2f2";
 const otherColorsStrongBlue = "#f2f2f2";
 const otherColorsSlateGray = "#667085";
+const otherColorsFillGray = "#f4f4f4";
 
 //box shadow
 const shadow =
@@ -74,6 +75,7 @@ const theme = createTheme({
       graishWhiteLight: otherColorsGraishWhiteLight,
       strongBlue: otherColorsStrongBlue,
       slateGray: otherColorsSlateGray,
+      fillGray: otherColorsFillGray,
     },
   },
   font: {
