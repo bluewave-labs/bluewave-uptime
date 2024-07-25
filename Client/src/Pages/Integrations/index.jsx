@@ -18,7 +18,7 @@ const IntegrationsComponent = ({ url, header, info, onClick }) => {
   const theme = useTheme();
 
   return (
-    <Grid item lg={6} flexGrow={1} direction="row">
+    <Grid item lg={6} flexGrow={1}>
       <Stack
         direction="row"
         justifyContent="space-between"
