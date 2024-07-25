@@ -55,10 +55,10 @@ const createPageSpeedCheck = async (req, res, next) => {
     const pageSpeedResults = await pageSpeedService.runPageSpeedCheck(url);
 
     // Extract categories scores
-    const categories = pageSpeedResults.lighthouseResult?.categories;
+    const categories = pageSpeedResults.data.lighthouseResult?.categories;
 
     if (!categories) {
-      throw new Error('Categories not found in PageSpeed results');
+      throw new Error("Categories not found in PageSpeed results");
     }
 
     const newPageSpeedCheck = await pageSpeedService.createPageSpeedCheck({

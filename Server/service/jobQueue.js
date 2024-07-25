@@ -231,9 +231,12 @@ class JobQueue {
     try {
       const jobs = await this.getJobs();
       for (const job of jobs) {
+        await this.queue.removeRepeatableByKey(job.key);
         await this.queue.remove(job.id);
       }
-      console.log(jobs);
+      this.workers.forEach(async (worker) => {
+        await worker.close();
+      });
       await this.queue.obliterate();
       logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
         service: SERVICE_NAME,

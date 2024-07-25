@@ -2,6 +2,8 @@ const axios = require("axios");
 const ping = require("ping");
 const logger = require("../utils/logger");
 const Check = require("../models/Check");
+const PageSpeedCheck = require("../models/PageSpeedCheck");
+const { write } = require("fs");
 
 class NetworkService {
   constructor(db) {
@@ -48,19 +50,19 @@ class NetworkService {
         await this.measureResponseTime(operation);
       const isAlive = response.alive;
 
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         responseTime,
-      });
-      return await this.logAndStoreCheck(check);
+      };
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: false,
         responseTime: error.responseTime,
-      });
-      return await this.logAndStoreCheck(check);
+      };
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     }
   }
 
@@ -85,26 +87,26 @@ class NetworkService {
       const isAlive = response.status >= 200 && response.status < 300;
 
       //Create a check with relevant data
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         responseTime,
         statusCode: response.status,
-      });
-      return await this.logAndStoreCheck(check);
+      };
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: false,
         responseTime: error.responseTime,
-      });
+      };
       // The server returned a response
       if (error.response) {
-        check.statusCode = error.response.status;
+        checkData.statusCode = error.response.status;
       } else {
-        check.statusCode = this.NETWORK_ERROR;
+        checkData.statusCode = this.NETWORK_ERROR;
       }
-      return await this.logAndStoreCheck(check);
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     }
   }
 
@@ -113,17 +115,7 @@ class NetworkService {
    * @param {Object} job - The job object containing data operation.
    * @returns {Promise<{boolean}} The result of logging and storing the check
    */
-  async handlePagespeed(job) {
-    // Get pagespeed data
-
-    try {
-      console.log("Fetching data");
-      const requestUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${job.data.url}&category=seo&category=accessibility&category=best-practices&category=performance`;
-      const response = await axios.get(requestUrl);
-      console.log(response.data);
-    } catch (error) {}
-    // Insert into DB
-  }
+  async handlePagespeed(job) {}
 
   /**
    * Retrieves the status of a given job based on its type.
@@ -162,7 +154,7 @@ class NetworkService {
    * @param {Error} [error=null] - Optional error object if an error occurred during the check.
    * @returns {Promise<boolean>} The status of the inserted check if successful, otherwise false.
    */
-  async logAndStoreCheck(check) {
+  async logAndStoreCheckOld(check) {
     try {
       const insertedCheck = await check.save();
       return insertedCheck.status;
@@ -173,6 +165,19 @@ class NetworkService {
         error: error,
       });
       return false;
+    }
+  }
+
+  async logAndStoreCheck(data, writeToDB) {
+    try {
+      const insertedCheck = await writeToDB(data);
+      return insertedCheck.status;
+    } catch (error) {
+      logger.error(`Error wrtiting check for ${data.monitorId}`, {
+        service: this.SERVICE_NAME,
+        monitorId: data.monitorId,
+        error: error,
+      });
     }
   }
 }
