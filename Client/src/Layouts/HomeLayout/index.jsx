@@ -1,17 +1,17 @@
 import NavBar from "../../Components/NavBar";
+import Sidebar from "../../Components/Sidebar";
 import { Outlet } from "react-router";
-import DashboardSidebar from "../../Components/Dashboard/DashboardSidebar";
+import { Box } from "@mui/material";
+
 import "./index.css";
 
 const HomeLayout = () => {
   return (
-    <div className="home-layout">
+    <Box className="home-layout">
+      <Sidebar />
       <NavBar />
-      <div className="main-content">
-        <DashboardSidebar />
-        <Outlet />
-      </div>
-    </div>
+      <Outlet />
+    </Box>
   );
 };
 

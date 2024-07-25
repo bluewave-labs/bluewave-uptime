@@ -1,13 +1,58 @@
-.main-content {
+.home-layout * {
+  box-sizing: border-box;
+}
+.home-layout {
+  display: grid;
   position: relative;
-  display: flex;
-  width: 100%;
-  height: max-content;
-  justify-content: flex-start;
+  grid-template-areas:
+    "aside header"
+    "aside main";
+  grid-template-columns: var(--env-var-side-bar-width) auto;
+  grid-template-rows: var(--env-var-nav-bar-height) auto;
+  background-color: var(--env-var-color-30);
+  height: 100vh;
 }
 
-.main-content > div:nth-child(2) {
-  position: relative;
-  /* overflow-y: auto; */
-  flex: 1;
+.home-layout aside {
+  grid-area: aside;
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: var(--env-var-side-bar-width);
+  background-color: var(--env-var-color-8);
+  border-right: 1px solid var(--color-border-0);
+  padding: var(--env-var-spacing-1) var(--env-var-spacing-1-plus);
+}
+.home-layout header {
+  grid-area: header;
+  background-color: var(--env-var-color-30);
+}
+.home-layout > div {
+  height: 100%;
+  grid-area: main;
+  padding: var(--env-var-spacing-2) calc(var(--env-var-spacing-4) * 2);
+  padding-bottom: var(--env-var-spacing-4);
+  max-width: 100%;
+}
+.home-layout > div:not(:has([class*="fallback"])) {
+  max-width: 1500px;
+}
+
+@media (max-width: 600px) {
+  .home-layout {
+    grid-template-areas:
+      "header header"
+      "main main";
+    grid-template-columns: 1fr;
+    grid-template-rows: 64px auto;
+  }
+
+  aside {
+    display: none;
+    visibility: hidden;
+  }
+
+  .home-layout > div {
+    padding: var(--env-var-spacing-1);
+  }
 }

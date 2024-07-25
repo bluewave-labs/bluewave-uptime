@@ -6,12 +6,7 @@ const Maintenance = () => {
   const theme = useTheme();
 
   return (
-    <div
-      className="maintenance"
-      style={{
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-      }}
-    >
+    <div className="maintenance">
       <Fallback
         title="maintenance window"
         checks={[

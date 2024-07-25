@@ -1,18 +1,11 @@
 /* NavBar Component Styles*/
-.css-14ds6td-MuiPaper-root-MuiAppBar-root {
-  height: var(--env-var-nav-bar-height);
-}
-
-.icon-button-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.MuiToolbar-root {
+  min-height: var(--env-var-nav-bar-height) !important;
 }
 
 .icon-button-toggle-title {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
-  margin-right: var(--env-var-spacing-2);
 }
 
 .icon-button-toggle-pic {
@@ -21,7 +14,6 @@
 }
 
 #icon-button {
-  color: transparent;
   -webkit-transition: none;
   transition: none;
   outline: none;
