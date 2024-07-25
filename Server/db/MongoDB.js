@@ -4,6 +4,7 @@ const UserModel = require("../models/user");
 const Check = require("../models/Check");
 const Alert = require("../models/Alert");
 const RecoveryToken = require("../models/RecoveryToken");
+const PageSpeedCheck = require("../models/PageSpeedCheck");
 const InviteToken = require("../models/InviteToken");
 const crypto = require("crypto");
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
@@ -509,6 +510,37 @@ const editMonitor = async (req, res) => {
 };
 
 //****************************************
+// Page Speed Checks
+//****************************************
+
+const createPageSpeedCheck = async (pageSpeedCheckData) => {
+  try {
+    const pageSpeedCheck = await new pageSpeedCheck({ ...pageSpeedCheckData }).save();
+    return pageSpeedCheck;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getPageSpeedChecks = async (monitorId) => {
+  try {
+    const pageSpeedChecks = await PageSpeedCheck.find({ monitorId });
+    return pageSpeedChecks;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deletePageSpeedChecks = async (monitorId) => {
+  try {
+    const result = await PageSpeedCheck.deleteMany({ monitorId });
+    return result.deletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//****************************************
 // Checks
 //****************************************
 
@@ -734,4 +766,7 @@ module.exports = {
   deleteAlert,
   deleteAlertByMonitorId,
   deleteMonitorsByUserId,
+  createPageSpeedCheck,
+  getPageSpeedChecks,
+  deletePageSpeedChecks,
 };
