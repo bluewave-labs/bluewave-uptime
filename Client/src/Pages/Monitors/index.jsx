@@ -52,6 +52,12 @@ const Monitors = () => {
     dispatch(getMonitorsByUserId(authState.authToken));
   }, []);
 
+  useEffect(() => {
+    if (monitorState.monitors.length === 0) {
+      navigate("/monitors/create");
+    }
+  }, [monitorState.monitors, navigate]);
+
   const up = monitorState.monitors.reduce((acc, cur) => {
     return cur.status === true ? acc + 1 : acc;
   }, 0);
