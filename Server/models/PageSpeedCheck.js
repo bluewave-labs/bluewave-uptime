@@ -45,3 +45,5 @@ const PageSpeedCheck = mongoose.Schema(
  */
 
 module.exports = mongoose.model("PageSpeedCheck", PageSpeedCheck);
+
+
