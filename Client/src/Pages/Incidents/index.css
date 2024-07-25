@@ -1,0 +1,17 @@
+.incidents h1.MuiTypography-root {
+  color: var(--env-var-color-5);
+}
+.incidents h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  font-weight: 600;
+}
+.incidents button.MuiButtonBase-root {
+  font-size: var(--env-var-font-size-medium);
+  height: 34px;
+  border-color: var(--env-var-color-16);
+}
+
+/* remove later */
+.incidents .MuiSelect-select {
+  padding: 0 10px;
+}

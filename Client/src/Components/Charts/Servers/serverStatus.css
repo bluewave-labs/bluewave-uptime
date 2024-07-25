@@ -14,7 +14,7 @@
 .server-status-tile {
   min-width: 250px;
   width: calc(100% - 310px);
-  padding: var(--spacing-general-1);
+  padding: var(--spacing-general-0);
   border: 1px solid var(--color-border-0);
   border-radius: var(--border-radius-0);
 }
@@ -22,7 +22,7 @@
 .server-status-tile-title {
   font-size: var(--font-size-0);
   font-weight: bold;
-  margin-bottom: 25px;
+  margin-bottom: calc(var(--spacing-general-1) / 2);
 }
 
 .server-status-tile-value {

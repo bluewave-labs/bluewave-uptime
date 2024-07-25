@@ -1,76 +1,66 @@
-.create-monitor-form h1.MuiTypography-root {
+.create-monitor h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
   color: var(--env-var-color-1);
 }
-.create-monitor-form h1.MuiTypography-root,
-.create-monitor-form h2.MuiTypography-root {
+.create-monitor h1.MuiTypography-root,
+.create-monitor h2.MuiTypography-root {
   font-weight: 600;
 }
-.create-monitor-form h2.MuiTypography-root {
+.create-monitor h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
 }
-.create-monitor-form p.MuiTypography-root,
-.create-monitor-form button.MuiButtonBase-root,
-#monitor-frequencies {
+.create-monitor p.MuiTypography-root,
+.create-monitor button.MuiButtonBase-root {
   font-size: var(--env-var-font-size-medium);
 }
-.create-monitor-form h2.MuiTypography-root,
-.create-monitor-form h6.MuiTypography-root,
-.create-monitor-form p.MuiTypography-root,
-#monitor-frequencies {
+.create-monitor h2.MuiTypography-root,
+.create-monitor h6.MuiTypography-root,
+.create-monitor p.MuiTypography-root {
   color: var(--env-var-color-2);
 }
-.create-monitor-form h6.MuiTypography-root {
+.create-monitor h6.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
   opacity: 0.8;
 }
-
-.create-monitor-form .error-container {
+.create-monitor button.MuiButtonBase-root {
+  height: 34px;
+}
+.create-monitor .error-container {
   position: relative;
 }
-.create-monitor-form .error-container p.MuiTypography-root.input-error {
+.create-monitor .error-container p.MuiTypography-root.input-error {
   color: var(--env-var-color-24);
   opacity: 0.8;
   position: absolute;
   top: 0;
 }
-
-/* for testing, will remove later */
-/* .config-box:has(.error-container):has(.input-error) {
-  border-color: var(--env-var-color-24);
-} */
-
-.create-monitor-form .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input {
-  padding: var(--env-var-spacing-1);
-}
-.create-monitor-form .MuiInputBase-root:has(#monitor-frequencies) {
-  min-width: 300px;
-  width: 100%;
-  height: 34px;
-  border: 1px solid var(--env-var-color-4);
-  border-radius: var(--env-var-radius-1);
-  overflow: hidden;
-}
-.create-monitor-form .MuiInputBase-root:has(#monitor-frequencies) fieldset {
-  outline: none;
-  border: none;
-}
-.create-monitor-form .MuiStack-root:has(span.MuiTypography-root.input-error) {
+.create-monitor .MuiStack-root:has(span.MuiTypography-root.input-error) {
   position: relative;
 }
-.create-monitor-form span.MuiTypography-root.input-error {
+.create-monitor span.MuiTypography-root.input-error {
   position: absolute;
   top: 100%;
 }
-
-.monitors-gaps-medium {
-  height: var(--env-var-spacing-2);
+.create-monitor .config-box {
+  padding: var(--env-var-spacing-4) 50px;
+  padding-bottom: 60px;
+  border: 1px solid var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+  flex-direction: row;
+  gap: var(--env-var-spacing-4);
 }
-.monitors-gaps-small-plus {
-  height: var(--env-var-spacing-1-plus);
+.create-monitor .config-box .MuiBox-root,
+.create-monitor .config-box .MuiStack-root {
+  flex: 1;
 }
 
-.monitors-create-button-holder {
+.create-monitor-form {
   display: flex;
-  justify-content: end;
+  flex-direction: column;
+  gap: var(--env-var-spacing-4);
+}
+
+body:has(.create-monitor) .select-dropdown .MuiMenuItem-root,
+.create-monitor .select-wrapper .select-component > .MuiSelect-select {
+  text-transform: lowercase;
 }

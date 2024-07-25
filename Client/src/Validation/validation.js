@@ -43,8 +43,8 @@ const passwordSchema = joi
   });
 
 const credentials = joi.object({
-  firstname: nameSchema,
-  lastname: nameSchema,
+  firstName: nameSchema,
+  lastName: nameSchema,
   email: joi
     .string()
     .trim()
@@ -68,12 +68,10 @@ const credentials = joi.object({
       }
       return value;
     }),
-  role: joi.string().messages({
-    "string.empty": "Role is required",
-  }),
+  role: joi.array(),
 });
 
-const createMonitorValidation = joi.object({
+const monitorValidation = joi.object({
   url: joi
     .string()
     .trim()
@@ -85,7 +83,7 @@ const createMonitorValidation = joi.object({
     .string()
     .trim()
     .messages({ "string.empty": "*This field is required." }),
-  frequency: joi.number().messages({
+  interval: joi.number().messages({
     "number.base": "*Frequency must be a number.",
     "any.required": "*Frequency is required.",
   }),
@@ -106,4 +104,4 @@ const imageValidation = joi.object({
     }),
 });
 
-export { credentials, imageValidation, createMonitorValidation };
+export { credentials, imageValidation, monitorValidation };

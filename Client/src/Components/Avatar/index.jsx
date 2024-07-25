@@ -30,7 +30,7 @@ const Avatar = ({ src, small, sx }) => {
 
   return (
     <MuiAvatar
-      alt={`${user?.firstname} ${user?.lastname}`}
+      alt={`${user?.firstName} ${user?.lastName}`}
       src={
         src ? src : user?.avatarImage ? image : "/static/images/avatar/2.jpg"
       }
@@ -51,7 +51,7 @@ const Avatar = ({ src, small, sx }) => {
         ...sx,
       }}
     >
-      {user.firstname?.charAt(0)}{user.lastname?.charAt(0)}
+      {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
     </MuiAvatar>
   );
 };

@@ -2,25 +2,26 @@ import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
 import {
   Box,
-  Checkbox,
-  Container,
+  ButtonGroup,
   Divider,
-  MenuItem,
+  IconButton,
   Modal,
-  Select,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
 import Button from "../../Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
+import Field from "../../Inputs/Field";
+import { credentials } from "../../../Validation/validation";
+import axiosInstance from "../../../Utils/axiosConfig";
+import { createToast } from "../../../Utils/toastUtils";
+import { useSelector } from "react-redux";
+import BasicTable from "../../BasicTable";
+import Remove from "../../../assets/icons/trash-bin.svg?react";
+import Select from "../../Inputs/Select";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -30,227 +31,279 @@ import EditSvg from "../../../assets/icons/edit.svg?react";
  * @returns {JSX.Element}
  */
 
-const teamColumns = [
-  {
-    id: "checkbox",
-    label: "",
-    sx: { minWidth: "20px", width: "40px" },
-  },
-  {
-    id: "name",
-    label: "NAME",
-    sx: { fontSize: "12px" },
-  },
-  { id: "email", label: "EMAIL", sx: { fontSize: "12px" } },
-  { id: "role", label: "ROLE", sx: { fontSize: "12px" } },
-];
-//for testing, will be removed later
-const teamConfig = [
-  {
-    id: 0,
-    isChecked: false,
-    name: "John Connor",
-    email: "john@domain.com",
-    type: "admin",
-    role: "Administrator",
-    createdAt: "10/4/2022",
-  },
-  {
-    id: 1,
-    isChecked: false,
-    name: "Adam McFadden",
-    email: "adam@domain.com",
-    type: "member",
-    role: "Member",
-    createdAt: "10/4/2022",
-  },
-  {
-    id: 2,
-    isChecked: false,
-    name: "Cris Cross",
-    email: "cris@domain.com",
-    type: "member",
-    role: "Member",
-    createdAt: "10/4/2022",
-  },
-  {
-    id: 3,
-    isChecked: false,
-    name: "Prince",
-    email: "prince@domain.com",
-    type: "member",
-    role: "Member",
-    createdAt: "10/4/2022",
-  },
-];
-const actionsConfig = [
-  {
-    value: "bulk",
-    label: "Bulk actions",
-  },
-];
-const roleConfig = [
-  {
-    value: "role",
-    label: "Change role to",
-  },
-];
-
 const TeamPanel = () => {
   const theme = useTheme();
-  //TODO - use redux loading state
-  //!! - currently all loading buttons are tied to the same state
-  const [isLoading, setIsLoading] = useState(false);
-  //TODO - connect to redux
+
+  const { authToken } = useSelector((state) => state.auth);
+  //TODO
   const [orgStates, setOrgStates] = useState({
     name: "Bluewave Labs",
-    isLoading: false,
     isEdit: false,
-    newName: "",
   });
+  const [toInvite, setToInvite] = useState({
+    email: "",
+    role: ["0"],
+  });
+  const [tableData, setTableData] = useState({});
+  const [members, setMembers] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const response = await axiosInstance.get("/auth/users", {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+
+        setMembers(response.data.data);
+      } catch (error) {
+        createToast({
+          body: error.message || "Error fetching team members.",
+        });
+      }
+    };
+
+    fetchTeam();
+  }, []);
+
+  useEffect(() => {
+    let team = members;
+    if (filter !== "all")
+      team = members.filter((member) => member.role.includes(filter));
+
+    const data = {
+      cols: [
+        { id: 1, name: "NAME" },
+        { id: 2, name: "EMAIL" },
+        { id: 3, name: "ROLE" },
+        { id: 4, name: "ACTION" },
+      ],
+      rows: team?.map((member, idx) => {
+        return {
+          id: member._id,
+          data: [
+            {
+              id: idx,
+              data: (
+                <Stack>
+                  <Typography
+                    style={{ color: theme.palette.otherColors.blackish }}
+                  >
+                    {member.firstName + " " + member.lastName}
+                  </Typography>
+                  <Typography sx={{ opacity: 0.6 }}>
+                    Created {new Date(member.createdAt).toLocaleDateString()}
+                  </Typography>
+                </Stack>
+              ),
+            },
+            { id: idx + 1, data: member.email },
+            {
+              // TODO - Add select dropdown
+              id: idx + 2,
+              data: member.role.includes("admin") ? "Administrator" : "Member",
+            },
+            {
+              // TODO - Add delete onClick
+              id: idx + 3,
+              data: (
+                <IconButton
+                  aria-label="remove member"
+                  sx={{
+                    "&:focus": {
+                      outline: "none",
+                    },
+                  }}
+                >
+                  <Remove />
+                </IconButton>
+              ),
+            },
+          ],
+        };
+      }),
+    };
+
+    setTableData(data);
+  }, [members, filter]);
+
+  // RENAME ORGANIZATION
   const toggleEdit = () => {
     setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
   };
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setOrgStates((prev) => ({
-      ...prev,
-      name: value,
-    }));
-  };
   const handleRename = () => {};
 
-  const [teamStates, setTeamStates] = useState({
-    members: teamConfig,
-    filter: "",
-  });
-  const handleCheckCell = (id) => {
-    const updatedTeamStates = [...teamStates.members];
-    updatedTeamStates[id] = {
-      ...updatedTeamStates[id],
-      isChecked: !updatedTeamStates[id].isChecked,
-    };
-    setTeamStates((prev) => ({
-      ...prev,
-      members: updatedTeamStates,
-    }));
-  };
-  const handleFilter = (filter) => {
-    setTeamStates((prev) => ({
-      ...prev,
-      filter: filter,
-    }));
-  };
-  //TODO - implement select action function
-  const handleSelectActionType = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
-  //TODO - implement select role function
-  const handleSelectRoleType = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
   //TODO - implement save team function
-  const handleSaveTeam = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
+  const handleSaveTeam = () => {};
+
+  // INVITE MEMBER
   const [isOpen, setIsOpen] = useState(false);
-  const handleInviteMember = () => {};
-  const handleMembersQuery = (type) => {
-    let count = 0;
-    teamStates.members.forEach((member) => {
-      type === "" ? count++ : member.type === type ? count++ : "";
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    setToInvite((prev) => ({
+      ...prev,
+      email: value,
+    }));
+
+    const validation = credentials.validate(
+      { email: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+
+      if (validation.error) {
+        updatedErrors.email = validation.error.details[0].message;
+      } else {
+        delete updatedErrors.email;
+      }
+      return updatedErrors;
     });
-    return count;
   };
+
+  const handleInviteMember = async () => {
+    if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
+      setToInvite((prev) => ({ ...prev, role: ["user"] }));
+
+    const { error } = credentials.validate(
+      { email: toInvite.email },
+      {
+        abortEarly: false,
+      }
+    );
+
+    if (error) {
+      setErrors((prev) => ({ ...prev, email: error.details[0].message }));
+    } else
+      try {
+        await axiosInstance.post(
+          "/auth/invite",
+          {
+            email: toInvite.email,
+            role: toInvite.role,
+          },
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+
+        closeInviteModal();
+        createToast({
+          body: "Member invited. They will receive an email with details on how to create their account.",
+        });
+      } catch (error) {
+        createToast({
+          body: error.message || "Unknown error.",
+        });
+      }
+  };
+  const closeInviteModal = () => {
+    setIsOpen(false);
+    setToInvite({ email: "", role: ["0"] });
+    setErrors({});
+  };
+
   return (
     <TabPanel value="team">
       <form className="edit-organization-form">
-        <div className="edit-organization-form__wrapper">
-          <Stack>
-            <Typography component="h1">Organization name</Typography>
-          </Stack>
-          <Stack
-            className="row-stack"
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
-            sx={{ minHeight: "34px", maxHeight: "34px" }}
-          >
-            <TextField
-              value={orgStates.name}
-              onChange={handleChange}
-              disabled={!orgStates.isEdit}
-              sx={{
-                color: theme.palette.otherColors.bluishGray,
-                "& .Mui-disabled": {
-                  WebkitTextFillColor: "initial !important",
-                },
-                "& .Mui-disabled fieldset": {
-                  borderColor: "transparent !important",
-                },
-              }}
-              inputProps={{
-                sx: { textAlign: "end", padding: theme.gap.small },
-              }}
-            />
-            <Button
-              level={orgStates.isEdit ? "secondary" : "tertiary"}
-              label={orgStates.isEdit ? "Save" : ""}
-              img={!orgStates.isEdit ? <EditSvg /> : ""}
-              onClick={() => toggleEdit()}
-              sx={{
-                minWidth: 0,
-                paddingX: theme.gap.small,
-                ml: orgStates.isEdit ? theme.gap.small : 0,
-              }}
-            />
-          </Stack>
-        </div>
-        <Divider
-          aria-hidden="true"
-          className="short-divider"
-          sx={{ marginY: theme.spacing(4) }}
-        />
+        <Box sx={{ alignSelf: "flex-start" }}>
+          <Typography component="h1">Organization name</Typography>
+        </Box>
+        <Stack
+          className="row-stack"
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center"
+          sx={{ height: "34px" }}
+        >
+          <TextField
+            value={orgStates.name}
+            onChange={(event) =>
+              setOrgStates((prev) => ({
+                ...prev,
+                name: event.target.value,
+              }))
+            }
+            disabled={!orgStates.isEdit}
+            sx={{
+              color: theme.palette.otherColors.bluishGray,
+              "& .Mui-disabled": {
+                WebkitTextFillColor: "initial !important",
+              },
+              "& .Mui-disabled fieldset": {
+                borderColor: "transparent !important",
+              },
+            }}
+            inputProps={{
+              sx: { textAlign: "end", padding: theme.gap.small },
+            }}
+          />
+          <Button
+            level={orgStates.isEdit ? "secondary" : "tertiary"}
+            label={orgStates.isEdit ? "Save" : ""}
+            img={!orgStates.isEdit ? <EditSvg /> : ""}
+            onClick={() => toggleEdit()}
+            sx={{
+              minWidth: 0,
+              paddingX: theme.gap.small,
+              ml: orgStates.isEdit ? theme.gap.small : 0,
+            }}
+          />
+        </Stack>
       </form>
-      <form className="edit-team-form" noValidate spellCheck="false">
-        <div className="edit-team-form__wrapper">
-          <Typography component="h1">Team members</Typography>
-        </div>
-        <div className="edit-team-form__wrapper compact">
+      <Divider
+        aria-hidden="true"
+        className="short-divider"
+        sx={{ marginY: theme.spacing(4) }}
+      />
+      <form
+        className="edit-team-form"
+        noValidate
+        spellCheck="false"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: theme.gap.large,
+        }}
+      >
+        <Typography component="h1">Team members</Typography>
+        <Stack direction="row" justifyContent="space-between">
           <Stack
             direction="row"
-            gap="20px"
-            alignItems="center"
+            alignItems="flex-end"
+            gap={theme.gap.medium}
             sx={{ fontSize: "14px" }}
           >
-            <Box onClick={() => handleFilter("")}>
-              All
-              <span className="members-query">
-                <span>{handleMembersQuery("")}</span>
-              </span>
-            </Box>
-            <Box onClick={() => handleFilter("admin")}>
-              Administrator
-              <span className="members-query">
-                <span>{handleMembersQuery("admin")}</span>
-              </span>
-            </Box>
-            <Box onClick={() => handleFilter("member")}>
-              Member
-              <span className="members-query">
-                <span>{handleMembersQuery("member")}</span>
-              </span>
-            </Box>
+            <ButtonGroup>
+              <Button
+                level="secondary"
+                label="All"
+                onClick={() => setFilter("all")}
+                sx={{
+                  backgroundColor:
+                    filter === "all" && theme.palette.otherColors.fillGray,
+                }}
+              />
+              <Button
+                level="secondary"
+                label="Administrator"
+                onClick={() => setFilter("admin")}
+                sx={{
+                  backgroundColor:
+                    filter === "admin" && theme.palette.otherColors.fillGray,
+                }}
+              />
+              <Button
+                level="secondary"
+                label="Member"
+                onClick={() => setFilter("user")}
+                sx={{
+                  backgroundColor:
+                    filter === "user" && theme.palette.otherColors.fillGray,
+                }}
+              />
+            </ButtonGroup>
           </Stack>
           <Button
             level="primary"
@@ -258,146 +311,17 @@ const TeamPanel = () => {
             sx={{ paddingX: "30px" }}
             onClick={() => setIsOpen(true)}
           />
-        </div>
-        <div className="edit-team-form__wrapper compact">
-          <Container
-            disableGutters
-            sx={{
-              border: `1px solid ${theme.palette.section.borderColor}`,
-              borderRadius: `${theme.shape.borderRadius}px`,
-              borderBottom: "none",
-            }}
-          >
-            <Stack direction="row" gap="40px" p="20px">
-              <Stack
-                direction="row"
-                gap="10px"
-                alignItems="center"
-                className="table-stack"
-              >
-                <Select
-                  id="select-actions"
-                  value="bulk"
-                  inputProps={{ id: "select-actions-input" }}
-                >
-                  {actionsConfig.map((action) => (
-                    <MenuItem
-                      value={action.value}
-                      key={action.value}
-                      sx={{ fontSize: "13px" }}
-                    >
-                      {action.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <ButtonSpinner
-                  level="secondary"
-                  label="Apply"
-                  onClick={handleSelectActionType}
-                  isLoading={isLoading}
-                  sx={{
-                    bgcolor: "#fafafa",
-                  }}
-                />
-              </Stack>
-              <Stack direction="row" gap="10px" alignItems="center">
-                <Select
-                  id="select-role"
-                  value="role"
-                  inputProps={{ id: "select-role-input" }}
-                >
-                  {roleConfig.map((role) => (
-                    <MenuItem
-                      value={role.value}
-                      key={role.value}
-                      sx={{ fontSize: "13px" }}
-                    >
-                      {role.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <ButtonSpinner
-                  level="secondary"
-                  label="Apply"
-                  onClick={handleSelectRoleType}
-                  isLoading={isLoading}
-                  sx={{
-                    bgcolor: "#fafafa",
-                  }}
-                />
-              </Stack>
-            </Stack>
-            <Table
-              sx={{
-                borderTop: `1px solid ${theme.palette.section.borderColor}`,
-                tableLayout: "fixed",
-              }}
-            >
-              <TableHead>
-                <TableRow
-                  sx={{
-                    bgcolor: "#fafafa",
-                  }}
-                >
-                  {teamColumns.map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      sx={{
-                        ...cell.sx,
-                        color: theme.palette.otherColors.slateGray,
-                      }}
-                    >
-                      {cell.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {teamStates.members.map((cell) =>
-                  teamStates.filter === "" ||
-                  teamStates.filter === cell.type ? (
-                    <TableRow key={cell.id}>
-                      <TableCell align="center">
-                        <Checkbox
-                          id={`${cell.id}-${cell.name}`}
-                          checked={cell.isChecked}
-                          onChange={() => handleCheckCell(cell.id)}
-                          inputProps={{ "aria-label": "controlled" }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Stack direction="column">
-                          <Box
-                            sx={{
-                              color: theme.palette.otherColors.blackish,
-                              verticalAlign: "top",
-                            }}
-                          >
-                            {cell.name}
-                          </Box>
-                          <Box>Created at {cell.createdAt}</Box>
-                        </Stack>
-                      </TableCell>
-                      <TableCell>{cell.email}</TableCell>
-                      <TableCell>{cell.role}</TableCell>
-                    </TableRow>
-                  ) : (
-                    ""
-                  )
-                )}
-              </TableBody>
-            </Table>
-          </Container>
-        </div>
-        <Divider aria-hidden="true" width="0" />
+        </Stack>
+        <BasicTable data={tableData} paginated={false} reversed={true} />
         <Stack direction="row" justifyContent="flex-end">
           <Box width="fit-content">
             <ButtonSpinner
               level="primary"
               label="Save"
               onClick={handleSaveTeam}
-              isLoading={isLoading}
+              isLoading={false}
               loadingText="Saving..."
+              disabled={true}
               sx={{
                 paddingX: "40px",
               }}
@@ -409,7 +333,7 @@ const TeamPanel = () => {
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={closeInviteModal}
         disablePortal
       >
         <Stack
@@ -433,32 +357,55 @@ const TeamPanel = () => {
           <Typography id="modal-invite-member" component="h1">
             Invite new team member
           </Typography>
-          <Typography id="invite-member-to-team" component="p">
+          <Typography
+            id="invite-member-to-team"
+            component="p"
+            sx={{ mb: theme.gap.medium }}
+          >
             When you add a new team member, they will get access to all
             monitors.
           </Typography>
-          <TextField
+          <Field
+            type="email"
             id="input-team-member"
-            spellCheck="false"
-            // value={orgStates.newName}
-            // onChange={(event) =>
-            //   setOrgStates((prev) => ({
-            //     ...prev,
-            //     newName: event.target.value,
-            //   }))
-            // }
-          ></TextField>
-          <Stack direction="row" gap="10px" mt="10px" justifyContent="flex-end">
+            placeholder="Email"
+            value={toInvite.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <Select
+            id="team-member-role"
+            placeholder="Select role"
+            isHidden={true}
+            value={toInvite.role[0]}
+            onChange={(event) =>
+              setToInvite((prev) => ({
+                ...prev,
+                role: [event.target.value],
+              }))
+            }
+            items={[
+              { _id: "admin", name: "admin" },
+              { _id: "user", name: "user" },
+            ]}
+          />
+          <Stack
+            direction="row"
+            gap={theme.gap.small}
+            mt={theme.gap.ml}
+            justifyContent="flex-end"
+          >
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setIsOpen(false)}
+              onClick={closeInviteModal}
             />
             <ButtonSpinner
               level="primary"
               label="Send invite"
               onClick={handleInviteMember}
-              isLoading={isLoading}
+              isLoading={false}
+              disabled={Object.keys(errors).length !== 0}
             />
           </Stack>
         </Stack>

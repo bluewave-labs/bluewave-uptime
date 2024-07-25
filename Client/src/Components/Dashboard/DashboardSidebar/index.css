@@ -1,5 +1,5 @@
 .dashboard-sidebar {
-  height: calc(100vh - 64px);
+  height: calc(100vh - var(--env-var-nav-bar-height));
   width: 250px;
   border: 1px solid var(--color-border-0);
   border-top: none;

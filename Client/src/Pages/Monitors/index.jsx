@@ -126,11 +126,12 @@ const Monitors = () => {
       className="monitors"
       style={{
         padding: `${theme.content.pY} ${theme.content.pX}`,
+        backgroundColor: "var(--env-var-color-30)",
       }}
     >
       <div className="monitors-bar">
         <div className="monitors-bar-title">
-          Hello, {authState.user.firstname}
+          Hello, {authState.user.firstName}
         </div>
         <Button
           level="primary"

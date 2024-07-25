@@ -1,62 +1,68 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import "./index.css";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
-import Check from "../../Components/Check/Check";
-import Button from "../../Components/Button";
-import { credentials } from "../../Validation/validation";
-import axiosInstance from "../../Utils/axiosConfig";
-import { useDispatch } from "react-redux";
-import { register } from "../../Features/Auth/authSlice";
-import { createToast } from "../../Utils/toastUtils";
-import Field from "../../Components/Inputs/Field";
 import { useTheme } from "@emotion/react";
 import { Stack, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
 
-const Register = () => {
+import "../index.css";
+import background from "../../../assets/Images/background_pattern_decorative.png";
+import Logomark from "../../../assets/Images/bwl-logo-2.svg?react";
+import Check from "../../../Components/Check/Check";
+import Button from "../../../Components/Button";
+import { credentials } from "../../../Validation/validation";
+import { createToast } from "../../../Utils/toastUtils";
+import Field from "../../../Components/Inputs/Field";
+import { register } from "../../../Features/Auth/authSlice";
+import { useParams } from "react-router-dom";
+import axiosInstance from "../../../Utils/axiosConfig";
+
+const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { token } = useParams();
   const theme = useTheme();
-
   // TODO If possible, change the IDs of these fields to match the backend
   const idMap = {
-    "register-firstname-input": "firstname",
-    "register-lastname-input": "lastname",
+    "register-firstname-input": "firstName",
+    "register-lastname-input": "lastName",
     "register-email-input": "email",
     "register-password-input": "password",
     "register-confirm-input": "confirm",
   };
 
   const [form, setForm] = useState({
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirm: "",
-    role: "",
+    role: [],
   });
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    axiosInstance
-      .get("/auth/users/admin")
-      .then((response) => {
-        if (response.data.data === true) {
-          navigate("/login");
+    const fetchInvite = async () => {
+      if (token !== undefined) {
+        try {
+          const res = await axiosInstance.post(`/auth/invite/verify`, {
+            token,
+          });
+          const { role, email } = res.data.data;
+          console.log(role);
+          setForm({ ...form, email, role });
+        } catch (error) {
+          console.log(error);
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [form, navigate]);
+      }
+    };
+    fetchInvite();
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const adminForm = { ...form, role: "admin" };
-    const { error } = credentials.validate(adminForm, {
+    const registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+    const { error } = credentials.validate(registerForm, {
       abortEarly: false,
       context: { password: form.password },
     });
@@ -75,8 +81,8 @@ const Register = () => {
             : "Error validating data.",
       });
     } else {
-      delete adminForm.confirm;
-      const action = await dispatch(register(adminForm));
+      delete registerForm.confirm;
+      const action = await dispatch(register(registerForm));
       if (action.payload.success) {
         const token = action.payload.data;
         localStorage.setItem("token", token);
@@ -132,7 +138,7 @@ const Register = () => {
         <Stack gap={theme.gap.small} alignItems="center">
           <Logomark alt="BlueWave Uptime Icon" />
           <Typography component="h1" sx={{ mt: theme.gap.xl }}>
-            Create admin account
+            Create{isAdmin ? " admin " : " "}account
           </Typography>
         </Stack>
         <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
@@ -142,9 +148,9 @@ const Register = () => {
             isRequired={true}
             placeholder="Daniel"
             autoComplete="given-name"
-            value={form.firstname}
+            value={form.firstName}
             onChange={handleChange}
-            error={errors.firstname}
+            error={errors.firstName}
           />
           <Field
             id="register-lastname-input"
@@ -152,9 +158,9 @@ const Register = () => {
             isRequired={true}
             placeholder="Cojocea"
             autoComplete="family-name"
-            value={form.lastname}
+            value={form.lastName}
             onChange={handleChange}
-            error={errors.lastname}
+            error={errors.lastName}
           />
           <Field
             type="email"
@@ -241,5 +247,7 @@ const Register = () => {
     </div>
   );
 };
-
+Register.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default Register;

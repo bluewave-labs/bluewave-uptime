@@ -149,17 +149,25 @@ const DetailsPage = () => {
     if (!checks || checks.length === 0) {
       return 0;
     }
-    const latestCheck = new Date(checks[0].createdAt);
+
+    const latestCheck = new Date(checks[checks.length - 1].createdAt);
     let latestDownCheck = 0;
-    for (let i = 0; i < checks.length; i++) {
+
+    // Checks are ordered oldest -> newest
+    // So we iterate backwards and find the first down check
+    for (let i = checks.length - 1; i >= 0; i--) {
       if (checks[i].status === false) {
         latestDownCheck = new Date(checks[i].createdAt);
         break;
       }
     }
+
+    // If no down check is found, uptime is from the first check to now
     if (latestDownCheck === 0) {
-      return Date.now() - new Date(checks[checks.length - 1].createdAt);
+      return Date.now() - new Date(checks[0].createdAt);
     }
+
+    // Otherwise the uptime is from the last check to the last down check
     return latestCheck - latestDownCheck;
   };
 
@@ -172,7 +180,8 @@ const DetailsPage = () => {
     if (!checks || checks.length === 0) {
       return 0; // Handle case when no checks are available
     }
-    return new Date() - new Date(checks[0].createdAt);
+    // Data is sorted oldest -> newest, so last check is the most recent
+    return new Date() - new Date(checks[checks.length - 1].createdAt);
   };
 
   /**
@@ -194,6 +203,7 @@ const DetailsPage = () => {
       className="monitor-details"
       style={{
         padding: `${theme.content.pY} ${theme.content.pX}`,
+        backgroundColor: "var(--env-var-color-30)",
       }}
     >
       <Button
@@ -237,6 +247,7 @@ const DetailsPage = () => {
             level="tertiary"
             label="Configure"
             img={<SettingsIcon />}
+            onClick={() => navigate(`/monitors/configure/${monitorId}`)}
             sx={{
               ml: "auto",
               alignSelf: "flex-end",
@@ -297,7 +308,7 @@ const DetailsPage = () => {
           <Typography component="h2" mb={theme.gap.ml}>
             History
           </Typography>
-          <BasicTable data={data} paginated={true} />
+          <BasicTable data={data} paginated={true} reversed={true} />
         </Box>
       </Stack>
     </div>
