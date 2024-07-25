@@ -1,9 +1,0 @@
-.alert {
-  margin: 0;
-  width: fit-content;
-  padding: var(--env-var-spacing-1-plus);
-  font-size: var(--env-var-font-size-medium);
-}
-.alert .MuiStack-root {
-  max-width: 85%;
-}
