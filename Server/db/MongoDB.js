@@ -513,6 +513,19 @@ const editMonitor = async (req, res) => {
 // Page Speed Checks
 //****************************************
 
+/**
+ * Create a PageSpeed check for a monitor
+ * @async
+ * @param {Object} pageSpeedCheckData
+ * @param {string} pageSpeedCheckData.monitorId
+ * @param {number} pageSpeedCheckData.accessibility
+ * @param {number} pageSpeedCheckData.bestPractices
+ * @param {number} pageSpeedCheckData.seo
+ * @param {number} pageSpeedCheckData.performance
+ * @returns {Promise<PageSpeedCheck>}
+ * @throws {Error}
+ */
+
 const createPageSpeedCheck = async (pageSpeedCheckData) => {
   try {
     const pageSpeedCheck = await new pageSpeedCheck({ ...pageSpeedCheckData }).save();
@@ -522,6 +535,14 @@ const createPageSpeedCheck = async (pageSpeedCheckData) => {
   }
 };
 
+/**
+ * Get all PageSpeed checks for a monitor
+ * @async
+ * @param {string} monitorId
+ * @returns {Promise<Array<PageSpeedCheck>>}
+ * @throws {Error}
+ */
+
 const getPageSpeedChecks = async (monitorId) => {
   try {
     const pageSpeedChecks = await PageSpeedCheck.find({ monitorId });
@@ -530,6 +551,14 @@ const getPageSpeedChecks = async (monitorId) => {
     throw error;
   }
 };
+
+/**
+ * Delete all PageSpeed checks for a monitor
+ * @async
+ * @param {string} monitorId
+ * @returns {number}
+ * @throws {Error}
+ */
 
 const deletePageSpeedChecks = async (monitorId) => {
   try {
