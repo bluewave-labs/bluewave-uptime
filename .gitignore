@@ -1,2 +1,4 @@
 .vite
 .vscode
+*.sh
+!uptime.sh

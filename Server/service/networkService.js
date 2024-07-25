@@ -1,14 +1,13 @@
 const axios = require("axios");
 const ping = require("ping");
 const logger = require("../utils/logger");
-const Check = require("../models/Check");
-const { Console } = require("winston/lib/winston/transports");
 
 class NetworkService {
   constructor(db) {
     this.db = db;
     this.TYPE_PING = "ping";
     this.TYPE_HTTP = "http";
+    this.TYPE_PAGESPEED = "pagespeed";
     this.SERVICE_NAME = "NetworkService";
     this.NETWORK_ERROR = 5000;
   }
@@ -44,24 +43,23 @@ class NetworkService {
     };
 
     try {
-      const { responseTime, response } = await this.measureResponseTime(
-        operation
-      );
+      const { responseTime, response } =
+        await this.measureResponseTime(operation);
       const isAlive = response.alive;
 
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         responseTime,
-      });
-      return await this.logAndStoreCheck(check);
+      };
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: false,
         responseTime: error.responseTime,
-      });
-      return await this.logAndStoreCheck(check);
+      };
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     }
   }
 
@@ -79,36 +77,42 @@ class NetworkService {
 
     // attempt connection
     try {
-      const { responseTime, response } = await this.measureResponseTime(
-        operation
-      );
+      const { responseTime, response } =
+        await this.measureResponseTime(operation);
 
       // check if response is in the 200 range, if so, service is up
       const isAlive = response.status >= 200 && response.status < 300;
 
       //Create a check with relevant data
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         responseTime,
         statusCode: response.status,
-      });
-      return await this.logAndStoreCheck(check);
+      };
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
-      const check = new Check({
+      const checkData = {
         monitorId: job.data._id,
         status: false,
         responseTime: error.responseTime,
-      });
+      };
       // The server returned a response
       if (error.response) {
-        check.statusCode = error.response.status;
+        checkData.statusCode = error.response.status;
       } else {
-        check.statusCode = this.NETWORK_ERROR;
+        checkData.statusCode = this.NETWORK_ERROR;
       }
-      return await this.logAndStoreCheck(check);
+      return await this.logAndStoreCheck(checkData, this.db.createCheck);
     }
   }
+
+  /**
+   * Handles PageSpeed job types
+   * @param {Object} job - The job object containing data operation.
+   * @returns {Promise<{boolean}} The result of logging and storing the check
+   */
+  async handlePagespeed(job) {}
 
   /**
    * Retrieves the status of a given job based on its type.
@@ -123,6 +127,8 @@ class NetworkService {
         return await this.handlePing(job);
       case this.TYPE_HTTP:
         return await this.handleHttp(job);
+      case this.TYPE_PAGESPEED:
+        return await this.handlePagespeed(job);
       default:
         logger.error(`Unsupported type: ${job.data.type}`, {
           service: this.SERVICE_NAME,
@@ -134,28 +140,23 @@ class NetworkService {
 
   /**
    * Logs and stores the result of a check for a specific job.
-   * This function creates a new Check object with the job's details and the result of the check,
-   * then attempts to save this object to the database. If the save operation is successful,
-   * it returns the status of the inserted check. If an error occurs during the save operation,
-   * it logs the error and returns false.
    *
-   * @param {Object} job - The job object containing data necessary for the check.
-   * @param {boolean} isAlive - The result of the check, indicating if the target is alive.
-   * @param {number} responseTime - The response time measured during the check.
-   * @param {Error} [error=null] - Optional error object if an error occurred during the check.
+   * @param {Object} data - Data to be written
+   * @param {function} writeToDB - DB write method
+   *
    * @returns {Promise<boolean>} The status of the inserted check if successful, otherwise false.
    */
-  async logAndStoreCheck(check) {
+
+  async logAndStoreCheck(data, writeToDB) {
     try {
-      const insertedCheck = await check.save();
+      const insertedCheck = await writeToDB(data);
       return insertedCheck.status;
     } catch (error) {
-      logger.error(`Error wrtiting check for ${check.monitorId}`, {
+      logger.error(`Error wrtiting check for ${data.monitorId}`, {
         service: this.SERVICE_NAME,
-        monitorId: check.monitorId,
+        monitorId: data.monitorId,
         error: error,
       });
-      return false;
     }
   }
 }
