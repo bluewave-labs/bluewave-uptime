@@ -24,6 +24,7 @@ import ResponseTimeChart from "../../Components/Charts/ResponseTimeChart";
  * @param {number} params.precentage - The percentage to display.
  * @returns {React.ElementType} Returns a div element with the host details.
  */
+
 const Host = ({ params }) => {
   return (
     <div className="host-row">
@@ -40,7 +41,6 @@ const Host = ({ params }) => {
     </div>
   );
 };
-
 const Monitors = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -57,7 +57,6 @@ const Monitors = () => {
   }, 0);
 
   const down = monitorState.monitors.length - up;
-
   const data = {
     cols: [
       { id: 1, name: "Host" },
@@ -73,7 +72,8 @@ const Monitors = () => {
         ),
       },
       { id: 3, name: "Response Time" },
-      { id: 4, name: "Actions" },
+      { id: 4, name: "Type" },
+      { id: 5, name: "Actions" },
     ],
     rows: [],
   };
@@ -116,7 +116,8 @@ const Monitors = () => {
           ),
         },
         { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
-        { id: idx + 3, data: "TODO" },
+        { id: idx + 3, data: monitor.type },
+        { id: idx + 4, data: "TODO" },
       ],
     };
   });
