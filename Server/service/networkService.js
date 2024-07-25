@@ -1,9 +1,6 @@
 const axios = require("axios");
 const ping = require("ping");
 const logger = require("../utils/logger");
-const Check = require("../models/Check");
-const PageSpeedCheck = require("../models/PageSpeedCheck");
-const { write } = require("fs");
 
 class NetworkService {
   constructor(db) {
@@ -143,30 +140,12 @@ class NetworkService {
 
   /**
    * Logs and stores the result of a check for a specific job.
-   * This function creates a new Check object with the job's details and the result of the check,
-   * then attempts to save this object to the database. If the save operation is successful,
-   * it returns the status of the inserted check. If an error occurs during the save operation,
-   * it logs the error and returns false.
    *
-   * @param {Object} job - The job object containing data necessary for the check.
-   * @param {boolean} isAlive - The result of the check, indicating if the target is alive.
-   * @param {number} responseTime - The response time measured during the check.
-   * @param {Error} [error=null] - Optional error object if an error occurred during the check.
+   * @param {Object} data - Data to be written
+   * @param {function} writeToDB - DB write method
+   *
    * @returns {Promise<boolean>} The status of the inserted check if successful, otherwise false.
    */
-  async logAndStoreCheckOld(check) {
-    try {
-      const insertedCheck = await check.save();
-      return insertedCheck.status;
-    } catch (error) {
-      logger.error(`Error wrtiting check for ${check.monitorId}`, {
-        service: this.SERVICE_NAME,
-        monitorId: check.monitorId,
-        error: error,
-      });
-      return false;
-    }
-  }
 
   async logAndStoreCheck(data, writeToDB) {
     try {
