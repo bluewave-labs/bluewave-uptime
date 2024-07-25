@@ -27,6 +27,7 @@ const IntegrationsComponent = ({ url, header, info, onClick }) => {
         border={1}
         borderColor={theme.palette.divider}
         borderRadius={`${theme.shape.borderRadius}px`}
+        sx={{ backgroundColor: theme.palette.otherColors.white }}
       >
         <Box
           component="img"
