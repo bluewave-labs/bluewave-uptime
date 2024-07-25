@@ -67,23 +67,6 @@
   align-items: center;
 }
 
-#select-actions,
-#select-role {
-  padding: 5px 0;
-  padding-left: 15px;
-  padding-right: 50px;
-  line-height: 1.75;
-}
-.MuiInputBase-root:has(#select-actions) fieldset,
-.MuiInputBase-root:has(#select-role) fieldset {
-  border-color: #a1a7b1;
-  margin: -1px;
-  border-width: 1px;
-}
-.MuiInputBase-root:has(#select-actions):hover fieldset,
-.MuiInputBase-root:has(#select-role):hover fieldset {
-  border-color: var(--env-var-color-2);
-}
 
 /* for testing, will remove later */
 @media only screen and (max-width: 1600px) {
@@ -109,23 +92,6 @@
 .edit-profile-form__wrapper .MuiStack-root:has(.MuiFormControl-root),
 .edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root) {
   margin: 0;
-}
-
-#role-default {
-  display: none;
-  visibility: none;
-}
-.MuiInputBase-root:has(#team-member-role) {
-  height: 34px;
-}
-#team-member-role {
-  padding: 0 10px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-.MuiInputBase-root:not(.Mui-focused):has(#team-member-role):hover fieldset {
-  border-color: var(--env-var-color-29);
 }
 
 .edit-organization-form {

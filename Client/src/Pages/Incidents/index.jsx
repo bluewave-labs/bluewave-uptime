@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  Select,
-  MenuItem,
-  Typography,
-  ButtonGroup,
-  Stack,
-} from "@mui/material";
+import { Typography, ButtonGroup, Stack } from "@mui/material";
 
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
@@ -15,6 +9,7 @@ import { StatusLabel } from "../../Components/Label";
 import { useTheme } from "@emotion/react";
 
 import "./index.css";
+import Select from "../../Components/Inputs/Select";
 
 const Incidents = () => {
   const theme = useTheme();
@@ -118,16 +113,13 @@ const Incidents = () => {
     >
       <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
         <Typography component="h1">Incident history for: </Typography>
-        <Select value={selectedMonitor} onChange={handleSelect}>
-          <MenuItem value={"0"}>All servers</MenuItem>
-          {Object.values(monitors).map((monitor) => {
-            return (
-              <MenuItem key={monitor._id} value={monitor._id}>
-                {monitor.name}
-              </MenuItem>
-            );
-          })}
-        </Select>
+        <Select
+          id="incidents-select-monitor"
+          placeholder="All servers"
+          value={selectedMonitor}
+          onChange={handleSelect}
+          items={Object.values(monitors)}
+        />
         <ButtonGroup sx={{ ml: "auto" }}>
           <Button
             level="secondary"
@@ -158,7 +150,7 @@ const Incidents = () => {
           />
         </ButtonGroup>
       </Stack>
-      <BasicTable data={data} paginated={true} rowsPerPage={12}/>
+      <BasicTable data={data} paginated={true} rowsPerPage={12} />
     </Stack>
   );
 };

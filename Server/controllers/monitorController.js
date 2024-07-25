@@ -2,6 +2,7 @@ const {
   getMonitorByIdValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
+  editMonitorBodyValidation,
 } = require("../validation/joi");
 
 const SERVICE_NAME = "monitorController";
@@ -251,7 +252,7 @@ const deleteAllMonitors = async (req, res) => {
 const editMonitor = async (req, res, next) => {
   try {
     await getMonitorByIdValidation.validateAsync(req.params);
-    await monitorValidation.validateAsync(req.body);
+    await editMonitorBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;

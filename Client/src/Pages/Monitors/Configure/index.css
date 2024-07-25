@@ -70,3 +70,8 @@
   flex-direction: column;
   gap: var(--env-var-spacing-4);
 }
+
+body:has(.configure-monitor) .select-dropdown .MuiMenuItem-root,
+.configure-monitor .select-wrapper .select-component > .MuiSelect-select {
+  text-transform: lowercase;
+}
