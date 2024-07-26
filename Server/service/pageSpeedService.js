@@ -14,7 +14,10 @@ class PageSpeedService {
    */
   async runPageSpeedCheck(url) {
     try {
-      const response = await axios.get(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}`);
+      const response = await axios.get(
+        "https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://www.google.com&category=seo&category=accessibility&category=best-practices&category=performance"
+      );
+
       return response.data;
     } catch (error) {
       logger.error(`Error running PageSpeed check for ${url}`, {

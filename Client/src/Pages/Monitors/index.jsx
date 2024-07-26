@@ -74,7 +74,8 @@ const Monitors = () => {
         ),
       },
       { id: 3, name: "Response Time" },
-      { id: 4, name: "Actions" },
+      { id: 4, name: "Type" },
+      { id: 5, name: "Actions" },
     ],
     rows: [],
   };
@@ -117,7 +118,8 @@ const Monitors = () => {
           ),
         },
         { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
-        { id: idx + 3, data: "TODO" },
+        { id: idx + 3, data: monitor.type },
+        { id: idx + 4, data: "TODO" },
       ],
     };
   });

@@ -74,9 +74,11 @@ function NavBar() {
   const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
 
+  // Initialize settings and update based on user role
   let settings = ["Profile", "Password", "Team", "Logout"];
-  if (!authState.user.role.includes("admin"))
+  if (authState.user?.role && !authState.user.role.includes("admin")) {
     settings = ["Profile", "Password", "Logout"];
+  }
 
   /**
    * Handles opening the user menu.
@@ -136,7 +138,7 @@ function NavBar() {
                 className="icon-button-toggle-title"
                 sx={{ mr: "3px", lineHeight: 2 }}
               >
-                {authState.user.firstName} {authState.user.lastName}
+                {authState.user?.firstName} {authState.user?.lastName}
               </Box>
               <KeyboardArrowDownIcon sx={{ mt: "2px" }} />
             </Stack>

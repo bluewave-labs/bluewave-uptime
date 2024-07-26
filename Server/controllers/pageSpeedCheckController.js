@@ -1,5 +1,7 @@
 const PageSpeedCheck = require("../models/PageSpeedCheck");
+const PageSpeedService = require("../service/pageSpeedService");
 const { successMessages } = require("../utils/messages");
+const pageSpeedService = new PageSpeedService();
 const SERVICE_NAME = "pagespeed";
 const {
   getPageSpeedCheckParamValidation,
@@ -47,17 +49,25 @@ const createPageSpeedCheck = async (req, res, next) => {
     await createPageSpeedCheckBodyValidation.validateAsync(req.body);
 
     const { monitorId } = req.params;
-    const { accessibility, bestPractices, seo, performance } = req.body;
+    const { url } = req.body;
 
-    const newPageSpeedCheck = new PageSpeedCheck({
+    // Run the PageSpeed check
+    const pageSpeedResults = await pageSpeedService.runPageSpeedCheck(url);
+
+    // Extract categories scores
+    const categories = pageSpeedResults.lighthouseResult?.categories;
+
+    if (!categories) {
+      throw new Error("Categories not found in PageSpeed results");
+    }
+
+    const newPageSpeedCheck = await pageSpeedService.createPageSpeedCheck({
       monitorId,
-      accessibility,
-      bestPractices,
-      seo,
-      performance,
+      accessibility: (categories.accessibility?.score || 0) * 100,
+      bestPractices: (categories["best-practices"]?.score || 0) * 100,
+      seo: (categories.seo?.score || 0) * 100,
+      performance: (categories.performance?.score || 0) * 100,
     });
-
-    await newPageSpeedCheck.save();
 
     return res.status(201).json({
       msg: successMessages.CREATED,

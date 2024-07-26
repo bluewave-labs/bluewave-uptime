@@ -17,6 +17,10 @@ const PageSpeedCheck = mongoose.Schema(
       ref: "Monitor",
       immutable: true,
     },
+    status: {
+      type: Boolean,
+      required: true,
+    },
     accessibility: {
       type: Number,
       required: true,
@@ -45,3 +49,5 @@ const PageSpeedCheck = mongoose.Schema(
  */
 
 module.exports = mongoose.model("PageSpeedCheck", PageSpeedCheck);
+
+
