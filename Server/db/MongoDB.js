@@ -528,7 +528,7 @@ const editMonitor = async (req, res) => {
 
 const createPageSpeedCheck = async (pageSpeedCheckData) => {
   try {
-    const pageSpeedCheck = await new pageSpeedCheck({ ...pageSpeedCheckData }).save();
+    const pageSpeedCheck = await new PageSpeedCheck({ ...pageSpeedCheckData }).save();
     return pageSpeedCheck;
   } catch (error) {
     throw error;

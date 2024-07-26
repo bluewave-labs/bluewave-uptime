@@ -112,7 +112,34 @@ class NetworkService {
    * @param {Object} job - The job object containing data operation.
    * @returns {Promise<{boolean}} The result of logging and storing the check
    */
-  async handlePagespeed(job) {}
+  async handlePagespeed(job) {
+    try {
+      const url = job.data.url;
+      const response = await axios.get(
+        `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
+      );
+      const pageSpeedResults = response.data;
+      const categories = pageSpeedResults.lighthouseResult?.categories;
+      const checkData = {
+        monitorId: job.data._id,
+        status: true,
+        accessibility: (categories.accessibility?.score || 0) * 100,
+        bestPractices: (categories["best-practices"]?.score || 0) * 100,
+        seo: (categories.seo?.score || 0) * 100,
+        performance: (categories.performance?.score || 0) * 100,
+      };
+      this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
+    } catch (error) {
+      const checkData = {
+        monitorId: job.data._id,
+        status: false,
+        accessibility: 0,
+        bestPractices: 0,
+        seo: 0,
+        performance: 0,
+      };
+    }
+  }
 
   /**
    * Retrieves the status of a given job based on its type.
