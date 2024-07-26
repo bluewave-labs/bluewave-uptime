@@ -8,7 +8,6 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "../Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
@@ -24,6 +23,7 @@ import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 
 import BWULogo from "../../assets/Images/bwl-logo.svg?react";
+import Avatar from "../Avatar";
 
 const icons = {
   Profile: <UserSvg />,
@@ -50,9 +50,11 @@ function NavBar() {
   const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
 
+  // Initialize settings and update based on user role
   let settings = ["Profile", "Password", "Team", "Logout"];
-  if (!authState.user.role.includes("admin"))
+  if (authState.user?.role && !authState.user.role.includes("admin")) {
     settings = ["Profile", "Password", "Logout"];
+  }
 
   /**
    * Handles opening the user menu.
@@ -154,7 +156,7 @@ function NavBar() {
                 <div className="icon-button-toggle">
                   <Avatar small={true} sx={{ mr: "8px" }} />
                   <div className="icon-button-toggle-title">
-                    {authState.user.firstName} {authState.user.lastName}
+                    {authState.user?.firstName} {authState.user?.lastName}
                   </div>
                   <img
                     className="icon-button-toggle-pic"
