@@ -2,7 +2,7 @@ import "./index.css";
 import React, { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
-import { Box, MenuItem, Stack, Typography } from "@mui/material";
+import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
@@ -134,6 +134,8 @@ const CreateMonitor = () => {
     { _id: 5, name: "5 minutes" },
   ];
 
+  console.log(checks.type);
+
   return (
     <Box className="create-monitor">
       <Button
@@ -199,15 +201,47 @@ const CreateMonitor = () => {
             </Typography>
           </Box>
           <Stack gap={theme.gap.large}>
-            <RadioButton
-              id="monitor-checks-http"
-              title="HTTP/website monitoring"
-              desc="Use HTTP(s) to monitor your website or API endpoint."
-              size="small"
-              value="http"
-              checked={checks.type === "http"}
-              onChange={(event) => handleChange(event, "type", setChecks)}
-            />
+            <Stack gap={theme.gap.medium}>
+              <RadioButton
+                id="monitor-checks-http"
+                title="Website monitoring"
+                desc="Use HTTP(s) to monitor your website or API endpoint."
+                size="small"
+                value="http"
+                checked={checks.type === "http" || checks.type === "https"}
+                onChange={(event) => handleChange(event, "type", setChecks)}
+              />
+              {checks.type === "http" || checks.type === "https" ? (
+                <ButtonGroup sx={{ ml: "32px" }}>
+                  <Button
+                    level="secondary"
+                    label="HTTP"
+                    onClick={() =>
+                      setChecks((prev) => ({ ...prev, type: "http" }))
+                    }
+                    sx={{
+                      backgroundColor:
+                        checks.type === "http" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="HTTPS"
+                    onClick={() =>
+                      setChecks((prev) => ({ ...prev, type: "https" }))
+                    }
+                    sx={{
+                      backgroundColor:
+                        checks.type === "https" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                </ButtonGroup>
+              ) : (
+                ""
+              )}
+            </Stack>
             <RadioButton
               id="monitor-checks-ping"
               title="Ping monitoring"

@@ -60,6 +60,12 @@
   gap: var(--env-var-spacing-4);
 }
 
+.create-monitor .MuiStack-root .MuiButtonGroup-root button {
+  font-size: var(--env-var-font-size-small);
+  height: 28px;
+  padding: 8px;
+}
+
 body:has(.create-monitor) .select-dropdown .MuiMenuItem-root,
 .create-monitor .select-wrapper .select-component > .MuiSelect-select {
   text-transform: lowercase;
