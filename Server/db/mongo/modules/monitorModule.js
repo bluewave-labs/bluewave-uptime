@@ -32,7 +32,18 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const { monitorId } = req.params;
-    const { status } = req.query;
+    let { status, limit, sortOrder } = req.query;
+
+    // This effectively removes limit, returning all checks
+    if (limit === undefined) limit = 0;
+
+    // Default sort order is newest -> oldest
+    if (sortOrder === "asc") {
+      sortOrder = 1;
+    } else if (sortOrder === "desc") {
+      sortOrder = -1;
+    } else sortOrder = -1;
+
     const monitor = await Monitor.findById(monitorId);
 
     const checksQuery = { monitorId: monitor._id };
@@ -42,16 +53,17 @@ const getMonitorById = async (req, res) => {
     }
 
     // Determine model type
-    let model = null;
-    if (monitor.type === "http" || monitor.type === "ping") {
-      model = Check;
-    } else {
-      model = PageSpeedCheck;
-    }
+    let model =
+      monitor.type === "http" || monitor.type === "ping"
+        ? Check
+        : PageSpeedCheck;
 
-    const checks = await model.find(checksQuery).sort({
-      createdAt: 1,
-    });
+    const checks = await model
+      .find(checksQuery)
+      .sort({
+        createdAt: sortOrder,
+      })
+      .limit(limit);
 
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
@@ -70,13 +82,20 @@ const getMonitorById = async (req, res) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
-    let { limit, type, status } = req.query;
+    let { limit, type, status, sortOrder } = req.query;
     const monitorQuery = { userId: req.params.userId };
 
     if (type !== undefined) {
       const types = Array.isArray(type) ? type : [type];
       monitorQuery.type = { $in: types };
     }
+
+    // Default sort order is newest -> oldest
+    if (sortOrder === "asc") {
+      sortOrder = 1;
+    } else if (sortOrder === "desc") {
+      sortOrder = -1;
+    } else sortOrder = -1;
 
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
@@ -90,19 +109,16 @@ const getMonitorsByUserId = async (req, res) => {
           checksQuery.status = status;
         }
 
-        //Determine the model type
-        let model = null;
-        if (type === "http" || type === "ping") {
-          model = Check;
-        } else {
-          model = PageSpeedCheck;
-        }
+        let model =
+          monitor.type === "http" || monitor.type === "ping"
+            ? Check
+            : PageSpeedCheck;
 
         // Checks are order newest -> oldest
         const checks = await model
           .find(checksQuery)
           .sort({
-            createdAt: -1,
+            createdAt: sortOrder,
           })
           .limit(limit);
         return { ...monitor.toObject(), checks };

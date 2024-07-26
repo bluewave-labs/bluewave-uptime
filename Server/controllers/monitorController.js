@@ -1,8 +1,10 @@
 const {
   getMonitorByIdParamValidation,
+  getMonitorByIdQueryValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
   editMonitorBodyValidation,
+  getMonitorsByUserIdQueryValidation,
 } = require("../validation/joi");
 
 const SERVICE_NAME = "monitorController";
@@ -42,6 +44,7 @@ const getAllMonitors = async (req, res, next) => {
 const getMonitorById = async (req, res, next) => {
   try {
     await getMonitorByIdParamValidation.validateAsync(req.params);
+    await getMonitorByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.message = error.details[0].message;
@@ -77,14 +80,9 @@ const getMonitorById = async (req, res, next) => {
  * @throws {Error}
  */
 const getMonitorsByUserId = async (req, res, next) => {
-  const { error } = getMonitorsByUserIdValidation.validate(req.params);
-  if (error) {
-    return res
-      .status(422)
-      .json({ success: false, msg: error.details[0].message });
-  }
-
   try {
+    await getMonitorsByUserIdValidation.validateAsync(req.params);
+    await getMonitorsByUserIdQueryValidation.validateAsync(req.query);
     const userId = req.params.userId;
     const monitors = await req.db.getMonitorsByUserId(req, res);
 

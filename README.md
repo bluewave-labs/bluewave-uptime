@@ -783,9 +783,11 @@ curl --request GET \
 
 ###### Query Params
 
-> | Name   | Type      | Required | Notes        |
-> | ------ | --------- | -------- | ------------ |
-> | status | `boolean` | Optional | Check status |
+> | Name      | Type      | Required | Notes                                            |
+> | --------- | --------- | -------- | ------------------------------------------------ |
+> | status    | `boolean` | Optional | Check status                                     |
+> | limit     | `number`  | Optional | Number of checks to return                       |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest |
 
 ###### Response Payload
 
@@ -797,7 +799,7 @@ curl --request GET \
 
 ```
 curl --request GET \
-  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1?status=true \
+  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1?status=true?limit=0 \
   --header '<bearer_token>' \
 ```
 
@@ -861,11 +863,12 @@ curl --request GET \
 
 ###### Query Params
 
-> | Name   | Type      | Required | Notes                                             |
-> | ------ | --------- | -------- | ------------------------------------------------- |
-> | status | `boolean` | Optional | Check status                                      |
-> | type   | `string`  | Optional | Multiple allowed: `http` \| `ping` \| `pagespeed` |
-> | limit  | `number`  | Optional | Monitor status                                    |
+> | Name      | Type      | Required | Notes                                             |
+> | --------- | --------- | -------- | ------------------------------------------------- |
+> | status    | `boolean` | Optional | Check status                                      |
+> | type      | `string`  | Optional | Multiple allowed: `http` \| `ping` \| `pagespeed` |
+> | limit     | `number`  | Optional | Monitor status                                    |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest  |
 
 ###### Response Payload
 

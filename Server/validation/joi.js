@@ -122,8 +122,26 @@ const getMonitorByIdParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+const getMonitorByIdQueryValidation = joi.object({
+  status: joi.boolean(),
+  sortOrder: joi.string().valid("asc", "desc"),
+  limit: joi.number(),
+});
+
 const getMonitorsByUserIdValidation = joi.object({
   userId: joi.string().required(),
+});
+
+const getMonitorsByUserIdQueryValidation = joi.object({
+  status: joi.boolean(),
+  sortOrder: joi.string().valid("asc", "desc"),
+  limit: joi.number(),
+  type: joi
+    .alternatives()
+    .try(
+      joi.string().valid("http", "ping", "pagespeed"),
+      joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+    ),
 });
 
 const monitorValidation = joi.object({
@@ -245,8 +263,9 @@ module.exports = {
   inviteBodyValidation,
   inviteVerifciationBodyValidation,
   getMonitorByIdParamValidation,
+  getMonitorByIdQueryValidation,
   getMonitorsByUserIdValidation,
-  monitorValidation,
+  getMonitorsByUserIdQueryValidation,
   editMonitorBodyValidation,
   editUserParamValidation,
   editUserBodyValidation,

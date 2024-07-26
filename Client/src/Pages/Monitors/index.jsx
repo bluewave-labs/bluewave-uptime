@@ -100,6 +100,9 @@ const Monitors = () => {
           : "var(--env-var-color-19)",
     };
 
+    // Reverse checks so latest check is on the right
+    const reversedChecks = monitor.checks.slice().reverse();
+
     return {
       id: monitor._id,
       handleClick: () => navigate(`/monitors/${monitor._id}`),
@@ -117,7 +120,7 @@ const Monitors = () => {
             />
           ),
         },
-        { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
+        { id: idx + 2, data: <ResponseTimeChart checks={reversedChecks} /> },
         { id: idx + 3, data: monitor.type },
         { id: idx + 4, data: "TODO" },
       ],
