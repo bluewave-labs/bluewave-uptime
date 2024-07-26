@@ -1,0 +1,58 @@
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+#box-close-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.css-1qh2y1i-MuiStack-root {
+  margin-bottom: 16px;
+}
+
+.field h3.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+  font-weight: 600;
+  color: var(--env-var-color-5);
+  margin-bottom: 8px;
+}
+
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+  width: 320px;
+  margin-bottom: 16px;
+}
+
+.duration-controls
+  div.MuiFormControl-root
+  .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
+  height: 17px;
+  font-size: var(--env-var-font-size-medium);
+}
+
+.duration-controls
+  div.MuiFormControl-root
+  .css-1axaeol-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root {
+  height: 34px;
+  font-size: var(--env-var-font-size-medium);
+}
+
+div.MuiFormControl-root .css-1r2m0wd-MuiInputBase-root-MuiOutlinedInput-root {
+  height: 34px;
+  font-size: var(--env-var-font-size-medium);
+}
+
+div.MuiFormControl-root
+  .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root
+  .css-i4bv87-MuiSvgIcon-root {
+  width: 20px;
+  height: 20px;
+}
+
+.box-actions {
+  display: flex;
+  margin-top: 40px;
+  justify-content: end;
+}
