@@ -1,5 +1,6 @@
 const Monitor = require("../../../models/Monitor");
 const Check = require("../../../models/Check");
+const PageSpeedCheck = require("../../../models/PageSpeedCheck");
 
 const { errorMessages } = require("../../../utils/messages");
 
@@ -40,9 +41,18 @@ const getMonitorById = async (req, res) => {
       checksQuery.status = status;
     }
 
-    const checks = await Check.find(checksQuery).sort({
+    // Determine model type
+    let model = null;
+    if (monitor.type === "http" || monitor.type === "ping") {
+      model = Check;
+    } else {
+      model = PageSpeedCheck;
+    }
+
+    const checks = await model.find(checksQuery).sort({
       createdAt: 1,
     });
+
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
   } catch (error) {
@@ -79,8 +89,18 @@ const getMonitorsByUserId = async (req, res) => {
         if (status !== undefined) {
           checksQuery.status = status;
         }
+
+        //Determine the model type
+        let model = null;
+        if (type === "http" || type === "ping") {
+          model = Check;
+        } else {
+          model = PageSpeedCheck;
+        }
+
         // Checks are order newest -> oldest
-        const checks = await Check.find(checksQuery)
+        const checks = await model
+          .find(checksQuery)
           .sort({
             createdAt: -1,
           })

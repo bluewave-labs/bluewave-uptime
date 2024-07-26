@@ -14,7 +14,7 @@ const PageSpeedCheck = require("../../../models/PageSpeedCheck");
  */
 const createPageSpeedCheck = async (pageSpeedCheckData) => {
   try {
-    const pageSpeedCheck = await new pageSpeedCheck({
+    const pageSpeedCheck = await new PageSpeedCheck({
       ...pageSpeedCheckData,
     }).save();
     return pageSpeedCheck;
