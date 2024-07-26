@@ -35,7 +35,7 @@ const Avatar = ({ src, small, sx }) => {
         src ? src : user?.avatarImage ? image : "/static/images/avatar/2.jpg"
       }
       sx={{
-        fontSize: small ? "12px" : "20px",
+        fontSize: small ? "13px" : "20px",
         display: "inline-flex",
         "&::before": {
           content: `""`,

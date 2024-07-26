@@ -199,13 +199,7 @@ const DetailsPage = () => {
   };
 
   return (
-    <div
-      className="monitor-details"
-      style={{
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-        backgroundColor: "var(--env-var-color-30)",
-      }}
-    >
+    <Box className="monitor-details">
       <Button
         level="tertiary"
         label="Back to Monitors"
@@ -311,7 +305,7 @@ const DetailsPage = () => {
           <BasicTable data={data} paginated={true} reversed={true} />
         </Box>
       </Stack>
-    </div>
+    </Box>
   );
 };
 

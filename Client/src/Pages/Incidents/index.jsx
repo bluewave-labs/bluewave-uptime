@@ -104,13 +104,7 @@ const Incidents = () => {
   data.rows = incidents;
 
   return (
-    <Stack
-      className="incidents"
-      gap={theme.gap.large}
-      style={{
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-      }}
-    >
+    <Stack className="incidents" gap={theme.gap.large}>
       <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
         <Typography component="h1">Incident history for: </Typography>
         <Select

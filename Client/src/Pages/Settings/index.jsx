@@ -14,10 +14,7 @@ const Settings = () => {
     <Box
       className="settings"
       style={{
-        maxWidth: "1200px",
-        padding: `${theme.content.pY} ${theme.content.pX}`,
         paddingBottom: 0,
-        backgroundColor: "var(--env-var-color-30)",
       }}
     >
       <form className="settings-form" noValidate spellCheck="false">

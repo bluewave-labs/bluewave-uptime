@@ -1,0 +1,35 @@
+aside .MuiStack-root {
+  cursor: pointer;
+}
+aside > svg {
+  margin: var(--env-var-spacing-2) var(--env-var-spacing-1);
+}
+aside .selected-path,
+aside .MuiStack-root:hover {
+  background-color: var(--env-var-color-13);
+}
+aside .MuiStack-root svg {
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
+}
+aside span.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-5);
+  line-height: 1;
+}
+aside .MuiStack-root:nth-last-child(2) {
+  margin-top: auto;
+  position: relative;
+}
+aside .MuiStack-root:nth-last-child(2):before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  border-top: solid 1px var(--env-var-color-6);
+}
+aside .MuiStack-root:last-child {
+  margin-bottom: 10px;
+}

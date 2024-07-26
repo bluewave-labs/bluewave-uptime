@@ -5,12 +5,7 @@ const Status = () => {
   const theme = useTheme();
 
   return (
-    <div
-      className="status"
-      style={{
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-      }}
-    >
+    <div className="status">
       <Fallback
         title="status page"
         checks={[
