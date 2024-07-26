@@ -134,8 +134,6 @@ const CreateMonitor = () => {
     { _id: 5, name: "5 minutes" },
   ];
 
-  console.log(checks.type);
-
   return (
     <Box className="create-monitor">
       <Button
@@ -172,6 +170,7 @@ const CreateMonitor = () => {
               type="url"
               id="monitor-url"
               label="URL to monitor"
+              https={checks.type === "https"}
               placeholder="google.com"
               value={generalSettings.url}
               onChange={(event) =>

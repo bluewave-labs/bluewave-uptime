@@ -19,6 +19,7 @@ import { useState } from "react";
  * @param {string} [props.type] - Type of input field (e.g., 'text', 'password').
  * @param {string} props.id - ID of the input field.
  * @param {string} [props.label] - Label for the input field.
+ * @param {boolean} [props.https] - Indicates if it should display http or https.
  * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
  * @param {boolean} [props.isOptional] - Indicates if the field is optional, will display optional text.
  * @param {string} [props.optionalLabel] - Optional label for the input field.
@@ -35,6 +36,7 @@ const Field = ({
   type = "text",
   id,
   label,
+  https,
   isRequired,
   isOptional,
   optionalLabel,
@@ -92,7 +94,9 @@ const Field = ({
                 borderRight: `solid 1px ${theme.palette.section.borderColor}`,
               }}
             >
-              <Typography component="h5">https://</Typography>
+              <Typography component="h5">
+                {https ? "https" : "http"}://
+              </Typography>
             </Stack>
           ),
           endAdornment:
@@ -152,6 +156,7 @@ Field.propTypes = {
   type: PropTypes.oneOf(["text", "password", "url", "email", "description"]),
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
+  https: PropTypes.bool,
   isRequired: PropTypes.bool,
   isOptional: PropTypes.bool,
   optionalLabel: PropTypes.string,
