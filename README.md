@@ -84,14 +84,17 @@ To get the application up and running you need to:
 
 ```
 CLIENT_HOST="http://localhost:5173"
-JWT_SECRET="my_secret"
+JWT_SECRET=<jwt_secret>
 DB_TYPE="MongoDB"
 DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
 REDIS_HOST="redis"
 REDIS_PORT=6379
-SYSTEM_EMAIL_ADDRESS="<email>"
-SENDGRID_API_KEY="<api_key>"
-LOGIN_PAGE_URL="<login_page"
+TOKEN_TTL="99d"
+PAGESPEED_API_KEY=<api_key>
+SYSTEM_EMAIL_HOST="smtp.gmail.com"
+SYSTEM_EMAIL_PORT=465
+SYSTEM_EMAIL_ADDRESS=<system_email>
+SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
 3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
