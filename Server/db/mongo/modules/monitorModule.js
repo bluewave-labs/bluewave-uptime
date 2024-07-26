@@ -68,6 +68,7 @@ const getMonitorsByUserId = async (req, res) => {
       monitorQuery.type = { $in: types };
     }
 
+    // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
 
     const monitors = await Monitor.find(monitorQuery);
