@@ -29,14 +29,7 @@ const Account = ({ open = "profile" }) => {
   if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
 
   return (
-    <Box
-      //TODO - breakpoints for responsive design
-      minWidth={theme.spacing(55)}
-      maxWidth="1200px"
-      py={theme.content.pY}
-      px={theme.content.pX}
-      className="account"
-    >
+    <Box className="account">
       <TabContext value={tab}>
         <Box
           sx={{
@@ -74,7 +67,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-       { user.role.includes("admin") && <TeamPanel />}
+        {user.role.includes("admin") && <TeamPanel />}
       </TabContext>
     </Box>
   );

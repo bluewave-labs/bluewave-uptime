@@ -3,6 +3,7 @@ import "./index.css";
 import React from "react";
 import PropTypes from "prop-types";
 import { Stack, Typography } from "@mui/material";
+import { useNavigate } from "react-router";
 
 /**
  * Support for defaultProps will be removed from function components in a future major release
@@ -30,6 +31,8 @@ const DefaultValue = {
  * @returns {JSX.Element} The rendered error page component.
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
+  const navigate = useNavigate();
+
   return (
     <Stack className="not-found-page" justifyContent="center">
       <Stack gap="20px" alignItems="center">
@@ -39,6 +42,7 @@ const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
           label="Go to the main dashboard"
           level="primary"
           sx={{ mt: "24px" }}
+          onClick={() => navigate("/")}
         />
       </Stack>
     </Stack>

@@ -135,14 +135,7 @@ const CreateMonitor = () => {
   ];
 
   return (
-    <div
-      className="create-monitor"
-      style={{
-        maxWidth: "1200px",
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-        backgroundColor: "var(--env-var-color-30)",
-      }}
-    >
+    <Box className="create-monitor">
       <Button
         level="tertiary"
         label="Back"
@@ -402,7 +395,7 @@ const CreateMonitor = () => {
           />
         </Stack>
       </form>
-    </div>
+    </Box>
   );
 };
 

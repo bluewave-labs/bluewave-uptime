@@ -1,207 +1,33 @@
-.monitors,
-.new-monitor {
-  width: 70vw;
-}
-
-.monitors {
-  font-family: var(--env-var-font-familt-1);
-  background-color: var(--env-var-color-30);
-}
-
-.monitors-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.monitors-bar-title {
+.monitors h1.MuiTypography-root,
+.monitors h2.MuiTypography-root {
   color: var(--env-var-color-1);
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.monitors-stats {
-  margin-top: var(--env-var-spacing-2);
-  display: flex;
-  gap: 24px;
-  height: 100px;
-}
-
-.monitors-gaps-medium {
-  height: var(--env-var-spacing-2);
-}
-
-.monitors-gaps-small-plus {
-  height: var(--env-var-spacing-1-plus);
-}
-
-.monitors-gaps-small {
-  height: 6px;
-}
-
-.new-monitor-header {
-  color: var(--env-var-color-1);
-  font-size: var(--env-var-font-size-large-plus);
   font-weight: 600;
 }
-
-.service-check-list-title {
-  color: var(--env-var-color-5);
+.monitors h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large-plus);
+}
+.monitors h2.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+}
+.monitors .MuiStack-root > button {
   font-size: var(--env-var-font-size-medium);
-}
-
-.service-check-list-desc {
-  color: var(--env-var-color-25);
-  font-size: var(--env-var-font-size-small);
-}
-
-.host-status-box-text {
-  font-size: var(--env-var-font-size-medium);
-}
-
-.monitors-dropdown-holder {
-  padding-left: 30px;
-}
-
-#ports-list {
-  width: 172.92px;
-  height: 12px;
-  font-size: var(--env-var-font-size-small);
-  align-items: center;
-}
-
-.incident-notif-config-title,
-.adv-setting-title {
-  color: var(--env-var-color-5);
-  font-size: var(--env-var-font-size-medium);
-}
-
-.adv-setting-title {
-  font-weight: 500;
-}
-
-.config-box-inputs,
-.service-check-list,
-.incident-notif-config,
-.advanced-setting-config,
-.proxy-setting-config {
-  min-width: 350px;
-  padding-right: 40px;
-}
-
-.monitors-create-button-holder {
-  display: flex;
-  justify-content: end;
-}
-
-#create-new-monitor-btn {
-  padding-top: 6px;
-}
-
-#ports-dropdown,
-#freq-dropdown {
-  width: 226.8px;
-  height: 20px;
-}
-
-/* TODO */
-.current-monitors {
-  margin-top: var(--env-var-spacing-2);
-  border: 1px solid #eaecf0;
-  padding: 40px;
-  border-radius: 4px;
-}
-
-.current-monitors-title-holder {
-  display: flex;
-  align-items: center;
-}
-
-.current-monitors-bar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.current-monitors-title {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-right: var(--env-var-spacing-1);
-  color: var(--env-var-color-1);
+  height: var(--env-var-height-2);
+  min-width: fit-content;
 }
 
 .current-monitors-counter {
-  display: inline-flex;
+  display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2px;
-  min-width: 22px;
-  min-height: 22px;
+  padding: 5px;
+  min-width: 25px;
+  min-height: 25px;
   background-color: var(--env-var-color-15);
   border: 1px solid var(--env-var-color-6);
   border-radius: 50%;
   font-size: var(--env-var-font-size-medium);
   font-weight: 500;
   color: var(--env-var-color-5);
-}
-
-.monitors-v-gaping {
-  height: var(--env-var-spacing-3);
-}
-
-.current-monitors-table {
-  width: 100%;
-  text-align: left;
-}
-
-.current-monitors-table {
-  width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-  border: 1px solid var(--env-var-color-16);
-  border-radius: var(--env-var-radius-1);
-}
-
-.current-monitors-table th,
-.current-monitors-table td {
-  border: 1px solid var(--env-var-color-16);
-  border-left: none;
-  border-right: none;
-  padding: 8px;
-}
-
-.theader-row {
-  background-color: var(--env-var-color-13);
-  color: var(--env-var-color-2);
-  font-weight: 500;
-}
-
-.theader-row td {
-  padding: var(--env-var-spacing-1) var(--env-var-spacing-2);
-  font-size: var(--env-var-font-size-medium);
-}
-
-.host-list-item-precentage {
-  font-size: var(--env-var-font-size-medium);
-}
-
-.tbody-row td {
-  padding: var(--env-var-spacing-2) var(--env-var-img-width-2);
-}
-
-.host-status-box {
-  display: flex;
-  width: fit-content;
-  border: 1px solid var(--env-var-color-4);
-  border-radius: var(--env-var-radius-2);
-  align-items: center;
-  padding: calc(var(--env-var-spacing-1) / 2);
-}
-
-.host-actions {
-  margin: auto;
-  cursor: pointer;
-}
-
-.tbody-row-cell.actions-cell {
-  padding-left: 30px;
+  margin-left: 10px;
+  line-height: 0.8;
 }

@@ -1,5 +1,5 @@
 :root {
-  --spacing-general-0: 10px 25px;
+  --spacing-general-0: 12px 18px;
   --spacing-general-1: 20px;
   --color-border-0: #eaecf0;
   --border-radius-0: 4px;
@@ -12,17 +12,19 @@
 }
 
 .server-status-tile {
-  min-width: 250px;
+  min-width: 100px;
   width: calc(100% - 310px);
   padding: var(--spacing-general-0);
   border: 1px solid var(--color-border-0);
   border-radius: var(--border-radius-0);
+  background-color: var(--env-var-color-8);
 }
 
 .server-status-tile-title {
   font-size: var(--font-size-0);
   font-weight: bold;
   margin-bottom: calc(var(--spacing-general-1) / 2);
+  color: var(--env-var-color-1);
 }
 
 .server-status-tile-value {

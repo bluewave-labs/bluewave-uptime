@@ -128,14 +128,7 @@ const Configure = () => {
   ];
 
   return (
-    <div
-      className="configure-monitor"
-      style={{
-        maxWidth: "1200px",
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-        backgroundColor: "var(--env-var-color-30)",
-      }}
-    >
+    <Box className="configure-monitor">
       <Button
         level="tertiary"
         label="Back"
@@ -304,7 +297,7 @@ const Configure = () => {
           <Button level="primary" label="Save" sx={{ px: theme.gap.ml }} />
         </Stack>
       </form>
-    </div>
+    </Box>
   );
 };
 
