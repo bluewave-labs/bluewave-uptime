@@ -107,39 +107,49 @@ class NetworkService {
     }
   }
 
-  /**
-   * Handles PageSpeed job types
-   * @param {Object} job - The job object containing data operation.
-   * @returns {Promise<{boolean}} The result of logging and storing the check
-   */
-  async handlePagespeed(job) {
-    try {
-      const url = job.data.url;
-      const response = await axios.get(
-        `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
-      );
-      const pageSpeedResults = response.data;
-      const categories = pageSpeedResults.lighthouseResult?.categories;
-      const checkData = {
-        monitorId: job.data._id,
-        status: true,
-        accessibility: (categories.accessibility?.score || 0) * 100,
-        bestPractices: (categories["best-practices"]?.score || 0) * 100,
-        seo: (categories.seo?.score || 0) * 100,
-        performance: (categories.performance?.score || 0) * 100,
-      };
-      this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
-    } catch (error) {
-      const checkData = {
-        monitorId: job.data._id,
-        status: false,
-        accessibility: 0,
-        bestPractices: 0,
-        seo: 0,
-        performance: 0,
-      };
-    }
+/**
+ * Handles PageSpeed job types by fetching and processing PageSpeed insights.
+ *
+ * This method sends a request to the Google PageSpeed Insights API to get performance metrics
+ * for the specified URL, then logs and stores the check results.
+ *
+ * @param {Object} job - The job object containing data related to the PageSpeed check.
+ * @param {string} job.data.url - The URL to be analyzed by the PageSpeed Insights API.
+ * @param {string} job.data._id - The unique identifier for the monitor associated with the check.
+ *
+ * @returns {Promise<void>} A promise that resolves when the check results have been logged and stored.
+ *
+ * @throws {Error} Throws an error if there is an issue with fetching or processing the PageSpeed insights.
+ */
+async handlePagespeed(job) {
+  try {
+    const url = job.data.url;
+    const response = await axios.get(
+      `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
+    );
+    const pageSpeedResults = response.data;
+    const categories = pageSpeedResults.lighthouseResult?.categories;
+    const checkData = {
+      monitorId: job.data._id,
+      status: true,
+      accessibility: (categories.accessibility?.score || 0) * 100,
+      bestPractices: (categories["best-practices"]?.score || 0) * 100,
+      seo: (categories.seo?.score || 0) * 100,
+      performance: (categories.performance?.score || 0) * 100,
+    };
+    this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
+  } catch (error) {
+    const checkData = {
+      monitorId: job.data._id,
+      status: false,
+      accessibility: 0,
+      bestPractices: 0,
+      seo: 0,
+      performance: 0,
+    };
   }
+}
+
 
   /**
    * Retrieves the status of a given job based on its type.
