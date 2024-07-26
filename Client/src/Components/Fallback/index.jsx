@@ -29,7 +29,7 @@ const Fallback = ({ title, checks, link = "/" }) => {
       gap={theme.gap.xl}
     >
       <Skeleton />
-      <Stack gap={theme.gap.small}>
+      <Stack gap={theme.gap.small} maxWidth={"275px"}>
         <Typography component="h1" marginY={theme.gap.medium}>
           A {title} is used to:
         </Typography>
