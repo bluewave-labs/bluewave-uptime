@@ -118,7 +118,7 @@ const inviteVerifciationBodyValidation = joi.object({
 // Monitors
 //****************************************
 
-const getMonitorByIdValidation = joi.object({
+const getMonitorByIdParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
@@ -244,7 +244,7 @@ module.exports = {
   inviteRoleValidation,
   inviteBodyValidation,
   inviteVerifciationBodyValidation,
-  getMonitorByIdValidation,
+  getMonitorByIdParamValidation,
   getMonitorsByUserIdValidation,
   monitorValidation,
   editMonitorBodyValidation,
