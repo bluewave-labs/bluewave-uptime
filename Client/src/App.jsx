@@ -22,6 +22,7 @@ import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
 import Configure from "./Pages/Monitors/Configure";
+import { MaintenanceOptions } from "./Components/MaintenanceOptions";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -98,6 +99,7 @@ function App() {
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
         />
+        <Route exact path="/maintainopts" element={<MaintenanceOptions />} />
       </Routes>
       <ToastContainer />
     </>
