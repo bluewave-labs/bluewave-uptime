@@ -6,15 +6,11 @@
 ![](https://img.shields.io/github/issues-pr/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/issues/bluewave-labs/bluewave-uptime)
 
-
 <h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">BlueWave Uptime</a></h1>
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
-
-
 ![bluewave-uptime-screenshot](https://github.com/user-attachments/assets/765bf060-e734-45e6-bd00-2a2eb37c9c02)
-
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
@@ -776,7 +772,7 @@ curl --request GET \
 </details>
 
 <details>
-<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
+<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}?status</b></summary>
 
 ###### Method/Headers
 
@@ -784,6 +780,14 @@ curl --request GET \
 > | -------------- | ---------------- |
 > | Method         | GET              |
 > | content-type   | application/json |
+
+###### Query Params
+
+> | Name      | Type      | Required | Notes                                            |
+> | --------- | --------- | -------- | ------------------------------------------------ |
+> | status    | `boolean` | Optional | Check status                                     |
+> | limit     | `number`  | Optional | Number of checks to return                       |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest |
 
 ###### Response Payload
 
@@ -795,7 +799,7 @@ curl --request GET \
 
 ```
 curl --request GET \
-  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1 \
+  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1?status=true?limit=0 \
   --header '<bearer_token>' \
 ```
 
@@ -856,6 +860,15 @@ curl --request GET \
 > | -------------- | ---------------- |
 > | Method         | GET              |
 > | content-type   | application/json |
+
+###### Query Params
+
+> | Name      | Type      | Required | Notes                                             |
+> | --------- | --------- | -------- | ------------------------------------------------- |
+> | status    | `boolean` | Optional | Check status                                      |
+> | type      | `string`  | Optional | Multiple allowed: `http` \| `ping` \| `pagespeed` |
+> | limit     | `number`  | Optional | Monitor status                                    |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest  |
 
 ###### Response Payload
 

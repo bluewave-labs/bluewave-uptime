@@ -82,11 +82,14 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchMonitor = async () => {
-      const res = await axiosInstance.get(`/monitors/${monitorId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axiosInstance.get(
+        `/monitors/${monitorId}?sortOrder=asc`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       setMonitor(res.data.data);
       const data = {
         cols: [
