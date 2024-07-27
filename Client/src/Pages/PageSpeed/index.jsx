@@ -5,13 +5,15 @@ import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 
 import "./index.css";
 import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
+import { StatusLabel } from "../../Components/Label";
 
 const Card = ({ data }) => {
   const theme = useTheme();
 
   /**
-   * Helper function to get duration since last check or the last
+   * Helper function to get duration since last check or the last date checked
    * @param {Array} checks Array of check objects.
+   * @param {boolean} duration Whether the function should return the duration since last checked or the date itself
    * @returns {number} Timestamp of the most recent check.
    */
   const getLastChecked = (checks, duration = true) => {
@@ -30,12 +32,25 @@ const Card = ({ data }) => {
     <Grid item lg={6} flexGrow={1}>
       <Stack direction="row" gap={theme.gap.medium} p={theme.gap.ml}>
         <PageSpeedIcon style={{ width: theme.gap.ml, height: theme.gap.ml }} />
-        <Box>
+        <Box flex={1}>
           <Stack direction="row" justifyContent="space-between">
             <Typography component="h2" mb={theme.gap.xs}>
               {data.name}
             </Typography>
-            {/* TODO - Add status label */}
+            {/* TODO - fix prop-type error */}
+            <StatusLabel
+              status={data.isActive ? "Live (collecting data)" : "Inactive"}
+              dot={
+                data.isActive
+                  ? "var(--env-var-color-17)"
+                  : "var(--env-var-color-19)"
+              }
+              customStyles={{
+                backgroundColor: data.isActive
+                  ? "var(--env-var-color-20)"
+                  : "var(--env-var-color-21)",
+              }}
+            />
           </Stack>
           <Typography>{data.url}</Typography>
           <Typography mt={theme.gap.large}>
