@@ -4,9 +4,28 @@ import { useTheme } from "@emotion/react";
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 
 import "./index.css";
+import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
 
 const Card = ({ data }) => {
   const theme = useTheme();
+
+  /**
+   * Helper function to get duration since last check or the last
+   * @param {Array} checks Array of check objects.
+   * @returns {number} Timestamp of the most recent check.
+   */
+  const getLastChecked = (checks, duration = true) => {
+    if (!checks || checks.length === 0) {
+      return 0; // Handle case when no checks are available
+    }
+
+    // Data is sorted oldest -> newest, so last check is the most recent
+    if (!duration) {
+      return new Date(checks[checks.length - 1].createdAt);
+    }
+    return new Date() - new Date(checks[checks.length - 1].createdAt);
+  };
+
   return (
     <Grid item lg={6} flexGrow={1}>
       <Stack direction="row" gap={theme.gap.medium} p={theme.gap.ml}>
@@ -23,9 +42,9 @@ const Card = ({ data }) => {
             <Typography component="span" fontWeight={600}>
               Last checked:{" "}
             </Typography>
-            {/* get last check */}
+            {formatDate(getLastChecked(data.checks, false))}{" "}
             <Typography component="span" fontStyle="italic">
-              (3 minutes ago)
+              ({formatDurationRounded(getLastChecked(data.checks))} ago)
             </Typography>
           </Typography>
         </Box>
