@@ -189,6 +189,7 @@ class NetworkService {
       const insertedCheck = await writeToDB(data);
       return insertedCheck.status;
     } catch (error) {
+      console.log(error);
       logger.error(`Error wrtiting check for ${data.monitorId}`, {
         service: this.SERVICE_NAME,
         monitorId: data.monitorId,

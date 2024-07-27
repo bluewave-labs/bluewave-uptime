@@ -6,15 +6,11 @@
 ![](https://img.shields.io/github/issues-pr/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/issues/bluewave-labs/bluewave-uptime)
 
-
 <h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">BlueWave Uptime</a></h1>
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
-
-
 ![bluewave-uptime-screenshot](https://github.com/user-attachments/assets/765bf060-e734-45e6-bd00-2a2eb37c9c02)
-
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
@@ -88,14 +84,17 @@ To get the application up and running you need to:
 
 ```
 CLIENT_HOST="http://localhost:5173"
-JWT_SECRET="my_secret"
+JWT_SECRET=<jwt_secret>
 DB_TYPE="MongoDB"
 DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
 REDIS_HOST="redis"
 REDIS_PORT=6379
-SYSTEM_EMAIL_ADDRESS="<email>"
-SENDGRID_API_KEY="<api_key>"
-LOGIN_PAGE_URL="<login_page"
+TOKEN_TTL="99d"
+PAGESPEED_API_KEY=<api_key>
+SYSTEM_EMAIL_HOST="smtp.gmail.com"
+SYSTEM_EMAIL_PORT=465
+SYSTEM_EMAIL_ADDRESS=<system_email>
+SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
 3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
@@ -149,19 +148,22 @@ That's it, the application is ready to use on port 5173.
 
 Configure the server with the following environmental variables:
 
-| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values                                  |
-| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                                                  |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                                                  |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB`                              |
-| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                                                  |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                                                  |
-| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                                                  |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                                                  |
-| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                                                  |
-| REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                                                  |
-| REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                                                  |
-| TOKEN_TTL            | Optional          | string    | Time for token to live                                                                      | In vercel/ms format https://github.com/vercel/ms |
+| ENV Variable Name     | Required/Optional | Type      | Description                              | Accepted Values                                  |
+| --------------------- | ----------------- | --------- | ---------------------------------------- | ------------------------------------------------ |
+| CLIENT_HOST           | Required          | `string`  | Frontend Host                            |                                                  |
+| JWT_SECRET            | Required          | `string`  | JWT secret                               |                                                  |
+| DB_TYPE               | Optional          | `string`  | Specify DB to use                        | `MongoDB \| FakeDB`                              |
+| DB_CONNECTION_STRING  | Required          | `string`  | Specifies URL for MongoDB Database       |                                                  |
+| PORT                  | Optional          | `integer` | Specifies Port for Server                |                                                  |
+| LOGIN_PAGE_URL        | Required          | `string`  | Login url to be used in emailing service |                                                  |
+| REDIS_HOST            | Required          | `string`  | Host address for Redis database          |                                                  |
+| REDIS_PORT            | Required          | `integer` | Port for Redis database                  |                                                  |
+| TOKEN_TTL             | Optional          | `string`  | Time for token to live                   | In vercel/ms format https://github.com/vercel/ms |
+| PAGESPEED_API_KEY     | Optional          | `string`  | API Key for PageSpeed requests           |                                                  |
+| SYSTEM_EMAIL_HOST     | Required          | `string`  | Host to send System Emails From          |                                                  |
+| SYSTEM_EMAIL_PORT     | Required          | `number`  | Port for System Email Host               |                                                  |
+| SYSTEM_EMAIL_ADDRESS  | Required          | `string`  | System Email Address                     |                                                  |
+| SYSTEM_EMAIL_PASSWORD | Required          | `string`  | System Email Password                    |                                                  |
 
 <br/>
 
@@ -776,7 +778,7 @@ curl --request GET \
 </details>
 
 <details>
-<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
+<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}?status</b></summary>
 
 ###### Method/Headers
 
@@ -784,6 +786,14 @@ curl --request GET \
 > | -------------- | ---------------- |
 > | Method         | GET              |
 > | content-type   | application/json |
+
+###### Query Params
+
+> | Name      | Type      | Required | Notes                                            |
+> | --------- | --------- | -------- | ------------------------------------------------ |
+> | status    | `boolean` | Optional | Check status                                     |
+> | limit     | `number`  | Optional | Number of checks to return                       |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest |
 
 ###### Response Payload
 
@@ -795,7 +805,7 @@ curl --request GET \
 
 ```
 curl --request GET \
-  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1 \
+  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1?status=true?limit=0 \
   --header '<bearer_token>' \
 ```
 
@@ -856,6 +866,15 @@ curl --request GET \
 > | -------------- | ---------------- |
 > | Method         | GET              |
 > | content-type   | application/json |
+
+###### Query Params
+
+> | Name      | Type      | Required | Notes                                             |
+> | --------- | --------- | -------- | ------------------------------------------------- |
+> | status    | `boolean` | Optional | Check status                                      |
+> | type      | `string`  | Optional | Multiple allowed: `http` \| `ping` \| `pagespeed` |
+> | limit     | `number`  | Optional | Monitor status                                    |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest  |
 
 ###### Response Payload
 

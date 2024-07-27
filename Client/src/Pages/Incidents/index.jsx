@@ -33,7 +33,7 @@ const Incidents = () => {
   useEffect(() => {
     const fetchIncidents = async () => {
       const res = await axiosInstance.get(
-        `/monitors/incidents/user/${authState.user._id}`,
+        `/monitors/user/${authState.user._id}?status=false`,
         {
           headers: {
             Authorization: `Bearer ${authState.authToken}`,

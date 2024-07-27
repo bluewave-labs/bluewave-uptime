@@ -51,7 +51,7 @@ export const getMonitorsByUserId = createAsyncThunk(
     const user = jwtDecode(token);
     try {
       const res = await axiosInstance.get(
-        `/monitors/user/${user._id}?limit=25`,
+        `/monitors/user/${user._id}?limit=25&type=http&type=ping&sortOrder=desc`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

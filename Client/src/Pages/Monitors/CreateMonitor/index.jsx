@@ -2,7 +2,7 @@ import "./index.css";
 import React, { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
-import { Box, MenuItem, Stack, Typography } from "@mui/material";
+import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
@@ -85,14 +85,17 @@ const CreateMonitor = () => {
     //obj to submit
     let monitor = {
       url:
-        checks.type === "http"
-          ? "https://" + generalSettings.url
+        //preprending protocol for url
+        checks.type === "http" || checks.type === "https"
+          ? `${checks.type}://` + generalSettings.url
           : generalSettings.url,
       name:
         generalSettings.name === ""
           ? generalSettings.url
           : generalSettings.name,
-      ...checks,
+      //there is no separate monitor type for https since the operations for the two protocols are identical
+      //however the URL does need the correct prepend hence https is still being tracked but overwritten when prepping the monitor obj
+      type: checks.type === "https" ? "http" : checks.type,
     };
 
     const { error } = monitorValidation.validate(monitor, {
@@ -167,9 +170,14 @@ const CreateMonitor = () => {
           </Box>
           <Stack gap={theme.gap.xl}>
             <Field
-              type="url"
+              type={
+                checks.type === "http" || checks.type === "https"
+                  ? "url"
+                  : "text"
+              }
               id="monitor-url"
               label="URL to monitor"
+              https={checks.type === "https"}
               placeholder="google.com"
               value={generalSettings.url}
               onChange={(event) =>
@@ -199,15 +207,47 @@ const CreateMonitor = () => {
             </Typography>
           </Box>
           <Stack gap={theme.gap.large}>
-            <RadioButton
-              id="monitor-checks-http"
-              title="HTTP/website monitoring"
-              desc="Use HTTP(s) to monitor your website or API endpoint."
-              size="small"
-              value="http"
-              checked={checks.type === "http"}
-              onChange={(event) => handleChange(event, "type", setChecks)}
-            />
+            <Stack gap={theme.gap.medium}>
+              <RadioButton
+                id="monitor-checks-http"
+                title="Website monitoring"
+                desc="Use HTTP(s) to monitor your website or API endpoint."
+                size="small"
+                value="http"
+                checked={checks.type === "http" || checks.type === "https"}
+                onChange={(event) => handleChange(event, "type", setChecks)}
+              />
+              {checks.type === "http" || checks.type === "https" ? (
+                <ButtonGroup sx={{ ml: "32px" }}>
+                  <Button
+                    level="secondary"
+                    label="HTTP"
+                    onClick={() =>
+                      setChecks((prev) => ({ ...prev, type: "http" }))
+                    }
+                    sx={{
+                      backgroundColor:
+                        checks.type === "http" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="HTTPS"
+                    onClick={() =>
+                      setChecks((prev) => ({ ...prev, type: "https" }))
+                    }
+                    sx={{
+                      backgroundColor:
+                        checks.type === "https" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                </ButtonGroup>
+              ) : (
+                ""
+              )}
+            </Stack>
             <RadioButton
               id="monitor-checks-ping"
               title="Ping monitoring"

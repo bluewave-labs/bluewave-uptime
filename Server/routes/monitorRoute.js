@@ -7,15 +7,6 @@ router.get("/", monitorController.getAllMonitors);
 router.get("/:monitorId", monitorController.getMonitorById);
 router.get("/user/:userId", monitorController.getMonitorsByUserId);
 
-router.get(
-  "/incidents/:monitorId",
-  monitorController.getMonitorByIdForIncidents
-);
-router.get(
-  "/incidents/user/:userId",
-  monitorController.getMonitorsByUserIdForIncidents
-);
-
 router.post("/", monitorController.createMonitor);
 router.post(
   "/delete/:monitorId",
