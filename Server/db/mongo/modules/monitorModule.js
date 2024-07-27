@@ -1,7 +1,6 @@
 const Monitor = require("../../../models/Monitor");
 const Check = require("../../../models/Check");
 const PageSpeedCheck = require("../../../models/PageSpeedCheck");
-
 const { errorMessages } = require("../../../utils/messages");
 
 /**
@@ -31,6 +30,7 @@ const getAllMonitors = async (req, res) => {
  */
 const getMonitorById = async (req, res) => {
   try {
+
     const { monitorId } = req.params;
     let { status, limit, sortOrder } = req.query;
 
@@ -64,7 +64,6 @@ const getMonitorById = async (req, res) => {
         createdAt: sortOrder,
       })
       .limit(limit);
-
     const monitorWithChecks = { ...monitor.toObject(), checks };
     return monitorWithChecks;
   } catch (error) {
@@ -124,7 +123,6 @@ const getMonitorsByUserId = async (req, res) => {
         return { ...monitor.toObject(), checks };
       })
     );
-
     return monitorsWithChecks;
   } catch (error) {
     throw error;
