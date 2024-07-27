@@ -85,8 +85,8 @@ const CreateMonitor = () => {
     //obj to submit
     let monitor = {
       url:
-        checks.type === "http"
-          ? "https://" + generalSettings.url
+        checks.type === "http" || checks.type === "https"
+          ? `${checks.type}://` + generalSettings.url
           : generalSettings.url,
       name:
         generalSettings.name === ""
@@ -167,7 +167,11 @@ const CreateMonitor = () => {
           </Box>
           <Stack gap={theme.gap.xl}>
             <Field
-              type="url"
+              type={
+                checks.type === "http" || checks.type === "https"
+                  ? "url"
+                  : "text"
+              }
               id="monitor-url"
               label="URL to monitor"
               https={checks.type === "https"}
