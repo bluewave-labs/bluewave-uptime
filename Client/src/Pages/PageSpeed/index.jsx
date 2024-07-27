@@ -11,6 +11,7 @@ const PageSpeed = () => {
           "Help analyze webpage speed",
           "Give suggestions on how the page can be improved",
         ]}
+        link="/page-speed/create"
       />
     </Box>
   );

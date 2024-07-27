@@ -1,0 +1,9 @@
+.create-page-speed > .MuiStack-root {
+  margin: auto;
+  margin-top: var(--env-var-default-2);
+  background-color: var(--env-var-color-8);
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--env-var-shadow-1);
+  padding: calc(var(--env-var-default-2) / 2) var(--env-var-default-2);
+}
