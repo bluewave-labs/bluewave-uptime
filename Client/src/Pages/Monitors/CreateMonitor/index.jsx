@@ -85,6 +85,7 @@ const CreateMonitor = () => {
     //obj to submit
     let monitor = {
       url:
+        //preprending protocol for url
         checks.type === "http" || checks.type === "https"
           ? `${checks.type}://` + generalSettings.url
           : generalSettings.url,
@@ -92,6 +93,8 @@ const CreateMonitor = () => {
         generalSettings.name === ""
           ? generalSettings.url
           : generalSettings.name,
+      //there is no separate monitor type for https since the operations for the two protocols are identical
+      //however the URL does need the correct prepend hence https is still being tracked but overwritten when prepping the monitor obj
       type: checks.type === "https" ? "http" : checks.type,
     };
 
