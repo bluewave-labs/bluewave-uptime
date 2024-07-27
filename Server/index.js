@@ -33,7 +33,7 @@ const startApp = async () => {
   //
   // **************************
   const DB_TYPE = {
-    MongoDB: () => require("./db/MongoDB"),
+    MongoDB: () => require("./db/mongo/MongoDB"),
     FakedDB: () => require("./db/FakeDb"),
   };
 
