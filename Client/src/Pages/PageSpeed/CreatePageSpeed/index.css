@@ -16,8 +16,7 @@
   color: var(--env-var-color-1);
 }
 .create-page-speed h1.MuiTypography-root,
-.create-page-speed h2.MuiTypography-root,
-.create-page-speed h3.MuiTypography-root {
+.create-page-speed h2.MuiTypography-root {
   font-weight: 600;
 }
 .create-page-speed h2.MuiTypography-root,
@@ -25,7 +24,19 @@
 .create-page-speed button {
   font-size: var(--env-var-font-size-medium);
 }
+.create-page-speed .MuiBox-root > .field + p.MuiTypography-root {
+  font-size: var(--env-var-font-size-small-plus);
+  opacity: 0.6;
+}
+.create-page-speed .checkbox-wrapper {
+  margin-bottom: 1px;
+}
 
 .create-page-speed button:not(.MuiIconButton-root) {
   height: var(--env-var-height-2);
+}
+
+body:has(.create-page-speed) .select-dropdown .MuiMenuItem-root,
+.create-page-speed .select-wrapper .select-component > .MuiSelect-select {
+  text-transform: lowercase;
 }

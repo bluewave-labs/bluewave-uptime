@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Button from "../../../Components/Button";
+import Checkbox from "../../../Components/Inputs/Checkbox";
 const CreatePageSpeed = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -70,6 +71,34 @@ const CreatePageSpeed = () => {
         <Stack gap={theme.gap.small}>
           <Typography component="h2">Incidents notifications</Typography>
           <Typography>When there is a new incident,</Typography>
+          <Checkbox
+            id="notify-sms"
+            label="Notify via SMS (coming soon)"
+            isChecked={false}
+            isDisabled={true}
+          />
+          <Checkbox
+            id="notify-email"
+            label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
+            isChecked={true}
+          />
+          <Checkbox
+            id="notify-emails"
+            label="Notify via email to following emails"
+            isChecked={true}
+          />
+          <Box mt={theme.gap.small} ml={`calc(${theme.gap.ml} * 2)`}>
+            <Field
+              id="notify-emails-list"
+              placeholder="notifications@gmail.com"
+              value=""
+              onChange={() => console.log("disabled")}
+              error=""
+            />
+            <Typography mt={theme.gap.small}>
+              You can separate multiple emails with a comma
+            </Typography>
+          </Box>
         </Stack>
         <Stack
           direction="row"
