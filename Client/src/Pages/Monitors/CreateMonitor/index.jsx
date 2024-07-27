@@ -92,7 +92,7 @@ const CreateMonitor = () => {
         generalSettings.name === ""
           ? generalSettings.url
           : generalSettings.name,
-      ...checks,
+      type: checks.type === "https" ? "http" : checks.type,
     };
 
     const { error } = monitorValidation.validate(monitor, {
