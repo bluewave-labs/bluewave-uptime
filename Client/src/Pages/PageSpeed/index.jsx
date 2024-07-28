@@ -124,7 +124,7 @@ const PageSpeed = () => {
   return (
     <Box className="page-speed">
       {monitors ? (
-        <Stack gap={theme.gap.small}>
+        <Stack gap={theme.gap.xs}>
           <Typography component="h1">All page speed monitors</Typography>
           <Typography mb={theme.gap.large}>
             Click on one of the monitors to get more site speed information.

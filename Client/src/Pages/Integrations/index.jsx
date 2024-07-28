@@ -23,11 +23,7 @@ const IntegrationsComponent = ({ url, header, info, onClick }) => {
         direction="row"
         justifyContent="space-between"
         gap={theme.gap.large}
-        p={theme.gap.large}
-        border={1}
-        borderColor={theme.palette.divider}
-        borderRadius={`${theme.shape.borderRadius}px`}
-        sx={{ backgroundColor: theme.palette.otherColors.white }}
+        p={theme.gap.ml}
       >
         <Box
           component="img"
@@ -99,8 +95,10 @@ const Integrations = () => {
   return (
     <Stack className="integrations" gap={theme.gap.xs}>
       <Typography component="h1">Integrations</Typography>
-      <Typography>Connect Uptime Genie to your favorite service</Typography>
-      <Grid container spacing={theme.gap.large} mt={theme.gap.xs}>
+      <Typography mb={theme.gap.large}>
+        Connect Uptime Genie to your favorite service
+      </Typography>
+      <Grid container spacing={theme.gap.large}>
         {integrations.map((integration, index) => (
           <IntegrationsComponent
             key={index}

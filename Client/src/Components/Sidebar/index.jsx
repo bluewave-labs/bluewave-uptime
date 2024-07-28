@@ -25,9 +25,9 @@ const menu = [
   { name: "Monitors", path: "monitors", icon: <Monitors /> },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   { name: "Status pages", path: "status", icon: <StatusPages /> },
-  { name: "Integrations", path: "integrations", icon: <Integrations /> },
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
   { name: "Page speed", path: "page-speed", icon: <PageSpeed /> },
+  { name: "Integrations", path: "integrations", icon: <Integrations /> },
   { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },
 ];

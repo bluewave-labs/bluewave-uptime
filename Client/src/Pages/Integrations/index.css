@@ -12,3 +12,9 @@
 .integrations button {
   height: var(--env-var-height-2);
 }
+
+.integrations .MuiGrid-item > .MuiStack-root {
+  border: solid 1px var(--env-var-color-6);
+  border-radius: var(--env-var-radius-1);
+  background-color: var(--env-var-color-8);
+}
