@@ -59,6 +59,8 @@ class JobQueue {
       QUEUE_NAME,
       async (job) => {
         try {
+          // TODO wrap this in a check to see if a maintenace window is active
+          // If so, don't process the job
           const res = await this.networkService.getStatus(job);
         } catch (error) {
           logger.error(`Error processing job ${job.id}: ${error.message}`, {
