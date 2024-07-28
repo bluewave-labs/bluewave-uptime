@@ -55,7 +55,7 @@ We love contributors. Here's how you can contribute:
 
 Made with [contrib.rocks](https://contrib.rocks).
 
-![Alt](https://repobeats.axiom.co/api/embed/050f9ecd32cfe5c37a5ba119647a68eee69493d4.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/c35d999c82dbb31e967427ea4166c14da4172e73.svg "Repobeats analytics image")
 
 
 ## Getting Started
