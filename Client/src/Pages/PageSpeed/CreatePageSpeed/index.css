@@ -1,25 +1,26 @@
 .create-page-speed > .MuiStack-root {
+  position: relative;
   margin: auto;
   margin-top: var(--env-var-default-2);
   background-color: var(--env-var-color-8);
   width: 100%;
   max-width: 500px;
   box-shadow: var(--env-var-shadow-1);
-  padding: calc(var(--env-var-default-2) / 2) var(--env-var-default-2);
+  border-radius: var(--env-var-radius-1);
+  padding: var(--env-var-default-2);
 }
 .create-page-speed h1.MuiTypography-root,
 .create-page-speed h2.MuiTypography-root,
 .create-page-speed p.MuiTypography-root {
   color: var(--env-var-color-5);
 }
-.create-page-speed h3.MuiTypography-root {
-  color: var(--env-var-color-1);
-}
 .create-page-speed h1.MuiTypography-root,
 .create-page-speed h2.MuiTypography-root {
   font-weight: 600;
 }
-.create-page-speed h2.MuiTypography-root,
+.create-page-speed h2.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium-plus);
+}
 .create-page-speed p.MuiTypography-root,
 .create-page-speed button {
   font-size: var(--env-var-font-size-medium);
@@ -34,6 +35,12 @@
 
 .create-page-speed button:not(.MuiIconButton-root) {
   height: var(--env-var-height-2);
+}
+.create-page-speed .MuiIconButton-root {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: var(--env-var-spacing-1);
 }
 
 body:has(.create-page-speed) .select-dropdown .MuiMenuItem-root,

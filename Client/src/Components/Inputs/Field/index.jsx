@@ -94,7 +94,7 @@ const Field = ({
                 borderRight: `solid 1px ${theme.palette.section.borderColor}`,
               }}
             >
-              <Typography component="h5">
+              <Typography component="h5" sx={{ lineHeight: 1 }}>
                 {https ? "https" : "http"}://
               </Typography>
             </Stack>

@@ -1,13 +1,13 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-
-import "./index.css";
 import { useNavigate } from "react-router";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Button from "../../../Components/Button";
 import Checkbox from "../../../Components/Inputs/Checkbox";
+import "./index.css";
+
 const CreatePageSpeed = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -23,25 +23,19 @@ const CreatePageSpeed = () => {
   return (
     <Box className="create-page-speed">
       <Stack gap={theme.gap.xl}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+        <IconButton
+          aria-label="close modal"
+          onClick={() => navigate("/page-speed")}
+          sx={{
+            p: "5px",
+            opacity: 0.6,
+            "&:focus": { outline: "none" },
+          }}
         >
-          <Typography component="h1">Create a page speed monitor</Typography>
-          <IconButton
-            aria-label="close modal"
-            onClick={() => navigate("/page-speed")}
-            sx={{
-              p: "2px",
-              mr: "-2px",
-              "&:focus": { outline: "none" },
-            }}
-          >
-            <CloseRoundedIcon />
-          </IconButton>
-        </Stack>
+          <CloseRoundedIcon />
+        </IconButton>
         <Stack gap={theme.gap.large}>
+          <Typography component="h1">Create a page speed monitor</Typography>
           <Field
             type="text"
             id="monitor-name"
@@ -87,7 +81,7 @@ const CreatePageSpeed = () => {
             label="Notify via email to following emails"
             isChecked={true}
           />
-          <Box mt={theme.gap.small} ml={`calc(${theme.gap.ml} * 2)`}>
+          <Box mx={`calc(${theme.gap.ml} * 2)`}>
             <Field
               id="notify-emails-list"
               placeholder="notifications@gmail.com"
@@ -100,12 +94,7 @@ const CreatePageSpeed = () => {
             </Typography>
           </Box>
         </Stack>
-        <Stack
-          direction="row"
-          justifyContent="flex-end"
-          gap={theme.gap.small}
-          mb={theme.gap.large}
-        >
+        <Stack direction="row" justifyContent="flex-end" gap={theme.gap.small}>
           <Button level="tertiary" label="Cancel" />
           <Button level="primary" label="Create" />
         </Stack>
