@@ -27,14 +27,18 @@ BlueWave Uptime is an open source server monitoring application used to track th
 * Incidents at a glance
 * Status pages
 * Page speed monitoring (in the works)
-* 3rd party integrations (todo)
+
+**Roadmap:**
+* 3rd party integrations
+* Domain monitoring
+* SSL monitoring
 
 ## Tech stack
 
-* ReactJs
-* MUI (React framework)
-* Node.js
-* MongoDB
+* [ReactJs](https://react.dev/)
+* [MUI (React framework)](https://mui.com/)
+* [Node.js](https://nodejs.org/en)
+* [MongoDB](https://mongodb.com)
 
 ## Contributing
 
