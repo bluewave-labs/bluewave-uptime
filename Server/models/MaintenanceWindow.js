@@ -34,6 +34,11 @@ const MaintenanceWindow = mongoose.Schema(
       ref: "Monitor",
       immutable: true,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      immutable: true,
+    },
     active: {
       type: Boolean,
     },
