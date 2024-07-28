@@ -1,0 +1,30 @@
+.page-speed h1.MuiTypography-root,
+.page-speed span.MuiTypography-root,
+.page-speed p.MuiTypography-root,
+.page-speed .label {
+  color: var(--env-var-color-5);
+}
+.page-speed h2.MuiTypography-root {
+  color: var(--env-var-color-3);
+  line-height: 1.1;
+}
+.page-speed h1.MuiTypography-root,
+.page-speed h2.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  font-weight: 600;
+}
+.page-speed span.MuiTypography-root,
+.page-speed p.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+}
+.page-speed .MuiGrid-item > .MuiStack-root {
+  border: solid 1px var(--env-var-color-6);
+  border-radius: var(--env-var-radius-1);
+  background-color: var(--env-var-color-8);
+}
+.page-speed .label {
+  padding: 0 5px;
+  height: 22px;
+  font-size: var(--env-var-font-size-small);
+  border-color: var(--env-var-color-29);
+}

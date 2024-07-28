@@ -14,33 +14,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import "./index.css";
 import { monitorValidation } from "../../../Validation/validation";
 import Select from "../../../Components/Inputs/Select";
-
-const formatDurationRounded = (ms) => {
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  let time = "";
-  if (days > 0) {
-    time += `${days} day${days !== 1 ? "s" : ""}`;
-    return time;
-  }
-  if (hours > 0) {
-    time += `${hours} hour${hours !== 1 ? "s" : ""}`;
-    return time;
-  }
-  if (minutes > 0) {
-    time += `${minutes} minute${minutes !== 1 ? "s" : ""}`;
-    return time;
-  }
-  if (seconds > 0) {
-    time += `${seconds} second${seconds !== 1 ? "s" : ""}`;
-    return time;
-  }
-
-  return time;
-};
+import { formatDurationRounded } from "../../../Utils/timeUtils";
 
 /**
  * Helper function to get duration since last check

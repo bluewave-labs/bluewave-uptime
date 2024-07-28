@@ -13,52 +13,8 @@ import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import SettingsIcon from "../../../assets/icons/settings.svg?react";
+import { formatDuration, formatDurationRounded } from "../../../Utils/timeUtils";
 import "./index.css";
-
-const formatDuration = (ms) => {
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  let dateStr = "";
-
-  days && (dateStr += `${days}d `);
-  hours && (dateStr += `${hours % 24}h `);
-  minutes && (dateStr += `${minutes % 60}m `);
-  seconds && (dateStr += `${seconds % 60}s `);
-
-  dateStr === "" && (dateStr = "0s");
-
-  return dateStr;
-};
-
-const formatDurationRounded = (ms) => {
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  let time = "";
-  if (days > 0) {
-    time += `${days} day${days !== 1 ? "s" : ""}`;
-    return time;
-  }
-  if (hours > 0) {
-    time += `${hours} hour${hours !== 1 ? "s" : ""}`;
-    return time;
-  }
-  if (minutes > 0) {
-    time += `${minutes} minute${minutes !== 1 ? "s" : ""}`;
-    return time;
-  }
-  if (seconds > 0) {
-    time += `${seconds} second${seconds !== 1 ? "s" : ""}`;
-    return time;
-  }
-
-  return time;
-};
 
 const StatBox = ({ title, value }) => {
   return (

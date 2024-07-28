@@ -7,7 +7,6 @@
 .checkbox-wrapper span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
-  line-height: 1;
 }
 .checkbox-wrapper .MuiButtonBase-root {
   margin-right: var(--env-var-spacing-1);
