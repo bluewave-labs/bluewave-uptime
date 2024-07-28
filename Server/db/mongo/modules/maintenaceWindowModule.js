@@ -63,6 +63,18 @@ const getMaintenanceWindowByUserId = async (userId) => {
   }
 };
 
+/**
+ * Asynchronously retrieves all MaintenanceWindow documents associated with a specific monitor ID.
+ * @async
+ * @function getMaintenanceWindowsByMonitorId
+ * @param {mongoose.Schema.Types.ObjectId} monitorId - The ID of the monitor.
+ * @returns {Promise<Array<MaintenanceWindow>>} An array of MaintenanceWindow documents.
+ * @throws {Error} If there is an error retrieving the documents.
+ * @example
+ * getMaintenanceWindowsByMonitorId('monitorId')
+ *   .then(maintenanceWindows => console.log(maintenanceWindows))
+ *   .catch(error => console.error(error));
+ */
 const getMaintenanceWindowsByMonitorId = async (monitorId) => {
   try {
     const maintenanceWindows = await MaintenanceWindow.find({
@@ -74,6 +86,18 @@ const getMaintenanceWindowsByMonitorId = async (monitorId) => {
   }
 };
 
+/**
+ * Asynchronously deletes a MaintenanceWindow document by its ID.
+ * @async
+ * @function deleteMaintenaceWindowById
+ * @param {mongoose.Schema.Types.ObjectId} maintenanceWindowId - The ID of the MaintenanceWindow document to delete.
+ * @returns {Promise<MaintenanceWindow>} The deleted MaintenanceWindow document.
+ * @throws {Error} If there is an error deleting the document.
+ * @example
+ * deleteMaintenaceWindowById('maintenanceWindowId')
+ *   .then(maintenanceWindow => console.log(maintenanceWindow))
+ *   .catch(error => console.error(error));
+ */
 const deleteMaintenaceWindowById = async (maintenanceWindowId) => {
   try {
     const maintenanceWindow =
@@ -84,6 +108,18 @@ const deleteMaintenaceWindowById = async (maintenanceWindowId) => {
   }
 };
 
+/**
+ * Asynchronously deletes all MaintenanceWindow documents associated with a specific monitor ID.
+ * @async
+ * @function deleteMaintenanceWindowByMonitorId
+ * @param {mongoose.Schema.Types.ObjectId} monitorId - The ID of the monitor.
+ * @returns {Promise<Object>} The result of the delete operation. This object contains information about the operation, such as the number of documents deleted.
+ * @throws {Error} If there is an error deleting the documents.
+ * @example
+ * deleteMaintenanceWindowByMonitorId('monitorId')
+ *   .then(result => console.log(result))
+ *   .catch(error => console.error(error));
+ */
 const deleteMaintenanceWindowByMonitorId = async (monitorId) => {
   try {
     const result = await MaintenanceWindow.deleteMany({ monitorId: monitorId });
@@ -93,6 +129,18 @@ const deleteMaintenanceWindowByMonitorId = async (monitorId) => {
   }
 };
 
+/**
+ * Asynchronously deletes all MaintenanceWindow documents associated with a specific user ID.
+ * @async
+ * @function deleteMaintenanceWindowByUserId
+ * @param {String} userId - The ID of the user.
+ * @returns {Promise<Object>} The result of the delete operation. This object contains information about the operation, such as the number of documents deleted.
+ * @throws {Error} If there is an error deleting the documents.
+ * @example
+ * deleteMaintenanceWindowByUserId('userId')
+ *   .then(result => console.log(result))
+ *   .catch(error => console.error(error));
+ */
 const deleteMaintenanceWindowByUserId = async (userId) => {
   try {
     const result = await MaintenanceWindow.deleteMany({ userId: userId });
