@@ -6,6 +6,8 @@ import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Button from "../../../Components/Button";
 import Checkbox from "../../../Components/Inputs/Checkbox";
+import { useState } from "react";
+import { monitorValidation } from "../../../Validation/validation";
 import "./index.css";
 
 const CreatePageSpeed = () => {
@@ -19,6 +21,34 @@ const CreatePageSpeed = () => {
     { _id: 4, name: "4 minutes" },
     { _id: 5, name: "5 minutes" },
   ];
+
+  const [form, setForm] = useState({
+    name: "",
+    url: "",
+    interval: 1,
+    type: "pagespeed",
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (event, id) => {
+    const { value } = event.target;
+    setForm((prev) => ({ ...prev, [id]: value }));
+
+    const validation = monitorValidation.validate(
+      { [id]: value },
+      { abortEarly: false }
+    );
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      if (validation.error) {
+        updatedErrors[id] = validation.error.details[0].message;
+      } else {
+        delete updatedErrors[id];
+      }
+      return updatedErrors;
+    });
+  };
 
   return (
     <Box className="create-page-speed">
@@ -41,57 +71,65 @@ const CreatePageSpeed = () => {
             id="monitor-name"
             label="Monitor friendly name"
             placeholder="Example monitor"
-            value=""
-            onChange={() => console.log("disabled")}
-            error=""
+            isOptional={true}
+            value={form.name}
+            onChange={(event) => handleChange(event, "name")}
+            error={errors.name}
           />
           <Field
             type="url"
             id="monitor-url"
             label="URL"
             placeholder="random.website.com"
-            value=""
-            onChange={() => console.log("disabled")}
-            error=""
+            value={form.url}
+            onChange={(event) => handleChange(event, "url")}
+            error={errors.url}
           />
           <Select
             id="monitor-frequency"
             label="Check frequency"
             items={frequencies}
-            value={1}
-            onChange={() => console.log("disabled")}
+            value={form.interval}
+            onChange={(event) => handleChange(event, "interval")}
           />
         </Stack>
         <Stack gap={theme.gap.small}>
-          <Typography component="h2">Incidents notifications</Typography>
-          <Typography>When there is a new incident,</Typography>
-          <Checkbox
-            id="notify-sms"
-            label="Notify via SMS (coming soon)"
-            isChecked={false}
-            isDisabled={true}
-          />
-          <Checkbox
-            id="notify-email"
-            label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
-            isChecked={true}
-          />
-          <Checkbox
-            id="notify-emails"
-            label="Notify via email to following emails"
-            isChecked={true}
-          />
-          <Box mx={`calc(${theme.gap.ml} * 2)`}>
-            <Field
-              id="notify-emails-list"
-              placeholder="notifications@gmail.com"
-              value=""
-              onChange={() => console.log("disabled")}
-              error=""
-            />
-            <Typography mt={theme.gap.small}>
-              You can separate multiple emails with a comma
+          <Typography component="h2">
+            Incidents notifications{" "}
+            <Typography component="span">(coming soon)</Typography>
+          </Typography>
+          <Box className="section-disabled">
+            <Typography mb={theme.gap.small}>
+              When there is a new incident,
             </Typography>
+            <Checkbox
+              id="notify-sms"
+              label="Notify via SMS (coming soon)"
+              isChecked={false}
+              isDisabled={true}
+            />
+            <Checkbox
+              id="notify-email"
+              label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
+              isChecked={true}
+            />
+            <Checkbox
+              id="notify-emails"
+              label="Notify via email to following emails"
+              isChecked={true}
+            />
+            <Box mx={`calc(${theme.gap.ml} * 2)`}>
+              <Field
+                id="notify-emails-list"
+                placeholder="notifications@gmail.com"
+                value=""
+                onChange={() => console.log("disabled")}
+                error=""
+              />
+              <Typography mt={theme.gap.small}>
+                You can separate multiple emails with a comma
+              </Typography>
+            </Box>
           </Box>
         </Stack>
         <Stack direction="row" justifyContent="flex-end" gap={theme.gap.small}>
