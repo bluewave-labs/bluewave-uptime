@@ -78,6 +78,9 @@ const successMessages = {
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",
   JOB_QUEUE_OBLITERATE: "Queue OBLITERATED!!!",
+
+  //Maintenance Window Controller
+  MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
 };
 
 module.exports = {

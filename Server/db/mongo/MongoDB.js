@@ -108,6 +108,18 @@ const {
   deleteAlertByMonitorId,
 } = require("./modules/alertModule");
 
+//****************************************
+// Maintenance Window
+//****************************************
+const {
+  createMaintenanceWindow,
+  getMaintenanceWindowByUserId,
+  getMaintenanceWindowsByMonitorId,
+  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowByMonitorId,
+  deleteMaintenanceWindowByUserId,
+} = require("./modules/maintenaceWindowModule");
+
 module.exports = {
   connect,
   insertUser,
@@ -144,4 +156,5 @@ module.exports = {
   createPageSpeedCheck,
   getPageSpeedChecks,
   deletePageSpeedChecks,
+  createMaintenanceWindow,
 };
