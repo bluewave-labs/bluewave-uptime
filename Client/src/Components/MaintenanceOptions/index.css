@@ -9,50 +9,60 @@
   height: 12px;
 }
 
-.css-1qh2y1i-MuiStack-root {
-  margin-bottom: 16px;
+.box-actions {
+  display: flex;
+  margin-top: var(--env-var-spacing-2);
+  justify-content: end;
 }
 
-.field h3.MuiTypography-root {
+div.MuiFormControl-root div.MuiInputBase-root input.MuiInputBase-input {
+  font-size: var(--env-var-font-size-medium);
+}
+
+div.MuiFormControl-root
+  div.MuiInputBase-root
+  div.MuiInputAdornment-root
+  button.MuiButtonBase-root
+  svg.MuiSvgIcon-root {
+  width: 20px;
+  height: 20px;
+}
+
+div.MuiFormControl-root div.MuiInputBase-root div.MuiSelect-select {
+  height: 17px;
+  font-size: var(--env-var-font-size-medium);
+  align-items: center;
+}
+
+div.MuiFormControl-root
+  div.MuiInputBase-root
+  div.MuiSelect-select
+  fieldset.MuiOutlinedInput-notchedOutline {
+  height: 17px;
+}
+
+div.MuiStack-root.field.field-text h3.MuiTypography-root.MuiTypography-body1 {
   font-size: var(--env-var-font-size-medium);
   font-weight: 600;
   color: var(--env-var-color-5);
   margin-bottom: 8px;
 }
 
-.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+div.MuiStack-root.field.field-text
+  div.MuiFormControl-root
+  div.MuiInputBase-root.MuiOutlinedInput-root {
   width: 320px;
   margin-bottom: 16px;
 }
 
-.duration-controls
+div.MuiStack-root.field.field-text
   div.MuiFormControl-root
-  .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
-  height: 17px;
-  font-size: var(--env-var-font-size-medium);
-}
-
-.duration-controls
+  div.MuiInputBase-root.MuiOutlinedInput-root
+  #friendly-name,
+div.MuiStack-root.field.field-text
   div.MuiFormControl-root
-  .css-1axaeol-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root {
+  div.MuiInputBase-root.MuiOutlinedInput-root
+  #add-monitor {
   height: 34px;
   font-size: var(--env-var-font-size-medium);
-}
-
-div.MuiFormControl-root .css-1r2m0wd-MuiInputBase-root-MuiOutlinedInput-root {
-  height: 34px;
-  font-size: var(--env-var-font-size-medium);
-}
-
-div.MuiFormControl-root
-  .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root
-  .css-i4bv87-MuiSvgIcon-root {
-  width: 20px;
-  height: 20px;
-}
-
-.box-actions {
-  display: flex;
-  margin-top: 40px;
-  justify-content: end;
 }

@@ -18,7 +18,7 @@ const Timepicker = ({ title }) => {
   const [value, setValue] = useState(dayjs());
 
   return (
-    <>
+    <div className="custom-time-picker">
       <Typography
         style={{
           color: "var(--env-var-color-31)",
@@ -41,7 +41,7 @@ const Timepicker = ({ title }) => {
           }}
         />
       </LocalizationProvider>
-    </>
+    </div>
   );
 };
 

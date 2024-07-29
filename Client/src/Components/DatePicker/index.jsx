@@ -18,7 +18,7 @@ const Datepicker = ({ title }) => {
   const [value, setValue] = useState(dayjs());
 
   return (
-    <>
+    <div className="custom-date-pciker-holder">
       <Typography
         style={{
           color: "var(--env-var-color-31)",
@@ -35,12 +35,13 @@ const Datepicker = ({ title }) => {
           onChange={(newValue) => setValue(newValue)}
           slotProps={{ textField: { size: "small" } }}
           sx={{
-            width: 129,
+            width: 130,
             marginBottom: "16px",
           }}
+          className="custom-date-picker"
         />
       </LocalizationProvider>
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import "./index.css";
-import React from "react";
+import React, { useState } from "react";
 import Close from "../../assets/icons/close.svg?react";
 import ComboBox from "../ComboBox";
 import Datepicker from "../DatePicker";
@@ -10,6 +10,37 @@ import Field from "../Inputs/Field";
 import Button from "../Button";
 
 export const MaintenanceOptions = () => {
+  const [repeat, setRepeat] = useState("");
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [duration, setDuration] = useState("");
+  const [friendlyName, setFriendlyName] = useState("");
+  const [addMonitor, setAddMonitor] = useState("");
+
+  const handleRepeat = (value) => {
+    setRepeat(value);
+  };
+
+  const handleDate = (value) => {
+    setDate(value);
+  };
+
+  const handleStartTime = (value) => {
+    setStartTime(value);
+  };
+
+  const handleDuration = (value) => {
+    setDuration(value);
+  };
+
+  const handleFriendlyName = (value) => {
+    setFriendlyName(value);
+  };
+
+  const handleAddMonitor = (value) => {
+    setAddMonitor(value);
+  };
+
   return (
     <Box
       width={347}
@@ -41,17 +72,18 @@ export const MaintenanceOptions = () => {
       <Duration title="Duration" />
       <Field
         id="friendly-name"
-        value=""
-        onChange={() => console.log("Friendly name")}
+        value={friendlyName}
         label="Friendly name"
         placeholder="Maintanence at __ : __ for ___ minutes"
+        onChange={(e) => handleFriendlyName(e.target.value)}
       />
       <Field
         id="add-monitor"
-        value=""
-        onChange={() => console.log("Add monitors")}
+        className="add-monitor"
+        value={addMonitor}
         label="Add monitors"
         placeholder="Start typing to search for current monitors"
+        onChange={(e) => handleAddMonitor(e.target.value)}
       />
       <div className="box-actions">
         <Button
