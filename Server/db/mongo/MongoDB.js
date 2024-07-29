@@ -159,4 +159,7 @@ module.exports = {
   createMaintenanceWindow,
   getMaintenanceWindowsByUserId,
   getMaintenanceWindowsByMonitorId,
+  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowByMonitorId,
+  deleteMaintenanceWindowByUserId,
 };
