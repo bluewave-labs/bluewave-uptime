@@ -11,7 +11,8 @@
 }
 .create-page-speed h1.MuiTypography-root,
 .create-page-speed h2.MuiTypography-root,
-.create-page-speed p.MuiTypography-root {
+.create-page-speed p.MuiTypography-root,
+.create-page-speed h2.MuiTypography-root > span.MuiTypography-root {
   color: var(--env-var-color-5);
 }
 .create-page-speed h1.MuiTypography-root,
@@ -22,15 +23,28 @@
   font-size: var(--env-var-font-size-medium-plus);
 }
 .create-page-speed p.MuiTypography-root,
-.create-page-speed button {
+.create-page-speed button,
+.create-page-speed h2.MuiTypography-root > span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
 .create-page-speed .MuiBox-root > .field + p.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
+}
+.create-page-speed .MuiBox-root > .field + p.MuiTypography-root,
+.create-page-speed h2.MuiTypography-root > span.MuiTypography-root {
   opacity: 0.6;
 }
 .create-page-speed .checkbox-wrapper {
   margin-bottom: 1px;
+}
+/* to be removed */
+.create-page-speed .section-disabled {
+  opacity: 0.4;
+  background-color: #f1f1f2;
+  padding: 10px;
+  border-radius: 8px;
+  user-select: none;
+  pointer-events: none;
 }
 
 .create-page-speed button:not(.MuiIconButton-root) {

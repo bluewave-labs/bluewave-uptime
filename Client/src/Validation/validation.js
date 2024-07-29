@@ -74,18 +74,22 @@ const credentials = joi.object({
 const monitorValidation = joi.object({
   url: joi
     .string()
+    .uri({ allowRelative: true })
     .trim()
-    .messages({ "string.empty": "*This field is required." }),
+    .messages({
+      "string.empty": "This field is required.",
+      "string.uri": "The URL you provided is not valid.",
+    }),
   name: joi.string().trim().max(50).allow("").messages({
-    "string.max": "*This field should not exceed the 50 characters limit.",
+    "string.max": "This field should not exceed the 50 characters limit.",
   }),
   type: joi
     .string()
     .trim()
-    .messages({ "string.empty": "*This field is required." }),
+    .messages({ "string.empty": "This field is required." }),
   interval: joi.number().messages({
-    "number.base": "*Frequency must be a number.",
-    "any.required": "*Frequency is required.",
+    "number.base": "Frequency must be a number.",
+    "any.required": "Frequency is required.",
   }),
 });
 
