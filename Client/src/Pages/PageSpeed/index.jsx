@@ -39,7 +39,7 @@ const Card = ({ data }) => {
             </Typography>
             {/* TODO - fix prop-type error */}
             <StatusLabel
-              status={data.isActive ? "active" : "cannot resolve"}
+              status={data.isActive ? "up" : "cannot resolve"}
               text={data.isActive ? "Live (collecting data)" : "Inactive"}
             />
           </Stack>

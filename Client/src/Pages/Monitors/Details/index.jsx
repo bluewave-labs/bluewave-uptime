@@ -13,7 +13,10 @@ import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import SettingsIcon from "../../../assets/icons/settings.svg?react";
-import { formatDuration, formatDurationRounded } from "../../../Utils/timeUtils";
+import {
+  formatDuration,
+  formatDurationRounded,
+} from "../../../Utils/timeUtils";
 import "./index.css";
 
 const StatBox = ({ title, value }) => {
@@ -54,32 +57,14 @@ const DetailsPage = () => {
           { id: 3, name: "Message" },
         ],
         rows: res.data.data.checks.map((check, idx) => {
-          const params = {
-            status: check.status === true ? "Up" : "Down",
-            backgroundColor:
-              check.status === true
-                ? "var(--env-var-color-20)"
-                : "var(--env-var-color-21)",
-            statusDotColor:
-              check.status === true
-                ? "var(--env-var-color-17)"
-                : "var(--env-var-color-19)",
-          };
+          const status = check.status === true ? "up" : "down";
 
           return {
             id: check._id,
             data: [
               {
                 id: idx,
-                data: (
-                  <StatusLabel
-                    status={params.status}
-                    dot={params.statusDotColor}
-                    customStyles={{
-                      backgroundColor: params.backgroundColor,
-                    }}
-                  />
-                ),
+                data: <StatusLabel status={status} text={status} />,
               },
               { id: idx + 1, data: new Date(check.createdAt).toLocaleString() },
               { id: idx + 2, data: check.statusCode },

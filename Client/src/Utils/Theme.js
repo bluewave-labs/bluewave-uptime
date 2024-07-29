@@ -120,20 +120,20 @@ const theme = createTheme({
   },
   //add more as needed
   label: {
-    active: {
+    up: {
       borderColor: sectionBorder,
       bgColor: "#ecfdf3",
-      dotColor: sectionBorder,
+      dotColor: "#17B26A",
     },
     down: {
       borderColor: sectionBorder,
       bgColor: "#f9eced",
-      dotColor: sectionBorder,
+      dotColor: labelRed,
     },
     "cannot resolve": {
       borderColor: sectionBorder,
       bgColor: "#f2f4f7",
-      dotColor: secondaryMain,
+      dotColor: labelGray,
     },
   },
 });

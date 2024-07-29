@@ -89,15 +89,7 @@ const Monitors = () => {
         monitor.status === true
           ? "var(--env-var-color-17)"
           : "var(--env-var-color-19)",
-      status: monitor.status === true ? "Up" : "Down",
-      backgroundColor:
-        monitor.status === true
-          ? "var(--env-var-color-20)"
-          : "var(--env-var-color-21)",
-      statusDotColor:
-        monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
+      status: monitor.status === true ? "up" : "down",
     };
 
     // Reverse checks so latest check is on the right
@@ -113,10 +105,8 @@ const Monitors = () => {
           data: (
             <StatusLabel
               status={params.status}
-              dot={params.statusDotColor}
-              customStyles={{
-                backgroundColor: params.backgroundColor,
-              }}
+              text={params.status}
+              customStyles={{ textTransform: "capitalize" }}
             />
           ),
         },

@@ -117,7 +117,7 @@ ColoredLabel.propTypes = {
 /**
  * @component
  * @param {Object} props
- * @param { 'active' | 'down' | 'cannot resolve'} props.status - The status for the label
+ * @param { 'up' | 'down' | 'cannot resolve'} props.status - The status for the label
  * @param {string} props.text - The text of the of the label
  * @returns {JSX.Element}
  * @example
@@ -151,7 +151,7 @@ const StatusLabel = ({ status, text, customStyles }) => {
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf(["active", "down", "cannot resolve"]),
+  status: PropTypes.oneOf(["up", "down", "cannot resolve"]),
   text: PropTypes.string,
   customStyles: PropTypes.object,
 };
