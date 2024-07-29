@@ -10,8 +10,14 @@ router.post(
 );
 
 router.get(
-  "/:userId",
+  "/user/:userId",
   maintenanceWindowController.getMaintenanceWindowsByUserId
+);
+
+router.get(
+  "/monitor/:monitorId",
+  verifyOwnership(Monitor, "monitorId"),
+  maintenanceWindowController.getMaintenanceWindowsByMonitorId
 );
 
 module.exports = router;

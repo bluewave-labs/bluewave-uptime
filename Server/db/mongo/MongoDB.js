@@ -158,4 +158,5 @@ module.exports = {
   deletePageSpeedChecks,
   createMaintenanceWindow,
   getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByMonitorId,
 };
