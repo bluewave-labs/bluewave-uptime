@@ -9,4 +9,9 @@ router.post(
   maintenanceWindowController.createMaintenanceWindow
 );
 
+router.get(
+  "/:userId",
+  maintenanceWindowController.getMaintenanceWindowsByUserId
+);
+
 module.exports = router;

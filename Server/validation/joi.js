@@ -268,6 +268,10 @@ const createMaintenanceWindowBodyValidation = joi.object({
   expiry: joi.date(),
 });
 
+getMaintenanceWindowsByUserIdParamValidation = joi.object({
+  userId: joi.string().required(),
+});
+
 module.exports = {
   roleValidatior,
   loginValidation,
@@ -304,4 +308,5 @@ module.exports = {
   createPageSpeedCheckBodyValidation,
   createMaintenanceWindowParamValidation,
   createMaintenanceWindowBodyValidation,
+  getMaintenanceWindowsByUserIdParamValidation,
 };

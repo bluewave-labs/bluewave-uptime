@@ -1,6 +1,7 @@
 const {
   createMaintenanceWindowParamValidation,
   createMaintenanceWindowBodyValidation,
+  getMaintenanceWindowsByUserIdParamValidation,
 } = require("../validation/joi");
 
 const SERVICE_NAME = "maintenanceWindowController";
@@ -40,6 +41,28 @@ const createMaintenanceWindow = async (req, res, next) => {
     next(error);
   }
 };
+
+const getMaintenanceWindowsByUserId = async (req, res, next) => {
+  try {
+    await getMaintenanceWindowsByUserIdParamValidation.validateAsync(
+      req.params
+    );
+
+    const maintenanceWindows = await req.db.getMaintenanceWindowsByUserId(
+      req.params.userId
+    );
+
+    return res.status(201).json({
+      success: true,
+      msg: successMessages.MAINTEANCE_WINDOW_GET_BY_USER,
+      data: maintenanceWindows,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
 module.exports = {
   createMaintenanceWindow,
+  getMaintenanceWindowsByUserId,
 };

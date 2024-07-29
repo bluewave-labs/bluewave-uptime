@@ -81,6 +81,7 @@ const successMessages = {
 
   //Maintenance Window Controller
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
+  MAINTEANCE_WINDOW_GET_BY_USER: "Got Maintenance Windows by User successfully",
 };
 
 module.exports = {
