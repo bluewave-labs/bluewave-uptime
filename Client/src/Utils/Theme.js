@@ -118,6 +118,24 @@ const theme = createTheme({
       border: "#fec84b",
     },
   },
+  //add more as needed
+  label: {
+    active: {
+      borderColor: sectionBorder,
+      bgColor: "#ecfdf3",
+      dotColor: sectionBorder,
+    },
+    down: {
+      borderColor: sectionBorder,
+      bgColor: "#f9eced",
+      dotColor: sectionBorder,
+    },
+    "cannot resolve": {
+      borderColor: sectionBorder,
+      bgColor: "#f2f4f7",
+      dotColor: secondaryMain,
+    },
+  },
 });
 
 export default theme;

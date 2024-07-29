@@ -39,17 +39,8 @@ const Card = ({ data }) => {
             </Typography>
             {/* TODO - fix prop-type error */}
             <StatusLabel
-              status={data.isActive ? "Live (collecting data)" : "Inactive"}
-              dot={
-                data.isActive
-                  ? "var(--env-var-color-17)"
-                  : "var(--env-var-color-19)"
-              }
-              customStyles={{
-                backgroundColor: data.isActive
-                  ? "var(--env-var-color-20)"
-                  : "var(--env-var-color-21)",
-              }}
+              status={data.isActive ? "active" : "cannot resolve"}
+              text={data.isActive ? "Live (collecting data)" : "Inactive"}
             />
           </Stack>
           <Typography>{data.url}</Typography>
