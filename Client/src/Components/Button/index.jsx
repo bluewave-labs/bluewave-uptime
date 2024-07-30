@@ -60,9 +60,14 @@ const Button = ({ id, type, level, label, disabled, img, onClick, sx }) => {
       onClick={onClick}
       disableRipple
       sx={{
+        boxShadow: "none",
         textTransform: "none",
         "&:focus": {
           outline: "none",
+        },
+        "&:hover": {
+          boxShadow: "none",
+          transition: "none"
         },
         ...sx,
       }}
