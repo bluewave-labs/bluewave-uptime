@@ -158,6 +158,7 @@ const deleteMonitor = async (req, res, next) => {
     await req.jobQueue.deleteJob(monitor);
     await req.db.deleteChecks(monitor._id);
     await req.db.deleteAlertByMonitorId(monitor._id);
+    await req.db.deleteNotificationByMonitorId(monitor._id);
     /**
      * TODO
      * We should remove all checks and alerts associated with this monitor

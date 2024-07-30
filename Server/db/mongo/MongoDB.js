@@ -120,6 +120,11 @@ const {
   deleteMaintenanceWindowByUserId,
 } = require("./modules/maintenaceWindowModule");
 
+const {
+  createNotification,
+  getNotificationsByMonitorId,
+} = require("./modules/notificationModule");
+
 module.exports = {
   connect,
   insertUser,
@@ -162,4 +167,6 @@ module.exports = {
   deleteMaintenaceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
+  createNotification,
+  getNotificationsByMonitorId,
 };
