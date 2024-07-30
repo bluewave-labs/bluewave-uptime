@@ -23,11 +23,11 @@ const Card = ({ data }) => {
       return 0; // Handle case when no checks are available
     }
 
-    // Data is sorted oldest -> newest, so last check is the most recent
+    // Data is sorted newest -> oldest, so newest check is the most recent
     if (!duration) {
-      return new Date(checks[checks.length - 1].createdAt);
+      return new Date(checks[0].createdAt);
     }
-    return new Date() - new Date(checks[checks.length - 1].createdAt);
+    return new Date() - new Date(checks[0].createdAt);
   };
 
   return (
@@ -39,13 +39,12 @@ const Card = ({ data }) => {
             <Typography component="h2" mb={theme.gap.xs}>
               {data.name}
             </Typography>
-            {/* TODO - fix prop-type error */}
             <StatusLabel
-              status={data.isActive ? "up" : "cannot resolve"}
-              text={data.isActive ? "Live (collecting data)" : "Inactive"}
+              status={data.status ? "up" : "cannot resolve"}
+              text={data.status ? "Live (collecting data)" : "Inactive"}
             />
           </Stack>
-          <Typography>{data.url}</Typography>
+          <Typography>{data.url.replace(/^https?:\/\//, "")}</Typography>
           <Typography mt={theme.gap.large}>
             <Typography component="span" fontWeight={600}>
               Last checked:{" "}
