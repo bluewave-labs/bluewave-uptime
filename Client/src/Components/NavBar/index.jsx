@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
+import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +36,7 @@ function AddBorderOnScroll(props) {
     disableHysteresis: true,
     threshold: 0,
   });
-  
+
   return (
     <AppBar
       className={trigger ? "scrolled" : ""}
@@ -47,7 +47,7 @@ function AddBorderOnScroll(props) {
         borderBottom: "1px solid transparent",
         "&.scrolled": {
           borderBottom: "1px solid #eaecf0",
-          backgroundColor: "white"
+          backgroundColor: "white",
         },
       }}
     >
@@ -96,7 +96,7 @@ function NavBar() {
   const logout = () => {
     // Clear auth state
     dispatch(clearAuthState());
-    dispatch(clearMonitorState());
+    dispatch(clearUptimeMonitorState());
     navigate("/login");
   };
 

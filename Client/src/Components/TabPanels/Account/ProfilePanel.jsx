@@ -17,7 +17,7 @@ import {
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
-import { clearMonitorState } from "../../../Features/Monitors/monitorsSlice";
+import { clearUptimeMonitorState } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { createToast } from "../../../Utils/toastUtils";
 
 /**
@@ -194,7 +194,7 @@ const ProfilePanel = () => {
     const action = await dispatch(deleteUser(authToken));
     if (action.payload.success) {
       dispatch(clearAuthState());
-      dispatch(clearMonitorState());
+      dispatch(clearUptimeMonitorState());
     } else {
       if (action.payload) {
         // dispatch errors

@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import monitorsReducer from "./Features/Monitors/monitorsSlice";
+import uptimeMonitorsReducer from "./Features/UptimeMonitors/uptimeMonitorsSlice";
 import authReducer from "./Features/Auth/authSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore, createTransform } from "redux-persist";
@@ -23,7 +23,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  monitors: monitorsReducer,
+  uptimeMonitors: uptimeMonitorsReducer,
   auth: authReducer,
 });
 

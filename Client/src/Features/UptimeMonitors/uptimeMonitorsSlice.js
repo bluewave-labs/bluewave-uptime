@@ -8,7 +8,7 @@ const initialState = {
   msg: null,
 };
 
-export const createMonitor = createAsyncThunk(
+export const createUptimeMonitor = createAsyncThunk(
   "monitors/createMonitor",
   async (data, thunkApi) => {
     try {
@@ -30,7 +30,7 @@ export const createMonitor = createAsyncThunk(
   }
 );
 
-export const getMonitors = createAsyncThunk(
+export const getUptimeMonitors = createAsyncThunk(
   "monitors/getMonitors",
   async (token, thunkApi) => {
     try {
@@ -45,7 +45,7 @@ export const getMonitors = createAsyncThunk(
   }
 );
 
-export const getMonitorsByUserId = createAsyncThunk(
+export const getUptimeMonitorsByUserId = createAsyncThunk(
   "montiors/getMonitorsByUserId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
@@ -68,11 +68,11 @@ export const getMonitorsByUserId = createAsyncThunk(
   }
 );
 
-const monitorsSlice = createSlice({
-  name: "monitors",
+const uptimeMonitorsSlice = createSlice({
+  name: "uptimeMonitors",
   initialState,
   reducers: {
-    clearMonitorState: (state) => {
+    clearUptimeMonitorState: (state) => {
       state.isLoading = false;
       state.monitors = [];
       state.success = null;
@@ -84,63 +84,64 @@ const monitorsSlice = createSlice({
       // *****************************************************
       // All Monitors
       // *****************************************************
-      .addCase(getMonitors.pending, (state) => {
+      .addCase(getUptimeMonitors.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getMonitors.fulfilled, (state, action) => {
+      .addCase(getUptimeMonitors.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getMonitors.rejected, (state, action) => {
+      .addCase(getUptimeMonitors.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Getting montiors failed";
+          : "Getting uptime monitors failed";
       })
       // *****************************************************
       // Monitors by userId
       // *****************************************************
 
-      .addCase(getMonitorsByUserId.pending, (state) => {
+      .addCase(getUptimeMonitorsByUserId.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getMonitorsByUserId.fulfilled, (state, action) => {
+      .addCase(getUptimeMonitorsByUserId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getMonitorsByUserId.rejected, (state, action) => {
+      .addCase(getUptimeMonitorsByUserId.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Getting montiors failed";
+          : "Getting uptime monitors failed";
       })
 
       // *****************************************************
       // Create Monitor
       // *****************************************************
-      .addCase(createMonitor.pending, (state) => {
+      .addCase(createUptimeMonitor.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createMonitor.fulfilled, (state, action) => {
+      .addCase(createUptimeMonitor.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
       })
-      .addCase(createMonitor.rejected, (state, action) => {
+      .addCase(createUptimeMonitor.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Failed to create monitor";
+          : "Failed to create uptime monitor";
       });
   },
 });
 
-export const { setMonitors, clearMonitorState } = monitorsSlice.actions;
+export const { setUptimeMonitors, clearUptimeMonitorState } =
+  uptimeMonitorsSlice.actions;
 
-export default monitorsSlice.reducer;
+export default uptimeMonitorsSlice.reducer;
