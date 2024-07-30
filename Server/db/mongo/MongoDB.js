@@ -65,8 +65,6 @@ const {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
-  getMonitorByIdForIncidents,
-  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
@@ -123,6 +121,7 @@ const {
 const {
   createNotification,
   getNotificationsByMonitorId,
+  deleteNotificationsByMonitorId,
 } = require("./modules/notificationModule");
 
 module.exports = {
@@ -141,8 +140,6 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
-  getMonitorByIdForIncidents,
-  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
@@ -169,4 +166,5 @@ module.exports = {
   deleteMaintenanceWindowByUserId,
   createNotification,
   getNotificationsByMonitorId,
+  deleteNotificationsByMonitorId,
 };

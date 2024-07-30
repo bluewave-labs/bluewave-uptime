@@ -1,5 +1,4 @@
 const Notification = require("../../../models/Notification");
-const Notification = require("../../../models/Notification");
 
 /**
  * Creates a new notification.
@@ -35,7 +34,17 @@ const getNotificationsByMonitorId = async (monitorId) => {
   }
 };
 
+const deleteNotificationsByMonitorId = async (monitorId) => {
+  try {
+    const result = await Notification.deleteMany({ monitorId });
+    return result.deletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createNotification,
   getNotificationsByMonitorId,
+  deleteNotificationsByMonitorId,
 };
