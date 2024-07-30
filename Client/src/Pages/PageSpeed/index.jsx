@@ -23,7 +23,7 @@ const Card = ({ data }) => {
       return 0; // Handle case when no checks are available
     }
 
-    // Data is sorted oldest -> newest, so last check is the most recent
+    // Data is sorted newest -> oldest, so newest check is the most recent
     if (!duration) {
       return new Date(checks[0].createdAt);
     }
