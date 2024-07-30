@@ -9,7 +9,7 @@ const initialState = {
 };
 
 export const createPageSpeed = createAsyncThunk(
-  "monitors/createPageSpeed",
+  "pageSpeedMonitors/createPageSpeed",
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
@@ -31,7 +31,7 @@ export const createPageSpeed = createAsyncThunk(
 );
 
 export const getPageSpeedMonitors = createAsyncThunk(
-  "monitors/getPageSpeedMonitors",
+  "pageSpeedMonitors/getPageSpeedMonitors",
   async (token, thunkApi) => {
     try {
       const res = await axiosInstance.get("/monitors");
@@ -46,7 +46,7 @@ export const getPageSpeedMonitors = createAsyncThunk(
 );
 
 export const getPageSpeedByUserId = createAsyncThunk(
-  "montiors/getPageSpeedByUserId",
+  "pageSpeedMonitors/getPageSpeedByUserId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
@@ -68,8 +68,8 @@ export const getPageSpeedByUserId = createAsyncThunk(
   }
 );
 
-const pageSpeedSlice = createSlice({
-  name: "pageSpeed",
+const pageSpeedMonitorsSlice = createSlice({
+  name: "pageSpeedMonitors",
   initialState,
   reducers: {
     clearMonitorState: (state) => {
@@ -117,7 +117,7 @@ const pageSpeedSlice = createSlice({
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Getting montiors failed";
+          : "Getting page speed monitors failed";
       })
 
       // *****************************************************
@@ -136,11 +136,11 @@ const pageSpeedSlice = createSlice({
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Failed to create monitor";
+          : "Failed to create page speed monitor";
       });
   },
 });
 
-export const { setMonitors, clearMonitorState } = pageSpeedSlice.actions;
+export const { setMonitors, clearMonitorState } = pageSpeedMonitorsSlice.actions;
 
-export default pageSpeedSlice.reducer;
+export default pageSpeedMonitorsSlice.reducer;
