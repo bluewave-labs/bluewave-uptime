@@ -262,6 +262,7 @@ module.exports = {
   inviteRoleValidation,
   inviteBodyValidation,
   inviteVerifciationBodyValidation,
+  monitorValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
   getMonitorsByUserIdValidation,
