@@ -54,7 +54,7 @@ const createMaintenanceWindow = async (maintenanceWindowData) => {
  *   .then(maintenanceWindows => console.log(maintenanceWindows))
  *   .catch(error => console.error(error));
  */
-const getMaintenanceWindowByUserId = async (userId) => {
+const getMaintenanceWindowsByUserId = async (userId) => {
   try {
     const maintenanceWindows = await MaintenanceWindow.find({ userId: userId });
     return maintenanceWindows;
@@ -152,7 +152,7 @@ const deleteMaintenanceWindowByUserId = async (userId) => {
 
 module.exports = {
   createMaintenanceWindow,
-  getMaintenanceWindowByUserId,
+  getMaintenanceWindowsByUserId,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenaceWindowById,
   deleteMaintenanceWindowByMonitorId,
