@@ -38,7 +38,7 @@ const Configure = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.monitors);
+  const { monitors } = useSelector((state) => state.uptimeMonitors);
   const { monitorId } = useParams();
 
   const idMap = {
