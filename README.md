@@ -14,16 +14,45 @@
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
+## Features
+
+- Completely open source, deployable on your servers
+- Website monitoring
+- Port monitoring
+- Ping monitoring
+- Incidents at a glance
+- Status pages
+- Page speed monitoring (in the works)
+
+**Roadmap:**
+
+- 3rd party integrations
+- Domain monitoring
+- SSL monitoring
+
+## Tech stack
+
+- [ReactJs](https://react.dev/)
+- [MUI (React framework)](https://mui.com/)
+- [Node.js](https://nodejs.org/en)
+- [MongoDB](https://mongodb.com)
+
 ## Contributing
 
-You are welcome to provide contributions to the project. It uses React on the FE, and Nodejs and MongoDB on the BE, hence if you are comfortable with working with those technologies, you are encouraged to send your PRs. Please read [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md). Once you start contributing, we can also add you to our weekly team calls (every Thursday).
+We love contributors. Here's how you can contribute:
 
-Note that We have a Figma file that includes:
+- Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
+- Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
+- Open an issue if you believe you've encountered a bug
+- Make a pull request to add new features/make quality-of-life improvements/fix bugs.
 
-- All the dashboard elements and components
-- The design guideline for the app
+<a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=bluewave-labs/bluewave-uptime" />
+</a>
 
-You can see the designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). Since it is read-only, we encourage you to copy to your own Figma page, then work on it.
+Made with [contrib.rocks](https://contrib.rocks).
+
+![Alt](https://repobeats.axiom.co/api/embed/c35d999c82dbb31e967427ea4166c14da4172e73.svg "Repobeats analytics image")
 
 ## Getting Started
 
@@ -2066,11 +2095,3 @@ const myRoute = async(req, res, next) => {
 ```
 
 Errors should not be handled at the controller level and should be left to the middleware to handle.
-
-## Contributors
-
-<a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=bluewave-labs/bluewave-uptime" />
-</a>
-
-Made with [contrib.rocks](https://contrib.rocks).
