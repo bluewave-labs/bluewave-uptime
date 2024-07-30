@@ -10,10 +10,7 @@ import Button from "../../../Components/Button";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
-import {
-  createMonitor,
-  getMonitorsByUserId,
-} from "../../../Features/Monitors/monitorsSlice";
+import { createPageSpeed, getPageSpeedByUserId } from "../../../Features/PageSpeed/pageSpeedSlice";
 import "./index.css";
 
 const CreatePageSpeed = () => {
@@ -23,11 +20,10 @@ const CreatePageSpeed = () => {
 
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.monitors);
+  const { monitors } = useSelector((state) => state.pageSpeed);
   useEffect(() => {
-    dispatch(getMonitorsByUserId(authToken));
+    dispatch(getPageSpeedByUserId(authToken));
   }, []);
-  console.log(monitors);
 
   const frequencies = [
     { _id: 1, name: "1 minute" },
@@ -87,7 +83,7 @@ const CreatePageSpeed = () => {
         type: "pagespeed",
       };
       try {
-        const action = await dispatch(createMonitor({ authToken, monitor }));
+        const action = await dispatch(createPageSpeed({ authToken, monitor }));
         if (action.meta.requestStatus === "fulfilled") {
           navigate("/page-speed");
         }

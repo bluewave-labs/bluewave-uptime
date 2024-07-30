@@ -85,13 +85,15 @@ const Field = ({
         onChange={onChange}
         disabled={disabled}
         sx={
-          type === "url" && {
-            "& .MuiInputBase-root": { padding: 0 },
-            "& .MuiStack-root": {
-              borderTopLeftRadius: `${theme.shape.borderRadius}px`,
-              borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
-            },
-          }
+          type === "url"
+            ? {
+                "& .MuiInputBase-root": { padding: 0 },
+                "& .MuiStack-root": {
+                  borderTopLeftRadius: `${theme.shape.borderRadius}px`,
+                  borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
+                },
+              }
+            : {}
         }
         InputProps={{
           startAdornment: type === "url" && (
@@ -101,7 +103,7 @@ const Field = ({
               height="100%"
               sx={{
                 borderRight: `solid 1px ${theme.palette.section.borderColor}`,
-                backgroundColor: "red",
+                backgroundColor: "#f9f9fa",
                 pl: theme.gap.medium,
               }}
             >

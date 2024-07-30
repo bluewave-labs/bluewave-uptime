@@ -1,4 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import pageSpeedReducer from "./Features/PageSpeed/pageSpeedSlice";
 import monitorsReducer from "./Features/Monitors/monitorsSlice";
 import authReducer from "./Features/Auth/authSlice";
 import storage from "redux-persist/lib/storage";
@@ -18,13 +19,14 @@ const authTransform = createTransform(
 const persistConfig = {
   key: "root",
   storage,
-  whitielist: ["auth", "monitors"],
+  whitielist: ["auth", "monitors", "pageSpeed"],
   transforms: [authTransform],
 };
 
 const rootReducer = combineReducers({
   monitors: monitorsReducer,
   auth: authReducer,
+  pageSpeed: pageSpeedReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
