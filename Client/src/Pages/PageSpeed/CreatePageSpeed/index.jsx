@@ -10,7 +10,7 @@ import Button from "../../../Components/Button";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
-import { createPageSpeed } from "../../../Features/PageSpeed/pageSpeedMonitorsSlice";
+import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import "./index.css";
 
 const CreatePageSpeed = () => {

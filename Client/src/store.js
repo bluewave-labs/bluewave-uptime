@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import pageSpeedMonitorsReducer from "./Features/PageSpeed/pageSpeedMonitorsSlice";
+import pageSpeedMonitorReducer from "./Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import monitorsReducer from "./Features/Monitors/monitorsSlice";
 import authReducer from "./Features/Auth/authSlice";
 import storage from "redux-persist/lib/storage";
@@ -26,7 +26,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   monitors: monitorsReducer,
   auth: authReducer,
-  pageSpeedMonitors: pageSpeedMonitorsReducer,
+  pageSpeedMonitors: pageSpeedMonitorReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -68,8 +68,8 @@ export const getPageSpeedByUserId = createAsyncThunk(
   }
 );
 
-const pageSpeedMonitorsSlice = createSlice({
-  name: "pageSpeedMonitors",
+const pageSpeedMonitorSlice = createSlice({
+  name: "pageSpeedMonitor",
   initialState,
   reducers: {
     clearMonitorState: (state) => {
@@ -141,6 +141,6 @@ const pageSpeedMonitorsSlice = createSlice({
   },
 });
 
-export const { setMonitors, clearMonitorState } = pageSpeedMonitorsSlice.actions;
+export const { setMonitors, clearMonitorState } = pageSpeedMonitorSlice.actions;
 
-export default pageSpeedMonitorsSlice.reducer;
+export default pageSpeedMonitorSlice.reducer;
