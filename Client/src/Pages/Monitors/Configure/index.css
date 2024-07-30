@@ -1,0 +1,77 @@
+.configure-monitor h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large-plus);
+  color: var(--env-var-color-1);
+  font-weight: 600;
+}
+.configure-monitor h2.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  font-weight: 600;
+}
+.configure-monitor h2.MuiTypography-root,
+.configure-monitor .config-box p.MuiTypography-root,
+.configure-monitor .MuiSelect-select {
+  color: var(--env-var-color-5);
+}
+.configure-monitor p.MuiTypography-root,
+.configure-monitor .MuiSelect-select {
+  font-size: var(--env-var-font-size-medium);
+}
+.configure-monitor h6.MuiTypography-root {
+  opacity: 0.6;
+}
+.configure-monitor h6.MuiTypography-root,
+.configure-monitor p.MuiTypography-root:has(span),
+.configure-monitor p.MuiTypography-root span.MuiTypography-root {
+  font-size: var(--env-var-font-size-small-plus);
+}
+.configure-monitor button.MuiButtonBase-root {
+  font-size: var(--env-var-font-size-medium);
+}
+.configure-monitor button.MuiButtonBase-root {
+  height: var(--env-var-height-2);
+}
+.configure-monitor button.MuiButtonBase-root:has(svg) {
+  line-height: 1;
+}
+.configure-monitor .config-box {
+  padding: var(--env-var-spacing-4) 50px;
+  padding-bottom: 60px;
+  border: 1px solid var(--env-var-color-16);
+  border-radius: var(--env-var-radius-1);
+}
+.configure-monitor .config-box .MuiBox-root,
+.configure-monitor .config-box .MuiStack-root {
+  flex: 1;
+}
+.configure-monitor .MuiStack-root:has(span.MuiTypography-root.input-error) {
+  position: relative;
+}
+.configure-monitor span.MuiTypography-root.input-error {
+  position: absolute;
+  top: 100%;
+}
+
+.MuiInputBase-root:has(#monitor-interval) {
+  height: 34px;
+  width: 100%;
+}
+#monitor-interval {
+  padding: 0 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.MuiInputBase-root:not(.Mui-focused):has(#monitor-interval):hover fieldset {
+  border-color: var(--env-var-color-29);
+}
+
+.configure-monitor-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--env-var-spacing-4);
+}
+
+body:has(.configure-monitor) .select-dropdown .MuiMenuItem-root,
+.configure-monitor .select-wrapper .select-component > .MuiSelect-select {
+  text-transform: lowercase;
+}

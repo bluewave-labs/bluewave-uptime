@@ -1,20 +1,18 @@
 import "./index.css";
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
 import Avatar from "../Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useTheme } from "@mui/material/styles";
-import ChevronDown from "../../assets/Images/Icon-chevron-down.png";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
+import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,16 +20,41 @@ import LockSvg from "../../assets/icons/lock.svg?react";
 import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
+import { Stack, useScrollTrigger } from "@mui/material";
 
-import BWULogo from "../../assets/Images/bwl-logo.svg?react";
-
-const settings = ["Profile", "Password", "Team", "Logout"];
 const icons = {
   Profile: <UserSvg />,
   Team: <TeamSvg />,
   Password: <LockSvg />,
   Logout: <LogoutSvg />,
 };
+
+function AddBorderOnScroll(props) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    target: window ? window() : undefined,
+    disableHysteresis: true,
+    threshold: 0,
+  });
+
+  return (
+    <AppBar
+      className={trigger ? "scrolled" : ""}
+      position="sticky"
+      sx={{
+        boxShadow: "none",
+        transition: "all 0.3s ease",
+        borderBottom: "1px solid transparent",
+        "&.scrolled": {
+          borderBottom: "1px solid #eaecf0",
+          backgroundColor: "white",
+        },
+      }}
+    >
+      {children}
+    </AppBar>
+  );
+}
 
 /**
  * NavBar component
@@ -51,6 +74,12 @@ function NavBar() {
   const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
 
+  // Initialize settings and update based on user role
+  let settings = ["Profile", "Password", "Team", "Logout"];
+  if (authState.user?.role && !authState.user.role.includes("admin")) {
+    settings = ["Profile", "Password", "Logout"];
+  }
+
   /**
    * Handles opening the user menu.
    *
@@ -67,7 +96,7 @@ function NavBar() {
   const logout = () => {
     // Clear auth state
     dispatch(clearAuthState());
-    dispatch(clearMonitorState());
+    dispatch(clearUptimeMonitorState());
     navigate("/login");
   };
 
@@ -95,109 +124,62 @@ function NavBar() {
   };
 
   return (
-    <AppBar
-      position="sticky"
-      sx={{
-        width: "100%",
-        backgroundColor: "white",
-        boxShadow: "var(--env-var-shadow-1)",
-      }}
-    >
-      <Container maxWidth="xxl" sx={{ width: "100%" }}>
-        <Toolbar disableGutters>
-          <BWULogo id="bw-uptime-logo-dashboard" alt="BlueWave Uptime Logo" />
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
-
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: theme.typography.fontWeightBold,
-              letterSpacing: theme.spacing(0.3),
-              color: "inherit",
-              textDecoration: "none",
-            }}
+    <AddBorderOnScroll>
+      <Toolbar disableGutters sx={{ alignSelf: "flex-end", paddingX: "25px" }}>
+        <Tooltip title="Open settings">
+          <IconButton
+            id="icon-button"
+            onClick={handleOpenUserMenu}
+            sx={{ p: 0 }}
           >
-            UPTIME GENIE
-          </Typography>
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton
-                id="icon-button"
-                onClick={handleOpenUserMenu}
-                sx={{ p: 0 }}
+            <Stack direction="row" alignItems="center" gap="8px">
+              <Avatar small={true} />
+              <Box
+                className="icon-button-toggle-title"
+                sx={{ mr: "3px", lineHeight: 2 }}
               >
-                <div className="icon-button-toggle">
-                  <Avatar small={true} sx={{ mr: "8px" }} />
-                  <div className="icon-button-toggle-title">
-                    {authState.user.firstname} {authState.user.lastname}
-                  </div>
-                  <img
-                    className="icon-button-toggle-pic"
-                    src={ChevronDown}
-                    alt="ChevronDown"
-                  />
-                </div>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: theme.spacing(5.5) }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+                {authState.user?.firstName} {authState.user?.lastName}
+              </Box>
+              <KeyboardArrowDownIcon sx={{ mt: "2px" }} />
+            </Stack>
+          </IconButton>
+        </Tooltip>
+        <Menu
+          sx={{ mt: theme.spacing(5.5) }}
+          id="menu-appbar"
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          {settings.map((setting) => (
+            <MenuItem
+              id="menu-item"
+              key={setting}
+              onClick={() => handleCloseUserMenu(setting)}
+              sx={{ width: "150px" }}
             >
-              {settings.map((setting) => (
-                <MenuItem
-                  id="menu-item"
-                  key={setting}
-                  onClick={() => handleCloseUserMenu(setting)}
-                  sx={{ width: "150px" }}
-                >
-                  {icons[setting]}
-                  <Typography
-                    fontSize="var(--env-var-font-size-medium)"
-                    textAlign="center"
-                    marginLeft="8px"
-                  >
-                    {setting}
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+              {icons[setting]}
+              <Typography
+                fontSize="var(--env-var-font-size-medium)"
+                textAlign="center"
+                marginLeft="8px"
+              >
+                {setting}
+              </Typography>
+            </MenuItem>
+          ))}
+        </Menu>
+      </Toolbar>
+    </AddBorderOnScroll>
   );
 }
 

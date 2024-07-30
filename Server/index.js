@@ -1,23 +1,26 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-const authRouter = require("./routes/authRoute");
-const monitorRouter = require("./routes/monitorRoute");
-const checkRouter = require("./routes/checkRoute");
-const alertRouter = require("./routes/alertRoute");
-const { connectDbAndRunServer } = require("./configs/db");
 require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
+
+const authRouter = require("./routes/authRoute");
+const monitorRouter = require("./routes/monitorRoute");
+const checkRouter = require("./routes/checkRoute");
+const alertRouter = require("./routes/alertRoute");
+const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
+const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
+
+const { connectDbAndRunServer } = require("./configs/db");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
-const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
+const EmailService = require("./service/emailService");
+const PageSpeedService = require("./service/pageSpeedService");
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
-  // const { sendEmail } = require('./utils/sendEmail')
-
   // **************************
   // Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
   // Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
@@ -31,19 +34,13 @@ const startApp = async () => {
   //
   // **************************
   const DB_TYPE = {
-    MongoDB: () => require("./db/MongoDB"),
+    MongoDB: () => require("./db/mongo/MongoDB"),
     FakedDB: () => require("./db/FakeDb"),
   };
 
   const db = DB_TYPE[process.env.DB_TYPE]
     ? DB_TYPE[process.env.DB_TYPE]()
     : require("./db/FakeDb");
-
-  /**
-   * NOTES
-   * Email Service will be added
-   * Logger Service will be added (Winston or similar)
-   */
 
   const app = express();
 
@@ -59,11 +56,13 @@ const startApp = async () => {
   // Make DB accessible anywhere we have a Request object
   // By adding the DB to the request object, we can access it in any route
   // Thus we do not need to import it in every route file, and we can easily swap out DBs as there is only one place to change it
-  // Same applies for JobQueue
+  // Same applies for JobQueue and emailService
   // **************************
   app.use((req, res, next) => {
     req.db = db;
     req.jobQueue = jobQueue;
+    req.emailService = emailService;
+    req.pageSpeedService = pageSpeedService;
     next();
   });
 
@@ -73,6 +72,7 @@ const startApp = async () => {
   app.use("/api/v1/checks", verifyJWT, checkRouter);
   app.use("/api/v1/alerts", verifyJWT, alertRouter);
   app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
+  app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
   //Temporary route for testing, remove later
   app.use("/api/v1/job", queueRouter);
 
@@ -87,14 +87,34 @@ const startApp = async () => {
     }
   });
 
+  app.use("/api/v1/mail", async (req, res) => {
+    try {
+      const id = await req.emailService.buildAndSendEmail(
+        "welcomeEmailTemplate",
+        {
+          name: "Alex",
+        },
+        "ajhollid@gmail.com",
+        "Welcome"
+      );
+      res.status(200).json({ success: true, msg: "Email sent", data: id });
+    } catch (error) {
+      logger.error(error.message);
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
   /**
    * Error handler middleware
    * Should be called last
    */
   app.use(handleErrors);
 
+  // Create services
   await connectDbAndRunServer(app, db);
   const jobQueue = await JobQueue.createJobQueue(db);
+  const emailService = new EmailService();
+  const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {
     console.log("Shutting down gracefully");

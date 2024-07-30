@@ -77,6 +77,7 @@ Made with [contrib.rocks](https://contrib.rocks).
     - <code>POST</code> [/api/v1/auth/register](#post-register)
     - <code>POST</code> [/api/v1/auth/login](#post-login)
     - <code>POST</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
+    - <code>GET</code> [/api/v1/auth/users](#get-all-users-id)
     - <code>POST</code> [/api/v1/auth/recovery/request](#post-auth-recovery-request-id)
     - <code>POST</code> [/api/v1/auth/recovery/validate](#post-auth-recovery-validate-id)
     - <code>POST</code> [/api/v1/auth/recovery/reset](#post-auth-recovery-reset-id)
@@ -116,14 +117,17 @@ To get the application up and running you need to:
 
 ```
 CLIENT_HOST="http://localhost:5173"
-JWT_SECRET="my_secret"
+JWT_SECRET=<jwt_secret>
 DB_TYPE="MongoDB"
 DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
 REDIS_HOST="redis"
 REDIS_PORT=6379
-SYSTEM_EMAIL_ADDRESS="<email>"
-SENDGRID_API_KEY="<api_key>"
-LOGIN_PAGE_URL="<login_page"
+TOKEN_TTL="99d"
+PAGESPEED_API_KEY=<api_key>
+SYSTEM_EMAIL_HOST="smtp.gmail.com"
+SYSTEM_EMAIL_PORT=465
+SYSTEM_EMAIL_ADDRESS=<system_email>
+SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
 3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
@@ -177,19 +181,22 @@ That's it, the application is ready to use on port 5173.
 
 Configure the server with the following environmental variables:
 
-| ENV Variable Name    | Required/Optional | Type      | Description                                                                                 | Accepted Values                                  |
-| -------------------- | ----------------- | --------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| CLIENT_HOST          | Required          | `string`  | Frontend Host                                                                               |                                                  |
-| JWT_SECRET           | Required          | `string`  | JWT secret                                                                                  |                                                  |
-| DB_TYPE              | Optional          | `string`  | Specify DB to use                                                                           | `MongoDB \| FakeDB`                              |
-| DB_CONNECTION_STRING | Required          | `string`  | Specifies URL for MongoDB Database                                                          |                                                  |
-| PORT                 | Optional          | `integer` | Specifies Port for Server                                                                   |                                                  |
-| SENDGRID_API_KEY     | Required          | `string`  | Specifies API KEY for SendGrid email service                                                |                                                  |
-| SYSTEM_EMAIL_ADDRESS | Required          | `string`  | Specifies System email to be used in emailing service, must be a verified email by sendgrid |                                                  |
-| LOGIN_PAGE_URL       | Required          | `string`  | Login url to be used in emailing service                                                    |                                                  |
-| REDIS_HOST           | Required          | `string`  | Host address for Redis database                                                             |                                                  |
-| REDIS_PORT           | Required          | `integer` | Port for Redis database                                                                     |                                                  |
-| TOKEN_TTL            | Optional          | string    | Time for token to live                                                                      | In vercel/ms format https://github.com/vercel/ms |
+| ENV Variable Name     | Required/Optional | Type      | Description                              | Accepted Values                                  |
+| --------------------- | ----------------- | --------- | ---------------------------------------- | ------------------------------------------------ |
+| CLIENT_HOST           | Required          | `string`  | Frontend Host                            |                                                  |
+| JWT_SECRET            | Required          | `string`  | JWT secret                               |                                                  |
+| DB_TYPE               | Optional          | `string`  | Specify DB to use                        | `MongoDB \| FakeDB`                              |
+| DB_CONNECTION_STRING  | Required          | `string`  | Specifies URL for MongoDB Database       |                                                  |
+| PORT                  | Optional          | `integer` | Specifies Port for Server                |                                                  |
+| LOGIN_PAGE_URL        | Required          | `string`  | Login url to be used in emailing service |                                                  |
+| REDIS_HOST            | Required          | `string`  | Host address for Redis database          |                                                  |
+| REDIS_PORT            | Required          | `integer` | Port for Redis database                  |                                                  |
+| TOKEN_TTL             | Optional          | `string`  | Time for token to live                   | In vercel/ms format https://github.com/vercel/ms |
+| PAGESPEED_API_KEY     | Optional          | `string`  | API Key for PageSpeed requests           |                                                  |
+| SYSTEM_EMAIL_HOST     | Required          | `string`  | Host to send System Emails From          |                                                  |
+| SYSTEM_EMAIL_PORT     | Required          | `number`  | Port for System Email Host               |                                                  |
+| SYSTEM_EMAIL_ADDRESS  | Required          | `string`  | System Email Address                     |                                                  |
+| SYSTEM_EMAIL_PASSWORD | Required          | `string`  | System Email Password                    |                                                  |
 
 <br/>
 
@@ -336,38 +343,39 @@ Example:
 
 ##### Method/Headers
 
-> | Method/Headers | Value            |
-> | -------------- | ---------------- |
-> | Method         | POST             |
-> | content-type   | application/json |
+> | Method/Headers | Value               |
+> | -------------- | ------------------- |
+> | Method         | POST                |
+> | content-type   | multipart/form-data |
 
-##### Body
+##### Form
 
-> | Name      | Type     | Notes               |
-> | --------- | -------- | ------------------- |
-> | firstname | `string` |                     |
-> | lastname  | `string` |
-> | email     | `string` | Valid email address |
-> | password  | `string` | Min 8 chars         |
+> | Name      | Type            | Notes                                           |
+> | --------- | --------------- | ----------------------------------------------- |
+> | firstName | `string`        |                                                 |
+> | lastName  | `string`        |                                                 |
+> | email     | `string`        | Valid email address                             |
+> | password  | `string`        | Min 8 chars, One Upper, one number, one special |
+> | role      | `Array<string>` | Array of user roles                             |
 
 ##### Response Payload
 
-> | Type | Notes                              |
-> | ---- | ---------------------------------- |
-> | JWT  | JSON Web Token containing a `User` |
+> | Type | Notes          |
+> | ---- | -------------- |
+> | User | User data      |
+> | JWT  | JSON web token |
 
 ##### Sample CURL request
 
 ```
 curl --request POST \
   --url http://localhost:5000/api/v1/auth/register \
-  --header 'Content-Type: application/json' \
-  --data '{
-	"firstname" : "User First Name",
-	"lastname": "User Last Name",
-	"email" : "user@gmail.com",
-	"password": "user_password"
-}'
+  --header 'Content-Type: multipart/form-data' \
+  --form firstName=Alex \
+  --form lastName=Hollidaty \
+  --form email=ajhollid@gmail.com \
+  --form 'password=Testtest1!' \
+  --form 'role[]=admin'
 ```
 
 ##### Sample Response
@@ -375,8 +383,22 @@ curl --request POST \
 ```json
 {
   "success": true,
-  "msg": "User created",
-  "data": "<encoded_user>"
+  "msg": "User created successfully",
+  "data": {
+    "user": {
+      "_id": "66a1425b873da2207443f192",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "name@gmail.com",
+      "isActive": true,
+      "isVerified": false,
+      "role": ["admin"],
+      "createdAt": "2024-07-24T18:05:15.852Z",
+      "updatedAt": "2024-07-24T18:05:15.852Z",
+      "__v": 0
+    },
+    "token": "<token>"
+  }
 }
 ```
 
@@ -397,23 +419,25 @@ curl --request POST \
 > | Name     | Type     | Notes               |
 > | -------- | -------- | ------------------- |
 > | email    | `string` | Valid email address |
-> | password | `string` | Min 8 chars         |
+> | password | `string` |                     |
 
 ##### Response Payload
 
-> | Type | Notes                              |
-> | ---- | ---------------------------------- |
-> | JWT  | JSON Web Token Containing a `User` |
+> | Type | Notes          |
+> | ---- | -------------- |
+> | User | User data      |
+> | JWT  | JSON web token |
 
 ##### Sample CURL request
 
 ```
 curl --request POST \
   --url http://localhost:5000/api/v1/auth/login \
+  --header 'Authorization: Bearer undefined' \
   --header 'Content-Type: application/json' \
   --data '{
-	"email" : "user@gmail.com",
-	"password": "user_password"
+	"email" : "name@gmail.com",
+	"password": "Testtest1!"
 }'
 ```
 
@@ -421,9 +445,25 @@ curl --request POST \
 
 ```json
 {
-  "success": true,
-  "msg": "Found user",
-  "data": "<encoded_user>"
+{
+	"success": true,
+	"msg": "User logged in successfully",
+	"data": {
+		"user": {
+      "_id": "66a1425b873da2207443f192",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "name@gmail.com",
+      "isActive": true,
+      "isVerified": false,
+      "role": ["admin"],
+      "createdAt": "2024-07-24T18:05:15.852Z",
+      "updatedAt": "2024-07-24T18:05:15.852Z",
+      "__v": 0
+		},
+		"token": "<token>"
+	}
+}
 }
 ```
 
@@ -434,18 +474,20 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value               |
+> | -------------- | ------------------- |
+> | Method         | POST                |
+> | content-type   | multipart/form-data |
 
-##### Body
+##### Form
 
-> | Name          | Type     | Notes       |
-> | ------------- | -------- | ----------- |
-> | firstname     | `string` |             |
-> | lastname      | `string` |             |
-> | profilePicUrl | `string` |             |
-> | password      | `string` | Min 8 chars |
+> | Name        | Type     | Notes                       |
+> | ----------- | -------- | --------------------------- |
+> | firstName   | `string` | Optional                    |
+> | lastName    | `string` | Optional                    |
+> | profileIame | `file`   | Optional                    |
+> | password    | `string` | Required to change password |
+> | newPassword | `string` | Required to change password |
 
 ###### Response Payload
 
@@ -457,13 +499,14 @@ curl --request POST \
 
 ```
 curl --request POST \
-  --url http://localhost:5000/api/v1/auth/user/6654d156634754f789e1f10e \
+  --url http://localhost:5000/api/v1/auth/user/66a1425b873da2207443f192 \
   --header 'Authorization: <bearer_token>' \
-  --header 'Content-Type: application/json' \
-  --data '{
-	"firstname": "First Name",
-  "lastname: "Last Name"
-}'
+  --header 'Content-Type: multipart/form-data' \
+  --form firstName=Test \
+  --form lastName=Test \
+  --form profileImage=@/home/user/Desktop/cat.jpg \
+  --form 'newPassword=Testtest1!' \
+  --form 'password=Testtest2!'
 ```
 
 ###### Sample Response
@@ -471,18 +514,69 @@ curl --request POST \
 ```json
 {
   "success": true,
-  "msg": "User updated",
+  "msg": "User updated successfully",
   "data": {
-    "_id": "6654d156634754f789e1f10e",
-    "firstname": "First Name",
-    "lastname": "Last Name",
-    "email": "me@gmail.com",
+    "_id": "66a1425b873da2207443f192",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "name@gmail.com",
     "isActive": true,
     "isVerified": false,
-    "createdAt": "2024-05-27T18:30:46.358Z",
-    "updatedAt": "2024-05-27T19:21:51.747Z",
-    "__v": 0
+    "role": ["admin"],
+    "createdAt": "2024-07-24T18:05:15.852Z",
+    "updatedAt": "2024-07-24T18:31:32.314Z",
+    "__v": 0,
+    "avatarImage": "<Base64 Image>"
   }
+}
+```
+
+</details>
+
+<details>
+<summary id='#get-all-users-id'><code>GET</code><b>/api/v1/auth/users</b></summary>
+
+###### Method/Headers
+
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | GET              |
+> | content-type   | application/json |
+
+###### Response Payload
+
+> | Type          | Notes                                 |
+> | ------------- | ------------------------------------- |
+> | `Array<User>` | Returns an array containing all users |
+
+##### Sample CURL request
+
+```
+curl --request GET \
+  --url http://localhost:5000/api/v1/auth/users \
+  --header 'Authorization: <bearer_token>\
+```
+
+##### Sample Resonse
+
+```json
+{
+  "success": true,
+  "msg": "Got all users",
+  "data": [
+    {
+      "_id": "669e90072d5663d25808bc7b",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "name@gmail.com",
+      "isActive": true,
+      "isVerified": false,
+      "role": ["admin"],
+      "createdAt": "2024-07-22T16:59:51.695Z",
+      "updatedAt": "2024-07-22T16:59:51.695Z",
+      "__v": 0
+    }
+  ]
 }
 ```
 
@@ -493,9 +587,10 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | POST             |
+> | content-type   | application/json |
 
 ##### Body
 
@@ -516,7 +611,7 @@ curl --request POST \
   --url http://localhost:5000/api/v1/auth/recovery/request \
   --header 'Content-Type: application/json' \
   --data '{
-	"email" : "ajhollid@gmail.com"
+	"email" : "name@gmail.com"
 }'
 ```
 
@@ -527,7 +622,7 @@ curl --request POST \
   "success": true,
   "msg": "Created recovery token",
   "data": {
-    "email": "your_email@gmail.com",
+    "email": "name@gmail.com",
     "token": "f519da5e4a9be40cfc3c0fde97e60c0e6d17bdaa613f5ba537a45073f3865193",
     "_id": "6668878263587f30748e968e",
     "expiry": "2024-06-11T17:21:06.984Z",
@@ -545,9 +640,10 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | POST             |
+> | content-type   | application/json |
 
 ##### Body
 
@@ -580,7 +676,7 @@ curl --request POST \
   "msg": "Token is valid",
   "data": {
     "_id": "6668894263587f30748e969a",
-    "email": "ajhollid@gmail.com",
+    "email": "name@gmail.com",
     "token": "457d9926b24dedf613f120eeb524ef00ac45b3f0fc5c70bd25b1cc8aa83a64a0",
     "expiry": "2024-06-11T17:28:34.349Z",
     "createdAt": "2024-06-11T17:28:34.349Z",
@@ -597,9 +693,10 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | POST             |
+> | content-type   | application/json |
 
 ##### Body
 
@@ -634,9 +731,9 @@ curl --request POST \
   "msg": "Password reset",
   "data": {
     "_id": "66675891cb17336d84c25d9f",
-    "firstname": "User First Name",
-    "lastname": "User Last Name",
-    "email": "your_email@gmail.com",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "email": "name@gmail.com",
     "isActive": true,
     "isVerified": false,
     "createdAt": "2024-06-10T19:48:33.863Z",
@@ -657,9 +754,10 @@ curl --request POST \
 
 ##### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | GET   |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | GET              |
+> | content-type   | application/json |
 
 ##### Response Payload
 
@@ -713,13 +811,22 @@ curl --request GET \
 </details>
 
 <details>
-<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}</b></summary>
+<summary id='get-monitor-id'><code>GET</code> <b>/api/v1/monitor/{id}?status</b></summary>
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | GET   |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | GET              |
+> | content-type   | application/json |
+
+###### Query Params
+
+> | Name      | Type      | Required | Notes                                            |
+> | --------- | --------- | -------- | ------------------------------------------------ |
+> | status    | `boolean` | Optional | Check status                                     |
+> | limit     | `number`  | Optional | Number of checks to return                       |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest |
 
 ###### Response Payload
 
@@ -731,7 +838,7 @@ curl --request GET \
 
 ```
 curl --request GET \
-  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1 \
+  --url http://localhost:5000/api/v1/monitors/664d070786e62625ac612ca1?status=true?limit=0 \
   --header '<bearer_token>' \
 ```
 
@@ -788,9 +895,19 @@ curl --request GET \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | GET   |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | GET              |
+> | content-type   | application/json |
+
+###### Query Params
+
+> | Name      | Type      | Required | Notes                                             |
+> | --------- | --------- | -------- | ------------------------------------------------- |
+> | status    | `boolean` | Optional | Check status                                      |
+> | type      | `string`  | Optional | Multiple allowed: `http` \| `ping` \| `pagespeed` |
+> | limit     | `number`  | Optional | Monitor status                                    |
+> | sortOrder | `string`  | Optional | `desc`:Newest -> Oldest, `asc`: Oldest -> Newest  |
 
 ###### Response Payload
 
@@ -850,21 +967,22 @@ curl --request GET \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | POST             |
+> | content-type   | application/json |
 
 ##### Body
 
-> | Name        | Type      | Notes                  | Accepted Values        |
-> | ----------- | --------- | ---------------------- | ---------------------- |
-> | userId      | `string`  | UserId of current user |                        |
-> | name        | `string`  | Monitor name           |                        |
-> | description | `string`  | Monitor Description    |                        |
-> | type        | `string`  | Valid email address    | `"ping"`&#124;`"http"` |
-> | url         | `string`  | URL of service or IP   |                        |
-> | isActive    | `boolean` |                        |                        |
-> | interval    | `number`  | In ms                  |                        |
+> | Name        | Type      | Notes                  | Accepted Values                         |
+> | ----------- | --------- | ---------------------- | --------------------------------------- |
+> | userId      | `string`  | UserId of current user |                                         |
+> | name        | `string`  | Monitor name           |                                         |
+> | description | `string`  | Monitor Description    |                                         |
+> | type        | `string`  | Valid email address    | `"ping"`&#124;`"http"`&#124;`pagespeed` |
+> | url         | `string`  | URL of service or IP   |                                         |
+> | isActive    | `boolean` |                        |                                         |
+> | interval    | `number`  | In ms                  |                                         |
 
 ###### Response Payload
 
@@ -879,7 +997,6 @@ curl --request POST \
   --url http://localhost:5000/api/v1/monitors \
   --header <bearer_token> \
   --header 'Content-Type: application/json' \
-  --header 'User-Agent: insomnia/2023.5.8' \
   --data '{
       "userId": "66675891cb17336d84c25d9f",
 			"name": "Ping Google",
@@ -918,9 +1035,10 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | POST             |
+> | content-type   | application/json |
 
 ###### Response Payload
 
@@ -953,9 +1071,18 @@ curl --request POST \
 
 ###### Method/Headers
 
-> | Method/Headers | Value |
-> | -------------- | ----- |
-> | Method         | POST  |
+> | Method/Headers | Value            |
+> | -------------- | ---------------- |
+> | Method         | POST             |
+> | content-type   | application/json |
+
+##### Body
+
+> | Name        | Type     | Notes               | Accepted Values |
+> | ----------- | -------- | ------------------- | --------------- |
+> | name        | `string` | Monitor name        |                 |
+> | description | `string` | Monitor Description |                 |
+> | interval    | `number` | In ms               |
 
 ###### Response Payload
 
@@ -972,12 +1099,8 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '
 		{
-			"_id": "664e5ccf189c864800debc16",
-			"userId": "6645079aae0b439371913972",
 			"name": "Edited monitor",
 			"description": "Description",
-			"url": "https://monitor0.com",
-			"isActive": true,
 			"interval": 60000
 		}'
 ```

@@ -2,9 +2,11 @@ const errorMessages = {
   // General Errors:
   FRIENDLY_ERROR: "Something went wrong...",
   UNKNOWN_ERROR: "An unknown error occurred",
+
   // Auth Controller
   UNAUTHORIZED: "Unauthorized access",
   AUTH_ADMIN_EXISTS: "Admin already exists",
+  AUTH_INVITE_NOT_FOUND: "Invite not found",
 
   //Error handling middleware
   UNKNOWN_SERVICE: "Unknown service",
@@ -76,6 +78,10 @@ const successMessages = {
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",
   JOB_QUEUE_OBLITERATE: "Queue OBLITERATED!!!",
+
+  //Maintenance Window Controller
+  MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
+  MAINTEANCE_WINDOW_GET_BY_USER: "Got Maintenance Windows by User successfully",
 };
 
 module.exports = {

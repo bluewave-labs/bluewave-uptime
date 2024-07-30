@@ -1,7 +1,7 @@
 import "./index.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
+import { getUptimeMonitorsByUserId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
@@ -11,6 +11,7 @@ import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
 import ResponseTimeChart from "../../Components/Charts/ResponseTimeChart";
+import { Box, Stack, Typography } from "@mui/material";
 
 /**
  * Host component.
@@ -44,12 +45,12 @@ const Host = ({ params }) => {
 const Monitors = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const monitorState = useSelector((state) => state.monitors);
+  const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getMonitorsByUserId(authState.authToken));
+    dispatch(getUptimeMonitorsByUserId(authState.authToken));
   }, []);
 
   const up = monitorState.monitors.reduce((acc, cur) => {
@@ -73,7 +74,8 @@ const Monitors = () => {
         ),
       },
       { id: 3, name: "Response Time" },
-      { id: 4, name: "Actions" },
+      { id: 4, name: "Type" },
+      { id: 5, name: "Actions" },
     ],
     rows: [],
   };
@@ -87,16 +89,11 @@ const Monitors = () => {
         monitor.status === true
           ? "var(--env-var-color-17)"
           : "var(--env-var-color-19)",
-      status: monitor.status === true ? "Up" : "Down",
-      backgroundColor:
-        monitor.status === true
-          ? "var(--env-var-color-20)"
-          : "var(--env-var-color-21)",
-      statusDotColor:
-        monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
+      status: monitor.status === true ? "up" : "down",
     };
+
+    // Reverse checks so latest check is on the right
+    const reversedChecks = monitor.checks.slice().reverse();
 
     return {
       id: monitor._id,
@@ -108,62 +105,60 @@ const Monitors = () => {
           data: (
             <StatusLabel
               status={params.status}
-              dot={params.statusDotColor}
-              customStyles={{
-                backgroundColor: params.backgroundColor,
-              }}
+              text={params.status}
+              customStyles={{ textTransform: "capitalize" }}
             />
           ),
         },
-        { id: idx + 2, data: <ResponseTimeChart checks={monitor.checks} /> },
-        { id: idx + 3, data: "TODO" },
+        { id: idx + 2, data: <ResponseTimeChart checks={reversedChecks} /> },
+        { id: idx + 3, data: monitor.type },
+        { id: idx + 4, data: "TODO" },
       ],
     };
   });
 
   return (
-    <div
-      className="monitors"
-      style={{
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-      }}
-    >
-      <div className="monitors-bar">
-        <div className="monitors-bar-title">
-          Hello, {authState.user.firstname}
-        </div>
+    <Stack className="monitors" gap={theme.gap.large}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography component="h1">
+          Hello, {authState.user.firstName}
+        </Typography>
         <Button
           level="primary"
           label="Create new monitor"
           onClick={() => {
             navigate("/monitors/create");
           }}
-          sx={{ padding: "6px 25px", fontSize: "13px" }}
         />
-      </div>
-
-      <div className="monitors-stats">
+      </Stack>
+      <Stack
+        gap={theme.gap.large}
+        direction="row"
+        justifyContent="space-between"
+      >
         <ServerStatus title="Up" value={up} state="up" />
         <ServerStatus title="Down" value={down} state="down" />
         <ServerStatus title="Paused" value={0} state="pause" />
-      </div>
-
-      <div className="current-monitors">
-        <div className="current-monitors-bar">
-          <div className="current-monitors-title-holder">
-            <div className="current-monitors-title">Current monitors</div>
-            <div className="current-monitors-counter">
-              {monitorState.monitors.length}
-            </div>
-          </div>
-          <div className="current-monitors-search-bar">
-            {/* TODO - add search bar */}
-          </div>
-        </div>
-        <div className="monitors-v-gaping" />
+      </Stack>
+      <Stack
+        gap={theme.gap.large}
+        p={theme.gap.xl}
+        sx={{
+          border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+          borderRadius: `${theme.shape.borderRadius}px`,
+          backgroundColor: theme.palette.otherColors.white,
+        }}
+      >
+        <Stack direction="row" alignItems="center">
+          <Typography component="h2">Current monitors</Typography>
+          <Box className="current-monitors-counter">
+            {monitorState.monitors.length}
+          </Box>
+          {/* TODO - add search bar */}
+        </Stack>
         <BasicTable data={data} paginated={true} />
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };
 

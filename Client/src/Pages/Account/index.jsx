@@ -8,14 +8,13 @@ import ProfilePanel from "../../Components/TabPanels/Account/ProfilePanel";
 import PasswordPanel from "../../Components/TabPanels/Account/PasswordPanel";
 import TeamPanel from "../../Components/TabPanels/Account/TeamPanel";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 /**
  * Account component renders a settings page with tabs for Profile, Password, and Team settings.
  * @param {string} [props.open] - Specifies the initially open tab: 'profile', 'password', or 'team'.
  * @returns {JSX.Element}
  */
-
-const tabList = ["Profile", "Password", "Team"];
 
 const Account = ({ open = "profile" }) => {
   const theme = useTheme();
@@ -25,20 +24,17 @@ const Account = ({ open = "profile" }) => {
     navigate(`/account/${newTab}`);
   };
 
+  let tabList = ["Profile", "Password", "Team"];
+  const { user } = useSelector((state) => state.auth);
+  if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
+
   return (
-    <Box
-      //TODO - breakpoints for responsive design
-      minWidth={theme.spacing(55)}
-      maxWidth="1200px"
-      py={theme.content.pY}
-      px={theme.content.pX}
-      className="account"
-    >
+    <Box className="account">
       <TabContext value={tab}>
         <Box
           sx={{
             borderBottom: 1,
-            borderColor: theme.palette.section.borderColor,
+            borderColor: "var(--env-var-color-16)",
             "& .MuiTabs-root": { height: "fit-content", minHeight: "0" },
           }}
         >
@@ -71,7 +67,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-        <TeamPanel />
+        {user.role.includes("admin") && <TeamPanel />}
       </TabContext>
     </Box>
   );

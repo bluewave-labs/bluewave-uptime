@@ -1,0 +1,20 @@
+.integrations h1.MuiTypography-root,
+.integrations p.MuiTypography-root {
+  color: var(--env-var-color-5);
+}
+.integrations h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  font-weight: 600;
+}
+.integrations p.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+}
+.integrations button {
+  height: var(--env-var-height-2);
+}
+
+.integrations .MuiGrid-item > .MuiStack-root {
+  border: solid 1px var(--env-var-color-6);
+  border-radius: var(--env-var-radius-1);
+  background-color: var(--env-var-color-8);
+}

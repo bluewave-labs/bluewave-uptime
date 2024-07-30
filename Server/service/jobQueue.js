@@ -59,7 +59,34 @@ class JobQueue {
       QUEUE_NAME,
       async (job) => {
         try {
-          const res = await this.networkService.getStatus(job);
+          // Get all maintenance windows for this monitor
+          const monitorId = job.data._id;
+          const maintenanceWindows =
+            await this.db.getMaintenanceWindowsByMonitorId(monitorId);
+
+          // Check for active maintenance window:
+          const maintenanceWindowActive = maintenanceWindows.reduce(
+            (acc, window) => {
+              if (window.active) {
+                const start = new Date(window.start);
+                const end = new Date(window.end);
+                if (start < new Date() && end > new Date()) {
+                  return true;
+                }
+              }
+              return acc;
+            },
+            false
+          );
+
+          if (!maintenanceWindowActive) {
+            const res = await this.networkService.getStatus(job);
+          } else {
+            logger.info(`Monitor ${monitorId} is in maintenance window`, {
+              service: SERVICE_NAME,
+              monitorId,
+            });
+          }
         } catch (error) {
           logger.error(`Error processing job ${job.id}: ${error.message}`, {
             service: SERVICE_NAME,
@@ -231,9 +258,12 @@ class JobQueue {
     try {
       const jobs = await this.getJobs();
       for (const job of jobs) {
+        await this.queue.removeRepeatableByKey(job.key);
         await this.queue.remove(job.id);
       }
-      console.log(jobs);
+      this.workers.forEach(async (worker) => {
+        await worker.close();
+      });
       await this.queue.obliterate();
       logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
         service: SERVICE_NAME,

@@ -32,6 +32,8 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
  *       @param {JSX.Element} props.data.rows[].data[].data - The content to display in the cell.
  *       @param {function} props.data.rows.data.handleClick - Function to call when the row is clicked.
  * @param {boolean} [props.paginated=false] - Flag to enable pagination.
+ * @param {boolean} [props.reversed=false] - Flag to enable reverse order.
+ * @param {number} props.rowsPerPage- Number of rows per page (table).
  *
  * @example
  * const data = {
@@ -66,11 +68,10 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
  * <BasicTable data={data} rows={rows} paginated={true} />
  */
 
-const BasicTable = ({ data, paginated }) => {
+const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
   // Add headers to props validation
 
   const [page, setPage] = useState(0);
-  const rowsPerPage = 5;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,13 +80,44 @@ const BasicTable = ({ data, paginated }) => {
   let displayData = [];
 
   if (data && data.rows) {
+    let rows = reversed ? [...data.rows].reverse() : data.rows;
     displayData = paginated
-      ? data.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      : data.rows;
+      ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : rows;
   }
 
   if (!data || !data.cols || !data.rows) {
     return <div>No data</div>;
+  }
+
+  let paginationComponent = <></>;
+  if (paginated === true && data.rows.length > rowsPerPage) {
+    paginationComponent = (
+      <Pagination
+        count={Math.ceil(data.rows.length / rowsPerPage)}
+        page={page + 1}
+        onChange={(event, value) => handleChangePage(event, value - 1)}
+        shape="rounded"
+        renderItem={(item) => (
+          <PaginationItem
+            slots={{
+              previous: ArrowBackRoundedIcon,
+              next: ArrowForwardRoundedIcon,
+            }}
+            {...item}
+            sx={{
+              "&:focus": {
+                outline: "none",
+              },
+              "& .MuiTouchRipple-root": {
+                pointerEvents: "none",
+                display: "none",
+              },
+            }}
+          />
+        )}
+      />
+    );
   }
 
   return (
@@ -116,32 +148,8 @@ const BasicTable = ({ data, paginated }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {paginated === true && (
-        <Pagination
-          count={Math.ceil(data.rows.length / rowsPerPage)}
-          page={page + 1}
-          onChange={(event, value) => handleChangePage(event, value - 1)}
-          shape="rounded"
-          renderItem={(item) => (
-            <PaginationItem
-              slots={{
-                previous: ArrowBackRoundedIcon,
-                next: ArrowForwardRoundedIcon,
-              }}
-              {...item}
-              sx={{
-                "&:focus": {
-                  outline: "none",
-                },
-                "& .MuiTouchRipple-root": {
-                  pointerEvents: "none",
-                  display: "none",
-                },
-              }}
-            />
-          )}
-        />
-      )}
+
+      {paginationComponent}
     </>
   );
 };
@@ -149,6 +157,8 @@ const BasicTable = ({ data, paginated }) => {
 BasicTable.propTypes = {
   data: PropTypes.object.isRequired,
   paginated: PropTypes.bool,
+  reversed: PropTypes.bool,
+  rowPerPage: PropTypes.number,
 };
 
 export default BasicTable;

@@ -17,7 +17,7 @@ import {
 import ImageIcon from "@mui/icons-material/Image";
 import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
-import { clearMonitorState } from "../../../Features/Monitors/monitorsSlice";
+import { clearUptimeMonitorState } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { createToast } from "../../../Utils/toastUtils";
 
 /**
@@ -36,16 +36,16 @@ const ProfilePanel = () => {
   const { user, authToken, isLoading } = useSelector((state) => state.auth);
 
   const idToName = {
-    "edit-first-name": "firstname",
-    "edit-last-name": "lastname",
+    "edit-first-name": "firstName",
+    "edit-last-name": "lastName",
     // Disabled for now, will revisit in the future
     // "edit-email": "email",
   };
 
   // Local state for form data, errors, and file handling
   const [localData, setLocalData] = useState({
-    firstname: user.firstname,
-    lastname: user.lastname,
+    firstName: user.firstName,
+    lastName: user.lastName,
     // email: user.email, // Disabled for now
   });
   const [errors, setErrors] = useState({});
@@ -156,8 +156,8 @@ const ProfilePanel = () => {
   const handleSaveProfile = async (event) => {
     event.preventDefault();
     if (
-      localData.firstname === user.firstname &&
-      localData.lastname === user.lastname &&
+      localData.firstName === user.firstName &&
+      localData.lastName === user.lastName &&
       localData.deleteProfileImage === undefined &&
       localData.file === undefined
     ) {
@@ -194,7 +194,7 @@ const ProfilePanel = () => {
     const action = await dispatch(deleteUser(authToken));
     if (action.payload.success) {
       dispatch(clearAuthState());
-      dispatch(clearMonitorState());
+      dispatch(clearUptimeMonitorState());
     } else {
       if (action.payload) {
         // dispatch errors
@@ -223,7 +223,7 @@ const ProfilePanel = () => {
           </Stack>
           <Field
             id="edit-first-name"
-            value={localData.firstname}
+            value={localData.firstName}
             placeholder="Enter your first name"
             autoComplete="given-name"
             onChange={handleChange}
@@ -238,7 +238,7 @@ const ProfilePanel = () => {
             id="edit-last-name"
             placeholder="Enter your last name"
             autoComplete="family-name"
-            value={localData.lastname}
+            value={localData.lastName}
             onChange={handleChange}
             error={errors[idToName["edit-last-name"]]}
           />
@@ -255,7 +255,8 @@ const ProfilePanel = () => {
             value={user.email}
             placeholder="Enter your email"
             autoComplete="email"
-            // onChange={handleChange}
+            // TODO - add onChange
+            onChange={() => console.log("Disabled.")}
             // error={errors[idToName["edit-email"]]}
             disabled={true}
           />

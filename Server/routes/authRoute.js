@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { verifyJWT } = require("../middleware/verifyJWT");
+const { verifyAdmin } = require("../middleware/verifyAdmin");
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const multer = require("multer");
 const upload = multer();
@@ -13,7 +14,10 @@ const {
   validateRecoveryTokenController,
   resetPasswordController,
   checkAdminController,
-  deleteUserController
+  getAllUsersController,
+  deleteUserController,
+  inviteController,
+  inviteVerifyController,
 } = require("../controllers/authController");
 
 //Auth routes
@@ -26,7 +30,16 @@ router.post(
   userEditController
 );
 router.get("/users/admin", checkAdminController);
-router.delete("/user/:userId", verifyJWT, verifyOwnership(User, "userId") , deleteUserController);
+router.get("/users", verifyJWT, verifyAdmin, getAllUsersController);
+router.delete(
+  "/user/:userId",
+  verifyJWT,
+  verifyOwnership(User, "userId"),
+  deleteUserController
+);
+
+router.post("/invite", verifyJWT, inviteController);
+router.post("/invite/verify", inviteVerifyController);
 
 //Recovery routes
 router.post("/recovery/request", recoveryRequestController);

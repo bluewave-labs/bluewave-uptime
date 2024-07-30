@@ -25,7 +25,6 @@
     "dayjs": "1.11.11",
     "joi": "17.13.1",
     "jwt-decode": "^4.0.0",
-    "mjml-react": "^2.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "9.1.2",

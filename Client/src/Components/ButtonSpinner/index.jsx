@@ -70,6 +70,7 @@ const ButtonSpinner = ({
       endIcon={position === "end" && img}
       onClick={onClick}
       loading={isLoading}
+      disableRipple
       sx={{
         textTransform: "none",
         "&:focus": {

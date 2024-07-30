@@ -1,9 +1,12 @@
 const PageSpeedCheck = require("../models/PageSpeedCheck");
+const PageSpeedService = require("../service/pageSpeedService");
 const { successMessages } = require("../utils/messages");
+const pageSpeedService = new PageSpeedService();
 const SERVICE_NAME = "pagespeed";
 const {
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
+  createPageSpeedCheckBodyValidation,
   deletePageSpeedCheckParamValidation,
 } = require("../validation/joi");
 
@@ -42,7 +45,34 @@ const createPageSpeedCheck = async (req, res, next) => {
     // Validate monitorId parameter
     await createPageSpeedCheckParamValidation.validateAsync(req.params);
 
-    return res.status(200).json({ msg: "Hit createPageSpeedCheck" });
+    // Validate request body
+    await createPageSpeedCheckBodyValidation.validateAsync(req.body);
+
+    const { monitorId } = req.params;
+    const { url } = req.body;
+
+    // Run the PageSpeed check
+    const pageSpeedResults = await pageSpeedService.runPageSpeedCheck(url);
+
+    // Extract categories scores
+    const categories = pageSpeedResults.lighthouseResult?.categories;
+
+    if (!categories) {
+      throw new Error("Categories not found in PageSpeed results");
+    }
+
+    const newPageSpeedCheck = await pageSpeedService.createPageSpeedCheck({
+      monitorId,
+      accessibility: (categories.accessibility?.score || 0) * 100,
+      bestPractices: (categories["best-practices"]?.score || 0) * 100,
+      seo: (categories.seo?.score || 0) * 100,
+      performance: (categories.performance?.score || 0) * 100,
+    });
+
+    return res.status(201).json({
+      msg: successMessages.CREATED,
+      data: newPageSpeedCheck,
+    });
   } catch (error) {
     if (error.isJoi) {
       return res.status(400).json({ error: error.details[0].message });

@@ -19,8 +19,10 @@ import { useState } from "react";
  * @param {string} [props.type] - Type of input field (e.g., 'text', 'password').
  * @param {string} props.id - ID of the input field.
  * @param {string} [props.label] - Label for the input field.
+ * @param {boolean} [props.https] - Indicates if it should display http or https.
  * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
  * @param {boolean} [props.isOptional] - Indicates if the field is optional, will display optional text.
+ * @param {string} [props.optionalLabel] - Optional label for the input field.
  * @param {boolean} [props.hasCopy] - Indicates if the field supports copying.
  * @param {string} [props.autoComplete] - Autocomplete value for the input field.
  * @param {string} [props.placeholder] - Placeholder text for the input field.
@@ -34,8 +36,10 @@ const Field = ({
   type = "text",
   id,
   label,
+  https,
   isRequired,
   isOptional,
+  optionalLabel,
   hasCopy,
   autoComplete,
   placeholder,
@@ -61,7 +65,13 @@ const Field = ({
         <Typography component="h3">
           {label}
           {isRequired ? <span className="field-required">*</span> : ""}
-          {isOptional ? <span className="field-optional">(optional)</span> : ""}
+          {isOptional ? (
+            <span className="field-optional">
+              {optionalLabel || "(optional)"}
+            </span>
+          ) : (
+            ""
+          )}
         </Typography>
       )}
       <TextField
@@ -74,6 +84,17 @@ const Field = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
+        sx={
+          type === "url"
+            ? {
+                "& .MuiInputBase-root": { padding: 0 },
+                "& .MuiStack-root": {
+                  borderTopLeftRadius: `${theme.shape.borderRadius}px`,
+                  borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
+                },
+              }
+            : {}
+        }
         InputProps={{
           startAdornment: type === "url" && (
             <Stack
@@ -82,9 +103,13 @@ const Field = ({
               height="100%"
               sx={{
                 borderRight: `solid 1px ${theme.palette.section.borderColor}`,
+                backgroundColor: "#f9f9fa",
+                pl: theme.gap.medium,
               }}
             >
-              <Typography component="h5">https://</Typography>
+              <Typography component="h5" sx={{ lineHeight: 1 }}>
+                {https ? "https" : "http"}://
+              </Typography>
             </Stack>
           ),
           endAdornment:
@@ -144,8 +169,10 @@ Field.propTypes = {
   type: PropTypes.oneOf(["text", "password", "url", "email", "description"]),
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
+  https: PropTypes.bool,
   isRequired: PropTypes.bool,
   isOptional: PropTypes.bool,
+  optionalLabel: PropTypes.string,
   hasCopy: PropTypes.bool,
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,

@@ -1,3 +1,4 @@
+<!-- name, link -->
 <mjml>
   <mj-head>
     <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,500"></mj-font>
@@ -16,10 +17,10 @@
     <mj-section>
       <mj-column width="100%">
         <mj-text>
-          <p>Hello Alex!</p>
+          <p>Hello {{name}}!</p>
           <p>One of the admins created an account for you on the BlueWave Uptime server.</p>
           <p>You can go ahead and create your account using this link.</p>
-          <p><a href="https://example.com">https://example.com</a></p>
+          <p><a href={{link}}>{{link}}</a></p>
           <p>Thank you.</p>
         </mj-text>
       </mj-column>

@@ -1,16 +1,17 @@
 import "./index.css";
-import ConfigBox from "../../../Components/ConfigBox";
 import React, { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
-import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { createMonitorValidation } from "../../../Validation/validation";
-import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
+import { monitorValidation } from "../../../Validation/validation";
+import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import Field from "../../../Components/Inputs/Field";
+import Select from "../../../Components/Inputs/Select";
+import Checkbox from "../../../Components/Inputs/Checkbox";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -37,7 +38,7 @@ const CreateMonitor = () => {
   // });
   //Advanced Settings Form
   const [advancedSettings, setAdvancedSettings] = useState({
-    frequency: 1,
+    interval: 1,
     // retries: "",
     // codes: "",
     // redirects: "",
@@ -57,7 +58,7 @@ const CreateMonitor = () => {
       [id]: checkbox ? true : value,
     }));
 
-    const validation = createMonitorValidation.validate(
+    const validation = monitorValidation.validate(
       { [id]: value },
       { abortEarly: false }
     );
@@ -84,15 +85,21 @@ const CreateMonitor = () => {
     event.preventDefault();
     //obj to submit
     let monitor = {
-      ...generalSettings,
       url:
-        checks.type === "http"
-          ? "https://" + generalSettings.url
+        //preprending protocol for url
+        checks.type === "http" || checks.type === "https"
+          ? `${checks.type}://` + generalSettings.url
           : generalSettings.url,
-      ...checks,
+      name:
+        generalSettings.name === ""
+          ? generalSettings.url
+          : generalSettings.name,
+      //there is no separate monitor type for https since the operations for the two protocols are identical
+      //however the URL does need the correct prepend hence https is still being tracked but overwritten when prepping the monitor obj
+      type: checks.type === "https" ? "http" : checks.type,
     };
 
-    const { error } = createMonitorValidation.validate(monitor, {
+    const { error } = monitorValidation.validate(monitor, {
       abortEarly: false,
     });
 
@@ -107,11 +114,13 @@ const CreateMonitor = () => {
         ...monitor,
         description: monitor.name,
         userId: user._id,
-        // ...advancedSettings, // TODO frequency should be interval, then we can use spread
-        interval: advancedSettings.frequency * MS_PER_MINUTE,
+        // ...advancedSettings
+        interval: advancedSettings.interval * MS_PER_MINUTE,
       };
       try {
-        const action = await dispatch(createMonitor({ authToken, monitor }));
+        const action = await dispatch(
+          createUptimeMonitor({ authToken, monitor })
+        );
         if (action.meta.requestStatus === "fulfilled") {
           navigate("/monitors");
         }
@@ -123,20 +132,16 @@ const CreateMonitor = () => {
 
   //select values
   // const ports = ["Port 1", "Port 2", "Port 3"];
-  const frequencies = [1, 2, 3, 4, 5];
+  const frequencies = [
+    { _id: 1, name: "1 minute" },
+    { _id: 2, name: "2 minutes" },
+    { _id: 3, name: "3 minutes" },
+    { _id: 4, name: "4 minutes" },
+    { _id: 5, name: "5 minutes" },
+  ];
 
   return (
-    <form
-      className="create-monitor-form"
-      onSubmit={handleCreateMonitor}
-      noValidate
-      spellCheck="false"
-      style={{
-        maxWidth: "1200px",
-        flex: 1,
-        padding: `${theme.content.pY} ${theme.content.pX}`,
-      }}
-    >
+    <Box className="create-monitor">
       <Button
         level="tertiary"
         label="Back"
@@ -151,24 +156,31 @@ const CreateMonitor = () => {
           },
         }}
       />
-      <Typography component="h1">Create new monitor</Typography>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <Stack gap={theme.gap.small}>
+      <form
+        className="create-monitor-form"
+        onSubmit={handleCreateMonitor}
+        noValidate
+        spellCheck="false"
+      >
+        <Typography component="h1">Create new monitor</Typography>
+        <Stack className="config-box">
+          <Box>
             <Typography component="h2">General settings</Typography>
-            <Typography component="p">
+            <Typography component="p" mt={theme.gap.small}>
               Here you can select the URL of the host, together with the type of
               monitor.
             </Typography>
-          </Stack>
-        }
-        rightLayout={
+          </Box>
           <Stack gap={theme.gap.xl}>
             <Field
-              type="url"
+              type={
+                checks.type === "http" || checks.type === "https"
+                  ? "url"
+                  : "text"
+              }
               id="monitor-url"
               label="URL to monitor"
+              https={checks.type === "https"}
               placeholder="google.com"
               value={generalSettings.url}
               onChange={(event) =>
@@ -189,30 +201,56 @@ const CreateMonitor = () => {
               error={errors["name"]}
             />
           </Stack>
-        }
-      />
-      <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <Stack gap={theme.gap.small}>
+        </Stack>
+        <Stack className="config-box">
+          <Box>
             <Typography component="h2">Checks to perform</Typography>
-            <Typography component="p">
+            <Typography component="p" mt={theme.gap.small}>
               You can always add or remove checks after adding your site.
             </Typography>
-          </Stack>
-        }
-        rightLayout={
+          </Box>
           <Stack gap={theme.gap.large}>
-            <RadioButton
-              id="monitor-checks-http"
-              title="HTTP/website monitoring"
-              desc="Use HTTP(s) to monitor your website or API endpoint."
-              size="small"
-              value="http"
-              checked={checks.type === "http"}
-              onChange={(event) => handleChange(event, "type", setChecks)}
-            />
+            <Stack gap={theme.gap.medium}>
+              <RadioButton
+                id="monitor-checks-http"
+                title="Website monitoring"
+                desc="Use HTTP(s) to monitor your website or API endpoint."
+                size="small"
+                value="http"
+                checked={checks.type === "http" || checks.type === "https"}
+                onChange={(event) => handleChange(event, "type", setChecks)}
+              />
+              {checks.type === "http" || checks.type === "https" ? (
+                <ButtonGroup sx={{ ml: "32px" }}>
+                  <Button
+                    level="secondary"
+                    label="HTTP"
+                    onClick={() =>
+                      setChecks((prev) => ({ ...prev, type: "http" }))
+                    }
+                    sx={{
+                      backgroundColor:
+                        checks.type === "http" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="HTTPS"
+                    onClick={() =>
+                      setChecks((prev) => ({ ...prev, type: "https" }))
+                    }
+                    sx={{
+                      backgroundColor:
+                        checks.type === "https" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                </ButtonGroup>
+              ) : (
+                ""
+              )}
+            </Stack>
             <RadioButton
               id="monitor-checks-ping"
               title="Ping monitoring"
@@ -231,7 +269,6 @@ const CreateMonitor = () => {
               checked={checks.type === "port"}
               onChange={(event) => handleChange(event, "type", setChecks)}
             />
-            <div className="monitors-gaps-small-plus"></div>
             <div className="monitors-dropdown-holder">
               <Select
                 id="monitor-ports"
@@ -259,108 +296,51 @@ const CreateMonitor = () => {
               )}
             </Box>
           </Stack>
-        }
-      />
-      {/* TODO */}
-      {/* <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <div className="config-box-desc">
-            <div className="config-box-desc-title">Incident notifications</div>
-            <div className="config-box-desc-text">
-              When there is an incident, notify users.
-            </div>
-          </div>
-        }
-        rightLayout={
-          <div className="incident-notif-config">
-            <div className="incident-notif-config-title">
-              When there is a new incident,
-            </div>
-            <div className="monitors-gaps-medium"></div>
-            <div className="incident-notif-config-checks">
-              <CustomizableCheckBox
-                id="monitor-notify-sms"
-                title="Notify via SMS (to be implemented)"
-                isChecked={notifications.viaSms}
-                handleChange={() => handleCheck("viaSms", setNotifications)}
-              />
-              <div className="monitors-gaps-medium"></div>
-              <CustomizableCheckBox
-                id="monitor-notify-email"
-                title="Notify via email (to current email address)"
-                isChecked={notifications.viaEmail}
-                handleChange={() => handleCheck("viaEmail", setNotifications)}
-              />
-              <div className="monitors-gaps-medium"></div>
-              <CustomizableCheckBox
-                id="monitor-notify-other"
-                title="Notify via email (to another email address below)"
-                isChecked={notifications.viaOther}
-                handleChange={() => handleCheck("viaOther", setNotifications)}
-              />
-              <div className="monitors-gaps-small-plus"></div>
-              <div className="monitors-dropdown-holder">
-                <FlexibileTextField
-                  id="monitor-notify-other-email"
-                  placeholder="notifications@gmail.com"
-                  type="email"
-                  value={notifications.email}
-                  onChange={(event) =>
-                    handleChange(event, "email", setNotifications)
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        }
-      /> */}
-      <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
-      <ConfigBox
-        leftLayout={
-          <Stack gap={theme.gap.small}>
-            <Typography component="h2">Advanced settings</Typography>
-          </Stack>
-        }
-        rightLayout={
+        </Stack>
+
+        <Stack className="config-box">
+          <Box>
+            <Typography component="h2">Incident notifications</Typography>
+            <Typography component="p" mt={theme.gap.small}>
+              When there is an incident, notify users
+            </Typography>
+          </Box>
           <Stack gap={theme.gap.large}>
-            {/* TODO - refactor select component */}
-            <Box>
-              <Typography component="p" mb={theme.gap.small}>
-                Check frequency
-              </Typography>
-              <Select
-                id="monitor-frequencies"
-                value={advancedSettings.frequency || 1}
-                inputProps={{ id: "monitor-frequencies-select" }}
-                onChange={(event) =>
-                  handleChange(event, "frequency", setAdvancedSettings)
-                }
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      marginTop: "10px",
-                    },
-                  },
-                }}
-              >
-                {frequencies.map((freq) => (
-                  <MenuItem
-                    key={`port-${freq}`}
-                    value={freq}
-                    sx={{
-                      fontSize: "13px",
-                      borderRadius: `${theme.shape.borderRadius}px`,
-                      margin: "5px",
-                    }}
-                  >
-                    {freq} {freq === 1 ? "minute" : "minutes"}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
+            <Typography component="p" mt={theme.gap.small}>
+              When there is a new incident,
+            </Typography>
+            <Checkbox id="notify-sms" label="Notify via SMS (coming soon)" />
+            <Checkbox
+              id="notify-email-default"
+              label={`Notify via email (to ${user.email})`}
+            />
+            <Checkbox
+              id="notify-email"
+              label="Also notify via email to the following addresses:"
+            />
+            <Field
+              id="notify-email-list"
+              type="text"
+              label="You can separate multiple emails with a comma"
+              placeholder="name@gmail.com"
+            />
+          </Stack>
+        </Stack>
+
+        <Stack className="config-box">
+          <Box>
+            <Typography component="h2">Advanced settings</Typography>
+          </Box>
+          <Stack gap={theme.gap.large}>
+            <Select
+              id="monitor-interval"
+              label="Check frequency"
+              value={advancedSettings.interval || 1}
+              onChange={(event) =>
+                handleChange(event, "interval", setAdvancedSettings)
+              }
+              items={frequencies}
+            />
             {/* TODO */}
             {/* <FlexibileTextField
               id="monitor-settings-retries"
@@ -371,7 +351,6 @@ const CreateMonitor = () => {
                 handleChange(event, "retries", setAdvancedSettings)
               }
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-settings-codes"
               title="Accepted status codes"
@@ -381,7 +360,6 @@ const CreateMonitor = () => {
                 handleChange(event, "codes", setAdvancedSettings)
               }
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-settings-redirects"
               title="Maximum redirects"
@@ -392,11 +370,9 @@ const CreateMonitor = () => {
               }
             /> */}
           </Stack>
-        }
-      />
-      {/* TODO */}
-      {/* <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-medium"></div>
+        </Stack>
+        {/* TODO */}
+        {/*
       <ConfigBox
         leftLayout={
           <div className="config-box-desc">
@@ -411,21 +387,18 @@ const CreateMonitor = () => {
               isChecked={proxy.enabled}
               handleChange={() => handleCheck("enabled", setProxy)}
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-proxy-protocol"
               title="Proxy protocol"
               value={proxy.protocol}
               onChange={(event) => handleChange(event, "protocol", setProxy)}
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-proxy-address"
               title="Proxy address"
               value={proxy.address}
               onChange={(event) => handleChange(event, "address", setProxy)}
             />
-            <div className="monitors-gaps-medium"></div>
             <FlexibileTextField
               id="monitor-proxy-port"
               title="Proxy port"
@@ -435,19 +408,17 @@ const CreateMonitor = () => {
           </div>
         }
       /> */}
-      <div className="monitors-gaps-medium"></div>
-      <div className="monitors-gaps-small"></div>
-      <div className="monitors-create-button-holder">
-        <Button
-          id="create-new-monitor-btn"
-          level="primary"
-          label="Create new monitor"
-          sx={{ width: "210px", fontSize: "var(--env-var-font-size-medium)" }}
-          onClick={handleCreateMonitor}
-          disabled={Object.keys(errors).length !== 0 && true}
-        />
-      </div>
-    </form>
+        <Stack direction="row" justifyContent="flex-end">
+          <Button
+            id="create-new-monitor-btn"
+            level="primary"
+            label="Create new monitor"
+            onClick={handleCreateMonitor}
+            disabled={Object.keys(errors).length !== 0 && true}
+          />
+        </Stack>
+      </form>
+    </Box>
   );
 };
 

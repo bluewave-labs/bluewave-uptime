@@ -26,6 +26,7 @@ const otherColorsWhite = "#fff";
 const otherColorsGraishWhiteLight = "#f2f2f2";
 const otherColorsStrongBlue = "#f2f2f2";
 const otherColorsSlateGray = "#667085";
+const otherColorsFillGray = "#f4f4f4";
 
 //box shadow
 const shadow =
@@ -74,6 +75,7 @@ const theme = createTheme({
       graishWhiteLight: otherColorsGraishWhiteLight,
       strongBlue: otherColorsStrongBlue,
       slateGray: otherColorsSlateGray,
+      fillGray: otherColorsFillGray,
     },
   },
   font: {
@@ -114,6 +116,24 @@ const theme = createTheme({
       color: "#DC6803",
       bg: "#fffcf5",
       border: "#fec84b",
+    },
+  },
+  //add more as needed
+  label: {
+    up: {
+      borderColor: sectionBorder,
+      bgColor: "#ecfdf3",
+      dotColor: "#17B26A",
+    },
+    down: {
+      borderColor: sectionBorder,
+      bgColor: "#f9eced",
+      dotColor: labelRed,
+    },
+    "cannot resolve": {
+      borderColor: sectionBorder,
+      bgColor: "#f2f4f7",
+      dotColor: labelGray,
     },
   },
 });

@@ -43,8 +43,8 @@ const passwordSchema = joi
   });
 
 const credentials = joi.object({
-  firstname: nameSchema,
-  lastname: nameSchema,
+  firstName: nameSchema,
+  lastName: nameSchema,
   email: joi
     .string()
     .trim()
@@ -68,26 +68,28 @@ const credentials = joi.object({
       }
       return value;
     }),
-  role: joi.string().messages({
-    "string.empty": "Role is required",
-  }),
+  role: joi.array(),
 });
 
-const createMonitorValidation = joi.object({
+const monitorValidation = joi.object({
   url: joi
     .string()
+    .uri({ allowRelative: true })
     .trim()
-    .messages({ "string.empty": "*This field is required." }),
+    .messages({
+      "string.empty": "This field is required.",
+      "string.uri": "The URL you provided is not valid.",
+    }),
   name: joi.string().trim().max(50).allow("").messages({
-    "string.max": "*This field should not exceed the 50 characters limit.",
+    "string.max": "This field should not exceed the 50 characters limit.",
   }),
   type: joi
     .string()
     .trim()
-    .messages({ "string.empty": "*This field is required." }),
-  frequency: joi.number().messages({
-    "number.base": "*Frequency must be a number.",
-    "any.required": "*Frequency is required.",
+    .messages({ "string.empty": "This field is required." }),
+  interval: joi.number().messages({
+    "number.base": "Frequency must be a number.",
+    "any.required": "Frequency is required.",
   }),
 });
 
@@ -106,4 +108,4 @@ const imageValidation = joi.object({
     }),
 });
 
-export { credentials, imageValidation, createMonitorValidation };
+export { credentials, imageValidation, monitorValidation };
