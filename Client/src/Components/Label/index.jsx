@@ -117,34 +117,32 @@ ColoredLabel.propTypes = {
 /**
  * @component
  * @param {Object} props
- * @param {'Seen' | 'Waiting' | 'New' | 'Active'} props.status - The status for the label
- * @param {string} props.dot - The color of the dot
+ * @param { 'up' | 'down' | 'cannot resolve'} props.status - The status for the label
+ * @param {string} props.text - The text of the label
  * @returns {JSX.Element}
  * @example
  * // Render an active label
- * <StatusLabel status="Active" />
+ * <StatusLabel status="up" text="Active" />
  */
 
-const StatusLabel = ({ status, dot, customStyles }) => {
+const StatusLabel = ({ status, text, customStyles }) => {
   const theme = useTheme();
-
-  const colorLookup = {
-    Seen: theme.palette.labelGray.color,
-    Waiting: theme.palette.labelRed.color,
-    New: theme.palette.labelOrange.color,
-    Active: theme.palette.labelGreen.color,
-    Down: theme.palette.error.main, // Assuming theme.palette.error.main is red
-  };
-
-  // Look up the color for the status, default to labelGray if not found
-  const color = colorLookup[status] || theme.palette.labelGray.color;
+  // Look up the color for the status
+  const { borderColor, bgColor, dotColor } = theme.label[status];
 
   return (
-    <BaseLabel label={status} styles={customStyles}>
+    <BaseLabel
+      label={text}
+      styles={{
+        backgroundColor: bgColor,
+        borderColor: borderColor,
+        ...customStyles,
+      }}
+    >
       <Box
         width={7}
         height={7}
-        bgcolor={dot || color}
+        bgcolor={dotColor}
         borderRadius="50%"
         marginRight="5px"
       />
@@ -153,15 +151,8 @@ const StatusLabel = ({ status, dot, customStyles }) => {
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf([
-    "Seen",
-    "Waiting",
-    "New",
-    "Active",
-    "Up",
-    "Down",
-    "Cannot resolve",
-  ]),
+  status: PropTypes.oneOf(["up", "down", "cannot resolve"]),
+  text: PropTypes.string,
   customStyles: PropTypes.object,
 };
 

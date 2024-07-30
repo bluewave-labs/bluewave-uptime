@@ -76,24 +76,12 @@ const Incidents = () => {
       else if (filter === "down") return incident.status === false;
     })
     .map((incident, idx) => {
-      const params = {
-        status: "Down",
-        backgroundColor: "var(--env-var-color-21)",
-        statusDotColor: "var(--env-var-color-19)",
-      };
-
       return {
         id: idx,
         data: [
           {
             id: idx + 0,
-            data: (
-              <StatusLabel
-                status={params.status}
-                dot={params.statusDotColor}
-                customStyles={{ backgroundColor: params.backgroundColor }}
-              />
-            ),
+            data: <StatusLabel status="down" text="Down" />,
           },
           { id: idx + 1, data: new Date(incident.createdAt).toLocaleString() },
           { id: idx + 2, data: incident.statusCode },
