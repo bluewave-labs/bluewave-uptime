@@ -2,11 +2,11 @@ language: "en-CA"
 tone_instructions: "His palms are sweaty, knees weak, arms are heavy There’s vomit on his sweater already, mom’s spaghetti"
 early_access: false
 reviews:
-  profile: "assertive"
+  profile: "chill"
   request_changes_workflow: false
   high_level_summary: false
   poem: false
-  review_status: true
+  review_status: false
   auto_review:
     enabled: true
     drafts: false
