@@ -5,7 +5,7 @@ import Button from "../../../Components/Button";
 import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
-import { createMonitor } from "../../../Features/Monitors/monitorsSlice";
+import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -117,7 +117,9 @@ const CreateMonitor = () => {
         interval: advancedSettings.interval * MS_PER_MINUTE,
       };
       try {
-        const action = await dispatch(createMonitor({ authToken, monitor }));
+        const action = await dispatch(
+          createUptimeMonitor({ authToken, monitor })
+        );
         if (action.meta.requestStatus === "fulfilled") {
           navigate("/monitors");
         }
