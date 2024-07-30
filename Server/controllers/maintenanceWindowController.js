@@ -18,6 +18,7 @@ const createMaintenanceWindow = async (req, res, next) => {
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
+    return;
   }
 
   try {
@@ -54,6 +55,7 @@ const getMaintenanceWindowsByUserId = async (req, res, next) => {
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
+    return;
   }
   try {
     const maintenanceWindows = await req.db.getMaintenanceWindowsByUserId(
@@ -82,6 +84,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
+    return;
   }
 
   try {

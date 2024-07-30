@@ -17,6 +17,7 @@ const createCheck = async (req, res, next) => {
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
+    return;
   }
 
   try {
@@ -40,6 +41,7 @@ const getChecks = async (req, res, next) => {
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
+    return;
   }
 
   try {
@@ -62,6 +64,7 @@ const deleteChecks = async (req, res, next) => {
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
+    return;
   }
 
   try {
