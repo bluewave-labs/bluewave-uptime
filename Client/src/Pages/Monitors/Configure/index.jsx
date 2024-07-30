@@ -268,7 +268,14 @@ const Configure = () => {
           </Stack>
         </Stack>
         <Stack direction="row" justifyContent="flex-end">
-          <Button level="primary" label="Save" sx={{ px: theme.gap.ml }} />
+          <Button
+            type="submit"
+            level="primary"
+            label="Save"
+            sx={{
+              minWidth: "80px",
+            }}
+          />
         </Stack>
       </form>
     </Box>
