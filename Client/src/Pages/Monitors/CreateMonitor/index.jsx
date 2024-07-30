@@ -11,6 +11,7 @@ import { useTheme } from "@emotion/react";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
+import Checkbox from "../../../Components/Inputs/Checkbox";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -296,56 +297,36 @@ const CreateMonitor = () => {
             </Box>
           </Stack>
         </Stack>
-        {/* TODO */}
-        {/* 
-      <ConfigBox
-        leftLayout={
-          <div className="config-box-desc">
-            <div className="config-box-desc-title">Incident notifications</div>
-            <div className="config-box-desc-text">
-              When there is an incident, notify users.
-            </div>
-          </div>
-        }
-        rightLayout={
-          <div className="incident-notif-config">
-            <div className="incident-notif-config-title">
+
+        <Stack className="config-box">
+          <Box>
+            <Typography component="h2">Incident notifications</Typography>
+            <Typography component="p" mt={theme.gap.small}>
+              When there is an incident, notify users
+            </Typography>
+          </Box>
+          <Stack gap={theme.gap.large}>
+            <Typography component="p" mt={theme.gap.small}>
               When there is a new incident,
-            </div>
-            <div className="incident-notif-config-checks">
-              <CustomizableCheckBox
-                id="monitor-notify-sms"
-                title="Notify via SMS (to be implemented)"
-                isChecked={notifications.viaSms}
-                handleChange={() => handleCheck("viaSms", setNotifications)}
-              />
-              <CustomizableCheckBox
-                id="monitor-notify-email"
-                title="Notify via email (to current email address)"
-                isChecked={notifications.viaEmail}
-                handleChange={() => handleCheck("viaEmail", setNotifications)}
-              />
-              <CustomizableCheckBox
-                id="monitor-notify-other"
-                title="Notify via email (to another email address below)"
-                isChecked={notifications.viaOther}
-                handleChange={() => handleCheck("viaOther", setNotifications)}
-              />
-              <div className="monitors-dropdown-holder">
-                <FlexibileTextField
-                  id="monitor-notify-other-email"
-                  placeholder="notifications@gmail.com"
-                  type="email"
-                  value={notifications.email}
-                  onChange={(event) =>
-                    handleChange(event, "email", setNotifications)
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        }
-      /> */}
+            </Typography>
+            <Checkbox id="notify-sms" label="Notify via SMS (coming soon)" />
+            <Checkbox
+              id="notify-email-default"
+              label={`Notify via email (to ${user.email})`}
+            />
+            <Checkbox
+              id="notify-email"
+              label="Also notify via email to the following addresses:"
+            />
+            <Field
+              id="notify-email-list"
+              type="text"
+              label="You can separate multiple emails with a comma"
+              placeholder="name@gmail.com"
+            />
+          </Stack>
+        </Stack>
+
         <Stack className="config-box">
           <Box>
             <Typography component="h2">Advanced settings</Typography>
