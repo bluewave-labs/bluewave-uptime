@@ -13,9 +13,12 @@
   font-size: var(--env-var-font-size-large);
   font-weight: 600;
 }
-.page-speed span.MuiTypography-root,
 .page-speed p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
+}
+.page-speed p:has(> span.MuiTypography-root),
+.page-speed p.MuiTypography-root > span.MuiTypography-root {
+  font-size: var(--env-var-font-size-small-plus);
 }
 .page-speed .MuiGrid-item > .MuiStack-root {
   border: solid 1px var(--env-var-color-6);
