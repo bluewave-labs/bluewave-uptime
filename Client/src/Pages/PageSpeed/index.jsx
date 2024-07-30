@@ -1,11 +1,13 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import Fallback from "../../Components/Fallback";
+import { useEffect } from "react";
 import { useTheme } from "@emotion/react";
-import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
-
-import "./index.css";
 import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
 import { StatusLabel } from "../../Components/Label";
+import { useDispatch, useSelector } from "react-redux";
+import { getPageSpeedByUserId } from "../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
+import Fallback from "../../Components/Fallback";
+import "./index.css";
 
 const Card = ({ data }) => {
   const theme = useTheme();
@@ -61,56 +63,13 @@ const Card = ({ data }) => {
 
 const PageSpeed = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
-  // sample data, remove later
-  let monitors = [
-    {
-      success: true,
-      msg: 'Got monitor for 66a3d58ecd42ab3ed1171cf1 successfully"',
-      data: [
-        {
-          _id: "66a3ef558943628c59aabf00",
-          userId: "66a3d58ecd42ab3ed1171cf1",
-          name: "Google",
-          description: "Google",
-          status: true,
-          type: "pagespeed",
-          url: "https://www.google.com",
-          isActive: true,
-          interval: 10000,
-          createdAt: "2024-07-26T18:47:49.212Z",
-          updatedAt: "2024-07-26T18:47:49.212Z",
-          __v: 0,
-          checks: [
-            {
-              _id: "66a3f2266a073a2ff8dd0f7f",
-              monitorId: "66a3ef558943628c59aabf00",
-              status: true,
-              accessibility: 90,
-              bestPractices: 93,
-              seo: 92,
-              performance: 93,
-              createdAt: "2024-07-26T18:59:50.103Z",
-              updatedAt: "2024-07-26T18:59:50.103Z",
-              __v: 0,
-            },
-            {
-              _id: "66a3f2226a073a2ff8dd0f7d",
-              monitorId: "66a3ef558943628c59aabf00",
-              status: true,
-              accessibility: 90,
-              bestPractices: 93,
-              seo: 92,
-              performance: 87,
-              createdAt: "2024-07-26T18:59:46.280Z",
-              updatedAt: "2024-07-26T18:59:46.280Z",
-              __v: 0,
-            },
-          ],
-        },
-      ],
-    },
-  ];
+  const { authToken } = useSelector((state) => state.auth);
+  const { monitors } = useSelector((state) => state.pageSpeedMonitors);
+  useEffect(() => {
+    dispatch(getPageSpeedByUserId(authToken));
+  }, []);
 
   return (
     <Box className="page-speed">
@@ -121,7 +80,7 @@ const PageSpeed = () => {
             Click on one of the monitors to get more site speed information.
           </Typography>
           <Grid container spacing={theme.gap.large}>
-            {monitors[0].data?.map((monitor) => (
+            {monitors?.map((monitor) => (
               <Card data={monitor} key={`monitor-${monitor._id}`} />
             ))}
           </Grid>

@@ -1,18 +1,25 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 import { useTheme } from "@emotion/react";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Button from "../../../Components/Button";
 import Checkbox from "../../../Components/Inputs/Checkbox";
-import { useState } from "react";
 import { monitorValidation } from "../../../Validation/validation";
+import { createToast } from "../../../Utils/toastUtils";
+import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import "./index.css";
 
 const CreatePageSpeed = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const MS_PER_MINUTE = 60000;
+  const { user, authToken } = useSelector((state) => state.auth);
 
   const frequencies = [
     { _id: 1, name: "1 minute" },
@@ -26,7 +33,6 @@ const CreatePageSpeed = () => {
     name: "",
     url: "",
     interval: 1,
-    type: "pagespeed",
   });
   const [errors, setErrors] = useState({});
 
@@ -34,25 +40,68 @@ const CreatePageSpeed = () => {
     const { value } = event.target;
     setForm((prev) => ({ ...prev, [id]: value }));
 
-    const validation = monitorValidation.validate(
+    const { error } = monitorValidation.validate(
       { [id]: value },
       { abortEarly: false }
     );
 
     setErrors((prev) => {
-      const updatedErrors = { ...prev };
-      if (validation.error) {
-        updatedErrors[id] = validation.error.details[0].message;
-      } else {
-        delete updatedErrors[id];
-      }
-      return updatedErrors;
+      const newErrors = { ...prev };
+      if (error) newErrors[id] = error.details[0].message;
+      else delete newErrors[id];
+      return newErrors;
     });
+  };
+
+  const handleCreate = async (event) => {
+    event.preventDefault();
+
+    let monitor = {
+      url: "http://" + form.url,
+      name: form.name === "" ? form.url : form.name,
+    };
+
+    const { error } = monitorValidation.validate(form, { abortEarly: false });
+
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      createToast({ body: "Error validating data." });
+    } else {
+      monitor = {
+        ...monitor,
+        description: monitor.name,
+        userId: user._id,
+        interval: form.interval * MS_PER_MINUTE,
+        type: "pagespeed",
+      };
+      try {
+        const action = await dispatch(createPageSpeed({ authToken, monitor }));
+        if (action.meta.requestStatus === "fulfilled") {
+          navigate("/page-speed");
+        }
+      } catch (error) {
+        createToast({
+          body:
+            error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Unknown error.",
+        });
+      }
+    }
   };
 
   return (
     <Box className="create-page-speed">
-      <Stack gap={theme.gap.xl}>
+      <form
+        noValidate
+        spellCheck="false"
+        onSubmit={handleCreate}
+        style={{ display: "flex", flexDirection: "column", gap: theme.gap.xl }}
+      >
         <IconButton
           aria-label="close modal"
           onClick={() => navigate("/page-speed")}
@@ -111,12 +160,12 @@ const CreatePageSpeed = () => {
             <Checkbox
               id="notify-email"
               label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
-              isChecked={true}
+              isChecked={false}
             />
             <Checkbox
               id="notify-emails"
               label="Notify via email to following emails"
-              isChecked={true}
+              isChecked={false}
             />
             <Box mx={`calc(${theme.gap.ml} * 2)`}>
               <Field
@@ -133,10 +182,19 @@ const CreatePageSpeed = () => {
           </Box>
         </Stack>
         <Stack direction="row" justifyContent="flex-end" gap={theme.gap.small}>
-          <Button level="tertiary" label="Cancel" />
-          <Button level="primary" label="Create" />
+          <Button
+            level="tertiary"
+            label="Cancel"
+            onClick={() => navigate("/page-speed")}
+          />
+          <Button
+            type="submit"
+            level="primary"
+            label="Create"
+            onClick={handleCreate}
+          />
         </Stack>
-      </Stack>
+      </form>
     </Box>
   );
 };

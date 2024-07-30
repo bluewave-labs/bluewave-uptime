@@ -1,4 +1,4 @@
-.create-page-speed > .MuiStack-root {
+.create-page-speed form {
   position: relative;
   margin: auto;
   margin-top: var(--env-var-default-2);
