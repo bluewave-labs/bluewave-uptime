@@ -88,11 +88,6 @@ const CreateMonitor = () => {
     }
   };
 
-  // const handleNotifications = (event) => {
-  //   const { value } = event.target;
-  //   setMonitor((prev) => ({ ...prev, notifications: value }));
-  // };
-
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
     //obj to submit
@@ -145,8 +140,6 @@ const CreateMonitor = () => {
     { _id: 4, name: "4 minutes" },
     { _id: 5, name: "5 minutes" },
   ];
-
-  console.log(monitor);
 
   return (
     <Box className="create-monitor">
