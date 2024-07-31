@@ -209,6 +209,8 @@ const deleteMonitorsByUserId = async (userId) => {
 const editMonitor = async (req, res) => {
   const candidateId = req.params.monitorId;
   const candidateMonitor = req.body;
+  candidateMonitor.notifications = undefined;
+
   try {
     const editedMonitor = await Monitor.findByIdAndUpdate(
       candidateId,
