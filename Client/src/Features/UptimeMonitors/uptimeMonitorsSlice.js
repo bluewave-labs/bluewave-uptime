@@ -73,9 +73,39 @@ export const updateUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
+      const updatedFields = {
+        name: monitor.name,
+        description: monitor.description,
+        interval: monitor.interval,
+      };
       const res = await axiosInstance.post(
         `/monitors/edit/${monitor._id}`,
-        monitor,
+        updatedFields,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteUptimeMonitor = createAsyncThunk(
+  "monitors/deleteMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+      const res = await axiosInstance.post(
+        `/monitors/delete/${monitor._id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -181,6 +211,25 @@ const uptimeMonitorsSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to update uptime monitor";
+      })
+
+      // *****************************************************
+      // Delete Monitor
+      // *****************************************************
+      .addCase(deleteUptimeMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUptimeMonitor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(deleteUptimeMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to delete uptime monitor";
       });
   },
 });

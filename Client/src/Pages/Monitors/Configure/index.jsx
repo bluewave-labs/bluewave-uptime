@@ -14,7 +14,12 @@ import "./index.css";
 import { monitorValidation } from "../../../Validation/validation";
 import Select from "../../../Components/Inputs/Select";
 import { formatDurationRounded } from "../../../Utils/timeUtils";
-import { updateUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { createToast } from "../../../Utils/toastUtils";
+import {
+  updateUptimeMonitor,
+  getUptimeMonitorsByUserId,
+  deleteUptimeMonitor,
+} from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 /**
  * Parses a URL string and returns a URL object.
  *
@@ -98,11 +103,28 @@ const Configure = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const updatedMonitor = { ...monitor };
-    delete updatedMonitor.checks;
-    dispatch(updateUptimeMonitor({ authToken, monitor: updatedMonitor }));
+    const action = await dispatch(
+      updateUptimeMonitor({ authToken, monitor: monitor })
+    );
+    if (action.meta.requestStatus === "fulfilled") {
+      createToast({ body: "Monitor updated successfully!" });
+      dispatch(getUptimeMonitorsByUserId(authToken));
+    } else {
+      createToast({ body: "Failed to update monitor." });
+    }
+  };
+
+  const hanldeRemove = async (event) => {
+    event.preventDefault();
+    // TODO add confirm
+    const action = await dispatch(deleteUptimeMonitor({ authToken, monitor }));
+    if (action.meta.requestStatus === "fulfilled") {
+      navigate("/monitors");
+    } else {
+      createToast({ body: "Failed to delete monitor." });
+    }
   };
 
   const frequencies = [
@@ -186,6 +208,7 @@ const Configure = () => {
                 boxShadow: "none",
                 px: theme.gap.ml,
               }}
+              onClick={hanldeRemove}
             />
           </Stack>
         </Stack>
