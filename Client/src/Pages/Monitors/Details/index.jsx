@@ -147,6 +147,7 @@ const DetailsPage = () => {
       <Button
         level="tertiary"
         label="Back to Monitors"
+        animate="slideLeft"
         img={<WestRoundedIcon />}
         onClick={() => navigate("/monitors")}
         sx={{
@@ -154,7 +155,8 @@ const DetailsPage = () => {
           mb: theme.gap.medium,
           px: theme.gap.ml,
           "& svg.MuiSvgIcon-root": {
-            pr: theme.gap.small,
+            mr: theme.gap.small,
+            fill: theme.palette.otherColors.slateGray,
           },
         }}
       />
@@ -184,15 +186,16 @@ const DetailsPage = () => {
           <Button
             level="tertiary"
             label="Configure"
+            animate="rotate90"
             img={<SettingsIcon />}
             onClick={() => navigate(`/monitors/configure/${monitorId}`)}
             sx={{
               ml: "auto",
               alignSelf: "flex-end",
               backgroundColor: "#f4f4f4",
-              px: theme.gap.ml,
+              px: theme.gap.medium,
               "& svg": {
-                pr: theme.gap.xs,
+                mr: "6px",
               },
             }}
           />
@@ -222,19 +225,28 @@ const DetailsPage = () => {
                 level="secondary"
                 label="Day"
                 onClick={() => setFilter("day")}
-                sx={{ backgroundColor: filter === "day" && "#f4f4f4" }}
+                sx={{
+                  backgroundColor:
+                    filter === "day" && theme.palette.otherColors.fillGray,
+                }}
               />
               <Button
                 level="secondary"
                 label="Week"
                 onClick={() => setFilter("week")}
-                sx={{ backgroundColor: filter === "week" && "#f4f4f4" }}
+                sx={{
+                  backgroundColor:
+                    filter === "week" && theme.palette.otherColors.fillGray,
+                }}
               />
               <Button
                 level="secondary"
                 label="Month"
                 onClick={() => setFilter("month")}
-                sx={{ backgroundColor: filter === "month" && "#f4f4f4" }}
+                sx={{
+                  backgroundColor:
+                    filter === "month" && theme.palette.otherColors.fillGray,
+                }}
               />
             </ButtonGroup>
           </Stack>

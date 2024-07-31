@@ -145,6 +145,7 @@ const CreateMonitor = () => {
       <Button
         level="tertiary"
         label="Back"
+        animate="slideLeft"
         img={<WestRoundedIcon />}
         onClick={() => navigate("/monitors")}
         sx={{
@@ -152,7 +153,8 @@ const CreateMonitor = () => {
           mb: theme.gap.medium,
           px: theme.gap.ml,
           "& svg.MuiSvgIcon-root": {
-            pr: theme.gap.small,
+            mr: theme.gap.small,
+            fill: theme.palette.otherColors.slateGray,
           },
         }}
       />
