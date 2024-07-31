@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Modal, Stack, Typography } from "@mui/material";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
@@ -147,9 +147,9 @@ const Configure = () => {
     }
   };
 
-  const hanldeRemove = async (event) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const handleRemove = async (event) => {
     event.preventDefault();
-    // TODO add confirm
     const action = await dispatch(deleteUptimeMonitor({ authToken, monitor }));
     if (action.meta.requestStatus === "fulfilled") {
       navigate("/monitors");
@@ -249,7 +249,7 @@ const Configure = () => {
                 boxShadow: "none",
                 px: theme.gap.ml,
               }}
-              onClick={hanldeRemove}
+              onClick={() => setIsOpen(true)}
             />
           </Stack>
         </Stack>
@@ -380,6 +380,52 @@ const Configure = () => {
           />
         </Stack>
       </form>
+      <Modal
+        aria-labelledby="modal-delete-monitor"
+        aria-describedby="delete-monitor-confirmation"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        disablePortal
+      >
+        <Stack
+          gap={theme.gap.xs}
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-delete-monitor" component="h2">
+            Really delete this monitor?
+          </Typography>
+          <Typography id="delete-monitor-confirmation">
+            Once deleted, this monitor cannot be retrieved back.
+          </Typography>
+          <Stack
+            direction="row"
+            gap={theme.gap.small}
+            mt={theme.gap.large}
+            justifyContent="flex-end"
+          >
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => setIsOpen(false)}
+            />
+            <Button level="error" label="Delete" onClick={handleRemove} />
+          </Stack>
+        </Stack>
+      </Modal>
     </Box>
   );
 };
