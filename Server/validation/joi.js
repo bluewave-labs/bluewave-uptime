@@ -144,7 +144,7 @@ const getMonitorsByUserIdQueryValidation = joi.object({
     ),
 });
 
-const monitorValidation = joi.object({
+const createMonitorBodyValidation = joi.object({
   _id: joi.string(),
   userId: joi.string().required(),
   name: joi.string().required(),
@@ -153,6 +153,7 @@ const monitorValidation = joi.object({
   url: joi.string().required(),
   isActive: joi.boolean(),
   interval: joi.number(),
+  notifications: joi.array().items(joi.object()),
 });
 
 const editMonitorBodyValidation = joi.object({
@@ -286,7 +287,7 @@ module.exports = {
   inviteRoleValidation,
   inviteBodyValidation,
   inviteVerifciationBodyValidation,
-  monitorValidation,
+  createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
   getMonitorsByUserIdValidation,

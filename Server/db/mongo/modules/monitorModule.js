@@ -30,7 +30,6 @@ const getAllMonitors = async (req, res) => {
  */
 const getMonitorById = async (req, res) => {
   try {
-
     const { monitorId } = req.params;
     let { status, limit, sortOrder } = req.query;
 
@@ -140,6 +139,8 @@ const getMonitorsByUserId = async (req, res) => {
 const createMonitor = async (req, res) => {
   try {
     const monitor = new Monitor({ ...req.body });
+    // Remove notifications fom monitor as they aren't needed here
+    monitor.notifications = undefined;
     monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
