@@ -480,6 +480,7 @@ const deleteUserController = async (req, res, next) => {
           await req.jobQueue.deleteJob(monitor);
           await req.db.deleteChecks(monitor._id);
           await req.db.deleteAlertByMonitorId(monitor._id);
+          await req.db.deleteNotificationsByMonitorId(monitor._id);
         })
       );
 
