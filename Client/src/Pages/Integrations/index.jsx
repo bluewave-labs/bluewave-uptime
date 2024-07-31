@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Stack, Box, Typography, Grid } from "@mui/material";
+import { Stack, Typography, Grid } from "@mui/material";
 import Button from "../../Components/Button";
 import { useTheme } from "@emotion/react";
 import Discord from "../../assets/icons/discord-icon.svg?react";
@@ -30,9 +30,7 @@ const IntegrationsComponent = ({ icon, header, info, onClick }) => {
         pl={theme.gap.large}
         height="100%"
       >
-        <Stack alignItems="center" justifyContent="center">
-          {icon}
-        </Stack>
+        {icon}
         <Stack gap={theme.gap.xs} flex={1}>
           <Typography component="h1">{header}</Typography>
           <Typography
@@ -77,7 +75,7 @@ const Integrations = () => {
       icon: (
         <Slack
           alt="slack integration"
-          style={{ width: "45px", height: "45px" }}
+          style={{ width: "45px", height: "45px", alignSelf: "center" }}
         />
       ),
       header: "Slack",
@@ -88,7 +86,7 @@ const Integrations = () => {
       icon: (
         <Discord
           alt="discord integration"
-          style={{ width: "42px", height: "42px" }}
+          style={{ width: "42px", height: "42px", alignSelf: "center" }}
         />
       ),
       header: "Discord",
@@ -99,7 +97,7 @@ const Integrations = () => {
       icon: (
         <Zapier
           alt="zapier integration"
-          style={{ width: "42px", height: "42px" }}
+          style={{ width: "42px", height: "42px", alignSelf: "center" }}
         />
       ),
       header: "Zapier",
