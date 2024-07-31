@@ -233,9 +233,10 @@ const editMonitor = async (req, res, next) => {
   }
 
   try {
+    const jobBeforeEdit = await req.db.getMonitorById(req, res);
     const editedMonitor = await req.db.editMonitor(req, res);
     // Delete the old job(editedMonitor has the same ID as the old monitor)
-    await req.jobQueue.deleteJob(editedMonitor);
+    await req.jobQueue.deleteJob(jobBeforeEdit);
     // Add the new job back to the queue
     await req.jobQueue.addJob(editedMonitor._id, editedMonitor);
     return res.status(200).json({
