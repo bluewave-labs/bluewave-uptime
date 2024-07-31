@@ -20,6 +20,8 @@ import {
   getUptimeMonitorsByUserId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import Checkbox from "../../../Components/Inputs/Checkbox";
+
 /**
  * Parses a URL string and returns a URL object.
  *
@@ -55,7 +57,7 @@ const Configure = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { authToken } = useSelector((state) => state.auth);
+  const { user, authToken } = useSelector((state) => state.auth);
   const { monitors } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState();
   const [duration, setDuration] = useState(0);
@@ -67,6 +69,7 @@ const Configure = () => {
     "monitor-name": "name",
     "monitor-checks-http": "type",
     "monitor-checks-ping": "type",
+    "notify-email-default": "notification-email",
   };
 
   useEffect(() => {
@@ -80,27 +83,55 @@ const Configure = () => {
   const handleChange = (event, name) => {
     let { value, id } = event.target;
     if (!name) name = idMap[id];
-    if (name === "interval") {
-      value = value * MS_PER_MINUTE;
+
+    if (name.includes("notification-")) {
+      name = name.replace("notification-", "");
+      let hasNotif = monitor.notifications.some(
+        (notification) => notification.type === name
+      );
+      setMonitor((prev) => {
+        const notifs = [...prev.notifications];
+        if (hasNotif) {
+          return {
+            ...prev,
+            notifications: notifs.filter((notif) => notif.type !== name),
+          };
+        } else {
+          return {
+            ...prev,
+            notifications: [
+              ...notifs,
+              name === "email"
+                ? { type: name, address: value }
+                : // TODO - phone number
+                  { type: name, phone: value },
+            ],
+          };
+        }
+      });
+    } else {
+      if (name === "interval") {
+        value = value * MS_PER_MINUTE;
+      }
+      setMonitor((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+
+      const validation = monitorValidation.validate(
+        { [name]: value },
+        { abortEarly: false }
+      );
+
+      setErrors((prev) => {
+        const updatedErrors = { ...prev };
+
+        if (validation.error)
+          updatedErrors[name] = validation.error.details[0].message;
+        else delete updatedErrors[name];
+        return updatedErrors;
+      });
     }
-    setMonitor((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    const validation = monitorValidation.validate(
-      { [name]: value },
-      { abortEarly: false }
-    );
-
-    setErrors((prev) => {
-      const updatedErrors = { ...prev };
-
-      if (validation.error)
-        updatedErrors[name] = validation.error.details[0].message;
-      else delete updatedErrors[name];
-      return updatedErrors;
-    });
   };
 
   const handleSubmit = async (event) => {
@@ -139,6 +170,8 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
+  var lastChecked = formatDurationRounded(getLastChecked(monitor?.checks));
+
   return (
     <Box className="configure-monitor">
       <Button
@@ -161,10 +194,18 @@ const Configure = () => {
         <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
           {monitor?.status ? <GreenCheck /> : <RedCheck />}
           <Box>
-            <Typography component="h1" sx={{ lineHeight: 1 }}>
-              {parsedUrl?.host || "..."}
-            </Typography>
-            <Typography mt={theme.gap.small}>
+            {parsedUrl?.host ? (
+              <Typography
+                component="h1"
+                mb={theme.gap.small}
+                sx={{ lineHeight: 1 }}
+              >
+                {parsedUrl.host || "..."}
+              </Typography>
+            ) : (
+              ""
+            )}
+            <Typography lineHeight={parsedUrl?.host ? 1 : theme.gap.large}>
               <Typography
                 component="span"
                 sx={{
@@ -175,8 +216,8 @@ const Configure = () => {
               >
                 Your site is {monitor?.status ? "up" : "down"}.
               </Typography>{" "}
-              Checking every {duration}. Last time checked{" "}
-              {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
+              Checking every {duration}.{" "}
+              {lastChecked ? `Last time checked ${lastChecked} ago.` : ""}
             </Typography>
           </Box>
           <Stack
@@ -246,6 +287,69 @@ const Configure = () => {
               onChange={handleChange}
               error={errors["name"]}
             />
+          </Stack>
+        </Stack>
+        <Stack
+          className="config-box"
+          direction="row"
+          justifyContent="space-between"
+          gap={theme.gap.xxl}
+        >
+          <Box>
+            <Typography component="h2">Incident notifications</Typography>
+            <Typography component="p" mt={theme.gap.small}>
+              When there is an incident, notify users.
+            </Typography>
+          </Box>
+          <Stack gap={theme.gap.medium}>
+            <Typography component="p" mt={theme.gap.small}>
+              When there is a new incident,
+            </Typography>
+            <Checkbox
+              id="notify-sms"
+              label="Notify via SMS (coming soon)"
+              isChecked={false}
+              value=""
+              onChange={() => console.log("disabled")}
+              isDisabled={true}
+            />
+            <Checkbox
+              id="notify-email-default"
+              label={`Notify via email (to ${user.email})`}
+              isChecked={
+                monitor?.notifications?.some(
+                  (notification) => notification.type === "email"
+                ) || false
+              }
+              value={user?.email}
+              onChange={(event) => handleChange(event)}
+            />
+            <Checkbox
+              id="notify-email"
+              label="Also notify via email to multiple addresses (coming soon)"
+              isChecked={false}
+              value=""
+              onChange={() => console.log("disabled")}
+              isDisabled={true}
+            />
+            {monitor?.notifications?.some(
+              (notification) => notification.type === "emails"
+            ) ? (
+              <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                <Field
+                  id="notify-email-list"
+                  type="text"
+                  placeholder="name@gmail.com"
+                  value=""
+                  onChange={() => console.log("disabled")}
+                />
+                <Typography mt={theme.gap.small}>
+                  You can separate multiple emails with a comma
+                </Typography>
+              </Box>
+            ) : (
+              ""
+            )}
           </Stack>
         </Stack>
         <Stack
