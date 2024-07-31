@@ -27,7 +27,8 @@ const createAlert = async (req, res, next) => {
     await createAlertBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     error.service = SERVICE_NAME;
     next(error);
     return;
@@ -58,7 +59,8 @@ const getAlertsByUserId = async (req, res, next) => {
     await getAlertsByUserIdParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     error.service = SERVICE_NAME;
     next(error);
     return;
@@ -82,7 +84,8 @@ const getAlertsByMonitorId = async (req, res, next) => {
     await getAlertsByMonitorIdParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     error.service = SERVICE_NAME;
     next(error);
     return;
@@ -106,7 +109,8 @@ const getAlertById = async (req, res, next) => {
     await getAlertByIdParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     error.service = SERVICE_NAME;
     next(error);
     return;
@@ -132,7 +136,8 @@ const editAlert = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     error.service = SERVICE_NAME;
     next(error);
     return;
@@ -156,7 +161,8 @@ const deleteAlert = async (req, res, next) => {
     await deleteAlertParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     error.service = SERVICE_NAME;
     next(error);
     return;
