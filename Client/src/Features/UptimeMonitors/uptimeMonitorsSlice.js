@@ -68,6 +68,31 @@ export const getUptimeMonitorsByUserId = createAsyncThunk(
   }
 );
 
+export const updateUptimeMonitor = createAsyncThunk(
+  "monitors/updateMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+      const res = await axiosInstance.post(
+        `/monitors/edit/${monitor._id}`,
+        monitor,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const uptimeMonitorsSlice = createSlice({
   name: "uptimeMonitors",
   initialState,
@@ -137,6 +162,25 @@ const uptimeMonitorsSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to create uptime monitor";
+      })
+
+      // *****************************************************
+      // update Monitor
+      // *****************************************************
+      .addCase(updateUptimeMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUptimeMonitor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(updateUptimeMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to update uptime monitor";
       });
   },
 });
