@@ -132,7 +132,7 @@ const CreateMonitor = () => {
         createToast({ body: "Monitor created successfully!" });
         navigate("/monitors");
       } else {
-        createToast({ body: "Failed to delete monitor." });
+        createToast({ body: "Failed to create monitor." });
       }
     }
   };
