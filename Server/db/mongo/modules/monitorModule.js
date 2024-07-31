@@ -140,7 +140,7 @@ const createMonitor = async (req, res) => {
   try {
     const monitor = new Monitor({ ...req.body });
     // Remove notifications fom monitor as they aren't needed here
-    delete monitor.notifications;
+    monitor.notifications = undefined;
     monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
