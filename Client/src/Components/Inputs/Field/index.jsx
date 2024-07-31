@@ -177,7 +177,7 @@ Field.propTypes = {
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   error: PropTypes.string,
   disabled: PropTypes.bool,
 };
