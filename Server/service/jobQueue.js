@@ -231,7 +231,7 @@ class JobQueue {
    */
   async deleteJob(monitor) {
     try {
-      const deleted = await this.queue.removeRepeatable(monitor.id, {
+      const deleted = await this.queue.removeRepeatable(monitor._id, {
         every: monitor.interval,
       });
       if (deleted) {
