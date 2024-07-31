@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { sendEmail, sendSMS } = require('../utils/notificationUtils');
+const Notification = require('../db/mongo/modules/notificationModule'); 
 
 const CheckSchema = mongoose.Schema(
   {
@@ -67,9 +69,8 @@ CheckSchema.pre("save", async function (next) {
  * @param {ObjectId} monitorId - The monitor ID.
  * @param {string} status - The new status of the monitor.
  */
-
 async function notifyUsers(monitorId, status) {
-  const notifications = await mongoose.model('Notification').find({ monitorId });
+  const notifications = await Notification.find({ monitorId });
   notifications.forEach(async (notification) => {
     const context = { monitorId, status }; 
     if (notification.type === 'email') {
