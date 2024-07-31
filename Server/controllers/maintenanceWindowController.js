@@ -15,7 +15,8 @@ const createMaintenanceWindow = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
@@ -48,7 +49,15 @@ const getMaintenanceWindowsByUserId = async (req, res, next) => {
     await getMaintenanceWindowsByUserIdParamValidation.validateAsync(
       req.params
     );
-
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
     const maintenanceWindows = await req.db.getMaintenanceWindowsByUserId(
       req.params.userId
     );
@@ -69,7 +78,16 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
     await getMaintenanceWindowsByMonitorIdParamValidation.validateAsync(
       req.params
     );
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
 
+  try {
     const maintenanceWindows = await req.db.getMaintenanceWindowsByMonitorId(
       req.params.monitorId
     );

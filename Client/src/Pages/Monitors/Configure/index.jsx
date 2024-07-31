@@ -122,6 +122,7 @@ const Configure = () => {
       <Button
         level="tertiary"
         label="Back"
+        animate="slideLeft"
         img={<WestRoundedIcon />}
         onClick={() => navigate(-1)}
         sx={{
@@ -129,7 +130,8 @@ const Configure = () => {
           mb: theme.gap.medium,
           px: theme.gap.ml,
           "& svg.MuiSvgIcon-root": {
-            pr: theme.gap.small,
+            mr: theme.gap.small,
+            fill: theme.palette.otherColors.slateGray,
           },
         }}
       />
@@ -166,13 +168,14 @@ const Configure = () => {
             <Button
               level="tertiary"
               label="Pause"
+              animate="rotate180"
               img={<PauseCircleOutlineIcon />}
               sx={{
                 backgroundColor: "#f4f4f4",
                 pl: theme.gap.small,
                 pr: theme.gap.medium,
                 "& svg": {
-                  pr: theme.gap.xs,
+                  mr: theme.gap.xs,
                 },
               }}
             />

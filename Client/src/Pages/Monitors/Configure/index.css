@@ -38,6 +38,7 @@
   padding-bottom: 60px;
   border: 1px solid var(--env-var-color-16);
   border-radius: var(--env-var-radius-1);
+  background-color: var(--env-var-color-8);
 }
 .configure-monitor .config-box .MuiBox-root,
 .configure-monitor .config-box .MuiStack-root {

@@ -9,7 +9,6 @@ const {
 
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-const { error } = require("winston");
 
 /**
  * Returns all monitors
@@ -47,7 +46,8 @@ const getMonitorById = async (req, res, next) => {
     await getMonitorByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
@@ -83,6 +83,16 @@ const getMonitorsByUserId = async (req, res, next) => {
   try {
     await getMonitorsByUserIdValidation.validateAsync(req.params);
     await getMonitorsByUserIdQueryValidation.validateAsync(req.query);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
     const userId = req.params.userId;
     const monitors = await req.db.getMonitorsByUserId(req, res);
 
@@ -112,7 +122,9 @@ const createMonitor = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+
     next(error);
     return;
   }
@@ -143,21 +155,24 @@ const createMonitor = async (req, res, next) => {
 
 const deleteMonitor = async (req, res, next) => {
   try {
-    await getMonitorByIdValidation.validateAsync(req.params);
+    await getMonitorByIdParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
 
   try {
     const monitor = await req.db.deleteMonitor(req, res, next);
-    // Delete associated checks and alerts
+    // Delete associated checks,alerts,and notifications
     await req.jobQueue.deleteJob(monitor);
     await req.db.deleteChecks(monitor._id);
     await req.db.deleteAlertByMonitorId(monitor._id);
+    await req.db.deleteNotificationsByMonitorId(monitor._id);
+
     /**
      * TODO
      * We should remove all checks and alerts associated with this monitor
@@ -195,12 +210,13 @@ const deleteAllMonitors = async (req, res) => {
  */
 const editMonitor = async (req, res, next) => {
   try {
-    await getMonitorByIdValidation.validateAsync(req.params);
+    await getMonitorByIdParamValidation.validateAsync(req.params);
     await editMonitorBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }

@@ -72,9 +72,14 @@ const ButtonSpinner = ({
       loading={isLoading}
       disableRipple
       sx={{
+        boxShadow: "none",
         textTransform: "none",
         "&:focus": {
           outline: "none",
+        },
+        "&:hover": {
+          boxShadow: "none",
+          transition: "none"
         },
         ...sx,
       }}
