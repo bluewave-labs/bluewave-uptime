@@ -36,7 +36,7 @@ const CreateMonitor = () => {
     notifications: [],
     interval: 1,
   });
-  const [https, setHttps] = useState(false);
+  const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
 
   const handleChange = (event, name) => {
@@ -219,20 +219,20 @@ const CreateMonitor = () => {
                 <ButtonGroup sx={{ ml: "32px" }}>
                   <Button
                     level="secondary"
-                    label="HTTP"
-                    onClick={() => setHttps(false)}
-                    sx={{
-                      backgroundColor:
-                        !https && theme.palette.otherColors.fillGray,
-                    }}
-                  />
-                  <Button
-                    level="secondary"
                     label="HTTPS"
                     onClick={() => setHttps(true)}
                     sx={{
                       backgroundColor:
                         https && theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="HTTP"
+                    onClick={() => setHttps(false)}
+                    sx={{
+                      backgroundColor:
+                        !https && theme.palette.otherColors.fillGray,
                     }}
                   />
                 </ButtonGroup>
@@ -249,32 +249,6 @@ const CreateMonitor = () => {
               checked={monitor.type === "ping"}
               onChange={(event) => handleChange(event)}
             />
-            {/* TODO */}
-            {/* <RadioButton
-              id="monitor-checks-port"
-              title="Port monitoring"
-              desc="Monitor a specific service on your server."
-              value="port"
-              checked={checks.type === "port"}
-              onChange={(event) => handleChange(event, "type", setChecks)}
-            />
-            <div className="monitors-dropdown-holder">
-              <Select
-                id="monitor-ports"
-                value={checks.port || "placeholder"}
-                inputProps={{ id: "monitor-ports-select" }}
-                onChange={(event) => handleChange(event, "port", setChecks)}
-              >
-                <MenuItem id="port-placeholder" value="placeholder">
-                  Select a port to check
-                </MenuItem>
-                {ports.map((port, index) => (
-                  <MenuItem key={`port-${index}`} value={port}>
-                    {port}
-                  </MenuItem>
-                ))}
-              </Select>
-            </div> */}
             <Box className="error-container">
               {errors["type"] ? (
                 <Typography component="p" className="input-error">
@@ -322,18 +296,24 @@ const CreateMonitor = () => {
               onChange={() => console.log("disabled")}
               isDisabled={true}
             />
-            <Box mx={`calc(${theme.gap.ml} * 2)`}>
-              <Field
-                id="notify-email-list"
-                type="text"
-                placeholder="name@gmail.com"
-                value=""
-                onChange={() => console.log("disabled")}
-              />
-              <Typography mt={theme.gap.small}>
-                You can separate multiple emails with a comma
-              </Typography>
-            </Box>
+            {monitor.notifications.some(
+              (notification) => notification.type === "emails"
+            ) ? (
+              <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                <Field
+                  id="notify-email-list"
+                  type="text"
+                  placeholder="name@gmail.com"
+                  value=""
+                  onChange={() => console.log("disabled")}
+                />
+                <Typography mt={theme.gap.small}>
+                  You can separate multiple emails with a comma
+                </Typography>
+              </Box>
+            ) : (
+              ""
+            )}
           </Stack>
         </Stack>
         <Stack className="config-box">
