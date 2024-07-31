@@ -2,13 +2,14 @@ const {
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
   getMonitorsByUserIdValidation,
-  monitorValidation,
+  createMonitorBodyValidation,
   editMonitorBodyValidation,
   getMonitorsByUserIdQueryValidation,
 } = require("../validation/joi");
 
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
+const { runInNewContext } = require("vm");
 
 /**
  * Returns all monitors
@@ -118,7 +119,7 @@ const getMonitorsByUserId = async (req, res, next) => {
 
 const createMonitor = async (req, res, next) => {
   try {
-    await monitorValidation.validateAsync(req.body);
+    await createMonitorBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -130,7 +131,16 @@ const createMonitor = async (req, res, next) => {
   }
 
   try {
+    const notifications = req.body.notifications;
     const monitor = await req.db.createMonitor(req, res);
+
+    await Promise.all(
+      notifications.map(async (notification) => {
+        notification.monitorId = monitor._id;
+        await req.db.createNotification(notification);
+      })
+    );
+
     // Add monitor to job queue
     req.jobQueue.addJob(monitor._id, monitor);
     return res.status(201).json({
