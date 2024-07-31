@@ -111,7 +111,12 @@ const Monitors = () => {
           ),
         },
         { id: idx + 2, data: <ResponseTimeChart checks={reversedChecks} /> },
-        { id: idx + 3, data: monitor.type },
+        {
+          id: idx + 3,
+          data: (
+            <span style={{ textTransform: "uppercase" }}>{monitor.type}</span>
+          ),
+        },
         { id: idx + 4, data: "TODO" },
       ],
     };
