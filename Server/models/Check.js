@@ -62,6 +62,12 @@ CheckSchema.pre("save", async function (next) {
   }
 });
 
+/**
+ * Fetch notification associated with the monitor and send alerts.
+ * @param {ObjectId} monitorId - The monitor ID.
+ * @param {string} status - The new status of the monitor.
+ */
+
 async function notifyUsers(monitorId, status) {
   const notifications = await mongoose.model('Notification').find({ monitorId });
   notifications.forEach(async (notification) => {
