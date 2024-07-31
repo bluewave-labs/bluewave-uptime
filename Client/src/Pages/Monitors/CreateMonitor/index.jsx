@@ -26,8 +26,7 @@ const CreateMonitor = () => {
     "monitor-name": "name",
     "monitor-checks-http": "type",
     "monitor-checks-ping": "type",
-    "notify-sms": "sms",
-    "notify-email-default": "email",
+    "notify-email-default": "notification-email",
   };
 
   const [monitor, setMonitor] = useState({
@@ -43,23 +42,56 @@ const CreateMonitor = () => {
   const handleChange = (event, name) => {
     const { value, id } = event.target;
     if (!name) name = idMap[id];
-    setMonitor((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
 
-    const { error } = monitorValidation.validate(
-      { [name]: value },
-      { abortEarly: false }
-    );
+    if (name.includes("notification-")) {
+      name = name.replace("notification-", "");
+      let hasNotif = monitor.notifications.some(
+        (notification) => notification.type === name
+      );
+      setMonitor((prev) => {
+        const notifs = [...prev.notifications];
+        if (hasNotif) {
+          return {
+            ...prev,
+            notifications: notifs.filter((notif) => notif.type !== name),
+          };
+        } else {
+          return {
+            ...prev,
+            notifications: [
+              ...notifs,
+              name === "email"
+                ? { type: name, address: value }
+                : // TODO - phone number
+                  { type: name, phone: value },
+            ],
+          };
+        }
+      });
+    } else {
+      setMonitor((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
 
-    setErrors((prev) => {
-      const updatedErrors = { ...prev };
-      if (error) updatedErrors[name] = error.details[0].message;
-      else delete updatedErrors[name];
-      return updatedErrors;
-    });
+      const { error } = monitorValidation.validate(
+        { [name]: value },
+        { abortEarly: false }
+      );
+
+      setErrors((prev) => {
+        const updatedErrors = { ...prev };
+        if (error) updatedErrors[name] = error.details[0].message;
+        else delete updatedErrors[name];
+        return updatedErrors;
+      });
+    }
   };
+
+  // const handleNotifications = (event) => {
+  //   const { value } = event.target;
+  //   setMonitor((prev) => ({ ...prev, notifications: value }));
+  // };
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
@@ -91,6 +123,7 @@ const CreateMonitor = () => {
         ...form,
         description: form.name,
         userId: user._id,
+        notifications: monitor.notifications,
       };
       const action = await dispatch(
         createUptimeMonitor({ authToken, monitor: form })
@@ -112,6 +145,8 @@ const CreateMonitor = () => {
     { _id: 4, name: "4 minutes" },
     { _id: 5, name: "5 minutes" },
   ];
+
+  console.log(monitor);
 
   return (
     <Box className="create-monitor">
@@ -272,15 +307,26 @@ const CreateMonitor = () => {
             <Checkbox
               id="notify-sms"
               label="Notify via SMS (coming soon)"
+              isChecked={false}
+              value=""
+              onChange={() => console.log("disabled")}
               isDisabled={true}
             />
             <Checkbox
               id="notify-email-default"
               label={`Notify via email (to ${user.email})`}
+              isChecked={monitor.notifications.some(
+                (notification) => notification.type === "email"
+              )}
+              value={user?.email}
+              onChange={(event) => handleChange(event)}
             />
             <Checkbox
               id="notify-email"
               label="Also notify via email to multiple addresses (coming soon)"
+              isChecked={false}
+              value=""
+              onChange={() => console.log("disabled")}
               isDisabled={true}
             />
             <Box mx={`calc(${theme.gap.ml} * 2)`}>
@@ -288,6 +334,8 @@ const CreateMonitor = () => {
                 id="notify-email-list"
                 type="text"
                 placeholder="name@gmail.com"
+                value=""
+                onChange={() => console.log("disabled")}
               />
               <Typography mt={theme.gap.small}>
                 You can separate multiple emails with a comma
