@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import RadioButton from "../../../Components/RadioButton";
-import { Box, MenuItem, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
@@ -15,6 +14,25 @@ import "./index.css";
 import { monitorValidation } from "../../../Validation/validation";
 import Select from "../../../Components/Inputs/Select";
 import { formatDurationRounded } from "../../../Utils/timeUtils";
+import { createToast } from "../../../Utils/toastUtils";
+import {
+  updateUptimeMonitor,
+  getUptimeMonitorsByUserId,
+  deleteUptimeMonitor,
+} from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+/**
+ * Parses a URL string and returns a URL object.
+ *
+ * @param {string} url - The URL string to parse.
+ * @returns {URL} - The parsed URL object if valid, otherwise an empty string.
+ */
+const parseUrl = (url) => {
+  try {
+    return new URL(url);
+  } catch (error) {
+    return null;
+  }
+};
 
 /**
  * Helper function to get duration since last check
@@ -39,6 +57,9 @@ const Configure = () => {
   const dispatch = useDispatch();
   const { authToken } = useSelector((state) => state.auth);
   const { monitors } = useSelector((state) => state.uptimeMonitors);
+  const [monitor, setMonitor] = useState();
+  const [duration, setDuration] = useState(0);
+  const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
 
   const idMap = {
@@ -48,26 +69,20 @@ const Configure = () => {
     "monitor-checks-ping": "type",
   };
 
-  const [config, setConfig] = useState();
-  const [monitor, setMonitor] = useState();
-  const [errors, setErrors] = useState({});
   useEffect(() => {
-    const fetchMonitor = () => {
-      const data = monitors.find((monitor) => monitor._id === monitorId);
-      setConfig(data);
-      setMonitor({
-        name: data.name,
-        url: data.url.replace(/^https?:\/\//, ""),
-        type: data.type,
-        interval: data.interval / MS_PER_MINUTE,
-      });
-    };
-    fetchMonitor();
-  }, [monitorId, authToken]);
+    const data = monitors.find((monitor) => monitor._id === monitorId);
+    setMonitor({
+      ...data,
+    });
+    setDuration(formatDurationRounded(data?.interval));
+  }, [monitorId, authToken, monitors]);
 
   const handleChange = (event, name) => {
-    const { value, id } = event.target;
+    let { value, id } = event.target;
     if (!name) name = idMap[id];
+    if (name === "interval") {
+      value = value * MS_PER_MINUTE;
+    }
     setMonitor((prev) => ({
       ...prev,
       [name]: value,
@@ -88,9 +103,28 @@ const Configure = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO
+    const action = await dispatch(
+      updateUptimeMonitor({ authToken, monitor: monitor })
+    );
+    if (action.meta.requestStatus === "fulfilled") {
+      createToast({ body: "Monitor updated successfully!" });
+      dispatch(getUptimeMonitorsByUserId(authToken));
+    } else {
+      createToast({ body: "Failed to update monitor." });
+    }
+  };
+
+  const hanldeRemove = async (event) => {
+    event.preventDefault();
+    // TODO add confirm
+    const action = await dispatch(deleteUptimeMonitor({ authToken, monitor }));
+    if (action.meta.requestStatus === "fulfilled") {
+      navigate("/monitors");
+    } else {
+      createToast({ body: "Failed to delete monitor." });
+    }
   };
 
   const frequencies = [
@@ -100,6 +134,10 @@ const Configure = () => {
     { _id: 4, name: "4 minutes" },
     { _id: 5, name: "5 minutes" },
   ];
+
+  // Parse the URL
+  const parsedUrl = parseUrl(monitor?.url);
+  const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
   return (
     <Box className="configure-monitor">
@@ -121,25 +159,24 @@ const Configure = () => {
       />
       <form className="configure-monitor-form" noValidate spellCheck="false">
         <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          {config?.status ? <GreenCheck /> : <RedCheck />}
+          {monitor?.status ? <GreenCheck /> : <RedCheck />}
           <Box>
             <Typography component="h1" sx={{ lineHeight: 1 }}>
-              {config?.url.replace(/^https?:\/\//, "") || "..."}
+              {parsedUrl?.host || "..."}
             </Typography>
             <Typography mt={theme.gap.small}>
               <Typography
                 component="span"
                 sx={{
-                  color: config?.status
+                  color: monitor?.status
                     ? "var(--env-var-color-17)"
                     : "var(--env-var-color-24)",
                 }}
               >
-                Your site is {config?.status ? "up" : "down"}.
+                Your site is {monitor?.status ? "up" : "down"}.
               </Typography>{" "}
-              Checking every {formatDurationRounded(config?.interval)}. Last
-              time checked{" "}
-              {formatDurationRounded(getLastChecked(config?.checks))} ago.
+              Checking every {duration}. Last time checked{" "}
+              {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
             </Typography>
           </Box>
           <Stack
@@ -171,6 +208,7 @@ const Configure = () => {
                 boxShadow: "none",
                 px: theme.gap.ml,
               }}
+              onClick={hanldeRemove}
             />
           </Stack>
         </Stack>
@@ -189,12 +227,13 @@ const Configure = () => {
           </Box>
           <Stack gap={theme.gap.xl}>
             <Field
-              type="url"
+              type={monitor?.type === "http" ? "url" : "text"}
+              https={protocol === "https"}
               id="monitor-url"
               label="URL to monitor"
               placeholder="google.com"
-              value={monitor?.url || ""}
-              onChange={handleChange}
+              value={parsedUrl?.host || monitor?.url || ""}
+              disabled={true}
               error={errors["url"]}
             />
             <Field
@@ -216,55 +255,13 @@ const Configure = () => {
           gap={theme.gap.xxl}
         >
           <Box>
-            <Typography component="h2">Checks to perform</Typography>
-            <Typography component="p" sx={{ mt: theme.gap.small }}>
-              You can always add or remove checks after adding your site.
-            </Typography>
-          </Box>
-          <Stack gap={theme.gap.xl}>
-            <RadioButton
-              id="monitor-checks-http"
-              title="HTTP/website monitoring"
-              desc="Use HTTP(s) to monitor your website or API endpoint."
-              size="small"
-              value="http"
-              checked={monitor?.type === "http"}
-              onChange={handleChange}
-            />
-            <RadioButton
-              id="monitor-checks-ping"
-              title="Ping monitoring"
-              desc="Check whether your server is available or not."
-              size="small"
-              value="ping"
-              checked={monitor?.type === "ping"}
-              onChange={handleChange}
-            />
-            <Box className="error-container">
-              {errors["type"] ? (
-                <Typography component="p" className="input-error">
-                  {errors["type"]}
-                </Typography>
-              ) : (
-                ""
-              )}
-            </Box>
-          </Stack>
-        </Stack>
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
-          <Box>
             <Typography component="h2">Advanced settings</Typography>
           </Box>
           <Stack gap={theme.gap.xl}>
             <Select
               id="monitor-interval-configure"
               label="Check frequency"
-              value={monitor?.interval || 1}
+              value={monitor?.interval / MS_PER_MINUTE || 1}
               onChange={(event) => handleChange(event, "interval")}
               items={frequencies}
             />
@@ -272,12 +269,10 @@ const Configure = () => {
         </Stack>
         <Stack direction="row" justifyContent="flex-end">
           <Button
-            type="submit"
             level="primary"
             label="Save"
-            sx={{
-              minWidth: "80px",
-            }}
+            sx={{ px: theme.gap.ml }}
+            onClick={handleSubmit}
           />
         </Stack>
       </form>
