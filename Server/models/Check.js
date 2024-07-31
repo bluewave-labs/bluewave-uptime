@@ -42,13 +42,15 @@ CheckSchema.pre("save", async function (next) {
     const monitor = await mongoose.model("Monitor").findById(this.monitorId);
     if (monitor && monitor.status !== this.status) {
       if (monitor.status === true && this.status === false) {
-        // TODO issue alert
+        // Monitor down
         console.log("Monitor went down");
+        await notifyUsers(this.monitorId, 'down');
       }
 
       if (monitor.status === false && this.status === true) {
-        // TODO issue alert
+        // Monitor up
         console.log("Monitor went up");
+        await notifyUsers(this.monitorId, 'up');
       }
       monitor.status = this.status;
       await monitor.save();
@@ -59,5 +61,19 @@ CheckSchema.pre("save", async function (next) {
     next();
   }
 });
+
+async function notifyUsers(monitorId, status) {
+  const notifications = await mongoose.model('Notification').find({ monitorId });
+  notifications.forEach(async (notification) => {
+    const context = { monitorId, status }; 
+    if (notification.type === 'email') {
+      const template = status === 'down' ? 'serverIsDown' : 'serverIsUp';
+      await sendEmail(notification.address, template, context);
+    } else if (notification.type === 'sms') {
+      const message = `Monitor ${monitorId} is ${status}`;
+      await sendSMS(notification.phone, message);
+    }
+  });
+}
 
 module.exports = mongoose.model("Check", CheckSchema);
