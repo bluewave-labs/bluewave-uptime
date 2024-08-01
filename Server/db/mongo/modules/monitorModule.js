@@ -64,7 +64,8 @@ const getMonitorById = async (req, res) => {
         createdAt: sortOrder,
       })
       .limit(limit);
-    const monitorWithChecks = { ...monitor.toObject(), checks };
+    const notifications = await Notification.find({ monitorId: monitor._id });
+    const monitorWithChecks = { ...monitor.toObject(), checks, notifications };
     return monitorWithChecks;
   } catch (error) {
     throw error;
