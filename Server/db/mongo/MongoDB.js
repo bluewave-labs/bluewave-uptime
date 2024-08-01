@@ -65,8 +65,6 @@ const {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
-  getMonitorByIdForIncidents,
-  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
@@ -108,6 +106,24 @@ const {
   deleteAlertByMonitorId,
 } = require("./modules/alertModule");
 
+//****************************************
+// Maintenance Window
+//****************************************
+const {
+  createMaintenanceWindow,
+  getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByMonitorId,
+  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowByMonitorId,
+  deleteMaintenanceWindowByUserId,
+} = require("./modules/maintenaceWindowModule");
+
+const {
+  createNotification,
+  getNotificationsByMonitorId,
+  deleteNotificationsByMonitorId,
+} = require("./modules/notificationModule");
+
 module.exports = {
   connect,
   insertUser,
@@ -124,8 +140,6 @@ module.exports = {
   getAllMonitors,
   getMonitorById,
   getMonitorsByUserId,
-  getMonitorByIdForIncidents,
-  getMonitorsByUserIdForIncidents,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
@@ -144,4 +158,13 @@ module.exports = {
   createPageSpeedCheck,
   getPageSpeedChecks,
   deletePageSpeedChecks,
+  createMaintenanceWindow,
+  getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByMonitorId,
+  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowByMonitorId,
+  deleteMaintenanceWindowByUserId,
+  createNotification,
+  getNotificationsByMonitorId,
+  deleteNotificationsByMonitorId,
 };

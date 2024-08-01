@@ -54,7 +54,8 @@ const registerController = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
@@ -115,14 +116,20 @@ const registerController = async (req, res, next) => {
  */
 const loginController = async (req, res, next) => {
   try {
-    // Validate input
     await loginValidation.validateAsync(req.body);
-
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
     // Check if user exists
     const user = await req.db.getUserByEmail(req, res);
 
     // Compare password
-
     const match = await user.comparePassword(req.body.password);
     if (match !== true) {
       throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
@@ -157,7 +164,8 @@ const userEditController = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
@@ -216,8 +224,18 @@ const inviteController = async (req, res, next) => {
     // Only admins can invite
     const token = getTokenFromHeaders(req.headers);
     const { role, firstname } = jwt.decode(token);
-    await inviteRoleValidation.validateAsync({ roles: role });
-    await inviteBodyValidation.validateAsync(req.body);
+    try {
+      await inviteRoleValidation.validateAsync({ roles: role });
+      await inviteBodyValidation.validateAsync(req.body);
+    } catch (error) {
+      error.status = 422;
+      error.service = SERVICE_NAME;
+      error.message =
+        error.details?.[0]?.message || error.message || "Validation Error";
+      next(error);
+      return;
+    }
+
     const inviteToken = await req.db.requestInviteToken(req, res);
     req.emailService.buildAndSendEmail(
       "employeeActivationTemplate",
@@ -242,6 +260,16 @@ const inviteController = async (req, res, next) => {
 const inviteVerifyController = async (req, res, next) => {
   try {
     await inviteVerifciationBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
     const invite = await req.db.getInviteToken(req, res);
 
     res
@@ -289,6 +317,16 @@ const checkAdminController = async (req, res) => {
 const recoveryRequestController = async (req, res, next) => {
   try {
     await recoveryValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
     const user = await req.db.getUserByEmail(req, res);
     if (user) {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
@@ -328,6 +366,16 @@ const recoveryRequestController = async (req, res, next) => {
 const validateRecoveryTokenController = async (req, res, next) => {
   try {
     await recoveryTokenValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
     await req.db.validateRecoveryToken(req, res);
     // TODO Redirect user to reset password after validating token
     return res.status(200).json({
@@ -354,6 +402,15 @@ const validateRecoveryTokenController = async (req, res, next) => {
 const resetPasswordController = async (req, res, next) => {
   try {
     await newPasswordValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
     const user = await req.db.resetPassword(req, res);
     const token = issueToken(user._doc);
     res.status(200).json({
@@ -392,9 +449,18 @@ const deleteUserController = async (req, res, next) => {
     };
 
     // Validate user
-    await deleteUserParamValidation.validateAsync(
-      decodedTokenCastedAsRequest.body
-    );
+    try {
+      await deleteUserParamValidation.validateAsync(
+        decodedTokenCastedAsRequest.body
+      );
+    } catch (error) {
+      error.status = 422;
+      error.service = SERVICE_NAME;
+      error.message =
+        error.details?.[0]?.message || error.message || "Validation Error";
+      next(error);
+      return;
+    }
 
     // Check if the user exists
     const user = await req.db.getUserByEmail(decodedTokenCastedAsRequest);
@@ -408,25 +474,20 @@ const deleteUserController = async (req, res, next) => {
     );
 
     if (monitors) {
-      // 2. Delete jobs associated with each monitor
-      for (const monitor of monitors) {
-        await req.jobQueue.deleteJob(monitor);
-      }
+      //2.  Remove all jobs, delete checks and alerts
+      await Promise.all(
+        monitors.map(async (monitor) => {
+          await req.jobQueue.deleteJob(monitor);
+          await req.db.deleteChecks(monitor._id);
+          await req.db.deleteAlertByMonitorId(monitor._id);
+          await req.db.deleteNotificationsByMonitorId(monitor._id);
+        })
+      );
 
-      // 3. Delete all checks associated with each monitor
-      for (const monitor of monitors) {
-        await req.db.deleteChecks(monitor._id);
-      }
-
-      // 4. Delete all alerts associated with each monitor
-      for (const monitor of monitors) {
-        await req.db.deleteAlertByMonitorId(monitor._id);
-      }
-
-      // 5. Delete each monitor
+      // 3. Delete each monitor
       await req.db.deleteMonitorsByUserId(user._id);
 
-      // 6. Delete the user by id
+      // 4. Delete the user by id
       await req.db.deleteUser(decodedTokenCastedAsRequest);
 
       return res.status(200).json({

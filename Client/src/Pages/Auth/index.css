@@ -101,7 +101,9 @@
 /* ///// */
 /* LOGIN */
 /* ///// */
-.login-page span:not(.MuiTypography-root):not(.MuiButtonBase-root) {
+.login-page
+  .MuiStack-root:not(:has(> .MuiButtonBase-root))
+  span:not(.MuiTypography-root):not(.field-required) {
   color: var(--env-var-color-3);
   cursor: pointer;
   font-weight: 600;

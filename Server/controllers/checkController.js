@@ -14,7 +14,8 @@ const createCheck = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
@@ -37,7 +38,8 @@ const getChecks = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
@@ -59,20 +61,19 @@ const deleteChecks = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.message = error.details[0].message;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
     return;
   }
 
   try {
     const deletedCount = await req.db.deleteChecks(req.params.monitorId);
-    return res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.CHECK_DELETE,
-        data: { deletedCount },
-      });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_DELETE,
+      data: { deletedCount },
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

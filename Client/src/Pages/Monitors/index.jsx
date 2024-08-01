@@ -1,7 +1,7 @@
 import "./index.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getMonitorsByUserId } from "../../Features/Monitors/monitorsSlice";
+import { getUptimeMonitorsByUserId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
@@ -45,12 +45,12 @@ const Host = ({ params }) => {
 const Monitors = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const monitorState = useSelector((state) => state.monitors);
+  const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getMonitorsByUserId(authState.authToken));
+    dispatch(getUptimeMonitorsByUserId(authState.authToken));
   }, []);
 
   const up = monitorState.monitors.reduce((acc, cur) => {
@@ -111,7 +111,12 @@ const Monitors = () => {
           ),
         },
         { id: idx + 2, data: <ResponseTimeChart checks={reversedChecks} /> },
-        { id: idx + 3, data: monitor.type },
+        {
+          id: idx + 3,
+          data: (
+            <span style={{ textTransform: "uppercase" }}>{monitor.type}</span>
+          ),
+        },
         { id: idx + 4, data: "TODO" },
       ],
     };

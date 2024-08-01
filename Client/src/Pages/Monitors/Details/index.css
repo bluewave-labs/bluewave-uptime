@@ -37,13 +37,18 @@
 .monitor-details .stat-box {
   flex: 1;
   min-width: 100px;
-  border: solid 1px var(--env-var-color-4);
+  border: solid 1px;
   border-radius: var(--env-var-radius-1);
-  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
+  padding: var(--env-var-spacing-1) 18px;
+  background-color: var(--env-var-color-8);
 }
 .monitor-details .stat-box:not(:first-of-type) {
   margin-left: var(--env-var-spacing-2);
 }
 .monitor-details .stat-box h6.MuiTypography-root {
   margin-bottom: var(--env-var-spacing-1);
+}
+.monitor-details button.MuiButtonBase-root,
+.monitor-details .stat-box {
+  border-color: var(--env-var-color-16);
 }

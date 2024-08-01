@@ -11,6 +11,7 @@ const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
 const alertRouter = require("./routes/alertRoute");
 const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
+const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
 
 const { connectDbAndRunServer } = require("./configs/db");
 const queueRouter = require("./routes/queueRoute");
@@ -71,6 +72,7 @@ const startApp = async () => {
   app.use("/api/v1/checks", verifyJWT, checkRouter);
   app.use("/api/v1/alerts", verifyJWT, alertRouter);
   app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
+  app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
   //Temporary route for testing, remove later
   app.use("/api/v1/job", queueRouter);
 

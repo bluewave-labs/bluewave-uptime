@@ -84,6 +84,17 @@ const Field = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
+        sx={
+          type === "url"
+            ? {
+                "& .MuiInputBase-root": { padding: 0 },
+                "& .MuiStack-root": {
+                  borderTopLeftRadius: `${theme.shape.borderRadius}px`,
+                  borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
+                },
+              }
+            : {}
+        }
         InputProps={{
           startAdornment: type === "url" && (
             <Stack
@@ -92,6 +103,8 @@ const Field = ({
               height="100%"
               sx={{
                 borderRight: `solid 1px ${theme.palette.section.borderColor}`,
+                backgroundColor: "#f9f9fa",
+                pl: theme.gap.medium,
               }}
             >
               <Typography component="h5" sx={{ lineHeight: 1 }}>
@@ -164,7 +177,7 @@ Field.propTypes = {
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   error: PropTypes.string,
   disabled: PropTypes.bool,
 };

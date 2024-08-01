@@ -8,8 +8,8 @@ const initialState = {
   msg: null,
 };
 
-export const createMonitor = createAsyncThunk(
-  "monitors/createMonitor",
+export const createPageSpeed = createAsyncThunk(
+  "pageSpeedMonitors/createPageSpeed",
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
@@ -30,8 +30,8 @@ export const createMonitor = createAsyncThunk(
   }
 );
 
-export const getMonitors = createAsyncThunk(
-  "monitors/getMonitors",
+export const getPageSpeedMonitors = createAsyncThunk(
+  "pageSpeedMonitors/getPageSpeedMonitors",
   async (token, thunkApi) => {
     try {
       const res = await axiosInstance.get("/monitors");
@@ -45,13 +45,13 @@ export const getMonitors = createAsyncThunk(
   }
 );
 
-export const getMonitorsByUserId = createAsyncThunk(
-  "montiors/getMonitorsByUserId",
+export const getPageSpeedByUserId = createAsyncThunk(
+  "pageSpeedMonitors/getPageSpeedByUserId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
       const res = await axiosInstance.get(
-        `/monitors/user/${user._id}?limit=25&type=http&type=ping&sortOrder=desc`,
+        `/monitors/user/${user._id}?limit=25&type=pagespeed&sortOrder=desc`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,8 +68,8 @@ export const getMonitorsByUserId = createAsyncThunk(
   }
 );
 
-const monitorsSlice = createSlice({
-  name: "monitors",
+const pageSpeedMonitorSlice = createSlice({
+  name: "pageSpeedMonitor",
   initialState,
   reducers: {
     clearMonitorState: (state) => {
@@ -84,16 +84,16 @@ const monitorsSlice = createSlice({
       // *****************************************************
       // All Monitors
       // *****************************************************
-      .addCase(getMonitors.pending, (state) => {
+      .addCase(getPageSpeedMonitors.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getMonitors.fulfilled, (state, action) => {
+      .addCase(getPageSpeedMonitors.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getMonitors.rejected, (state, action) => {
+      .addCase(getPageSpeedMonitors.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
@@ -104,43 +104,43 @@ const monitorsSlice = createSlice({
       // Monitors by userId
       // *****************************************************
 
-      .addCase(getMonitorsByUserId.pending, (state) => {
+      .addCase(getPageSpeedByUserId.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getMonitorsByUserId.fulfilled, (state, action) => {
+      .addCase(getPageSpeedByUserId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getMonitorsByUserId.rejected, (state, action) => {
+      .addCase(getPageSpeedByUserId.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Getting montiors failed";
+          : "Getting page speed monitors failed";
       })
 
       // *****************************************************
       // Create Monitor
       // *****************************************************
-      .addCase(createMonitor.pending, (state) => {
+      .addCase(createPageSpeed.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createMonitor.fulfilled, (state, action) => {
+      .addCase(createPageSpeed.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
       })
-      .addCase(createMonitor.rejected, (state, action) => {
+      .addCase(createPageSpeed.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Failed to create monitor";
+          : "Failed to create page speed monitor";
       });
   },
 });
 
-export const { setMonitors, clearMonitorState } = monitorsSlice.actions;
+export const { setMonitors, clearMonitorState } = pageSpeedMonitorSlice.actions;
 
-export default monitorsSlice.reducer;
+export default pageSpeedMonitorSlice.reducer;

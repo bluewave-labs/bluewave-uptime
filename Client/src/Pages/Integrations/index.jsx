@@ -1,20 +1,23 @@
 import PropTypes from "prop-types";
-import { Stack, Box, Typography, Grid } from "@mui/material";
+import { Stack, Typography, Grid } from "@mui/material";
 import Button from "../../Components/Button";
 import { useTheme } from "@emotion/react";
+import Discord from "../../assets/icons/discord-icon.svg?react";
+import Slack from "../../assets/icons/slack-icon.svg?react";
+import Zapier from "../../assets/icons/zapier-icon.svg?react";
 
 import "./index.css";
 
 /**
  * Integrations component
  * @param {Object} props - Props for the IntegrationsComponent.
- * @param {string} props.url - The URL for the integration image.
+ * @param {string} props.icon - The icon for the integration image.
  * @param {string} props.header - The header for the integration.
  * @param {string} props.info - Information about the integration.
  * @param {Function} props.onClick - The onClick handler for the integration button.
  * @returns {JSX.Element} The JSX representation of the IntegrationsComponent.
  */
-const IntegrationsComponent = ({ url, header, info, onClick }) => {
+const IntegrationsComponent = ({ icon, header, info, onClick }) => {
   const theme = useTheme();
 
   return (
@@ -24,14 +27,10 @@ const IntegrationsComponent = ({ url, header, info, onClick }) => {
         justifyContent="space-between"
         gap={theme.gap.large}
         p={theme.gap.ml}
+        pl={theme.gap.large}
+        height="100%"
       >
-        <Box
-          component="img"
-          src={url}
-          alt="Integration"
-          width={80}
-          height={80}
-        />
+        {icon}
         <Stack gap={theme.gap.xs} flex={1}>
           <Typography component="h1">{header}</Typography>
           <Typography
@@ -48,6 +47,7 @@ const IntegrationsComponent = ({ url, header, info, onClick }) => {
           level="primary"
           onClick={onClick}
           sx={{ alignSelf: "center" }}
+          disabled={true}
         />
       </Stack>
     </Grid>
@@ -56,7 +56,7 @@ const IntegrationsComponent = ({ url, header, info, onClick }) => {
 
 // PropTypes for IntegrationsComponent
 IntegrationsComponent.propTypes = {
-  url: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
   header: PropTypes.string.isRequired,
   info: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
@@ -72,19 +72,34 @@ const Integrations = () => {
 
   const integrations = [
     {
-      url: "https://via.placeholder.com/80",
+      icon: (
+        <Slack
+          alt="slack integration"
+          style={{ width: "45px", height: "45px", alignSelf: "center" }}
+        />
+      ),
       header: "Slack",
       info: "Connect with Slack and see incidents in a channel",
       onClick: () => {},
     },
     {
-      url: "https://via.placeholder.com/80",
+      icon: (
+        <Discord
+          alt="discord integration"
+          style={{ width: "42px", height: "42px", alignSelf: "center" }}
+        />
+      ),
       header: "Discord",
       info: "Connect with Discord and view incidents directly in a channel",
       onClick: () => {},
     },
     {
-      url: "https://via.placeholder.com/80",
+      icon: (
+        <Zapier
+          alt="zapier integration"
+          style={{ width: "42px", height: "42px", alignSelf: "center" }}
+        />
+      ),
       header: "Zapier",
       info: "Send all incidents to Zapier, and then see them everywhere",
       onClick: () => {},
@@ -96,13 +111,13 @@ const Integrations = () => {
     <Stack className="integrations" gap={theme.gap.xs}>
       <Typography component="h1">Integrations</Typography>
       <Typography mb={theme.gap.large}>
-        Connect Uptime Genie to your favorite service
+        Connect BlueWave Uptime to your favorite service.
       </Typography>
       <Grid container spacing={theme.gap.large}>
         {integrations.map((integration, index) => (
           <IntegrationsComponent
             key={index}
-            url={integration.url}
+            icon={integration.icon}
             header={integration.header}
             info={integration.info}
             onClick={integration.onClick}

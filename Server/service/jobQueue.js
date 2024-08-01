@@ -59,9 +59,34 @@ class JobQueue {
       QUEUE_NAME,
       async (job) => {
         try {
-          // TODO wrap this in a check to see if a maintenace window is active
-          // If so, don't process the job
-          const res = await this.networkService.getStatus(job);
+          // Get all maintenance windows for this monitor
+          const monitorId = job.data._id;
+          const maintenanceWindows =
+            await this.db.getMaintenanceWindowsByMonitorId(monitorId);
+
+          // Check for active maintenance window:
+          const maintenanceWindowActive = maintenanceWindows.reduce(
+            (acc, window) => {
+              if (window.active) {
+                const start = new Date(window.start);
+                const end = new Date(window.end);
+                if (start < new Date() && end > new Date()) {
+                  return true;
+                }
+              }
+              return acc;
+            },
+            false
+          );
+
+          if (!maintenanceWindowActive) {
+            const res = await this.networkService.getStatus(job);
+          } else {
+            logger.info(`Monitor ${monitorId} is in maintenance window`, {
+              service: SERVICE_NAME,
+              monitorId,
+            });
+          }
         } catch (error) {
           logger.error(`Error processing job ${job.id}: ${error.message}`, {
             service: SERVICE_NAME,
@@ -206,7 +231,7 @@ class JobQueue {
    */
   async deleteJob(monitor) {
     try {
-      const deleted = await this.queue.removeRepeatable(monitor.id, {
+      const deleted = await this.queue.removeRepeatable(monitor._id, {
         every: monitor.interval,
       });
       if (deleted) {

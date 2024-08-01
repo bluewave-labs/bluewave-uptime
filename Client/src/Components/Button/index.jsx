@@ -1,5 +1,6 @@
 import { Button as MuiButton } from "@mui/material";
 import PropTypes from "prop-types";
+import "./index.css";
 
 const levelConfig = {
   primary: {
@@ -48,11 +49,22 @@ const levelConfig = {
  * <Button type="submit" level="error" label="Error" disabled sx={{marginTop: "1rem"}}/>
  */
 
-const Button = ({ id, type, level, label, disabled, img, onClick, sx }) => {
+const Button = ({
+  id,
+  animate,
+  type,
+  level,
+  label,
+  disabled,
+  img,
+  onClick,
+  sx,
+}) => {
   const { variant, color } = levelConfig[level];
   return (
     <MuiButton
       id={id}
+      className={`button-${animate}`}
       type={type}
       variant={variant}
       color={color}
@@ -60,15 +72,20 @@ const Button = ({ id, type, level, label, disabled, img, onClick, sx }) => {
       onClick={onClick}
       disableRipple
       sx={{
+        lineHeight: 1,
+        boxShadow: "none",
         textTransform: "none",
         "&:focus": {
           outline: "none",
+        },
+        "&:hover": {
+          boxShadow: "none",
         },
         ...sx,
       }}
     >
       {img && img}
-      {label}
+      <span>{label}</span>
     </MuiButton>
   );
 };

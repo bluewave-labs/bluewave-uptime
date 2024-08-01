@@ -144,7 +144,7 @@ const getMonitorsByUserIdQueryValidation = joi.object({
     ),
 });
 
-const monitorValidation = joi.object({
+const createMonitorBodyValidation = joi.object({
   _id: joi.string(),
   userId: joi.string().required(),
   name: joi.string().required(),
@@ -153,12 +153,14 @@ const monitorValidation = joi.object({
   url: joi.string().required(),
   isActive: joi.boolean(),
   interval: joi.number(),
+  notifications: joi.array().items(joi.object()),
 });
 
 const editMonitorBodyValidation = joi.object({
   name: joi.string(),
   description: joi.string(),
   interval: joi.number(),
+  notifications: joi.array().items(joi.object()),
 });
 
 //****************************************
@@ -252,6 +254,30 @@ const deletePageSpeedCheckParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+//****************************************
+// MaintenanceWindowValidation
+//****************************************
+const createMaintenanceWindowParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
+const createMaintenanceWindowBodyValidation = joi.object({
+  userId: joi.string().required(),
+  active: joi.boolean().required(),
+  oneTime: joi.boolean().required(),
+  start: joi.date().required(),
+  end: joi.date().required(),
+  expiry: joi.date(),
+});
+
+const getMaintenanceWindowsByUserIdParamValidation = joi.object({
+  userId: joi.string().required(),
+});
+
+const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
 module.exports = {
   roleValidatior,
   loginValidation,
@@ -262,7 +288,7 @@ module.exports = {
   inviteRoleValidation,
   inviteBodyValidation,
   inviteVerifciationBodyValidation,
-  monitorValidation,
+  createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
   getMonitorsByUserIdValidation,
@@ -287,4 +313,8 @@ module.exports = {
   createPageSpeedCheckParamValidation,
   deletePageSpeedCheckParamValidation,
   createPageSpeedCheckBodyValidation,
+  createMaintenanceWindowParamValidation,
+  createMaintenanceWindowBodyValidation,
+  getMaintenanceWindowsByUserIdParamValidation,
+  getMaintenanceWindowsByMonitorIdParamValidation,
 };

@@ -8,7 +8,7 @@ import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { clearMonitorState } from "../../Features/Monitors/monitorsSlice";
+import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 
 const NewPasswordConfirmed = () => {
   const theme = useTheme();
@@ -17,7 +17,7 @@ const NewPasswordConfirmed = () => {
 
   const handleNavigate = () => {
     dispatch(clearAuthState());
-    dispatch(clearMonitorState());
+    dispatch(clearUptimeMonitorState());
     navigate("/login");
   };
 
