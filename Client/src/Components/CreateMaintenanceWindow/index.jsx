@@ -105,7 +105,7 @@ const CreateNewMaintenanceWindow = () => {
             width: "100px",
             height: "30px",
             gap: "10px",
-            backgroundColor: "var(--env-var-color-31)",
+            backgroundColor: "var(--env-var-color-32)",
             color: "var(--env-var-color-5)",
           }}
           label="Back"
