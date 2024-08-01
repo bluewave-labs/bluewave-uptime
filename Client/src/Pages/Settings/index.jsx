@@ -96,7 +96,7 @@ const Settings = () => {
             <Typography component="h1">About</Typography>
           </Box>
           <Box>
-            <Typography component="h2">Uptime Genie v1.0.0</Typography>
+            <Typography component="h2">BlueWave Uptime v1.0.0</Typography>
             <Typography
               sx={{ mt: theme.gap.xs, mb: theme.gap.medium, opacity: 0.6 }}
             >
