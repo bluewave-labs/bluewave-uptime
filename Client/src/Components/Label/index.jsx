@@ -134,6 +134,7 @@ const StatusLabel = ({ status, text, customStyles }) => {
     <BaseLabel
       label={text}
       styles={{
+        color: dotColor,
         backgroundColor: bgColor,
         borderColor: borderColor,
         ...customStyles,

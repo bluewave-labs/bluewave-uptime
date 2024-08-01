@@ -1,7 +1,6 @@
 .page-speed h1.MuiTypography-root,
 .page-speed span.MuiTypography-root,
-.page-speed p.MuiTypography-root,
-.page-speed .label {
+.page-speed p.MuiTypography-root {
   color: var(--env-var-color-5);
 }
 .page-speed h2.MuiTypography-root {
@@ -26,8 +25,7 @@
   background-color: var(--env-var-color-8);
 }
 .page-speed .label {
-  padding: 0 5px;
+  padding: 7px;
   height: 22px;
   font-size: var(--env-var-font-size-small);
-  border-color: var(--env-var-color-29);
 }
