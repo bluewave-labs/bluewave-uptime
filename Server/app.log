@@ -1,0 +1,122 @@
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-06-28T17:11:41.949Z","userId":"667eeecdf22db8cc47c3d1d1"}
+{"level":"error","message":"secretOrPrivateKey must have a value","service":"auth","timestamp":"2024-06-28T17:11:41.951Z"}
+{"level":"error","message":"editUserParamValidation.userDeleteValidation is not a function","service":"auth","timestamp":"2024-06-28T17:25:07.298Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-06-28T17:27:33.186Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-06-28T17:29:24.427Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-06-28T17:31:09.988Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-06-29T08:24:28.364Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-06-29T17:49:55.779Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-06-29T17:50:09.765Z","userId":"66804951e2faccbbc91f3db9"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-06-29T17:50:12.845Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-06-29T17:51:17.720Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'email')","service":"auth","timestamp":"2024-07-02T06:07:44.953Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'email')","service":"auth","timestamp":"2024-07-02T06:08:21.664Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-02T06:09:13.816Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-02T06:09:54.324Z"}
+{"level":"error","message":"User already exists","service":"auth","timestamp":"2024-07-02T06:10:32.735Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-02T06:19:03.951Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-02T06:30:35.012Z"}
+{"level":"error","message":"\"userId\" is required","service":"auth","timestamp":"2024-07-02T06:32:51.593Z"}
+{"level":"error","message":"\"email\" is not allowed","service":"auth","timestamp":"2024-07-02T06:34:23.667Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-02T06:42:27.918Z"}
+{"level":"error","message":"\"email\" is required","service":"auth","timestamp":"2024-07-02T06:44:46.524Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-02T06:46:18.818Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T06:49:48.849Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T06:51:56.487Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T06:52:38.772Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-07-02T06:53:08.103Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-02T08:12:56.991Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-02T08:12:57.003Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-02T08:13:27.146Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-02T08:13:27.156Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-07-02T08:15:59.141Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-07-02T08:19:37.776Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-07-02T08:20:12.522Z"}
+{"level":"error","message":"\"value\" must be of type object","service":"auth","timestamp":"2024-07-02T08:20:46.525Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:21:05.216Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:21:49.560Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:25:38.707Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:27:43.445Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:28:03.201Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:30:02.671Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:30:51.085Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:32:25.011Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:34:09.998Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:34:32.418Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'userId')","service":"auth","timestamp":"2024-07-02T08:35:58.666Z"}
+{"level":"error","message":"req.db.deleteUserById is not a function","service":"auth","timestamp":"2024-07-02T08:38:21.134Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-02T08:41:36.332Z","userId":"6683bd409a3e1f3bef1f962f"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-02T08:41:38.481Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-02T08:42:56.481Z","userId":"6683bd909a3e1f3bef1f9636"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-02T08:42:57.931Z"}
+{"level":"error","message":"\"role\" is required","service":"auth","timestamp":"2024-07-04T08:00:00.639Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-04T08:01:01.900Z","userId":"668656bdf26c0430195ed128"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-04T08:01:05.580Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-04T08:01:05.630Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-04T08:01:05.655Z"}
+{"level":"error","message":"No auth token provided","service":"verifyJWT","timestamp":"2024-07-04T08:01:53.601Z"}
+{"level":"error","message":"No auth token provided","service":"verifyJWT","timestamp":"2024-07-04T08:04:37.666Z"}
+{"level":"error","message":"No auth token provided","service":"verifyJWT","timestamp":"2024-07-04T08:05:16.895Z"}
+{"level":"error","message":"No auth token provided","service":"verifyJWT","timestamp":"2024-07-04T08:06:14.156Z"}
+{"level":"error","message":"\"Bearer\" is not allowed","service":"auth","timestamp":"2024-07-04T08:17:41.395Z"}
+{"level":"error","message":"\"Bearer\" is not allowed","service":"auth","timestamp":"2024-07-04T08:17:51.602Z"}
+{"level":"error","message":"\"role\" is required","service":"auth","timestamp":"2024-07-04T08:18:35.694Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-04T08:18:58.586Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-04T08:18:58.592Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-04T08:19:14.824Z","userId":"66865b02d7327e343aa12323"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-04T08:19:17.923Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-04T08:19:17.954Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-04T08:19:17.964Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-04T08:19:34.399Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-04T08:22:17.689Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:26:45.499Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:26:45.512Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-05T06:27:09.556Z","userId":"6687923d39eac2a95f808ed1"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-05T06:27:13.188Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:27:13.219Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:27:13.237Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"Unknown service","timestamp":"2024-07-05T06:30:02.774Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-05T06:31:03.056Z","userId":"6687932639eac2a95f808ef3"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-05T06:31:11.988Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:31:12.034Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:31:12.056Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"auth","timestamp":"2024-07-05T06:32:29.177Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"auth","timestamp":"2024-07-05T06:32:59.074Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"auth","timestamp":"2024-07-05T06:33:26.430Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"auth","timestamp":"2024-07-05T06:33:51.528Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"auth","timestamp":"2024-07-05T06:38:25.396Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-05T06:40:03.393Z","userId":"668795438844be01e10f9e86"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-05T06:40:09.997Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:40:10.067Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:40:10.077Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-05T06:47:27.451Z","userId":"668796ff8d72b0e492beb968"}
+{"level":"info","message":"Emails sent to receivers:mohammad@gmail.com with the subject:Welcome to Uptime Monitor","service":"Email_Service","timestamp":"2024-07-05T06:47:31.209Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:47:31.255Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-05T06:47:31.265Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"auth","timestamp":"2024-07-05T06:48:07.373Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"Unknown service","timestamp":"2024-07-06T05:07:26.227Z"}
+{"level":"error","message":"User already exists","service":"auth","timestamp":"2024-07-06T05:09:33.842Z"}
+{"level":"error","message":"User already exists","service":"auth","timestamp":"2024-07-06T05:12:33.528Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"Unknown service","timestamp":"2024-07-06T05:14:34.802Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"Unknown service","timestamp":"2024-07-06T05:15:27.207Z"}
+{"level":"error","message":"{(intermediate value)}.select is not a function","service":"Unknown service","timestamp":"2024-07-06T05:24:11.689Z"}
+{"level":"error","message":"secret or public key must be provided","service":"auth","timestamp":"2024-07-06T05:25:15.511Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-06T05:25:59.926Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-06T05:25:59.998Z"}
+{"level":"error","message":"secret or public key must be provided","service":"auth","timestamp":"2024-07-06T05:26:40.311Z"}
+{"level":"error","message":"secret or public key must be provided","service":"auth","timestamp":"2024-07-06T05:27:27.841Z"}
+{"level":"error","message":"secret or public key must be provided","service":"auth","timestamp":"2024-07-06T05:27:44.907Z"}
+{"level":"error","message":"Document not found","service":"verifyOwnership","timestamp":"2024-07-06T05:32:34.301Z"}
+{"level":"error","message":"Document not found","service":"verifyOwnership","timestamp":"2024-07-06T05:32:34.314Z"}
+{"level":"error","message":"Document not found","service":"verifyOwnership","timestamp":"2024-07-06T05:33:49.441Z"}
+{"level":"error","message":"Document not found","service":"verifyOwnership","timestamp":"2024-07-06T05:33:49.448Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-06T05:34:16.519Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-06T05:34:16.531Z"}
+{"level":"error","message":"Document not found","service":"verifyOwnership","timestamp":"2024-07-06T05:34:39.828Z"}
+{"level":"error","message":"Document not found","service":"verifyOwnership","timestamp":"2024-07-06T05:34:39.831Z"}
+{"level":"error","message":"User not found","service":"auth","timestamp":"2024-07-06T05:35:28.055Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-06T05:37:03.589Z"}
+{"level":"error","message":"No monitors found for user","service":"monitorController","timestamp":"2024-07-06T05:37:03.657Z"}
+{"level":"info","message":"User created successfully","service":"auth","timestamp":"2024-07-06T05:37:52.722Z","userId":"6688d83075adbba2df5c1cfd"}
+{"level":"error","message":"Sending Email action failed, ERROR:Unauthorized (401)\n  We cannot allow you to access SendGrid because you appear to be located in an embargoed region.\n    null\n    null","service":"Email_Service","timestamp":"2024-07-06T05:37:56.267Z"}
+{"level":"error","message":"Unauthorized","service":"auth","timestamp":"2024-07-06T05:37:56.273Z"}
