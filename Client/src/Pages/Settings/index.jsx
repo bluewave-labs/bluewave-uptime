@@ -110,7 +110,7 @@ const Settings = () => {
           </Box>
         </Stack>
         <Stack direction="row" justifyContent="flex-end">
-          <Button level="primary" label="Save" />
+          <Button level="primary" label="Save" sx={{ px: theme.gap.large }} />
         </Stack>
       </form>
     </Box>

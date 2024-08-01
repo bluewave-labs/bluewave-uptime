@@ -12,6 +12,9 @@
 .configure-monitor .MuiSelect-select {
   color: var(--env-var-color-5);
 }
+.configure-monitor .MuiModal-root h2.MuiTypography-root {
+  color: var(--env-var-color-1);
+}
 .configure-monitor p.MuiTypography-root,
 .configure-monitor .MuiSelect-select {
   font-size: var(--env-var-font-size-medium);
@@ -50,6 +53,9 @@
 .configure-monitor span.MuiTypography-root.input-error {
   position: absolute;
   top: 100%;
+}
+.configure-monitor .MuiInputBase-root:has(> .Mui-disabled) {
+  background-color: var(--env-var-color-13);
 }
 
 .MuiInputBase-root:has(#monitor-interval) {
