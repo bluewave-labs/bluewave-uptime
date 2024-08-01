@@ -24,7 +24,7 @@ import withAdminCheck from "./HOC/withAdminCheck";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
-import MaintenanceOptions from "./Components/MaintenanceOptions";
+import CreateNewMaintenanceWindow from "./Components/CreateMaintenanceWindow";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -66,10 +66,16 @@ function App() {
             path="integrations"
             element={<ProtectedRoute Component={Integrations} />}
           />
+
           <Route
             path="maintenance"
             element={<ProtectedRoute Component={Maintenance} />}
           />
+          <Route
+            path="/maintenance/create"
+            element={<CreateNewMaintenanceWindow />}
+          />
+
           <Route
             path="settings"
             element={<ProtectedRoute Component={Settings} />}
@@ -109,7 +115,6 @@ function App() {
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
         />
-        <Route path="/maintainopts" element={<MaintenanceOptions />} />
       </Routes>
       <ToastContainer />
     </>
