@@ -2,6 +2,7 @@ const Monitor = require("../../../models/Monitor");
 const Check = require("../../../models/Check");
 const PageSpeedCheck = require("../../../models/PageSpeedCheck");
 const { errorMessages } = require("../../../utils/messages");
+const Notification = require("../../../models/Notification");
 
 /**
  * Get all monitors
@@ -119,7 +120,12 @@ const getMonitorsByUserId = async (req, res) => {
             createdAt: sortOrder,
           })
           .limit(limit);
-        return { ...monitor.toObject(), checks };
+
+        // Get notifications
+        const notifications = await Notification.find({
+          monitorId: monitor._id,
+        });
+        return { ...monitor.toObject(), checks, notifications };
       })
     );
     return monitorsWithChecks;
