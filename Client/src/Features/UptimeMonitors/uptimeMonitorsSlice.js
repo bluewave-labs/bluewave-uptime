@@ -77,6 +77,7 @@ export const updateUptimeMonitor = createAsyncThunk(
         name: monitor.name,
         description: monitor.description,
         interval: monitor.interval,
+        notifications: monitor.notifications
       };
       const res = await axiosInstance.post(
         `/monitors/edit/${monitor._id}`,

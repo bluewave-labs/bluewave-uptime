@@ -375,7 +375,7 @@ const Configure = () => {
           <Button
             level="primary"
             label="Save"
-            sx={{ px: theme.gap.ml }}
+            sx={{ px: theme.gap.large }}
             onClick={handleSubmit}
           />
         </Stack>

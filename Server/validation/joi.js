@@ -160,6 +160,7 @@ const editMonitorBodyValidation = joi.object({
   name: joi.string(),
   description: joi.string(),
   interval: joi.number(),
+  notifications: joi.array().items(joi.object()),
 });
 
 //****************************************
