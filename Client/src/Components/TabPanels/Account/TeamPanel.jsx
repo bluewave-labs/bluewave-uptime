@@ -34,7 +34,7 @@ import Select from "../../Inputs/Select";
 const TeamPanel = () => {
   const theme = useTheme();
 
-  const { authToken } = useSelector((state) => state.auth);
+  const { authToken, user } = useSelector((state) => state.auth);
   //TODO
   const [orgStates, setOrgStates] = useState({
     name: "Bluewave Labs",
@@ -65,7 +65,7 @@ const TeamPanel = () => {
     };
 
     fetchTeam();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let team = members;
