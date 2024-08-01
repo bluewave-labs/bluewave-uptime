@@ -2,6 +2,7 @@ const Monitor = require("../../../models/Monitor");
 const Check = require("../../../models/Check");
 const PageSpeedCheck = require("../../../models/PageSpeedCheck");
 const { errorMessages } = require("../../../utils/messages");
+const Notification = require("../../../models/Notification");
 
 /**
  * Get all monitors
@@ -30,7 +31,6 @@ const getAllMonitors = async (req, res) => {
  */
 const getMonitorById = async (req, res) => {
   try {
-
     const { monitorId } = req.params;
     let { status, limit, sortOrder } = req.query;
 
@@ -64,7 +64,8 @@ const getMonitorById = async (req, res) => {
         createdAt: sortOrder,
       })
       .limit(limit);
-    const monitorWithChecks = { ...monitor.toObject(), checks };
+    const notifications = await Notification.find({ monitorId: monitor._id });
+    const monitorWithChecks = { ...monitor.toObject(), checks, notifications };
     return monitorWithChecks;
   } catch (error) {
     throw error;
@@ -120,7 +121,12 @@ const getMonitorsByUserId = async (req, res) => {
             createdAt: sortOrder,
           })
           .limit(limit);
-        return { ...monitor.toObject(), checks };
+
+        // Get notifications
+        const notifications = await Notification.find({
+          monitorId: monitor._id,
+        });
+        return { ...monitor.toObject(), checks, notifications };
       })
     );
     return monitorsWithChecks;
@@ -140,6 +146,8 @@ const getMonitorsByUserId = async (req, res) => {
 const createMonitor = async (req, res) => {
   try {
     const monitor = new Monitor({ ...req.body });
+    // Remove notifications fom monitor as they aren't needed here
+    monitor.notifications = undefined;
     monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
@@ -208,6 +216,8 @@ const deleteMonitorsByUserId = async (userId) => {
 const editMonitor = async (req, res) => {
   const candidateId = req.params.monitorId;
   const candidateMonitor = req.body;
+  candidateMonitor.notifications = undefined;
+
   try {
     const editedMonitor = await Monitor.findByIdAndUpdate(
       candidateId,

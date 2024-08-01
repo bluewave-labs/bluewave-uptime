@@ -31,6 +31,9 @@
 .account .MuiButtonGroup-root button {
   border-color: var(--env-var-color-16);
 }
+.account button{
+  height: 34px;
+}
 .account [class$="-form"] {
   width: inherit;
 }

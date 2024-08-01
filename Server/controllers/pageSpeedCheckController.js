@@ -1,4 +1,3 @@
-const PageSpeedCheck = require("../models/PageSpeedCheck");
 const PageSpeedService = require("../service/pageSpeedService");
 const { successMessages } = require("../utils/messages");
 const pageSpeedService = new PageSpeedService();
@@ -22,12 +21,19 @@ const getPageSpeedChecks = async (req, res, next) => {
   try {
     // Validate monitorId parameter
     await getPageSpeedCheckParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
 
+  try {
     return res.status(200).json({ msg: "Hit getPageSpeedChecks" });
   } catch (error) {
-    if (error.isJoi) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
+    error.service = SERVICE_NAME;
     next(error);
   }
 };
@@ -42,12 +48,18 @@ const getPageSpeedChecks = async (req, res, next) => {
  */
 const createPageSpeedCheck = async (req, res, next) => {
   try {
-    // Validate monitorId parameter
     await createPageSpeedCheckParamValidation.validateAsync(req.params);
-
-    // Validate request body
     await createPageSpeedCheckBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
 
+  try {
     const { monitorId } = req.params;
     const { url } = req.body;
 
@@ -74,9 +86,6 @@ const createPageSpeedCheck = async (req, res, next) => {
       data: newPageSpeedCheck,
     });
   } catch (error) {
-    if (error.isJoi) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
     error.service = SERVICE_NAME;
     next(error);
   }
@@ -94,12 +103,17 @@ const deletePageSpeedCheck = async (req, res, next) => {
   try {
     // Validate monitorId parameter
     await deletePageSpeedCheckParamValidation.validateAsync(req.params);
-
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
     return res.status(200).json({ msg: "Hit deletePageSpeedCheck" });
   } catch (error) {
-    if (error.isJoi) {
-      return res.status(400).json({ error: error.details[0].message });
-    }
     error.service = SERVICE_NAME;
     next(error);
   }

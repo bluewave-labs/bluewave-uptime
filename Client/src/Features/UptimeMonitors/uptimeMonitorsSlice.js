@@ -68,6 +68,62 @@ export const getUptimeMonitorsByUserId = createAsyncThunk(
   }
 );
 
+export const updateUptimeMonitor = createAsyncThunk(
+  "monitors/updateMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+      const updatedFields = {
+        name: monitor.name,
+        description: monitor.description,
+        interval: monitor.interval,
+        notifications: monitor.notifications
+      };
+      const res = await axiosInstance.post(
+        `/monitors/edit/${monitor._id}`,
+        updatedFields,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteUptimeMonitor = createAsyncThunk(
+  "monitors/deleteMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+      const res = await axiosInstance.post(
+        `/monitors/delete/${monitor._id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const uptimeMonitorsSlice = createSlice({
   name: "uptimeMonitors",
   initialState,
@@ -137,6 +193,44 @@ const uptimeMonitorsSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to create uptime monitor";
+      })
+
+      // *****************************************************
+      // update Monitor
+      // *****************************************************
+      .addCase(updateUptimeMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUptimeMonitor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(updateUptimeMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to update uptime monitor";
+      })
+
+      // *****************************************************
+      // Delete Monitor
+      // *****************************************************
+      .addCase(deleteUptimeMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUptimeMonitor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(deleteUptimeMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to delete uptime monitor";
       });
   },
 });

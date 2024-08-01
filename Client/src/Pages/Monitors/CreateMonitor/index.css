@@ -18,7 +18,8 @@
 .create-monitor p.MuiTypography-root {
   color: var(--env-var-color-2);
 }
-.create-monitor h6.MuiTypography-root {
+.create-monitor h6.MuiTypography-root,
+.create-monitor .MuiBox-root .field + p.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
   opacity: 0.8;
 }
@@ -48,6 +49,7 @@
   border-radius: var(--env-var-radius-1);
   flex-direction: row;
   gap: var(--env-var-spacing-4);
+  background-color: var(--env-var-color-8);
 }
 .create-monitor .config-box .MuiBox-root,
 .create-monitor .config-box .MuiStack-root {
