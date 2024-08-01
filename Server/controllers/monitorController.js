@@ -234,7 +234,23 @@ const editMonitor = async (req, res, next) => {
 
   try {
     const monitorBeforeEdit = await req.db.getMonitorById(req, res);
+
+    // Get notifications from the request body
+    const notifications = req.body.notifications;
+
     const editedMonitor = await req.db.editMonitor(req, res);
+
+    await req.db.deleteNotificationsByMonitorId(editedMonitor._id);
+
+    if (notifications && notifications.length !== 0) {
+      await Promise.all(
+        notifications.map(async (notification) => {
+          notification.monitorId = editedMonitor._id;
+          await req.db.createNotification(notification);
+        })
+      );
+    }
+
     // Delete the old job(editedMonitor has the same ID as the old monitor)
     await req.jobQueue.deleteJob(monitorBeforeEdit);
     // Add the new job back to the queue
