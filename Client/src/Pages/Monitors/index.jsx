@@ -41,7 +41,14 @@ import {
 const Host = ({ params }) => {
   return (
     <Stack direction="row" alignItems="center" className="host">
-      <a href={params.url} target="_blank" rel="noreferrer">
+      <a
+        href={params.url}
+        target="_blank"
+        rel="noreferrer"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      >
         <OpenInNewPage />
       </a>
       <Box>{params.title}</Box>
@@ -231,8 +238,7 @@ const Monitors = () => {
         onClose={closeMenu}
       >
         <MenuItem
-          onClick={(event) => {
-            event.stopPropagation();
+          onClick={() => {
             window.open(actions.url, "_blank", "noreferrer");
           }}
         >
