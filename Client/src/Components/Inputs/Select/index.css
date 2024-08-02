@@ -15,6 +15,9 @@
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
 }
+.select-wrapper h3.MuiTypography-root{
+  font-weight: 500;
+}
 .MuiInputBase-root:has(> .MuiSelect-select) fieldset {
   border-color: var(--env-var-color-29);
 }

@@ -72,7 +72,8 @@ const Button = ({
       onClick={onClick}
       disableRipple
       sx={{
-        lineHeight: 1,
+        lineHeight: 1.5,
+        fontWeight: 400,
         boxShadow: "none",
         textTransform: "none",
         "&:focus": {

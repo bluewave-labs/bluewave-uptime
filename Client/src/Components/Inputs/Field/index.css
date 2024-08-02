@@ -24,6 +24,7 @@
 .field h3.MuiTypography-root span.field-optional {
   opacity: 0.6;
   margin-left: 4px;
+  font-weight: 400;
 }
 .field h5.MuiTypography-root {
   position: relative;

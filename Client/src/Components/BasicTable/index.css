@@ -85,7 +85,11 @@
 .MuiPaper-root + .MuiPagination-root ul {
   justify-content: center;
 }
-.MuiPaper-root + .MuiPagination-root ul li button {
+.MuiPaper-root
+  + .MuiPagination-root
+  ul
+  li:not(:first-child):not(:last-child)
+  button {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-5);
   font-weight: 500;
@@ -123,6 +127,6 @@
 .MuiPaper-root + .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
   background-color: var(--env-var-color-15);
 }
-.MuiPaper-root + .MuiPagination-root div.MuiPaginationItem-root{
+.MuiPaper-root + .MuiPagination-root div.MuiPaginationItem-root {
   user-select: none;
 }

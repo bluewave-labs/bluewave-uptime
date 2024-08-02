@@ -33,9 +33,11 @@ const shadow =
   "0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
 // Global Font Family
-const fontFamilyDefault = '"Roboto", "Helvetica", "Arial", sans-serif';
+const fontFamilyDefault =
+  '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
 
 const theme = createTheme({
+  typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     primary: {
       main: primaryMain,
@@ -76,11 +78,6 @@ const theme = createTheme({
       strongBlue: otherColorsStrongBlue,
       slateGray: otherColorsSlateGray,
       fillGray: otherColorsFillGray,
-    },
-  },
-  font: {
-    default: {
-      font: fontFamilyDefault,
     },
   },
   shape: {

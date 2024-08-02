@@ -31,3 +31,7 @@
   font-size: var(--env-var-font-size-small);
   border-color: var(--env-var-color-29);
 }
+.page-speed button {
+  height: 34px;
+  align-self: flex-end;
+}
