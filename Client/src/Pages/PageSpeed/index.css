@@ -29,7 +29,10 @@
   height: 22px;
   font-size: var(--env-var-font-size-small);
 }
-.page-speed button {
+.page-speed:not(:has([class*="fallback__"])) button {
   height: 34px;
   align-self: flex-end;
+}
+.page-speed [class*="fallback__"] h1 {
+  margin-left: var(--env-var-spacing-3);
 }

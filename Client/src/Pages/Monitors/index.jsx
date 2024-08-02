@@ -44,8 +44,12 @@ const Host = ({ params }) => {
       <a href={params.url} target="_blank" rel="noreferrer">
         <OpenInNewPage />
       </a>
-      <Box>{params.title}</Box>
-      <Box sx={{ color: params.percentageColor }}>{params.precentage}%</Box>
+      <Box>
+        {params.title}
+        <Typography component="span" sx={{ color: params.percentageColor }}>
+          {params.precentage}%
+        </Typography>
+      </Box>
     </Stack>
   );
 };

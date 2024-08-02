@@ -75,7 +75,7 @@ const PageSpeed = () => {
 
   return (
     <Box className="page-speed">
-      {monitors ? (
+      {monitors?.length !== 0 ? (
         <Stack gap={theme.gap.xs}>
           <Stack
             direction="row"
