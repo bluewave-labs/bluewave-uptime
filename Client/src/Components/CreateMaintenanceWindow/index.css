@@ -1,4 +1,4 @@
-.maintenance-options > .maintenance-option-item > .select-wrapper {
+.maintenance-options > .MuiStack-root > .MuiStack-root.select-wrapper {
   width: 380px;
 }
 
@@ -16,6 +16,6 @@
   width: 90px;
 }
 
-.maintenance-option-item .MuiInputAdornment-root .MuiIconButton-root svg {
+.MuiInputAdornment-outlined .MuiIconButton-root svg {
   width: 20px;
 }

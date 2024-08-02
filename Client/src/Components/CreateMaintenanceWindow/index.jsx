@@ -128,8 +128,8 @@ const CreateNewMaintenanceWindow = () => {
           </Typography>
         </Box>
         <Stack
-          gap={8}
-          paddingY={6}
+          gap={5}
+          paddingY={4}
           paddingX={8}
           sx={{
             border: "1px solid var(--env-var-color-16)",
@@ -138,11 +138,7 @@ const CreateNewMaintenanceWindow = () => {
           className="maintenance-options"
         >
           {configOptions.map((item, index) => (
-            <Stack
-              key={index}
-              display="-webkit-inline-box"
-              className="maintenance-option-item"
-            >
+            <Stack key={index} display="-webkit-inline-box">
               {configOptionTitle(item.title, item.description)}
               {item.comopnent && item.comopnent}
             </Stack>
