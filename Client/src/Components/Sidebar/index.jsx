@@ -26,7 +26,7 @@ const menu = [
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   { name: "Status pages", path: "status", icon: <StatusPages /> },
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
-  { name: "Page speed", path: "page-speed", icon: <PageSpeed /> },
+  { name: "Page speed", path: "pagespeed", icon: <PageSpeed /> },
   { name: "Integrations", path: "integrations", icon: <Integrations /> },
   { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },

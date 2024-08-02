@@ -122,7 +122,7 @@ const PageSpeedDetails = () => {
         label="Back"
         animate="slideLeft"
         img={<WestRoundedIcon />}
-        onClick={() => navigate("/page-speed")}
+        onClick={() => navigate("/pagespeed")}
         sx={{
           width: "fit-content",
           backgroundColor: theme.palette.otherColors.fillGray,

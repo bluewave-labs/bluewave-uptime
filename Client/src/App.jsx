@@ -87,11 +87,11 @@ function App() {
             element={<ProtectedRoute Component={Account} open="team" />}
           />
           <Route
-            path="page-speed"
+            path="pagespeed"
             element={<ProtectedRoute Component={PageSpeed} />}
           />
           <Route
-            path="page-speed/create"
+            path="pagespeed/create"
             element={<ProtectedRoute Component={CreatePageSpeed} />}
           />
           <Route

@@ -91,7 +91,7 @@ const PageSpeed = () => {
             <Button
               level="primary"
               label="Create new"
-              onClick={() => navigate("/page-speed/create")}
+              onClick={() => navigate("/pagespeed/create")}
             />
           </Stack>
           <Grid container spacing={theme.gap.large}>
@@ -108,7 +108,7 @@ const PageSpeed = () => {
             "Help analyze webpage speed",
             "Give suggestions on how the page can be improved",
           ]}
-          link="/page-speed/create"
+          link="/pagespeed/create"
         />
       )}
     </Box>

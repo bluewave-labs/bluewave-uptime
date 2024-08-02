@@ -82,7 +82,7 @@ const CreatePageSpeed = () => {
       try {
         const action = await dispatch(createPageSpeed({ authToken, monitor }));
         if (action.meta.requestStatus === "fulfilled") {
-          navigate("/page-speed");
+          navigate("/pagespeed");
         }
       } catch (error) {
         createToast({
@@ -102,7 +102,7 @@ const CreatePageSpeed = () => {
         label="Back"
         animate="slideLeft"
         img={<WestRoundedIcon />}
-        onClick={() => navigate("/page-speed")}
+        onClick={() => navigate("/pagespeed")}
         sx={{
           backgroundColor: theme.palette.otherColors.fillGray,
           mb: theme.gap.large,
