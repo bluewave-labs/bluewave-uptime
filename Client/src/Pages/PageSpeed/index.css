@@ -29,3 +29,7 @@
   height: 22px;
   font-size: var(--env-var-font-size-small);
 }
+.page-speed button {
+  height: 34px;
+  align-self: flex-end;
+}

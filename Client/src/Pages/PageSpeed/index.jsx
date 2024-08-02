@@ -8,6 +8,8 @@ import { getPageSpeedByUserId } from "../../Features/PageSpeedMonitor/pageSpeedM
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
+import Button from "../../Components/Button";
+import { useNavigate } from "react-router";
 
 const Card = ({ data }) => {
   const theme = useTheme();
@@ -63,6 +65,7 @@ const Card = ({ data }) => {
 const PageSpeed = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { authToken } = useSelector((state) => state.auth);
   const { monitors } = useSelector((state) => state.pageSpeedMonitors);
@@ -74,10 +77,23 @@ const PageSpeed = () => {
     <Box className="page-speed">
       {monitors ? (
         <Stack gap={theme.gap.xs}>
-          <Typography component="h1">All page speed monitors</Typography>
-          <Typography mb={theme.gap.large}>
-            Click on one of the monitors to get more site speed information.
-          </Typography>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            mb={theme.gap.large}
+          >
+            <Box>
+              <Typography component="h1">All page speed monitors</Typography>
+              <Typography mt={theme.gap.xs}>
+                Click on one of the monitors to get more site speed information.
+              </Typography>
+            </Box>
+            <Button
+              level="primary"
+              label="Create new"
+              onClick={() => navigate("/page-speed/create")}
+            />
+          </Stack>
           <Grid container spacing={theme.gap.large}>
             {monitors?.map((monitor) => (
               <Card data={monitor} key={`monitor-${monitor._id}`} />

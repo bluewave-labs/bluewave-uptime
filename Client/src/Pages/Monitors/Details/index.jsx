@@ -22,7 +22,9 @@ import "./index.css";
 const StatBox = ({ title, value }) => {
   return (
     <Box className="stat-box">
-      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 400 }}>
+        {title}
+      </Typography>
       <Typography variant="h4">{value}</Typography>
     </Box>
   );
@@ -64,7 +66,13 @@ const DetailsPage = () => {
             data: [
               {
                 id: idx,
-                data: <StatusLabel status={status} text={status} />,
+                data: (
+                  <StatusLabel
+                    status={status}
+                    text={status}
+                    customStyles={{ textTransform: "capitalize" }}
+                  />
+                ),
               },
               { id: idx + 1, data: new Date(check.createdAt).toLocaleString() },
               { id: idx + 2, data: check.statusCode },
