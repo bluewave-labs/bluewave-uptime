@@ -79,7 +79,7 @@ const {
 const {
   createPageSpeedCheck,
   getPageSpeedChecks,
-  deletePageSpeedChecks,
+  deletePageSpeedChecksByMonitorId,
 } = require("./modules/pageSpeedCheckModule");
 
 //****************************************
@@ -157,7 +157,7 @@ module.exports = {
   deleteMonitorsByUserId,
   createPageSpeedCheck,
   getPageSpeedChecks,
-  deletePageSpeedChecks,
+  deletePageSpeedChecksByMonitorId,
   createMaintenanceWindow,
   getMaintenanceWindowsByUserId,
   getMaintenanceWindowsByMonitorId,
