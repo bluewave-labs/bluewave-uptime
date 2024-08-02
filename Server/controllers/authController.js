@@ -440,6 +440,7 @@ const deleteUserController = async (req, res, next) => {
     const { _id, email } = decodedToken;
 
     const decodedTokenCastedAsRequest = {
+      query: {},
       params: {
         userId: _id,
       },
