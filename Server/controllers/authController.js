@@ -439,6 +439,7 @@ const deleteUserController = async (req, res, next) => {
     const decodedToken = jwt.decode(token);
     const { _id, email } = decodedToken;
 
+    // TODO fix this hack
     const decodedTokenCastedAsRequest = {
       query: {},
       params: {
