@@ -22,9 +22,10 @@
 }
 
 .MuiTable-root .label {
-  border-color: var(--env-var-color-4);
+  line-height: 1;
   border-radius: var(--env-var-radius-2);
-  padding: calc(var(--env-var-spacing-1) / 2);
+  padding: 7px;
+  font-size: var(--env-var-font-size-small-plus);
 }
 
 .MuiPaper-root:has(table.MuiTable-root) {
@@ -118,6 +119,6 @@
 .MuiPaper-root + .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
   background-color: var(--env-var-color-15);
 }
-.MuiPaper-root + .MuiPagination-root div.MuiPaginationItem-root{
+.MuiPaper-root + .MuiPagination-root div.MuiPaginationItem-root {
   user-select: none;
 }
