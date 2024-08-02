@@ -1,9 +1,8 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Button from "../../../Components/Button";
@@ -11,6 +10,7 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import "./index.css";
 
 const CreatePageSpeed = () => {
@@ -23,10 +23,11 @@ const CreatePageSpeed = () => {
 
   const frequencies = [
     { _id: 1, name: "1 minute" },
-    { _id: 2, name: "2 minutes" },
-    { _id: 3, name: "3 minutes" },
-    { _id: 4, name: "4 minutes" },
-    { _id: 5, name: "5 minutes" },
+    { _id: 1440, name: "1 day" },
+    { _id: 2880, name: "2 days" },
+    { _id: 4320, name: "3 days" },
+    { _id: 7200, name: "5 days" },
+    { _id: 10080, name: "1 week" },
   ];
 
   const [form, setForm] = useState({
@@ -96,102 +97,114 @@ const CreatePageSpeed = () => {
 
   return (
     <Box className="create-page-speed">
+      <Button
+        level="tertiary"
+        label="Back"
+        animate="slideLeft"
+        img={<WestRoundedIcon />}
+        onClick={() => navigate("/page-speed")}
+        sx={{
+          backgroundColor: "#f4f4f4",
+          mb: theme.gap.large,
+          px: theme.gap.ml,
+          "& svg.MuiSvgIcon-root": {
+            mr: theme.gap.small,
+            fill: theme.palette.otherColors.slateGray,
+          },
+        }}
+      />
       <form
         noValidate
         spellCheck="false"
         onSubmit={handleCreate}
-        style={{ display: "flex", flexDirection: "column", gap: theme.gap.xl }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: theme.gap.large,
+          // TODO
+          maxWidth: "1000px",
+        }}
       >
-        <IconButton
-          aria-label="close modal"
-          onClick={() => navigate("/page-speed")}
-          sx={{
-            p: "5px",
-            opacity: 0.6,
-            "&:focus": { outline: "none" },
-          }}
-        >
-          <CloseRoundedIcon />
-        </IconButton>
-        <Stack gap={theme.gap.large}>
-          <Typography component="h1">Create a page speed monitor</Typography>
-          <Field
-            type="text"
-            id="monitor-name"
-            label="Monitor friendly name"
-            placeholder="Example monitor"
-            isOptional={true}
-            value={form.name}
-            onChange={(event) => handleChange(event, "name")}
-            error={errors.name}
-          />
-          <Field
-            type="url"
-            id="monitor-url"
-            label="URL"
-            placeholder="random.website.com"
-            value={form.url}
-            onChange={(event) => handleChange(event, "url")}
-            error={errors.url}
-          />
-          <Select
-            id="monitor-frequency"
-            label="Check frequency"
-            items={frequencies}
-            value={form.interval}
-            onChange={(event) => handleChange(event, "interval")}
-          />
-        </Stack>
-        <Stack gap={theme.gap.small}>
-          <Typography component="h2">
-            Incidents notifications{" "}
-            <Typography component="span">(coming soon)</Typography>
-          </Typography>
-          <Box className="section-disabled">
-            <Typography mb={theme.gap.small}>
-              When there is a new incident,
+        <Typography component="h1">Create a page speed monitor</Typography>
+        <Stack gap={theme.gap.xl}>
+          <Stack direction="row">
+            <Typography component="h3">Monitor friendly name</Typography>
+            <Field
+              type="text"
+              id="monitor-name"
+              placeholder="Example monitor"
+              value={form.name}
+              onChange={(event) => handleChange(event, "name")}
+              error={errors.name}
+            />
+          </Stack>
+          <Stack direction="row">
+            <Typography component="h3">URL</Typography>
+            <Field
+              type="url"
+              id="monitor-url"
+              placeholder="random.website.com"
+              value={form.url}
+              onChange={(event) => handleChange(event, "url")}
+              error={errors.url}
+            />
+          </Stack>
+          <Stack direction="row">
+            <Typography component="h3">Check frequency</Typography>
+            <Select
+              id="monitor-frequency"
+              items={frequencies}
+              value={form.interval}
+              onChange={(event) => handleChange(event, "interval")}
+            />
+          </Stack>
+          <Stack direction="row">
+            <Typography component="h3">
+              Incidents notifications{" "}
+              <Typography component="span">(coming soon)</Typography>
             </Typography>
-            <Checkbox
-              id="notify-sms"
-              label="Notify via SMS (coming soon)"
-              isChecked={false}
-              isDisabled={true}
-            />
-            <Checkbox
-              id="notify-email"
-              label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
-              isChecked={false}
-            />
-            <Checkbox
-              id="notify-emails"
-              label="Notify via email to following emails"
-              isChecked={false}
-            />
-            <Box mx={`calc(${theme.gap.ml} * 2)`}>
-              <Field
-                id="notify-emails-list"
-                placeholder="notifications@gmail.com"
-                value=""
-                onChange={() => console.log("disabled")}
-                error=""
-              />
-              <Typography mt={theme.gap.small}>
-                You can separate multiple emails with a comma
+            <Stack className="section-disabled">
+              <Typography mb={theme.gap.small}>
+                When there is a new incident,
               </Typography>
-            </Box>
-          </Box>
+              <Checkbox
+                id="notify-sms"
+                label="Notify via SMS (coming soon)"
+                isChecked={false}
+                isDisabled={true}
+              />
+              <Checkbox
+                id="notify-email"
+                label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
+                isChecked={false}
+              />
+              <Checkbox
+                id="notify-emails"
+                label="Notify via email to following emails"
+                isChecked={false}
+              />
+              <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                <Field
+                  id="notify-emails-list"
+                  placeholder="notifications@gmail.com"
+                  value=""
+                  onChange={() => console.log("disabled")}
+                  error=""
+                />
+                <Typography mt={theme.gap.small}>
+                  You can separate multiple emails with a comma
+                </Typography>
+              </Box>
+            </Stack>
+          </Stack>
         </Stack>
-        <Stack direction="row" justifyContent="flex-end" gap={theme.gap.small}>
-          <Button
-            level="tertiary"
-            label="Cancel"
-            onClick={() => navigate("/page-speed")}
-          />
+        <Stack direction="row" justifyContent="flex-end">
           <Button
             type="submit"
             level="primary"
             label="Create"
             onClick={handleCreate}
+            sx={{ px: theme.gap.large, mt: theme.gap.large }}
           />
         </Stack>
       </form>
