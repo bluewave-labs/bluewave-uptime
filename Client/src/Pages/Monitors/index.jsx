@@ -41,7 +41,14 @@ import {
 const Host = ({ params }) => {
   return (
     <Stack direction="row" alignItems="center" className="host">
-      <a href={params.url} target="_blank" rel="noreferrer">
+      <a
+        href={params.url}
+        target="_blank"
+        rel="noreferrer"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      >
         <OpenInNewPage />
       </a>
       <Box>
@@ -64,6 +71,7 @@ const Monitors = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [actions, setActions] = useState({});
   const openMenu = (event, id, url) => {
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
     setActions({ id: id, url: url });
   };
@@ -141,7 +149,7 @@ const Monitors = () => {
     return {
       id: monitor._id,
       // disabled for now
-      // handleClick: () => navigate(`/monitors/${monitor._id}`),
+      handleClick: () => navigate(`/monitors/${monitor._id}`),
       data: [
         { id: idx, data: <Host params={params} /> },
         {
@@ -167,7 +175,10 @@ const Monitors = () => {
             <>
               <IconButton
                 aria-label="monitor actions"
-                onClick={(event) => openMenu(event, monitor._id, monitor.url)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  openMenu(event, monitor._id, monitor.url);
+                }}
                 sx={{
                   "&:focus": {
                     outline: "none",
@@ -231,7 +242,9 @@ const Monitors = () => {
         onClose={closeMenu}
       >
         <MenuItem
-          onClick={() => window.open(actions.url, "_blank", "noreferrer")}
+          onClick={() => {
+            window.open(actions.url, "_blank", "noreferrer");
+          }}
         >
           Open site
         </MenuItem>
