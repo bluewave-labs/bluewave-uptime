@@ -9,7 +9,8 @@
 .page-speed-details p {
   font-size: var(--env-var-font-size-medium);
 }
-.page-speed-details svg + .MuiBox-root > p {
+.page-speed-details svg + .MuiBox-root > p,
+.page-speed-details h4 > span {
   font-size: var(--env-var-font-size-small-plus);
 }
 .page-speed-details h2,

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { formatDate, formatDurationRounded } from "../../../Utils/timeUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -37,6 +38,24 @@ const StatBox = ({ icon, title, value }) => {
   );
 };
 
+/**
+ * Helper function to get duration since last check or the last date checked
+ * @param {Array} checks Array of check objects.
+ * @param {boolean} duration Whether the function should return the duration since last checked or the date itself
+ * @returns {number} Timestamp of the most recent check.
+ */
+const getLastChecked = (checks, duration = true) => {
+  if (!checks || checks.length === 0) {
+    return 0; // Handle case when no checks are available
+  }
+
+  // Data is sorted newest -> oldest, so newest check is the most recent
+  if (!duration) {
+    return new Date(checks[0].createdAt);
+  }
+  return new Date() - new Date(checks[0].createdAt);
+};
+
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -47,7 +66,7 @@ const PageSpeedDetails = () => {
   useEffect(() => {
     const fetchMonitor = async () => {
       const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc`,
+        `/monitors/${monitorId}?sortOrder=desc`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -194,17 +213,43 @@ const PageSpeedDetails = () => {
         <StatBox
           icon={<LastCheckedIcon />}
           title="Last checked"
-          value="27 July, 7:24 AM (3 minutes ago)"
+          value={
+            <>
+              {formatDate(getLastChecked(monitor?.checks, false))}{" "}
+              <Typography
+                component="span"
+                fontStyle="italic"
+                sx={{ opacity: 0.8 }}
+              >
+                ({formatDurationRounded(getLastChecked(monitor?.checks))} ago)
+              </Typography>
+            </>
+          }
         />
         <StatBox
           icon={<ClockIcon />}
           title="Checks since"
-          value="27 July, 7:24 AM (3 minutes ago)"
+          value={
+            <>
+              {formatDate(new Date(monitor?.createdAt))}{" "}
+              <Typography
+                component="span"
+                fontStyle="italic"
+                sx={{ opacity: 0.8 }}
+              >
+                (
+                {formatDurationRounded(
+                  new Date() - new Date(monitor?.createdAt)
+                )}{" "}
+                ago)
+              </Typography>
+            </>
+          }
         ></StatBox>
         <StatBox
           icon={<IntervalCheckIcon />}
           title="Checks every"
-          value="3 minutes"
+          value={formatDurationRounded(monitor?.interval)}
         ></StatBox>
       </Stack>
       <Typography component="h2">Score history</Typography>
