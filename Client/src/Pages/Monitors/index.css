@@ -51,7 +51,7 @@ body:has(.monitors) .actions-menu li.MuiButtonBase-root {
 body:has(.monitors) .actions-menu li.MuiButtonBase-root:last-of-type {
   color: var(--env-var-color-26);
 }
-body:has(.monitors) .MuiModal-root p.MuiTypography-root {
+body:has(.monitors) .actions-menu .MuiModal-root p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
 }
