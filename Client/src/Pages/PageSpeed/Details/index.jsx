@@ -1,13 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import SettingsIcon from "../../../assets/icons/settings.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
 import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
-import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 
@@ -38,6 +40,27 @@ const StatBox = ({ icon, title, value }) => {
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [monitor, setMonitor] = useState({});
+  const { monitorId } = useParams();
+  const { authToken } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    const fetchMonitor = async () => {
+      const res = await axiosInstance.get(
+        `/monitors/${monitorId}?sortOrder=asc`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      setMonitor(res.data.data);
+    };
+
+    fetchMonitor();
+  }, []);
+
+  console.log(monitor);
 
   const data = {
     _id: "66ad34001d483d284550e8cb",

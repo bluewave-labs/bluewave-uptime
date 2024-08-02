@@ -95,7 +95,7 @@ function App() {
             element={<ProtectedRoute Component={CreatePageSpeed} />}
           />
           <Route
-            path="page-speed/:monitorId"
+            path="pagespeed/:monitorId"
             element={<ProtectedRoute Component={PageSpeedDetails} />}
           />
         </Route>

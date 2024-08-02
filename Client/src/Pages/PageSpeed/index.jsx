@@ -13,6 +13,7 @@ import { useNavigate } from "react-router";
 
 const Card = ({ data }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   /**
    * Helper function to get duration since last check or the last date checked
@@ -33,8 +34,19 @@ const Card = ({ data }) => {
   };
 
   return (
-    <Grid item lg={6} flexGrow={1}>
-      <Stack direction="row" gap={theme.gap.medium} p={theme.gap.ml}>
+    <Grid
+      item
+      lg={6}
+      flexGrow={1}
+      sx={{ "&:hover > .MuiStack-root": { backgroundColor: "#f9fafb" } }}
+    >
+      <Stack
+        direction="row"
+        gap={theme.gap.medium}
+        p={theme.gap.ml}
+        onClick={() => navigate(`/pagespeed/${data._id}`)}
+        sx={{ cursor: "pointer" }}
+      >
         <PageSpeedIcon style={{ width: theme.gap.ml, height: theme.gap.ml }} />
         <Box flex={1}>
           <Stack direction="row" justifyContent="space-between">
