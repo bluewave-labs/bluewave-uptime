@@ -210,6 +210,9 @@ class JobQueue {
    */
   async addJob(jobName, payload) {
     try {
+      // Execute job immediately
+      await this.queue.add(jobName, payload);
+
       await this.queue.add(jobName, payload, {
         repeat: {
           every: payload.interval,
