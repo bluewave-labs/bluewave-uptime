@@ -129,6 +129,22 @@ class NetworkService {
       );
       const pageSpeedResults = response.data;
       const categories = pageSpeedResults.lighthouseResult?.categories;
+      const audits = pageSpeedResults.lighthouseResult?.audits;
+      const {
+        "cumulative-layout-shift": cls,
+        "speed-index": si,
+        "first-contentful-paint": fcp,
+        "largest-contentful-paint": lcp,
+        "total-blocking-time": tbt,
+      } = audits;
+
+      // Weights
+      // First Contentful Paint	10%
+      // Speed Index	10%
+      // Largest Contentful Paint	25%
+      // Total Blocking Time	30%
+      // Cumulative Layout Shift	25%
+
       const checkData = {
         monitorId: job.data._id,
         status: true,
@@ -136,7 +152,15 @@ class NetworkService {
         bestPractices: (categories["best-practices"]?.score || 0) * 100,
         seo: (categories.seo?.score || 0) * 100,
         performance: (categories.performance?.score || 0) * 100,
+        audits: {
+          cls,
+          si,
+          fcp,
+          lcp,
+          tbt,
+        },
       };
+
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } catch (error) {
       const checkData = {
