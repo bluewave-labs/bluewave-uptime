@@ -8,12 +8,12 @@ router.get("/:monitorId", monitorController.getMonitorById);
 router.get("/user/:userId", monitorController.getMonitorsByUserId);
 
 router.post("/", monitorController.createMonitor);
-router.post(
-  "/delete/:monitorId",
+router.delete(
+  "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   monitorController.deleteMonitor
 );
-router.post(
+router.put(
   "/edit/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   monitorController.editMonitor

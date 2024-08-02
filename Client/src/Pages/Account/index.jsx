@@ -51,14 +51,11 @@ const Account = ({ open = "profile" }) => {
                   minWidth: "fit-content",
                   minHeight: 0,
                   paddingLeft: "0",
-                  paddingY: "10px",
-                  marginRight: "20px",
+                  paddingY: theme.gap.small,
+                  fontWeight: 400,
+                  marginRight: theme.gap.ml,
                   "&:focus": {
                     outline: "none",
-                  },
-                  "& .MuiTouchRipple-root": {
-                    pointerEvents: "none",
-                    display: "none",
                   },
                 }}
               />

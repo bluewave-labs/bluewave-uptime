@@ -48,7 +48,7 @@ const getPageSpeedChecks = async (monitorId) => {
  * @throws {Error}
  */
 
-const deletePageSpeedChecks = async (monitorId) => {
+const deletePageSpeedChecksByMonitorId = async (monitorId) => {
   try {
     const result = await PageSpeedCheck.deleteMany({ monitorId });
     return result.deletedCount;
@@ -60,5 +60,5 @@ const deletePageSpeedChecks = async (monitorId) => {
 module.exports = {
   createPageSpeedCheck,
   getPageSpeedChecks,
-  deletePageSpeedChecks,
+  deletePageSpeedChecksByMonitorId,
 };

@@ -77,9 +77,9 @@ export const updateUptimeMonitor = createAsyncThunk(
         name: monitor.name,
         description: monitor.description,
         interval: monitor.interval,
-        notifications: monitor.notifications
+        notifications: monitor.notifications,
       };
-      const res = await axiosInstance.post(
+      const res = await axiosInstance.put(
         `/monitors/edit/${monitor._id}`,
         updatedFields,
         {
@@ -104,16 +104,12 @@ export const deleteUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await axiosInstance.post(
-        `/monitors/delete/${monitor._id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await axiosInstance.delete(`/monitors/${monitor._id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {

@@ -135,7 +135,9 @@ const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
             {displayData.map((row) => {
               return (
                 <TableRow
-                  sx={{ cursor: row.handleClick ? "pointer" : "default" }}
+                  sx={{
+                    cursor: row.handleClick ? "pointer" : "default",
+                  }}
                   key={row.id}
                   onClick={row.handleClick ? row.handleClick : null}
                 >

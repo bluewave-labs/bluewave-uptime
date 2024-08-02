@@ -33,9 +33,11 @@ const shadow =
   "0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
 // Global Font Family
-const fontFamilyDefault = '"Roboto", "Helvetica", "Arial", sans-serif';
+const fontFamilyDefault =
+  '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
 
 const theme = createTheme({
+  typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     primary: {
       main: primaryMain,
@@ -78,11 +80,6 @@ const theme = createTheme({
       fillGray: otherColorsFillGray,
     },
   },
-  font: {
-    default: {
-      font: fontFamilyDefault,
-    },
-  },
   shape: {
     borderRadius: 4,
     borderThick: 2,
@@ -121,19 +118,19 @@ const theme = createTheme({
   //add more as needed
   label: {
     up: {
-      borderColor: sectionBorder,
+      borderColor: "#D4F4E1",
       bgColor: "#ecfdf3",
       dotColor: "#17B26A",
     },
     down: {
-      borderColor: sectionBorder,
+      borderColor: "#fbd1d1",
       bgColor: "#f9eced",
-      dotColor: labelRed,
+      dotColor: "#f04438",
     },
     "cannot resolve": {
-      borderColor: sectionBorder,
+      borderColor: "#e2eaf7",
       bgColor: "#f2f4f7",
-      dotColor: labelGray,
+      dotColor: "#4e5ba6",
     },
   },
 });

@@ -158,9 +158,9 @@ const Login = () => {
               }
               label="Remember me"
             />
-            <span onClick={() => navigate("/forgot-password")}>
+            <Typography component="span" onClick={() => navigate("/forgot-password")}>
               Forgot password
-            </span>
+            </Typography>
           </Stack>
         </Stack>
         <Stack gap={theme.gap.ml} mt={theme.gap.large}>
@@ -179,13 +179,13 @@ const Login = () => {
             <Typography component="p" sx={{ alignSelf: "center" }}>
               Don't have an account?
             </Typography>
-            <span
+            <Typography component="span"
               onClick={() => {
                 navigate("/register");
               }}
             >
               Sign up
-            </span>
+            </Typography>
           </Stack>
         </Stack>
       </form>

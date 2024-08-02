@@ -145,7 +145,10 @@ function NavBar() {
           </IconButton>
         </Tooltip>
         <Menu
-          sx={{ mt: theme.spacing(5.5) }}
+          sx={{
+            mt: theme.spacing(5.5),
+            borderRadius: "4px",
+          }}
           id="menu-appbar"
           anchorEl={anchorElUser}
           anchorOrigin={{
@@ -172,6 +175,7 @@ function NavBar() {
                 fontSize="var(--env-var-font-size-medium)"
                 textAlign="center"
                 marginLeft="8px"
+                sx={{ fontWeight: 400, color: "#344054" }}
               >
                 {setting}
               </Typography>

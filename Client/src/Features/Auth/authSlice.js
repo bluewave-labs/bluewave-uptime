@@ -61,7 +61,7 @@ export const update = createAsyncThunk(
       form.deleteProfileImage &&
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
-      const res = await axiosInstance.post(`/auth/user/${user._id}`, fd, {
+      const res = await axiosInstance.put(`/auth/user/${user._id}`, fd, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -185,9 +185,7 @@ const handleForgotRejected = (state, action) => {
 const handleNewPasswordRejected = (state, action) => {
   state.isLoading = false;
   state.success = false;
-  state.msg = action.payload
-    ? action.payload.msg
-    : "Failed to reset password.";
+  state.msg = action.payload ? action.payload.msg : "Failed to reset password.";
 };
 
 const authSlice = createSlice({

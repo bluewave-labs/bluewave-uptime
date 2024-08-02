@@ -31,7 +31,7 @@
 .account .MuiButtonGroup-root button {
   border-color: var(--env-var-color-16);
 }
-.account button{
+.account button:not(.MuiIconButton-root) {
   height: 34px;
 }
 .account [class$="-form"] {
@@ -69,7 +69,6 @@
   justify-content: flex-start;
   align-items: center;
 }
-
 
 /* for testing, will remove later */
 @media only screen and (max-width: 1600px) {

@@ -103,7 +103,7 @@
 /* ///// */
 .login-page
   .MuiStack-root:not(:has(> .MuiButtonBase-root))
-  span:not(.MuiTypography-root):not(.field-required) {
+  > span:not(.field-required):not(.input-error) {
   color: var(--env-var-color-3);
   cursor: pointer;
   font-weight: 600;

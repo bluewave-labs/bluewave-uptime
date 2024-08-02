@@ -111,7 +111,7 @@ const Integrations = () => {
     <Stack className="integrations" gap={theme.gap.xs}>
       <Typography component="h1">Integrations</Typography>
       <Typography mb={theme.gap.large}>
-        Connect Uptime Genie to your favorite service
+        Connect BlueWave Uptime to your favorite service.
       </Typography>
       <Grid container spacing={theme.gap.large}>
         {integrations.map((integration, index) => (
