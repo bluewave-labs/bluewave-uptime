@@ -24,6 +24,7 @@ import withAdminCheck from "./HOC/withAdminCheck";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
+import PageSpeedDetails from "./Pages/PageSpeed/Details";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -92,6 +93,10 @@ function App() {
           <Route
             path="page-speed/create"
             element={<ProtectedRoute Component={CreatePageSpeed} />}
+          />
+          <Route
+            path="page-speed/:monitorId"
+            element={<ProtectedRoute Component={PageSpeedDetails} />}
           />
         </Route>
 

@@ -104,7 +104,7 @@ const CreatePageSpeed = () => {
         img={<WestRoundedIcon />}
         onClick={() => navigate("/page-speed")}
         sx={{
-          backgroundColor: "#f4f4f4",
+          backgroundColor: theme.palette.otherColors.fillGray,
           mb: theme.gap.large,
           px: theme.gap.ml,
           "& svg.MuiSvgIcon-root": {

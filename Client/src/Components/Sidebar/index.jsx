@@ -50,7 +50,15 @@ function Sidebar() {
           alignItems="center"
           gap={theme.gap.small}
           borderRadius={`${theme.shape.borderRadius}px`}
-          onClick={() => navigate(`/${item.path}`)}
+          onClick={() =>
+            item.path === "support"
+              ? window.open(
+                  "https://github.com/bluewave-labs/bluewave-uptime",
+                  "_blank",
+                  "noreferrer"
+                )
+              : navigate(`/${item.path}`)
+          }
           sx={{ p: `${theme.gap.small} ${theme.gap.medium}` }}
         >
           {item.icon}
