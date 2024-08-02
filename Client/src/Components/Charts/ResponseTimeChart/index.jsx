@@ -8,7 +8,12 @@ const ResponseTimeChart = ({ checks = [] }) => {
   return (
     <div className="chart-container">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart width={150} height={40} data={normalizedChecks}>
+        <BarChart
+          width={150}
+          height={40}
+          data={normalizedChecks}
+          style={{ cursor: "pointer" }}
+        >
           <Bar maxBarSize={10} dataKey="responseTime">
             {normalizedChecks.map((check, index) => (
               <Cell
