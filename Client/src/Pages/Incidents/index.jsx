@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Typography, ButtonGroup, Stack } from "@mui/material";
-
+import { Typography, ButtonGroup, Stack, Box } from "@mui/material";
+import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
 import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
 import { useTheme } from "@emotion/react";
+import { useNavigate } from "react-router";
+import Select from "../../Components/Inputs/Select";
 
 import "./index.css";
-import Select from "../../Components/Inputs/Select";
 
 const Incidents = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
   const [monitors, setMonitors] = useState({});
   const [selectedMonitor, setSelectedMonitor] = useState("0");
@@ -58,13 +60,19 @@ const Incidents = () => {
     setSelectedMonitor(event.target.value);
   };
   let incidents = [];
+  let hasAnyIncidents = false;
+  let hasSpecificIncidents = false;
   if (selectedMonitor === "0") {
     Object.values(monitors).forEach((monitor) => {
       incidents = incidents.concat(monitor.checks);
     });
+    if (incidents.length !== 0) hasAnyIncidents = true;
+    hasSpecificIncidents = hasAnyIncidents;
   } else {
     const monitor = monitors[selectedMonitor];
     incidents = monitor.checks;
+    if (incidents.length !== 0) hasSpecificIncidents = true;
+    hasAnyIncidents = true;
   }
   incidents = incidents
     .sort((a, b) => {
@@ -92,48 +100,83 @@ const Incidents = () => {
   data.rows = incidents;
 
   return (
-    <Stack className="incidents" gap={theme.gap.large}>
-      <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
-        <Typography component="h1">Incident history for: </Typography>
-        <Select
-          id="incidents-select-monitor"
-          placeholder="All servers"
-          value={selectedMonitor}
-          onChange={handleSelect}
-          items={Object.values(monitors)}
-        />
-        <ButtonGroup sx={{ ml: "auto" }}>
-          <Button
-            level="secondary"
-            label="All"
-            onClick={() => setFilter("all")}
-            sx={{
-              backgroundColor:
-                filter === "all" && theme.palette.otherColors.fillGray,
-            }}
-          />
-          <Button
-            level="secondary"
-            label="Down"
-            onClick={() => setFilter("down")}
-            sx={{
-              backgroundColor:
-                filter === "down" && theme.palette.otherColors.fillGray,
-            }}
-          />
-          <Button
-            level="secondary"
-            label="Cannot Resolve"
-            onClick={() => setFilter("resolve")}
-            sx={{
-              backgroundColor:
-                filter === "resolve" && theme.palette.otherColors.fillGray,
-            }}
-          />
-        </ButtonGroup>
+    <>
+      <Stack className="incidents" gap={theme.gap.large}>
+        {hasAnyIncidents ? (
+          <>
+            <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
+              <Typography component="h1">Incident history for: </Typography>
+              <Select
+                id="incidents-select-monitor"
+                placeholder="All servers"
+                value={selectedMonitor}
+                onChange={handleSelect}
+                items={Object.values(monitors)}
+              />
+              {hasAnyIncidents && hasSpecificIncidents && (
+                <ButtonGroup sx={{ ml: "auto" }}>
+                  <Button
+                    level="secondary"
+                    label="All"
+                    onClick={() => setFilter("all")}
+                    sx={{
+                      backgroundColor:
+                        filter === "all" && theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="Down"
+                    onClick={() => setFilter("down")}
+                    sx={{
+                      backgroundColor:
+                        filter === "down" && theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="Cannot Resolve"
+                    onClick={() => setFilter("resolve")}
+                    sx={{
+                      backgroundColor:
+                        filter === "resolve" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                </ButtonGroup>
+              )}
+            </Stack>
+            {hasAnyIncidents && hasSpecificIncidents ? (
+              <BasicTable data={data} paginated={true} rowsPerPage={12} />
+            ) : (
+              <Typography alignSelf="center" mt={theme.gap.xxl}>
+                The monitor you have selected, has no recorded incidents yet.
+              </Typography>
+            )}
+          </>
+        ) : (
+          <Stack alignItems="center" mt={theme.gap.xxl} gap={theme.gap.small}>
+            <Typography>No incidents, yet.</Typography>
+            <Button
+              level="tertiary"
+              label="Back"
+              animate="slideLeft"
+              img={<WestRoundedIcon />}
+              onClick={() => navigate(-1)}
+              sx={{
+                backgroundColor: theme.palette.otherColors.fillGray,
+                mb: theme.gap.medium,
+                px: theme.gap.ml,
+                "& svg.MuiSvgIcon-root": {
+                  mr: theme.gap.small,
+                  fill: theme.palette.otherColors.slateGray,
+                },
+              }}
+            />
+          </Stack>
+        )}
       </Stack>
-      <BasicTable data={data} paginated={true} rowsPerPage={12} />
-    </Stack>
+    </>
   );
 };
 
