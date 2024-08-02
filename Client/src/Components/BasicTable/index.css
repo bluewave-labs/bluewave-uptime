@@ -1,20 +1,24 @@
-.MuiTable-root .host-row {
-  display: flex;
-  align-items: center;
-}
-.MuiTable-root .host-row a {
+.MuiTable-root .host a {
   width: var(--env-var-img-width-2);
   height: var(--env-var-img-width-2);
   color: var(--env-var-color-5);
   margin-right: 10px;
   margin-bottom: 2px;
 }
-.MuiTable-root .host-row a svg {
+.MuiTable-root .host a svg {
   width: var(--env-var-font-size-large);
   height: var(--env-var-font-size-large);
 }
-.MuiTable-root .host-row .host-percentage {
+.MuiTable-root .host div:nth-child(3) {
   font-size: var(--env-var-font-size-small);
+}
+.MuiTable-root .host div:nth-child(2) {
+  width: fit-content;
+  margin-right: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .MuiTable-root .label {
@@ -22,15 +26,6 @@
   border-radius: var(--env-var-radius-2);
   padding: 7px;
   font-size: var(--env-var-font-size-small-plus);
-}
-
-.MuiTable-root .host-name {
-  width: fit-content;
-  margin-right: 10px;
-  font-weight: 700;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .MuiPaper-root:has(table.MuiTable-root) {

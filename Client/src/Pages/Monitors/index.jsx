@@ -1,17 +1,30 @@
 import "./index.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUptimeMonitorsByUserId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import {
+  deleteUptimeMonitor,
+  getUptimeMonitorsByUserId,
+} from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
+import Settings from "../../assets/icons/settings-bold.svg?react";
 import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
+import { createToast } from "../../Utils/toastUtils";
 import ResponseTimeChart from "../../Components/Charts/ResponseTimeChart";
-import { Box, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Modal,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 /**
  * Host component.
@@ -27,18 +40,13 @@ import { Box, Stack, Typography } from "@mui/material";
  */
 const Host = ({ params }) => {
   return (
-    <div className="host-row">
+    <Stack direction="row" alignItems="center" className="host">
       <a href={params.url} target="_blank" rel="noreferrer">
         <OpenInNewPage />
       </a>
-      <div className="host-name">{params.title}</div>
-      <div
-        className="host-percentage"
-        style={{ color: params.percentageColor }}
-      >
-        {params.precentage}%
-      </div>
-    </div>
+      <Box>{params.title}</Box>
+      <Box sx={{ color: params.percentageColor }}>{params.precentage}%</Box>
+    </Stack>
   );
 };
 
@@ -47,7 +55,38 @@ const Monitors = () => {
   const navigate = useNavigate();
   const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch({});
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [actions, setActions] = useState({});
+  const openMenu = (event, id, url) => {
+    setAnchorEl(event.currentTarget);
+    setActions({ id: id, url: url });
+  };
+  const closeMenu = () => {
+    setAnchorEl(null);
+    setActions({});
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const openRemove = () => {
+    setAnchorEl(null);
+    setIsOpen(true);
+  };
+  const handleRemove = async (event) => {
+    event.preventDefault();
+    let monitor = { _id: actions.id };
+    const action = await dispatch(
+      deleteUptimeMonitor({ authToken: authState.authToken, monitor })
+    );
+    if (action.meta.requestStatus === "fulfilled") {
+      setIsOpen(false); // close modal
+      dispatch(getUptimeMonitorsByUserId(authState.authToken));
+      createToast({ body: "Monitor deleted successfully." });
+    } else {
+      createToast({ body: "Failed to delete monitor." });
+    }
+  };
 
   useEffect(() => {
     dispatch(getUptimeMonitorsByUserId(authState.authToken));
@@ -65,12 +104,12 @@ const Monitors = () => {
       {
         id: 2,
         name: (
-          <>
+          <Box width="max-content">
             Status
             <span>
               <ArrowDownwardRoundedIcon />
             </span>
-          </>
+          </Box>
         ),
       },
       { id: 3, name: "Response Time" },
@@ -97,7 +136,8 @@ const Monitors = () => {
 
     return {
       id: monitor._id,
-      handleClick: () => navigate(`/monitors/${monitor._id}`),
+      // disabled for now
+      // handleClick: () => navigate(`/monitors/${monitor._id}`),
       data: [
         { id: idx, data: <Host params={params} /> },
         {
@@ -117,7 +157,24 @@ const Monitors = () => {
             <span style={{ textTransform: "uppercase" }}>{monitor.type}</span>
           ),
         },
-        { id: idx + 4, data: "TODO" },
+        {
+          id: idx + 4,
+          data: (
+            <>
+              <IconButton
+                aria-label="monitor actions"
+                onClick={(event) => openMenu(event, monitor._id, monitor.url)}
+                sx={{
+                  "&:focus": {
+                    outline: "none",
+                  },
+                }}
+              >
+                <Settings />
+              </IconButton>
+            </>
+          ),
+        },
       ],
     };
   });
@@ -163,6 +220,73 @@ const Monitors = () => {
         </Stack>
         <BasicTable data={data} paginated={true} />
       </Stack>
+      <Menu
+        className="actions-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+      >
+        <MenuItem
+          onClick={() => window.open(actions.url, "_blank", "noreferrer")}
+        >
+          Open site
+        </MenuItem>
+        <MenuItem onClick={() => navigate(`/monitors/${actions.id}`)}>
+          Details
+        </MenuItem>
+        {/* TODO - pass monitor id to Incidents page */}
+        <MenuItem disabled>Incidents</MenuItem>
+        <MenuItem onClick={() => navigate(`/monitors/configure/${actions.id}`)}>
+          Configure
+        </MenuItem>
+        <MenuItem onClick={openRemove}>Remove</MenuItem>
+      </Menu>
+      <Modal
+        aria-labelledby="modal-delete-monitor"
+        aria-describedby="delete-monitor-confirmation"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        disablePortal
+      >
+        <Stack
+          gap={theme.gap.xs}
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "white",
+            border: "solid 1px #f2f2f2",
+            borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: 24,
+            p: "30px",
+            "&:focus": {
+              outline: "none",
+            },
+          }}
+        >
+          <Typography id="modal-delete-monitor" component="h2">
+            Really delete this monitor?
+          </Typography>
+          <Typography id="delete-monitor-confirmation">
+            Once deleted, this monitor cannot be retrieved back.
+          </Typography>
+          <Stack
+            direction="row"
+            gap={theme.gap.small}
+            mt={theme.gap.large}
+            justifyContent="flex-end"
+          >
+            <Button
+              level="tertiary"
+              label="Cancel"
+              onClick={() => setIsOpen(false)}
+            />
+            <Button level="error" label="Delete" onClick={handleRemove} />
+          </Stack>
+        </Stack>
+      </Modal>
     </Stack>
   );
 };
