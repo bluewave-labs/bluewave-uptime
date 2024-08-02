@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const EmailService = require("../service/emailService");
 
 const CheckSchema = mongoose.Schema(
   {
@@ -11,10 +12,10 @@ const CheckSchema = mongoose.Schema(
       type: Boolean,
     },
     responseTime: {
-      type: Number, // milliseconds
+      type: Number, 
     },
     statusCode: {
-      type: Number, // 200, ... , 500
+      type: Number, 
     },
     message: {
       type: String,
@@ -22,33 +23,44 @@ const CheckSchema = mongoose.Schema(
     expiry: {
       type: Date,
       default: Date.now,
-      expires: 60 * 60 * 24 * 30, // 30 days in seconds
+      expires: 60 * 60 * 24 * 30, 
     },
   },
-
   {
     timestamps: true,
   }
 );
-
-/**
- * When a check is created, we should update the stauts of the associated monitor
- * if it has changed.  Monitor starts with default status: true
- * @param {function} next - Callback to proceed to the next middleware.
- */
 
 CheckSchema.pre("save", async function (next) {
   try {
     const monitor = await mongoose.model("Monitor").findById(this.monitorId);
     if (monitor && monitor.status !== this.status) {
       if (monitor.status === true && this.status === false) {
-        // TODO issue alert
-        console.log("Monitor went down");
+        // Notify user that the monitor is down
+        const emailService = new EmailService();
+        const users = await mongoose.model("User").find({ _id: monitor.userId });
+        const user = users[0]; 
+
+        await emailService.buildAndSendEmail(
+          "serverIsDownTemplate",
+          { monitorName: monitor.name, monitorUrl: monitor.url },
+          user.email,
+          `Monitor ${monitor.name} is down`
+        );
       }
 
       if (monitor.status === false && this.status === true) {
-        // TODO issue alert
-        console.log("Monitor went up");
+        // Notify user that the monitor is up
+        const emailService = new EmailService();
+        const users = await mongoose.model("User").find({ _id: monitor.userId });
+        const user = users[0]; 
+
+        await emailService.buildAndSendEmail(
+          "serverIsUpTemplate",
+          { monitorName: monitor.name, monitorUrl: monitor.url },
+          user.email,
+          `Monitor ${monitor.name} is back up`
+        );
       }
       monitor.status = this.status;
       await monitor.save();
