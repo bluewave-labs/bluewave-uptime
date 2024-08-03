@@ -24,6 +24,7 @@ import withAdminCheck from "./HOC/withAdminCheck";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
+import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -68,6 +69,10 @@ function App() {
           <Route
             path="maintenance"
             element={<ProtectedRoute Component={Maintenance} />}
+          />
+          <Route
+            path="/maintenance/create"
+            element={<CreateNewMaintenanceWindow />}
           />
           <Route
             path="settings"

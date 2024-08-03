@@ -1,0 +1,21 @@
+.maintenance-options > .MuiStack-root > .MuiStack-root.select-wrapper {
+  width: 380px;
+}
+
+.date-picker .MuiOutlinedInput-root,
+.time-picker .MuiOutlinedInput-root {
+  height: 34px;
+  font-size: var(--env-var-font-size-medium);
+}
+
+.date-picker .MuiOutlinedInput-root {
+  width: 140px;
+}
+
+.time-picker .MuiOutlinedInput-root {
+  width: 90px;
+}
+
+.MuiInputAdornment-outlined .MuiIconButton-root svg {
+  width: 20px;
+}
