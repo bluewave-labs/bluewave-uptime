@@ -1,4 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,7 +9,7 @@ import { formatDate, formatDurationRounded } from "../../../Utils/timeUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
-import SettingsIcon from "../../../assets/icons/settings.svg?react";
+import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
 import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
@@ -25,7 +27,7 @@ const StatBox = ({ icon, title, value }) => {
       direction="row"
       gap={theme.gap.small}
       p={theme.gap.ml}
-      pb={theme.gap.large}
+      pb={theme.gap.mlplus}
     >
       {icon}
       <Box>
@@ -35,6 +37,25 @@ const StatBox = ({ icon, title, value }) => {
         <Typography variant="h4">{value}</Typography>
       </Box>
     </Stack>
+  );
+};
+
+const PieCenterLabel = ({ value, color }) => {
+  const { width, height, left, top } = useDrawingArea();
+  return (
+    <text
+      x={left + width - 1}
+      y={top + height / 2 + 2}
+      style={{
+        fill: color,
+        fontSize: "55px",
+        textAnchor: "middle",
+        dominantBaseline: "central",
+        userSelect: "none",
+      }}
+    >
+      {value}
+    </text>
   );
 };
 
@@ -79,8 +100,6 @@ const PageSpeedDetails = () => {
     fetchMonitor();
   }, []);
 
-  console.log(monitor);
-
   const data = {
     _id: "66ad34001d483d284550e8cb",
     monitorId: "66ad2f5b4dfcd19cdbfc7205",
@@ -119,7 +138,7 @@ const PageSpeedDetails = () => {
         title: "First Contentful Paint",
         description:
           "First Contentful Paint marks the time at which the first text or image is painted.",
-        score: 1,
+        score: 0.1,
         scoreDisplayMode: "numeric",
         displayValue: "0.4s",
         numericValue: 419,
@@ -156,6 +175,51 @@ const PageSpeedDetails = () => {
     updatedAt: "2024-08-02T19:31:12.732Z",
     __v: 0,
   };
+
+  /**
+   * Weight constants for different performance metrics.
+   * @type {Object}
+   */
+  const weights = {
+    fcp: 10,
+    si: 10,
+    lcp: 25,
+    tbt: 30,
+    cls: 25,
+  };
+
+  /**
+   * Calculates the performance score based on the provided audit data and weights.
+   *
+   * @param {Object} audits - An object containing audit data.
+   * @param {Object} audits.<metric> - An object for each performance metric.
+   * @param {number} audits.<metric>.score - The score for the specific metric.
+   * @returns {number} The calculated performance score, rounded to the nearest integer.
+   */
+  const calculatePerformance = (audits) => {
+    let sum = 0;
+    Object.keys(audits).forEach((key) => {
+      if (audits[key].score) sum += audits[key].score * weights[key];
+    });
+    return Math.round(sum);
+  };
+
+  var performance = calculatePerformance(data.audits);
+
+  /**
+   * Retrieves color properties based on the performance value.
+   *
+   * @param {number} value - The performance score used to determine the color properties.
+   * @returns {{stroke: string, text: string, bg: string}} The color properties for the given performance value.
+   */
+  const getColors = (value) => {
+    if (value >= 90 && value <= 100) return theme.pie.green;
+    else if (value >= 50 && value < 90) return theme.pie.yellow;
+    else if (value >= 0 && value < 50) return theme.pie.red;
+    return theme.pie.default;
+  };
+
+  const colorMap = getColors(performance);
 
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
@@ -196,12 +260,16 @@ const PageSpeedDetails = () => {
           level="tertiary"
           label="Configure"
           animate="rotate90"
-          img={<SettingsIcon />}
+          img={
+            <SettingsIcon
+              style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
+            />
+          }
           onClick={() => navigate(`/monitors/configure/${monitorId}`)}
           sx={{
             ml: "auto",
             alignSelf: "flex-end",
-            backgroundColor: "#f4f4f4",
+            backgroundColor: theme.palette.otherColors.fillGray,
             px: theme.gap.medium,
             "& svg": {
               mr: "6px",
@@ -209,7 +277,12 @@ const PageSpeedDetails = () => {
           }}
         />
       </Stack>
-      <Stack direction="row" justifyContent="space-between" gap={theme.gap.xl}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        gap={theme.gap.xl}
+        flexWrap="wrap"
+      >
         <StatBox
           icon={<LastCheckedIcon />}
           title="Last checked"
@@ -254,6 +327,50 @@ const PageSpeedDetails = () => {
       </Stack>
       <Typography component="h2">Score history</Typography>
       <Typography component="h2">Performance report</Typography>
+      <Box p={theme.gap.ml}>
+        <Stack mx="auto" width="fit-content" alignItems="center">
+          <PieChart
+            series={[
+              {
+                data: [
+                  {
+                    value: 100,
+                    color: colorMap.bg,
+                  },
+                ],
+                color: "red",
+                outerRadius: 65,
+                cx: "100%",
+                cy: "50%",
+              },
+              {
+                data: [
+                  {
+                    value: performance,
+                    color: colorMap.stroke,
+                  },
+                ],
+                color: "red",
+                innerRadius: 60,
+                outerRadius: 70,
+                paddingAngle: 5,
+                cornerRadius: 5,
+                startAngle: 0,
+                endAngle: (performance / 100) * 360,
+                cx: "100%",
+                cy: "50%",
+              },
+            ]}
+            width={200}
+            height={160}
+            tooltip={{ trigger: "none" }}
+          >
+            <PieCenterLabel value={performance} color={colorMap.text} />
+          </PieChart>
+          <Typography component="h2">Performance</Typography>
+          <Typography>Values are estimated and may vary.</Typography>
+        </Stack>
+      </Box>
     </Stack>
   );
 };

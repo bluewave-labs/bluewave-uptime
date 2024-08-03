@@ -94,6 +94,7 @@ const theme = createTheme({
     small: "8px",
     medium: "12px",
     ml: "16px",
+    mlplus: "20px",
     large: "24px",
     xl: "40px",
     xxl: "60px",
@@ -132,6 +133,12 @@ const theme = createTheme({
       bgColor: "#f2f4f7",
       dotColor: "#4e5ba6",
     },
+  },
+  pie: {
+    green: { stroke: "#17b26a", text: "#079455", bg: "#ecfdf3" },
+    yellow: { stroke: "#fdb022", text: "#dc6803", bg: "#fffcf5" },
+    red: { stroke: "#f04438", text: "#f04438", bg: "#ffeaea" },
+    default: { stroke: "#4e5ba6", text: "#4e5ba6", bg: "#f2f4f7" },
   },
 });
 

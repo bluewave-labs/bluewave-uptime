@@ -26,15 +26,26 @@
 .page-speed-details h6 {
   font-weight: 600;
 }
+.page-speed-details .MuiBox-root > h2 {
+  font-size: 18px;
+  color: var(--env-var-color-1);
+}
 .page-speed-details button.MuiButtonBase-root {
   height: 34px;
 }
 
-.page-speed-details .stat-box {
+.page-speed-details .stat-box,
+.page-speed-details > .MuiBox-root {
   border: solid 1px var(--env-var-color-6);
   border-radius: var(--env-var-radius-2);
-  flex: 1;
   background-color: var(--env-var-color-8);
+  min-width: 200px;
+}
+.page-speed-details .stat-box {
+  flex: 1;
+}
+.page-speed-details .stat-box:last-of-type {
+  flex-shrink: 1;
 }
 .page-speed-details .stat-box svg {
   width: 22px;
