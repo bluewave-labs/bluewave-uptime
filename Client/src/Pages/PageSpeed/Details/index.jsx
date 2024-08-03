@@ -6,6 +6,7 @@ import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate, formatDurationRounded } from "../../../Utils/timeUtils";
+import { getLastChecked } from "../../../Utils/monitorUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -18,6 +19,15 @@ import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 
 import "./index.css";
 
+/**
+ * Displays a box with an icon, title, and value.
+ *
+ * @param {Object} props
+ * @param {ReactNode} props.icon - The icon to display in the box.
+ * @param {string} props.title - The title text to display above the value.
+ * @param {string | number} props.value - The value text to display in the box.
+ * @returns {JSX.Element}
+ */
 const StatBox = ({ icon, title, value }) => {
   const theme = useTheme();
 
@@ -40,6 +50,14 @@ const StatBox = ({ icon, title, value }) => {
   );
 };
 
+/**
+ * Renders a centered label within a pie chart.
+ *
+ * @param {Object} props
+ * @param {string | number} props.value - The value to display in the label.
+ * @param {string} props.color - The color of the text.
+ * @returns {JSX.Element}
+ */
 const PieCenterLabel = ({ value, color }) => {
   const { width, height, left, top } = useDrawingArea();
   return (
@@ -57,24 +75,6 @@ const PieCenterLabel = ({ value, color }) => {
       {value}
     </text>
   );
-};
-
-/**
- * Helper function to get duration since last check or the last date checked
- * @param {Array} checks Array of check objects.
- * @param {boolean} duration Whether the function should return the duration since last checked or the date itself
- * @returns {number} Timestamp of the most recent check.
- */
-const getLastChecked = (checks, duration = true) => {
-  if (!checks || checks.length === 0) {
-    return 0; // Handle case when no checks are available
-  }
-
-  // Data is sorted newest -> oldest, so newest check is the most recent
-  if (!duration) {
-    return new Date(checks[0].createdAt);
-  }
-  return new Date() - new Date(checks[0].createdAt);
 };
 
 const PageSpeedDetails = () => {
