@@ -25,6 +25,7 @@ import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
+import PageSpeedDetails from "./Pages/PageSpeed/Details";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -91,12 +92,16 @@ function App() {
             element={<ProtectedRoute Component={Account} open="team" />}
           />
           <Route
-            path="page-speed"
+            path="pagespeed"
             element={<ProtectedRoute Component={PageSpeed} />}
           />
           <Route
-            path="page-speed/create"
+            path="pagespeed/create"
             element={<ProtectedRoute Component={CreatePageSpeed} />}
+          />
+          <Route
+            path="pagespeed/:monitorId"
+            element={<ProtectedRoute Component={PageSpeedDetails} />}
           />
         </Route>
 

@@ -150,7 +150,7 @@ const CreateMonitor = () => {
         img={<WestRoundedIcon />}
         onClick={() => navigate("/monitors")}
         sx={{
-          backgroundColor: "#f4f4f4",
+          backgroundColor: theme.palette.otherColors.fillGray,
           mb: theme.gap.medium,
           px: theme.gap.ml,
           "& svg.MuiSvgIcon-root": {

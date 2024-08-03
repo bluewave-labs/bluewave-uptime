@@ -35,7 +35,7 @@ import {
  * @param {string} params.url - The URL of the host.
  * @param {string} params.title - The name of the host.
  * @param {string} params.percentageColor - The color of the percentage text.
- * @param {number} params.precentage - The percentage to display.
+ * @param {number} params.percentage - The percentage to display.
  * @returns {React.ElementType} Returns a div element with the host details.
  */
 const Host = ({ params }) => {
@@ -54,7 +54,7 @@ const Host = ({ params }) => {
       <Box>
         {params.title}
         <Typography component="span" sx={{ color: params.percentageColor }}>
-          {params.precentage}%
+          {params.percentage}%
         </Typography>
       </Box>
     </Stack>
@@ -135,7 +135,7 @@ const Monitors = () => {
     const params = {
       url: monitor.url,
       title: monitor.name,
-      precentage: 100,
+      percentage: 100,
       percentageColor:
         monitor.status === true
           ? "var(--env-var-color-17)"
