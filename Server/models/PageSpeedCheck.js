@@ -1,5 +1,39 @@
 const mongoose = require("mongoose");
 
+const AuditSchema = mongoose.Schema({
+  id: { type: String, required: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  score: { type: Number, required: true },
+  scoreDisplayMode: { type: String, required: true },
+  displayValue: { type: String, required: true },
+  numericValue: { type: Number, required: true },
+  numericUnit: { type: String, required: true },
+});
+
+const AuditsSchema = mongoose.Schema({
+  cls: {
+    type: AuditSchema,
+    required: true,
+  },
+  si: {
+    type: AuditSchema,
+    required: true,
+  },
+  fcp: {
+    type: AuditSchema,
+    required: true,
+  },
+  lcp: {
+    type: AuditSchema,
+    required: true,
+  },
+  tbt: {
+    type: AuditSchema,
+    required: true,
+  },
+});
+
 /**
  * Mongoose schema for storing metrics from Google Lighthouse.
  * @typedef {Object} PageSpeedCheck
@@ -35,6 +69,10 @@ const PageSpeedCheck = mongoose.Schema(
     },
     performance: {
       type: Number,
+      required: true,
+    },
+    audits: {
+      type: AuditsSchema,
       required: true,
     },
   },

@@ -14,6 +14,7 @@ const Maintenance = () => {
           "Eliminate any misunderstandings",
           "Stop sending alerts in maintenance windows",
         ]}
+        link="/maintenance/create"
       />
     </div>
   );
