@@ -170,7 +170,7 @@ const CreateNewMaintenanceWindow = () => {
             sx={{
               fontSize: "var(--env-var-font-size-small)",
               borderBottom: "1px dashed var(--env-var-color-3)",
-              paddingBottom: 1,
+              paddingBottom: "4px",
             }}
           >
             Add all monitors to this maintenance window
