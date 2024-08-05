@@ -135,10 +135,30 @@ const theme = createTheme({
     },
   },
   pie: {
-    green: { stroke: "#17b26a", text: "#079455", bg: "#ecfdf3" },
-    yellow: { stroke: "#fdb022", text: "#dc6803", bg: "#fffcf5" },
-    red: { stroke: "#f04438", text: "#f04438", bg: "#ffeaea" },
-    default: { stroke: "#4e5ba6", text: "#4e5ba6", bg: "#f2f4f7" },
+    green: {
+      stroke: "#17b26a",
+      strokeBg: "#d4f4e1",
+      text: "#079455",
+      bg: "#ecfdf3",
+    },
+    yellow: {
+      stroke: "#fdb022",
+      strokeBg: "rgba(255, 192, 34, 0.3)",
+      text: "#dc6803",
+      bg: "#fffcf5",
+    },
+    red: {
+      stroke: "#f04438",
+      strokeBg: "#ffecea",
+      text: "#f04438",
+      bg: "#ffeaea",
+    },
+    default: {
+      stroke: "#4e5ba6",
+      strokeBg: "#f2f4f7",
+      text: "#4e5ba6",
+      bg: "#f2f4f7",
+    },
   },
 });
 
