@@ -168,6 +168,7 @@ const CreateNewMaintenanceWindow = () => {
           />
           <Typography
             sx={{
+              width: "fit-content",
               fontSize: "var(--env-var-font-size-small)",
               borderBottom: "1px dashed var(--env-var-color-3)",
               paddingBottom: "4px",
