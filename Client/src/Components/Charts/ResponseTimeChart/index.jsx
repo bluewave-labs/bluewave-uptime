@@ -1,33 +1,36 @@
 import "./index.css";
 import PropTypes from "prop-types";
-import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
 import { NormalizeData } from "../ChartUtils";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 const ResponseTimeChart = ({ checks = [] }) => {
   const normalizedChecks = NormalizeData(checks, 1, 100);
+
+  const responseTimes = normalizedChecks.map((check) => check.responseTime);
+  const ids = normalizedChecks.map((check) => check.createdAt);
+  const colors = normalizedChecks.map((check) => {
+    return check.status === true ? "#17b26a" : "#d92d20";
+  });
+
   return (
     <div className="chart-container">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          width={150}
-          height={40}
-          data={normalizedChecks}
-          style={{ cursor: "pointer" }}
-        >
-          <Bar maxBarSize={10} dataKey="responseTime">
-            {normalizedChecks.map((check, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={
-                  check.status === true
-                    ? "var(--env-var-color-23)"
-                    : "var(--env-var-color-24)"
-                }
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <BarChart
+        leftAxis={null}
+        bottomAxis={null}
+        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+        series={[{ data: responseTimes }]}
+        xAxis={[
+          {
+            scaleType: "band",
+            data: ids,
+            colorMap: {
+              type: "ordinal",
+              values: ids,
+              colors: colors,
+            },
+          },
+        ]}
+      />
     </div>
   );
 };
