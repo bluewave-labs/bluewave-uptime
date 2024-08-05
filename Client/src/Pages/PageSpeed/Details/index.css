@@ -58,7 +58,8 @@
 .page-speed-details .MuiPieArcLabel-faded {
   fill: rgba(0, 0, 0, 0.3);
 }
-.page-speed-details .pie-label {
+.page-speed-details .pie-label,
+.page-speed-details .pie-value-label {
   transition: all 400ms ease;
 }
 

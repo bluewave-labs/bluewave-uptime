@@ -78,6 +78,37 @@ const PieCenterLabel = ({ value, color }) => {
   );
 };
 
+const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
+  const { width, height } = useDrawingArea();
+
+  // Compute the midpoint angle in radians
+  const angle = (((startAngle + endAngle) / 2) * Math.PI) / 180;
+  const radius = height / 3.7; // length from center of the circle to where the text is positioned
+
+  // Calculate x and y positions
+  const x = Math.sin(angle) * radius;
+  const y = -Math.cos(angle) * radius;
+
+  return (
+    <g transform={`translate(${width / 2}, ${height / 2})`}>
+      <text
+        className="pie-value-label"
+        x={x}
+        y={y}
+        style={{
+          fill: highlighted ? color : "rgba(0,0,0,0)",
+          fontSize: "12px",
+          textAnchor: "middle",
+          dominantBaseline: "central",
+          userSelect: "none",
+        }}
+      >
+        +{value}
+      </text>
+    </g>
+  );
+};
+
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -433,6 +464,16 @@ const PageSpeedDetails = () => {
             }}
           >
             <PieCenterLabel value={performance} color={colorMap.text} />
+            {pieData?.map((pie) => (
+              <PieValueLabel
+                key={pie.id}
+                value={pie.data[0].value}
+                startAngle={pie.startAngle}
+                endAngle={pie.endAngle}
+                color={pie.data[0].color}
+                highlighted={highlightedItem?.seriesId === pie.id}
+              />
+            ))}
           </PieChart>
           <Typography component="h2" mt={theme.gap.xs}>
             Performance
