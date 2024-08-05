@@ -58,23 +58,27 @@ const StatBox = ({ icon, title, value }) => {
  * @param {string} props.color - The color of the text.
  * @returns {JSX.Element}
  */
-const PieCenterLabel = ({ value, color }) => {
+const PieCenterLabel = ({ value, color, setExpand }) => {
   const { width, height } = useDrawingArea();
   return (
-    <text
-      className="pie-label"
-      x={width / 2}
-      y={height / 2}
-      style={{
-        fill: color,
-        fontSize: "45px",
-        textAnchor: "middle",
-        dominantBaseline: "central",
-        userSelect: "none",
-      }}
+    <g
+      transform={`translate(${width / 2}, ${height / 2})`}
+      onMouseEnter={() => setExpand(true)}
     >
-      {value}
-    </text>
+      <circle cx={0} cy={0} r={width / 3} fill="transparent" />
+      <text
+        className="pie-label"
+        style={{
+          fill: color,
+          fontSize: "45px",
+          textAnchor: "middle",
+          dominantBaseline: "central",
+          userSelect: "none",
+        }}
+      >
+        {value}
+      </text>
+    </g>
   );
 };
 
@@ -305,11 +309,13 @@ const PageSpeedDetails = () => {
     return props;
   };
 
-  const pieSize = { width: 300, height: 205 };
+  const pieSize = { width: 200, height: 200 };
   const pieData = getPieData(data.audits);
   const colorMap = getColors(performance);
 
   const [highlightedItem, setHighLightedItem] = useState(null);
+  const [expand, setExpand] = useState(false);
+  console.log(expand);
 
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
@@ -419,82 +425,94 @@ const PageSpeedDetails = () => {
       <Typography component="h2">Performance report</Typography>
       <Box p={theme.gap.ml}>
         <Stack mx="auto" width="fit-content" alignItems="center">
-          <PieChart
-            series={[
-              {
-                data: [
+          <Box onMouseLeave={() => setExpand(false)}>
+            {expand ? (
+              <PieChart
+                series={[
                   {
-                    value: 100,
-                    color: colorMap.bg,
+                    data: [
+                      {
+                        value: 100,
+                        color: colorMap.bg,
+                      },
+                    ],
+                    outerRadius: 65,
+                    cx: pieSize.width / 2,
                   },
-                ],
-                outerRadius: 65,
-                cx: pieSize.width / 2,
-              },
-              {
-                data: [
+                  ...pieData,
+                ]}
+                width={pieSize.width}
+                height={pieSize.height}
+                margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                onHighlightChange={setHighLightedItem}
+                slotProps={{
+                  legend: { hidden: true },
+                }}
+                tooltip={{ trigger: "none" }}
+                sx={{
+                  "&:has(.MuiPieArcLabel-faded) .pie-label": {
+                    fill: "rgba(0,0,0,0) !important",
+                  },
+                }}
+              >
+                <PieCenterLabel
+                  value={performance}
+                  color={colorMap.text}
+                  setExpand={setExpand}
+                />
+                {pieData?.map((pie) => (
+                  <PieValueLabel
+                    key={pie.id}
+                    value={pie.data[0].value}
+                    startAngle={pie.startAngle}
+                    endAngle={pie.endAngle}
+                    color={pie.data[0].color}
+                    highlighted={highlightedItem?.seriesId === pie.id}
+                  />
+                ))}
+              </PieChart>
+            ) : (
+              <PieChart
+                series={[
                   {
-                    value: performance,
-                    color: colorMap.stroke,
+                    data: [
+                      {
+                        value: 100,
+                        color: colorMap.bg,
+                      },
+                    ],
+                    outerRadius: 65,
+                    cx: pieSize.width / 2,
                   },
-                ],
-                innerRadius: 60,
-                outerRadius: 70,
-                paddingAngle: 5,
-                cornerRadius: 5,
-                startAngle: 0,
-                endAngle: (performance / 100) * 360,
-                cx: pieSize.width / 2,
-              },
-            ]}
-            width={pieSize.width}
-            height={pieSize.height}
-            margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
-            tooltip={{ trigger: "none" }}
-          >
-            <PieCenterLabel value={performance} color={colorMap.text} />
-          </PieChart>
-          <PieChart
-            series={[
-              {
-                data: [
                   {
-                    value: 100,
-                    color: colorMap.bg,
+                    data: [
+                      {
+                        value: performance,
+                        color: colorMap.stroke,
+                      },
+                    ],
+                    innerRadius: 60,
+                    outerRadius: 70,
+                    paddingAngle: 5,
+                    cornerRadius: 5,
+                    startAngle: 0,
+                    endAngle: (performance / 100) * 360,
+                    cx: pieSize.width / 2,
                   },
-                ],
-                outerRadius: 65,
-                cx: pieSize.width / 2,
-              },
-              ...pieData,
-            ]}
-            width={pieSize.width}
-            height={pieSize.height}
-            margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
-            highlightedItem={highlightedItem}
-            onHighlightChange={setHighLightedItem}
-            slotProps={{
-              legend: { hidden: true },
-            }}
-            tooltip={{ trigger: "none" }}
-            sx={{
-              "&:has(.MuiPieArcLabel-faded) .pie-label": {
-                fill: "rgba(0,0,0,0) !important",
-              },
-            }}
-          >
-            <PieCenterLabel value={performance} color={colorMap.text} />
-            {pieData?.map((pie) => (
-              <PieValueLabel
-                key={pie.id}
-                value={pie.data[0].value}
-                startAngle={pie.startAngle}
-                endAngle={pie.endAngle}
-                color={pie.data[0].color}
-                highlighted={highlightedItem?.seriesId === pie.id}
-              />
-            ))}
-          </PieChart>
+                ]}
+                width={pieSize.width}
+                height={pieSize.height}
+                margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                tooltip={{ trigger: "none" }}
+              >
+                <PieCenterLabel
+                  value={performance}
+                  color={colorMap.text}
+                  setExpand={setExpand}
+                />
+              </PieChart>
+            )}
+          </Box>
           <Typography component="h2" mt={theme.gap.xs}>
             Performance
           </Typography>
