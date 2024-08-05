@@ -78,6 +78,18 @@ const PieCenterLabel = ({ value, color }) => {
   );
 };
 
+/**
+ * A component that renders a label on a pie chart slice.
+ * The label is positioned relative to the center of the pie chart and is optionally highlighted.
+ *
+ * @param {Object} props
+ * @param {number} props.value - The value to display inside the pie slice.
+ * @param {number} props.startAngle - The starting angle of the pie slice in degrees.
+ * @param {number} props.endAngle - The ending angle of the pie slice in degrees.
+ * @param {string} props.color - The color of the label text when highlighted.
+ * @param {boolean} props.highlighted - Determines if the label should be highlighted or not.
+ * @returns {JSX.Element}
+ */
 const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
   const { width, height } = useDrawingArea();
 
@@ -233,6 +245,14 @@ const PageSpeedDetails = () => {
     return theme.pie.default;
   };
 
+  /**
+   * Calculates and formats the data needed for rendering a pie chart based on audit scores and weights.
+   * This function generates properties for each pie slice, including angles, radii, and colors.
+   * It also calculates performance based on the weighted values.
+   *
+   * @returns {Array<Object>} An array of objects, each representing the properties for a slice of the pie chart.
+   * @returns {number} performance - A variable updated with the rounded sum of weighted values.
+   */
   let performance = 0;
   const getPieData = (audits) => {
     let props = [];
