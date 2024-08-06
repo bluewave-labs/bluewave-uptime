@@ -63,10 +63,8 @@ const CreateNewMaintenanceWindow = () => {
     repeat: 1,
     date: dayjs(),
     startTime: dayjs(),
-    duration: {
-      magnitude: "",
-      unit: 1,
-    },
+    duration: "60",
+    unit: "minutes",
     friendlyName: "",
     AddMonitors: "",
   });
@@ -133,14 +131,14 @@ const CreateNewMaintenanceWindow = () => {
           <Field
             id="duration-value"
             placeholder="60"
-            onChange={(e) => handleChange(e, "duration.magnitude")}
-            value={values["duration.unit"]}
+            onChange={(e) => handleChange(e, "duration")}
+            value={values.duration}
           />
           <Select
-            onChange={(e) => handleChange(e, "duration.unit")}
+            onChange={(e) => handleChange(e, "unit")}
             id="duration-unit"
             items={timeFrames}
-            value={values.duration.unit}
+            value={values.unit}
           />
         </Stack>
       ),
