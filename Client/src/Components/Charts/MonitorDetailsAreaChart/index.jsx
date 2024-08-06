@@ -60,8 +60,6 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
       const checkTime = new Date(checks[i].createdAt).getTime();
       if (now - checkTime < limits[filter]) {
         result.push(checks[i]);
-      } else {
-        break;
       }
     }
     return result;
