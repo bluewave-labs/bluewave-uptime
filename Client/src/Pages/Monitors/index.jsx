@@ -41,16 +41,26 @@ import {
 const Host = ({ params }) => {
   return (
     <Stack direction="row" alignItems="center" className="host">
-      <a
-        href={params.url}
-        target="_blank"
-        rel="noreferrer"
+      <IconButton
+        aria-label="monitor link"
         onClick={(event) => {
           event.stopPropagation();
+          window.open(params.url, "_blank", "noreferrer");
+        }}
+        sx={{
+          "&:focus": {
+            outline: "none",
+          },
+          mr: "3px",
         }}
       >
-        <OpenInNewPage />
-      </a>
+        <OpenInNewPage
+          style={{
+            marginTop: "-1px",
+            marginRight: "-1px",
+          }}
+        />
+      </IconButton>
       <Box>
         {params.title}
         <Typography component="span" sx={{ color: params.percentageColor }}>

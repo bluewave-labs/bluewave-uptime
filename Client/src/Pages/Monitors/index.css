@@ -9,7 +9,7 @@
 .monitors h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
 }
-.monitors .MuiStack-root > button {
+.monitors .MuiStack-root > button:not(.MuiIconButton-root) {
   font-size: var(--env-var-font-size-medium);
   height: var(--env-var-height-2);
   min-width: fit-content;
