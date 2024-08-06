@@ -51,3 +51,18 @@
   width: 22px;
   height: 22px;
 }
+.page-speed-details .MuiPieArcLabel-root {
+  font-size: var(--env-var-font-size-small-plus);
+  transition: fill 300ms ease;
+}
+.page-speed-details .MuiPieArcLabel-faded {
+  fill: rgba(0, 0, 0, 0.3);
+}
+.page-speed-details .pie-label,
+.page-speed-details .pie-value-label {
+  transition: all 400ms ease;
+}
+
+.page-speed-details .MuiPieArc-root {
+  stroke: inherit;
+}

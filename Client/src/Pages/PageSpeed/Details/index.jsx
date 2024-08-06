@@ -58,22 +58,70 @@ const StatBox = ({ icon, title, value }) => {
  * @param {string} props.color - The color of the text.
  * @returns {JSX.Element}
  */
-const PieCenterLabel = ({ value, color }) => {
-  const { width, height, left, top } = useDrawingArea();
+const PieCenterLabel = ({ value, color, setExpand }) => {
+  const { width, height } = useDrawingArea();
   return (
-    <text
-      x={left + width - 1}
-      y={top + height / 2 + 2}
-      style={{
-        fill: color,
-        fontSize: "55px",
-        textAnchor: "middle",
-        dominantBaseline: "central",
-        userSelect: "none",
-      }}
+    <g
+      transform={`translate(${width / 2}, ${height / 2})`}
+      onMouseEnter={() => setExpand(true)}
     >
-      {value}
-    </text>
+      <circle cx={0} cy={0} r={width / 3} fill="transparent" />
+      <text
+        className="pie-label"
+        style={{
+          fill: color,
+          fontSize: "45px",
+          textAnchor: "middle",
+          dominantBaseline: "central",
+          userSelect: "none",
+        }}
+      >
+        {value}
+      </text>
+    </g>
+  );
+};
+
+/**
+ * A component that renders a label on a pie chart slice.
+ * The label is positioned relative to the center of the pie chart and is optionally highlighted.
+ *
+ * @param {Object} props
+ * @param {number} props.value - The value to display inside the pie slice.
+ * @param {number} props.startAngle - The starting angle of the pie slice in degrees.
+ * @param {number} props.endAngle - The ending angle of the pie slice in degrees.
+ * @param {string} props.color - The color of the label text when highlighted.
+ * @param {boolean} props.highlighted - Determines if the label should be highlighted or not.
+ * @returns {JSX.Element}
+ */
+const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
+  const { width, height } = useDrawingArea();
+
+  // Compute the midpoint angle in radians
+  const angle = (((startAngle + endAngle) / 2) * Math.PI) / 180;
+  const radius = height / 3.7; // length from center of the circle to where the text is positioned
+
+  // Calculate x and y positions
+  const x = Math.sin(angle) * radius;
+  const y = -Math.cos(angle) * radius;
+
+  return (
+    <g transform={`translate(${width / 2}, ${height / 2})`}>
+      <text
+        className="pie-value-label"
+        x={x}
+        y={y}
+        style={{
+          fill: highlighted ? color : "rgba(0,0,0,0)",
+          fontSize: "12px",
+          textAnchor: "middle",
+          dominantBaseline: "central",
+          userSelect: "none",
+        }}
+      >
+        +{value}
+      </text>
+    </g>
   );
 };
 
@@ -114,7 +162,7 @@ const PageSpeedDetails = () => {
         title: "Cumulative Layout Shift",
         description:
           "Cumulative Layout Shift measures the movement of visible elements within the viewport.",
-        score: 1,
+        score: 0.1,
         scoreDisplayMode: "numeric",
         displayValue: "0",
         numericValue: 0,
@@ -126,7 +174,7 @@ const PageSpeedDetails = () => {
         title: "Speed Index",
         description:
           "Speed Index shows how quickly the contents of a page are visibly populated.",
-        score: 1,
+        score: 0.9,
         scoreDisplayMode: "numeric",
         displayValue: "0.6s",
         numericValue: 567.8934352052013,
@@ -138,7 +186,7 @@ const PageSpeedDetails = () => {
         title: "First Contentful Paint",
         description:
           "First Contentful Paint marks the time at which the first text or image is painted.",
-        score: 0.1,
+        score: 0.8,
         scoreDisplayMode: "numeric",
         displayValue: "0.4s",
         numericValue: 419,
@@ -150,7 +198,7 @@ const PageSpeedDetails = () => {
         title: "Largest Contentful Paint",
         description:
           "Largest Contentful Paint marks the time at which the largest text or image is painted.",
-        score: 1,
+        score: 0.6,
         scoreDisplayMode: "numeric",
         displayValue: "0.4s",
         numericValue: 422.5,
@@ -162,7 +210,7 @@ const PageSpeedDetails = () => {
         title: "Total Blocking Time",
         description:
           "Sum of all time periods between FCP and Time to Interactive",
-        score: 1,
+        score: 0.9,
         scoreDisplayMode: "numeric",
         displayValue: "20ms",
         numericValue: 16,
@@ -189,24 +237,6 @@ const PageSpeedDetails = () => {
   };
 
   /**
-   * Calculates the performance score based on the provided audit data and weights.
-   *
-   * @param {Object} audits - An object containing audit data.
-   * @param {Object} audits.<metric> - An object for each performance metric.
-   * @param {number} audits.<metric>.score - The score for the specific metric.
-   * @returns {number} The calculated performance score, rounded to the nearest integer.
-   */
-  const calculatePerformance = (audits) => {
-    let sum = 0;
-    Object.keys(audits).forEach((key) => {
-      if (audits[key].score) sum += audits[key].score * weights[key];
-    });
-    return Math.round(sum);
-  };
-
-  var performance = calculatePerformance(data.audits);
-
-  /**
    * Retrieves color properties based on the performance value.
    *
    * @param {number} value - The performance score used to determine the color properties.
@@ -219,7 +249,73 @@ const PageSpeedDetails = () => {
     return theme.pie.default;
   };
 
+  /**
+   * Calculates and formats the data needed for rendering a pie chart based on audit scores and weights.
+   * This function generates properties for each pie slice, including angles, radii, and colors.
+   * It also calculates performance based on the weighted values.
+   *
+   * @returns {Array<Object>} An array of objects, each representing the properties for a slice of the pie chart.
+   * @returns {number} performance - A variable updated with the rounded sum of weighted values.
+   */
+  let performance = 0;
+  const getPieData = (audits) => {
+    let props = [];
+    let startAngle = 0;
+    const padding = 3; // padding between arcs
+    const max = 360 - padding * (Object.keys(audits).length - 1); // _id is a child of audits
+
+    Object.keys(audits).forEach((key) => {
+      if (audits[key].score) {
+        let value = audits[key].score * weights[key];
+        let endAngle = startAngle + (weights[key] * max) / 100;
+
+        let theme = getColors(audits[key].score * 100);
+        props.push({
+          id: key,
+          data: [
+            {
+              value: value,
+              color: theme.stroke,
+              label: key.toUpperCase(),
+            },
+            {
+              value: weights[key] - value,
+              color: theme.strokeBg,
+              label: "",
+            },
+          ],
+          arcLabel: (item) => `${item.label}`,
+          arcLabelRadius: 95,
+          startAngle: startAngle,
+          endAngle: endAngle,
+          innerRadius: 70,
+          outerRadius: 80,
+          cornerRadius: 3,
+          highlightScope: { faded: "global", highlighted: "series" },
+          faded: {
+            innerRadius: 60,
+            outerRadius: 70,
+            additionalRadius: -20,
+            arcLabelRadius: 5,
+          },
+          cx: pieSize.width / 2,
+        });
+
+        performance += Math.round(value);
+        startAngle = endAngle + padding;
+      }
+    });
+
+    return props;
+  };
+
+  const pieSize = { width: 200, height: 200 };
+  const pieData = getPieData(data.audits);
   const colorMap = getColors(performance);
+
+  const [highlightedItem, setHighLightedItem] = useState(null);
+  const [expand, setExpand] = useState(false);
+  console.log(expand);
 
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
@@ -329,45 +425,97 @@ const PageSpeedDetails = () => {
       <Typography component="h2">Performance report</Typography>
       <Box p={theme.gap.ml}>
         <Stack mx="auto" width="fit-content" alignItems="center">
-          <PieChart
-            series={[
-              {
-                data: [
+          <Box onMouseLeave={() => setExpand(false)}>
+            {expand ? (
+              <PieChart
+                series={[
                   {
-                    value: 100,
-                    color: colorMap.bg,
+                    data: [
+                      {
+                        value: 100,
+                        color: colorMap.bg,
+                      },
+                    ],
+                    outerRadius: 65,
+                    cx: pieSize.width / 2,
                   },
-                ],
-                color: "red",
-                outerRadius: 65,
-                cx: "100%",
-                cy: "50%",
-              },
-              {
-                data: [
+                  ...pieData,
+                ]}
+                width={pieSize.width}
+                height={pieSize.height}
+                margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                onHighlightChange={setHighLightedItem}
+                slotProps={{
+                  legend: { hidden: true },
+                }}
+                tooltip={{ trigger: "none" }}
+                sx={{
+                  "&:has(.MuiPieArcLabel-faded) .pie-label": {
+                    fill: "rgba(0,0,0,0) !important",
+                  },
+                }}
+              >
+                <PieCenterLabel
+                  value={performance}
+                  color={colorMap.text}
+                  setExpand={setExpand}
+                />
+                {pieData?.map((pie) => (
+                  <PieValueLabel
+                    key={pie.id}
+                    value={pie.data[0].value}
+                    startAngle={pie.startAngle}
+                    endAngle={pie.endAngle}
+                    color={pie.data[0].color}
+                    highlighted={highlightedItem?.seriesId === pie.id}
+                  />
+                ))}
+              </PieChart>
+            ) : (
+              <PieChart
+                series={[
                   {
-                    value: performance,
-                    color: colorMap.stroke,
+                    data: [
+                      {
+                        value: 100,
+                        color: colorMap.bg,
+                      },
+                    ],
+                    outerRadius: 65,
+                    cx: pieSize.width / 2,
                   },
-                ],
-                color: "red",
-                innerRadius: 60,
-                outerRadius: 70,
-                paddingAngle: 5,
-                cornerRadius: 5,
-                startAngle: 0,
-                endAngle: (performance / 100) * 360,
-                cx: "100%",
-                cy: "50%",
-              },
-            ]}
-            width={200}
-            height={160}
-            tooltip={{ trigger: "none" }}
-          >
-            <PieCenterLabel value={performance} color={colorMap.text} />
-          </PieChart>
-          <Typography component="h2">Performance</Typography>
+                  {
+                    data: [
+                      {
+                        value: performance,
+                        color: colorMap.stroke,
+                      },
+                    ],
+                    innerRadius: 60,
+                    outerRadius: 70,
+                    paddingAngle: 5,
+                    cornerRadius: 5,
+                    startAngle: 0,
+                    endAngle: (performance / 100) * 360,
+                    cx: pieSize.width / 2,
+                  },
+                ]}
+                width={pieSize.width}
+                height={pieSize.height}
+                margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                tooltip={{ trigger: "none" }}
+              >
+                <PieCenterLabel
+                  value={performance}
+                  color={colorMap.text}
+                  setExpand={setExpand}
+                />
+              </PieChart>
+            )}
+          </Box>
+          <Typography component="h2" mt={theme.gap.xs}>
+            Performance
+          </Typography>
           <Typography>Values are estimated and may vary.</Typography>
         </Stack>
       </Box>
