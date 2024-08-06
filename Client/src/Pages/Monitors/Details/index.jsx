@@ -12,7 +12,7 @@ import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
-import SettingsIcon from "../../../assets/icons/settings.svg?react";
+import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import {
   formatDuration,
   formatDurationRounded,
@@ -203,7 +203,11 @@ const DetailsPage = () => {
             level="tertiary"
             label="Configure"
             animate="rotate90"
-            img={<SettingsIcon />}
+            img={
+              <SettingsIcon
+                style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
+              />
+            }
             onClick={() => navigate(`/monitors/configure/${monitorId}`)}
             sx={{
               ml: "auto",
