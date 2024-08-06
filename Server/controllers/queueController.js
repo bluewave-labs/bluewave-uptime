@@ -4,7 +4,7 @@ const SERVICE_NAME = "JobQueue";
 
 const getJobs = async (req, res, next) => {
   try {
-    const jobs = await req.jobQueue.getJobs();
+    const jobs = await req.jobQueue.getJobStats();
     return res.status(200).json({ jobs });
   } catch (error) {
     error.service = SERVICE_NAME;
