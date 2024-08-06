@@ -47,10 +47,10 @@ const configOptionTitle = (title, description) => {
 };
 
 const timeFrames = [
-  { _id: "seconds", name: "seconds" },
-  { _id: "minutes", name: "minutes" },
-  { _id: "hours", name: "hours" },
-  { _id: "days", name: "days" },
+  { _id: 1, name: "seconds" },
+  { _id: 2, name: "minutes" },
+  { _id: 3, name: "hours" },
+  { _id: 4, name: "days" },
 ];
 
 const sxButtons = {
@@ -64,8 +64,8 @@ const CreateNewMaintenanceWindow = () => {
     date: dayjs(),
     startTime: dayjs(),
     duration: {
-      value: "60",
-      unit: "minutes",
+      magnitude: "",
+      unit: 1,
     },
     friendlyName: "",
     AddMonitors: "",
@@ -133,8 +133,8 @@ const CreateNewMaintenanceWindow = () => {
           <Field
             id="duration-value"
             placeholder="60"
-            onChange={(e) => handleChange(e, "duration")}
-            value={values.duration.value}
+            onChange={(e) => handleChange(e, "duration.magnitude")}
+            value={values["duration.unit"]}
           />
           <Select
             onChange={(e) => handleChange(e, "duration.unit")}
@@ -159,7 +159,11 @@ const CreateNewMaintenanceWindow = () => {
     {
       title: "Add monitors",
       component: (
-        <Stack gap={2}>
+        <Stack
+          className="add-monitors-fields"
+          sx={{ width: "60%", maxWidth: "380px" }}
+          gap={2}
+        >
           <Field
             id="add-monitors"
             placeholder="Start typing to search for current monitors"
