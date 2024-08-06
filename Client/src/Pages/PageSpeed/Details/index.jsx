@@ -18,6 +18,7 @@ import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 
 import "./index.css";
+import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 
 /**
  * Displays a box with an icon, title, and value.
@@ -142,11 +143,12 @@ const PageSpeedDetails = () => {
           },
         }
       );
+      console.log(monitor);
       setMonitor(res.data.data);
     };
 
     fetchMonitor();
-  }, []);
+  }, [monitorId]);
 
   const data = {
     _id: "66ad34001d483d284550e8cb",
@@ -421,6 +423,9 @@ const PageSpeedDetails = () => {
         ></StatBox>
       </Stack>
       <Typography component="h2">Score history</Typography>
+      <Box height="300px">
+        <PageSpeedLineChart pageSpeedChecks={monitor?.checks?.slice(0, 25)} />
+      </Box>
       <Typography component="h2">Performance report</Typography>
       <Stack direction="row" alignItems="center" overflow="hidden">
         <Stack

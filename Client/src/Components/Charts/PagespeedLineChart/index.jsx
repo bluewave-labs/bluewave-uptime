@@ -49,7 +49,7 @@ const PageSpeedLineChart = ({ pageSpeedChecks = [] }) => {
 };
 
 PageSpeedLineChart.propTypes = {
-  pageSpeedChecks: PropTypes.array.isRequired,
+  pageSpeedChecks: PropTypes.array,
 };
 
 export default PageSpeedLineChart;
