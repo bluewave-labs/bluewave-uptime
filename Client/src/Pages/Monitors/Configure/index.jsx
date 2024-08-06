@@ -9,7 +9,7 @@ import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-
+import { getLastChecked } from "../../../Utils/monitorUtils";
 import "./index.css";
 import { monitorValidation } from "../../../Validation/validation";
 import Select from "../../../Components/Inputs/Select";
@@ -34,18 +34,6 @@ const parseUrl = (url) => {
   } catch (error) {
     return null;
   }
-};
-
-/**
- * Helper function to get duration since last check
- * @param {Array} checks Array of check objects.
- * @returns {number} Timestamp of the most recent check.
- */
-const getLastChecked = (checks) => {
-  if (!checks || checks.length === 0) {
-    return 0; // Handle case when no checks are available
-  }
-  return new Date() - new Date(checks[0].createdAt);
 };
 
 /**

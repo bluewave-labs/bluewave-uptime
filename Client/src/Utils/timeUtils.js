@@ -50,7 +50,6 @@ export const formatDate = (date) => {
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
-    second: "numeric",
     hour12: true,
   };
 
