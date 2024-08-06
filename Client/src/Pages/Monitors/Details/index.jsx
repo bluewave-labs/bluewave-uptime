@@ -43,45 +43,53 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchMonitor = async () => {
-      const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      setMonitor(res.data.data);
-      const data = {
-        cols: [
-          { id: 1, name: "Status" },
-          { id: 2, name: "Date & Time" },
-          { id: 3, name: "Message" },
-        ],
-        rows: res.data.data.checks.map((check, idx) => {
-          const status = check.status === true ? "up" : "down";
+      try {
+        const res = await axiosInstance.get(
+          `/monitors/${monitorId}?sortOrder=asc`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        setMonitor(res.data.data);
+        const data = {
+          cols: [
+            { id: 1, name: "Status" },
+            { id: 2, name: "Date & Time" },
+            { id: 3, name: "Message" },
+          ],
+          rows: res.data.data.checks.map((check, idx) => {
+            const status = check.status === true ? "up" : "down";
 
-          return {
-            id: check._id,
-            data: [
-              {
-                id: idx,
-                data: (
-                  <StatusLabel
-                    status={status}
-                    text={status}
-                    customStyles={{ textTransform: "capitalize" }}
-                  />
-                ),
-              },
-              { id: idx + 1, data: new Date(check.createdAt).toLocaleString() },
-              { id: idx + 2, data: check.statusCode },
-            ],
-          };
-        }),
-      };
+            return {
+              id: check._id,
+              data: [
+                {
+                  id: idx,
+                  data: (
+                    <StatusLabel
+                      status={status}
+                      text={status}
+                      customStyles={{ textTransform: "capitalize" }}
+                    />
+                  ),
+                },
+                {
+                  id: idx + 1,
+                  data: new Date(check.createdAt).toLocaleString(),
+                },
+                { id: idx + 2, data: check.statusCode },
+              ],
+            };
+          }),
+        };
 
-      setData(data);
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching monitor of id: " + monitorId);
+        navigate("/not-found");
+      }
     };
     fetchMonitor();
   }, [monitorId, authToken]);

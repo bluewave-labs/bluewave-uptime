@@ -62,6 +62,10 @@ const Configure = () => {
 
   useEffect(() => {
     const data = monitors.find((monitor) => monitor._id === monitorId);
+    if (!data) {
+      console.error("Error fetching monitor of id: " + monitorId);
+      navigate("/not-found");
+    }
     setMonitor({
       ...data,
     });
