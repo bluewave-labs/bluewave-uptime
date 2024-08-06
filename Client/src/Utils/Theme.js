@@ -140,24 +140,28 @@ const theme = createTheme({
       strokeBg: "#d4f4e1",
       text: "#079455",
       bg: "#ecfdf3",
+      shape: "circle",
     },
     yellow: {
       stroke: "#fdb022",
       strokeBg: "rgba(255, 192, 34, 0.3)",
       text: "#dc6803",
       bg: "#fffcf5",
+      shape: "square",
     },
     red: {
       stroke: "#f04438",
       strokeBg: "#ffecea",
       text: "#f04438",
       bg: "#ffeaea",
+      shape: "triangle",
     },
     default: {
       stroke: "#4e5ba6",
       strokeBg: "#f2f4f7",
       text: "#4e5ba6",
       bg: "#f2f4f7",
+      shape: "",
     },
   },
 });

@@ -1,20 +1,23 @@
 .page-speed-details h1 {
   font-size: var(--env-var-font-size-large-plus);
+  color: var(--env-var-color-1);
 }
 .page-speed-details h2,
 .page-speed-details h6 {
   font-size: var(--env-var-font-size-large);
 }
 .page-speed-details h4,
-.page-speed-details p {
+.page-speed-details p,
+.page-speed-details p > span {
   font-size: var(--env-var-font-size-medium);
 }
-.page-speed-details svg + .MuiBox-root > p,
+.page-speed-details h1 + span,
 .page-speed-details h4 > span {
   font-size: var(--env-var-font-size-small-plus);
 }
 .page-speed-details h2,
-.page-speed-details h4 {
+.page-speed-details h4,
+.page-speed-details p {
   color: var(--env-var-color-5);
 }
 .page-speed-details h6 {
@@ -26,16 +29,12 @@
 .page-speed-details h6 {
   font-weight: 600;
 }
-.page-speed-details .MuiBox-root > h2 {
-  font-size: 18px;
-  color: var(--env-var-color-1);
-}
 .page-speed-details button.MuiButtonBase-root {
   height: 34px;
 }
 
 .page-speed-details .stat-box,
-.page-speed-details > .MuiBox-root {
+.page-speed-details > .MuiStack-root:last-child {
   border: solid 1px var(--env-var-color-6);
   border-radius: var(--env-var-radius-2);
   background-color: var(--env-var-color-8);
@@ -62,7 +61,11 @@
 .page-speed-details .pie-value-label {
   transition: all 400ms ease;
 }
-
 .page-speed-details .MuiPieArc-root {
   stroke: inherit;
+}
+
+.page-speed-details .metric {
+  min-width: 200px;
+  flex: 1;
 }
