@@ -99,7 +99,7 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
 
   // Compute the midpoint angle in radians
   const angle = (((startAngle + endAngle) / 2) * Math.PI) / 180;
-  const radius = height / 3.7; // length from center of the circle to where the text is positioned
+  const radius = height / 3.5; // length from center of the circle to where the text is positioned
 
   // Calculate x and y positions
   const x = Math.sin(angle) * radius;
@@ -288,12 +288,12 @@ const PageSpeedDetails = () => {
           arcLabelRadius: 95,
           startAngle: startAngle,
           endAngle: endAngle,
-          innerRadius: 70,
+          innerRadius: 73,
           outerRadius: 80,
-          cornerRadius: 3,
+          cornerRadius: 2,
           highlightScope: { faded: "global", highlighted: "series" },
           faded: {
-            innerRadius: 60,
+            innerRadius: 63,
             outerRadius: 70,
             additionalRadius: -20,
             arcLabelRadius: 5,
@@ -315,7 +315,6 @@ const PageSpeedDetails = () => {
 
   const [highlightedItem, setHighLightedItem] = useState(null);
   const [expand, setExpand] = useState(false);
-  console.log(expand);
 
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
@@ -342,11 +341,11 @@ const PageSpeedDetails = () => {
       >
         <GreenCheck />
         <Box>
-          <Typography component="h1" sx={{ lineHeight: 1 }}>
-            google.com
+          <Typography component="h1" mb={theme.gap.xs} sx={{ lineHeight: 1 }}>
+            {monitor?.url}
           </Typography>
           <Typography
-            mt={theme.gap.small}
+            component="span"
             sx={{ color: "var(--env-var-color-17)" }}
           >
             Your pagespeed monitor is live.
@@ -361,7 +360,7 @@ const PageSpeedDetails = () => {
               style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
             />
           }
-          onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+          onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
           sx={{
             ml: "auto",
             alignSelf: "flex-end",
@@ -423,8 +422,15 @@ const PageSpeedDetails = () => {
       </Stack>
       <Typography component="h2">Score history</Typography>
       <Typography component="h2">Performance report</Typography>
-      <Box p={theme.gap.ml}>
-        <Stack mx="auto" width="fit-content" alignItems="center">
+      <Stack direction="row" alignItems="center" overflow="hidden">
+        <Stack
+          alignItems="center"
+          textAlign="center"
+          minWidth="300px"
+          flex={1}
+          px={theme.gap.xl}
+          py={theme.gap.ml}
+        >
           <Box onMouseLeave={() => setExpand(false)}>
             {expand ? (
               <PieChart
@@ -436,7 +442,7 @@ const PageSpeedDetails = () => {
                         color: colorMap.bg,
                       },
                     ],
-                    outerRadius: 65,
+                    outerRadius: 67,
                     cx: pieSize.width / 2,
                   },
                   ...pieData,
@@ -481,7 +487,7 @@ const PageSpeedDetails = () => {
                         color: colorMap.bg,
                       },
                     ],
-                    outerRadius: 65,
+                    outerRadius: 67,
                     cx: pieSize.width / 2,
                   },
                   {
@@ -491,10 +497,10 @@ const PageSpeedDetails = () => {
                         color: colorMap.stroke,
                       },
                     ],
-                    innerRadius: 60,
+                    innerRadius: 63,
                     outerRadius: 70,
                     paddingAngle: 5,
-                    cornerRadius: 5,
+                    cornerRadius: 2,
                     startAngle: 0,
                     endAngle: (performance / 100) * 360,
                     cx: pieSize.width / 2,
@@ -513,12 +519,154 @@ const PageSpeedDetails = () => {
               </PieChart>
             )}
           </Box>
-          <Typography component="h2" mt={theme.gap.xs}>
-            Performance
+          <Typography mt={theme.gap.medium}>
+            Values are estimated and may vary.{" "}
+            <Typography
+              component="span"
+              sx={{
+                color: theme.palette.primary.main,
+                fontWeight: 500,
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
+              See calculator
+            </Typography>
           </Typography>
-          <Typography>Values are estimated and may vary.</Typography>
         </Stack>
-      </Box>
+        <Box
+          px={theme.gap.xl}
+          py={theme.gap.ml}
+          height="100%"
+          flex={1}
+          sx={{
+            borderLeft: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+          }}
+        >
+          <Typography
+            mb={theme.gap.medium}
+            pb={theme.gap.ml}
+            color={theme.palette.secondary.main}
+            textAlign="center"
+            sx={{
+              borderBottom: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+              borderBottomStyle: "dashed",
+            }}
+          >
+            The{" "}
+            <Typography
+              component="span"
+              sx={{
+                color: theme.palette.primary.main,
+                fontWeight: 500,
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
+              performance score is calculated
+            </Typography>{" "}
+            directly from these{" "}
+            <Typography component="span" fontWeight={600}>
+              metrics
+            </Typography>
+            .
+          </Typography>
+          <Stack
+            direction="row"
+            flexWrap="wrap"
+            pt={theme.gap.ml}
+            gap={theme.gap.ml}
+          >
+            {Object.keys(data.audits).map((key) => {
+              if (key === "_id") return;
+
+              let audit = data.audits[key];
+              let metricParams = getColors(audit.score * 100);
+
+              let shape = (
+                <Box
+                  sx={{
+                    width: theme.gap.medium,
+                    height: theme.gap.medium,
+                    borderRadius: "50%",
+                    backgroundColor: metricParams.stroke,
+                  }}
+                ></Box>
+              );
+              if (metricParams.shape === "square")
+                shape = (
+                  <Box
+                    sx={{
+                      width: theme.gap.medium,
+                      height: theme.gap.medium,
+                      backgroundColor: metricParams.stroke,
+                    }}
+                  ></Box>
+                );
+              else if (metricParams.shape === "triangle")
+                shape = (
+                  <Box
+                    sx={{
+                      width: 0,
+                      height: 0,
+                      ml: `calc((${theme.gap.medium} - ${theme.gap.small}) / -2)`,
+                      borderLeft: `${theme.gap.small} solid transparent`,
+                      borderRight: `${theme.gap.small} solid transparent`,
+                      borderBottom: `${theme.gap.medium} solid ${metricParams.stroke}`,
+                    }}
+                  ></Box>
+                );
+
+              // Find the position where the number ends and the unit begins
+              const match = audit.displayValue.match(/(\d+\.?\d*)([a-zA-Z]+)/);
+              let value;
+              let unit;
+              if (match) {
+                value = match[1];
+                unit = match[2];
+              } else {
+                value = audit.displayValue;
+              }
+
+              return (
+                <Stack
+                  className="metric"
+                  key={`${key}-box`}
+                  direction="row"
+                  gap={theme.gap.small}
+                >
+                  {shape}
+                  <Box>
+                    <Typography sx={{ lineHeight: 1 }}>
+                      {audit.title}
+                    </Typography>
+                    <Typography
+                      component="span"
+                      sx={{
+                        color: metricParams.text,
+                        fontSize: "16px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {value}
+                      <Typography
+                        component="span"
+                        ml="2px"
+                        sx={{
+                          color: theme.palette.secondary.main,
+                          fontSize: "13px",
+                        }}
+                      >
+                        {unit}
+                      </Typography>
+                    </Typography>
+                  </Box>
+                </Stack>
+              );
+            })}
+          </Stack>
+        </Box>
+      </Stack>
     </Stack>
   );
 };
