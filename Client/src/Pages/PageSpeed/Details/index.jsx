@@ -400,7 +400,7 @@ const PageSpeedDetails = () => {
                 {pieData?.map((pie) => (
                   <PieValueLabel
                     key={pie.id}
-                    value={pie.data[0].value}
+                    value={Math.round(pie.data[0].value * 10) / 10}
                     startAngle={pie.startAngle}
                     endAngle={pie.endAngle}
                     color={pie.data[0].color}
