@@ -44,12 +44,28 @@ const PageSpeedLineChart = ({ pageSpeedChecks = [] }) => {
       dataset={pageSpeedChecks}
       {...customize}
       grid={{ vertical: true, horizontal: true }}
+      tooltip={{ trigger: "none" }}
+      slotProps={{
+        legend: {
+          direction: "row",
+          position: { vertical: "bottom", horizontal: "middle" },
+          padding: 2,
+          itemMarkWidth: 8,
+          itemMarkHeight: 8,
+          markGap: 5,
+          itemGap: 15,
+          labelStyle: {
+            fontSize: 13,
+            color: "#344054"
+          }
+        },
+      }}
     />
   );
 };
 
 PageSpeedLineChart.propTypes = {
-  pageSpeedChecks: PropTypes.array.isRequired,
+  pageSpeedChecks: PropTypes.array,
 };
 
 export default PageSpeedLineChart;

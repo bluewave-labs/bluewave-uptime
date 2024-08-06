@@ -18,6 +18,7 @@ import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 
 import "./index.css";
+import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 
 /**
  * Displays a box with an icon, title, and value.
@@ -129,6 +130,7 @@ const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [monitor, setMonitor] = useState({});
+  const [audits, setAudits] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
 
@@ -142,87 +144,13 @@ const PageSpeedDetails = () => {
           },
         }
       );
+
       setMonitor(res.data.data);
+      setAudits(res.data.data.checks[0].audits);
     };
 
     fetchMonitor();
-  }, []);
-
-  const data = {
-    _id: "66ad34001d483d284550e8cb",
-    monitorId: "66ad2f5b4dfcd19cdbfc7205",
-    status: true,
-    accessibility: 100,
-    bestPractices: 79,
-    seo: 100,
-    performance: 100,
-    audits: {
-      cls: {
-        id: "cumulative-layout-shift",
-        title: "Cumulative Layout Shift",
-        description:
-          "Cumulative Layout Shift measures the movement of visible elements within the viewport.",
-        score: 0.1,
-        scoreDisplayMode: "numeric",
-        displayValue: "0",
-        numericValue: 0,
-        numericUnit: "unitless",
-        _id: "66ad34001d483d284550e8cd",
-      },
-      si: {
-        id: "speed-index",
-        title: "Speed Index",
-        description:
-          "Speed Index shows how quickly the contents of a page are visibly populated.",
-        score: 0.9,
-        scoreDisplayMode: "numeric",
-        displayValue: "0.6s",
-        numericValue: 567.8934352052013,
-        numericUnit: "millisecond",
-        _id: "66ad34001d483d284550e8ce",
-      },
-      fcp: {
-        id: "first-contentful-paint",
-        title: "First Contentful Paint",
-        description:
-          "First Contentful Paint marks the time at which the first text or image is painted.",
-        score: 0.8,
-        scoreDisplayMode: "numeric",
-        displayValue: "0.4s",
-        numericValue: 419,
-        numericUnit: "millisecond",
-        _id: "66ad34001d483d284550e8cf",
-      },
-      lcp: {
-        id: "largest-contentful-paint",
-        title: "Largest Contentful Paint",
-        description:
-          "Largest Contentful Paint marks the time at which the largest text or image is painted.",
-        score: 0.6,
-        scoreDisplayMode: "numeric",
-        displayValue: "0.4s",
-        numericValue: 422.5,
-        numericUnit: "millisecond",
-        _id: "66ad34001d483d284550e8d0",
-      },
-      tbt: {
-        id: "total-blocking-time",
-        title: "Total Blocking Time",
-        description:
-          "Sum of all time periods between FCP and Time to Interactive",
-        score: 0.9,
-        scoreDisplayMode: "numeric",
-        displayValue: "20ms",
-        numericValue: 16,
-        numericUnit: "millisecond",
-        _id: "66ad34001d483d284550e8d1",
-      },
-      _id: "66ad34001d483d284550e8cc",
-    },
-    createdAt: "2024-08-02T19:31:12.732Z",
-    updatedAt: "2024-08-02T19:31:12.732Z",
-    __v: 0,
-  };
+  }, [monitorId]);
 
   /**
    * Weight constants for different performance metrics.
@@ -310,7 +238,7 @@ const PageSpeedDetails = () => {
   };
 
   const pieSize = { width: 200, height: 200 };
-  const pieData = getPieData(data.audits);
+  const pieData = getPieData(audits);
   const colorMap = getColors(performance);
 
   const [highlightedItem, setHighLightedItem] = useState(null);
@@ -421,6 +349,9 @@ const PageSpeedDetails = () => {
         ></StatBox>
       </Stack>
       <Typography component="h2">Score history</Typography>
+      <Box height="300px">
+        <PageSpeedLineChart pageSpeedChecks={monitor?.checks?.slice(0, 25)} />
+      </Box>
       <Typography component="h2">Performance report</Typography>
       <Stack direction="row" alignItems="center" overflow="hidden">
         <Stack
@@ -577,10 +508,10 @@ const PageSpeedDetails = () => {
             pt={theme.gap.ml}
             gap={theme.gap.ml}
           >
-            {Object.keys(data.audits).map((key) => {
+            {Object.keys(audits).map((key) => {
               if (key === "_id") return;
 
-              let audit = data.audits[key];
+              let audit = audits[key];
               let metricParams = getColors(audit.score * 100);
 
               let shape = (
@@ -618,7 +549,7 @@ const PageSpeedDetails = () => {
                 );
 
               // Find the position where the number ends and the unit begins
-              const match = audit.displayValue.match(/(\d+\.?\d*)([a-zA-Z]+)/);
+              const match = audit.displayValue.match(/(\d+\.?\d*)\s*([a-zA-Z]+)/);
               let value;
               let unit;
               if (match) {
