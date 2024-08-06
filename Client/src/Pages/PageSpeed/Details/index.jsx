@@ -16,7 +16,6 @@ import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
-import { StatusLabel } from "../../../Components/Label";
 
 import "./index.css";
 
@@ -427,7 +426,7 @@ const PageSpeedDetails = () => {
         <Stack
           alignItems="center"
           textAlign="center"
-          minWidth="400px"
+          minWidth="300px"
           flex={1}
           px={theme.gap.xl}
           py={theme.gap.ml}
