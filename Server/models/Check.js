@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const EmailService = require("../service/emailService");
+const Notification = require("../models/Notification");
 
 /**
  * Check Schema for MongoDB collection.
@@ -78,15 +79,17 @@ CheckSchema.pre("save", async function (next) {
     const monitor = await mongoose.model("Monitor").findById(this.monitorId);
 
     if (monitor) {
-      // Check if the monitor has notifications
-      if (monitor.notifications && monitor.notifications.length > 0) {
+      const notifications = await Notification.find({ monitorId: this.monitorId });
+
+      // Check if there are any notifications
+      if (notifications && notifications.length > 0) {
         // Only send email if monitor status has changed
         if (monitor.status !== this.status) {
           const emailService = new EmailService();
 
           if (monitor.status === true && this.status === false) {
             // Notify users that the monitor is down
-            for (const notification of monitor.notifications) {
+            for (const notification of notifications) {
               if (notification.email) {
                 await emailService.buildAndSendEmail(
                   "serverIsDownTemplate",
@@ -100,7 +103,7 @@ CheckSchema.pre("save", async function (next) {
 
           if (monitor.status === false && this.status === true) {
             // Notify users that the monitor is up
-            for (const notification of monitor.notifications) {
+            for (const notification of notifications) {
               if (notification.email) {
                 await emailService.buildAndSendEmail(
                   "serverIsUpTemplate",
@@ -124,5 +127,6 @@ CheckSchema.pre("save", async function (next) {
     next();
   }
 });
+
 
 module.exports = mongoose.model("Check", CheckSchema);
