@@ -70,9 +70,13 @@ const PageSpeed = () => {
     dispatch(getPageSpeedByUserId(authToken));
   }, []);
 
+  // will show skeletons only on initial load
+  // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
+  let isActuallyLoading = isLoading && monitors.length === 0;
+
   return (
     <Box className="page-speed">
-      {isLoading ? (
+      {isActuallyLoading ? (
         <Stack gap={theme.gap.xs}>
           <Stack
             direction="row"
