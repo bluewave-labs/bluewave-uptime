@@ -1,11 +1,7 @@
 const router = require("express").Router();
-const Check = require("../models/Check");
-const Monitor = require("../models/Monitor");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
-const { verifyJWT } = require("../middleware/verifyJWT");
 const checkController = require("../controllers/checkController");
-
-router.use(verifyJWT);
+const { verifyOwnership } = require("../middleware/verifyOwnership");
+const Monitor = require("../models/Monitor");
 
 router.post(
   "/:monitorId",
