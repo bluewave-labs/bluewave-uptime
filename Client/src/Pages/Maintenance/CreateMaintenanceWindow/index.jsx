@@ -47,10 +47,9 @@ const configOptionTitle = (title, description) => {
 };
 
 const timeFrames = [
-  { _id: 1, name: "seconds" },
-  { _id: 2, name: "minutes" },
-  { _id: 3, name: "hours" },
-  { _id: 4, name: "days" },
+  { _id: "minutes", name: "minutes" },
+  { _id: "hours", name: "hours" },
+  { _id: "days", name: "days" },
 ];
 
 const sxButtons = {
@@ -63,7 +62,7 @@ const CreateNewMaintenanceWindow = () => {
     repeat: 1,
     date: dayjs(),
     startTime: dayjs(),
-    duration: "60",
+    durationOptions: "60",
     unit: "minutes",
     friendlyName: "",
     AddMonitors: "",
@@ -131,8 +130,8 @@ const CreateNewMaintenanceWindow = () => {
           <Field
             id="duration-value"
             placeholder="60"
-            onChange={(e) => handleChange(e, "duration")}
-            value={values.duration}
+            onChange={(e) => handleChange(e, "durationOptions")}
+            value={values.durationOptions}
           />
           <Select
             onChange={(e) => handleChange(e, "unit")}

@@ -47,3 +47,9 @@
 .maintenance-options .add-monitors-fields .field.field-text {
   width: 100%;
 }
+
+.MuiPopover-paper.MuiMenu-paper.select-dropdown
+  .MuiMenu-list
+  .MuiButtonBase-root {
+  text-transform: none;
+}
