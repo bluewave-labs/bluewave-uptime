@@ -47,7 +47,7 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
     });
   };
 
-  const filterChecks = (checks, filter) => {
+  const filterChecks = (checks, filter, numToDisplay) => {
     const limits = {
       day: 24 * 60 * 60 * 1000,
       week: 24 * 60 * 60 * 1000 * 7,
@@ -55,20 +55,29 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
     };
 
     const now = new Date().getTime();
-    const result = [];
+    let result = [];
     for (let i = 0; i < checks.length; i++) {
       const checkTime = new Date(checks[i].createdAt).getTime();
       if (now - checkTime < limits[filter]) {
         result.push(checks[i]);
       }
     }
+
+    // If more than 50 checks, pick every nth check
+    if (result.length > numToDisplay) {
+      const n = Math.ceil(result.length / numToDisplay);
+      result = result.filter((_, idx) => {
+        return idx % n === 0;
+      });
+    }
+
     return result;
   };
 
   let normalizedChecks = [];
   if (checks && checks.length > 0) {
-    const filteredChecks = filterChecks(checks, filter);
-    normalizedChecks = NormalizeData(filteredChecks, 33, 100);
+    const filteredChecks = filterChecks(checks, filter, 75);
+    normalizedChecks = NormalizeData(filteredChecks, 10, 100);
   }
 
   return (
