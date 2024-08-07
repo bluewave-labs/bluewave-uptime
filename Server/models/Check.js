@@ -90,11 +90,11 @@ CheckSchema.pre("save", async function (next) {
           if (monitor.status === true && this.status === false) {
             // Notify users that the monitor is down
             for (const notification of notifications) {
-              if (notification.email) {
+              if (notification.type === "email") {
                 await emailService.buildAndSendEmail(
                   "serverIsDownTemplate",
                   { monitorName: monitor.name, monitorUrl: monitor.url },
-                  notification.email,
+                  notification.address,
                   `Monitor ${monitor.name} is down`
                 );
               }
@@ -104,11 +104,11 @@ CheckSchema.pre("save", async function (next) {
           if (monitor.status === false && this.status === true) {
             // Notify users that the monitor is up
             for (const notification of notifications) {
-              if (notification.email) {
+              if (notification.type === "email") {
                 await emailService.buildAndSendEmail(
                   "serverIsUpTemplate",
                   { monitorName: monitor.name, monitorUrl: monitor.url },
-                  notification.email,
+                  notification.address,
                   `Monitor ${monitor.name} is back up`
                 );
               }
