@@ -22,6 +22,7 @@ import {
   Menu,
   MenuItem,
   Modal,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -204,46 +205,81 @@ const Monitors = () => {
     };
   });
 
+  let loading =  monitorState.isLoading && monitorState.monitors.length === 0;
+
   return (
     <Stack className="monitors" gap={theme.gap.large}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography component="h1">
-          Hello, {authState.user.firstName}
-        </Typography>
-        <Button
-          level="primary"
-          label="Create new monitor"
-          onClick={() => {
-            navigate("/monitors/create");
-          }}
-        />
+        {loading ? (
+          <>
+            <Skeleton variant="rounded" width="50%" height={36} />
+            <Skeleton variant="rounded" width="15%" height={36} />
+          </>
+        ) : (
+          <>
+            <Typography component="h1">
+              Hello, {authState.user.firstName}
+            </Typography>
+            <Button
+              level="primary"
+              label="Create new monitor"
+              onClick={() => {
+                navigate("/monitors/create");
+              }}
+            />
+          </>
+        )}
       </Stack>
       <Stack
         gap={theme.gap.large}
         direction="row"
         justifyContent="space-between"
       >
-        <ServerStatus title="Up" value={up} state="up" />
-        <ServerStatus title="Down" value={down} state="down" />
-        <ServerStatus title="Paused" value={0} state="pause" />
+        {loading ? (
+          <>
+            <Skeleton variant="rounded" width="100%" height={100} />
+            <Skeleton variant="rounded" width="100%" height={100} />
+            <Skeleton variant="rounded" width="100%" height={100} />
+          </>
+        ) : (
+          <>
+            <ServerStatus title="Up" value={up} state="up" />
+            <ServerStatus title="Down" value={down} state="down" />
+            <ServerStatus title="Paused" value={0} state="pause" />
+          </>
+        )}
       </Stack>
       <Stack
         gap={theme.gap.large}
         p={theme.gap.xl}
+        border={1}
+        borderColor={
+          loading ? "#f9fafb" : theme.palette.otherColors.graishWhite
+        }
+        backgroundColor={loading ? "#f9fafb" : "white"}
         sx={{
-          border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
           borderRadius: `${theme.shape.borderRadius}px`,
-          backgroundColor: theme.palette.otherColors.white,
         }}
       >
-        <Stack direction="row" alignItems="center">
-          <Typography component="h2">Current monitors</Typography>
-          <Box className="current-monitors-counter">
-            {monitorState.monitors.length}
-          </Box>
-          {/* TODO - add search bar */}
-        </Stack>
-        <BasicTable data={data} paginated={true} />
+        {loading ? (
+          <Skeleton variant="rounded" width="50%" height={25} />
+        ) : (
+          <Stack direction="row" alignItems="center">
+            <Typography component="h2">Current monitors</Typography>
+            <Box className="current-monitors-counter">
+              {monitorState.monitors.length}
+            </Box>
+            {/* TODO - add search bar */}
+          </Stack>
+        )}
+        {loading ? (
+          <>
+            <Skeleton variant="rounded" width="100%" height={400} />
+            <Skeleton variant="rounded" width="100%" height={100} />
+          </>
+        ) : (
+          <BasicTable data={data} paginated={true} />
+        )}
       </Stack>
       <Menu
         className="actions-menu"
