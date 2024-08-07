@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Typography, ButtonGroup, Stack, Box } from "@mui/material";
+import { Typography, ButtonGroup, Stack, Box, Skeleton } from "@mui/material";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
@@ -18,6 +18,7 @@ const Incidents = () => {
   const authState = useSelector((state) => state.auth);
   const [monitors, setMonitors] = useState({});
   const [selectedMonitor, setSelectedMonitor] = useState("0");
+  const [loading, setLoading] = useState(false);
 
   // TODO do something with these filters
   const [filter, setFilter] = useState("all");
@@ -34,6 +35,7 @@ const Incidents = () => {
 
   useEffect(() => {
     const fetchIncidents = async () => {
+      setLoading(true);
       const res = await axiosInstance.get(
         `/monitors/user/${authState.user._id}?status=false`,
         {
@@ -51,6 +53,7 @@ const Incidents = () => {
         }, {});
         setMonitors(monitorLookup);
       }
+      setLoading(false);
     };
 
     fetchIncidents();
@@ -92,8 +95,8 @@ const Incidents = () => {
             data: <StatusLabel status="down" text="Down" />,
           },
           { id: idx + 1, data: new Date(incident.createdAt).toLocaleString() },
-          { id: idx + 2, data: incident.statusCode },
-          { id: idx + 3, data: monitors[incident.monitorId].name },
+          { id: idx + 2, data: monitors[incident.monitorId].name },
+          { id: idx + 3, data: incident.statusCode },
         ],
       };
     });
@@ -102,7 +105,22 @@ const Incidents = () => {
   return (
     <>
       <Stack className="incidents" gap={theme.gap.large}>
-        {hasAnyIncidents ? (
+        {loading ? (
+          <>
+            <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
+              <Skeleton variant="rounded" width={150} height={34} />
+              <Skeleton variant="rounded" width="15%" height={34} />
+              <Skeleton
+                variant="rounded"
+                width="20%"
+                height={34}
+                sx={{ ml: "auto" }}
+              />
+            </Stack>
+            <Skeleton variant="rounded" width="100%" height={300} />
+            <Skeleton variant="rounded" width="100%" height={100} />
+          </>
+        ) : hasAnyIncidents ? (
           <>
             <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
               <Typography component="h1">Incident history for: </Typography>
@@ -155,8 +173,7 @@ const Incidents = () => {
             )}
           </>
         ) : (
-          <Stack alignItems="center" mt={theme.gap.xxl} gap={theme.gap.small}>
-            <Typography>No incidents, yet.</Typography>
+          <Box>
             <Button
               level="tertiary"
               label="Back"
@@ -165,15 +182,25 @@ const Incidents = () => {
               onClick={() => navigate(-1)}
               sx={{
                 backgroundColor: theme.palette.otherColors.fillGray,
-                mb: theme.gap.medium,
                 px: theme.gap.ml,
+                mb: theme.gap.ml,
                 "& svg.MuiSvgIcon-root": {
                   mr: theme.gap.small,
                   fill: theme.palette.otherColors.slateGray,
                 },
               }}
             />
-          </Stack>
+            <Box
+              padding={theme.gap.xxl}
+              gap={theme.gap.small}
+              border={1}
+              borderRadius={`${theme.shape.borderRadius}px`}
+              borderColor={theme.palette.otherColors.graishWhite}
+              backgroundColor={theme.palette.otherColors.white}
+            >
+              <Typography textAlign="center">No incidents, yet.</Typography>
+            </Box>
+          </Box>
         )}
       </Stack>
     </>
