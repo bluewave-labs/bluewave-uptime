@@ -26,7 +26,7 @@ const menu = [
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   { name: "Status pages", path: "status", icon: <StatusPages /> },
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
-  { name: "Page speed", path: "page-speed", icon: <PageSpeed /> },
+  { name: "Page speed", path: "pagespeed", icon: <PageSpeed /> },
   { name: "Integrations", path: "integrations", icon: <Integrations /> },
   { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },
@@ -50,7 +50,15 @@ function Sidebar() {
           alignItems="center"
           gap={theme.gap.small}
           borderRadius={`${theme.shape.borderRadius}px`}
-          onClick={() => navigate(`/${item.path}`)}
+          onClick={() =>
+            item.path === "support"
+              ? window.open(
+                  "https://github.com/bluewave-labs/bluewave-uptime",
+                  "_blank",
+                  "noreferrer"
+                )
+              : navigate(`/${item.path}`)
+          }
           sx={{ p: `${theme.gap.small} ${theme.gap.medium}` }}
         >
           {item.icon}

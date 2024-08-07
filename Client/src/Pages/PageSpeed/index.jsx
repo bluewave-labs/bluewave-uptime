@@ -10,31 +10,26 @@ import Fallback from "../../Components/Fallback";
 import "./index.css";
 import Button from "../../Components/Button";
 import { useNavigate } from "react-router";
+import { getLastChecked } from "../../Utils/monitorUtils";
 
 const Card = ({ data }) => {
   const theme = useTheme();
-
-  /**
-   * Helper function to get duration since last check or the last date checked
-   * @param {Array} checks Array of check objects.
-   * @param {boolean} duration Whether the function should return the duration since last checked or the date itself
-   * @returns {number} Timestamp of the most recent check.
-   */
-  const getLastChecked = (checks, duration = true) => {
-    if (!checks || checks.length === 0) {
-      return 0; // Handle case when no checks are available
-    }
-
-    // Data is sorted newest -> oldest, so newest check is the most recent
-    if (!duration) {
-      return new Date(checks[0].createdAt);
-    }
-    return new Date() - new Date(checks[0].createdAt);
-  };
+  const navigate = useNavigate();
 
   return (
-    <Grid item lg={6} flexGrow={1}>
-      <Stack direction="row" gap={theme.gap.medium} p={theme.gap.ml}>
+    <Grid
+      item
+      lg={6}
+      flexGrow={1}
+      sx={{ "&:hover > .MuiStack-root": { backgroundColor: "#f9fafb" } }}
+    >
+      <Stack
+        direction="row"
+        gap={theme.gap.medium}
+        p={theme.gap.ml}
+        onClick={() => navigate(`/pagespeed/${data._id}`)}
+        sx={{ cursor: "pointer" }}
+      >
         <PageSpeedIcon style={{ width: theme.gap.ml, height: theme.gap.ml }} />
         <Box flex={1}>
           <Stack direction="row" justifyContent="space-between">
@@ -75,7 +70,7 @@ const PageSpeed = () => {
 
   return (
     <Box className="page-speed">
-      {monitors ? (
+      {monitors?.length !== 0 ? (
         <Stack gap={theme.gap.xs}>
           <Stack
             direction="row"
@@ -91,7 +86,7 @@ const PageSpeed = () => {
             <Button
               level="primary"
               label="Create new"
-              onClick={() => navigate("/page-speed/create")}
+              onClick={() => navigate("/pagespeed/create")}
             />
           </Stack>
           <Grid container spacing={theme.gap.large}>
@@ -108,7 +103,7 @@ const PageSpeed = () => {
             "Help analyze webpage speed",
             "Give suggestions on how the page can be improved",
           ]}
-          link="/page-speed/create"
+          link="/pagespeed/create"
         />
       )}
     </Box>

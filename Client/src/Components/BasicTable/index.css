@@ -3,22 +3,21 @@
   height: var(--env-var-img-width-2);
   color: var(--env-var-color-5);
   margin-right: 10px;
-  margin-bottom: 2px;
 }
 .MuiTable-root .host a svg {
   width: var(--env-var-font-size-large);
   height: var(--env-var-font-size-large);
 }
-.MuiTable-root .host div:nth-child(3) {
-  font-size: var(--env-var-font-size-small);
-}
 .MuiTable-root .host div:nth-child(2) {
   width: fit-content;
-  margin-right: 10px;
   font-weight: 700;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+.MuiTable-root .host div:nth-child(2) span {
+  font-size: var(--env-var-font-size-small);
+  margin-left: 10px;
 }
 
 .MuiTable-root .label {

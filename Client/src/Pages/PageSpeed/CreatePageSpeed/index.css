@@ -1,37 +1,31 @@
-.create-page-speed form {
-  position: relative;
-  margin: auto;
-  margin-top: var(--env-var-default-2);
+.create-page-speed form > .MuiStack-root:not(:last-of-type) {
   background-color: var(--env-var-color-8);
-  width: 100%;
-  max-width: 500px;
-  box-shadow: var(--env-var-shadow-1);
+  border: solid 1px var(--env-var-color-6);
   border-radius: var(--env-var-radius-1);
   padding: var(--env-var-default-2);
 }
-.create-page-speed h1.MuiTypography-root,
-.create-page-speed h2.MuiTypography-root,
+.create-page-speed h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-1);
+}
 .create-page-speed p.MuiTypography-root,
-.create-page-speed h2.MuiTypography-root > span.MuiTypography-root {
+.create-page-speed h3.MuiTypography-root {
   color: var(--env-var-color-5);
 }
 .create-page-speed h1.MuiTypography-root,
-.create-page-speed h2.MuiTypography-root {
+.create-page-speed h3.MuiTypography-root {
   font-weight: 600;
 }
-.create-page-speed h2.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium-plus);
-}
 .create-page-speed p.MuiTypography-root,
-.create-page-speed button,
-.create-page-speed h2.MuiTypography-root > span.MuiTypography-root {
+.create-page-speed h3.MuiTypography-root,
+.create-page-speed h3.MuiTypography-root > span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
 .create-page-speed .MuiBox-root > .field + p.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
 }
 .create-page-speed .MuiBox-root > .field + p.MuiTypography-root,
-.create-page-speed h2.MuiTypography-root > span.MuiTypography-root {
+.create-page-speed h3.MuiTypography-root > span.MuiTypography-root {
   opacity: 0.6;
 }
 .create-page-speed .checkbox-wrapper {
@@ -47,17 +41,18 @@
   pointer-events: none;
 }
 
-.create-page-speed button:not(.MuiIconButton-root) {
+.create-page-speed button {
   height: var(--env-var-height-2);
-}
-.create-page-speed .MuiIconButton-root {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: var(--env-var-spacing-1);
 }
 
 body:has(.create-page-speed) .select-dropdown .MuiMenuItem-root,
 .create-page-speed .select-wrapper .select-component > .MuiSelect-select {
   text-transform: lowercase;
+}
+
+.create-page-speed .field,
+.create-page-speed .section-disabled,
+.create-page-speed .select-wrapper,
+.create-page-speed h3.MuiTypography-root {
+  flex: 1;
 }

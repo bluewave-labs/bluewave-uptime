@@ -19,6 +19,8 @@ const JobQueue = require("./service/jobQueue");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
 
+let cleaningUp = false;
+
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
   // **************************
@@ -117,6 +119,11 @@ const startApp = async () => {
   const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {
+    if (cleaningUp) {
+      console.log("Already cleaning up");
+      return;
+    }
+    cleaningUp = true;
     console.log("Shutting down gracefully");
     await jobQueue.obliterate();
     console.log("Finished cleanup");

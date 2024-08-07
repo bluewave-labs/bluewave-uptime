@@ -23,7 +23,7 @@ const {
 //Auth routes
 router.post("/register", upload.single("profileImage"), registerController);
 router.post("/login", loginController);
-router.post(
+router.put(
   "/user/:userId",
   upload.single("profileImage"),
   verifyJWT,

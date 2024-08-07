@@ -35,17 +35,38 @@ import {
  * @param {string} params.url - The URL of the host.
  * @param {string} params.title - The name of the host.
  * @param {string} params.percentageColor - The color of the percentage text.
- * @param {number} params.precentage - The percentage to display.
+ * @param {number} params.percentage - The percentage to display.
  * @returns {React.ElementType} Returns a div element with the host details.
  */
 const Host = ({ params }) => {
   return (
     <Stack direction="row" alignItems="center" className="host">
-      <a href={params.url} target="_blank" rel="noreferrer">
-        <OpenInNewPage />
-      </a>
-      <Box>{params.title}</Box>
-      <Box sx={{ color: params.percentageColor }}>{params.precentage}%</Box>
+      <IconButton
+        aria-label="monitor link"
+        onClick={(event) => {
+          event.stopPropagation();
+          window.open(params.url, "_blank", "noreferrer");
+        }}
+        sx={{
+          "&:focus": {
+            outline: "none",
+          },
+          mr: "3px",
+        }}
+      >
+        <OpenInNewPage
+          style={{
+            marginTop: "-1px",
+            marginRight: "-1px",
+          }}
+        />
+      </IconButton>
+      <Box>
+        {params.title}
+        <Typography component="span" sx={{ color: params.percentageColor }}>
+          {params.percentage}%
+        </Typography>
+      </Box>
     </Stack>
   );
 };
@@ -60,6 +81,7 @@ const Monitors = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [actions, setActions] = useState({});
   const openMenu = (event, id, url) => {
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
     setActions({ id: id, url: url });
   };
@@ -123,7 +145,7 @@ const Monitors = () => {
     const params = {
       url: monitor.url,
       title: monitor.name,
-      precentage: 100,
+      percentage: 100,
       percentageColor:
         monitor.status === true
           ? "var(--env-var-color-17)"
@@ -137,7 +159,7 @@ const Monitors = () => {
     return {
       id: monitor._id,
       // disabled for now
-      // handleClick: () => navigate(`/monitors/${monitor._id}`),
+      handleClick: () => navigate(`/monitors/${monitor._id}`),
       data: [
         { id: idx, data: <Host params={params} /> },
         {
@@ -163,7 +185,10 @@ const Monitors = () => {
             <>
               <IconButton
                 aria-label="monitor actions"
-                onClick={(event) => openMenu(event, monitor._id, monitor.url)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  openMenu(event, monitor._id, monitor.url);
+                }}
                 sx={{
                   "&:focus": {
                     outline: "none",
@@ -227,7 +252,9 @@ const Monitors = () => {
         onClose={closeMenu}
       >
         <MenuItem
-          onClick={() => window.open(actions.url, "_blank", "noreferrer")}
+          onClick={() => {
+            window.open(actions.url, "_blank", "noreferrer");
+          }}
         >
           Open site
         </MenuItem>
