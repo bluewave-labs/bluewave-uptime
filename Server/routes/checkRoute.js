@@ -25,4 +25,4 @@ router.post(
   checkController.deleteChecks
 );
 
-
+module.exports = router;
