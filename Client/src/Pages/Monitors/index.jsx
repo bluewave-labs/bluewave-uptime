@@ -294,10 +294,10 @@ const Monitors = () => {
           }}
         >
           <Typography id="modal-delete-monitor" component="h2">
-            Really delete this monitor?
+            Do you really want to delete this monitor?
           </Typography>
           <Typography id="delete-monitor-confirmation">
-            Once deleted, this monitor cannot be retrieved back.
+            Once deleted, this monitor cannot be retrieved.
           </Typography>
           <Stack
             direction="row"
