@@ -22,18 +22,19 @@ const CreatePageSpeed = () => {
   const { user, authToken } = useSelector((state) => state.auth);
 
   const frequencies = [
-    { _id: 1, name: "1 minute" },
+    { _id: 3, name: "3 minutes" },
+    { _id: 5, name: "5 minutes" },
+    { _id: 10, name: "10 minutes" },
+    { _id: 20, name: "20 minutes" },
+    { _id: 60, name: "1 hour" },
     { _id: 1440, name: "1 day" },
-    { _id: 2880, name: "2 days" },
-    { _id: 4320, name: "3 days" },
-    { _id: 7200, name: "5 days" },
     { _id: 10080, name: "1 week" },
   ];
 
   const [form, setForm] = useState({
     name: "",
     url: "",
-    interval: 1,
+    interval: 3,
   });
   const [errors, setErrors] = useState({});
 
