@@ -63,7 +63,7 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
       }
     }
 
-    // If more than 50 checks, pick every nth check
+    // If more than numToDisplay checks, pick every nth check
     if (result.length > numToDisplay) {
       const n = Math.ceil(result.length / numToDisplay);
       result = result.filter((_, idx) => {
