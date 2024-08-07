@@ -34,36 +34,43 @@ const CheckSchema = mongoose.Schema(
 CheckSchema.pre("save", async function (next) {
   try {
     const monitor = await mongoose.model("Monitor").findById(this.monitorId);
-    if (monitor && monitor.status !== this.status) {
-      if (monitor.status === true && this.status === false) {
-        // Notify user that the monitor is down
-        const emailService = new EmailService();
-        const users = await mongoose.model("User").find({ _id: monitor.userId });
-        const user = users[0]; 
+    if (monitor) {
+      // Check if the monitor has notifications
+      if (monitor.notifications && monitor.notifications.length > 0) {
+        if (monitor.status !== this.status) {
+          const emailService = new EmailService();
 
-        await emailService.buildAndSendEmail(
-          "serverIsDownTemplate",
-          { monitorName: monitor.name, monitorUrl: monitor.url },
-          user.email,
-          `Monitor ${monitor.name} is down`
-        );
+          if (monitor.status === true && this.status === false) {
+            // Notify user that the monitor is down
+            const users = await mongoose.model("User").find({ _id: monitor.userId });
+            if (users.length > 0) {
+              const user = users[0];
+              await emailService.buildAndSendEmail(
+                "serverIsDownTemplate",
+                { monitorName: monitor.name, monitorUrl: monitor.url },
+                user.email,
+                `Monitor ${monitor.name} is down`
+              );
+            }
+          }
+
+          if (monitor.status === false && this.status === true) {
+            // Notify user that the monitor is up
+            const users = await mongoose.model("User").find({ _id: monitor.userId });
+            if (users.length > 0) {
+              const user = users[0];
+              await emailService.buildAndSendEmail(
+                "serverIsUpTemplate",
+                { monitorName: monitor.name, monitorUrl: monitor.url },
+                user.email,
+                `Monitor ${monitor.name} is back up`
+              );
+            }
+          }
+          monitor.status = this.status;
+          await monitor.save();
+        }
       }
-
-      if (monitor.status === false && this.status === true) {
-        // Notify user that the monitor is up
-        const emailService = new EmailService();
-        const users = await mongoose.model("User").find({ _id: monitor.userId });
-        const user = users[0]; 
-
-        await emailService.buildAndSendEmail(
-          "serverIsUpTemplate",
-          { monitorName: monitor.name, monitorUrl: monitor.url },
-          user.email,
-          `Monitor ${monitor.name} is back up`
-        );
-      }
-      monitor.status = this.status;
-      await monitor.save();
     }
   } catch (error) {
     console.log(error);
@@ -71,5 +78,6 @@ CheckSchema.pre("save", async function (next) {
     next();
   }
 });
+
 
 module.exports = mongoose.model("Check", CheckSchema);
