@@ -126,6 +126,53 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
   );
 };
 
+/**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Skeleton variant="rounded" width="15%" height={34} />
+      <Stack direction="row" gap={theme.gap.small}>
+        <Skeleton variant="circular" style={{ minWidth: 24, minHeight: 24 }} />
+        <Box width="80%">
+          <Skeleton variant="rounded" width="50%" height={24} />
+          <Skeleton
+            variant="rounded"
+            width="50%"
+            height={18}
+            sx={{ mt: theme.gap.small }}
+          />
+        </Box>
+        <Skeleton
+          variant="rounded"
+          width="15%"
+          height={34}
+          sx={{ alignSelf: "flex-end" }}
+        />
+      </Stack>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        gap={theme.gap.xl}
+        flexWrap="wrap"
+      >
+        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
+        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
+        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
+      </Stack>
+      <Skeleton variant="rounded" width="25%" height={24} />
+      <Skeleton variant="rounded" width="100%" height={300} />
+      <Skeleton variant="rounded" width="25%" height={24} />
+      <Skeleton variant="rounded" width="100%" height={300} />
+    </>
+  );
+};
+
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -254,50 +301,26 @@ const PageSpeedDetails = () => {
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
       {loading ? (
-        <Skeleton variant="rounded" width="15%" height={34} />
+        <SkeletonLayout />
       ) : (
-        <Button
-          level="tertiary"
-          label="Back"
-          animate="slideLeft"
-          img={<WestRoundedIcon />}
-          onClick={() => navigate("/pagespeed")}
-          sx={{
-            width: "fit-content",
-            backgroundColor: theme.palette.otherColors.fillGray,
-            px: theme.gap.ml,
-            "& svg.MuiSvgIcon-root": {
-              mr: theme.gap.small,
-              fill: theme.palette.otherColors.slateGray,
-            },
-          }}
-        />
-      )}
-      <Stack direction="row" gap={theme.gap.small}>
-        {loading ? (
-          <>
-            <Skeleton
-              variant="circular"
-              style={{ minWidth: 24, minHeight: 24 }}
-            />
-            <Box width="80%">
-              <Skeleton variant="rounded" width="50%" height={24} />
-              <Skeleton
-                variant="rounded"
-                width="50%"
-                height={18}
-                sx={{ mt: theme.gap.small }}
-              />
-            </Box>
-            <Skeleton
-              variant="rounded"
-              width="15%"
-              height={34}
-              sx={{ alignSelf: "flex-end" }}
-            />
-          </>
-        ) : (
-          <>
+        <>
+          <Button
+            level="tertiary"
+            label="Back"
+            animate="slideLeft"
+            img={<WestRoundedIcon />}
+            onClick={() => navigate("/pagespeed")}
+            sx={{
+              width: "fit-content",
+              backgroundColor: theme.palette.otherColors.fillGray,
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.small,
+                fill: theme.palette.otherColors.slateGray,
+              },
+            }}
+          />
+          <Stack direction="row" gap={theme.gap.small}>
             <GreenCheck />
             <Box>
               <Typography
@@ -334,38 +357,13 @@ const PageSpeedDetails = () => {
                 },
               }}
             />
-          </>
-        )}
-      </Stack>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        gap={theme.gap.xl}
-        flexWrap="wrap"
-      >
-        {loading ? (
-          <>
-            <Skeleton
-              variant="rounded"
-              width="30%"
-              height={90}
-              sx={{ flex: 1 }}
-            />
-            <Skeleton
-              variant="rounded"
-              width="30%"
-              height={90}
-              sx={{ flex: 1 }}
-            />
-            <Skeleton
-              variant="rounded"
-              width="30%"
-              height={90}
-              sx={{ flex: 1 }}
-            />
-          </>
-        ) : (
-          <>
+          </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            gap={theme.gap.xl}
+            flexWrap="wrap"
+          >
             <StatBox
               icon={<LastCheckedIcon />}
               title="Last checked"
@@ -408,31 +406,13 @@ const PageSpeedDetails = () => {
               title="Checks every"
               value={formatDurationRounded(monitor?.interval)}
             ></StatBox>
-          </>
-        )}
-      </Stack>
-      {loading ? (
-        <>
-          <Skeleton variant="rounded" width="25%" height={24} />
-          <Skeleton variant="rounded" width="100%" height={300} />
-        </>
-      ) : (
-        <>
+          </Stack>
           <Typography component="h2">Score history</Typography>
           <Box height="300px">
             <PageSpeedLineChart
               pageSpeedChecks={monitor?.checks?.slice(0, 25)}
             />
           </Box>
-        </>
-      )}
-      {loading ? (
-        <>
-          <Skeleton variant="rounded" width="25%" height={24} />
-          <Skeleton variant="rounded" width="100%" height={300} />
-        </>
-      ) : (
-        <>
           <Typography component="h2">Performance report</Typography>
           <Stack direction="row" alignItems="center" overflow="hidden">
             <Stack

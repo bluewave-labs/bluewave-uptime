@@ -36,6 +36,76 @@ StatBox.propTypes = {
 };
 
 /**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Skeleton variant="rounded" width="20%" height={34} />
+      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+          <Skeleton
+            variant="circular"
+            style={{ minWidth: 24, minHeight: 24 }}
+          />
+          <Box width="80%">
+            <Skeleton variant="rounded" width="50%" height={24} />
+            <Skeleton
+              variant="rounded"
+              width="50%"
+              height={18}
+              sx={{ mt: theme.gap.small }}
+            />
+          </Box>
+          <Skeleton
+            variant="rounded"
+            width="20%"
+            height={34}
+            sx={{ alignSelf: "flex-end" }}
+          />
+        </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          gap={theme.gap.large}
+        >
+          <Skeleton variant="rounded" width="100%" height={80} />
+          <Skeleton variant="rounded" width="100%" height={80} />
+          <Skeleton variant="rounded" width="100%" height={80} />
+        </Stack>
+        <Box>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            mb={theme.gap.ml}
+          >
+            <Skeleton
+              variant="rounded"
+              width="20%"
+              height={24}
+              sx={{ alignSelf: "flex-end" }}
+            />
+            <Skeleton variant="rounded" width="20%" height={34} />
+          </Stack>
+          <Box sx={{ height: "200px" }}>
+            <Skeleton variant="rounded" width="100%" height="100%" />
+          </Box>
+        </Box>
+        <Stack gap={theme.gap.ml}>
+          <Skeleton variant="rounded" width="20%" height={24} />
+          <Skeleton variant="rounded" width="100%" height={200} />
+          <Skeleton variant="rounded" width="100%" height={50} />
+        </Stack>
+      </Stack>
+    </>
+  );
+};
+
+/**
  * Details page component displaying monitor details and related information.
  * @component
  */
@@ -168,49 +238,28 @@ const DetailsPage = () => {
   return (
     <Box className="monitor-details">
       {loading ? (
-        <Skeleton variant="rounded" width="20%" height={34} />
+        <SkeletonLayout />
       ) : (
-        <Button
-          level="tertiary"
-          label="Back to Monitors"
-          animate="slideLeft"
-          img={<WestRoundedIcon />}
-          onClick={() => navigate("/monitors")}
-          sx={{
-            backgroundColor: "#f4f4f4",
-            px: theme.gap.ml,
-            "& svg.MuiSvgIcon-root": {
-              mr: theme.gap.small,
-              fill: theme.palette.otherColors.slateGray,
-            },
-          }}
-        />
-      )}
-      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          {loading ? (
-            <Skeleton
-              variant="circular"
-              style={{ minWidth: 24, minHeight: 24 }}
-            />
-          ) : monitor?.status ? (
-            <GreenCheck />
-          ) : (
-            <RedCheck />
-          )}
-          <Box width="80%">
-            {loading ? (
-              <>
-                <Skeleton variant="rounded" width="50%" height={24} />
-                <Skeleton
-                  variant="rounded"
-                  width="50%"
-                  height={18}
-                  sx={{ mt: theme.gap.small }}
-                />
-              </>
-            ) : (
-              <>
+        <>
+          <Button
+            level="tertiary"
+            label="Back to Monitors"
+            animate="slideLeft"
+            img={<WestRoundedIcon />}
+            onClick={() => navigate("/monitors")}
+            sx={{
+              backgroundColor: "#f4f4f4",
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.small,
+                fill: theme.palette.otherColors.slateGray,
+              },
+            }}
+          />
+          <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+              <Box>
                 <Typography component="h1" sx={{ lineHeight: 1 }}>
                   {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                 </Typography>
@@ -229,55 +278,36 @@ const DetailsPage = () => {
                   Last time checked{" "}
                   {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
                 </Typography>
-              </>
-            )}
-          </Box>
-          {loading ? (
-            <Skeleton
-              variant="rounded"
-              width="20%"
-              height={34}
-              sx={{ alignSelf: "flex-end" }}
-            />
-          ) : (
-            <Button
-              level="tertiary"
-              label="Configure"
-              animate="rotate90"
-              img={
-                <SettingsIcon
-                  style={{
-                    minWidth: theme.gap.mlplus,
-                    minHeight: theme.gap.mlplus,
-                  }}
-                />
-              }
-              onClick={() => navigate(`/monitors/configure/${monitorId}`)}
-              sx={{
-                ml: "auto",
-                alignSelf: "flex-end",
-                backgroundColor: "#f4f4f4",
-                px: theme.gap.medium,
-                "& svg": {
-                  mr: "6px",
-                },
-              }}
-            />
-          )}
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.large}
-        >
-          {loading ? (
-            <>
-              <Skeleton variant="rounded" width="100%" height={80} />
-              <Skeleton variant="rounded" width="100%" height={80} />
-              <Skeleton variant="rounded" width="100%" height={80} />
-            </>
-          ) : (
-            <>
+              </Box>
+              <Button
+                level="tertiary"
+                label="Configure"
+                animate="rotate90"
+                img={
+                  <SettingsIcon
+                    style={{
+                      minWidth: theme.gap.mlplus,
+                      minHeight: theme.gap.mlplus,
+                    }}
+                  />
+                }
+                onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+                sx={{
+                  ml: "auto",
+                  alignSelf: "flex-end",
+                  backgroundColor: "#f4f4f4",
+                  px: theme.gap.medium,
+                  "& svg": {
+                    mr: "6px",
+                  },
+                }}
+              />
+            </Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              gap={theme.gap.large}
+            >
               <StatBox
                 title="Currently up for"
                 value={formatDuration(calculateUptimeDuration(monitor.checks))}
@@ -290,27 +320,13 @@ const DetailsPage = () => {
                 title="Incidents"
                 value={countIncidents(monitor.checks)}
               />
-            </>
-          )}
-        </Stack>
-        <Box>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={theme.gap.ml}
-          >
-            {loading ? (
-              <>
-                <Skeleton
-                  variant="rounded"
-                  width="20%"
-                  height={24}
-                  sx={{ alignSelf: "flex-end" }}
-                />
-                <Skeleton variant="rounded" width="20%" height={34} />
-              </>
-            ) : (
-              <>
+            </Stack>
+            <Box>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                mb={theme.gap.ml}
+              >
                 <Typography component="h2" mb={theme.gap.small}>
                   Response Times
                 </Typography>
@@ -344,35 +360,21 @@ const DetailsPage = () => {
                     }}
                   />
                 </ButtonGroup>
-              </>
-            )}
-          </Stack>
-          <Box sx={{ height: "200px" }}>
-            {loading ? (
-              <Skeleton variant="rounded" width="100%" height="100%" />
-            ) : (
-              <MonitorDetailsAreaChart
-                checks={monitor.checks}
-                filter={filter}
-              />
-            )}
-          </Box>
-        </Box>
-        <Stack gap={theme.gap.ml}>
-          {loading ? (
-            <>
-              <Skeleton variant="rounded" width="20%" height={24} />
-              <Skeleton variant="rounded" width="100%" height={200} />
-              <Skeleton variant="rounded" width="100%" height={50} />
-            </>
-          ) : (
-            <>
+              </Stack>
+              <Box sx={{ height: "200px" }}>
+                <MonitorDetailsAreaChart
+                  checks={monitor.checks}
+                  filter={filter}
+                />
+              </Box>
+            </Box>
+            <Stack gap={theme.gap.ml}>
               <Typography component="h2">History</Typography>
               <BasicTable data={data} paginated={true} reversed={true} />
-            </>
-          )}
-        </Stack>
-      </Stack>
+            </Stack>
+          </Stack>
+        </>
+      )}
     </Box>
   );
 };

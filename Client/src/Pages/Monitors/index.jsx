@@ -72,6 +72,38 @@ const Host = ({ params }) => {
   );
 };
 
+/**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Skeleton variant="rounded" width="50%" height={36} />
+        <Skeleton variant="rounded" width="15%" height={36} />
+      </Stack>
+      <Stack
+        gap={theme.gap.large}
+        direction="row"
+        justifyContent="space-between"
+      >
+        <Skeleton variant="rounded" width="100%" height={100} />
+        <Skeleton variant="rounded" width="100%" height={100} />
+        <Skeleton variant="rounded" width="100%" height={100} />
+      </Stack>
+      <Stack gap={theme.gap.large} p={theme.gap.xl} backgroundColor="#f9fafb">
+        <Skeleton variant="rounded" width="50%" height={25} />
+        <Skeleton variant="rounded" width="100%" height={300} />
+        <Skeleton variant="rounded" width="100%" height={100} />
+      </Stack>
+    </>
+  );
+};
+
 const Monitors = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -205,18 +237,19 @@ const Monitors = () => {
     };
   });
 
-  let loading =  monitorState.isLoading && monitorState.monitors.length === 0;
+  let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
   return (
     <Stack className="monitors" gap={theme.gap.large}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        {loading ? (
-          <>
-            <Skeleton variant="rounded" width="50%" height={36} />
-            <Skeleton variant="rounded" width="15%" height={36} />
-          </>
-        ) : (
-          <>
+      {loading ? (
+        <SkeletonLayout />
+      ) : (
+        <>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography component="h1">
               Hello, {authState.user.firstName}
             </Typography>
@@ -227,60 +260,37 @@ const Monitors = () => {
                 navigate("/monitors/create");
               }}
             />
-          </>
-        )}
-      </Stack>
-      <Stack
-        gap={theme.gap.large}
-        direction="row"
-        justifyContent="space-between"
-      >
-        {loading ? (
-          <>
-            <Skeleton variant="rounded" width="100%" height={100} />
-            <Skeleton variant="rounded" width="100%" height={100} />
-            <Skeleton variant="rounded" width="100%" height={100} />
-          </>
-        ) : (
-          <>
+          </Stack>
+          <Stack
+            gap={theme.gap.large}
+            direction="row"
+            justifyContent="space-between"
+          >
             <ServerStatus title="Up" value={up} state="up" />
             <ServerStatus title="Down" value={down} state="down" />
             <ServerStatus title="Paused" value={0} state="pause" />
-          </>
-        )}
-      </Stack>
-      <Stack
-        gap={theme.gap.large}
-        p={theme.gap.xl}
-        border={1}
-        borderColor={
-          loading ? "#f9fafb" : theme.palette.otherColors.graishWhite
-        }
-        backgroundColor={loading ? "#f9fafb" : "white"}
-        sx={{
-          borderRadius: `${theme.shape.borderRadius}px`,
-        }}
-      >
-        {loading ? (
-          <Skeleton variant="rounded" width="50%" height={25} />
-        ) : (
-          <Stack direction="row" alignItems="center">
-            <Typography component="h2">Current monitors</Typography>
-            <Box className="current-monitors-counter">
-              {monitorState.monitors.length}
-            </Box>
-            {/* TODO - add search bar */}
           </Stack>
-        )}
-        {loading ? (
-          <>
-            <Skeleton variant="rounded" width="100%" height={400} />
-            <Skeleton variant="rounded" width="100%" height={100} />
-          </>
-        ) : (
-          <BasicTable data={data} paginated={true} />
-        )}
-      </Stack>
+          <Stack
+            gap={theme.gap.large}
+            p={theme.gap.xl}
+            border={1}
+            borderColor={theme.palette.otherColors.graishWhite}
+            backgroundColor={theme.palette.otherColors.white}
+            sx={{
+              borderRadius: `${theme.shape.borderRadius}px`,
+            }}
+          >
+            <Stack direction="row" alignItems="center">
+              <Typography component="h2">Current monitors</Typography>
+              <Box className="current-monitors-counter">
+                {monitorState.monitors.length}
+              </Box>
+              {/* TODO - add search bar */}
+            </Stack>
+            <BasicTable data={data} paginated={true} />
+          </Stack>
+        </>
+      )}
       <Menu
         className="actions-menu"
         anchorEl={anchorEl}

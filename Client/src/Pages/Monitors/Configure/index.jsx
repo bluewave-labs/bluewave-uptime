@@ -37,6 +37,54 @@ const parseUrl = (url) => {
 };
 
 /**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Skeleton variant="rounded" width="15%" height={34} />
+      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+          <Skeleton
+            variant="circular"
+            style={{ minWidth: 24, minHeight: 24 }}
+          />
+          <Box width="80%">
+            <Skeleton
+              variant="rounded"
+              width="50%"
+              height={24}
+              sx={{ mb: theme.gap.small }}
+            />
+            <Skeleton variant="rounded" width="50%" height={18} />
+          </Box>
+          <Stack
+            direction="row"
+            gap={theme.gap.medium}
+            sx={{
+              ml: "auto",
+              alignSelf: "flex-end",
+            }}
+          >
+            <Skeleton variant="rounded" width={150} height={34} />
+          </Stack>
+        </Stack>
+        <Skeleton variant="rounded" width="100%" height={200} />
+        <Skeleton variant="rounded" width="100%" height={200} />
+        <Skeleton variant="rounded" width="100%" height={200} />
+        <Stack direction="row" justifyContent="flex-end">
+          <Skeleton variant="rounded" width="15%" height={34} />
+        </Stack>
+      </Stack>
+    </>
+  );
+};
+
+/**
  * Configure page displays monitor configurations and allows for editing actions.
  * @component
  */
@@ -169,56 +217,35 @@ const Configure = () => {
   return (
     <Box className="configure-monitor">
       {loading ? (
-        <Skeleton variant="rounded" width="15%" height={34} />
+        <SkeletonLayout />
       ) : (
-        <Button
-          level="tertiary"
-          label="Back"
-          animate="slideLeft"
-          img={<WestRoundedIcon />}
-          onClick={() => navigate(-1)}
-          sx={{
-            backgroundColor: "#f4f4f4",
-            px: theme.gap.ml,
-            "& svg.MuiSvgIcon-root": {
-              mr: theme.gap.small,
-              fill: theme.palette.otherColors.slateGray,
-            },
-          }}
-        />
-      )}
-      <form
-        className="configure-monitor-form"
-        noValidate
-        spellCheck="false"
-        style={{
-          marginTop: theme.gap.medium,
-        }}
-      >
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          {loading ? (
-            <Skeleton
-              variant="circular"
-              style={{ minWidth: 24, minHeight: 24 }}
-            />
-          ) : monitor?.status ? (
-            <GreenCheck />
-          ) : (
-            <RedCheck />
-          )}
-          <Box width="80%">
-            {loading ? (
-              <>
-                <Skeleton
-                  variant="rounded"
-                  width="50%"
-                  height={24}
-                  sx={{ mb: theme.gap.small }}
-                />
-                <Skeleton variant="rounded" width="50%" height={18} />
-              </>
-            ) : (
-              <>
+        <>
+          <Button
+            level="tertiary"
+            label="Back"
+            animate="slideLeft"
+            img={<WestRoundedIcon />}
+            onClick={() => navigate(-1)}
+            sx={{
+              backgroundColor: "#f4f4f4",
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.small,
+                fill: theme.palette.otherColors.slateGray,
+              },
+            }}
+          />
+          <form
+            className="configure-monitor-form"
+            noValidate
+            spellCheck="false"
+            style={{
+              marginTop: theme.gap.medium,
+            }}
+          >
+            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+              <Box>
                 {parsedUrl?.host ? (
                   <Typography
                     component="h1"
@@ -244,23 +271,15 @@ const Configure = () => {
                   Checking every {duration}.{" "}
                   {lastChecked ? `Last time checked ${lastChecked} ago.` : ""}
                 </Typography>
-              </>
-            )}
-          </Box>
-          <Stack
-            direction="row"
-            gap={theme.gap.medium}
-            sx={{
-              ml: "auto",
-              alignSelf: "flex-end",
-            }}
-          >
-            {loading ? (
-              <>
-                <Skeleton variant="rounded" width={150} height={34} />
-              </>
-            ) : (
-              <>
+              </Box>
+              <Stack
+                direction="row"
+                gap={theme.gap.medium}
+                sx={{
+                  ml: "auto",
+                  alignSelf: "flex-end",
+                }}
+              >
                 <Button
                   level="tertiary"
                   label="Pause"
@@ -284,18 +303,8 @@ const Configure = () => {
                   }}
                   onClick={() => setIsOpen(true)}
                 />
-              </>
-            )}
-          </Stack>
-        </Stack>
-        {loading ? (
-          <>
-            <Skeleton variant="rounded" width="100%" height={200} />
-            <Skeleton variant="rounded" width="100%" height={200} />
-            <Skeleton variant="rounded" width="100%" height={200} />
-          </>
-        ) : (
-          <>
+              </Stack>
+            </Stack>
             <Stack
               className="config-box"
               direction="row"
@@ -414,21 +423,17 @@ const Configure = () => {
                 />
               </Stack>
             </Stack>
-          </>
-        )}
-        <Stack direction="row" justifyContent="flex-end">
-          {loading ? (
-            <Skeleton variant="rounded" width="15%" height={34} />
-          ) : (
-            <Button
-              level="primary"
-              label="Save"
-              sx={{ px: theme.gap.large }}
-              onClick={handleSubmit}
-            />
-          )}
-        </Stack>
-      </form>
+            <Stack direction="row" justifyContent="flex-end">
+              <Button
+                level="primary"
+                label="Save"
+                sx={{ px: theme.gap.large }}
+                onClick={handleSubmit}
+              />
+            </Stack>
+          </form>
+        </>
+      )}
       <Modal
         aria-labelledby="modal-delete-monitor"
         aria-describedby="delete-monitor-confirmation"
