@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../Utils/axiosConfig";
@@ -27,6 +27,81 @@ const StatBox = ({ title, value }) => {
       </Typography>
       <Typography variant="h4">{value}</Typography>
     </Box>
+  );
+};
+
+StatBox.propTypes = {
+  title: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+/**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Skeleton variant="rounded" width="20%" height={34} />
+      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+          <Skeleton
+            variant="circular"
+            style={{ minWidth: 24, minHeight: 24 }}
+          />
+          <Box width="80%">
+            <Skeleton variant="rounded" width="50%" height={24} />
+            <Skeleton
+              variant="rounded"
+              width="50%"
+              height={18}
+              sx={{ mt: theme.gap.small }}
+            />
+          </Box>
+          <Skeleton
+            variant="rounded"
+            width="20%"
+            height={34}
+            sx={{ alignSelf: "flex-end" }}
+          />
+        </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          gap={theme.gap.large}
+        >
+          <Skeleton variant="rounded" width="100%" height={80} />
+          <Skeleton variant="rounded" width="100%" height={80} />
+          <Skeleton variant="rounded" width="100%" height={80} />
+        </Stack>
+        <Box>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            mb={theme.gap.ml}
+          >
+            <Skeleton
+              variant="rounded"
+              width="20%"
+              height={24}
+              sx={{ alignSelf: "flex-end" }}
+            />
+            <Skeleton variant="rounded" width="20%" height={34} />
+          </Stack>
+          <Box sx={{ height: "200px" }}>
+            <Skeleton variant="rounded" width="100%" height="100%" />
+          </Box>
+        </Box>
+        <Stack gap={theme.gap.ml}>
+          <Skeleton variant="rounded" width="20%" height={24} />
+          <Skeleton variant="rounded" width="100%" height={200} />
+          <Skeleton variant="rounded" width="100%" height={50} />
+        </Stack>
+      </Stack>
+    </>
   );
 };
 
@@ -158,135 +233,150 @@ const DetailsPage = () => {
     }, 0);
   };
 
+  let loading = Object.keys(monitor).length === 0;
+
   return (
     <Box className="monitor-details">
-      <Button
-        level="tertiary"
-        label="Back to Monitors"
-        animate="slideLeft"
-        img={<WestRoundedIcon />}
-        onClick={() => navigate("/monitors")}
-        sx={{
-          backgroundColor: "#f4f4f4",
-          mb: theme.gap.medium,
-          px: theme.gap.ml,
-          "& svg.MuiSvgIcon-root": {
-            mr: theme.gap.small,
-            fill: theme.palette.otherColors.slateGray,
-          },
-        }}
-      />
-      <Stack gap={theme.gap.xl}>
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          {monitor?.status ? <GreenCheck /> : <RedCheck />}
-          <Box>
-            <Typography component="h1" sx={{ lineHeight: 1 }}>
-              {monitor.url?.replace(/^https?:\/\//, "") || "..."}
-            </Typography>
-            <Typography mt={theme.gap.small}>
-              <Typography
-                component="span"
-                sx={{
-                  color: monitor?.status
-                    ? "var(--env-var-color-17)"
-                    : "var(--env-var-color-24)",
-                }}
-              >
-                Your site is {monitor?.status ? "up" : "down"}.
-              </Typography>{" "}
-              Checking every {formatDurationRounded(monitor?.interval)}. Last
-              time checked{" "}
-              {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
-            </Typography>
-          </Box>
+      {loading ? (
+        <SkeletonLayout />
+      ) : (
+        <>
           <Button
             level="tertiary"
-            label="Configure"
-            animate="rotate90"
-            img={
-              <SettingsIcon
-                style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
-              />
-            }
-            onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+            label="Back to Monitors"
+            animate="slideLeft"
+            img={<WestRoundedIcon />}
+            onClick={() => navigate("/monitors")}
             sx={{
-              ml: "auto",
-              alignSelf: "flex-end",
               backgroundColor: "#f4f4f4",
-              px: theme.gap.medium,
-              "& svg": {
-                mr: "6px",
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.small,
+                fill: theme.palette.otherColors.slateGray,
               },
             }}
           />
-        </Stack>
-        <Stack direction="row" justifyContent="space-between">
-          <StatBox
-            title="Currently up for"
-            value={formatDuration(calculateUptimeDuration(monitor.checks))}
-          />
-          <StatBox
-            title="Last checked"
-            value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
-          />
-          <StatBox title="Incidents" value={countIncidents(monitor.checks)} />
-        </Stack>
-        <Box>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={theme.gap.ml}
-          >
-            <Typography component="h2" mb={theme.gap.small}>
-              Response Times
-            </Typography>
-            <ButtonGroup>
+          <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+              <Box>
+                <Typography component="h1" sx={{ lineHeight: 1 }}>
+                  {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                </Typography>
+                <Typography mt={theme.gap.small}>
+                  <Typography
+                    component="span"
+                    sx={{
+                      color: monitor?.status
+                        ? "var(--env-var-color-17)"
+                        : "var(--env-var-color-24)",
+                    }}
+                  >
+                    Your site is {monitor?.status ? "up" : "down"}.
+                  </Typography>{" "}
+                  Checking every {formatDurationRounded(monitor?.interval)}.
+                  Last time checked{" "}
+                  {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
+                </Typography>
+              </Box>
               <Button
-                level="secondary"
-                label="Day"
-                onClick={() => setFilter("day")}
+                level="tertiary"
+                label="Configure"
+                animate="rotate90"
+                img={
+                  <SettingsIcon
+                    style={{
+                      minWidth: theme.gap.mlplus,
+                      minHeight: theme.gap.mlplus,
+                    }}
+                  />
+                }
+                onClick={() => navigate(`/monitors/configure/${monitorId}`)}
                 sx={{
-                  backgroundColor:
-                    filter === "day" && theme.palette.otherColors.fillGray,
+                  ml: "auto",
+                  alignSelf: "flex-end",
+                  backgroundColor: "#f4f4f4",
+                  px: theme.gap.medium,
+                  "& svg": {
+                    mr: "6px",
+                  },
                 }}
               />
-              <Button
-                level="secondary"
-                label="Week"
-                onClick={() => setFilter("week")}
-                sx={{
-                  backgroundColor:
-                    filter === "week" && theme.palette.otherColors.fillGray,
-                }}
+            </Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              gap={theme.gap.large}
+            >
+              <StatBox
+                title="Currently up for"
+                value={formatDuration(calculateUptimeDuration(monitor.checks))}
               />
-              <Button
-                level="secondary"
-                label="Month"
-                onClick={() => setFilter("month")}
-                sx={{
-                  backgroundColor:
-                    filter === "month" && theme.palette.otherColors.fillGray,
-                }}
+              <StatBox
+                title="Last checked"
+                value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
               />
-            </ButtonGroup>
+              <StatBox
+                title="Incidents"
+                value={countIncidents(monitor.checks)}
+              />
+            </Stack>
+            <Box>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                mb={theme.gap.ml}
+              >
+                <Typography component="h2" mb={theme.gap.small}>
+                  Response Times
+                </Typography>
+                <ButtonGroup>
+                  <Button
+                    level="secondary"
+                    label="Day"
+                    onClick={() => setFilter("day")}
+                    sx={{
+                      backgroundColor:
+                        filter === "day" && theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="Week"
+                    onClick={() => setFilter("week")}
+                    sx={{
+                      backgroundColor:
+                        filter === "week" && theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                  <Button
+                    level="secondary"
+                    label="Month"
+                    onClick={() => setFilter("month")}
+                    sx={{
+                      backgroundColor:
+                        filter === "month" &&
+                        theme.palette.otherColors.fillGray,
+                    }}
+                  />
+                </ButtonGroup>
+              </Stack>
+              <Box sx={{ height: "200px" }}>
+                <MonitorDetailsAreaChart
+                  checks={monitor.checks}
+                  filter={filter}
+                />
+              </Box>
+            </Box>
+            <Stack gap={theme.gap.ml}>
+              <Typography component="h2">History</Typography>
+              <BasicTable data={data} paginated={true} reversed={true} />
+            </Stack>
           </Stack>
-          <Box sx={{ height: "200px" }}>
-            <MonitorDetailsAreaChart checks={monitor.checks} filter={filter} />
-          </Box>
-        </Box>
-        <Box>
-          <Typography component="h2" mb={theme.gap.ml}>
-            History
-          </Typography>
-          <BasicTable data={data} paginated={true} reversed={true} />
-        </Box>
-      </Stack>
+        </>
+      )}
     </Box>
   );
 };
 
-StatBox.propTypes = {
-  title: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
 export default DetailsPage;

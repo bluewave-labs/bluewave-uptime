@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
@@ -126,6 +126,53 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
   );
 };
 
+/**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Skeleton variant="rounded" width="15%" height={34} />
+      <Stack direction="row" gap={theme.gap.small}>
+        <Skeleton variant="circular" style={{ minWidth: 24, minHeight: 24 }} />
+        <Box width="80%">
+          <Skeleton variant="rounded" width="50%" height={24} />
+          <Skeleton
+            variant="rounded"
+            width="50%"
+            height={18}
+            sx={{ mt: theme.gap.small }}
+          />
+        </Box>
+        <Skeleton
+          variant="rounded"
+          width="15%"
+          height={34}
+          sx={{ alignSelf: "flex-end" }}
+        />
+      </Stack>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        gap={theme.gap.xl}
+        flexWrap="wrap"
+      >
+        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
+        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
+        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
+      </Stack>
+      <Skeleton variant="rounded" width="25%" height={24} />
+      <Skeleton variant="rounded" width="100%" height={300} />
+      <Skeleton variant="rounded" width="25%" height={24} />
+      <Skeleton variant="rounded" width="100%" height={300} />
+    </>
+  );
+};
+
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -136,17 +183,22 @@ const PageSpeedDetails = () => {
 
   useEffect(() => {
     const fetchMonitor = async () => {
-      const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=desc`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      try {
+        const res = await axiosInstance.get(
+          `/monitors/${monitorId}?sortOrder=desc`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
 
-      setMonitor(res.data.data);
-      setAudits(res.data.data.checks[0].audits);
+        setMonitor(res.data.data);
+        setAudits(res.data.data.checks[0].audits);
+      } catch (error) {
+        console.error("Error fetching pagespeed monitor of id: " + monitorId);
+        navigate("/not-found");
+      }
     };
 
     fetchMonitor();
@@ -244,360 +296,373 @@ const PageSpeedDetails = () => {
   const [highlightedItem, setHighLightedItem] = useState(null);
   const [expand, setExpand] = useState(false);
 
+  let loading = Object.keys(monitor).length === 0;
+
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
-      <Button
-        level="tertiary"
-        label="Back"
-        animate="slideLeft"
-        img={<WestRoundedIcon />}
-        onClick={() => navigate("/pagespeed")}
-        sx={{
-          width: "fit-content",
-          backgroundColor: theme.palette.otherColors.fillGray,
-          px: theme.gap.ml,
-          "& svg.MuiSvgIcon-root": {
-            mr: theme.gap.small,
-            fill: theme.palette.otherColors.slateGray,
-          },
-        }}
-      />
-      <Stack
-        direction="row"
-        gap={theme.gap.small}
-        justifyContent="space-between"
-      >
-        <GreenCheck />
-        <Box>
-          <Typography component="h1" mb={theme.gap.xs} sx={{ lineHeight: 1 }}>
-            {monitor?.url}
-          </Typography>
-          <Typography
-            component="span"
-            sx={{ color: "var(--env-var-color-17)" }}
-          >
-            Your pagespeed monitor is live.
-          </Typography>
-        </Box>
-        <Button
-          level="tertiary"
-          label="Configure"
-          animate="rotate90"
-          img={
-            <SettingsIcon
-              style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
-            />
-          }
-          onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
-          sx={{
-            ml: "auto",
-            alignSelf: "flex-end",
-            backgroundColor: theme.palette.otherColors.fillGray,
-            px: theme.gap.medium,
-            "& svg": {
-              mr: "6px",
-            },
-          }}
-        />
-      </Stack>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        gap={theme.gap.xl}
-        flexWrap="wrap"
-      >
-        <StatBox
-          icon={<LastCheckedIcon />}
-          title="Last checked"
-          value={
-            <>
-              {formatDate(getLastChecked(monitor?.checks, false))}{" "}
-              <Typography
-                component="span"
-                fontStyle="italic"
-                sx={{ opacity: 0.8 }}
-              >
-                ({formatDurationRounded(getLastChecked(monitor?.checks))} ago)
-              </Typography>
-            </>
-          }
-        />
-        <StatBox
-          icon={<ClockIcon />}
-          title="Checks since"
-          value={
-            <>
-              {formatDate(new Date(monitor?.createdAt))}{" "}
-              <Typography
-                component="span"
-                fontStyle="italic"
-                sx={{ opacity: 0.8 }}
-              >
-                (
-                {formatDurationRounded(
-                  new Date() - new Date(monitor?.createdAt)
-                )}{" "}
-                ago)
-              </Typography>
-            </>
-          }
-        ></StatBox>
-        <StatBox
-          icon={<IntervalCheckIcon />}
-          title="Checks every"
-          value={formatDurationRounded(monitor?.interval)}
-        ></StatBox>
-      </Stack>
-      <Typography component="h2">Score history</Typography>
-      <Box height="300px">
-        <PageSpeedLineChart pageSpeedChecks={monitor?.checks?.slice(0, 25)} />
-      </Box>
-      <Typography component="h2">Performance report</Typography>
-      <Stack direction="row" alignItems="center" overflow="hidden">
-        <Stack
-          alignItems="center"
-          textAlign="center"
-          minWidth="300px"
-          flex={1}
-          px={theme.gap.xl}
-          py={theme.gap.ml}
-        >
-          <Box onMouseLeave={() => setExpand(false)}>
-            {expand ? (
-              <PieChart
-                series={[
-                  {
-                    data: [
-                      {
-                        value: 100,
-                        color: colorMap.bg,
-                      },
-                    ],
-                    outerRadius: 67,
-                    cx: pieSize.width / 2,
-                  },
-                  ...pieData,
-                ]}
-                width={pieSize.width}
-                height={pieSize.height}
-                margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
-                onHighlightChange={setHighLightedItem}
-                slotProps={{
-                  legend: { hidden: true },
-                }}
-                tooltip={{ trigger: "none" }}
-                sx={{
-                  "&:has(.MuiPieArcLabel-faded) .pie-label": {
-                    fill: "rgba(0,0,0,0) !important",
-                  },
-                }}
-              >
-                <PieCenterLabel
-                  value={performance}
-                  color={colorMap.text}
-                  setExpand={setExpand}
-                />
-                {pieData?.map((pie) => (
-                  <PieValueLabel
-                    key={pie.id}
-                    value={Math.round(pie.data[0].value * 10) / 10}
-                    startAngle={pie.startAngle}
-                    endAngle={pie.endAngle}
-                    color={pie.data[0].color}
-                    highlighted={highlightedItem?.seriesId === pie.id}
-                  />
-                ))}
-              </PieChart>
-            ) : (
-              <PieChart
-                series={[
-                  {
-                    data: [
-                      {
-                        value: 100,
-                        color: colorMap.bg,
-                      },
-                    ],
-                    outerRadius: 67,
-                    cx: pieSize.width / 2,
-                  },
-                  {
-                    data: [
-                      {
-                        value: performance,
-                        color: colorMap.stroke,
-                      },
-                    ],
-                    innerRadius: 63,
-                    outerRadius: 70,
-                    paddingAngle: 5,
-                    cornerRadius: 2,
-                    startAngle: 0,
-                    endAngle: (performance / 100) * 360,
-                    cx: pieSize.width / 2,
-                  },
-                ]}
-                width={pieSize.width}
-                height={pieSize.height}
-                margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
-                tooltip={{ trigger: "none" }}
-              >
-                <PieCenterLabel
-                  value={performance}
-                  color={colorMap.text}
-                  setExpand={setExpand}
-                />
-              </PieChart>
-            )}
-          </Box>
-          <Typography mt={theme.gap.medium}>
-            Values are estimated and may vary.{" "}
-            <Typography
-              component="span"
-              sx={{
-                color: theme.palette.primary.main,
-                fontWeight: 500,
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              See calculator
-            </Typography>
-          </Typography>
-        </Stack>
-        <Box
-          px={theme.gap.xl}
-          py={theme.gap.ml}
-          height="100%"
-          flex={1}
-          sx={{
-            borderLeft: `solid 1px ${theme.palette.otherColors.graishWhite}`,
-          }}
-        >
-          <Typography
-            mb={theme.gap.medium}
-            pb={theme.gap.ml}
-            color={theme.palette.secondary.main}
-            textAlign="center"
+      {loading ? (
+        <SkeletonLayout />
+      ) : (
+        <>
+          <Button
+            level="tertiary"
+            label="Back"
+            animate="slideLeft"
+            img={<WestRoundedIcon />}
+            onClick={() => navigate("/pagespeed")}
             sx={{
-              borderBottom: `solid 1px ${theme.palette.otherColors.graishWhite}`,
-              borderBottomStyle: "dashed",
+              width: "fit-content",
+              backgroundColor: theme.palette.otherColors.fillGray,
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.small,
+                fill: theme.palette.otherColors.slateGray,
+              },
             }}
-          >
-            The{" "}
-            <Typography
-              component="span"
+          />
+          <Stack direction="row" gap={theme.gap.small}>
+            <GreenCheck />
+            <Box>
+              <Typography
+                component="h1"
+                mb={theme.gap.xs}
+                sx={{ lineHeight: 1 }}
+              >
+                {monitor?.url}
+              </Typography>
+              <Typography
+                component="span"
+                sx={{ color: "var(--env-var-color-17)" }}
+              >
+                Your pagespeed monitor is live.
+              </Typography>
+            </Box>
+            <Button
+              level="tertiary"
+              label="Configure"
+              animate="rotate90"
+              img={
+                <SettingsIcon
+                  style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
+                />
+              }
+              onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
               sx={{
-                color: theme.palette.primary.main,
-                fontWeight: 500,
-                textDecoration: "underline",
-                cursor: "pointer",
+                ml: "auto",
+                alignSelf: "flex-end",
+                backgroundColor: theme.palette.otherColors.fillGray,
+                px: theme.gap.medium,
+                "& svg": {
+                  mr: "6px",
+                },
               }}
-            >
-              performance score is calculated
-            </Typography>{" "}
-            directly from these{" "}
-            <Typography component="span" fontWeight={600}>
-              metrics
-            </Typography>
-            .
-          </Typography>
+            />
+          </Stack>
           <Stack
             direction="row"
+            justifyContent="space-between"
+            gap={theme.gap.xl}
             flexWrap="wrap"
-            pt={theme.gap.ml}
-            gap={theme.gap.ml}
           >
-            {Object.keys(audits).map((key) => {
-              if (key === "_id") return;
-
-              let audit = audits[key];
-              let metricParams = getColors(audit.score * 100);
-
-              let shape = (
-                <Box
-                  sx={{
-                    width: theme.gap.medium,
-                    height: theme.gap.medium,
-                    borderRadius: "50%",
-                    backgroundColor: metricParams.stroke,
-                  }}
-                ></Box>
-              );
-              if (metricParams.shape === "square")
-                shape = (
-                  <Box
-                    sx={{
-                      width: theme.gap.medium,
-                      height: theme.gap.medium,
-                      backgroundColor: metricParams.stroke,
-                    }}
-                  ></Box>
-                );
-              else if (metricParams.shape === "triangle")
-                shape = (
-                  <Box
-                    sx={{
-                      width: 0,
-                      height: 0,
-                      ml: `calc((${theme.gap.medium} - ${theme.gap.small}) / -2)`,
-                      borderLeft: `${theme.gap.small} solid transparent`,
-                      borderRight: `${theme.gap.small} solid transparent`,
-                      borderBottom: `${theme.gap.medium} solid ${metricParams.stroke}`,
-                    }}
-                  ></Box>
-                );
-
-              // Find the position where the number ends and the unit begins
-              const match = audit.displayValue.match(/(\d+\.?\d*)\s*([a-zA-Z]+)/);
-              let value;
-              let unit;
-              if (match) {
-                value = match[1];
-                unit = match[2];
-              } else {
-                value = audit.displayValue;
+            <StatBox
+              icon={<LastCheckedIcon />}
+              title="Last checked"
+              value={
+                <>
+                  {formatDate(getLastChecked(monitor?.checks, false))}{" "}
+                  <Typography
+                    component="span"
+                    fontStyle="italic"
+                    sx={{ opacity: 0.8 }}
+                  >
+                    ({formatDurationRounded(getLastChecked(monitor?.checks))}{" "}
+                    ago)
+                  </Typography>
+                </>
               }
-
-              return (
-                <Stack
-                  className="metric"
-                  key={`${key}-box`}
-                  direction="row"
-                  gap={theme.gap.small}
-                >
-                  {shape}
-                  <Box>
-                    <Typography sx={{ lineHeight: 1 }}>
-                      {audit.title}
-                    </Typography>
-                    <Typography
-                      component="span"
-                      sx={{
-                        color: metricParams.text,
-                        fontSize: "16px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {value}
-                      <Typography
-                        component="span"
-                        ml="2px"
-                        sx={{
-                          color: theme.palette.secondary.main,
-                          fontSize: "13px",
-                        }}
-                      >
-                        {unit}
-                      </Typography>
-                    </Typography>
-                  </Box>
-                </Stack>
-              );
-            })}
+            />
+            <StatBox
+              icon={<ClockIcon />}
+              title="Checks since"
+              value={
+                <>
+                  {formatDate(new Date(monitor?.createdAt))}{" "}
+                  <Typography
+                    component="span"
+                    fontStyle="italic"
+                    sx={{ opacity: 0.8 }}
+                  >
+                    (
+                    {formatDurationRounded(
+                      new Date() - new Date(monitor?.createdAt)
+                    )}{" "}
+                    ago)
+                  </Typography>
+                </>
+              }
+            ></StatBox>
+            <StatBox
+              icon={<IntervalCheckIcon />}
+              title="Checks every"
+              value={formatDurationRounded(monitor?.interval)}
+            ></StatBox>
           </Stack>
-        </Box>
-      </Stack>
+          <Typography component="h2">Score history</Typography>
+          <Box height="300px">
+            <PageSpeedLineChart
+              pageSpeedChecks={monitor?.checks?.slice(0, 25)}
+            />
+          </Box>
+          <Typography component="h2">Performance report</Typography>
+          <Stack direction="row" alignItems="center" overflow="hidden">
+            <Stack
+              alignItems="center"
+              textAlign="center"
+              minWidth="300px"
+              flex={1}
+              px={theme.gap.xl}
+              py={theme.gap.ml}
+            >
+              <Box onMouseLeave={() => setExpand(false)}>
+                {expand ? (
+                  <PieChart
+                    series={[
+                      {
+                        data: [
+                          {
+                            value: 100,
+                            color: colorMap.bg,
+                          },
+                        ],
+                        outerRadius: 67,
+                        cx: pieSize.width / 2,
+                      },
+                      ...pieData,
+                    ]}
+                    width={pieSize.width}
+                    height={pieSize.height}
+                    margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                    onHighlightChange={setHighLightedItem}
+                    slotProps={{
+                      legend: { hidden: true },
+                    }}
+                    tooltip={{ trigger: "none" }}
+                    sx={{
+                      "&:has(.MuiPieArcLabel-faded) .pie-label": {
+                        fill: "rgba(0,0,0,0) !important",
+                      },
+                    }}
+                  >
+                    <PieCenterLabel
+                      value={performance}
+                      color={colorMap.text}
+                      setExpand={setExpand}
+                    />
+                    {pieData?.map((pie) => (
+                      <PieValueLabel
+                        key={pie.id}
+                        value={Math.round(pie.data[0].value * 10) / 10}
+                        startAngle={pie.startAngle}
+                        endAngle={pie.endAngle}
+                        color={pie.data[0].color}
+                        highlighted={highlightedItem?.seriesId === pie.id}
+                      />
+                    ))}
+                  </PieChart>
+                ) : (
+                  <PieChart
+                    series={[
+                      {
+                        data: [
+                          {
+                            value: 100,
+                            color: colorMap.bg,
+                          },
+                        ],
+                        outerRadius: 67,
+                        cx: pieSize.width / 2,
+                      },
+                      {
+                        data: [
+                          {
+                            value: performance,
+                            color: colorMap.stroke,
+                          },
+                        ],
+                        innerRadius: 63,
+                        outerRadius: 70,
+                        paddingAngle: 5,
+                        cornerRadius: 2,
+                        startAngle: 0,
+                        endAngle: (performance / 100) * 360,
+                        cx: pieSize.width / 2,
+                      },
+                    ]}
+                    width={pieSize.width}
+                    height={pieSize.height}
+                    margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                    tooltip={{ trigger: "none" }}
+                  >
+                    <PieCenterLabel
+                      value={performance}
+                      color={colorMap.text}
+                      setExpand={setExpand}
+                    />
+                  </PieChart>
+                )}
+              </Box>
+              <Typography mt={theme.gap.medium}>
+                Values are estimated and may vary.{" "}
+                <Typography
+                  component="span"
+                  sx={{
+                    color: theme.palette.primary.main,
+                    fontWeight: 500,
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                >
+                  See calculator
+                </Typography>
+              </Typography>
+            </Stack>
+            <Box
+              px={theme.gap.xl}
+              py={theme.gap.ml}
+              height="100%"
+              flex={1}
+              sx={{
+                borderLeft: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+              }}
+            >
+              <Typography
+                mb={theme.gap.medium}
+                pb={theme.gap.ml}
+                color={theme.palette.secondary.main}
+                textAlign="center"
+                sx={{
+                  borderBottom: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+                  borderBottomStyle: "dashed",
+                }}
+              >
+                The{" "}
+                <Typography
+                  component="span"
+                  sx={{
+                    color: theme.palette.primary.main,
+                    fontWeight: 500,
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                >
+                  performance score is calculated
+                </Typography>{" "}
+                directly from these{" "}
+                <Typography component="span" fontWeight={600}>
+                  metrics
+                </Typography>
+                .
+              </Typography>
+              <Stack
+                direction="row"
+                flexWrap="wrap"
+                pt={theme.gap.ml}
+                gap={theme.gap.ml}
+              >
+                {Object.keys(audits).map((key) => {
+                  if (key === "_id") return;
+
+                  let audit = audits[key];
+                  let metricParams = getColors(audit.score * 100);
+
+                  let shape = (
+                    <Box
+                      sx={{
+                        width: theme.gap.medium,
+                        height: theme.gap.medium,
+                        borderRadius: "50%",
+                        backgroundColor: metricParams.stroke,
+                      }}
+                    ></Box>
+                  );
+                  if (metricParams.shape === "square")
+                    shape = (
+                      <Box
+                        sx={{
+                          width: theme.gap.medium,
+                          height: theme.gap.medium,
+                          backgroundColor: metricParams.stroke,
+                        }}
+                      ></Box>
+                    );
+                  else if (metricParams.shape === "triangle")
+                    shape = (
+                      <Box
+                        sx={{
+                          width: 0,
+                          height: 0,
+                          ml: `calc((${theme.gap.medium} - ${theme.gap.small}) / -2)`,
+                          borderLeft: `${theme.gap.small} solid transparent`,
+                          borderRight: `${theme.gap.small} solid transparent`,
+                          borderBottom: `${theme.gap.medium} solid ${metricParams.stroke}`,
+                        }}
+                      ></Box>
+                    );
+
+                  // Find the position where the number ends and the unit begins
+                  const match = audit.displayValue.match(
+                    /(\d+\.?\d*)\s*([a-zA-Z]+)/
+                  );
+                  let value;
+                  let unit;
+                  if (match) {
+                    value = match[1];
+                    unit = match[2];
+                  } else {
+                    value = audit.displayValue;
+                  }
+
+                  return (
+                    <Stack
+                      className="metric"
+                      key={`${key}-box`}
+                      direction="row"
+                      gap={theme.gap.small}
+                    >
+                      {shape}
+                      <Box>
+                        <Typography sx={{ lineHeight: 1 }}>
+                          {audit.title}
+                        </Typography>
+                        <Typography
+                          component="span"
+                          sx={{
+                            color: metricParams.text,
+                            fontSize: "16px",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {value}
+                          <Typography
+                            component="span"
+                            ml="2px"
+                            sx={{
+                              color: theme.palette.secondary.main,
+                              fontSize: "13px",
+                            }}
+                          >
+                            {unit}
+                          </Typography>
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  );
+                })}
+              </Stack>
+            </Box>
+          </Stack>
+        </>
+      )}
     </Stack>
   );
 };

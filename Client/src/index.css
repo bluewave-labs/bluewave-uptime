@@ -161,6 +161,10 @@ button:focus-visible {
   display: none;
 }
 
+body .MuiSkeleton-root {
+  background-color: var(--env-var-color-15);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

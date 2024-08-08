@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
@@ -57,20 +57,89 @@ const Card = ({ data }) => {
   );
 };
 
+/**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <Stack gap={theme.gap.xs}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        mb={theme.gap.large}
+      >
+        <Box width="80%">
+          <Skeleton variant="rounded" width="25%" height={24} />
+          <Skeleton
+            variant="rounded"
+            width="50%"
+            height={19.5}
+            sx={{ mt: theme.gap.xs }}
+          />
+        </Box>
+        <Skeleton
+          variant="rounded"
+          width="20%"
+          height={34}
+          sx={{ alignSelf: "flex-end" }}
+        />
+      </Stack>
+      <Stack direction="row" flexWrap="wrap" gap={theme.gap.large}>
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height={120}
+          sx={{ flex: "35%" }}
+        />
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height={120}
+          sx={{ flex: "35%" }}
+        />
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height={120}
+          sx={{ flex: "35%" }}
+        />
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height={120}
+          sx={{ flex: "35%" }}
+        />
+      </Stack>
+    </Stack>
+  );
+};
+
 const PageSpeed = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.pageSpeedMonitors);
+  const { monitors, isLoading } = useSelector(
+    (state) => state.pageSpeedMonitors
+  );
   useEffect(() => {
     dispatch(getPageSpeedByUserId(authToken));
   }, []);
 
+  // will show skeletons only on initial load
+  // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
+  let isActuallyLoading = isLoading && monitors.length === 0;
+
   return (
     <Box className="page-speed">
-      {monitors?.length !== 0 ? (
+      {isActuallyLoading ? (
+        <SkeletonLayout />
+      ) : monitors?.length !== 0 ? (
         <Stack gap={theme.gap.xs}>
           <Stack
             direction="row"
