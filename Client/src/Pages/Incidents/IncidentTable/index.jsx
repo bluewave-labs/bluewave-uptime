@@ -12,10 +12,10 @@ import {
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../../Utils/axiosConfig";
-import { StatusLabel } from "../../../../Components/Label";
+import axiosInstance from "../../../Utils/axiosConfig";
+import { StatusLabel } from "../../../Components/Label";
 
-const PaginationTable = ({ monitorId, dateRange }) => {
+const IncidentTable = ({ monitorId, filter }) => {
   const { authToken } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
@@ -27,8 +27,11 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   useEffect(() => {
     const fetchPage = async () => {
       try {
+        if (monitorId === "0") {
+          return;
+        }
         const res = await axiosInstance.get(
-          `/checks/${monitorId}?sortOrder=desc&dateRange=${dateRange}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`,
+          `/checks/${monitorId}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -45,7 +48,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   }, [
     authToken,
     monitorId,
-    dateRange,
+    filter,
     paginationController.page,
     paginationController.rowsPerPage,
   ]);
@@ -70,6 +73,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell>Monitor Name</TableCell>
             <TableCell>Status</TableCell>
             <TableCell>Date & Time</TableCell>
             <TableCell>Message</TableCell>
@@ -113,9 +117,9 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   );
 };
 
-PaginationTable.propTypes = {
+IncidentTable.propTypes = {
   monitorId: PropTypes.string.isRequired,
-  dateRange: PropTypes.string.isRequired,
+  filter: PropTypes.string.isRequired,
 };
 
-export default PaginationTable;
+export default IncidentTable;

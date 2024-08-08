@@ -1,11 +1,12 @@
 const Check = require("../../../models/Check");
 const Monitor = require("../../../models/Monitor");
 const mongoose = require("mongoose");
-const filterLookup = {
+const dateRangeLookup = {
   day: new Date(new Date().setDate(new Date().getDate() - 1)),
   week: new Date(new Date().setDate(new Date().getDate() - 7)),
   month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
 };
+
 /**
  * Create a check for a monitor
  * @async
@@ -35,7 +36,7 @@ const getChecksCount = async (req) => {
   const checksQuery = { monitorId: monitorId };
   // Filter checks by "day", "week", or "month"
   if (filter !== undefined) {
-    checksQuery.createdAt = { $gte: filterLookup[filter] };
+    checksQuery.createdAt = { $gte: dateRangeLookup[filter] };
   }
   const count = await Check.countDocuments(checksQuery);
   return count;
@@ -52,8 +53,8 @@ const getChecksCount = async (req) => {
 const getChecks = async (req) => {
   try {
     const { monitorId } = req.params;
-    let { sortOrder, limit, filter, page, rowsPerPage } = req.query;
-
+    let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
+    console.log(filter);
     // Default limit to 0 if not provided
     if (limit === undefined) limit = 0;
 
@@ -67,8 +68,12 @@ const getChecks = async (req) => {
     // Build query
     const checksQuery = { monitorId: monitorId };
     // Filter checks by "day", "week", or "month"
+    if (dateRange !== undefined) {
+      checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
+    }
+    // Fitler checks by status
     if (filter !== undefined) {
-      checksQuery.createdAt = { $gte: filterLookup[filter] };
+      checksQuery.status = false;
     }
 
     // Need to skip and limit here
