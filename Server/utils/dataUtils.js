@@ -11,7 +11,7 @@ const calculatePercentile = (arr, percentile) => {
   );
 };
 
-export const NormalizeData = (checks, rangeMin, rangeMax) => {
+const NormalizeData = (checks, rangeMin, rangeMax) => {
   if (checks.length > 1) {
     // Get the 5th and 95th percentile
     const min = calculatePercentile(checks, 0);
@@ -43,4 +43,8 @@ export const NormalizeData = (checks, rangeMin, rangeMax) => {
       return { ...check, originalResponseTime: check.responseTime };
     });
   }
+};
+
+module.exports = {
+  NormalizeData,
 };

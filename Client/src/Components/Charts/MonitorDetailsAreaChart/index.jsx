@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { NormalizeData } from "../ChartUtils";
 import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
@@ -47,17 +46,12 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
     });
   };
 
-  let normalizedChecks = [];
-  if (checks && checks.length > 0) {
-    normalizedChecks = NormalizeData(checks, 10, 100);
-  }
-
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         width={500}
         height={400}
-        data={normalizedChecks}
+        data={checks}
         margin={{
           top: 10,
           right: 0,

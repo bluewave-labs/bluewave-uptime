@@ -170,7 +170,7 @@ const DetailsPage = () => {
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc&filter=${filter}&numToDisplay=50`,
+        `/monitors/${monitorId}?sortOrder=asc&filter=${filter}&numToDisplay=50&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
