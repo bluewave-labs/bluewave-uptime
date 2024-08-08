@@ -78,6 +78,9 @@ Made with [contrib.rocks](https://contrib.rocks).
     - <code>POST</code> [/api/v1/auth/login](#post-login)
     - <code>PUT</code> [/api/v1/auth/user/{userId}](#post-auth-user-edit-id)
     - <code>GET</code> [/api/v1/auth/users](#get-all-users-id)
+    - <code>GET</code> [/api/v1/auth/users/admin](#get-all-admin-users-id)
+    - <code>POST</code> [/api/v1/auth/invite](#post-auth-invite-id)
+    - <code>POST</code> [/api/v1/auth/invite/verify/](#post-auth-invite-verify-id)
     - <code>POST</code> [/api/v1/auth/recovery/request](#post-auth-recovery-request-id)
     - <code>POST</code> [/api/v1/auth/recovery/validate](#post-auth-recovery-validate-id)
     - <code>POST</code> [/api/v1/auth/recovery/reset](#post-auth-recovery-reset-id)
@@ -88,6 +91,7 @@ Made with [contrib.rocks](https://contrib.rocks).
     - <code>POST</code> [/api/v1/monitors](#post-monitors)
     - <code>PUT</code> [/api/v1/monitors/{monitorId}](#put-monitors-id)
     - <code>DELETE</code> [/api/v1/monitors/{monitorId}](#delete-monitors-id)
+    - <code>DELETE</code> [/api/v1/monitors/all](#delete-all-monitors)
     ###### Checks
     - <code>POST</code> [/api/v1/checks/{monitorId}](#post-checks)
     - <code>GET</code> [/api/v1/checks/{monitorId}](#get-checks)
