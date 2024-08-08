@@ -88,6 +88,7 @@ const {
 
 const {
   createCheck,
+  getChecksCount,
   getChecks,
   deleteChecks,
 } = require("./modules/checkModule");
@@ -145,6 +146,7 @@ module.exports = {
   deleteAllMonitors,
   editMonitor,
   createCheck,
+  getChecksCount,
   getChecks,
   deleteChecks,
   createAlert,
