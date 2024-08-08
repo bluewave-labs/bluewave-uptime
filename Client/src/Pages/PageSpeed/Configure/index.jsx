@@ -3,6 +3,8 @@ import { useTheme } from "@emotion/react";
 import { Box, Modal, Stack, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
+import { deletePageSpeedMonitor } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { createToast } from "../../../Utils/toastUtils";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
@@ -11,6 +13,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
+
 import "./index.css";
 
 const PageSpeedConfigure = () => {
@@ -65,12 +68,14 @@ const PageSpeedConfigure = () => {
   const [isOpen, setIsOpen] = useState(false);
   const handleRemove = async (event) => {
     event.preventDefault();
-    // const action = await dispatch(deletePageSpeedMonitor({ authToken, monitor }));
-    // if (action.meta.requestStatus === "fulfilled") {
-    //   navigate("/monitors");
-    // } else {
-    //   createToast({ body: "Failed to delete monitor." });
-    // }
+    const action = await dispatch(
+      deletePageSpeedMonitor({ authToken, monitor })
+    );
+    if (action.meta.requestStatus === "fulfilled") {
+      navigate("/pagespeed");
+    } else {
+      createToast({ body: "Failed to delete monitor." });
+    }
   };
 
   return (

@@ -68,6 +68,27 @@ export const getPageSpeedByUserId = createAsyncThunk(
   }
 );
 
+export const deletePageSpeedMonitor = createAsyncThunk(
+  "monitors/deleteMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+      const res = await axiosInstance.delete(`/monitors/${monitor._id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 const pageSpeedMonitorSlice = createSlice({
   name: "pageSpeedMonitor",
   initialState,
@@ -137,6 +158,25 @@ const pageSpeedMonitorSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to create page speed monitor";
+      })
+
+      // *****************************************************
+      // Delete Monitor
+      // *****************************************************
+      .addCase(deletePageSpeedMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePageSpeedMonitor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(deletePageSpeedMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to delete page speed monitor";
       });
   },
 });
