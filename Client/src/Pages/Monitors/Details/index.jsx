@@ -119,10 +119,8 @@ const DetailsPage = () => {
 
   const fetchDataForTable = useCallback(async () => {
     try {
-      const limit = 0;
-
       const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc&limit=${limit}`,
+        `/checks/${monitorId}?sortOrder=desc&filter=${filter}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -135,7 +133,7 @@ const DetailsPage = () => {
           { id: 2, name: "Date & Time" },
           { id: 3, name: "Message" },
         ],
-        rows: res.data.data.checks.map((check, idx) => {
+        rows: res.data.data.map((check, idx) => {
           const status = check.status === true ? "up" : "down";
 
           return {
@@ -165,7 +163,7 @@ const DetailsPage = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [authToken, monitorId]);
+  }, [authToken, monitorId, filter]);
 
   const fetchMonitor = useCallback(async () => {
     try {

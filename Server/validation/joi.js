@@ -232,6 +232,12 @@ const getChecksParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+const getChecksQueryValidation = joi.object({
+  sortOrder: joi.string().valid("asc", "desc"),
+  limit: joi.number(),
+  filter: joi.string().valid("day", "week", "month"),
+});
+
 const deleteChecksParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
@@ -311,6 +317,7 @@ module.exports = {
   createCheckParamValidation,
   createCheckBodyValidation,
   getChecksParamValidation,
+  getChecksQueryValidation,
   deleteChecksParamValidation,
   deleteUserParamValidation,
   getPageSpeedCheckParamValidation,
