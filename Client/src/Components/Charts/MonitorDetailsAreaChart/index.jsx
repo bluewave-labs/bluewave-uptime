@@ -27,7 +27,7 @@ const CustomToolTip = ({ active, payload, label }) => {
   return null;
 };
 
-const MonitorDetailsAreaChart = ({ checks, filter }) => {
+const MonitorDetailsAreaChart = ({ checks }) => {
   //   SQUASH ERROR, NOT PERMANENT SOLUTION
   const error = console.error;
   console.error = (...args) => {

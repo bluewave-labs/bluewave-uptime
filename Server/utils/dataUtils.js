@@ -19,6 +19,7 @@ const NormalizeData = (checks, rangeMin, rangeMax) => {
 
     const normalizedChecks = checks.map((check) => {
       const originalResponseTime = check.responseTime;
+      console.log(originalResponseTime);
       // Normalize the response time between 1 and 100
       let normalizedResponseTime =
         rangeMin +
@@ -31,7 +32,7 @@ const NormalizeData = (checks, rangeMin, rangeMax) => {
         Math.min(rangeMax, normalizedResponseTime)
       );
       return {
-        ...check,
+        ...check._doc,
         responseTime: normalizedResponseTime,
         originalResponseTime: originalResponseTime,
       };
