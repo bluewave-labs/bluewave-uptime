@@ -11,7 +11,7 @@ const calculatePercentile = (arr, percentile) => {
   );
 };
 
-export const NormalizeData = (checks, rangeMin, rangeMax) => {
+const NormalizeData = (checks, rangeMin, rangeMax) => {
   if (checks.length > 1) {
     // Get the 5th and 95th percentile
     const min = calculatePercentile(checks, 0);
@@ -19,6 +19,7 @@ export const NormalizeData = (checks, rangeMin, rangeMax) => {
 
     const normalizedChecks = checks.map((check) => {
       const originalResponseTime = check.responseTime;
+      console.log(originalResponseTime);
       // Normalize the response time between 1 and 100
       let normalizedResponseTime =
         rangeMin +
@@ -31,7 +32,7 @@ export const NormalizeData = (checks, rangeMin, rangeMax) => {
         Math.min(rangeMax, normalizedResponseTime)
       );
       return {
-        ...check,
+        ...check._doc,
         responseTime: normalizedResponseTime,
         originalResponseTime: originalResponseTime,
       };
@@ -43,4 +44,8 @@ export const NormalizeData = (checks, rangeMin, rangeMax) => {
       return { ...check, originalResponseTime: check.responseTime };
     });
   }
+};
+
+module.exports = {
+  NormalizeData,
 };

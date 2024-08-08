@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { NormalizeData } from "../ChartUtils";
 import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
@@ -28,7 +27,7 @@ const CustomToolTip = ({ active, payload, label }) => {
   return null;
 };
 
-const MonitorDetailsAreaChart = ({ checks, filter }) => {
+const MonitorDetailsAreaChart = ({ checks }) => {
   //   SQUASH ERROR, NOT PERMANENT SOLUTION
   const error = console.error;
   console.error = (...args) => {
@@ -47,45 +46,12 @@ const MonitorDetailsAreaChart = ({ checks, filter }) => {
     });
   };
 
-  const filterChecks = (checks, filter, numToDisplay) => {
-    const limits = {
-      day: 24 * 60 * 60 * 1000,
-      week: 24 * 60 * 60 * 1000 * 7,
-      month: 24 * 60 * 60 * 1000 * 30, //TODO better monthly calculations
-    };
-
-    const now = new Date().getTime();
-    let result = [];
-    for (let i = 0; i < checks.length; i++) {
-      const checkTime = new Date(checks[i].createdAt).getTime();
-      if (now - checkTime < limits[filter]) {
-        result.push(checks[i]);
-      }
-    }
-
-    // If more than numToDisplay checks, pick every nth check
-    if (result.length > numToDisplay) {
-      const n = Math.ceil(result.length / numToDisplay);
-      result = result.filter((_, idx) => {
-        return idx % n === 0;
-      });
-    }
-
-    return result;
-  };
-
-  let normalizedChecks = [];
-  if (checks && checks.length > 0) {
-    const filteredChecks = filterChecks(checks, filter, 75);
-    normalizedChecks = NormalizeData(filteredChecks, 10, 100);
-  }
-
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         width={500}
         height={400}
-        data={normalizedChecks}
+        data={checks}
         margin={{
           top: 10,
           right: 0,

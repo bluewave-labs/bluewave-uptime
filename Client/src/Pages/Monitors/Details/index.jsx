@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -115,6 +115,74 @@ const DetailsPage = () => {
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
   const [filter, setFilter] = useState("day");
+  const navigate = useNavigate();
+
+  const fetchDataForTable = useCallback(async () => {
+    try {
+      const limit = 0;
+
+      const res = await axiosInstance.get(
+        `/monitors/${monitorId}?sortOrder=asc&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const data = {
+        cols: [
+          { id: 1, name: "Status" },
+          { id: 2, name: "Date & Time" },
+          { id: 3, name: "Message" },
+        ],
+        rows: res.data.data.checks.map((check, idx) => {
+          const status = check.status === true ? "up" : "down";
+
+          return {
+            id: check._id,
+            data: [
+              {
+                id: idx,
+                data: (
+                  <StatusLabel
+                    status={status}
+                    text={status}
+                    customStyles={{ textTransform: "capitalize" }}
+                  />
+                ),
+              },
+              {
+                id: idx + 1,
+                data: new Date(check.createdAt).toLocaleString(),
+              },
+              { id: idx + 2, data: check.statusCode },
+            ],
+          };
+        }),
+      };
+
+      setData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [authToken, monitorId]);
+
+  const fetchMonitor = useCallback(async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/monitors/${monitorId}?sortOrder=asc&filter=${filter}&numToDisplay=50&normalize=true`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      setMonitor(res.data.data);
+    } catch (error) {
+      console.error("Error fetching monitor of id: " + monitorId);
+      navigate("/not-found");
+    }
+  }, [authToken, monitorId, navigate, filter]);
 
   const fetchDataForChart = async () => {
     try {
@@ -185,14 +253,17 @@ const DetailsPage = () => {
 
   useEffect(() => {
     fetchMonitor();
-  }, [monitorId, authToken]);
+  }, [fetchMonitor]);
+
+  useEffect(() => {
+    fetchDataForTable();
+  }, [fetchDataForTable]);
 
   useEffect(() => {
     fetchDataForChart();
   }, [filter]);
 
   const theme = useTheme();
-  const navigate = useNavigate();
 
   /**
    * Function to calculate uptime duration based on the most recent check.

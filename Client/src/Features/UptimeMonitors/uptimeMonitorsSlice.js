@@ -51,7 +51,7 @@ export const getUptimeMonitorsByUserId = createAsyncThunk(
     const user = jwtDecode(token);
     try {
       const res = await axiosInstance.get(
-        `/monitors/user/${user._id}?limit=25&type=http&type=ping&sortOrder=desc`,
+        `/monitors/user/${user._id}?limit=25&type=http&type=ping&sortOrder=desc&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -1,21 +1,19 @@
 import "./index.css";
 import PropTypes from "prop-types";
 import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
-import { NormalizeData } from "../ChartUtils";
 
 const ResponseTimeChart = ({ checks = [] }) => {
-  const normalizedChecks = NormalizeData(checks, 1, 100);
   return (
     <div className="chart-container">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={150}
           height={40}
-          data={normalizedChecks}
+          data={checks}
           style={{ cursor: "pointer" }}
         >
           <Bar maxBarSize={10} dataKey="responseTime">
-            {normalizedChecks.map((check, index) => (
+            {checks.map((check, index) => (
               <Cell
                 key={`cell-${index}`}
                 fill={

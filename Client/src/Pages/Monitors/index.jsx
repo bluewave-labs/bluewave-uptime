@@ -145,7 +145,7 @@ const Monitors = () => {
 
   useEffect(() => {
     dispatch(getUptimeMonitorsByUserId(authState.authToken));
-  }, []);
+  }, [authState.authToken, dispatch]);
 
   const up = monitorState.monitors.reduce((acc, cur) => {
     return cur.status === true ? acc + 1 : acc;
