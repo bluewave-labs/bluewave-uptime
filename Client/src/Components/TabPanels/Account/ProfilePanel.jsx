@@ -352,7 +352,7 @@ const ProfilePanel = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: 500,
             bgcolor: "white",
             border: "solid 1px #f2f2f2",
             borderRadius: `${theme.shape.borderRadius}px`,
