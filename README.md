@@ -103,6 +103,14 @@ Made with [contrib.rocks](https://contrib.rocks).
     - <code>GET</code> [/api/v1/alerts/{alertId}](#get-alert-alert-id)
     - <code>PUT</code> [/api/v1/alerts/{alertId}](#edit-alert)
     - <code>DELETE</code> [/api/v1/alerts/{alertId}](#delete-alert)
+    ###### Page Speed
+    - <code>POST</code> [/api/v1/pagespeed/:monitorId](#post-pagespeed)
+    - <code>GET</code> [/api/v1/pagespeed/:monitorId](#get-pagespeed)
+    - <code>DELETE</code> [/api/v1/pagespeed/:monitorId](#delete-pagespeed)
+    ###### Maintenance Window
+    - <code>POST</code> [/api/v1/maintenance-window/:monitorId](#post-maintenance-window)
+    - <code>GET</code> [/api/v1/maintenance-window/user/:userId](#get-maintenance-window-by-userid)
+    - <code>GET</code> [/api/v1/maintenance-window/monitor/:monitorId](#get-maintenance-window-by-monitor-id)
 1.  [Error Handling](#error-handling)
 1.  [Contributors](#contributors)
 
