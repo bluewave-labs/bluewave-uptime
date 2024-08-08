@@ -21,4 +21,6 @@ router.post(
   checkController.deleteChecks
 );
 
+router.get("/user/:userId", checkController.getUserChecks);
+
 module.exports = router;

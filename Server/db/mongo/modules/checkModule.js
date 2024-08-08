@@ -1,4 +1,6 @@
 const Check = require("../../../models/Check");
+const Monitor = require("../../../models/Monitor");
+const mongoose = require("mongoose");
 const filterLookup = {
   day: new Date(new Date().setDate(new Date().getDate() - 1)),
   week: new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -92,6 +94,35 @@ const getChecks = async (req) => {
  * @throws {Error}
  */
 
+const getUserChecks = async (req) => {
+  const { userId } = req.params;
+  try {
+    const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
+
+    const checks = await Check.aggregate([
+      {
+        $lookup: {
+          from: "monitors", // The name of the Monitor collection
+          localField: "monitorId",
+          foreignField: "_id",
+          as: "monitorDetails",
+        },
+      },
+      {
+        $unwind: "$monitorDetails",
+      },
+      {
+        $match: {
+          "monitorDetails.userId": objectId,
+        },
+      },
+    ]);
+    return checks;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const deleteChecks = async (monitorId) => {
   try {
     const result = await Check.deleteMany({ monitorId });
@@ -100,4 +131,10 @@ const deleteChecks = async (monitorId) => {
     throw error;
   }
 };
-module.exports = { createCheck, getChecksCount, getChecks, deleteChecks };
+module.exports = {
+  createCheck,
+  getChecksCount,
+  getChecks,
+  getUserChecks,
+  deleteChecks,
+};

@@ -60,6 +60,20 @@ const getChecks = async (req, res, next) => {
   }
 };
 
+const getUserChecks = async (req, res, next) => {
+  try {
+    const checks = req.db.getUserChecks(req);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_GET,
+      data: { checksCount, checks },
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 const deleteChecks = async (req, res, next) => {
   try {
     await deleteChecksParamValidation.validateAsync(req.params);
@@ -88,5 +102,6 @@ const deleteChecks = async (req, res, next) => {
 module.exports = {
   createCheck,
   getChecks,
+  getUserChecks,
   deleteChecks,
 };
