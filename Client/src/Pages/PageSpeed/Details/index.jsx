@@ -139,7 +139,7 @@ const SkeletonLayout = () => {
       <Skeleton variant="rounded" width="15%" height={34} />
       <Stack direction="row" gap={theme.gap.small}>
         <Skeleton variant="circular" style={{ minWidth: 24, minHeight: 24 }} />
-        <Box width="80%">
+        <Box width="85%">
           <Skeleton variant="rounded" width="50%" height={24} />
           <Skeleton
             variant="rounded"
@@ -289,7 +289,7 @@ const PageSpeedDetails = () => {
     return props;
   };
 
-  const pieSize = { width: 200, height: 200 };
+  const pieSize = { width: 210, height: 200 };
   const pieData = getPieData(audits);
   const colorMap = getColors(performance);
 
