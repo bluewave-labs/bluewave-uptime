@@ -321,7 +321,7 @@ const PageSpeedDetails = () => {
             }}
           />
           <Stack direction="row" gap={theme.gap.small}>
-            <GreenCheck />
+            {monitor?.status ? <GreenCheck /> : <RedCheck />}
             <Box>
               <Typography
                 component="h1"
