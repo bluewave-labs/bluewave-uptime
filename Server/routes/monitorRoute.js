@@ -14,10 +14,10 @@ router.delete(
   monitorController.deleteMonitor
 );
 router.put(
-  "/edit/:monitorId",
+  "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   monitorController.editMonitor
 );
 
-router.delete("/delete/all", monitorController.deleteAllMonitors);
+router.delete("/all", monitorController.deleteAllMonitors);
 module.exports = router;
