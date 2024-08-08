@@ -42,6 +42,7 @@ const Incidents = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
+
   const [monitors, setMonitors] = useState({});
   const [selectedMonitor, setSelectedMonitor] = useState("0");
   const [loading, setLoading] = useState(false);
@@ -49,21 +50,11 @@ const Incidents = () => {
   // TODO do something with these filters
   const [filter, setFilter] = useState("all");
 
-  let data = {
-    cols: [
-      { id: 1, name: "Status" },
-      { id: 2, name: "Timestamp" },
-      { id: 3, name: "Monitor" },
-      { id: 4, name: "Message" },
-    ],
-    rows: [],
-  };
-
   useEffect(() => {
-    const fetchIncidents = async () => {
+    const fetchMonitors = async () => {
       setLoading(true);
       const res = await axiosInstance.get(
-        `/monitors/user/${authState.user._id}?status=false`,
+        `/monitors/user/${authState.user._id}?status=false&limit=1`,
         {
           headers: {
             Authorization: `Bearer ${authState.authToken}`,
@@ -82,58 +73,19 @@ const Incidents = () => {
       setLoading(false);
     };
 
-    fetchIncidents();
+    fetchMonitors();
   }, [authState]);
 
   const handleSelect = (event) => {
     setSelectedMonitor(event.target.value);
   };
-  let incidents = [];
-  let hasAnyIncidents = false;
-  let hasSpecificIncidents = false;
-  if (selectedMonitor === "0") {
-    Object.values(monitors).forEach((monitor) => {
-      incidents = incidents.concat(monitor.checks);
-    });
-    if (incidents.length !== 0) hasAnyIncidents = true;
-    hasSpecificIncidents = hasAnyIncidents;
-  } else {
-    const monitor = monitors[selectedMonitor];
-    incidents = monitor.checks;
-    if (incidents.length !== 0) hasSpecificIncidents = true;
-    hasAnyIncidents = true;
-  }
-  incidents = incidents
-    .sort((a, b) => {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    })
-    .filter((incident) => {
-      if (filter === "all") return true;
-      else if (filter === "resolve") return incident.statusCode === 5000;
-      else if (filter === "down") return incident.status === false;
-    })
-    .map((incident, idx) => {
-      return {
-        id: idx,
-        data: [
-          {
-            id: idx + 0,
-            data: <StatusLabel status="down" text="Down" />,
-          },
-          { id: idx + 1, data: new Date(incident.createdAt).toLocaleString() },
-          { id: idx + 2, data: monitors[incident.monitorId].name },
-          { id: idx + 3, data: incident.statusCode },
-        ],
-      };
-    });
-  data.rows = incidents;
 
   return (
     <>
       <Stack className="incidents" gap={theme.gap.large}>
         {loading ? (
           <SkeletonLayout />
-        ) : hasAnyIncidents ? (
+        ) : false ? (
           <>
             <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
               <Typography component="h1">Incident history for: </Typography>
@@ -178,7 +130,7 @@ const Incidents = () => {
               )}
             </Stack>
             {hasAnyIncidents && hasSpecificIncidents ? (
-              <BasicTable data={data} paginated={true} rowsPerPage={12} />
+              <div>thing</div>
             ) : (
               <Typography alignSelf="center" mt={theme.gap.xxl}>
                 The monitor you have selected, has no recorded incidents yet.
