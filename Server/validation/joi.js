@@ -236,6 +236,8 @@ const getChecksQueryValidation = joi.object({
   sortOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
   filter: joi.string().valid("day", "week", "month"),
+  page: joi.number(),
+  rowsPerPage: joi.number(),
 });
 
 const deleteChecksParamValidation = joi.object({

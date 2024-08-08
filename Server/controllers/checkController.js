@@ -48,9 +48,12 @@ const getChecks = async (req, res, next) => {
 
   try {
     const checks = await req.db.getChecks(req);
-    return res
-      .status(200)
-      .json({ success: true, msg: successMessages.CHECK_GET, data: checks });
+    const checksCount = await req.db.getChecksCount(req);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_GET,
+      data: { checksCount, checks },
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

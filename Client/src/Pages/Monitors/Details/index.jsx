@@ -4,7 +4,6 @@ import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../Utils/axiosConfig";
-import BasicTable from "../../../Components/BasicTable";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import { StatusLabel } from "../../../Components/Label";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -13,6 +12,7 @@ import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
+import PaginationTable from "./PaginationTable";
 import {
   formatDuration,
   formatDurationRounded,
@@ -111,59 +111,10 @@ const SkeletonLayout = () => {
  */
 const DetailsPage = () => {
   const [monitor, setMonitor] = useState({});
-  const [data, setData] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
   const [filter, setFilter] = useState("day");
   const navigate = useNavigate();
-
-  const fetchDataForTable = useCallback(async () => {
-    try {
-      const res = await axiosInstance.get(
-        `/checks/${monitorId}?sortOrder=desc&filter=${filter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const data = {
-        cols: [
-          { id: 1, name: "Status" },
-          { id: 2, name: "Date & Time" },
-          { id: 3, name: "Message" },
-        ],
-        rows: res.data.data.map((check, idx) => {
-          const status = check.status === true ? "up" : "down";
-
-          return {
-            id: check._id,
-            data: [
-              {
-                id: idx,
-                data: (
-                  <StatusLabel
-                    status={status}
-                    text={status}
-                    customStyles={{ textTransform: "capitalize" }}
-                  />
-                ),
-              },
-              {
-                id: idx + 1,
-                data: new Date(check.createdAt).toLocaleString(),
-              },
-              { id: idx + 2, data: check.statusCode },
-            ],
-          };
-        }),
-      };
-
-      setData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [authToken, monitorId, filter]);
 
   const fetchMonitor = useCallback(async () => {
     try {
@@ -185,10 +136,6 @@ const DetailsPage = () => {
   useEffect(() => {
     fetchMonitor();
   }, [fetchMonitor]);
-
-  useEffect(() => {
-    fetchDataForTable();
-  }, [fetchDataForTable]);
 
   const theme = useTheme();
 
@@ -390,7 +337,9 @@ const DetailsPage = () => {
             </Box>
             <Stack gap={theme.gap.ml}>
               <Typography component="h2">History</Typography>
-              <BasicTable data={data} paginated={true} reversed={true} />
+              {/* TODO New Table */}
+              <PaginationTable monitorId={monitorId} filter={filter} />
+              {/* <BasicTable data={data} paginated={true} /> */}
             </Stack>
           </Stack>
         </>
