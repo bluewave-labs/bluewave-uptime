@@ -42,9 +42,6 @@
   padding: var(--env-var-spacing-1) 18px;
   background-color: var(--env-var-color-8);
 }
-.monitor-details .stat-box:not(:first-of-type) {
-  margin-left: var(--env-var-spacing-2);
-}
 .monitor-details .stat-box h6.MuiTypography-root {
   margin-bottom: var(--env-var-spacing-1);
 }

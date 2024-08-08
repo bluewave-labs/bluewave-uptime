@@ -2,6 +2,7 @@ const {
   createCheckParamValidation,
   createCheckBodyValidation,
   getChecksParamValidation,
+  getChecksQueryValidation,
   deleteChecksParamValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
@@ -35,6 +36,7 @@ const createCheck = async (req, res, next) => {
 const getChecks = async (req, res, next) => {
   try {
     await getChecksParamValidation.validateAsync(req.params);
+    await getChecksQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -45,10 +47,13 @@ const getChecks = async (req, res, next) => {
   }
 
   try {
-    const checks = await req.db.getChecks(req.params.monitorId);
-    return res
-      .status(200)
-      .json({ success: true, msg: successMessages.CHECK_GET, data: checks });
+    const checks = await req.db.getChecks(req);
+    const checksCount = await req.db.getChecksCount(req);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_GET,
+      data: { checksCount, checks },
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);

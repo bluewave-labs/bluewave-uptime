@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import { Box, Modal, Stack, Typography } from "@mui/material";
+import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
@@ -37,6 +37,54 @@ const parseUrl = (url) => {
 };
 
 /**
+ * Renders a skeleton layout.
+ *
+ * @returns {JSX.Element}
+ */
+const SkeletonLayout = () => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Skeleton variant="rounded" width="15%" height={34} />
+      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+          <Skeleton
+            variant="circular"
+            style={{ minWidth: 24, minHeight: 24 }}
+          />
+          <Box width="80%">
+            <Skeleton
+              variant="rounded"
+              width="50%"
+              height={24}
+              sx={{ mb: theme.gap.small }}
+            />
+            <Skeleton variant="rounded" width="50%" height={18} />
+          </Box>
+          <Stack
+            direction="row"
+            gap={theme.gap.medium}
+            sx={{
+              ml: "auto",
+              alignSelf: "flex-end",
+            }}
+          >
+            <Skeleton variant="rounded" width={150} height={34} />
+          </Stack>
+        </Stack>
+        <Skeleton variant="rounded" width="100%" height={200} />
+        <Skeleton variant="rounded" width="100%" height={200} />
+        <Skeleton variant="rounded" width="100%" height={200} />
+        <Stack direction="row" justifyContent="flex-end">
+          <Skeleton variant="rounded" width="15%" height={34} />
+        </Stack>
+      </Stack>
+    </>
+  );
+};
+
+/**
  * Configure page displays monitor configurations and allows for editing actions.
  * @component
  */
@@ -47,7 +95,7 @@ const Configure = () => {
   const dispatch = useDispatch();
   const { user, authToken } = useSelector((state) => state.auth);
   const { monitors } = useSelector((state) => state.uptimeMonitors);
-  const [monitor, setMonitor] = useState();
+  const [monitor, setMonitor] = useState({});
   const [duration, setDuration] = useState(0);
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
@@ -164,214 +212,228 @@ const Configure = () => {
 
   var lastChecked = formatDurationRounded(getLastChecked(monitor?.checks));
 
+  let loading = Object.keys(monitor).length === 0;
+
   return (
     <Box className="configure-monitor">
-      <Button
-        level="tertiary"
-        label="Back"
-        animate="slideLeft"
-        img={<WestRoundedIcon />}
-        onClick={() => navigate(-1)}
-        sx={{
-          backgroundColor: "#f4f4f4",
-          mb: theme.gap.medium,
-          px: theme.gap.ml,
-          "& svg.MuiSvgIcon-root": {
-            mr: theme.gap.small,
-            fill: theme.palette.otherColors.slateGray,
-          },
-        }}
-      />
-      <form className="configure-monitor-form" noValidate spellCheck="false">
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          {monitor?.status ? <GreenCheck /> : <RedCheck />}
-          <Box>
-            {parsedUrl?.host ? (
-              <Typography
-                component="h1"
-                mb={theme.gap.small}
-                sx={{ lineHeight: 1 }}
-              >
-                {parsedUrl.host || "..."}
-              </Typography>
-            ) : (
-              ""
-            )}
-            <Typography lineHeight={parsedUrl?.host ? 1 : theme.gap.large}>
-              <Typography
-                component="span"
-                sx={{
-                  color: monitor?.status
-                    ? "var(--env-var-color-17)"
-                    : "var(--env-var-color-24)",
-                }}
-              >
-                Your site is {monitor?.status ? "up" : "down"}.
-              </Typography>{" "}
-              Checking every {duration}.{" "}
-              {lastChecked ? `Last time checked ${lastChecked} ago.` : ""}
-            </Typography>
-          </Box>
-          <Stack
-            direction="row"
-            gap={theme.gap.medium}
+      {loading ? (
+        <SkeletonLayout />
+      ) : (
+        <>
+          <Button
+            level="tertiary"
+            label="Back"
+            animate="slideLeft"
+            img={<WestRoundedIcon />}
+            onClick={() => navigate(-1)}
             sx={{
-              ml: "auto",
-              alignSelf: "flex-end",
+              backgroundColor: "#f4f4f4",
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.small,
+                fill: theme.palette.otherColors.slateGray,
+              },
+            }}
+          />
+          <form
+            className="configure-monitor-form"
+            noValidate
+            spellCheck="false"
+            style={{
+              marginTop: theme.gap.medium,
             }}
           >
-            <Button
-              level="tertiary"
-              label="Pause"
-              animate="rotate180"
-              img={<PauseCircleOutlineIcon />}
-              sx={{
-                backgroundColor: "#f4f4f4",
-                pl: theme.gap.small,
-                pr: theme.gap.medium,
-                "& svg": {
-                  mr: theme.gap.xs,
-                },
-              }}
-            />
-            <Button
-              level="error"
-              label="Remove"
-              sx={{
-                boxShadow: "none",
-                px: theme.gap.ml,
-              }}
-              onClick={() => setIsOpen(true)}
-            />
-          </Stack>
-        </Stack>
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
-          <Box>
-            <Typography component="h2">General settings</Typography>
-            <Typography component="p" sx={{ mt: theme.gap.small }}>
-              Here you can select the URL of the host, together with the type of
-              monitor.
-            </Typography>
-          </Box>
-          <Stack gap={theme.gap.xl}>
-            <Field
-              type={monitor?.type === "http" ? "url" : "text"}
-              https={protocol === "https"}
-              id="monitor-url"
-              label="URL to monitor"
-              placeholder="google.com"
-              value={parsedUrl?.host || monitor?.url || ""}
-              disabled={true}
-              error={errors["url"]}
-            />
-            <Field
-              type="text"
-              id="monitor-name"
-              label="Friendly name"
-              isOptional={true}
-              placeholder="Google"
-              value={monitor?.name || ""}
-              onChange={handleChange}
-              error={errors["name"]}
-            />
-          </Stack>
-        </Stack>
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
-          <Box>
-            <Typography component="h2">Incident notifications</Typography>
-            <Typography component="p" mt={theme.gap.small}>
-              When there is an incident, notify users.
-            </Typography>
-          </Box>
-          <Stack gap={theme.gap.medium}>
-            <Typography component="p" mt={theme.gap.small}>
-              When there is a new incident,
-            </Typography>
-            <Checkbox
-              id="notify-sms"
-              label="Notify via SMS (coming soon)"
-              isChecked={false}
-              value=""
-              onChange={() => console.log("disabled")}
-              isDisabled={true}
-            />
-            <Checkbox
-              id="notify-email-default"
-              label={`Notify via email (to ${user.email})`}
-              isChecked={
-                monitor?.notifications?.some(
-                  (notification) => notification.type === "email"
-                ) || false
-              }
-              value={user?.email}
-              onChange={(event) => handleChange(event)}
-            />
-            <Checkbox
-              id="notify-email"
-              label="Also notify via email to multiple addresses (coming soon)"
-              isChecked={false}
-              value=""
-              onChange={() => console.log("disabled")}
-              isDisabled={true}
-            />
-            {monitor?.notifications?.some(
-              (notification) => notification.type === "emails"
-            ) ? (
-              <Box mx={`calc(${theme.gap.ml} * 2)`}>
-                <Field
-                  id="notify-email-list"
-                  type="text"
-                  placeholder="name@gmail.com"
-                  value=""
-                  onChange={() => console.log("disabled")}
-                />
-                <Typography mt={theme.gap.small}>
-                  You can separate multiple emails with a comma
+            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+              <Box>
+                {parsedUrl?.host ? (
+                  <Typography
+                    component="h1"
+                    mb={theme.gap.small}
+                    sx={{ lineHeight: 1 }}
+                  >
+                    {parsedUrl.host || "..."}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+                <Typography lineHeight={parsedUrl?.host ? 1 : theme.gap.large}>
+                  <Typography
+                    component="span"
+                    sx={{
+                      color: monitor?.status
+                        ? "var(--env-var-color-17)"
+                        : "var(--env-var-color-24)",
+                    }}
+                  >
+                    Your site is {monitor?.status ? "up" : "down"}.
+                  </Typography>{" "}
+                  Checking every {duration}.{" "}
+                  {lastChecked ? `Last time checked ${lastChecked} ago.` : ""}
                 </Typography>
               </Box>
-            ) : (
-              ""
-            )}
-          </Stack>
-        </Stack>
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
-          <Box>
-            <Typography component="h2">Advanced settings</Typography>
-          </Box>
-          <Stack gap={theme.gap.xl}>
-            <Select
-              id="monitor-interval-configure"
-              label="Check frequency"
-              value={monitor?.interval / MS_PER_MINUTE || 1}
-              onChange={(event) => handleChange(event, "interval")}
-              items={frequencies}
-            />
-          </Stack>
-        </Stack>
-        <Stack direction="row" justifyContent="flex-end">
-          <Button
-            level="primary"
-            label="Save"
-            sx={{ px: theme.gap.large }}
-            onClick={handleSubmit}
-          />
-        </Stack>
-      </form>
+              <Stack
+                direction="row"
+                gap={theme.gap.medium}
+                sx={{
+                  ml: "auto",
+                  alignSelf: "flex-end",
+                }}
+              >
+                <Button
+                  level="tertiary"
+                  label="Pause"
+                  animate="rotate180"
+                  img={<PauseCircleOutlineIcon />}
+                  sx={{
+                    backgroundColor: "#f4f4f4",
+                    pl: theme.gap.small,
+                    pr: theme.gap.medium,
+                    "& svg": {
+                      mr: theme.gap.xs,
+                    },
+                  }}
+                />
+                <Button
+                  level="error"
+                  label="Remove"
+                  sx={{
+                    boxShadow: "none",
+                    px: theme.gap.ml,
+                  }}
+                  onClick={() => setIsOpen(true)}
+                />
+              </Stack>
+            </Stack>
+            <Stack
+              className="config-box"
+              direction="row"
+              justifyContent="space-between"
+              gap={theme.gap.xxl}
+            >
+              <Box>
+                <Typography component="h2">General settings</Typography>
+                <Typography component="p" sx={{ mt: theme.gap.small }}>
+                  Here you can select the URL of the host, together with the
+                  type of monitor.
+                </Typography>
+              </Box>
+              <Stack gap={theme.gap.xl}>
+                <Field
+                  type={monitor?.type === "http" ? "url" : "text"}
+                  https={protocol === "https"}
+                  id="monitor-url"
+                  label="URL to monitor"
+                  placeholder="google.com"
+                  value={parsedUrl?.host || monitor?.url || ""}
+                  disabled={true}
+                  error={errors["url"]}
+                />
+                <Field
+                  type="text"
+                  id="monitor-name"
+                  label="Friendly name"
+                  isOptional={true}
+                  placeholder="Google"
+                  value={monitor?.name || ""}
+                  onChange={handleChange}
+                  error={errors["name"]}
+                />
+              </Stack>
+            </Stack>
+            <Stack
+              className="config-box"
+              direction="row"
+              justifyContent="space-between"
+              gap={theme.gap.xxl}
+            >
+              <Box>
+                <Typography component="h2">Incident notifications</Typography>
+                <Typography component="p" mt={theme.gap.small}>
+                  When there is an incident, notify users.
+                </Typography>
+              </Box>
+              <Stack gap={theme.gap.medium}>
+                <Typography component="p" mt={theme.gap.small}>
+                  When there is a new incident,
+                </Typography>
+                <Checkbox
+                  id="notify-sms"
+                  label="Notify via SMS (coming soon)"
+                  isChecked={false}
+                  value=""
+                  onChange={() => console.log("disabled")}
+                  isDisabled={true}
+                />
+                <Checkbox
+                  id="notify-email-default"
+                  label={`Notify via email (to ${user.email})`}
+                  isChecked={
+                    monitor?.notifications?.some(
+                      (notification) => notification.type === "email"
+                    ) || false
+                  }
+                  value={user?.email}
+                  onChange={(event) => handleChange(event)}
+                />
+                <Checkbox
+                  id="notify-email"
+                  label="Also notify via email to multiple addresses (coming soon)"
+                  isChecked={false}
+                  value=""
+                  onChange={() => console.log("disabled")}
+                  isDisabled={true}
+                />
+                {monitor?.notifications?.some(
+                  (notification) => notification.type === "emails"
+                ) ? (
+                  <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                    <Field
+                      id="notify-email-list"
+                      type="text"
+                      placeholder="name@gmail.com"
+                      value=""
+                      onChange={() => console.log("disabled")}
+                    />
+                    <Typography mt={theme.gap.small}>
+                      You can separate multiple emails with a comma
+                    </Typography>
+                  </Box>
+                ) : (
+                  ""
+                )}
+              </Stack>
+            </Stack>
+            <Stack
+              className="config-box"
+              direction="row"
+              justifyContent="space-between"
+              gap={theme.gap.xxl}
+            >
+              <Box>
+                <Typography component="h2">Advanced settings</Typography>
+              </Box>
+              <Stack gap={theme.gap.xl}>
+                <Select
+                  id="monitor-interval-configure"
+                  label="Check frequency"
+                  value={monitor?.interval / MS_PER_MINUTE || 1}
+                  onChange={(event) => handleChange(event, "interval")}
+                  items={frequencies}
+                />
+              </Stack>
+            </Stack>
+            <Stack direction="row" justifyContent="flex-end">
+              <Button
+                level="primary"
+                label="Save"
+                sx={{ px: theme.gap.large }}
+                onClick={handleSubmit}
+              />
+            </Stack>
+          </form>
+        </>
+      )}
       <Modal
         aria-labelledby="modal-delete-monitor"
         aria-describedby="delete-monitor-confirmation"

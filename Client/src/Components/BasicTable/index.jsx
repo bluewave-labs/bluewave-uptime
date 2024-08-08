@@ -9,7 +9,7 @@ import {
   Pagination,
   PaginationItem,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./index.css";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -72,6 +72,10 @@ const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
   // Add headers to props validation
 
   const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    setPage(0);
+  }, [data]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
