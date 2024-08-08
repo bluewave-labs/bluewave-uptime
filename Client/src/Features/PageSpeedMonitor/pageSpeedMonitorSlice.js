@@ -68,8 +68,39 @@ export const getPageSpeedByUserId = createAsyncThunk(
   }
 );
 
-export const deletePageSpeedMonitor = createAsyncThunk(
-  "monitors/deleteMonitor",
+export const updatePageSpeed = createAsyncThunk(
+  "pageSpeedMonitors/updatePageSpeed",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitor } = data;
+      const updatedFields = {
+        name: monitor.name,
+        description: monitor.description,
+        interval: monitor.interval,
+        // notifications: monitor.notifications,
+      };
+      const res = await axiosInstance.put(
+        `/monitors/edit/${monitor._id}`,
+        updatedFields,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deletePageSpeed = createAsyncThunk(
+  "pageSpeedMonitors/deletePageSpeed",
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
@@ -161,17 +192,36 @@ const pageSpeedMonitorSlice = createSlice({
       })
 
       // *****************************************************
-      // Delete Monitor
+      // Create Monitor
       // *****************************************************
-      .addCase(deletePageSpeedMonitor.pending, (state) => {
+      .addCase(updatePageSpeed.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deletePageSpeedMonitor.fulfilled, (state, action) => {
+      .addCase(updatePageSpeed.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.success;
         state.msg = action.payload.msg;
       })
-      .addCase(deletePageSpeedMonitor.rejected, (state, action) => {
+      .addCase(updatePageSpeed.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to update page speed monitor";
+      })
+
+      // *****************************************************
+      // Delete Monitor
+      // *****************************************************
+      .addCase(deletePageSpeed.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePageSpeed.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(deletePageSpeed.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload

@@ -3,7 +3,12 @@ import { useTheme } from "@emotion/react";
 import { Box, Modal, Stack, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { deletePageSpeedMonitor } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import {
+  deletePageSpeed,
+  getPageSpeedByUserId,
+  updatePageSpeed,
+} from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
@@ -49,8 +54,11 @@ const PageSpeedConfigure = () => {
   }, [monitorId]);
 
   const handleChange = (event, id) => {
-    const { value } = event.target;
-    setForm((prev) => ({ ...prev, [id]: value }));
+    let { value } = event.target;
+    if ((id = "interval")) {
+      value = value * MS_PER_MINUTE;
+    }
+    setMonitor((prev) => ({ ...prev, [id]: value }));
 
     const { error } = monitorValidation.validate(
       { [id]: value },
@@ -65,12 +73,23 @@ const PageSpeedConfigure = () => {
     });
   };
 
+  const handleSave = async (event) => {
+    event.preventDefault();
+    const action = await dispatch(
+      updatePageSpeed({ authToken, monitor: monitor })
+    );
+    if (action.meta.requestStatus === "fulfilled") {
+      createToast({ body: "Monitor updated successfully!" });
+      dispatch(getPageSpeedByUserId(authToken));
+    } else {
+      createToast({ body: "Failed to update monitor." });
+    }
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const handleRemove = async (event) => {
     event.preventDefault();
-    const action = await dispatch(
-      deletePageSpeedMonitor({ authToken, monitor })
-    );
+    const action = await dispatch(deletePageSpeed({ authToken, monitor }));
     if (action.meta.requestStatus === "fulfilled") {
       navigate("/pagespeed");
     } else {
@@ -99,7 +118,7 @@ const PageSpeedConfigure = () => {
       <form
         noValidate
         spellCheck="false"
-        onSubmit={() => console.log("disabled")}
+        onSubmit={handleSave}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -229,6 +248,7 @@ const PageSpeedConfigure = () => {
             type="submit"
             level="primary"
             label="Save"
+            onClick={handleSave}
             sx={{ px: theme.gap.large, mt: theme.gap.large }}
           />
         </Stack>
