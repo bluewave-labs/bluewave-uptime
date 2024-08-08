@@ -46,7 +46,7 @@ const configOptionTitle = (title, description) => {
   );
 };
 
-const timeFrames = [
+const durationOptions = [
   { _id: "minutes", name: "minutes" },
   { _id: "hours", name: "hours" },
   { _id: "days", name: "days" },
@@ -62,7 +62,7 @@ const CreateNewMaintenanceWindow = () => {
     repeat: 1,
     date: dayjs(),
     startTime: dayjs(),
-    durationOptions: "60",
+    duration: "60",
     unit: "minutes",
     friendlyName: "",
     AddMonitors: "",
@@ -107,7 +107,6 @@ const CreateNewMaintenanceWindow = () => {
     },
     {
       title: "Start time",
-      description: "Your pings won’t be sent in this time frame.",
       component: (
         <LocalizationProvider
           className="time-localization-provider"
@@ -130,13 +129,13 @@ const CreateNewMaintenanceWindow = () => {
           <Field
             id="duration-value"
             placeholder="60"
-            onChange={(e) => handleChange(e, "durationOptions")}
-            value={values.durationOptions}
+            onChange={(e) => handleChange(e, "duration")}
+            value={values.duration}
           />
           <Select
             onChange={(e) => handleChange(e, "unit")}
             id="duration-unit"
-            items={timeFrames}
+            items={durationOptions}
             value={values.unit}
           />
         </Stack>
@@ -222,6 +221,7 @@ const CreateNewMaintenanceWindow = () => {
           sx={{
             border: "1px solid var(--env-var-color-16)",
             borderRadius: "var(--env-var-radius-1)",
+            backgroundColor: "var(--env-var-color-0)",
           }}
         >
           {configOptions.map((item, index) => (
