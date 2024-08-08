@@ -126,6 +126,8 @@ const getMonitorByIdQueryValidation = joi.object({
   status: joi.boolean(),
   sortOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
+  filter: joi.string().valid("day", "week", "month"),
+  numToDisplay: joi.number(),
 });
 
 const getMonitorsByUserIdValidation = joi.object({

@@ -32,7 +32,13 @@ const getAllMonitors = async (req, res) => {
 const getMonitorById = async (req, res) => {
   try {
     const { monitorId } = req.params;
-    let { status, limit, sortOrder } = req.query;
+    let { status, limit, sortOrder, filter, numToDisplay } = req.query;
+
+    const filterLookup = {
+      day: new Date(new Date().setDate(new Date().getDate() - 1)),
+      week: new Date(new Date().setDate(new Date().getDate() - 7)),
+      month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    };
 
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
@@ -52,18 +58,30 @@ const getMonitorById = async (req, res) => {
       checksQuery.status = status;
     }
 
+    // Filter checks by "day", "week", or "month"
+    if (filter !== undefined) {
+      checksQuery.createdAt = { $gte: filterLookup[filter] };
+    }
+
     // Determine model type
     let model =
       monitor.type === "http" || monitor.type === "ping"
         ? Check
         : PageSpeedCheck;
 
-    const checks = await model
+    let checks = await model
       .find(checksQuery)
       .sort({
         createdAt: sortOrder,
       })
       .limit(limit);
+
+    // If more than numToDisplay checks, pick every nth check
+    if (numToDisplay !== undefined && checks && checks.length > numToDisplay) {
+      const n = Math.ceil(checks.length / numToDisplay);
+      checks = checks.filter((_, index) => index % n === 0);
+    }
+
     const notifications = await Notification.find({ monitorId: monitor._id });
     const monitorWithChecks = { ...monitor.toObject(), checks, notifications };
     return monitorWithChecks;
