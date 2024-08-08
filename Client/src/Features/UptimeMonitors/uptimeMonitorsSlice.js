@@ -80,7 +80,7 @@ export const updateUptimeMonitor = createAsyncThunk(
         notifications: monitor.notifications,
       };
       const res = await axiosInstance.put(
-        `/monitors/edit/${monitor._id}`,
+        `/monitors/${monitor._id}`,
         updatedFields,
         {
           headers: {
