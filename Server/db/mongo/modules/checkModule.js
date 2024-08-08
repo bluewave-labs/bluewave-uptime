@@ -31,13 +31,20 @@ const createCheck = async (checkData) => {
 
 const getChecksCount = async (req) => {
   const monitorId = req.params.monitorId;
+  const dateRange = req.query.dateRange;
   const filter = req.query.filter;
+  console.log(filter);
   // Build query
   const checksQuery = { monitorId: monitorId };
   // Filter checks by "day", "week", or "month"
-  if (filter !== undefined) {
-    checksQuery.createdAt = { $gte: dateRangeLookup[filter] };
+  if (dateRange !== undefined) {
+    checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
   }
+
+  if (filter !== undefined) {
+    checksQuery.status = false;
+  }
+
   const count = await Check.countDocuments(checksQuery);
   return count;
 };
@@ -54,7 +61,6 @@ const getChecks = async (req) => {
   try {
     const { monitorId } = req.params;
     let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
-    console.log(filter);
     // Default limit to 0 if not provided
     if (limit === undefined) limit = 0;
 
