@@ -120,6 +120,10 @@
   font-size: var(--env-var-font-size-large);
   color: var(--env-var-color-2-light);
 }
+.login-page .field h3.MuiTypography-root,
+.login-page .field input {
+  color: var(--env-var-color-5);
+}
 .login-page .tos-p {
   font-size: var(--env-var-font-size-medium-plus);
 }
@@ -156,8 +160,15 @@
   line-height: 1;
 }
 .login-page button:not(.MuiIconButton-root),
-.field .MuiInputBase-root:has(input) {
+.login-page .field .MuiInputBase-root:has(input) {
   height: 40px;
+}
+.login-page .field svg {
+  width: 24px;
+  height: 24px;
+}
+.login-page .field .MuiIconButton-root{
+  padding: 4px;
 }
 
 .login-page > .MuiStack-root:nth-of-type(1) {

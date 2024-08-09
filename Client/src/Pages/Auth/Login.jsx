@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Divider, FormControl, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
@@ -15,6 +15,148 @@ import Mail from "../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 
 import "./index.css";
+
+const LandingPage = ({ onContinue }) => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+        <Box>
+          <Typography component="h1">Log In</Typography>
+          <Typography>We are pleased to see you again!</Typography>
+        </Box>
+        <Box width="100%">
+          <Button
+            level="secondary"
+            label="Continue with Email"
+            img={<Mail />}
+            onClick={onContinue}
+            sx={{
+              width: "100%",
+              "& svg": {
+                mr: theme.gap.small,
+              },
+            }}
+          />
+        </Box>
+        <Box maxWidth={400}>
+          <Typography className="tos-p">
+            By continuing, you agree to our{" "}
+            <Typography component="span">Terms of Service</Typography> and{" "}
+            <Typography component="span">Privacy Policy.</Typography>
+          </Typography>
+        </Box>
+      </Stack>
+    </>
+  );
+};
+
+const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Stack gap={theme.gap.large} textAlign="center">
+        <Box>
+          <Typography component="h1">Log In</Typography>
+          <Typography>Enter your email address</Typography>
+        </Box>
+        <Box textAlign="left">
+          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+            <Field
+              type="email"
+              id="login-email-input"
+              label="Email"
+              isRequired={true}
+              placeholder="john.doe@domain.com"
+              autoComplete="email"
+              value={form.email}
+              onChange={onChange}
+              error={errors.email}
+            />
+          </form>
+        </Box>
+        <Stack direction="row" justifyContent="space-between">
+          <Button
+            level="secondary"
+            label="Back"
+            animate="slideLeft"
+            img={<ArrowBackRoundedIcon />}
+            onClick={onBack}
+            sx={{
+              mb: theme.gap.medium,
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.xs,
+              },
+            }}
+          />
+          <Button
+            level="primary"
+            label="Continue"
+            onClick={onSubmit}
+            disabled={errors.email && true}
+            sx={{ width: "30%" }}
+          />
+        </Stack>
+      </Stack>
+    </>
+  );
+};
+
+const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Stack gap={theme.gap.large} textAlign="center">
+        <Box>
+          <Typography component="h1">Log In</Typography>
+          <Typography>Enter your password</Typography>
+        </Box>
+        <Box textAlign="left">
+          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+            <Field
+              type="password"
+              id="login-password-input"
+              label="Password"
+              isRequired={true}
+              placeholder="••••••••••"
+              autoComplete="current-password"
+              value={form.password}
+              onChange={onChange}
+              error={errors.password}
+            />
+          </form>
+        </Box>
+        <Stack direction="row" justifyContent="space-between">
+          <Button
+            level="secondary"
+            label="Back"
+            animate="slideLeft"
+            img={<ArrowBackRoundedIcon />}
+            onClick={onBack}
+            sx={{
+              mb: theme.gap.medium,
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.xs,
+              },
+            }}
+          />
+          <Button
+            level="primary"
+            label="Continue"
+            onClick={onSubmit}
+            disabled={errors.email && true}
+            sx={{ width: "30%" }}
+          />
+        </Stack>
+      </Stack>
+    </>
+  );
+};
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -45,47 +187,6 @@ const Login = () => {
       });
   }, [navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const { error } = credentials.validate(form, { abortEarly: false });
-
-    if (error) {
-      // validation errors
-      const newErrors = {};
-      error.details.forEach((err) => {
-        newErrors[err.path[0]] = err.message;
-      });
-      setErrors(newErrors);
-      createToast({
-        body:
-          error.details && error.details.length > 0
-            ? error.details[0].message
-            : "Error validating data.",
-      });
-    } else {
-      const action = await dispatch(login(form));
-      if (action.payload.success) {
-        navigate("/monitors");
-        createToast({
-          body: "Welcome back! You're successfully logged in.",
-        });
-      } else {
-        if (action.payload) {
-          // dispatch errors
-          createToast({
-            body: action.payload.msg,
-          });
-        } else {
-          // unknown errors
-          createToast({
-            body: "Unknown error.",
-          });
-        }
-      }
-    }
-  };
-
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idMap[id];
@@ -107,113 +208,61 @@ const Login = () => {
     });
   };
 
-  const [step, setStep] = useState(0);
-  const LandingPage = () => {
-    return (
-      <>
-        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
-          <Box>
-            <Typography component="h1">Log In</Typography>
-            <Typography>We are pleased to see you again!</Typography>
-          </Box>
-          <Box width="100%">
-            <Button
-              level="secondary"
-              label="Continue with Email"
-              img={<Mail />}
-              onClick={() => setStep(1)}
-              sx={{
-                width: "100%",
-                "& svg": {
-                  mr: theme.gap.small,
-                },
-              }}
-            />
-            {/* <Divider sx={{ marginY: theme.spacing(1) }}>or</Divider>
-            <Button
-              level="secondary"
-              label="Continue with Google"
-              onClick={() => setStep(1)}
-              sx={{ width: "100%" }}
-            /> */}
-          </Box>
-          <Box maxWidth={400}>
-            <Typography className="tos-p">
-              By continuing, you agree to our{" "}
-              <Typography component="span">Terms of Service</Typography> and{" "}
-              <Typography component="span">Privacy Policy.</Typography>
-            </Typography>
-          </Box>
-        </Stack>
-      </>
-    );
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const StepOne = () => {
-    const submit = (event) => {
-      event.preventDefault();
-
+    if (step === 1) {
       const { error } = credentials.validate(
         { email: form.email },
         { abortEarly: false }
       );
       if (error) {
         setErrors((prev) => ({ ...prev, email: error.details[0].message }));
-        createToast({ body: "Invalid email address." });
+        createToast({ body: error.details[0].message });
       } else {
         setStep(2);
       }
-    };
+    } else if (step === 2) {
+      const { error } = credentials.validate(form, { abortEarly: false });
 
-    return (
-      <>
-        <Stack gap={theme.gap.large} textAlign="center">
-          <Box>
-            <Typography component="h1">Log In</Typography>
-            <Typography>Enter your email address</Typography>
-          </Box>
-          <Box textAlign="left">
-            <form onSubmit={submit}>
-              <Field
-                type="email"
-                id="login-email-input"
-                label="Email"
-                isRequired={true}
-                placeholder="john.doe@domain.com"
-                autoComplete="email"
-                value={form.email}
-                onChange={handleChange}
-                error={errors.email}
-              />
-            </form>
-          </Box>
-          <Stack direction="row" justifyContent="space-between">
-            <Button
-              level="secondary"
-              label="Back"
-              animate="slideLeft"
-              img={<ArrowBackRoundedIcon />}
-              onClick={() => setStep(0)}
-              sx={{
-                mb: theme.gap.medium,
-                px: theme.gap.ml,
-                "& svg.MuiSvgIcon-root": {
-                  mr: theme.gap.xs,
-                },
-              }}
-            />
-            <Button
-              level="primary"
-              label="Continue"
-              onClick={submit}
-              disabled={errors.email && true}
-              sx={{ width: "30%" }}
-            />
-          </Stack>
-        </Stack>
-      </>
-    );
+      if (error) {
+        // validation errors
+        const newErrors = {};
+        error.details.forEach((err) => {
+          newErrors[err.path[0]] = err.message;
+        });
+        setErrors(newErrors);
+        createToast({
+          body:
+            error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
+        });
+      } else {
+        const action = await dispatch(login(form));
+        if (action.payload.success) {
+          navigate("/monitors");
+          createToast({
+            body: "Welcome back! You're successfully logged in.",
+          });
+        } else {
+          if (action.payload) {
+            // dispatch errors
+            createToast({
+              body: action.payload.msg,
+            });
+          } else {
+            // unknown errors
+            createToast({
+              body: "Unknown error.",
+            });
+          }
+        }
+      }
+    }
   };
+
+  const [step, setStep] = useState(0);
 
   return (
     <Stack className="login-page" overflow="hidden">
@@ -252,7 +301,27 @@ const Login = () => {
           },
         }}
       >
-        {step === 0 ? <LandingPage /> : step === 1 ? <StepOne /> : ""}
+        {step === 0 ? (
+          <LandingPage onContinue={() => setStep(1)} />
+        ) : step === 1 ? (
+          <StepOne
+            form={form}
+            errors={errors}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            onBack={() => setStep(0)}
+          />
+        ) : (
+          step === 2 && (
+            <StepTwo
+              form={form}
+              errors={errors}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              onBack={() => setStep(1)}
+            />
+          )
+        )}
       </Stack>
       <Box textAlign="center" p={theme.gap.large}>
         <Typography display="inline-block">Don't have an account? -</Typography>
@@ -267,87 +336,6 @@ const Login = () => {
           Sign Up
         </Typography>
       </Box>
-      {/* <form className="login-form" onSubmit={handleSubmit}>
-        <Stack gap={theme.gap.small} alignItems="center">
-          <Typography component="h1" sx={{ mt: theme.gap.xl }}>
-            Log In
-          </Typography>
-          <Typography>We are pleased to see you again!</Typography>
-        </Stack>
-        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Field
-            type="email"
-            id="login-email-input"
-            label="Email"
-            isRequired={true}
-            placeholder="Enter your email"
-            autoComplete="email"
-            value={form.email}
-            onChange={handleChange}
-            error={errors.email}
-          />
-          <Field
-            type="password"
-            id="login-password-input"
-            label="Password"
-            isRequired={true}
-            placeholder="••••••••••"
-            autoComplete="current-password"
-            value={form.password}
-            onChange={handleChange}
-            error={errors.password}
-          />
-          <Stack direction="row" justifyContent="space-between">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size="small"
-                  sx={{
-                    padding: 0,
-                    "& .MuiTouchRipple-root": {
-                      pointerEvents: "none",
-                      display: "none",
-                    },
-                  }}
-                />
-              }
-              label="Remember me"
-            />
-            <Typography
-              component="span"
-              onClick={() => navigate("/forgot-password")}
-            >
-              Forgot password
-            </Typography>
-          </Stack>
-        </Stack>
-        <Stack gap={theme.gap.ml} mt={theme.gap.large}>
-          <Button
-            type="submit"
-            level="primary"
-            label="Continue"
-            disabled={Object.keys(errors).length !== 0 && true}
-          />
-          <Stack
-            direction="row"
-            justifyContent="center"
-            gap="5px"
-            mt={theme.gap.ml}
-          >
-            <Typography sx={{ alignSelf: "center" }}>
-              Don't have an account?
-            </Typography>
-            <Typography
-              component="span"
-              onClick={() => {
-                navigate("/register");
-              }}
-            >
-              Sign up
-            </Typography>
-          </Stack>
-        </Stack>
-      </form> */}
     </Stack>
   );
 };
