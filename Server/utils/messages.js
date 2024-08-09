@@ -56,6 +56,7 @@ const successMessages = {
   // Auth Controller
   AUTH_CREATE_USER: "User created successfully",
   AUTH_LOGIN_USER: "User logged in successfully",
+  AUTH_LOGOUT_USER: "User logged out successfully",
   AUTH_UPDATE_USER: "User updated successfully",
   AUTH_CREATE_RECOVERY_TOKEN: "Recovery token created successfully",
   AUTH_VERIFY_RECOVERY_TOKEN: "Recovery token verified successfully",

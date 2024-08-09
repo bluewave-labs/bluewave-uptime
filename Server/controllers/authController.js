@@ -163,6 +163,26 @@ const loginController = async (req, res, next) => {
   }
 };
 
+const logoutController = async (req, res, next) => {
+  try {
+    // Get user
+    const { user } = req.body;
+    const userToLogout = await req.db.getUserByEmail(
+      { body: { email: user.email } },
+      res
+    );
+    userToLogout.authToken = null;
+    await userToLogout.save();
+
+    return res
+      .status(200)
+      .json({ success: true, msg: successMessages.AUTH_LOGOUT_USER });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 const userEditController = async (req, res, next) => {
   try {
     await editUserParamValidation.validateAsync(req.params);
@@ -530,6 +550,7 @@ const getAllUsersController = async (req, res) => {
 module.exports = {
   registerController,
   loginController,
+  logoutController,
   userEditController,
   inviteController,
   inviteVerifyController,
