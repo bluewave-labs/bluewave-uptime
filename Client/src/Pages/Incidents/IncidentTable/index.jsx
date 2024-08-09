@@ -85,10 +85,6 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               "&:focus": {
                 outline: "none",
               },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
             }}
           />
         )}

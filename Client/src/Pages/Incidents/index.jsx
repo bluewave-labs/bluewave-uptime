@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonGroup, Stack, Skeleton } from "@mui/material";
+import { ButtonGroup, Stack, Skeleton, Typography } from "@mui/material";
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
 import { useTheme } from "@emotion/react";
-import { useNavigate } from "react-router";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";
 import "./index.css";
@@ -37,7 +36,6 @@ const SkeletonLayout = () => {
 
 const Incidents = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
   const authState = useSelector((state) => state.auth);
 
   const [monitors, setMonitors] = useState({});
@@ -81,49 +79,58 @@ const Incidents = () => {
 
   return (
     <Stack className="incidents" gap={theme.gap.large}>
-      <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
-        <Select
-          id="incidents-select-monitor"
-          placeholder="All servers"
-          value={selectedMonitor}
-          onChange={handleSelect}
-          items={Object.values(monitors)}
-        />
-        <ButtonGroup sx={{ ml: "auto" }}>
-          <Button
-            level="secondary"
-            label="All"
-            onClick={() => setFilter("all")}
-            sx={{
-              backgroundColor:
-                filter === "all" && theme.palette.otherColors.fillGray,
-            }}
+      {loading ? (
+        <SkeletonLayout />
+      ) : (
+        <>
+          <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
+            <Typography display="inline-block" component="h1">
+              Incidents for
+            </Typography>
+            <Select
+              id="incidents-select-monitor"
+              placeholder="All servers"
+              value={selectedMonitor}
+              onChange={handleSelect}
+              items={Object.values(monitors)}
+            />
+            <ButtonGroup sx={{ ml: "auto" }}>
+              <Button
+                level="secondary"
+                label="All"
+                onClick={() => setFilter("all")}
+                sx={{
+                  backgroundColor:
+                    filter === "all" && theme.palette.otherColors.fillGray,
+                }}
+              />
+              <Button
+                level="secondary"
+                label="Down"
+                onClick={() => setFilter("down")}
+                sx={{
+                  backgroundColor:
+                    filter === "down" && theme.palette.otherColors.fillGray,
+                }}
+              />
+              <Button
+                level="secondary"
+                label="Cannot Resolve"
+                onClick={() => setFilter("resolve")}
+                sx={{
+                  backgroundColor:
+                    filter === "resolve" && theme.palette.otherColors.fillGray,
+                }}
+              />
+            </ButtonGroup>
+          </Stack>
+          <IncidentTable
+            monitors={monitors}
+            selectedMonitor={selectedMonitor}
+            filter={filter}
           />
-          <Button
-            level="secondary"
-            label="Down"
-            onClick={() => setFilter("down")}
-            sx={{
-              backgroundColor:
-                filter === "down" && theme.palette.otherColors.fillGray,
-            }}
-          />
-          <Button
-            level="secondary"
-            label="Cannot Resolve"
-            onClick={() => setFilter("resolve")}
-            sx={{
-              backgroundColor:
-                filter === "resolve" && theme.palette.otherColors.fillGray,
-            }}
-          />
-        </ButtonGroup>
-      </Stack>
-      <IncidentTable
-        monitors={monitors}
-        selectedMonitor={selectedMonitor}
-        filter={filter}
-      />
+        </>
+      )}
     </Stack>
   );
 };
