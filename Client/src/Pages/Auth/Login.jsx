@@ -45,11 +45,19 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { error } = credentials.validate(form, { abortEarly: false });
-
+  
+    // Convert the email to lowercase for case-insensitive comparison
+    const formWithLowerCaseEmail = {
+      ...form,
+      email: form.email.toLowerCase(),
+    };
+  
+    const { error } = credentials.validate(formWithLowerCaseEmail, {
+      abortEarly: false,
+    });
+  
     if (error) {
-      // validation errors
+      // Validation errors
       const newErrors = {};
       error.details.forEach((err) => {
         newErrors[err.path[0]] = err.message;
@@ -62,41 +70,39 @@ const Login = () => {
             : "Error validating data.",
       });
     } else {
-      const action = await dispatch(login(form));
+      // Use formWithLowerCaseEmail when dispatching the login action
+      const action = await dispatch(login(formWithLowerCaseEmail));
       if (action.payload.success) {
         navigate("/monitors");
         createToast({
           body: "Welcome back! You're successfully logged in.",
         });
       } else {
-        if (action.payload) {
-          // dispatch errors
-          createToast({
-            body: action.payload.msg,
-          });
-        } else {
-          // unknown errors
-          createToast({
-            body: "Unknown error.",
-          });
-        }
+        createToast({
+          body: action.payload ? action.payload.msg : "Unknown error.",
+        });
       }
     }
   };
+  
 
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idMap[id];
+  
+    // Convert email to lowercase
+    const newValue = name === "email" ? value.toLowerCase() : value;
+  
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: newValue,
     }));
-
+  
     const { error } = credentials.validate(
-      { [name]: value },
+      { [name]: newValue },
       { abortEarly: false }
     );
-
+  
     setErrors((prev) => {
       const prevErrors = { ...prev };
       if (error) prevErrors[name] = error.details[0].message;
@@ -104,6 +110,7 @@ const Login = () => {
       return prevErrors;
     });
   };
+  
 
   return (
     <div className="login-page">
