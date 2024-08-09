@@ -12,7 +12,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Button from "../../Button";
 import "./index.css";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 
 /**
  * @param {Object} props
@@ -30,140 +30,151 @@ import { useState } from "react";
  * @param {function} props.onChange - Function called on input change.
  * @param {string} [props.error] - Error message to display for the input field.
  * @param {boolean} [props.disabled] - Indicates if the input field is disabled.
+ * @param {React.Ref} [ref] - Ref forwarded to the underlying `TextField` component. Allows for direct interactions such as focusing.
  */
 
-const Field = ({
-  type = "text",
-  id,
-  label,
-  https,
-  isRequired,
-  isOptional,
-  optionalLabel,
-  hasCopy,
-  autoComplete,
-  placeholder,
-  value,
-  onChange,
-  error,
-  disabled,
-}) => {
-  const theme = useTheme();
+const Field = forwardRef(
+  (
+    {
+      type = "text",
+      id,
+      label,
+      https,
+      isRequired,
+      isOptional,
+      optionalLabel,
+      hasCopy,
+      autoComplete,
+      placeholder,
+      value,
+      onChange,
+      error,
+      disabled,
+    },
+    ref
+  ) => {
+    const theme = useTheme();
 
-  // TODO - are we using this feature anywhere ?
-  const [copy, setCopy] = useState(false);
-  const handleCopy = () => {
-    setCopy(true);
-    setTimeout(() => setCopy(false), 1000);
-  };
+    // TODO - are we using this feature anywhere ?
+    const [copy, setCopy] = useState(false);
+    const handleCopy = () => {
+      setCopy(true);
+      setTimeout(() => setCopy(false), 1000);
+    };
 
-  const [isVisible, setVisible] = useState(false);
+    const [isVisible, setVisible] = useState(false);
 
-  return (
-    <Stack gap={theme.gap.xs} className={`field field-${type}`}>
-      {label && (
-        <Typography component="h3">
-          {label}
-          {isRequired ? <span className="field-required">*</span> : ""}
-          {isOptional ? (
-            <span className="field-optional">
-              {optionalLabel || "(optional)"}
-            </span>
-          ) : (
-            ""
-          )}
-        </Typography>
-      )}
-      <TextField
-        type={type === "password" ? (isVisible ? "text" : type) : type}
-        id={id}
-        autoComplete={autoComplete}
-        placeholder={placeholder}
-        multiline={type === "description"}
-        rows={type === "description" ? 4 : 1}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        sx={
-          type === "url"
-            ? {
-                "& .MuiInputBase-root": { padding: 0 },
-                "& .MuiStack-root": {
-                  borderTopLeftRadius: `${theme.shape.borderRadius}px`,
-                  borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
-                },
-              }
-            : {}
-        }
-        InputProps={{
-          startAdornment: type === "url" && (
-            <Stack
-              direction="row"
-              alignItems="center"
-              height="100%"
-              sx={{
-                borderRight: `solid 1px ${theme.palette.section.borderColor}`,
-                backgroundColor: "#f9f9fa",
-                pl: theme.gap.medium,
-              }}
-            >
-              <Typography component="h5" sx={{ lineHeight: 1 }}>
-                {https ? "https" : "http"}://
-              </Typography>
-            </Stack>
-          ),
-          endAdornment:
-            type === "password" ? (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setVisible((show) => !show)}
-                  tabIndex={-1}
-                  sx={{
-                    color: theme.palette.section.borderColor,
-                    padding: `calc(${theme.gap.xs} / 2)`,
-                    "&:focus": {
-                      outline: "none",
-                    },
-                    "& .MuiTouchRipple-root": {
-                      pointerEvents: "none",
-                      display: "none",
-                    },
-                  }}
-                >
-                  {!isVisible ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
+    return (
+      <Stack gap={theme.gap.xs} className={`field field-${type}`}>
+        {label && (
+          <Typography component="h3">
+            {label}
+            {isRequired ? <span className="field-required">*</span> : ""}
+            {isOptional ? (
+              <span className="field-optional">
+                {optionalLabel || "(optional)"}
+              </span>
             ) : (
-              hasCopy && (
-                <InputAdornment className="copy" position="end">
-                  <Button
-                    level="tertiary"
-                    label={copy ? "Copied" : "Copy"}
-                    img={<ContentCopyIcon />}
-                    onClick={handleCopy}
+              ""
+            )}
+          </Typography>
+        )}
+        <TextField
+          type={type === "password" ? (isVisible ? "text" : type) : type}
+          id={id}
+          autoComplete={autoComplete}
+          placeholder={placeholder}
+          multiline={type === "description"}
+          rows={type === "description" ? 4 : 1}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          inputRef={ref}
+          sx={
+            type === "url"
+              ? {
+                  "& .MuiInputBase-root": { padding: 0 },
+                  "& .MuiStack-root": {
+                    borderTopLeftRadius: `${theme.shape.borderRadius}px`,
+                    borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
+                  },
+                }
+              : {}
+          }
+          InputProps={{
+            startAdornment: type === "url" && (
+              <Stack
+                direction="row"
+                alignItems="center"
+                height="100%"
+                sx={{
+                  borderRight: `solid 1px ${theme.palette.section.borderColor}`,
+                  backgroundColor: "#f9f9fa",
+                  pl: theme.gap.medium,
+                }}
+              >
+                <Typography component="h5" sx={{ lineHeight: 1 }}>
+                  {https ? "https" : "http"}://
+                </Typography>
+              </Stack>
+            ),
+            endAdornment:
+              type === "password" ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setVisible((show) => !show)}
+                    tabIndex={-1}
                     sx={{
-                      borderLeft: `solid 1px ${theme.palette.section.borderColor}`,
-                      lineHeight: 0,
+                      color: theme.palette.section.borderColor,
+                      padding: `calc(${theme.gap.xs} / 2)`,
+                      "&:focus": {
+                        outline: "none",
+                      },
                       "& .MuiTouchRipple-root": {
                         pointerEvents: "none",
                         display: "none",
                       },
                     }}
-                  />
+                  >
+                    {!isVisible ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
                 </InputAdornment>
-              )
-            ),
-        }}
-      />
-      {error && (
-        <Typography component="span" className="input-error" mt={theme.gap.xs}>
-          {error}
-        </Typography>
-      )}
-    </Stack>
-  );
-};
+              ) : (
+                hasCopy && (
+                  <InputAdornment className="copy" position="end">
+                    <Button
+                      level="tertiary"
+                      label={copy ? "Copied" : "Copy"}
+                      img={<ContentCopyIcon />}
+                      onClick={handleCopy}
+                      sx={{
+                        borderLeft: `solid 1px ${theme.palette.section.borderColor}`,
+                        lineHeight: 0,
+                        "& .MuiTouchRipple-root": {
+                          pointerEvents: "none",
+                          display: "none",
+                        },
+                      }}
+                    />
+                  </InputAdornment>
+                )
+              ),
+          }}
+        />
+        {error && (
+          <Typography
+            component="span"
+            className="input-error"
+            mt={theme.gap.xs}
+          >
+            {error}
+          </Typography>
+        )}
+      </Stack>
+    );
+  }
+);
 
 Field.propTypes = {
   type: PropTypes.oneOf(["text", "password", "url", "email", "description"]),

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
@@ -21,7 +21,7 @@ import "./index.css";
  *
  * @param {Object} props
  * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
- * @returns {JSX.Element} 
+ * @returns {JSX.Element}
  */
 const LandingPage = ({ onContinue }) => {
   const theme = useTheme();
@@ -72,6 +72,13 @@ const LandingPage = ({ onContinue }) => {
  */
 const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <>
@@ -92,6 +99,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               value={form.email}
               onChange={onChange}
               error={errors.email}
+              ref={inputRef}
             />
           </form>
         </Box>
@@ -136,6 +144,13 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
  */
 const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <>
@@ -156,6 +171,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               value={form.password}
               onChange={onChange}
               error={errors.password}
+              ref={inputRef}
             />
           </form>
         </Box>
