@@ -119,9 +119,9 @@
 .login-page button:not(.MuiIconButton-root),
 .login-page .field h3.MuiTypography-root,
 .login-page .field input,
-.login-page .field .input-error
+.login-page .field .input-error,
 .login-page p,
-.login-page .forgot-p + span {
+.login-page span {
   font-size: var(--env-var-font-size-medium-plus);
 }
 .login-page p {
@@ -132,9 +132,6 @@
   color: var(--env-var-color-5);
 }
 
-.login-page span {
-  font-size: inherit;
-}
 .login-page p + span {
   color: var(--env-var-color-3);
   opacity: 0.8;
@@ -166,9 +163,6 @@
 .login-page .field svg {
   width: 24px;
   height: 24px;
-}
-.login-page .field .MuiIconButton-root {
-  padding: 4px;
 }
 
 .login-page > .MuiStack-root:nth-of-type(1) {
