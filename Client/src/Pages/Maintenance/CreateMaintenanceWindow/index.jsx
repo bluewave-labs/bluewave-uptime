@@ -52,11 +52,6 @@ const durationOptions = [
   { _id: "days", name: "days" },
 ];
 
-const sxButtons = {
-  width: 110,
-  height: 34,
-};
-
 const CreateNewMaintenanceWindow = () => {
   const [values, setValues] = useState({
     repeat: 1,
@@ -232,8 +227,26 @@ const CreateNewMaintenanceWindow = () => {
           ))}
         </Stack>
         <Stack justifyContent="end" direction="row" marginTop={3}>
-          <Button sx={sxButtons} level="tertiary" label="Cancel" />
-          <Button sx={sxButtons} level="primary" label="Create" />
+          <Button
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent",
+                boxShadow: "none",
+              },
+            }}
+            level="tertiary"
+            label="Cancel"
+          />
+          <Button
+            sx={{
+              "&:hover": {
+                backgroundColor: "#1570EF",
+                boxShadow: "none",
+              },
+            }}
+            level="primary"
+            label="Create"
+          />
         </Stack>
       </Stack>
     </div>

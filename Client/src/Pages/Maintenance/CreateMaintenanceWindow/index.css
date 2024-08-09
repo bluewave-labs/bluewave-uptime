@@ -53,3 +53,19 @@
   .MuiButtonBase-root {
   text-transform: none;
 }
+
+.date-picker
+  .MuiOutlinedInput-root
+  .MuiInputAdornment-outlined
+  .MuiIconButton-root {
+  outline: none;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.create-maintenance-window .MuiStack-root .MuiStack-root > button {
+  width: 110px;
+  height: 34px;
+}
