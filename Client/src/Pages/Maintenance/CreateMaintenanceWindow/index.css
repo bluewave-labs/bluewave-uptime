@@ -1,5 +1,7 @@
-.maintenance-options > .MuiStack-root > .MuiStack-root.select-wrapper {
-  width: 380px;
+.maintenance-options .MuiStack-root .MuiStack-root.select-wrapper,
+.maintenance-options .MuiStack-root .field {
+  width: 60%;
+  max-width: 380px;
 }
 
 .date-picker .MuiOutlinedInput-root,
@@ -16,6 +18,54 @@
   width: 90px;
 }
 
-.MuiInputAdornment-outlined .MuiIconButton-root svg {
+.maintenance-options .MuiInputAdornment-outlined .MuiIconButton-root svg {
   width: 20px;
+}
+
+.duration-config .field-text .MuiTextField-root,
+.duration-config .field {
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+}
+
+.duration-config > .MuiStack-root.select-wrapper {
+  width: 100px;
+}
+
+.duration-config
+  > .MuiStack-root.select-wrapper
+  > .MuiInputBase-root:has(> .MuiSelect-select) {
+  width: 100px;
+  min-width: 100px;
+}
+
+.duration-config > .select-wrapper .select-component > .MuiSelect-select {
+  text-transform: none;
+}
+
+.maintenance-options .add-monitors-fields .field.field-text {
+  width: 100%;
+}
+
+.MuiPopover-paper.MuiMenu-paper.select-dropdown
+  .MuiMenu-list
+  .MuiButtonBase-root {
+  text-transform: none;
+}
+
+.date-picker
+  .MuiOutlinedInput-root
+  .MuiInputAdornment-outlined
+  .MuiIconButton-root {
+  outline: none;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.create-maintenance-window .MuiStack-root .MuiStack-root > button {
+  width: 110px;
+  height: 34px;
 }

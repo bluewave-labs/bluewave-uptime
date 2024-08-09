@@ -90,6 +90,7 @@ const {
   createCheck,
   getChecksCount,
   getChecks,
+  getUserChecks,
   deleteChecks,
 } = require("./modules/checkModule");
 
@@ -148,6 +149,7 @@ module.exports = {
   createCheck,
   getChecksCount,
   getChecks,
+  getUserChecks,
   deleteChecks,
   createAlert,
   getAlertsByUserId,

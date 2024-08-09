@@ -15,10 +15,12 @@ router.get(
   checkController.getChecks
 );
 
-router.post(
-  "/delete/:monitorId",
+router.delete(
+  "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   checkController.deleteChecks
 );
+
+router.get("/user/:userId", checkController.getUserChecks);
 
 module.exports = router;

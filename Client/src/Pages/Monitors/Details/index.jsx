@@ -113,13 +113,13 @@ const DetailsPage = () => {
   const [monitor, setMonitor] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
-  const [filter, setFilter] = useState("day");
+  const [dateRange, setDateRange] = useState("day");
   const navigate = useNavigate();
 
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc&filter=${filter}&numToDisplay=50&normalize=true`,
+        `/monitors/${monitorId}?sortOrder=asc&filter=${dateRange}&numToDisplay=50&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -131,7 +131,7 @@ const DetailsPage = () => {
       console.error("Error fetching monitor of id: " + monitorId);
       navigate("/not-found");
     }
-  }, [authToken, monitorId, navigate, filter]);
+  }, [authToken, monitorId, navigate, dateRange]);
 
   useEffect(() => {
     fetchMonitor();
@@ -301,44 +301,43 @@ const DetailsPage = () => {
                   <Button
                     level="secondary"
                     label="Day"
-                    onClick={() => setFilter("day")}
+                    onClick={() => setDateRange("day")}
                     sx={{
                       backgroundColor:
-                        filter === "day" && theme.palette.otherColors.fillGray,
+                        dateRange === "day" &&
+                        theme.palette.otherColors.fillGray,
                     }}
                   />
                   <Button
                     level="secondary"
                     label="Week"
-                    onClick={() => setFilter("week")}
+                    onClick={() => setDateRange("week")}
                     sx={{
                       backgroundColor:
-                        filter === "week" && theme.palette.otherColors.fillGray,
+                        dateRange === "week" &&
+                        theme.palette.otherColors.fillGray,
                     }}
                   />
                   <Button
                     level="secondary"
                     label="Month"
-                    onClick={() => setFilter("month")}
+                    onClick={() => setDateRange("month")}
                     sx={{
                       backgroundColor:
-                        filter === "month" &&
+                        dateRange === "month" &&
                         theme.palette.otherColors.fillGray,
                     }}
                   />
                 </ButtonGroup>
               </Stack>
               <Box sx={{ height: "200px" }}>
-                <MonitorDetailsAreaChart
-                  checks={monitor.checks}
-                  filter={filter}
-                />
+                <MonitorDetailsAreaChart checks={monitor.checks} />
               </Box>
             </Box>
             <Stack gap={theme.gap.ml}>
               <Typography component="h2">History</Typography>
               {/* TODO New Table */}
-              <PaginationTable monitorId={monitorId} filter={filter} />
+              <PaginationTable monitorId={monitorId} dateRange={dateRange} />
               {/* <BasicTable data={data} paginated={true} /> */}
             </Stack>
           </Stack>

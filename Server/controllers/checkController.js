@@ -3,6 +3,8 @@ const {
   createCheckBodyValidation,
   getChecksParamValidation,
   getChecksQueryValidation,
+  getUserChecksParamValidation,
+  getUserChecksQueryValidation,
   deleteChecksParamValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
@@ -60,6 +62,31 @@ const getChecks = async (req, res, next) => {
   }
 };
 
+const getUserChecks = async (req, res, next) => {
+  try {
+    await getUserChecksParamValidation.validateAsync(req.params);
+    await getUserChecksQueryValidation.validateAsync(req.query);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
+    const checkData = await req.db.getUserChecks(req);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_GET,
+      data: checkData,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
 const deleteChecks = async (req, res, next) => {
   try {
     await deleteChecksParamValidation.validateAsync(req.params);
@@ -88,5 +115,6 @@ const deleteChecks = async (req, res, next) => {
 module.exports = {
   createCheck,
   getChecks,
+  getUserChecks,
   deleteChecks,
 };

@@ -12,7 +12,6 @@
 .monitors p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
-.monitors h2:has(+ p),
 .monitors p.MuiTypography-root {
   color: var(--env-var-color-5);
 }
