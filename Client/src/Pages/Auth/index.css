@@ -116,17 +116,22 @@
   font-weight: 600;
   color: var(--env-var-color-3);
 }
+.login-page button:not(.MuiIconButton-root),
+.login-page .field h3.MuiTypography-root,
+.login-page .field input,
+.login-page .field .input-error
+.login-page p,
+.login-page .forgot-p + span {
+  font-size: var(--env-var-font-size-medium-plus);
+}
 .login-page p {
-  font-size: var(--env-var-font-size-large);
   color: var(--env-var-color-2-light);
 }
 .login-page .field h3.MuiTypography-root,
 .login-page .field input {
   color: var(--env-var-color-5);
 }
-.login-page .tos-p {
-  font-size: var(--env-var-font-size-medium-plus);
-}
+
 .login-page span {
   font-size: inherit;
 }
@@ -149,25 +154,20 @@
 .login-page p + span:hover {
   opacity: 1;
 }
-.login-page button:not(.MuiIconButton-root),
-.login-page .field h3.MuiTypography-root,
-.login-page .field input,
-.login-page .field .input-error {
-  font-size: var(--env-var-font-size-medium-plus);
-}
 .login-page button:not(.MuiIconButton-root) {
+  user-select: none;
   border-radius: var(--env-var-radius-2);
   line-height: 1;
 }
 .login-page button:not(.MuiIconButton-root),
 .login-page .field .MuiInputBase-root:has(input) {
-  height: 40px;
+  height: 38px;
 }
 .login-page .field svg {
   width: 24px;
   height: 24px;
 }
-.login-page .field .MuiIconButton-root{
+.login-page .field .MuiIconButton-root {
   padding: 4px;
 }
 

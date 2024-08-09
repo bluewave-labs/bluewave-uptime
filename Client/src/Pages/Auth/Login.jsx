@@ -144,6 +144,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
  */
 const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -194,10 +195,23 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
             level="primary"
             label="Continue"
             onClick={onSubmit}
-            disabled={errors.email && true}
+            disabled={errors.password && true}
             sx={{ width: "30%" }}
           />
         </Stack>
+        <Box textAlign="center">
+          <Typography className="forgot-p" display="inline-block">
+            Forgot password?
+          </Typography>
+          <Typography
+            component="span"
+            ml={theme.gap.xs}
+            sx={{ userSelect: "none" }}
+            onClick={() => navigate("/forgot-password")}
+          >
+            Reset password
+          </Typography>
+        </Box>
       </Stack>
     </>
   );
@@ -292,6 +306,9 @@ const Login = () => {
             body: "Welcome back! You're successfully logged in.",
           });
         } else {
+          setErrors({
+            password: "The password you provided does not match our records",
+          });
           if (action.payload) {
             // dispatch errors
             createToast({
@@ -368,7 +385,7 @@ const Login = () => {
         )}
       </Stack>
       <Box textAlign="center" p={theme.gap.large}>
-        <Typography display="inline-block">Don't have an account? -</Typography>
+        <Typography display="inline-block">Don't have an account? —</Typography>
         <Typography
           component="span"
           ml={theme.gap.xs}
