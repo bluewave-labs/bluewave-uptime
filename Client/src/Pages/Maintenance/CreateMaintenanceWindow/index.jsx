@@ -9,6 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
+import Field from "../../../Components/Inputs/Field";
 
 const directory = {
   title: "Create a maintenance window",
@@ -45,9 +46,21 @@ const configOptionTitle = (title, description) => {
   );
 };
 
+const durationOptions = [
+  { _id: "minutes", name: "minutes" },
+  { _id: "hours", name: "hours" },
+  { _id: "days", name: "days" },
+];
+
 const CreateNewMaintenanceWindow = () => {
   const [values, setValues] = useState({
     repeat: 1,
+    date: dayjs(),
+    startTime: dayjs(),
+    duration: "60",
+    unit: "minutes",
+    friendlyName: "",
+    AddMonitors: "",
   });
 
   const handleChange = (event, name) => {
@@ -77,20 +90,88 @@ const CreateNewMaintenanceWindow = () => {
           className="date-localization-provider"
           dateAdapter={AdapterDayjs}
         >
-          <DatePicker className="date-picker" defaultValue={dayjs()} />
+          <DatePicker
+            className="date-picker"
+            defaultValue={values.date}
+            onChange={(date) =>
+              handleChange({ target: { value: date } }, "date")
+            }
+          />
         </LocalizationProvider>
       ),
     },
     {
       title: "Start time",
-      description: "Your pings won’t be sent in this time frame.",
       component: (
         <LocalizationProvider
           className="time-localization-provider"
           dateAdapter={AdapterDayjs}
         >
-          <MobileTimePicker className="time-picker" defaultValue={dayjs()} />
+          <MobileTimePicker
+            className="time-picker"
+            defaultValue={values.startTime}
+            onChange={(time) =>
+              handleChange({ target: { value: time } }, "startTime")
+            }
+          />
         </LocalizationProvider>
+      ),
+    },
+    {
+      title: "Duration",
+      component: (
+        <Stack className="duration-config" gap={2} direction="row">
+          <Field
+            id="duration-value"
+            placeholder="60"
+            onChange={(e) => handleChange(e, "duration")}
+            value={values.duration}
+          />
+          <Select
+            onChange={(e) => handleChange(e, "unit")}
+            id="duration-unit"
+            items={durationOptions}
+            value={values.unit}
+          />
+        </Stack>
+      ),
+    },
+    {
+      title: "Friendly name",
+      component: (
+        <Field
+          id="friendly-name"
+          placeholder="Maintanence at __ : __ for ___ minutes"
+          value={values.friendlyName}
+          onChange={(e) => handleChange(e, "friendlyName")}
+        />
+      ),
+    },
+    {
+      title: "Add monitors",
+      component: (
+        <Stack
+          className="add-monitors-fields"
+          sx={{ width: "60%", maxWidth: "380px" }}
+          gap={2}
+        >
+          <Field
+            id="add-monitors"
+            placeholder="Start typing to search for current monitors"
+            value={values.AddMonitors}
+            onChange={(e) => handleChange(e, "AddMonitors")}
+          />
+          <Typography
+            sx={{
+              width: "fit-content",
+              fontSize: "var(--env-var-font-size-small)",
+              borderBottom: "1px dashed var(--env-var-color-3)",
+              paddingBottom: "4px",
+            }}
+          >
+            Add all monitors to this maintenance window
+          </Typography>
+        </Stack>
       ),
     },
   ];
@@ -127,21 +208,45 @@ const CreateNewMaintenanceWindow = () => {
           </Typography>
         </Box>
         <Stack
+          className="maintenance-options"
           gap={5}
           paddingY={4}
           paddingX={8}
+          paddingBottom={10}
           sx={{
             border: "1px solid var(--env-var-color-16)",
             borderRadius: "var(--env-var-radius-1)",
+            backgroundColor: "var(--env-var-color-0)",
           }}
-          className="maintenance-options"
         >
           {configOptions.map((item, index) => (
             <Stack key={index} display="-webkit-inline-box">
-              {configOptionTitle(item.title, item.description)}
+              {item.title && configOptionTitle(item.title, item.description)}
               {item.component && item.component}
             </Stack>
           ))}
+        </Stack>
+        <Stack justifyContent="end" direction="row" marginTop={3}>
+          <Button
+            sx={{
+              "&:hover": {
+                backgroundColor: "transparent",
+                boxShadow: "none",
+              },
+            }}
+            level="tertiary"
+            label="Cancel"
+          />
+          <Button
+            sx={{
+              "&:hover": {
+                backgroundColor: "#1570EF",
+                boxShadow: "none",
+              },
+            }}
+            level="primary"
+            label="Create"
+          />
         </Stack>
       </Stack>
     </div>
