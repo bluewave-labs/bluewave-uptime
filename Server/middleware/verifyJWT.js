@@ -3,6 +3,8 @@ const logger = require("../utils/logger");
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
 const { errorMessages } = require("../utils/messages");
+const { parse } = require("path");
+const User = require("../models/user");
 /**
  * Verifies the JWT token
  * @function
@@ -32,14 +34,27 @@ const verifyJWT = (req, res, next) => {
 
   const parsedToken = token.slice(TOKEN_PREFIX.length, token.length);
   // Verify the token's authenticity
-  jwt.verify(parsedToken, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(parsedToken, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      logger.error(errorMessages.INVALID_AUTH_TOKEN, {
-        service: SERVICE_NAME,
-      });
-      return res
-        .status(401)
-        .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
+      try {
+        const userId = jwt.decode(parsedToken)._id;
+        await User.updateOne({ _id: userId }, { $unset: { authToken: null } });
+        logger.error(errorMessages.INVALID_AUTH_TOKEN, {
+          service: SERVICE_NAME,
+        });
+        return res
+          .status(401)
+          .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
+      } catch (error) {
+        logger.error(errorMessages.UNKNOWN_ERROR, {
+          service: SERVICE_NAME,
+          error: error,
+        });
+        error.status = 401;
+        error.service = SERVICE_NAME;
+        next(error);
+        return;
+      }
     }
     //Add the user to the request object for use in the route
     req.user = decoded;

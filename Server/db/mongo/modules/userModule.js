@@ -27,7 +27,6 @@ const insertUser = async (req, res) => {
       const avatar = await GenerateAvatarImage(req.file);
       userData.avatarImage = avatar;
     }
-    console.log(userData);
     const newUser = new UserModel(userData);
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })
