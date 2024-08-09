@@ -8,7 +8,12 @@ import {
   TableBody,
   TableFooter,
   TablePagination,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
+
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -68,52 +73,73 @@ const IncidentTable = ({ monitorId, filter }) => {
     });
   };
 
-  return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Monitor Name</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Date & Time</TableCell>
-            <TableCell>Message</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {checks.map((check) => {
-            const status = check.status === true ? "up" : "down";
+  let paginationComponent = <></>;
+  if (checksCount > paginationController.rowsPerPage) {
+    paginationComponent = (
+      <Pagination
+        count={Math.ceil(checksCount / paginationController.rowsPerPage)}
+        page={paginationController.page + 1}
+        onChange={handlePageChange}
+        shape="rounded"
+        renderItem={(item) => (
+          <PaginationItem
+            slots={{
+              previous: ArrowBackRoundedIcon,
+              next: ArrowForwardRoundedIcon,
+            }}
+            {...item}
+            sx={{
+              "&:focus": {
+                outline: "none",
+              },
+              "& .MuiTouchRipple-root": {
+                pointerEvents: "none",
+                display: "none",
+              },
+            }}
+          />
+        )}
+      />
+    );
+  }
 
-            return (
-              <TableRow key={check._id}>
-                <TableCell>
-                  <StatusLabel
-                    status={status}
-                    text={status}
-                    customStyles={{ textTransform: "capitalize" }}
-                  />
-                </TableCell>
-                <TableCell>
-                  {new Date(check.createdAt).toLocaleString()}
-                </TableCell>
-                <TableCell>{check.statusCode}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              onPageChange={handlePageChange}
-              page={paginationController.page}
-              count={checksCount}
-              rowsPerPage={paginationController.rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+  return (
+    <>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Monitor Name</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Date & Time</TableCell>
+              <TableCell>Message</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {checks.map((check) => {
+              const status = check.status === true ? "up" : "down";
+
+              return (
+                <TableRow key={check._id}>
+                  <TableCell>
+                    <StatusLabel
+                      status={status}
+                      text={status}
+                      customStyles={{ textTransform: "capitalize" }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {new Date(check.createdAt).toLocaleString()}
+                  </TableCell>
+                  <TableCell>{check.statusCode}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {paginationComponent}
+    </>
   );
 };
 
