@@ -1,9 +1,12 @@
 const Check = require("../../../models/Check");
-const filterLookup = {
+const Monitor = require("../../../models/Monitor");
+const mongoose = require("mongoose");
+const dateRangeLookup = {
   day: new Date(new Date().setDate(new Date().getDate() - 1)),
   week: new Date(new Date().setDate(new Date().getDate() - 7)),
   month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
 };
+
 /**
  * Create a check for a monitor
  * @async
@@ -28,13 +31,32 @@ const createCheck = async (checkData) => {
 
 const getChecksCount = async (req) => {
   const monitorId = req.params.monitorId;
+  const dateRange = req.query.dateRange;
   const filter = req.query.filter;
+  console.log(filter);
   // Build query
   const checksQuery = { monitorId: monitorId };
   // Filter checks by "day", "week", or "month"
-  if (filter !== undefined) {
-    checksQuery.createdAt = { $gte: filterLookup[filter] };
+  if (dateRange !== undefined) {
+    checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
   }
+
+  if (filter !== undefined) {
+    checksQuery.status = false;
+    switch (filter) {
+      case "all":
+        break;
+      case "down":
+        break;
+      case "resolve":
+        checksQuery.statusCode = 5000;
+        break;
+      default:
+        console.log("default");
+        break;
+    }
+  }
+
   const count = await Check.countDocuments(checksQuery);
   return count;
 };
@@ -50,23 +72,34 @@ const getChecksCount = async (req) => {
 const getChecks = async (req) => {
   try {
     const { monitorId } = req.params;
-    let { sortOrder, limit, filter, page, rowsPerPage } = req.query;
-
+    let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
     // Default limit to 0 if not provided
-    if (limit === undefined) limit = 0;
+    limit = limit === "undefined" ? 0 : limit;
 
     // Default sort order is newest -> oldest
-    if (sortOrder === "asc") {
-      sortOrder = 1;
-    } else if (sortOrder === "desc") {
-      sortOrder = -1;
-    } else sortOrder = -1;
+    sortOrder = sortOrder === "asc" ? 1 : -1;
 
     // Build query
     const checksQuery = { monitorId: monitorId };
     // Filter checks by "day", "week", or "month"
+    if (dateRange !== undefined) {
+      checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
+    }
+    // Fitler checks by status
     if (filter !== undefined) {
-      checksQuery.createdAt = { $gte: filterLookup[filter] };
+      checksQuery.status = false;
+      switch (filter) {
+        case "all":
+          break;
+        case "down":
+          break;
+        case "resolve":
+          checksQuery.statusCode = 5000;
+          break;
+        default:
+          console.log("default");
+          break;
+      }
     }
 
     // Need to skip and limit here
@@ -84,8 +117,61 @@ const getChecks = async (req) => {
   }
 };
 
+const getUserChecks = async (req) => {
+  const { userId } = req.params;
+  let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
+
+  // Get monitorIDs
+  const userMonitors = await Monitor.find({ userId: userId });
+  const monitorIds = userMonitors.map((monitor) => monitor._id);
+
+  //Build check query
+  // Default limit to 0 if not provided
+  limit = limit === "undefined" ? 0 : limit;
+
+  // Default sort order is newest -> oldest
+  sortOrder = sortOrder === "asc" ? 1 : -1;
+
+  checksQuery = { monitorId: { $in: monitorIds } };
+
+  if (filter !== undefined) {
+    checksQuery.status = false;
+    switch (filter) {
+      case "all":
+        break;
+      case "down":
+        break;
+      case "resolve":
+        checksQuery.statusCode = 5000;
+        break;
+      default:
+        console.log("default");
+        break;
+    }
+  }
+
+  if (dateRange !== undefined) {
+    checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
+  }
+
+  // Skip and limit for pagination
+  let skip = 0;
+  if (page && rowsPerPage) {
+    skip = page * rowsPerPage;
+  }
+
+  const checksCount = await Check.countDocuments(checksQuery);
+
+  const checks = await Check.find(checksQuery)
+    .skip(skip)
+    .limit(rowsPerPage)
+    .sort({ createdAt: sortOrder });
+
+  return { checksCount, checks };
+};
+
 /**
- * Delete all checks for a monitor
+ * Delete all checks for a user
  * @async
  * @param {string} monitorId
  * @returns {number}
@@ -100,4 +186,10 @@ const deleteChecks = async (monitorId) => {
     throw error;
   }
 };
-module.exports = { createCheck, getChecksCount, getChecks, deleteChecks };
+module.exports = {
+  createCheck,
+  getChecksCount,
+  getChecks,
+  getUserChecks,
+  deleteChecks,
+};

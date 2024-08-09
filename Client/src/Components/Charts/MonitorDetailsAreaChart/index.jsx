@@ -79,7 +79,6 @@ const MonitorDetailsAreaChart = ({ checks }) => {
 
 MonitorDetailsAreaChart.propTypes = {
   checks: PropTypes.array,
-  filter: PropTypes.string,
 };
 
 CustomToolTip.propTypes = {

@@ -6,38 +6,42 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  PaginationItem,
   Pagination,
+  PaginationItem,
   Paper,
 } from "@mui/material";
 
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import axiosInstance from "../../../../Utils/axiosConfig";
-import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
-const PaginationTable = ({ monitorId, dateRange }) => {
-  const { authToken } = useSelector((state) => state.auth);
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../../Utils/axiosConfig";
+import { StatusLabel } from "../../../Components/Label";
+
+const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
   const [paginationController, setPaginationController] = useState({
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 12,
   });
 
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/checks/${monitorId}?sortOrder=desc&dateRange=${dateRange}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+        let url = `/checks/${selectedMonitor}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
+
+        if (selectedMonitor === "0") {
+          url = `/checks/user/${user._id}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
+        }
+
+        const res = await axiosInstance.get(url, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {
@@ -47,13 +51,15 @@ const PaginationTable = ({ monitorId, dateRange }) => {
     fetchPage();
   }, [
     authToken,
-    monitorId,
-    dateRange,
+    user,
+    selectedMonitor,
+    filter,
     paginationController.page,
     paginationController.rowsPerPage,
   ]);
 
   const handlePageChange = (_, newPage) => {
+    console.log(newPage);
     setPaginationController({
       ...paginationController,
       page: newPage - 1, // 0-indexed
@@ -79,10 +85,6 @@ const PaginationTable = ({ monitorId, dateRange }) => {
               "&:focus": {
                 outline: "none",
               },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
             }}
           />
         )}
@@ -96,6 +98,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Monitor Name</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Date & Time</TableCell>
               <TableCell>Message</TableCell>
@@ -107,6 +110,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
 
               return (
                 <TableRow key={check._id}>
+                  <TableCell>{monitors[check.monitorId]?.name}</TableCell>
                   <TableCell>
                     <StatusLabel
                       status={status}
@@ -129,9 +133,10 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   );
 };
 
-PaginationTable.propTypes = {
-  monitorId: PropTypes.string.isRequired,
-  dateRange: PropTypes.string.isRequired,
+IncidentTable.propTypes = {
+  monitors: PropTypes.object.isRequired,
+  selectedMonitor: PropTypes.string.isRequired,
+  filter: PropTypes.string.isRequired,
 };
 
-export default PaginationTable;
+export default IncidentTable;
