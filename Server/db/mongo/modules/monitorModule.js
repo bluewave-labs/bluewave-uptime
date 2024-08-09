@@ -90,7 +90,6 @@ const getMonitorById = async (req, res) => {
     if (normalize !== undefined) {
       checks = NormalizeData(checks, 1, 100);
     }
-    console.log(checks.length);
     const notifications = await Notification.find({ monitorId: monitor._id });
     const monitorWithChecks = { ...monitor.toObject(), checks, notifications };
     return monitorWithChecks;
