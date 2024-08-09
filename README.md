@@ -20,22 +20,22 @@ BlueWave Uptime is an open source server monitoring application used to track th
 
 ## Features
 
-* Completely open source, deployable on your servers
-* Website monitoring
-* Port monitoring
-* Ping monitoring
-* Incidents at a glance
-* Page speed monitoring
-* Scheduled maintenance (in the works)
-* Status pages (in the works)
+- [x] Completely open source, deployable on your servers
+- [x] Website monitoring
+- [x] Port monitoring
+- [x] Ping monitoring
+- [x] Incidents at a glance
+- [x] Page speed monitoring
+- [ ] Scheduled maintenance (in the works)
+- [ ] Status pages (in the works)
 
 **Roadmap (short term):**
-* 3rd party integrations
-* DNS monitoring
-* SSL monitoring
+- [ ] 3rd party integrations
+- [ ] DNS monitoring
+- [ ] SSL monitoring
 
 **Roadmap (long term):**
-* Memory, disk and CPU monitoring using OpenTelemetry
+- [ ] Memory, disk and CPU monitoring using OpenTelemetry
 
 ## Tech stack
 
