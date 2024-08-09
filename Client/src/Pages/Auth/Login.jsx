@@ -16,6 +16,13 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 
 import "./index.css";
 
+/**
+ * Displays the initial landing page.
+ *
+ * @param {Object} props
+ * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
+ * @returns {JSX.Element} 
+ */
 const LandingPage = ({ onContinue }) => {
   const theme = useTheme();
 
@@ -52,6 +59,17 @@ const LandingPage = ({ onContinue }) => {
   );
 };
 
+/**
+ * Renders the first step of the login process.
+ *
+ * @param {Object} props
+ * @param {Object} props.form - Form state object.
+ * @param {Object} props.errors - Object containing form validation errors.
+ * @param {Function} props.onSubmit - Callback function to handle form submission.
+ * @param {Function} props.onChange - Callback function to handle form input changes.
+ * @param {Function} props.onBack - Callback function to handle "Back" button click.
+ * @returns {JSX.Element}
+ */
 const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
 
@@ -105,6 +123,17 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+/**
+ * Renders the second step of the login process, including a password input field.
+ *
+ * @param {Object} props
+ * @param {Object} props.form - Form state object.
+ * @param {Object} props.errors - Object containing form validation errors.
+ * @param {Function} props.onSubmit - Callback function to handle form submission.
+ * @param {Function} props.onChange - Callback function to handle form input changes.
+ * @param {Function} props.onBack - Callback function to handle "Back" button click.
+ * @returns {JSX.Element}
+ */
 const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
 
@@ -173,6 +202,7 @@ const Login = () => {
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
     axiosInstance
@@ -261,8 +291,6 @@ const Login = () => {
       }
     }
   };
-
-  const [step, setStep] = useState(0);
 
   return (
     <Stack className="login-page" overflow="hidden">
