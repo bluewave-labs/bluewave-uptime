@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Typography, ButtonGroup, Stack, Box, Skeleton } from "@mui/material";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
+import { ButtonGroup, Stack, Skeleton } from "@mui/material";
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
-import BasicTable from "../../Components/BasicTable";
-import { StatusLabel } from "../../Components/Label";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router";
 import Select from "../../Components/Inputs/Select";
@@ -122,96 +119,12 @@ const Incidents = () => {
           />
         </ButtonGroup>
       </Stack>
-      <IncidentTable monitorId={selectedMonitor} filter={filter} />
+      <IncidentTable
+        monitors={monitors}
+        selectedMonitor={selectedMonitor}
+        filter={filter}
+      />
     </Stack>
-    // <>
-    //   <Stack className="incidents" gap={theme.gap.large}>
-    //     {loading ? (
-    //       <SkeletonLayout />
-    //     ) : false ? (
-    //       <>
-    //         <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
-    //           <Typography component="h1">Incident history for: </Typography>
-    //           <Select
-    //             id="incidents-select-monitor"
-    //             placeholder="All servers"
-    //             value={selectedMonitor}
-    //             onChange={handleSelect}
-    //             items={Object.values(monitors)}
-    //           />
-    //           {hasAnyIncidents && hasSpecificIncidents && (
-    // <ButtonGroup sx={{ ml: "auto" }}>
-    //   <Button
-    //     level="secondary"
-    //     label="All"
-    //     onClick={() => setFilter("all")}
-    //     sx={{
-    //       backgroundColor:
-    //         filter === "all" && theme.palette.otherColors.fillGray,
-    //     }}
-    //   />
-    //   <Button
-    //     level="secondary"
-    //     label="Down"
-    //     onClick={() => setFilter("down")}
-    //     sx={{
-    //       backgroundColor:
-    //         filter === "down" && theme.palette.otherColors.fillGray,
-    //     }}
-    //   />
-    //   <Button
-    //     level="secondary"
-    //     label="Cannot Resolve"
-    //     onClick={() => setFilter("resolve")}
-    //     sx={{
-    //       backgroundColor:
-    //         filter === "resolve" &&
-    //         theme.palette.otherColors.fillGray,
-    //     }}
-    //   />
-    // </ButtonGroup>
-    //           )}
-    //         </Stack>
-    //         {hasAnyIncidents && hasSpecificIncidents ? (
-    //           <div>thing</div>
-    //         ) : (
-    //           <Typography alignSelf="center" mt={theme.gap.xxl}>
-    //             The monitor you have selected, has no recorded incidents yet.
-    //           </Typography>
-    //         )}
-    //       </>
-    //     ) : (
-    //       <Box>
-    //         <Button
-    //           level="tertiary"
-    //           label="Back"
-    //           animate="slideLeft"
-    //           img={<WestRoundedIcon />}
-    //           onClick={() => navigate(-1)}
-    //           sx={{
-    //             backgroundColor: theme.palette.otherColors.fillGray,
-    //             px: theme.gap.ml,
-    //             mb: theme.gap.ml,
-    //             "& svg.MuiSvgIcon-root": {
-    //               mr: theme.gap.small,
-    //               fill: theme.palette.otherColors.slateGray,
-    //             },
-    //           }}
-    //         />
-    //         <Box
-    //           padding={theme.gap.xxl}
-    //           gap={theme.gap.small}
-    //           border={1}
-    //           borderRadius={`${theme.shape.borderRadius}px`}
-    //           borderColor={theme.palette.otherColors.graishWhite}
-    //           backgroundColor={theme.palette.otherColors.white}
-    //         >
-    //           <Typography textAlign="center">No incidents, yet.</Typography>
-    //         </Box>
-    //       </Box>
-    //     )}
-    //   </Stack>
-    // </>
   );
 };
 

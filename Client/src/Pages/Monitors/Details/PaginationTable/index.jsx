@@ -6,8 +6,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TableFooter,
-  TablePagination,
   PaginationItem,
   Pagination,
   Paper,
@@ -58,16 +56,16 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   const handlePageChange = (_, newPage) => {
     setPaginationController({
       ...paginationController,
-      page: newPage - 1,
+      page: newPage - 1, // 0-indexed
     });
   };
-  
+
   let paginationComponent = <></>;
   if (checksCount > paginationController.rowsPerPage) {
     paginationComponent = (
       <Pagination
         count={Math.ceil(checksCount / paginationController.rowsPerPage)}
-        page={paginationController.page + 1}
+        page={paginationController.page + 1} //0-indexed
         onChange={handlePageChange}
         shape="rounded"
         renderItem={(item) => (

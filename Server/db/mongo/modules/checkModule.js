@@ -74,14 +74,10 @@ const getChecks = async (req) => {
     const { monitorId } = req.params;
     let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
     // Default limit to 0 if not provided
-    if (limit === undefined) limit = 0;
+    limit = limit === "undefined" ? 0 : limit;
 
     // Default sort order is newest -> oldest
-    if (sortOrder === "asc") {
-      sortOrder = 1;
-    } else if (sortOrder === "desc") {
-      sortOrder = -1;
-    } else sortOrder = -1;
+    sortOrder = sortOrder === "asc" ? 1 : -1;
 
     // Build query
     const checksQuery = { monitorId: monitorId };
@@ -121,42 +117,66 @@ const getChecks = async (req) => {
   }
 };
 
+const getUserChecks = async (req) => {
+  const { userId } = req.params;
+  let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
+
+  // Get monitorIDs
+  const userMonitors = await Monitor.find({ userId: userId });
+  const monitorIds = userMonitors.map((monitor) => monitor._id);
+
+  //Build check query
+  // Default limit to 0 if not provided
+  limit = limit === "undefined" ? 0 : limit;
+
+  // Default sort order is newest -> oldest
+  sortOrder = sortOrder === "asc" ? 1 : -1;
+
+  checksQuery = { monitorId: { $in: monitorIds } };
+
+  if (filter !== undefined) {
+    checksQuery.status = false;
+    switch (filter) {
+      case "all":
+        break;
+      case "down":
+        break;
+      case "resolve":
+        checksQuery.statusCode = 5000;
+        break;
+      default:
+        console.log("default");
+        break;
+    }
+  }
+
+  if (dateRange !== undefined) {
+    checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
+  }
+
+  // Skip and limit for pagination
+  let skip = 0;
+  if (page && rowsPerPage) {
+    skip = page * rowsPerPage;
+  }
+
+  const checksCount = await Check.countDocuments(checksQuery);
+
+  const checks = await Check.find(checksQuery)
+    .skip(skip)
+    .limit(rowsPerPage)
+    .sort({ createdAt: sortOrder });
+
+  return { checksCount, checks };
+};
+
 /**
- * Delete all checks for a monitor
+ * Delete all checks for a user
  * @async
  * @param {string} monitorId
  * @returns {number}
  * @throws {Error}
  */
-
-const getUserChecks = async (req) => {
-  const { userId } = req.params;
-  try {
-    const objectId = mongoose.Types.ObjectId.createFromHexString(userId);
-
-    const checks = await Check.aggregate([
-      {
-        $lookup: {
-          from: "monitors", // The name of the Monitor collection
-          localField: "monitorId",
-          foreignField: "_id",
-          as: "monitorDetails",
-        },
-      },
-      {
-        $unwind: "$monitorDetails",
-      },
-      {
-        $match: {
-          "monitorDetails.userId": objectId,
-        },
-      },
-    ]);
-    return checks;
-  } catch (error) {
-    throw error;
-  }
-};
 
 const deleteChecks = async (monitorId) => {
   try {

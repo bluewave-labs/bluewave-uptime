@@ -6,10 +6,9 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TableFooter,
-  TablePagination,
   Pagination,
   PaginationItem,
+  Paper,
 } from "@mui/material";
 
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -20,29 +19,29 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../../Utils/axiosConfig";
 import { StatusLabel } from "../../../Components/Label";
 
-const IncidentTable = ({ monitorId, filter }) => {
-  const { authToken } = useSelector((state) => state.auth);
+const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
   const [paginationController, setPaginationController] = useState({
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 12,
   });
 
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        if (monitorId === "0") {
-          return;
+        let url = `/checks/${selectedMonitor}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
+
+        if (selectedMonitor === "0") {
+          url = `/checks/user/${user._id}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
         }
-        const res = await axiosInstance.get(
-          `/checks/${monitorId}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+
+        const res = await axiosInstance.get(url, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {
@@ -52,24 +51,18 @@ const IncidentTable = ({ monitorId, filter }) => {
     fetchPage();
   }, [
     authToken,
-    monitorId,
+    user,
+    selectedMonitor,
     filter,
     paginationController.page,
     paginationController.rowsPerPage,
   ]);
 
   const handlePageChange = (_, newPage) => {
+    console.log(newPage);
     setPaginationController({
       ...paginationController,
-      page: newPage,
-    });
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPaginationController({
-      ...paginationController,
-      rowsPerPage: parseInt(event.target.value, 10),
-      page: 0,
+      page: newPage - 1, // 0-indexed
     });
   };
 
@@ -78,7 +71,7 @@ const IncidentTable = ({ monitorId, filter }) => {
     paginationComponent = (
       <Pagination
         count={Math.ceil(checksCount / paginationController.rowsPerPage)}
-        page={paginationController.page + 1}
+        page={paginationController.page + 1} //0-indexed
         onChange={handlePageChange}
         shape="rounded"
         renderItem={(item) => (
@@ -105,7 +98,7 @@ const IncidentTable = ({ monitorId, filter }) => {
 
   return (
     <>
-      <TableContainer>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -121,6 +114,7 @@ const IncidentTable = ({ monitorId, filter }) => {
 
               return (
                 <TableRow key={check._id}>
+                  <TableCell>{monitors[check.monitorId]?.name}</TableCell>
                   <TableCell>
                     <StatusLabel
                       status={status}
@@ -144,7 +138,8 @@ const IncidentTable = ({ monitorId, filter }) => {
 };
 
 IncidentTable.propTypes = {
-  monitorId: PropTypes.string.isRequired,
+  monitors: PropTypes.object.isRequired,
+  selectedMonitor: PropTypes.string.isRequired,
   filter: PropTypes.string.isRequired,
 };
 

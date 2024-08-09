@@ -4,7 +4,7 @@ const Notification = require("../models/Notification");
 
 /**
  * Check Schema for MongoDB collection.
- * 
+ *
  * Represents a check associated with a monitor, storing information
  * about the status and response of a particular check event.
  */
@@ -12,7 +12,7 @@ const CheckSchema = mongoose.Schema(
   {
     /**
      * Reference to the associated Monitor document.
-     * 
+     *
      * @type {mongoose.Schema.Types.ObjectId}
      */
     monitorId: {
@@ -22,7 +22,7 @@ const CheckSchema = mongoose.Schema(
     },
     /**
      * Status of the check (true for up, false for down).
-     * 
+     *
      * @type {Boolean}
      */
     status: {
@@ -30,23 +30,23 @@ const CheckSchema = mongoose.Schema(
     },
     /**
      * Response time of the check in milliseconds.
-     * 
+     *
      * @type {Number}
      */
     responseTime: {
-      type: Number, 
+      type: Number,
     },
     /**
      * HTTP status code received during the check.
-     * 
+     *
      * @type {Number}
      */
     statusCode: {
-      type: Number, 
+      type: Number,
     },
     /**
      * Message or description of the check result.
-     * 
+     *
      * @type {String}
      */
     message: {
@@ -54,7 +54,7 @@ const CheckSchema = mongoose.Schema(
     },
     /**
      * Expiry date of the check, auto-calculated to expire after 30 days.
-     * 
+     *
      * @type {Date}
      */
     expiry: {
@@ -70,7 +70,7 @@ const CheckSchema = mongoose.Schema(
 
 /**
  * Pre-save middleware to handle status change notifications.
- * 
+ *
  * This middleware checks if the status of the monitor associated
  * with the check has changed and sends notifications if necessary.
  */
@@ -79,7 +79,9 @@ CheckSchema.pre("save", async function (next) {
     const monitor = await mongoose.model("Monitor").findById(this.monitorId);
 
     if (monitor) {
-      const notifications = await Notification.find({ monitorId: this.monitorId });
+      const notifications = await Notification.find({
+        monitorId: this.monitorId,
+      });
 
       // Check if there are any notifications
       if (notifications && notifications.length > 0) {
@@ -127,6 +129,5 @@ CheckSchema.pre("save", async function (next) {
     next();
   }
 });
-
 
 module.exports = mongoose.model("Check", CheckSchema);
