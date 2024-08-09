@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Divider,
-  FormControlLabel,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, FormControl, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
@@ -18,6 +12,7 @@ import Field from "../../Components/Inputs/Field";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 
 import "./index.css";
 
@@ -154,6 +149,72 @@ const Login = () => {
     );
   };
 
+  const StepOne = () => {
+    const submit = (event) => {
+      event.preventDefault();
+
+      const { error } = credentials.validate(
+        { email: form.email },
+        { abortEarly: false }
+      );
+      if (error) {
+        setErrors((prev) => ({ ...prev, email: error.details[0].message }));
+        createToast({ body: "Invalid email address." });
+      } else {
+        setStep(2);
+      }
+    };
+
+    return (
+      <>
+        <Stack gap={theme.gap.large} textAlign="center">
+          <Box>
+            <Typography component="h1">Log In</Typography>
+            <Typography>Enter your email address</Typography>
+          </Box>
+          <Box textAlign="left">
+            <form onSubmit={submit}>
+              <Field
+                type="email"
+                id="login-email-input"
+                label="Email"
+                isRequired={true}
+                placeholder="john.doe@domain.com"
+                autoComplete="email"
+                value={form.email}
+                onChange={handleChange}
+                error={errors.email}
+              />
+            </form>
+          </Box>
+          <Stack direction="row" justifyContent="space-between">
+            <Button
+              level="secondary"
+              label="Back"
+              animate="slideLeft"
+              img={<ArrowBackRoundedIcon />}
+              onClick={() => setStep(0)}
+              sx={{
+                mb: theme.gap.medium,
+                px: theme.gap.ml,
+                "& svg.MuiSvgIcon-root": {
+                  mr: theme.gap.xs,
+                },
+              }}
+            />
+            <Button
+              level="primary"
+              label="Continue"
+              onClick={submit}
+              disabled={errors.email && true}
+              sx={{ width: "30%" }}
+            />
+          </Stack>
+        </Stack>
+      </>
+    );
+  };
+
   return (
     <Stack className="login-page" overflow="hidden">
       <img
@@ -171,7 +232,8 @@ const Login = () => {
         <Typography>BlueWave Uptime</Typography>
       </Stack>
       <Stack
-        width="fit-content"
+        width="100%"
+        maxWidth={600}
         flex={1}
         justifyContent="center"
         p={theme.gap.xl}
@@ -186,12 +248,11 @@ const Login = () => {
             padding: {
               xs: theme.gap.large,
               sm: theme.gap.xl,
-              lg: theme.gap.xxl,
             },
           },
         }}
       >
-        <LandingPage />
+        {step === 0 ? <LandingPage /> : step === 1 ? <StepOne /> : ""}
       </Stack>
       <Box textAlign="center" p={theme.gap.large}>
         <Typography display="inline-block">Don't have an account? -</Typography>

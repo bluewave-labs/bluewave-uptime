@@ -107,6 +107,7 @@
   font-weight: 600;
 }
 
+/*  */
 .login-page {
   height: 100vh;
 }
@@ -115,7 +116,6 @@
   font-weight: 600;
   color: var(--env-var-color-3);
 }
-
 .login-page p {
   font-size: var(--env-var-font-size-large);
   color: var(--env-var-color-2-light);
@@ -145,16 +145,24 @@
 .login-page p + span:hover {
   opacity: 1;
 }
-.login-page button:not(.MuiIconButton-root) {
+.login-page button:not(.MuiIconButton-root),
+.login-page .field h3.MuiTypography-root,
+.login-page .field input,
+.login-page .field .input-error {
   font-size: var(--env-var-font-size-medium-plus);
-  height: 40px;
+}
+.login-page button:not(.MuiIconButton-root) {
   border-radius: var(--env-var-radius-2);
+  line-height: 1;
+}
+.login-page button:not(.MuiIconButton-root),
+.field .MuiInputBase-root:has(input) {
+  height: 40px;
 }
 
 .login-page > .MuiStack-root:nth-of-type(1) {
   height: var(--env-var-nav-bar-height);
 }
-
 .login-page .background-pattern-svg {
   top: 14%;
   width: 100%;
