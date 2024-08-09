@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
+* {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -20,6 +24,7 @@
   --env-var-color-0: #fff;
   --env-var-color-1: #101828;
   --env-var-color-2: #475467;
+  --env-var-color-2-light: #838c99;
   --env-var-color-3: #1570ef;
 
   --env-var-color-4: #d0d5dd;

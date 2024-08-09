@@ -98,6 +98,7 @@ const theme = createTheme({
     large: "24px",
     xl: "40px",
     xxl: "60px",
+    triplexl: "120px"
   },
   alert: {
     info: {

@@ -1,6 +1,3 @@
-.home-layout * {
-  box-sizing: border-box;
-}
 .home-layout {
   display: grid;
   position: relative;
