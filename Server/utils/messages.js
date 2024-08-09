@@ -7,6 +7,7 @@ const errorMessages = {
   UNAUTHORIZED: "Unauthorized access",
   AUTH_ADMIN_EXISTS: "Admin already exists",
   AUTH_INVITE_NOT_FOUND: "Invite not found",
+  AUTH_ALREADY_LOGGED_IN: "User already logged in",
 
   //Error handling middleware
   UNKNOWN_SERVICE: "Unknown service",

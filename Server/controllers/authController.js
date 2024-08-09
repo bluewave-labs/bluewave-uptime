@@ -135,6 +135,10 @@ const loginController = async (req, res, next) => {
       throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
     }
 
+    if (user.authToken) {
+      throw new Error(errorMessages.AUTH_ALREADY_LOGGED_IN);
+    }
+
     // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
