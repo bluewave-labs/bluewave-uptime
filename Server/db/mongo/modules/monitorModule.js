@@ -81,14 +81,16 @@ const getMonitorById = async (req, res) => {
     // If more than numToDisplay checks, pick every nth check
     if (numToDisplay !== undefined && checks && checks.length > numToDisplay) {
       const n = Math.ceil(checks.length / numToDisplay);
-      checks = checks.filter((_, index) => index % n === 0);
+      checks = checks.filter(
+        (_, index) => index % n === 0 || index === checks.length - 1
+      );
     }
 
     // Normalize checks if requested
-    if (normalize) {
-      checks = NormalizeData(checks, 10, 100);
+    if (normalize !== undefined) {
+      checks = NormalizeData(checks, 1, 100);
     }
-
+    console.log(checks.length);
     const notifications = await Notification.find({ monitorId: monitor._id });
     const monitorWithChecks = { ...monitor.toObject(), checks, notifications };
     return monitorWithChecks;
@@ -148,7 +150,7 @@ const getMonitorsByUserId = async (req, res) => {
           .limit(limit);
 
         //Normalize checks if requested
-        if (normalize === true) {
+        if (normalize !== undefined) {
           checks = NormalizeData(checks, 10, 100);
         }
 
