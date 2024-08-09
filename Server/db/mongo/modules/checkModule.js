@@ -45,13 +45,11 @@ const getChecksCount = async (req) => {
     checksQuery.status = false;
     switch (filter) {
       case "all":
-        console.log("all");
         break;
       case "down":
-        console.log("down");
         break;
       case "resolve":
-        console.log("resolve");
+        checksQuery.statusCode = 5000;
         break;
       default:
         console.log("default");
@@ -94,6 +92,18 @@ const getChecks = async (req) => {
     // Fitler checks by status
     if (filter !== undefined) {
       checksQuery.status = false;
+      switch (filter) {
+        case "all":
+          break;
+        case "down":
+          break;
+        case "resolve":
+          checksQuery.statusCode = 5000;
+          break;
+        default:
+          console.log("default");
+          break;
+      }
     }
 
     // Need to skip and limit here
