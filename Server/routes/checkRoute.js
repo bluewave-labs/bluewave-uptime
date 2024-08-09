@@ -15,8 +15,8 @@ router.get(
   checkController.getChecks
 );
 
-router.post(
-  "/delete/:monitorId",
+router.delete(
+  "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   checkController.deleteChecks
 );

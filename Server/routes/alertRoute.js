@@ -29,14 +29,14 @@ router.get(
   alertController.getAlertById
 );
 // Edit
-router.post(
-  "/edit/:alertId",
+router.put(
+  "/:alertId",
   verifyOwnership(Monitor, "monitorId"),
   alertController.editAlert
 );
 //Delete
-router.post(
-  "/delete/:alertId",
+router.delete(
+  "/:alertId",
   verifyOwnership(Monitor, "monitorId"),
   alertController.deleteAlert
 );

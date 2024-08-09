@@ -8,12 +8,17 @@ import {
   TableBody,
   TableFooter,
   TablePagination,
+  PaginationItem,
+  Pagination,
+  Paper,
 } from "@mui/material";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../../Utils/axiosConfig";
 import { StatusLabel } from "../../../../Components/Label";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
   const { authToken } = useSelector((state) => state.auth);
@@ -53,63 +58,76 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   const handlePageChange = (_, newPage) => {
     setPaginationController({
       ...paginationController,
-      page: newPage,
+      page: newPage - 1,
     });
   };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPaginationController({
-      ...paginationController,
-      rowsPerPage: parseInt(event.target.value, 10),
-      page: 0,
-    });
-  };
+  
+  let paginationComponent = <></>;
+  if (checksCount > paginationController.rowsPerPage) {
+    paginationComponent = (
+      <Pagination
+        count={Math.ceil(checksCount / paginationController.rowsPerPage)}
+        page={paginationController.page + 1}
+        onChange={handlePageChange}
+        shape="rounded"
+        renderItem={(item) => (
+          <PaginationItem
+            slots={{
+              previous: ArrowBackRoundedIcon,
+              next: ArrowForwardRoundedIcon,
+            }}
+            {...item}
+            sx={{
+              "&:focus": {
+                outline: "none",
+              },
+              "& .MuiTouchRipple-root": {
+                pointerEvents: "none",
+                display: "none",
+              },
+            }}
+          />
+        )}
+      />
+    );
+  }
 
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Status</TableCell>
-            <TableCell>Date & Time</TableCell>
-            <TableCell>Message</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {checks.map((check) => {
-            const status = check.status === true ? "up" : "down";
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Status</TableCell>
+              <TableCell>Date & Time</TableCell>
+              <TableCell>Message</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {checks.map((check) => {
+              const status = check.status === true ? "up" : "down";
 
-            return (
-              <TableRow key={check._id}>
-                <TableCell>
-                  <StatusLabel
-                    status={status}
-                    text={status}
-                    customStyles={{ textTransform: "capitalize" }}
-                  />
-                </TableCell>
-                <TableCell>
-                  {new Date(check.createdAt).toLocaleString()}
-                </TableCell>
-                <TableCell>{check.statusCode}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              onPageChange={handlePageChange}
-              page={paginationController.page}
-              count={checksCount}
-              rowsPerPage={paginationController.rowsPerPage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+              return (
+                <TableRow key={check._id}>
+                  <TableCell>
+                    <StatusLabel
+                      status={status}
+                      text={status}
+                      customStyles={{ textTransform: "capitalize" }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {new Date(check.createdAt).toLocaleString()}
+                  </TableCell>
+                  <TableCell>{check.statusCode}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {paginationComponent}
+    </>
   );
 };
 
