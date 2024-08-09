@@ -40,6 +40,9 @@ const UserSchema = mongoose.Schema(
       default: "user",
       enum: ["user", "admin"],
     },
+    authToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

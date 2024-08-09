@@ -142,6 +142,8 @@ const loginController = async (req, res, next) => {
 
     // Happy path, return token
     const token = issueToken(userWithoutPassword);
+    user.authToken = token;
+    await user.save();
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
