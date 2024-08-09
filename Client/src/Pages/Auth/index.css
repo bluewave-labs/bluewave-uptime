@@ -2,7 +2,6 @@
 /* SHARED */
 /* ////// */
 .register-page,
-.login-page,
 .set-new-password-page,
 .password-confirmed-page,
 .forgot-password-page,
@@ -12,7 +11,6 @@
   height: var(--env-var-height-1);
 }
 .register-page h1.MuiTypography-root,
-.login-page h1.MuiTypography-root,
 .set-new-password-page h1.MuiTypography-root,
 .password-confirmed-page h1.MuiTypography-root,
 .forgot-password-page h1.MuiTypography-root,
@@ -24,8 +22,6 @@
 .register-page p.MuiTypography-root,
 .register-page span,
 .register-page button,
-.login-page p.MuiTypography-root,
-.login-page span,
 .login-page button,
 .set-new-password-page p.MuiTypography-root,
 .set-new-password-page button,
@@ -38,13 +34,11 @@
 .check-email-page span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
-.register-page p.MuiTypography-root,
-.login-page p.MuiTypography-root {
+.register-page p.MuiTypography-root {
   color: var(--env-var-color-2);
   opacity: 0.8;
 }
 .register-page button:not(.MuiIconButton-root),
-.login-page button:not(.MuiIconButton-root),
 .set-new-password-page button:not(.MuiIconButton-root),
 .password-confirmed-page button:not(.MuiIconButton-root),
 .forgot-password-page button:not(.MuiIconButton-root),
@@ -54,12 +48,10 @@
   line-height: 0;
 }
 
-.register-page svg rect,
-.login-page svg rect {
+.register-page svg rect {
   fill: none;
 }
-.register-form,
-.login-form {
+.register-form {
   margin-top: 95px;
 }
 
@@ -77,7 +69,6 @@
   color: var(--env-var-color-2);
 }
 
-.login-page .MuiFormControlLabel-root .MuiButtonBase-root,
 .set-new-password-page button:not(.MuiIconButton-root) svg,
 .password-confirmed-page button:not(.MuiIconButton-root) svg,
 .forgot-password-page button svg,
@@ -108,23 +99,64 @@
   cursor: pointer;
   font-weight: 600;
 }
-.login-page .MuiFormControlLabel-root {
-  margin: 0;
-}
-.login-page .MuiFormControlLabel-root span:not(.Mui-checked) svg {
-  fill: var(--env-var-color-4);
-}
-.login-page .MuiFormControlLabel-root svg {
-  margin-bottom: 1px;
-}
-.login-page .MuiFormControlLabel-root .MuiTypography-root {
-  color: var(--env-var-color-5);
-  user-select: none;
-}
 
 /* /////////// */
 /* Check Email */
 /* /////////// */
 .check-email-page span.MuiTypography-root {
   font-weight: 600;
+}
+
+.login-page {
+  height: 100vh;
+}
+.login-page h1 {
+  font-size: 37px;
+  font-weight: 600;
+  color: var(--env-var-color-3);
+}
+
+.login-page p {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-2-light);
+}
+.login-page .tos-p {
+  font-size: var(--env-var-font-size-medium-plus);
+}
+.login-page span {
+  font-size: inherit;
+}
+.login-page p + span {
+  color: var(--env-var-color-3);
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity 300ms ease-in;
+}
+.login-page p > span {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: all 200ms;
+}
+.login-page p > span:hover {
+  color: var(--env-var-color-2);
+  text-underline-offset: 4px;
+}
+.login-page p + span:hover {
+  opacity: 1;
+}
+.login-page button:not(.MuiIconButton-root) {
+  font-size: var(--env-var-font-size-medium-plus);
+  height: 40px;
+  border-radius: var(--env-var-radius-2);
+}
+
+.login-page > .MuiStack-root:nth-of-type(1) {
+  height: var(--env-var-nav-bar-height);
+}
+
+.login-page .background-pattern-svg {
+  top: 14%;
+  width: 100%;
+  max-width: 800px;
 }

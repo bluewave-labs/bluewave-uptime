@@ -1,18 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import "./index.css";
-import Logomark from "../../assets/Images/bwl-logo-2.svg?react";
-import Button from "../../Components/Button";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import axiosInstance from "../../Utils/axiosConfig";
+import {
+  Box,
+  Divider,
+  FormControlLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
+import Button from "../../Components/Button";
+import axiosInstance from "../../Utils/axiosConfig";
 import Field from "../../Components/Inputs/Field";
-import { Checkbox, FormControlLabel, Stack, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
+import background from "../../assets/Images/background_pattern_decorative.png";
+import Logo from "../../assets/icons/bwu-icon.svg?react";
+import Mail from "../../assets/icons/mail.svg?react";
+
+import "./index.css";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -105,19 +112,106 @@ const Login = () => {
     });
   };
 
+  const [step, setStep] = useState(0);
+  const LandingPage = () => {
+    return (
+      <>
+        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+          <Box>
+            <Typography component="h1">Log In</Typography>
+            <Typography>We are pleased to see you again!</Typography>
+          </Box>
+          <Box width="100%">
+            <Button
+              level="secondary"
+              label="Continue with Email"
+              img={<Mail />}
+              onClick={() => setStep(1)}
+              sx={{
+                width: "100%",
+                "& svg": {
+                  mr: theme.gap.small,
+                },
+              }}
+            />
+            {/* <Divider sx={{ marginY: theme.spacing(1) }}>or</Divider>
+            <Button
+              level="secondary"
+              label="Continue with Google"
+              onClick={() => setStep(1)}
+              sx={{ width: "100%" }}
+            /> */}
+          </Box>
+          <Box maxWidth={400}>
+            <Typography className="tos-p">
+              By continuing, you agree to our{" "}
+              <Typography component="span">Terms of Service</Typography> and{" "}
+              <Typography component="span">Privacy Policy.</Typography>
+            </Typography>
+          </Box>
+        </Stack>
+      </>
+    );
+  };
+
   return (
-    <div className="login-page">
+    <Stack className="login-page" overflow="hidden">
       <img
         className="background-pattern-svg"
         src={background}
         alt="background pattern"
       />
-      <form className="login-form" onSubmit={handleSubmit}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        px={theme.gap.large}
+        gap={theme.gap.small}
+      >
+        <Logo style={{ borderRadius: theme.shape.borderRadius }} />
+        <Typography>BlueWave Uptime</Typography>
+      </Stack>
+      <Stack
+        width="fit-content"
+        flex={1}
+        justifyContent="center"
+        p={theme.gap.xl}
+        pb={theme.gap.triplexl}
+        mx="auto"
+        sx={{
+          "& > .MuiStack-root": {
+            border: 1,
+            borderRadius: theme.shape.borderRadius,
+            borderColor: theme.palette.otherColors.graishWhite,
+            backgroundColor: theme.palette.otherColors.white,
+            padding: {
+              xs: theme.gap.large,
+              sm: theme.gap.xl,
+              lg: theme.gap.xxl,
+            },
+          },
+        }}
+      >
+        <LandingPage />
+      </Stack>
+      <Box textAlign="center" p={theme.gap.large}>
+        <Typography display="inline-block">Don't have an account? -</Typography>
+        <Typography
+          component="span"
+          ml={theme.gap.xs}
+          onClick={() => {
+            navigate("/register");
+          }}
+          sx={{ userSelect: "none" }}
+        >
+          Sign Up
+        </Typography>
+      </Box>
+      {/* <form className="login-form" onSubmit={handleSubmit}>
         <Stack gap={theme.gap.small} alignItems="center">
-          <Logomark alt="BlueWave Uptime Icon" />
           <Typography component="h1" sx={{ mt: theme.gap.xl }}>
-            Login to Your Account
+            Log In
           </Typography>
+          <Typography>We are pleased to see you again!</Typography>
         </Stack>
         <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
           <Field
@@ -158,7 +252,10 @@ const Login = () => {
               }
               label="Remember me"
             />
-            <Typography component="span" onClick={() => navigate("/forgot-password")}>
+            <Typography
+              component="span"
+              onClick={() => navigate("/forgot-password")}
+            >
               Forgot password
             </Typography>
           </Stack>
@@ -176,10 +273,11 @@ const Login = () => {
             gap="5px"
             mt={theme.gap.ml}
           >
-            <Typography component="p" sx={{ alignSelf: "center" }}>
+            <Typography sx={{ alignSelf: "center" }}>
               Don't have an account?
             </Typography>
-            <Typography component="span"
+            <Typography
+              component="span"
               onClick={() => {
                 navigate("/register");
               }}
@@ -188,8 +286,8 @@ const Login = () => {
             </Typography>
           </Stack>
         </Stack>
-      </form>
-    </div>
+      </form> */}
+    </Stack>
   );
 };
 
