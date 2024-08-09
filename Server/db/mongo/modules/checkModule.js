@@ -43,6 +43,20 @@ const getChecksCount = async (req) => {
 
   if (filter !== undefined) {
     checksQuery.status = false;
+    switch (filter) {
+      case "all":
+        console.log("all");
+        break;
+      case "down":
+        console.log("down");
+        break;
+      case "resolve":
+        console.log("resolve");
+        break;
+      default:
+        console.log("default");
+        break;
+    }
   }
 
   const count = await Check.countDocuments(checksQuery);
