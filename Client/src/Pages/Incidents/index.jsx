@@ -47,6 +47,7 @@ const Incidents = () => {
 
   useEffect(() => {
     const fetchMonitors = async () => {
+      console.log("fetching monitors");
       setLoading(true);
       const res = await axiosInstance.get(
         `/monitors/user/${authState.user._id}?status=false&limit=1`,

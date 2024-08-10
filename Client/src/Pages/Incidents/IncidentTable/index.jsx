@@ -30,6 +30,9 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 
   useEffect(() => {
     const fetchPage = async () => {
+      if (!monitors || Object.keys(monitors).length === 0) {
+        return;
+      }
       try {
         let url = `/checks/${selectedMonitor}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
 
@@ -52,6 +55,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   }, [
     authToken,
     user,
+    monitors,
     selectedMonitor,
     filter,
     paginationController.page,
