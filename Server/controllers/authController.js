@@ -135,6 +135,10 @@ const loginController = async (req, res, next) => {
       throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
     }
 
+    if (user.authToken) {
+      throw new Error(errorMessages.AUTH_ALREADY_LOGGED_IN);
+    }
+
     // Remove password from user object.  Should this be abstracted to DB layer?
     const userWithoutPassword = { ...user._doc };
     delete userWithoutPassword.password;
@@ -142,6 +146,8 @@ const loginController = async (req, res, next) => {
 
     // Happy path, return token
     const token = issueToken(userWithoutPassword);
+    user.authToken = token;
+    await user.save();
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
@@ -153,6 +159,26 @@ const loginController = async (req, res, next) => {
   } catch (error) {
     error.status = 500;
     // Anything else should be an error
+    next(error);
+  }
+};
+
+const logoutController = async (req, res, next) => {
+  try {
+    // Get user
+    const { user } = req.body;
+    const userToLogout = await req.db.getUserByEmail(
+      { body: { email: user.email } },
+      res
+    );
+    userToLogout.authToken = null;
+    await userToLogout.save();
+
+    return res
+      .status(200)
+      .json({ success: true, msg: successMessages.AUTH_LOGOUT_USER });
+  } catch (error) {
+    error.service = SERVICE_NAME;
     next(error);
   }
 };
@@ -524,6 +550,7 @@ const getAllUsersController = async (req, res) => {
 module.exports = {
   registerController,
   loginController,
+  logoutController,
   userEditController,
   inviteController,
   inviteVerifyController,
