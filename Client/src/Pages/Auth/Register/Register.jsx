@@ -11,13 +11,14 @@ import { useParams } from "react-router-dom";
 import background from "../../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../../assets/icons/mail.svg?react";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import axiosInstance from "../../../Utils/axiosConfig";
 import "../index.css";
 
-const LandingPage = ({isAdmin}) => {
+const LandingPage = ({ isAdmin, onSignup }) => {
   const theme = useTheme();
 
   return (
@@ -34,6 +35,7 @@ const LandingPage = ({isAdmin}) => {
             level="secondary"
             label="Sign up with Email"
             img={<Mail />}
+            onClick={onSignup}
             sx={{
               width: "100%",
               "& svg": {
@@ -49,6 +51,70 @@ const LandingPage = ({isAdmin}) => {
             <Typography component="span">Privacy Policy.</Typography>
           </Typography>
         </Box>
+      </Stack>
+    </>
+  );
+};
+
+const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
+  const theme = useTheme();
+  return (
+    <>
+      <Stack gap={theme.gap.large} textAlign="center">
+        <Box>
+          <Typography component="h1">Sign Up</Typography>
+          <Typography>Enter your personal details</Typography>
+        </Box>
+        <Box textAlign="left">
+          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+            <Field
+              id="register-firstname-input"
+              label="Name"
+              isRequired={true}
+              placeholder="Jordan"
+              autoComplete="given-name"
+              value={form.firstName}
+              onChange={onChange}
+              error={errors.firstName}
+            />
+            <Box my={theme.gap.ml}>
+              <Field
+                id="register-lastname-input"
+                label="Surname"
+                isRequired={true}
+                placeholder="Ellis"
+                autoComplete="family-name"
+                value={form.lastName}
+                onChange={onChange}
+                error={errors.lastName}
+              />
+            </Box>
+          </form>
+        </Box>
+        <Stack direction="row" justifyContent="space-between">
+          <Button
+            level="secondary"
+            label="Back"
+            animate="slideLeft"
+            img={<ArrowBackRoundedIcon />}
+            onClick={onBack}
+            sx={{
+              mb: theme.gap.medium,
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.xs,
+              },
+            }}
+            props={{ tabIndex: -1 }}
+          />
+          <Button
+            level="primary"
+            label="Continue"
+            onClick={onSubmit}
+            disabled={(errors.firstName || errors.lastName) && true}
+            sx={{ width: "30%" }}
+          />
+        </Stack>
       </Stack>
     </>
   );
@@ -77,6 +143,7 @@ const Register = ({ isAdmin }) => {
     role: [],
   });
   const [errors, setErrors] = useState({});
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
     const fetchInvite = async () => {
@@ -98,46 +165,64 @@ const Register = ({ isAdmin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
-    const { error } = credentials.validate(registerForm, {
-      abortEarly: false,
-      context: { password: form.password },
-    });
 
-    if (error) {
-      // validation errors
-      const newErrors = {};
-      error.details.forEach((err) => {
-        newErrors[err.path[0]] = err.message;
+    if (step === 1) {
+      const { error } = credentials.validate(
+        { firstName: form.firstName, lastName: form.lastName },
+        { abortEarly: false }
+      );
+      if (error) {
+        const newErrors = {};
+        error.details.forEach((err) => {
+          newErrors[err.path[0]] = err.message;
+        });
+        setErrors(newErrors);
+        createToast({ body: error.details[0].message });
+      } else {
+        setStep(2);
+      }
+    } else if (step === 3) {
+      const registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+      const { error } = credentials.validate(registerForm, {
+        abortEarly: false,
+        context: { password: form.password },
       });
-      setErrors(newErrors);
-      createToast({
-        body:
-          error.details && error.details.length > 0
-            ? error.details[0].message
-            : "Error validating data.",
-      });
-    } else {
-      delete registerForm.confirm;
-      const action = await dispatch(register(registerForm));
-      if (action.payload.success) {
-        const token = action.payload.data;
-        localStorage.setItem("token", token);
-        navigate("/");
+
+      if (error) {
+        // validation errors
+        const newErrors = {};
+        error.details.forEach((err) => {
+          newErrors[err.path[0]] = err.message;
+        });
+        setErrors(newErrors);
         createToast({
-          body: "Welcome! Your account was created successfully.",
+          body:
+            error.details && error.details.length > 0
+              ? error.details[0].message
+              : "Error validating data.",
         });
       } else {
-        if (action.payload) {
-          // dispatch errors
+        delete registerForm.confirm;
+        const action = await dispatch(register(registerForm));
+        if (action.payload.success) {
+          const token = action.payload.data;
+          localStorage.setItem("token", token);
+          navigate("/");
           createToast({
-            body: action.payload.msg,
+            body: "Welcome! Your account was created successfully.",
           });
         } else {
-          // unknown errors
-          createToast({
-            body: "Unknown error.",
-          });
+          if (action.payload) {
+            // dispatch errors
+            createToast({
+              body: action.payload.msg,
+            });
+          } else {
+            // unknown errors
+            createToast({
+              body: "Unknown error.",
+            });
+          }
         }
       }
     }
@@ -201,7 +286,19 @@ const Register = ({ isAdmin }) => {
           },
         }}
       >
-        <LandingPage isAdmin={isAdmin} />
+        {step === 0 ? (
+          <LandingPage isAdmin={isAdmin} onSignup={() => setStep(1)} />
+        ) : step === 1 ? (
+          <StepOne
+            form={form}
+            errors={errors}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            onBack={() => setStep(0)}
+          />
+        ) : (
+          ""
+        )}
       </Stack>
       <Box textAlign="center" p={theme.gap.large}>
         <Typography display="inline-block">

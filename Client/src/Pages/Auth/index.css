@@ -85,10 +85,10 @@
   font-weight: 600;
   color: var(--env-var-color-3);
 }
-.login-page button:not(.MuiIconButton-root),
-.login-page .field h3.MuiTypography-root,
-.login-page .field input,
-.login-page .field .input-error,
+.auth button:not(.MuiIconButton-root),
+.auth .field h3.MuiTypography-root,
+.auth .field input,
+.auth .field .input-error,
 .auth p,
 .auth span {
   font-size: var(--env-var-font-size-medium-plus);
@@ -96,8 +96,8 @@
 .auth p {
   color: var(--env-var-color-2-light);
 }
-.login-page .field h3.MuiTypography-root,
-.login-page .field input {
+.auth .field h3.MuiTypography-root,
+.auth .field input {
   color: var(--env-var-color-5);
 }
 

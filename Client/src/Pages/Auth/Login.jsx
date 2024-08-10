@@ -94,7 +94,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               id="login-email-input"
               label="Email"
               isRequired={true}
-              placeholder="john.doe@domain.com"
+              placeholder="jordan.ellis@domain.com"
               autoComplete="email"
               value={form.email}
               onChange={onChange}
