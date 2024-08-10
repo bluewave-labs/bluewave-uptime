@@ -77,6 +77,8 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.firstName}
             />
+          </form>
+          <form noValidate spellCheck={false} onSubmit={onSubmit}>
             <Box my={theme.gap.ml}>
               <Field
                 id="register-lastname-input"
@@ -144,6 +146,115 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.email}
             />
           </form>
+        </Box>
+        <Stack direction="row" justifyContent="space-between">
+          <Button
+            level="secondary"
+            label="Back"
+            animate="slideLeft"
+            img={<ArrowBackRoundedIcon />}
+            onClick={onBack}
+            sx={{
+              mb: theme.gap.medium,
+              px: theme.gap.ml,
+              "& svg.MuiSvgIcon-root": {
+                mr: theme.gap.xs,
+              },
+            }}
+            props={{ tabIndex: -1 }}
+          />
+          <Button
+            level="primary"
+            label="Continue"
+            onClick={onSubmit}
+            disabled={errors.email && true}
+            sx={{ width: "30%" }}
+          />
+        </Stack>
+      </Stack>
+    </>
+  );
+};
+
+const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Stack gap={theme.gap.large} textAlign="center">
+        <Box>
+          <Typography component="h1">Sign Up</Typography>
+          <Typography>Create your password</Typography>
+        </Box>
+        <Box textAlign="left">
+          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+            <Field
+              type="password"
+              id="register-password-input"
+              label="Password"
+              isRequired={true}
+              placeholder="Create a password"
+              autoComplete="current-password"
+              value={form.password}
+              onChange={onChange}
+              error={errors.password}
+            />
+          </form>
+          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+            <Box mt={theme.gap.ml}>
+              <Field
+                type="password"
+                id="register-confirm-input"
+                label="Confirm password"
+                isRequired={true}
+                placeholder="Confirm your password"
+                autoComplete="current-password"
+                value={form.confirm}
+                onChange={onChange}
+                error={errors.confirm}
+              />
+            </Box>
+          </form>
+          <Stack gap={theme.gap.small} my={theme.gap.large}>
+            <Check
+              text="Must be at least 8 characters long"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : form.password.length < 8
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain one special character and a number"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
+                      form.password
+                    )
+                  ? "error"
+                  : "success"
+              }
+            />
+            <Check
+              text="Must contain at least one upper and lower character"
+              variant={
+                errors?.password === "Password is required"
+                  ? "error"
+                  : form.password === ""
+                  ? "info"
+                  : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
+                  ? "error"
+                  : "success"
+              }
+            />
+          </Stack>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
@@ -365,6 +476,14 @@ const Register = ({ isAdmin }) => {
             onChange={handleChange}
             onBack={() => setStep(1)}
           />
+        ) : step === 3 ? (
+          <StepThree
+            form={form}
+            errors={errors}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            onBack={() => setStep(2)}
+          />
         ) : (
           ""
         )}
@@ -384,115 +503,6 @@ const Register = ({ isAdmin }) => {
           Log In
         </Typography>
       </Box>
-      {/* <form className="register-form" onSubmit={handleSubmit} noValidate>
-        <Stack gap={theme.gap.small} alignItems="center">
-          <Typography component="h1" sx={{ mt: theme.gap.xl }}>
-            Create{isAdmin ? " admin " : " "}account
-          </Typography>
-        </Stack>
-        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Field
-            id="register-firstname-input"
-            label="Name"
-            isRequired={true}
-            placeholder="Daniel"
-            autoComplete="given-name"
-            value={form.firstName}
-            onChange={handleChange}
-            error={errors.firstName}
-          />
-          <Field
-            id="register-lastname-input"
-            label="Surname"
-            isRequired={true}
-            placeholder="Cojocea"
-            autoComplete="family-name"
-            value={form.lastName}
-            onChange={handleChange}
-            error={errors.lastName}
-          />
-          <Field
-            type="email"
-            id="register-email-input"
-            label="Email"
-            isRequired={true}
-            placeholder="daniel.cojocea@domain.com"
-            autoComplete="email"
-            value={form.email}
-            onChange={handleChange}
-            error={errors.email}
-          />
-          <Field
-            type="password"
-            id="register-password-input"
-            label="Password"
-            isRequired={true}
-            placeholder="Create a password"
-            autoComplete="current-password"
-            value={form.password}
-            onChange={handleChange}
-            error={errors.password}
-          />
-          <Field
-            type="password"
-            id="register-confirm-input"
-            label="Confirm password"
-            isRequired={true}
-            placeholder="Confirm your password"
-            autoComplete="current-password"
-            value={form.confirm}
-            onChange={handleChange}
-            error={errors.confirm}
-          />
-          <Stack gap={theme.gap.small}>
-            <Check
-              text="Must be at least 8 characters long"
-              variant={
-                errors?.password === "Password is required"
-                  ? "error"
-                  : form.password === ""
-                  ? "info"
-                  : form.password.length < 8
-                  ? "error"
-                  : "success"
-              }
-            />
-            <Check
-              text="Must contain one special character and a number"
-              variant={
-                errors?.password === "Password is required"
-                  ? "error"
-                  : form.password === ""
-                  ? "info"
-                  : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
-                      form.password
-                    )
-                  ? "error"
-                  : "success"
-              }
-            />
-            <Check
-              text="Must contain at least one upper and lower character"
-              variant={
-                errors?.password === "Password is required"
-                  ? "error"
-                  : form.password === ""
-                  ? "info"
-                  : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
-                  ? "error"
-                  : "success"
-              }
-            />
-          </Stack>
-          <Button
-            type="submit"
-            level="primary"
-            label="Get started"
-            sx={{ marginBottom: theme.gap.large }}
-            disabled={Object.keys(errors).length !== 0 && true}
-          />
-        </Stack>
-      </form> */}
     </Stack>
   );
 };

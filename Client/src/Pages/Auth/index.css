@@ -133,6 +133,9 @@
   width: 24px;
   height: 24px;
 }
+.auth .check span.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+}
 
 .auth > .MuiStack-root:nth-of-type(1) {
   height: var(--env-var-nav-bar-height);
