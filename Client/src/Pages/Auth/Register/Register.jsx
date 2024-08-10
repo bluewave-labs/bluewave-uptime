@@ -423,57 +423,69 @@ const Register = ({ isAdmin }) => {
     createToast({ body: error.details[0].message || "Error validating data." });
   };
 
-  const handleSubmit = async (e) => {
+  const handleStepOne = async (e) => {
     e.preventDefault();
 
-    let error;
-    let registerForm;
-
-    if (step === 1) {
-      error = validateForm({
-        firstName: form.firstName,
-        lastName: form.lastName,
-      });
-    } else if (step === 2) {
-      error = validateForm({ email: form.email });
-    } else if (step === 3) {
-      registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
-      error = validateForm(registerForm, {
-        context: { password: form.password },
-      });
-    }
+    let error = validateForm({
+      firstName: form.firstName,
+      lastName: form.lastName,
+    });
 
     if (error) {
       handleError(error);
       return;
     }
 
-    if (step === 1) {
-      setStep(2);
-    } else if (step === 2) {
-      setStep(3);
-    } else if (step === 3) {
-      delete registerForm.confirm;
-      const action = await dispatch(register(registerForm));
-      if (action.payload.success) {
-        const token = action.payload.data;
-        localStorage.setItem("token", token);
-        navigate("/");
+    setStep(2);
+  };
+
+  const handleStepTwo = async (e) => {
+    e.preventDefault();
+
+    let error;
+    error = validateForm({ email: form.email });
+    if (error) {
+      handleError(error);
+      return;
+    }
+
+    setStep(3);
+  };
+
+  // Final step
+  // Attempts account registration
+  const handleStepThree = async (e) => {
+    e.preventDefault();
+
+    let registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+    let error = validateForm(registerForm, {
+      context: { password: form.password },
+    });
+    if (error) {
+      handleError(error);
+      return;
+    }
+
+    delete registerForm.confirm;
+    const action = await dispatch(register(registerForm));
+    if (action.payload.success) {
+      const token = action.payload.data;
+      localStorage.setItem("token", token);
+      navigate("/");
+      createToast({
+        body: "Welcome! Your account was created successfully.",
+      });
+    } else {
+      if (action.payload) {
+        // dispatch errors
         createToast({
-          body: "Welcome! Your account was created successfully.",
+          body: action.payload.msg,
         });
       } else {
-        if (action.payload) {
-          // dispatch errors
-          createToast({
-            body: action.payload.msg,
-          });
-        } else {
-          // unknown errors
-          createToast({
-            body: "Unknown error.",
-          });
-        }
+        // unknown errors
+        createToast({
+          body: "Unknown error.",
+        });
       }
     }
   };
@@ -542,7 +554,7 @@ const Register = ({ isAdmin }) => {
           <StepOne
             form={form}
             errors={errors}
-            onSubmit={handleSubmit}
+            onSubmit={handleStepOne}
             onChange={handleChange}
             onBack={() => setStep(0)}
           />
@@ -550,7 +562,7 @@ const Register = ({ isAdmin }) => {
           <StepTwo
             form={form}
             errors={errors}
-            onSubmit={handleSubmit}
+            onSubmit={handleStepTwo}
             onChange={handleChange}
             onBack={() => setStep(1)}
           />
@@ -558,7 +570,7 @@ const Register = ({ isAdmin }) => {
           <StepThree
             form={form}
             errors={errors}
-            onSubmit={handleSubmit}
+            onSubmit={handleStepThree}
             onChange={handleChange}
             onBack={() => setStep(2)}
           />
