@@ -1,21 +1,58 @@
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import PropTypes from "prop-types";
-
-import "../index.css";
-import background from "../../../assets/Images/background_pattern_decorative.png";
-import Logomark from "../../../assets/Images/bwl-logo-2.svg?react";
-import Check from "../../../Components/Check/Check";
-import Button from "../../../Components/Button";
 import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
-import Field from "../../../Components/Inputs/Field";
 import { register } from "../../../Features/Auth/authSlice";
 import { useParams } from "react-router-dom";
+import background from "../../../assets/Images/background_pattern_decorative.png";
+import Logo from "../../../assets/icons/bwu-icon.svg?react";
+import Mail from "../../../assets/icons/mail.svg?react";
+import Check from "../../../Components/Check/Check";
+import Button from "../../../Components/Button";
+import Field from "../../../Components/Inputs/Field";
 import axiosInstance from "../../../Utils/axiosConfig";
+import "../index.css";
+
+const LandingPage = ({isAdmin}) => {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+        <Box>
+          <Typography component="h1">Sign Up</Typography>
+          <Typography>
+            Create your {isAdmin ? "admin " : ""}account to get started.
+          </Typography>
+        </Box>
+        <Box width="100%">
+          <Button
+            level="secondary"
+            label="Sign up with Email"
+            img={<Mail />}
+            sx={{
+              width: "100%",
+              "& svg": {
+                mr: theme.gap.small,
+              },
+            }}
+          />
+        </Box>
+        <Box maxWidth={400}>
+          <Typography className="tos-p">
+            By signing up, you agree to our{" "}
+            <Typography component="span">Terms of Service</Typography> and{" "}
+            <Typography component="span">Privacy Policy.</Typography>
+          </Typography>
+        </Box>
+      </Stack>
+    </>
+  );
+};
 
 const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
@@ -128,15 +165,61 @@ const Register = ({ isAdmin }) => {
   };
 
   return (
-    <div className="register-page">
+    <Stack className="register-page auth" overflow="hidden">
       <img
         className="background-pattern-svg"
         src={background}
         alt="background pattern"
       />
-      <form className="register-form" onSubmit={handleSubmit} noValidate>
+      <Stack
+        direction="row"
+        alignItems="center"
+        px={theme.gap.large}
+        gap={theme.gap.small}
+      >
+        <Logo style={{ borderRadius: theme.shape.borderRadius }} />
+        <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
+      </Stack>
+      <Stack
+        width="100%"
+        maxWidth={600}
+        flex={1}
+        justifyContent="center"
+        p={theme.gap.xl}
+        pb={theme.gap.triplexl}
+        mx="auto"
+        sx={{
+          "& > .MuiStack-root": {
+            border: 1,
+            borderRadius: theme.shape.borderRadius,
+            borderColor: theme.palette.otherColors.graishWhite,
+            backgroundColor: theme.palette.otherColors.white,
+            padding: {
+              xs: theme.gap.large,
+              sm: theme.gap.xl,
+            },
+          },
+        }}
+      >
+        <LandingPage isAdmin={isAdmin} />
+      </Stack>
+      <Box textAlign="center" p={theme.gap.large}>
+        <Typography display="inline-block">
+          Already have an account? —
+        </Typography>
+        <Typography
+          component="span"
+          ml={theme.gap.xs}
+          onClick={() => {
+            navigate("/login");
+          }}
+          sx={{ userSelect: "none" }}
+        >
+          Log In
+        </Typography>
+      </Box>
+      {/* <form className="register-form" onSubmit={handleSubmit} noValidate>
         <Stack gap={theme.gap.small} alignItems="center">
-          <Logomark alt="BlueWave Uptime Icon" />
           <Typography component="h1" sx={{ mt: theme.gap.xl }}>
             Create{isAdmin ? " admin " : " "}account
           </Typography>
@@ -243,8 +326,8 @@ const Register = ({ isAdmin }) => {
             disabled={Object.keys(errors).length !== 0 && true}
           />
         </Stack>
-      </form>
-    </div>
+      </form> */}
+    </Stack>
   );
 };
 Register.propTypes = {

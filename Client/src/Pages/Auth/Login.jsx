@@ -117,6 +117,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
                 mr: theme.gap.xs,
               },
             }}
+            props={{ tabIndex: -1 }}
           />
           <Button
             level="primary"
@@ -190,6 +191,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
                 mr: theme.gap.xs,
               },
             }}
+            props={{ tabIndex: -1 }}
           />
           <Button
             level="primary"
@@ -234,18 +236,18 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
 
-  useEffect(() => {
-    axiosInstance
-      .get("/auth/users/admin")
-      .then((response) => {
-        if (response.data.data === false) {
-          navigate("/register");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [navigate]);
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get("/auth/users/admin")
+  //     .then((response) => {
+  //       if (response.data.data === false) {
+  //         navigate("/register");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [navigate]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -326,7 +328,7 @@ const Login = () => {
   };
 
   return (
-    <Stack className="login-page" overflow="hidden">
+    <Stack className="login-page auth" overflow="hidden">
       <img
         className="background-pattern-svg"
         src={background}
@@ -339,7 +341,7 @@ const Login = () => {
         gap={theme.gap.small}
       >
         <Logo style={{ borderRadius: theme.shape.borderRadius }} />
-        <Typography>BlueWave Uptime</Typography>
+        <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
       </Stack>
       <Stack
         width="100%"
