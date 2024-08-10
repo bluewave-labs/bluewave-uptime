@@ -28,6 +28,13 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   });
 
   useEffect(() => {
+    setPaginationController({
+      ...paginationController,
+      page: 0,
+    });
+  }, [dateRange]);
+
+  useEffect(() => {
     const fetchPage = async () => {
       try {
         const res = await axiosInstance.get(
