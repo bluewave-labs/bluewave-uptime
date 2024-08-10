@@ -236,18 +236,18 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
 
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get("/auth/users/admin")
-  //     .then((response) => {
-  //       if (response.data.data === false) {
-  //         navigate("/register");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [navigate]);
+  useEffect(() => {
+    axiosInstance
+      .get("/auth/users/admin")
+      .then((response) => {
+        if (response.data.data === false) {
+          navigate("/register");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [navigate]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;

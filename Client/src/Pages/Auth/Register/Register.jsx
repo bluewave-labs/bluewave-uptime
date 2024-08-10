@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
@@ -58,6 +58,14 @@ const LandingPage = ({ isAdmin, onSignup }) => {
 
 const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <>
       <Stack gap={theme.gap.large} textAlign="center">
@@ -76,6 +84,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               value={form.firstName}
               onChange={onChange}
               error={errors.firstName}
+              ref={inputRef}
             />
           </form>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
@@ -124,6 +133,13 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 
 const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <>
@@ -144,6 +160,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               value={form.email}
               onChange={onChange}
               error={errors.email}
+              ref={inputRef}
             />
           </form>
         </Box>
@@ -178,6 +195,13 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 
 const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <>
@@ -198,6 +222,7 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               value={form.password}
               onChange={onChange}
               error={errors.password}
+              ref={inputRef}
             />
           </form>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>

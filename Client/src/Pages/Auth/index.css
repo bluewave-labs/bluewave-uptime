@@ -17,7 +17,6 @@
   color: var(--env-var-color-1);
   font-weight: 600;
 }
-.login-page button,
 .set-new-password-page p.MuiTypography-root,
 .set-new-password-page button,
 .password-confirmed-page p.MuiTypography-root,
