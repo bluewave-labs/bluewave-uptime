@@ -18,6 +18,14 @@ import Field from "../../../Components/Inputs/Field";
 import axiosInstance from "../../../Utils/axiosConfig";
 import "../index.css";
 
+/**
+ * Displays the initial landing page.
+ *
+ * @param {Object} props
+ * @param {boolean} props.isAdmin - Whether the user is creating and admin account
+ * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
+ * @returns {JSX.Element}
+ */
 const LandingPage = ({ isAdmin, onSignup }) => {
   const theme = useTheme();
 
@@ -56,6 +64,17 @@ const LandingPage = ({ isAdmin, onSignup }) => {
   );
 };
 
+/**
+ * Renders the first step of the sign up process.
+ *
+ * @param {Object} props
+ * @param {Object} props.form - Form state object.
+ * @param {Object} props.errors - Object containing form validation errors.
+ * @param {Function} props.onSubmit - Callback function to handle form submission.
+ * @param {Function} props.onChange - Callback function to handle form input changes.
+ * @param {Function} props.onBack - Callback function to handle "Back" button click.
+ * @returns {JSX.Element}
+ */
 const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
   const inputRef = useRef(null);
@@ -131,6 +150,17 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+/**
+ * Renders the second step of the sign up process.
+ *
+ * @param {Object} props
+ * @param {Object} props.form - Form state object.
+ * @param {Object} props.errors - Object containing form validation errors.
+ * @param {Function} props.onSubmit - Callback function to handle form submission.
+ * @param {Function} props.onChange - Callback function to handle form input changes.
+ * @param {Function} props.onBack - Callback function to handle "Back" button click.
+ * @returns {JSX.Element}
+ */
 const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
   const inputRef = useRef(null);
@@ -193,6 +223,17 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+/**
+ * Renders the third step of the sign up process.
+ *
+ * @param {Object} props
+ * @param {Object} props.form - Form state object.
+ * @param {Object} props.errors - Object containing form validation errors.
+ * @param {Function} props.onSubmit - Callback function to handle form submission.
+ * @param {Function} props.onChange - Callback function to handle form input changes.
+ * @param {Function} props.onBack - Callback function to handle "Back" button click.
+ * @returns {JSX.Element}
+ */
 const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
   const theme = useTheme();
   const inputRef = useRef(null);
@@ -353,6 +394,13 @@ const Register = ({ isAdmin }) => {
     fetchInvite();
   }, [token]);
 
+  /**
+   * Validates the form data against the validation schema.
+   *
+   * @param {Object} data - The form data to validate.
+   * @param {Object} [options] - Optional settings for validation.
+   * @returns {Object | undefined} - Returns the validation error object if there are validation errors; otherwise, `undefined`.
+   */
   const validateForm = (data, options = {}) => {
     const { error } = credentials.validate(data, {
       abortEarly: false,
@@ -361,6 +409,11 @@ const Register = ({ isAdmin }) => {
     return error;
   };
 
+  /**
+   * Handles validation errors by setting the state with error messages and displaying a toast notification.
+   *
+   * @param {Object} error - The validation error object returned from the validation schema.
+   */
   const handleError = (error) => {
     const newErrors = {};
     error.details.forEach((err) => {
