@@ -1,0 +1,35 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BluWave Uptime",
+    "summary": "BlueWave Uptime OpenAPI Specifications",
+    "description": "BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.",
+    "contact": {
+      "name": "API Support",
+      "url": "mailto:hello@bluewavelabs.ca",
+      "email": "hello@bluewavelabs.ca"
+    },
+    "license": {
+      "name": "AGPLv3",
+      "url": "https://github.com/bluewave-labs/bluewave-uptime/tree/HEAD/LICENSE"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://bluewavelabs.ca",
+      "description": "Remote Development Server"
+    },
+    {
+      "url": "http://localhost:{PORT}",
+      "description": "Local Development Server",
+      "variables": {
+        "PORT": {
+          "description": "The Data Set API is accessible via https and http",
+          "enum": ["5000", "3000", "8080"],
+          "default": "5000"
+        }
+      }
+    }
+  ]
+}
