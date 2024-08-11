@@ -102,7 +102,7 @@ function NavBar() {
     // Make request to BE to remove JWT from user
     await axiosIntance.post(
       "/auth/logout",
-      { user: authState.user },
+      { email: authState.user.email },
       {
         headers: {
           Authorization: `Bearer ${authState.authToken}`,

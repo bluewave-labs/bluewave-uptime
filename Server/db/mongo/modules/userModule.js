@@ -150,10 +150,20 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const logoutUser = async (userId) => {
+  try {
+    await UserModel.updateOne({ _id: userId }, { $unset: { authToken: null } });
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   insertUser,
   getUserByEmail,
   updateUser,
   deleteUser,
   getAllUsers,
+  logoutUser,
 };

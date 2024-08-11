@@ -37,6 +37,7 @@ const {
   updateUser,
   deleteUser,
   getAllUsers,
+  logoutUser,
 } = require("./modules/userModule");
 
 //****************************************
@@ -133,6 +134,7 @@ module.exports = {
   updateUser,
   deleteUser,
   getAllUsers,
+  logoutUser,
   requestInviteToken,
   getInviteToken,
   requestRecoveryToken,

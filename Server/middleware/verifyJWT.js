@@ -38,7 +38,7 @@ const verifyJWT = (req, res, next) => {
     if (err) {
       try {
         const userId = jwt.decode(parsedToken)._id;
-        await User.updateOne({ _id: userId }, { $unset: { authToken: null } });
+        await req.db.logoutUser(userId);
         logger.error(errorMessages.INVALID_AUTH_TOKEN, {
           service: SERVICE_NAME,
         });

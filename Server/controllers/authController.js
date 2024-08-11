@@ -166,11 +166,8 @@ const loginController = async (req, res, next) => {
 const logoutController = async (req, res, next) => {
   try {
     // Get user
-    const { user } = req.body;
-    const userToLogout = await req.db.getUserByEmail(
-      { body: { email: user.email } },
-      res
-    );
+    const { email } = req.body;
+    const userToLogout = await req.db.getUserByEmail({ body: { email } }, res);
     userToLogout.authToken = null;
     await userToLogout.save();
 
