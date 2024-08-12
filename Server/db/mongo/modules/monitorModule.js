@@ -140,6 +140,13 @@ const getStatusBarValues = (checks) => {
  * @throws {Error}
  */
 const getMonitorStatsById = async (req) => {
+  const filterLookup = {
+    hour: new Date(new Date().getTime() - 60 * 60 * 1000),
+    day: new Date(new Date().setDate(new Date().getDate() - 1)),
+    week: new Date(new Date().setDate(new Date().getDate() - 7)),
+    month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+  };
+
   try {
     const { monitorId } = req.params;
     let { status, limit, sortOrder, filter, numToDisplay, normalize } =
@@ -154,39 +161,45 @@ const getMonitorStatsById = async (req) => {
     // Get monitor
     const monitor = await Monitor.findById(monitorId);
 
-    // Get all checks to calculate stats
-    const checksQuery = { monitorId: monitor._id };
     let model =
       monitor.type === "http" || monitor.type === "ping"
         ? Check
         : PageSpeedCheck;
 
-    const filterLookup = {
-      hour: new Date(new Date().getTime() - 60 * 60 * 1000),
-      day: new Date(new Date().setDate(new Date().getDate() - 1)),
-      week: new Date(new Date().setDate(new Date().getDate() - 7)),
-      month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    const monitorStats = {
+      ...monitor.toObject(),
     };
-
+    // Get all checks to calculate stats
+    const checksQuery = { monitorId: monitor._id };
     // Get all checks
     const checksAll = await model.find(checksQuery).sort({
       createdAt: sortOrder,
     });
-    // Get checks in 24 hours
-    checksQuery.createdAt = { $gte: filterLookup.day };
-    const checks24Hours = await model.find(checksQuery).sort({
-      createdAt: sortOrder,
-    });
-    // Get checks in 30 days
-    checksQuery.createdAt = { $gte: filterLookup.month };
-    const checks30Days = await model.find(checksQuery).sort({
-      createdAt: sortOrder,
-    });
-    // Get checks in 60 mins
-    checksQuery.createdAt = { $gte: filterLookup.hour };
-    const checks60Mins = await model
-      .find(checksQuery)
-      .sort({ createdAt: sortOrder });
+
+    if (monitor.type === "http" || monitor.type === "ping") {
+      // Get checks in 24 hours
+      checksQuery.createdAt = { $gte: filterLookup.day };
+      const checks24Hours = await model.find(checksQuery).sort({
+        createdAt: sortOrder,
+      });
+      // Get checks in 30 days
+      checksQuery.createdAt = { $gte: filterLookup.month };
+      const checks30Days = await model.find(checksQuery).sort({
+        createdAt: sortOrder,
+      });
+      // Get checks in 60 mins
+      checksQuery.createdAt = { $gte: filterLookup.hour };
+      const checks60Mins = await model
+        .find(checksQuery)
+        .sort({ createdAt: sortOrder });
+
+      // HTTP/PING Specific stats
+      monitorStats.avgResponseTime24hours =
+        getAverageResponseTime24Hours(checks24Hours);
+      monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
+      monitorStats.uptime30Days = getUptimePercentage(checks30Days);
+      monitorStats.statusBar = getStatusBarValues(checks60Mins);
+    }
 
     //Get checks for dateRange
 
@@ -205,7 +218,6 @@ const getMonitorStatsById = async (req) => {
         createdAt: sortOrder,
       })
       .limit(limit);
-    const incidents = getIncidents(dateRangeChecks);
 
     // If more than numToDisplay checks, pick every nth check
     if (
@@ -221,26 +233,14 @@ const getMonitorStatsById = async (req) => {
     if (normalize !== undefined) {
       dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
     }
-
-    const uptimeDuration = calculateUptimeDuration(checksAll);
-    const lastChecked = getLastChecked(checksAll);
-    const latestResponseTime = getLatestResponseTime(checksAll);
-    const avgResponseTime24hours = getAverageResponseTime24Hours(checks24Hours);
-    const uptime24Hours = getUptimePercentage(checks24Hours);
-    const uptime30Days = getUptimePercentage(checks30Days);
-    const statusBar = getStatusBarValues(checks60Mins);
-    const monitorStats = {
-      ...monitor.toObject(),
-      uptimeDuration,
-      lastChecked,
-      latestResponseTime,
-      avgResponseTime24hours,
-      uptime24Hours,
-      uptime30Days,
-      statusBar,
-      incidents,
-      dateRangeChecks,
-    };
+    
+    // Add common stats
+    const incidents = getIncidents(dateRangeChecks);
+    monitorStats.uptimeDuration = caluclteUptimeDuration(checksAll);
+    monitorStats.lastChecked = getLastChecked(checksAll);
+    monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
+    monitorStats.incidents = incidents;
+    monitorStats.checks = dateRangeChecks;
 
     return monitorStats;
   } catch (error) {
