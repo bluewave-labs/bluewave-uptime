@@ -23,6 +23,232 @@ const getAllMonitors = async (req, res) => {
 };
 
 /**
+ * Function to calculate uptime duration based on the most recent check.
+ * @param {Array} checks Array of check objects.
+ * @returns {number} Uptime duration in ms.
+ */
+const caluclteUptimeDuration = (checks) => {
+  if (!checks || checks.length === 0) {
+    return 0;
+  }
+
+  const latestCheck = new Date(checks[0].createdAt);
+  let latestDownCheck = 0;
+
+  for (let i = 0; i < checks.length; i++) {
+    if (checks[i].status === false) {
+      latestDownCheck = new Date(checks[i].createdAt);
+      break;
+    }
+  }
+
+  // If no down check is found, uptime is from the last check to now
+  if (latestDownCheck === 0) {
+    return Date.now() - new Date(checks[checks.length - 1].createdAt);
+  }
+
+  // Otherwise the uptime is from the last check to the last down check
+  return latestCheck - latestDownCheck;
+};
+
+/**
+ * Helper function to get duration since last check
+ * @param {Array} checks Array of check objects.
+ * @returns {number} Timestamp of the most recent check.
+ */
+const getLastChecked = (checks) => {
+  if (!checks || checks.length === 0) {
+    return 0; // Handle case when no checks are available
+  }
+  // Data is sorted newest->oldest, so last check is the most recent
+  return new Date() - new Date(checks[0].createdAt);
+};
+
+/**
+ * Helper function to get latestResponseTime
+ * @param {Array} checks Array of check objects.
+ * @returns {number} Timestamp of the most recent check.
+ */
+const getLatestResponseTime = (checks) => {
+  if (!checks || checks.length === 0) {
+    return 0;
+  }
+  return checks[0].responseTime;
+};
+
+/**
+ * Helper function to get average 24h response time
+ * @param {Array} checks Array of check objects.
+ * @returns {number} Timestamp of the most recent check.
+ */
+const getAverageResponseTime24Hours = (checks) => {
+  if (!checks || checks.length === 0) {
+    return 0;
+  }
+  const aggResponseTime = checks.reduce((sum, check) => {
+    return sum + check.responseTime;
+  }, 0);
+  return aggResponseTime / checks.length;
+};
+
+/**
+ * Helper function to get precentage 24h uptime
+ * @param {Array} checks Array of check objects.
+ * @returns {number} Timestamp of the most recent check.
+ */
+
+const getUptimePercentage = (checks) => {
+  if (!checks || checks.length === 0) {
+    return 0;
+  }
+  const upCount = checks.reduce((count, check) => {
+    return check.status === true ? count + 1 : count;
+  }, 0);
+  return (upCount / checks.length) * 100;
+};
+
+/**
+ * Helper function to get all incidents
+ * @param {Array} checks Array of check objects.
+ * @returns {number} Timestamp of the most recent check.
+ */
+
+const getIncidents = (checks) => {
+  if (!checks || checks.length === 0) {
+    return 0; // Handle case when no checks are available
+  }
+  return checks.reduce((acc, check) => {
+    return check.status === false ? (acc += 1) : acc;
+  }, 0);
+};
+/**
+ * Helper function to get all incidents
+ * @param {Array} checks Array of check objects.
+ * @returns {Array<Boolean>}  Array of booleans representing up/down.
+ */
+const getStatusBarValues = (checks) => {
+  return checks.map((check) => {
+    return check.status;
+  });
+};
+/**
+ * Get stats by monitor ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Monitor>}
+ * @throws {Error}
+ */
+const getMonitorStatsById = async (req) => {
+  try {
+    const { monitorId } = req.params;
+    let { status, limit, sortOrder, filter, numToDisplay, normalize } =
+      req.query;
+
+    // This effectively removes limit, returning all checks
+    if (limit === undefined) limit = 0;
+
+    // Default sort order is newest -> oldest
+    sortOrder = sortOrder === "asc" ? 1 : -1;
+
+    // Get monitor
+    const monitor = await Monitor.findById(monitorId);
+
+    // Get all checks to calculate stats
+    const checksQuery = { monitorId: monitor._id };
+    let model =
+      monitor.type === "http" || monitor.type === "ping"
+        ? Check
+        : PageSpeedCheck;
+
+    const filterLookup = {
+      hour: new Date(new Date().getTime() - 60 * 60 * 1000),
+      day: new Date(new Date().setDate(new Date().getDate() - 1)),
+      week: new Date(new Date().setDate(new Date().getDate() - 7)),
+      month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    };
+
+    // Get all checks
+    const checksAll = await model.find(checksQuery).sort({
+      createdAt: sortOrder,
+    });
+    // Get checks in 24 hours
+    checksQuery.createdAt = { $gte: filterLookup.day };
+    const checks24Hours = await model.find(checksQuery).sort({
+      createdAt: sortOrder,
+    });
+    // Get checks in 30 days
+    checksQuery.createdAt = { $gte: filterLookup.month };
+    const checks30Days = await model.find(checksQuery).sort({
+      createdAt: sortOrder,
+    });
+    // Get checks in 60 mins
+    checksQuery.createdAt = { $gte: filterLookup.hour };
+    const checks60Mins = await model
+      .find(checksQuery)
+      .sort({ createdAt: sortOrder });
+
+    //Get checks for dateRange
+
+    if (status !== undefined) {
+      checksQuery.status = status;
+    }
+
+    // Filter checks by "day", "week", or "month"
+    if (filter !== undefined) {
+      checksQuery.createdAt = { $gte: filterLookup[filter] };
+    }
+
+    let dateRangeChecks = await model
+      .find(checksQuery)
+      .sort({
+        createdAt: sortOrder,
+      })
+      .limit(limit);
+    const incidents = getIncidents(dateRangeChecks);
+
+    // If more than numToDisplay checks, pick every nth check
+    if (
+      numToDisplay !== undefined &&
+      dateRangeChecks &&
+      dateRangeChecks.length > numToDisplay
+    ) {
+      const n = Math.ceil(dateRangeChecks.length / numToDisplay);
+      dateRangeChecks = dateRangeChecks.filter((_, index) => index % n === 0);
+    }
+
+    // Normalize checks if requested
+    if (normalize !== undefined) {
+      dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
+    }
+
+    const uptimeDuration = caluclteUptimeDuration(checksAll);
+    const lastChecked = getLastChecked(checksAll);
+    const latestResponseTime = getLatestResponseTime(checksAll);
+    const avgResponseTime24hours = getAverageResponseTime24Hours(checks24Hours);
+    const uptime24Hours = getUptimePercentage(checks24Hours);
+    const uptime30Days = getUptimePercentage(checks30Days);
+    const statusBar = getStatusBarValues(checks60Mins);
+    const monitorStats = {
+      ...monitor.toObject(),
+      uptimeDuration,
+      lastChecked,
+      latestResponseTime,
+      avgResponseTime24hours,
+      uptime24Hours,
+      uptime30Days,
+      statusBar,
+      incidents,
+      dateRangeChecks,
+    };
+
+    return monitorStats;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
  * Get a monitor by ID
  * @async
  * @param {Express.Request} req
@@ -263,6 +489,7 @@ const editMonitor = async (req, res) => {
 
 module.exports = {
   getAllMonitors,
+  getMonitorStatsById,
   getMonitorById,
   getMonitorsByUserId,
   createMonitor,
