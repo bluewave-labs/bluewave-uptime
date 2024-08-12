@@ -82,13 +82,13 @@
   cursor: pointer;
   transition: opacity 300ms ease-in;
 }
-.auth p > span {
+.auth p > span:not(.email-sent-to) {
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
   transition: all 200ms;
 }
-.auth p > span:hover {
+.auth p > span:not(.email-sent-to):hover {
   color: var(--env-var-color-2);
   text-underline-offset: 4px;
 }
@@ -110,6 +110,10 @@
 }
 .auth .check span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
+}
+.auth .email-sent-to {
+  font-weight: 600;
+  cursor: default;
 }
 
 .auth > .MuiStack-root:nth-of-type(1) {

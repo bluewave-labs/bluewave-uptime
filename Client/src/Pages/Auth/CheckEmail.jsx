@@ -115,7 +115,45 @@ const CheckEmail = () => {
             },
           },
         }}
-      ></Stack>
+      >
+        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+          <Box>
+            <EmailIcon />
+            <Typography component="h1">Check your email</Typography>
+            <Typography mt={theme.gap.xs} sx={{ width: "max-content" }}>
+              We sent a password reset link to{" "}
+              <Typography className="email-sent-to" component="span">
+                {email || "username@email.com"}
+              </Typography>
+            </Typography>
+          </Box>
+          <Button
+            level="primary"
+            label="Open email app"
+            onClick={openMail}
+            sx={{
+              width: "100%",
+              maxWidth: 400,
+            }}
+          />
+          <Typography sx={{ alignSelf: "center", mb: theme.gap.medium }}>
+            Didn't receive the email?{" "}
+            <Typography
+              component="span"
+              onClick={resendToken}
+              sx={{
+                color: theme.palette.primary.main,
+                userSelect: "none",
+                pointerEvents: disabled ? "none" : "auto",
+                cursor: disabled ? "default" : "pointer",
+                opacity: disabled ? 0.5 : 1,
+              }}
+            >
+              Click to resend
+            </Typography>
+          </Typography>
+        </Stack>
+      </Stack>
       <Box textAlign="center" p={theme.gap.large}>
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
