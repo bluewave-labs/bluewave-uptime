@@ -114,7 +114,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
       ) : checks?.length === 0 ? (
         <Box>
           <Typography textAlign="center">
-            The monitor you have selected, has no recorded incidents yet.
+            The monitor you have selected has no recorded incidents yet.
           </Typography>
         </Box>
       ) : (
