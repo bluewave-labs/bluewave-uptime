@@ -219,6 +219,8 @@ const getMonitorStatsById = async (req) => {
       })
       .limit(limit);
 
+    const incidents = getIncidents(dateRangeChecks);
+
     // If more than numToDisplay checks, pick every nth check
     if (
       numToDisplay !== undefined &&
@@ -233,10 +235,9 @@ const getMonitorStatsById = async (req) => {
     if (normalize !== undefined) {
       dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
     }
-    
+
     // Add common stats
-    const incidents = getIncidents(dateRangeChecks);
-    monitorStats.uptimeDuration = caluclteUptimeDuration(checksAll);
+    monitorStats.uptimeDuration = calculateUptimeDuration(checksAll);
     monitorStats.lastChecked = getLastChecked(checksAll);
     monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
     monitorStats.incidents = incidents;
