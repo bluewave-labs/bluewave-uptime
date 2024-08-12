@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import { createToast } from "../../Utils/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotPassword } from "../../Features/Auth/authSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Field from "../../Components/Inputs/Field";
@@ -23,6 +23,11 @@ const ForgotPassword = () => {
   const [form, setForm] = useState({
     email: "",
   });
+
+  useEffect(() => {
+    const email = sessionStorage.getItem("email");
+    email && setForm({ email: sessionStorage.getItem("email") });
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
