@@ -5,6 +5,7 @@ const Monitor = require("../models/Monitor");
 
 router.get("/", monitorController.getAllMonitors);
 router.get("/stats/:monitorId", monitorController.getMonitorStatsById);
+router.get("/certificate/:monitorId", monitorController.getMonitorCertificate);
 router.get("/:monitorId", monitorController.getMonitorById);
 router.get("/user/:userId", monitorController.getMonitorsByUserId);
 

@@ -57,6 +57,7 @@ const CheckSchema = mongoose.Schema(
      *
      * @type {Date}
      */
+
     expiry: {
       type: Date,
       default: Date.now,
