@@ -21,6 +21,8 @@ import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 import { Stack, useScrollTrigger } from "@mui/material";
+import axiosIntance from "../../Utils/axiosConfig";
+import axios from "axios";
 
 const icons = {
   Profile: <UserSvg />,
@@ -93,10 +95,21 @@ function NavBar() {
    * Handles logging out the user
    *
    */
-  const logout = () => {
+  const logout = async () => {
     // Clear auth state
     dispatch(clearAuthState());
     dispatch(clearUptimeMonitorState());
+    // Make request to BE to remove JWT from user
+    await axiosIntance.post(
+      "/auth/logout",
+      { email: authState.user.email },
+      {
+        headers: {
+          Authorization: `Bearer ${authState.authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     navigate("/login");
   };
 

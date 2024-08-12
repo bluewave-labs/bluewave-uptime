@@ -1,7 +1,6 @@
 /* ////// */
 /* SHARED */
 /* ////// */
-.register-page,
 .set-new-password-page,
 .password-confirmed-page,
 .forgot-password-page,
@@ -10,7 +9,6 @@
   justify-content: center;
   height: var(--env-var-height-1);
 }
-.register-page h1.MuiTypography-root,
 .set-new-password-page h1.MuiTypography-root,
 .password-confirmed-page h1.MuiTypography-root,
 .forgot-password-page h1.MuiTypography-root,
@@ -19,10 +17,6 @@
   color: var(--env-var-color-1);
   font-weight: 600;
 }
-.register-page p.MuiTypography-root,
-.register-page span,
-.register-page button,
-.login-page button,
 .set-new-password-page p.MuiTypography-root,
 .set-new-password-page button,
 .password-confirmed-page p.MuiTypography-root,
@@ -34,11 +28,6 @@
 .check-email-page span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
-.register-page p.MuiTypography-root {
-  color: var(--env-var-color-2);
-  opacity: 0.8;
-}
-.register-page button:not(.MuiIconButton-root),
 .set-new-password-page button:not(.MuiIconButton-root),
 .password-confirmed-page button:not(.MuiIconButton-root),
 .forgot-password-page button:not(.MuiIconButton-root),
@@ -46,13 +35,6 @@
   height: 34px;
   border-radius: var(--env-var-radius-2);
   line-height: 0;
-}
-
-.register-page svg rect {
-  fill: none;
-}
-.register-form {
-  margin-top: 95px;
 }
 
 .set-new-password-form,
@@ -76,9 +58,6 @@
   margin-right: 5px;
 }
 
-.register-page
-  .MuiFormControl-root:has(#register-password-input)
-  + span.MuiTypography-root,
 .set-new-password-page
   .MuiFormControl-root:has(#register-password-input)
   + span.MuiTypography-root,
@@ -89,17 +68,6 @@
   visibility: hidden;
 }
 
-/* ///// */
-/* LOGIN */
-/* ///// */
-.login-page
-  .MuiStack-root:not(:has(> .MuiButtonBase-root))
-  > span:not(.field-required):not(.input-error) {
-  color: var(--env-var-color-3);
-  cursor: pointer;
-  font-weight: 600;
-}
-
 /* /////////// */
 /* Check Email */
 /* /////////// */
@@ -107,68 +75,71 @@
   font-weight: 600;
 }
 
-/*  */
-.login-page {
+/* AUTH */
+.auth {
   height: 100vh;
 }
-.login-page h1 {
-  font-size: 37px;
+.auth h1 {
+  font-size: var(--env-var-font-size-xlarge);
   font-weight: 600;
   color: var(--env-var-color-3);
 }
-.login-page button:not(.MuiIconButton-root),
-.login-page .field h3.MuiTypography-root,
-.login-page .field input,
-.login-page .field .input-error,
-.login-page p,
-.login-page span {
+.auth button:not(.MuiIconButton-root),
+.auth .field h3.MuiTypography-root,
+.auth .field input,
+.auth .field .input-error,
+.auth p,
+.auth span {
   font-size: var(--env-var-font-size-medium-plus);
 }
-.login-page p {
+.auth p {
   color: var(--env-var-color-2-light);
 }
-.login-page .field h3.MuiTypography-root,
-.login-page .field input {
+.auth .field h3.MuiTypography-root,
+.auth .field input {
   color: var(--env-var-color-5);
 }
 
-.login-page p + span {
+.auth p + span {
   color: var(--env-var-color-3);
   opacity: 0.8;
   cursor: pointer;
   transition: opacity 300ms ease-in;
 }
-.login-page p > span {
+.auth p > span {
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
   transition: all 200ms;
 }
-.login-page p > span:hover {
+.auth p > span:hover {
   color: var(--env-var-color-2);
   text-underline-offset: 4px;
 }
-.login-page p + span:hover {
+.auth p + span:hover {
   opacity: 1;
 }
-.login-page button:not(.MuiIconButton-root) {
+.auth button:not(.MuiIconButton-root) {
   user-select: none;
   border-radius: var(--env-var-radius-2);
   line-height: 1;
 }
-.login-page button:not(.MuiIconButton-root),
-.login-page .field .MuiInputBase-root:has(input) {
+.auth button:not(.MuiIconButton-root),
+.auth .field .MuiInputBase-root:has(input) {
   height: 38px;
 }
-.login-page .field svg {
+.auth .field svg {
   width: 24px;
   height: 24px;
 }
+.auth .check span.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium);
+}
 
-.login-page > .MuiStack-root:nth-of-type(1) {
+.auth > .MuiStack-root:nth-of-type(1) {
   height: var(--env-var-nav-bar-height);
 }
-.login-page .background-pattern-svg {
+.auth .background-pattern-svg {
   top: 14%;
   width: 100%;
   max-width: 800px;

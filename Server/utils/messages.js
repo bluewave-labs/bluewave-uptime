@@ -7,6 +7,7 @@ const errorMessages = {
   UNAUTHORIZED: "Unauthorized access",
   AUTH_ADMIN_EXISTS: "Admin already exists",
   AUTH_INVITE_NOT_FOUND: "Invite not found",
+  AUTH_ALREADY_LOGGED_IN: "User already logged in",
 
   //Error handling middleware
   UNKNOWN_SERVICE: "Unknown service",
@@ -55,6 +56,7 @@ const successMessages = {
   // Auth Controller
   AUTH_CREATE_USER: "User created successfully",
   AUTH_LOGIN_USER: "User logged in successfully",
+  AUTH_LOGOUT_USER: "User logged out successfully",
   AUTH_UPDATE_USER: "User updated successfully",
   AUTH_CREATE_RECOVERY_TOKEN: "Recovery token created successfully",
   AUTH_VERIFY_RECOVERY_TOKEN: "Recovery token verified successfully",

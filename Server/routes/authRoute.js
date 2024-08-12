@@ -9,6 +9,7 @@ const User = require("../models/user");
 const {
   registerController,
   loginController,
+  logoutController,
   userEditController,
   recoveryRequestController,
   validateRecoveryTokenController,
@@ -23,6 +24,7 @@ const {
 //Auth routes
 router.post("/register", upload.single("profileImage"), registerController);
 router.post("/login", loginController);
+router.post("/logout", logoutController);
 router.put(
   "/user/:userId",
   upload.single("profileImage"),

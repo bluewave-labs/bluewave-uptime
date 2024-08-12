@@ -58,6 +58,7 @@ const Button = ({
   disabled,
   img,
   onClick,
+  props,
   sx,
 }) => {
   const { variant, color } = levelConfig[level];
@@ -84,6 +85,7 @@ const Button = ({
         },
         ...sx,
       }}
+      {...props}
     >
       {img && img}
       <span>{label}</span>
