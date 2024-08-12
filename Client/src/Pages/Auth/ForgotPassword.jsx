@@ -81,6 +81,11 @@ const ForgotPassword = () => {
     else delete errors.email;
   };
 
+  const handleNavigate = () => {
+    sessionStorage.removeItem("email");
+    navigate("/login");
+  };
+
   return (
     <Stack className="forgot-password-page auth" overflow="hidden">
       <img
@@ -159,9 +164,7 @@ const ForgotPassword = () => {
         <Typography
           component="span"
           ml={theme.gap.xs}
-          onClick={() => {
-            navigate("/login");
-          }}
+          onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >
           Log In

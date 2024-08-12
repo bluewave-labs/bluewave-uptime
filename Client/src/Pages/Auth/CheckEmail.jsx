@@ -79,6 +79,11 @@ const CheckEmail = () => {
     }
   };
 
+  const handleNavigate = () => {
+    sessionStorage.removeItem("email");
+    navigate("/login");
+  };
+
   return (
     <Stack className="check-email-page auth" overflow="hidden">
       <img
@@ -159,9 +164,7 @@ const CheckEmail = () => {
         <Typography
           component="span"
           ml={theme.gap.xs}
-          onClick={() => {
-            navigate("/login");
-          }}
+          onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >
           Log In

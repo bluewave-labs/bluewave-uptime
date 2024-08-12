@@ -57,46 +57,38 @@ const NewPasswordConfirmed = () => {
             },
           },
         }}
-      ></Stack>
+      >
+        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+          <Box>
+            <ConfirmIcon alt="password confirm icon" />
+            <Typography component="h1">Password reset</Typography>
+            <Typography mt={theme.gap.xs}>
+              Your password has been successfully reset. Click below to log in
+              magically.
+            </Typography>
+          </Box>
+          <Button
+            level="primary"
+            label="Continue"
+            onClick={() => navigate("/monitors")}
+            sx={{
+              width: "100%",
+              maxWidth: 400,
+            }}
+          />
+        </Stack>
+      </Stack>
       <Box textAlign="center" p={theme.gap.large}>
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
           component="span"
           ml={theme.gap.xs}
-          onClick={() => {
-            navigate("/login");
-          }}
+          onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >
           Log In
         </Typography>
       </Box>
-      {/* <form className="password-confirmed-form">
-        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
-          <ConfirmIcon alt="confirm icon" style={{ fill: "white" }} />
-          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
-            Password reset
-          </Typography>
-          <Typography sx={{ textAlign: "center" }}>
-            Your password has been successfully reset. Click below to log in
-            magically.
-          </Typography>
-        </Stack>
-        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Button
-            level="primary"
-            label="Continue"
-            onClick={() => navigate("/monitors")}
-          />
-          <Button
-            level="tertiary"
-            label="Back to log in"
-            img={<ArrowBackRoundedIcon />}
-            sx={{ alignSelf: "center", width: "fit-content" }}
-            onClick={handleNavigate}
-          />
-        </Stack>
-      </form> */}
     </Stack>
   );
 };
