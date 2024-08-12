@@ -79,6 +79,11 @@ const CheckEmail = () => {
     }
   };
 
+  const handleNavigate = () => {
+    sessionStorage.removeItem("email");
+    navigate("/login");
+  };
+
   return (
     <Stack className="check-email-page auth" overflow="hidden">
       <img
@@ -118,7 +123,7 @@ const CheckEmail = () => {
       >
         <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
           <Box>
-            <EmailIcon />
+            <EmailIcon alt="email icon" />
             <Typography component="h1">Check your email</Typography>
             <Typography mt={theme.gap.xs} sx={{ width: "max-content" }}>
               We sent a password reset link to{" "}
@@ -159,56 +164,12 @@ const CheckEmail = () => {
         <Typography
           component="span"
           ml={theme.gap.xs}
-          onClick={() => {
-            navigate("/login");
-          }}
+          onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >
           Log In
         </Typography>
       </Box>
-      {/* <form className="check-email-form">
-        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
-          <EmailIcon alt="EmailIcon" style={{ fill: "white" }} />
-          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
-            Check your email
-          </Typography>
-          <Typography sx={{ width: "max-content" }}>
-            We sent a password reset link to{" "}
-            <Typography component="span">
-              {email || "username@email.com"}
-            </Typography>
-          </Typography>
-        </Stack>
-        <Stack gap={theme.gap.ml} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Button level="primary" label="Open email app" onClick={openMail} />
-          <Typography sx={{ alignSelf: "center", mb: theme.gap.medium }}>
-            Didn't receive the email?{" "}
-            <Typography
-              component="span"
-              onClick={resendToken}
-              sx={{
-                color: theme.palette.primary.main,
-                letterSpacing: "-0.1px",
-                userSelect: "none",
-                pointerEvents: disabled ? "none" : "auto",
-                cursor: disabled ? "default" : "pointer",
-                opacity: disabled ? 0.5 : 1,
-              }}
-            >
-              Click to resend
-            </Typography>
-          </Typography>
-
-          <Button
-            level="tertiary"
-            label="Back to log in"
-            img={<ArrowBackRoundedIcon />}
-            sx={{ alignSelf: "center", width: "fit-content" }}
-            onClick={() => navigate("/login")}
-          />
-        </Stack>
-      </form> */}
     </Stack>
   );
 };

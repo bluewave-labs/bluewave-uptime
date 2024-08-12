@@ -81,6 +81,11 @@ const ForgotPassword = () => {
     else delete errors.email;
   };
 
+  const handleNavigate = () => {
+    sessionStorage.removeItem("email");
+    navigate("/login");
+  };
+
   return (
     <Stack className="forgot-password-page auth" overflow="hidden">
       <img
@@ -120,7 +125,7 @@ const ForgotPassword = () => {
       >
         <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
           <Box>
-            <Key />
+            <Key alt="password key icon" />
             <Typography component="h1">Forgot password?</Typography>
             <Typography>
               No worries, we'll send you reset instructions.
@@ -159,9 +164,7 @@ const ForgotPassword = () => {
         <Typography
           component="span"
           ml={theme.gap.xs}
-          onClick={() => {
-            navigate("/login");
-          }}
+          onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >
           Log In
