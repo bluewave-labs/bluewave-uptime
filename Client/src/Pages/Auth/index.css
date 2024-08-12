@@ -2,15 +2,13 @@
 /* SHARED */
 /* ////// */
 .set-new-password-page,
-.password-confirmed-page,
-.check-email-page {
+.password-confirmed-page {
   display: flex;
   justify-content: center;
   height: var(--env-var-height-1);
 }
 .set-new-password-page h1.MuiTypography-root,
-.password-confirmed-page h1.MuiTypography-root,
-.check-email-page h1.MuiTypography-root {
+.password-confirmed-page h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
   color: var(--env-var-color-1);
   font-weight: 600;
@@ -18,35 +16,28 @@
 .set-new-password-page p.MuiTypography-root,
 .set-new-password-page button,
 .password-confirmed-page p.MuiTypography-root,
-.password-confirmed-page button,
-.check-email-page p.MuiTypography-root,
-.check-email-page button,
-.check-email-page span.MuiTypography-root {
+.password-confirmed-page button {
   font-size: var(--env-var-font-size-medium);
 }
 .set-new-password-page button:not(.MuiIconButton-root),
-.password-confirmed-page button:not(.MuiIconButton-root),
-.check-email-page button:not(.MuiIconButton-root) {
+.password-confirmed-page button:not(.MuiIconButton-root) {
   height: 34px;
   border-radius: var(--env-var-radius-2);
   line-height: 0;
 }
 
 .set-new-password-form,
-.password-confirmed-form,
-.check-email-form {
+.password-confirmed-form {
   margin-top: 65px;
   width: var(--env-var-width-2);
 }
 .set-new-password-page p.MuiTypography-root,
-.password-confirmed-page p.MuiTypography-root,
-.check-email-page p.MuiTypography-root {
+.password-confirmed-page p.MuiTypography-root {
   color: var(--env-var-color-2);
 }
 
 .set-new-password-page button:not(.MuiIconButton-root) svg,
-.password-confirmed-page button:not(.MuiIconButton-root) svg,
-.check-email-page button svg {
+.password-confirmed-page button:not(.MuiIconButton-root) svg {
   margin-right: 5px;
 }
 
@@ -58,13 +49,6 @@
   + span.MuiTypography-root {
   display: none;
   visibility: hidden;
-}
-
-/* /////////// */
-/* Check Email */
-/* /////////// */
-.check-email-page span.MuiTypography-root {
-  font-weight: 600;
 }
 
 /* AUTH */
@@ -98,13 +82,13 @@
   cursor: pointer;
   transition: opacity 300ms ease-in;
 }
-.auth p > span {
+.auth p > span:not(.email-sent-to) {
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
   transition: all 200ms;
 }
-.auth p > span:hover {
+.auth p > span:not(.email-sent-to):hover {
   color: var(--env-var-color-2);
   text-underline-offset: 4px;
 }
@@ -130,6 +114,10 @@
 .auth form + form {
   margin: var(--env-var-spacing-1-plus) 0;
 }
+.auth .email-sent-to {
+  font-weight: 600;
+  cursor: default;
+}
 
 .auth > .MuiStack-root:nth-of-type(1) {
   height: var(--env-var-nav-bar-height);
@@ -140,6 +128,7 @@
   max-width: 800px;
 }
 
-.forgot-password-page h1 {
+.forgot-password-page h1,
+.check-email-page h1 {
   font-size: var(--env-var-font-size-large-plus);
 }
