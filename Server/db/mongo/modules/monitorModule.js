@@ -27,7 +27,7 @@ const getAllMonitors = async (req, res) => {
  * @param {Array} checks Array of check objects.
  * @returns {number} Uptime duration in ms.
  */
-const caluclteUptimeDuration = (checks) => {
+const calculateUptimeDuration = (checks) => {
   if (!checks || checks.length === 0) {
     return 0;
   }
@@ -233,7 +233,7 @@ const getMonitorStatsById = async (req) => {
     if (normalize !== undefined) {
       dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
     }
-
+    
     // Add common stats
     const incidents = getIncidents(dateRangeChecks);
     monitorStats.uptimeDuration = caluclteUptimeDuration(checksAll);
