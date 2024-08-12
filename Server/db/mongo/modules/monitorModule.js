@@ -27,7 +27,7 @@ const getAllMonitors = async (req, res) => {
  * @param {Array} checks Array of check objects.
  * @returns {number} Uptime duration in ms.
  */
-const caluclteUptimeDuration = (checks) => {
+const calculateUptimeDuration = (checks) => {
   if (!checks || checks.length === 0) {
     return 0;
   }
@@ -222,7 +222,7 @@ const getMonitorStatsById = async (req) => {
       dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
     }
 
-    const uptimeDuration = caluclteUptimeDuration(checksAll);
+    const uptimeDuration = calculateUptimeDuration(checksAll);
     const lastChecked = getLastChecked(checksAll);
     const latestResponseTime = getLatestResponseTime(checksAll);
     const avgResponseTime24hours = getAverageResponseTime24Hours(checks24Hours);
