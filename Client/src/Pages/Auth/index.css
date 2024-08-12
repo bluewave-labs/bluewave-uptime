@@ -3,7 +3,6 @@
 /* ////// */
 .set-new-password-page,
 .password-confirmed-page,
-.forgot-password-page,
 .check-email-page {
   display: flex;
   justify-content: center;
@@ -11,7 +10,6 @@
 }
 .set-new-password-page h1.MuiTypography-root,
 .password-confirmed-page h1.MuiTypography-root,
-.forgot-password-page h1.MuiTypography-root,
 .check-email-page h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
   color: var(--env-var-color-1);
@@ -21,8 +19,6 @@
 .set-new-password-page button,
 .password-confirmed-page p.MuiTypography-root,
 .password-confirmed-page button,
-.forgot-password-page p.MuiTypography-root,
-.forgot-password-page button,
 .check-email-page p.MuiTypography-root,
 .check-email-page button,
 .check-email-page span.MuiTypography-root {
@@ -30,7 +26,6 @@
 }
 .set-new-password-page button:not(.MuiIconButton-root),
 .password-confirmed-page button:not(.MuiIconButton-root),
-.forgot-password-page button:not(.MuiIconButton-root),
 .check-email-page button:not(.MuiIconButton-root) {
   height: 34px;
   border-radius: var(--env-var-radius-2);
@@ -39,21 +34,18 @@
 
 .set-new-password-form,
 .password-confirmed-form,
-.forgot-password-form,
 .check-email-form {
   margin-top: 65px;
   width: var(--env-var-width-2);
 }
 .set-new-password-page p.MuiTypography-root,
 .password-confirmed-page p.MuiTypography-root,
-.forgot-password-page p.MuiTypography-root,
 .check-email-page p.MuiTypography-root {
   color: var(--env-var-color-2);
 }
 
 .set-new-password-page button:not(.MuiIconButton-root) svg,
 .password-confirmed-page button:not(.MuiIconButton-root) svg,
-.forgot-password-page button svg,
 .check-email-page button svg {
   margin-right: 5px;
 }
@@ -146,4 +138,8 @@
   top: 14%;
   width: 100%;
   max-width: 800px;
+}
+
+.forgot-password-page h1 {
+  font-size: var(--env-var-font-size-large-plus);
 }
