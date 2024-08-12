@@ -105,10 +105,9 @@ const SetNewPassword = () => {
 
   return (
     <Stack className="set-new-password-page auth" overflow="hidden">
-      <img
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
       <Stack
         direction="row"
@@ -124,8 +123,8 @@ const SetNewPassword = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        p={theme.gap.xl}
-        pb={theme.gap.triplexl}
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.large}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
@@ -140,7 +139,11 @@ const SetNewPassword = () => {
           },
         }}
       >
-        <Stack gap={theme.gap.large} textAlign="center">
+        <Stack
+          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          alignItems="center"
+          textAlign="center"
+        >
           <Box>
             <LockIcon alt="lock icon" />
             <Typography component="h1">Set new password</Typography>
@@ -175,7 +178,12 @@ const SetNewPassword = () => {
             </form>
             <Stack gap={theme.gap.small} mb={theme.gap.large}>
               <Check
-                text="Must be at least 8 characters long"
+                text={
+                  <>
+                    <Typography component="span">Must be at least</Typography> 8
+                    characters long
+                  </>
+                }
                 variant={
                   errors?.password === "Password is required"
                     ? "error"
@@ -187,7 +195,12 @@ const SetNewPassword = () => {
                 }
               />
               <Check
-                text="Must contain one special character and a number"
+                text={
+                  <>
+                    <Typography component="span">Must contain</Typography> one
+                    special character and a number
+                  </>
+                }
                 variant={
                   errors?.password === "Password is required"
                     ? "error"
@@ -201,7 +214,14 @@ const SetNewPassword = () => {
                 }
               />
               <Check
-                text="Must contain at least one upper and lower character"
+                text={
+                  <>
+                    <Typography component="span">
+                      Must contain at least
+                    </Typography>{" "}
+                    one upper and lower character
+                  </>
+                }
                 variant={
                   errors?.password === "Password is required"
                     ? "error"
@@ -220,7 +240,7 @@ const SetNewPassword = () => {
             onClick={handleSubmit}
             level="primary"
             label="Reset password"
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", maxWidth: 400 }}
           />
         </Stack>
       </Stack>

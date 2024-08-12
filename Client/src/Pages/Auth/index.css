@@ -8,10 +8,8 @@
   color: var(--env-var-color-3);
 }
 .auth button:not(.MuiIconButton-root),
-.auth .field h3.MuiTypography-root,
-.auth .field input,
-.auth .field .input-error,
 .auth p,
+.auth .field input,
 .auth span {
   font-size: var(--env-var-font-size-medium-plus);
 }
@@ -55,6 +53,8 @@
   width: 24px;
   height: 24px;
 }
+.auth .field h3.MuiTypography-root,
+.auth .field .input-error,
 .auth .check span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
@@ -66,18 +66,67 @@
   cursor: default;
 }
 
-.auth > .MuiStack-root:nth-of-type(1) {
+.auth > .MuiStack-root:nth-of-type(2) {
   height: var(--env-var-nav-bar-height);
 }
 .auth .background-pattern-svg {
-  top: 14%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  z-index: -1;
+
   width: 100%;
   max-width: 800px;
+  height: 100%;
+  max-height: 800px;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .forgot-password-page h1,
 .check-email-page h1,
 .password-confirmed-page h1,
 .set-new-password-page h1 {
-  font-size: var(--env-var-font-size-large-plus);
+  font-size: 22px;
+}
+
+@media (max-width: 800px) {
+  .auth h1 {
+    font-size: var(--env-var-font-size-large-plus);
+  }
+  .auth button:not(.MuiIconButton-root),
+  .auth .field input,
+  .auth p,
+  .auth span {
+    font-size: var(--env-var-font-size-medium);
+  }
+  .auth button:not(.MuiIconButton-root),
+  .auth .field .MuiInputBase-root:has(input) {
+    height: 36px;
+  }
+  .auth .check span.MuiTypography-root,
+  .auth .field .input-error,
+  .auth .field h3.MuiTypography-root {
+    font-size: var(--env-var-font-size-small-plus);
+  }
+  .auth .check span > span {
+    display: none;
+  }
+  .auth form + form {
+    margin: var(--env-var-spacing-1-plus) 0;
+  }
+  .auth .background-pattern-svg {
+    max-width: 750px;
+    max-height: 750px;
+  }
+
+  .forgot-password-page h1,
+  .check-email-page h1,
+  .password-confirmed-page h1,
+  .set-new-password-page h1 {
+    font-size: 18px;
+  }
 }
