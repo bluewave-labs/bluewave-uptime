@@ -136,3 +136,7 @@
   width: 100%;
   max-width: 800px;
 }
+
+.forgot-password-page h1 {
+  font-size: var(--env-var-font-size-large-plus);
+}

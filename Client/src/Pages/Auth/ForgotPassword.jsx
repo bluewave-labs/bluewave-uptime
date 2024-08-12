@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../Utils/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,10 +8,8 @@ import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Field from "../../Components/Inputs/Field";
 import ButtonSpinner from "../../Components/ButtonSpinner";
-import Button from "../../Components/Button";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Key from "../../assets/icons/key.svg?react";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import "./index.css";
 
@@ -26,10 +24,6 @@ const ForgotPassword = () => {
     email: "",
   });
 
-  const idMap = {
-    "forgot-password-email-input": "email",
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -41,11 +35,9 @@ const ForgotPassword = () => {
         error.details && error.details.length > 0
           ? error.details[0].message
           : "Error validating data.";
-      setErrors(err);
+      setErrors({ email: err });
       createToast({
-        variant: "info",
         body: err,
-        hasIcon: false,
       });
     } else {
       const action = await dispatch(forgotPassword(form));
@@ -72,24 +64,16 @@ const ForgotPassword = () => {
   };
 
   const handleChange = (event) => {
-    const { value, id } = event.target;
-    const name = idMap[id];
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { value } = event.target;
+    setForm({ email: value });
 
     const { error } = credentials.validate(
-      { [name]: value },
+      { email: value },
       { abortEarly: false }
     );
 
-    setErrors((prev) => {
-      const prevErrors = { ...prev };
-      if (error) prevErrors[name] = error.details[0].message;
-      else delete prevErrors[name];
-      return prevErrors;
-    });
+    if (error) setErrors({ email: error.details[0].message });
+    else delete errors.email;
   };
 
   return (
@@ -128,45 +112,56 @@ const ForgotPassword = () => {
             },
           },
         }}
-      ></Stack>
-      {/* <form className="forgot-password-form" onSubmit={handleSubmit}>
-        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
-          <Logomark alt="Logomark" style={{ fill: "white" }} />
-          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
-            Forgot password?
-          </Typography>
-          <Typography>
-            No worries, we'll send you reset instructions.
-          </Typography>
+      >
+        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+          <Box>
+            <Key />
+            <Typography component="h1">Forgot password?</Typography>
+            <Typography>
+              No worries, we'll send you reset instructions.
+            </Typography>
+          </Box>
+          <Box width="100%" maxWidth={400} textAlign="left">
+            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
+              <Field
+                type="email"
+                id="forgot-password-email-input"
+                label="Email"
+                isRequired={true}
+                placeholder="Enter your email"
+                value={form.email}
+                onChange={handleChange}
+                error={errors.email}
+              />
+              <ButtonSpinner
+                disabled={errors.email !== undefined}
+                onClick={handleSubmit}
+                isLoading={isLoading}
+                level="primary"
+                label="Send instructions"
+                sx={{
+                  width: "100%",
+                  fontWeight: 400,
+                  mt: theme.gap.mlplus,
+                }}
+              />
+            </form>
+          </Box>
         </Stack>
-        <Stack gap={theme.gap.ml} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Field
-            type="email"
-            id="forgot-password-email-input"
-            label="Email"
-            isRequired={true}
-            placeholder="Enter your email"
-            value={form.email}
-            onChange={handleChange}
-            error={errors.email}
-          />
-          <ButtonSpinner
-            disabled={errors.email !== undefined}
-            onClick={handleSubmit}
-            isLoading={isLoading}
-            level="primary"
-            label="Reset password"
-            sx={{ mb: theme.gap.medium }}
-          />
-          <Button
-            level="tertiary"
-            label="Back to log in"
-            img={<ArrowBackRoundedIcon />}
-            sx={{ alignSelf: "center", width: "fit-content" }}
-            onClick={() => navigate("/login")}
-          />
-        </Stack>
-      </form> */}
+      </Stack>
+      <Box textAlign="center" p={theme.gap.large}>
+        <Typography display="inline-block">Go back to —</Typography>
+        <Typography
+          component="span"
+          ml={theme.gap.xs}
+          onClick={() => {
+            navigate("/login");
+          }}
+          sx={{ userSelect: "none" }}
+        >
+          Log In
+        </Typography>
+      </Box>
     </Stack>
   );
 };
