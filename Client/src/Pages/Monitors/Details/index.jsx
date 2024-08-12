@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../Utils/axiosConfig";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
-import { StatusLabel } from "../../../Components/Label";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -267,7 +266,7 @@ const DetailsPage = () => {
                 </ButtonGroup>
               </Stack>
               <Box sx={{ height: "200px" }}>
-                <MonitorDetailsAreaChart checks={monitor.checks} />
+                <MonitorDetailsAreaChart checks={monitor.checks.reverse()} />
               </Box>
             </Box>
             <Stack gap={theme.gap.ml}>

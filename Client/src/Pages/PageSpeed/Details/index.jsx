@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { formatDate, formatDurationRounded } from "../../../Utils/timeUtils";
+import {
+  formatDate,
+  formatDuration,
+  formatDurationRounded,
+} from "../../../Utils/timeUtils";
 import { getLastChecked } from "../../../Utils/monitorUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
@@ -185,7 +189,7 @@ const PageSpeedDetails = () => {
     const fetchMonitor = async () => {
       try {
         const res = await axiosInstance.get(
-          `/monitors/${monitorId}?sortOrder=desc`,
+          `/monitors/stats/${monitorId}?sortOrder=desc&limit=50`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -369,14 +373,13 @@ const PageSpeedDetails = () => {
               title="Last checked"
               value={
                 <>
-                  {formatDate(getLastChecked(monitor?.checks, false))}{" "}
+                  {formatDuration(monitor?.lastChecked)}{" "}
                   <Typography
                     component="span"
                     fontStyle="italic"
                     sx={{ opacity: 0.8 }}
                   >
-                    ({formatDurationRounded(getLastChecked(monitor?.checks))}{" "}
-                    ago)
+                    ago
                   </Typography>
                 </>
               }
@@ -386,17 +389,13 @@ const PageSpeedDetails = () => {
               title="Checks since"
               value={
                 <>
-                  {formatDate(new Date(monitor?.createdAt))}{" "}
+                  {formatDuration(monitor?.uptimeDuration)}{" "}
                   <Typography
                     component="span"
                     fontStyle="italic"
                     sx={{ opacity: 0.8 }}
                   >
-                    (
-                    {formatDurationRounded(
-                      new Date() - new Date(monitor?.createdAt)
-                    )}{" "}
-                    ago)
+                    ago
                   </Typography>
                 </>
               }
@@ -409,9 +408,7 @@ const PageSpeedDetails = () => {
           </Stack>
           <Typography component="h2">Score history</Typography>
           <Box height="300px">
-            <PageSpeedLineChart
-              pageSpeedChecks={monitor?.checks?.slice(0, 25)}
-            />
+            <PageSpeedLineChart pageSpeedChecks={monitor?.checks?.reverse()} />
           </Box>
           <Typography component="h2">Performance report</Typography>
           <Stack direction="row" alignItems="center" overflow="hidden">
