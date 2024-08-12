@@ -119,7 +119,7 @@ const DetailsPage = () => {
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc&filter=${dateRange}&numToDisplay=50&normalize=true`,
+        `/monitors/stats/${monitorId}?filter=${dateRange}&numToDisplay=50&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -138,67 +138,6 @@ const DetailsPage = () => {
   }, [fetchMonitor]);
 
   const theme = useTheme();
-
-  /**
-   * Function to calculate uptime duration based on the most recent check.
-   * @param {Array} checks Array of check objects.
-   * @returns {number} Uptime duration in ms.
-   */
-
-  // TODO:  This can be done more efficiently by iteratting backwards
-  //      and breaking when the first down check is found, calculate current time - downtime
-  const calculateUptimeDuration = (checks) => {
-    if (!checks || checks.length === 0) {
-      return 0;
-    }
-
-    const latestCheck = new Date(checks[checks.length - 1].createdAt);
-    let latestDownCheck = 0;
-
-    // Checks are ordered oldest -> newest
-    // So we iterate backwards and find the first down check
-    for (let i = checks.length - 1; i >= 0; i--) {
-      if (checks[i].status === false) {
-        latestDownCheck = new Date(checks[i].createdAt);
-        break;
-      }
-    }
-
-    // If no down check is found, uptime is from the first check to now
-    if (latestDownCheck === 0) {
-      return Date.now() - new Date(checks[0].createdAt);
-    }
-
-    // Otherwise the uptime is from the last check to the last down check
-    return latestCheck - latestDownCheck;
-  };
-
-  /**
-   * Helper function to get duration since last check
-   * @param {Array} checks Array of check objects.
-   * @returns {number} Timestamp of the most recent check.
-   */
-  const getLastChecked = (checks) => {
-    if (!checks || checks.length === 0) {
-      return 0; // Handle case when no checks are available
-    }
-    // Data is sorted oldest -> newest, so last check is the most recent
-    return new Date() - new Date(checks[checks.length - 1].createdAt);
-  };
-
-  /**
-   * Helper function to count incidents (checks with status === false).
-   * @param {Array} checks Array of check objects.
-   * @returns {number} Number of incidents.
-   */
-  const countIncidents = (checks) => {
-    if (!checks || checks.length === 0) {
-      return 0; // Handle case when no checks are available
-    }
-    return checks.reduce((acc, check) => {
-      return check.status === false ? (acc += 1) : acc;
-    }, 0);
-  };
 
   let loading = Object.keys(monitor).length === 0;
 
@@ -243,7 +182,7 @@ const DetailsPage = () => {
                   </Typography>{" "}
                   Checking every {formatDurationRounded(monitor?.interval)}.
                   Last time checked{" "}
-                  {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
+                  {formatDurationRounded(monitor?.lastChecked)} ago.
                 </Typography>
               </Box>
               <Button
@@ -277,16 +216,13 @@ const DetailsPage = () => {
             >
               <StatBox
                 title="Currently up for"
-                value={formatDuration(calculateUptimeDuration(monitor.checks))}
+                value={formatDuration(monitor?.uptimeDuration)}
               />
               <StatBox
                 title="Last checked"
-                value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
+                value={`${formatDuration(monitor?.lastChecked)} ago`}
               />
-              <StatBox
-                title="Incidents"
-                value={countIncidents(monitor.checks)}
-              />
+              <StatBox title="Incidents" value={monitor?.incidents} />
             </Stack>
             <Box>
               <Stack
