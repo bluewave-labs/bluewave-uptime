@@ -120,7 +120,7 @@ const ForgotPassword = () => {
       >
         <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
           <Box>
-            <Key />
+            <Key alt="password key icon" />
             <Typography component="h1">Forgot password?</Typography>
             <Typography>
               No worries, we'll send you reset instructions.
