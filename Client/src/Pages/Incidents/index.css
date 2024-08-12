@@ -17,6 +17,12 @@
 .incidents .MuiPagination-root {
   background-color: var(--env-var-color-8);
 }
+.incidents > .MuiBox-root {
+  background-color: var(--env-var-color-8);
+  border: solid 1px var(--env-var-color-6);
+  border-radius: var(--env-var-radius-1);
+  padding: 60px;
+}
 
 /* remove later */
 .incidents .MuiSelect-select {
