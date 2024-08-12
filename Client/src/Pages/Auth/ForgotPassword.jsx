@@ -1,18 +1,19 @@
-import "./index.css";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import Logomark from "../../assets/icons/key.svg?react";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import { Stack, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import { createToast } from "../../Utils/toastUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPassword } from "../../Features/Auth/authSlice";
 import { useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Field from "../../Components/Inputs/Field";
-import { createToast } from "../../Utils/toastUtils";
-import { useDispatch, useSelector } from "react-redux";
-import { forgotPassword } from "../../Features/Auth/authSlice";
 import ButtonSpinner from "../../Components/ButtonSpinner";
-import { Stack, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
 import Button from "../../Components/Button";
+import Logo from "../../assets/icons/bwu-icon.svg?react";
+import Key from "../../assets/icons/key.svg?react";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import background from "../../assets/Images/background_pattern_decorative.png";
+import "./index.css";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -92,13 +93,43 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="forgot-password-page">
+    <Stack className="forgot-password-page auth" overflow="hidden">
       <img
         className="background-pattern-svg"
         src={background}
         alt="background pattern"
       />
-      <form className="forgot-password-form" onSubmit={handleSubmit}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        px={theme.gap.large}
+        gap={theme.gap.small}
+      >
+        <Logo style={{ borderRadius: theme.shape.borderRadius }} />
+        <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
+      </Stack>
+      <Stack
+        width="100%"
+        maxWidth={600}
+        flex={1}
+        justifyContent="center"
+        p={theme.gap.xl}
+        pb={theme.gap.triplexl}
+        mx="auto"
+        sx={{
+          "& > .MuiStack-root": {
+            border: 1,
+            borderRadius: theme.shape.borderRadius,
+            borderColor: theme.palette.otherColors.graishWhite,
+            backgroundColor: theme.palette.otherColors.white,
+            padding: {
+              xs: theme.gap.large,
+              sm: theme.gap.xl,
+            },
+          },
+        }}
+      ></Stack>
+      {/* <form className="forgot-password-form" onSubmit={handleSubmit}>
         <Stack direction="column" alignItems="center" gap={theme.gap.small}>
           <Logomark alt="Logomark" style={{ fill: "white" }} />
           <Typography component="h1" sx={{ mt: theme.gap.ml }}>
@@ -135,8 +166,8 @@ const ForgotPassword = () => {
             onClick={() => navigate("/login")}
           />
         </Stack>
-      </form>
-    </div>
+      </form> */}
+    </Stack>
   );
 };
 
