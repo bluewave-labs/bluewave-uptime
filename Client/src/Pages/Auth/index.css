@@ -111,6 +111,9 @@
 .auth .check span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
+.auth form + form {
+  margin: var(--env-var-spacing-1-plus) 0;
+}
 .auth .email-sent-to {
   font-weight: 600;
   cursor: default;

@@ -154,6 +154,13 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
     }
   }, []);
 
+  const handleNavigate = () => {
+    if (form.email !== "" && !errors.email) {
+      sessionStorage.setItem("email", form.email);
+    }
+    navigate("/forgot-password");
+  };
+
   return (
     <>
       <Stack gap={theme.gap.large} textAlign="center">
@@ -209,7 +216,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
             component="span"
             ml={theme.gap.xs}
             sx={{ userSelect: "none" }}
-            onClick={() => navigate("/forgot-password")}
+            onClick={handleNavigate}
           >
             Reset password
           </Typography>
