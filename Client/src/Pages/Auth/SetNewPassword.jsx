@@ -11,7 +11,6 @@ import Check from "../../Components/Check/Check";
 import ButtonSpinner from "../../Components/ButtonSpinner";
 import Field from "../../Components/Inputs/Field";
 import LockIcon from "../../assets/icons/lock-button-icon.svg?react";
-import Button from "../../Components/Button";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import "./index.css";
@@ -140,7 +139,91 @@ const SetNewPassword = () => {
             },
           },
         }}
-      ></Stack>
+      >
+        <Stack gap={theme.gap.large} textAlign="center">
+          <Box>
+            <LockIcon alt="lock icon" />
+            <Typography component="h1">Set new password</Typography>
+            <Typography>
+              Your new password must be different to previously used passwords.
+            </Typography>
+          </Box>
+          <Box width="100%" textAlign="left">
+            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
+              <Field
+                type="password"
+                id="register-password-input"
+                label="Password"
+                isRequired={true}
+                placeholder="••••••••"
+                value={form.password}
+                onChange={handleChange}
+                error={errors.password}
+              />
+            </form>
+            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
+              <Field
+                type="password"
+                id="confirm-password-input"
+                label="Confirm password"
+                isRequired={true}
+                placeholder="••••••••"
+                value={form.confirm}
+                onChange={handleChange}
+                error={errors.confirm}
+              />
+            </form>
+            <Stack gap={theme.gap.small} mb={theme.gap.large}>
+              <Check
+                text="Must be at least 8 characters long"
+                variant={
+                  errors?.password === "Password is required"
+                    ? "error"
+                    : form.password === ""
+                    ? "info"
+                    : form.password.length < 8
+                    ? "error"
+                    : "success"
+                }
+              />
+              <Check
+                text="Must contain one special character and a number"
+                variant={
+                  errors?.password === "Password is required"
+                    ? "error"
+                    : form.password === ""
+                    ? "info"
+                    : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
+                        form.password
+                      )
+                    ? "error"
+                    : "success"
+                }
+              />
+              <Check
+                text="Must contain at least one upper and lower character"
+                variant={
+                  errors?.password === "Password is required"
+                    ? "error"
+                    : form.password === ""
+                    ? "info"
+                    : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
+                    ? "error"
+                    : "success"
+                }
+              />
+            </Stack>
+          </Box>
+          <ButtonSpinner
+            disabled={Object.keys(errors).length !== 0}
+            isLoading={isLoading}
+            onClick={handleSubmit}
+            level="primary"
+            label="Reset password"
+            sx={{ width: "100%" }}
+          />
+        </Stack>
+      </Stack>
       <Box textAlign="center" p={theme.gap.large}>
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
@@ -152,93 +235,6 @@ const SetNewPassword = () => {
           Log In
         </Typography>
       </Box>
-      {/* <form className="set-new-password-form" onSubmit={handleSubmit}>
-        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
-          <LockIcon alt="lock icon" style={{ fill: "white" }} />
-          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
-            Set new password
-          </Typography>
-          <Typography sx={{ textAlign: "center" }}>
-            Your new password must be different to previously used passwords.
-          </Typography>
-        </Stack>
-        <Stack gap={theme.gap.large} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Field
-            type="password"
-            id="register-password-input"
-            label="Password"
-            isRequired={true}
-            placeholder="••••••••"
-            value={form.password}
-            onChange={handleChange}
-            error={errors.password}
-          />
-          <Field
-            type="password"
-            id="confirm-password-input"
-            label="Confirm password"
-            isRequired={true}
-            placeholder="••••••••"
-            value={form.confirm}
-            onChange={handleChange}
-            error={errors.confirm}
-          />
-          <Stack gap={theme.gap.small}>
-            <Check
-              text="Must be at least 8 characters long"
-              variant={
-                errors?.password === "Password is required"
-                  ? "error"
-                  : form.password === ""
-                  ? "info"
-                  : form.password.length < 8
-                  ? "error"
-                  : "success"
-              }
-            />
-            <Check
-              text="Must contain one special character and a number"
-              variant={
-                errors?.password === "Password is required"
-                  ? "error"
-                  : form.password === ""
-                  ? "info"
-                  : !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(
-                      form.password
-                    )
-                  ? "error"
-                  : "success"
-              }
-            />
-            <Check
-              text="Must contain at least one upper and lower character"
-              variant={
-                errors?.password === "Password is required"
-                  ? "error"
-                  : form.password === ""
-                  ? "info"
-                  : !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
-                  ? "error"
-                  : "success"
-              }
-            />
-          </Stack>
-          <ButtonSpinner
-            disabled={Object.keys(errors).length !== 0}
-            isLoading={isLoading}
-            onClick={handleSubmit}
-            level="primary"
-            label="Reset password"
-          />
-          <Button
-            level="tertiary"
-            label="Back to log in"
-            img={<ArrowBackRoundedIcon />}
-            sx={{ alignSelf: "center", width: "fit-content" }}
-            onClick={() => navigate("/login")}
-          />
-        </Stack>
-      </form> */}
     </Stack>
   );
 };
