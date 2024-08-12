@@ -107,18 +107,16 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
             />
           </form>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
-            <Box my={theme.gap.ml}>
-              <Field
-                id="register-lastname-input"
-                label="Surname"
-                isRequired={true}
-                placeholder="Ellis"
-                autoComplete="family-name"
-                value={form.lastName}
-                onChange={onChange}
-                error={errors.lastName}
-              />
-            </Box>
+            <Field
+              id="register-lastname-input"
+              label="Surname"
+              isRequired={true}
+              placeholder="Ellis"
+              autoComplete="family-name"
+              value={form.lastName}
+              onChange={onChange}
+              error={errors.lastName}
+            />
           </form>
         </Box>
         <Stack direction="row" justifyContent="space-between">
@@ -267,21 +265,19 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
             />
           </form>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
-            <Box mt={theme.gap.ml}>
-              <Field
-                type="password"
-                id="register-confirm-input"
-                label="Confirm password"
-                isRequired={true}
-                placeholder="Confirm your password"
-                autoComplete="current-password"
-                value={form.confirm}
-                onChange={onChange}
-                error={errors.confirm}
-              />
-            </Box>
+            <Field
+              type="password"
+              id="register-confirm-input"
+              label="Confirm password"
+              isRequired={true}
+              placeholder="Confirm your password"
+              autoComplete="current-password"
+              value={form.confirm}
+              onChange={onChange}
+              error={errors.confirm}
+            />
           </form>
-          <Stack gap={theme.gap.small} my={theme.gap.large}>
+          <Stack gap={theme.gap.small} mb={theme.gap.large}>
             <Check
               text="Must be at least 8 characters long"
               variant={
