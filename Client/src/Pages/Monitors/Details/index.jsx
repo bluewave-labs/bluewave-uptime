@@ -119,7 +119,7 @@ const DetailsPage = () => {
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `/monitors/stats/${monitorId}?filter=${dateRange}&numToDisplay=50&normalize=true`,
+        `/monitors/stats/${monitorId}?dateRange=${dateRange}&numToDisplay=50&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
