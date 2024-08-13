@@ -510,7 +510,7 @@ const Register = ({ isAdmin }) => {
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idMap[id];
-
+    //Change email to lower case. 
     if (name === 'email') {
       value = value.toLowerCase();
     }
