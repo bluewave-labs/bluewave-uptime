@@ -6,7 +6,6 @@
 ![](https://img.shields.io/github/issues-pr/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/issues/bluewave-labs/bluewave-uptime)
 
-
 <h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">BlueWave Uptime</a></h1>
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
@@ -24,31 +23,33 @@ BlueWave Uptime is an open source server monitoring application used to track th
 - [x] Incidents at a glance
 - [x] Page speed monitoring
 - [ ] Scheduled maintenance (in the works)
-- [ ] Status pages (in the works)
 
 **Roadmap (short term):**
+
+- [ ] Memory, disk and CPU monitoring
 - [ ] 3rd party integrations
 - [ ] DNS monitoring
 - [ ] SSL monitoring
 
 **Roadmap (long term):**
-- [ ] Memory, disk and CPU monitoring using OpenTelemetry
+
+- [ ] Status pages
 
 ## Tech stack
 
-* [ReactJs](https://react.dev/)
-* [MUI (React framework)](https://mui.com/)
-* [Node.js](https://nodejs.org/en)
-* [MongoDB](https://mongodb.com)
+- [ReactJs](https://react.dev/)
+- [MUI (React framework)](https://mui.com/)
+- [Node.js](https://nodejs.org/en)
+- [MongoDB](https://mongodb.com)
 
 ## Contributing
 
 We love contributors. Here's how you can contribute:
 
-* Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
-* Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
-* Open an issue if you believe you've encountered a bug
-* Make a pull request to add new features/make quality-of-life improvements/fix bugs.
+- Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
+- Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
+- Open an issue if you believe you've encountered a bug
+- Make a pull request to add new features/make quality-of-life improvements/fix bugs.
 
 <a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=bluewave-labs/bluewave-uptime" />
@@ -58,12 +59,12 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ![Alt](https://repobeats.axiom.co/api/embed/c35d999c82dbb31e967427ea4166c14da4172e73.svg "Repobeats analytics image")
 
-
 ## Getting Started
 
 - Clone this repository to your local machine
 
-1.  [Docker Quickstart](#docker-quickstart)
+1.  [Quickstart for Developers](#dev-quickstart)
+1.  [Docker Compose](#docker-compose)
 1.  [Installation (Client)](#client)
 1.  [Configuration(Client)](#config-client)
     - [Environment](#env-vars-client)
@@ -117,9 +118,41 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ---
 
-### Docker Quick Start
+#### <u>Quickstart for Developers</u> <a id="dev-quickstart"></a>
 
-#### <u>Docker Quickstart</u> <a id="docker-quickstart"></a>
+<span style="color: red; font-weight: bold;">MAKE SURE YOU CD TO THE SPECIFIED DIRECTORIES AS PATHS IN COMMANDS ARE RELATIVE</span>
+
+##### Cloning and Initial Setup
+
+1.  Clone this repository
+2.  Checkout the `develop` branch `git checkout develop`
+
+##### Docker Images Setup
+
+3.  <span style="color: red; font-weight: bold;">CD</span> to the `Docker` directory
+4.  Run `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`
+5.  Run `docker run -d -p 27017:27017 -v $(pwd)/mongo/data:/data/db --name uptime_database_mongo uptime_database_mongo`
+
+##### Server Setup
+
+6.  <span style="color: red; font-weight: bold;">CD</span> to `Server` directory, run `npm install`
+7.  While in `Server` directory, create a `.env` file with the [required environmental variables](#env-vars-server)
+8.  While in the `Server` directory, run `npm run dev`
+
+##### Client Setup
+
+9.  <span style="color: red; font-weight: bold;">CD</span> to `Client` directory `run npm install`
+10. While in the `Client` directory, create a `.env` file with the [required environmental variables](#env-vars-client)
+11. While in the `Client` cirectory run `npm run dev`
+
+##### Access Application
+
+12. Client is running at `localhost:5173`
+13. Server is running at `localhost:5000`
+
+---
+
+#### <u>Docker Compose</u> <a id="docker-compose"></a>
 
 The fastest way to start the application is to use our Dockerfiles and [Docker Compose](https://docs.docker.com/compose/).
 
@@ -143,7 +176,7 @@ SYSTEM_EMAIL_ADDRESS=<system_email>
 SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
-3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
+3.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
@@ -151,7 +184,7 @@ VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
 
 4.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
 
-That's it, the application is ready to use on port 5173.
+That's it, the application is ready to use on port 80.
 <br/>
 
 ### Client
@@ -2112,4 +2145,3 @@ const myRoute = async(req, res, next) => {
 ```
 
 Errors should not be handled at the controller level and should be left to the middleware to handle.
-

@@ -22,7 +22,11 @@ export const register = createAsyncThunk(
       if (error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -37,7 +41,11 @@ export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
     if (error.response && error.response.data) {
       return thunkApi.rejectWithValue(error.response.data);
     }
-    return thunkApi.rejectWithValue(error.message);
+    const payload = {
+      status: false,
+      msg: error.message ? error.message : "Unknown error",
+    };
+    return thunkApi.rejectWithValue(payload);
   }
 });
 
@@ -76,7 +84,11 @@ export const update = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -95,7 +107,11 @@ export const deleteUser = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -110,7 +126,11 @@ export const forgotPassword = createAsyncThunk(
       if (error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -132,7 +152,11 @@ export const setNewPassword = createAsyncThunk(
       if (error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
