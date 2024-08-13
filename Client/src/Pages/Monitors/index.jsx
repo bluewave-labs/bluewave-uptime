@@ -250,7 +250,10 @@ const Monitors = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography component="h1">
+            <Typography
+              component="h1"
+              sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+            >
               Hello, {authState.user.firstName}
             </Typography>
             {monitorState.monitors?.length !== 0 && (
@@ -299,7 +302,8 @@ const Monitors = () => {
               </Stack>
               <Stack
                 gap={theme.gap.large}
-                p={theme.gap.xl}
+                p={theme.gap.lgplus}
+                flex={1}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
                 backgroundColor={theme.palette.otherColors.white}
