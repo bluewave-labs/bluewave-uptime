@@ -120,7 +120,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 #### <u>Quickstart for Developers</u> <a id="dev-quickstart"></a>
 
-# <span style="color: red; font-weight: bold;">PLEASE MAKE SURE YOU CD TO THE SPECIFIED DIRECTORIES</span>
+<span style="color: red; font-weight: bold;">MAKE SURE YOU CD TO THE SPECIFIED DIRECTORIES AS PATHS IN COMMANDS ARE RELATIVE</span>
 
 ##### Cloning and Initial Setup
 
@@ -176,7 +176,7 @@ SYSTEM_EMAIL_ADDRESS=<system_email>
 SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
-3.  In the `Docker` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
+3.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
