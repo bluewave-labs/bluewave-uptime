@@ -16,7 +16,7 @@ const roleValidatior = (role) => (value, helpers) => {
 //****************************************
 
 const loginValidation = joi.object({
-  email: joi.string().email().required(),
+  email: joi.string().email().lowercase().required(),
   password: joi
     .string()
     .min(8)
@@ -35,7 +35,7 @@ const registerValidation = joi.object({
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
-  email: joi.string().email().required(),
+  email: joi.string().email().lowercase().required(),
   password: joi
     .string()
     .min(8)
