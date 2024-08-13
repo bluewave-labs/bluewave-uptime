@@ -127,9 +127,15 @@ const getIncidents = (checks) => {
  * @returns {Array<Boolean>}  Array of booleans representing up/down.
  */
 const getStatusBarValues = (checks) => {
-  return checks.map((check) => {
-    return check.status;
-  });
+  return checks
+    .map((check) => {
+      return {
+        status: check.status,
+        responseTime: check.responseTime,
+        value: 75,
+      };
+    })
+    .reverse();
 };
 /**
  * Get stats by monitor ID

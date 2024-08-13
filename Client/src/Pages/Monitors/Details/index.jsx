@@ -17,6 +17,7 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
+import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -178,10 +179,13 @@ const DetailsPage = () => {
           <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
             <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
+              <Typography component="h1" sx={{ lineHeight: 1 }}>
+                {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+              </Typography>
+              <MonitorDetails60MinChart data={monitor.statusBar} />
+            </Stack>
+            <Stack direction="row" gap={theme.gap.small}>
               <Box>
-                <Typography component="h1" sx={{ lineHeight: 1 }}>
-                  {monitor.url?.replace(/^https?:\/\//, "") || "..."}
-                </Typography>
                 <Typography mt={theme.gap.small}>
                   <Typography
                     component="span"
