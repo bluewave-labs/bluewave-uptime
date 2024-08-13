@@ -20,7 +20,7 @@
     "@mui/x-data-grid": "7.3.2",
     "@mui/x-date-pickers": "7.3.2",
     "@reduxjs/toolkit": "2.2.5",
-    "axios": "1.7.2",
+    "axios": "^1.3.1",
     "chart.js": "^4.4.3",
     "dayjs": "1.11.11",
     "joi": "17.13.1",
