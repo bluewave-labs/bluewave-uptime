@@ -184,7 +184,7 @@ VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
 
 4.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
 
-That's it, the application is ready to use on port 5173.
+That's it, the application is ready to use on port 80.
 <br/>
 
 ### Client
