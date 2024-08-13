@@ -240,7 +240,7 @@ const Monitors = () => {
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
   return (
-    <Stack className="monitors" gap={theme.gap.large}>
+    <Stack className="monitors" pt={theme.gap.xl} gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (

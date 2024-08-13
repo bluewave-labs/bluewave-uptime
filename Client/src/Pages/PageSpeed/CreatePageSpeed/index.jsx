@@ -106,7 +106,7 @@ const CreatePageSpeed = () => {
         onClick={() => navigate("/pagespeed")}
         sx={{
           backgroundColor: theme.palette.otherColors.fillGray,
-          mb: theme.gap.large,
+          mb: theme.gap.medium,
           px: theme.gap.ml,
           "& svg.MuiSvgIcon-root": {
             mr: theme.gap.small,
@@ -122,8 +122,6 @@ const CreatePageSpeed = () => {
           display: "flex",
           flexDirection: "column",
           gap: theme.gap.large,
-          // TODO
-          maxWidth: "1000px",
         }}
       >
         <Typography component="h1">Create a page speed monitor</Typography>
