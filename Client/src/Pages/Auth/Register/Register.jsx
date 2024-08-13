@@ -510,6 +510,11 @@ const Register = ({ isAdmin }) => {
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idMap[id];
+
+    if (name === 'email') {
+      value = value.toLowerCase();
+    }
+    
     setForm((prev) => ({
       ...prev,
       [name]: value,
