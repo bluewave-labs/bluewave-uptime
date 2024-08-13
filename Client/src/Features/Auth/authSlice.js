@@ -74,7 +74,7 @@ export const update = createAsyncThunk(
       }
       const payload = {
         status: false,
-        msg: error.message ? error.message : "Unknown error",
+        msg: error.message ? rror.message : "Unknown error",
       };
       return thunkApi.rejectWithValue(payload);
     }
