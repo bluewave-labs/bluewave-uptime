@@ -6,11 +6,9 @@ import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
-  formatDate,
   formatDuration,
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
-import { getLastChecked } from "../../../Utils/monitorUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
