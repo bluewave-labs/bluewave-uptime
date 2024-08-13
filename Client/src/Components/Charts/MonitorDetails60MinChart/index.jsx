@@ -16,8 +16,14 @@ const MonitorDetails60MinChart = ({ data }) => {
     fontSize: "8px",
     fill: "black",
   };
+
+  const color = {
+    true: "var(--env-var-color-23)",
+    false: "var(--env-var-color-24)",
+    undefined: "var(--env-var-color-33)",
+  };
   return (
-    <ResponsiveContainer width="100%" height={50}>
+    <ResponsiveContainer width="100%" height={35}>
       <BarChart
         height={20}
         data={data}
@@ -27,14 +33,7 @@ const MonitorDetails60MinChart = ({ data }) => {
         <YAxis hide={true} domain={[0, 100]} />
         <Bar dataKey="value" barSize={15}>
           {data.map((check, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={
-                check.status === true
-                  ? "var(--env-var-color-23)"
-                  : "var(--env-var-color-24)"
-              }
-            />
+            <Cell key={`cell-${index}`} fill={color[check.status]} />
           ))}
         </Bar>
         <ReferenceLine x={0} stroke="black" strokeDasharray="3 3">

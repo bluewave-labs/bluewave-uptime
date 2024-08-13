@@ -177,7 +177,12 @@ const DetailsPage = () => {
             }}
           />
           <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+            <Stack
+              direction="row"
+              gap={theme.gap.small}
+              mt={theme.gap.small}
+              alignItems={"end"}
+            >
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
               <Typography component="h1" sx={{ lineHeight: 1 }}>
                 {monitor.url?.replace(/^https?:\/\//, "") || "..."}

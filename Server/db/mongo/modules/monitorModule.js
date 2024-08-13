@@ -139,7 +139,7 @@ const getStatusBarValues = (monitor, checks) => {
   });
 
   for (let i = 0; i < noBlankChecks; i++) {
-    statusBarValues.push({ status: false, responseTime: 0, value: 0 });
+    statusBarValues.push({ status: undefined, responseTime: 0, value: 75 });
   }
   return statusBarValues.reverse();
 };
