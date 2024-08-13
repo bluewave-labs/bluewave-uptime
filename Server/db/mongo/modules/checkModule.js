@@ -33,7 +33,6 @@ const getChecksCount = async (req) => {
   const monitorId = req.params.monitorId;
   const dateRange = req.query.dateRange;
   const filter = req.query.filter;
-  console.log(filter);
   // Build query
   const checksQuery = { monitorId: monitorId };
   // Filter checks by "day", "week", or "month"
