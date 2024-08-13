@@ -14,7 +14,9 @@ export const register = createAsyncThunk(
   "auth/register",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.post("/auth/register", form);
+      // Convert email to lowercase before sending the request
+      const modifiedForm = { ...form, email: form.email.toLowerCase() };
+      const res = await axiosInstance.post("/auth/register", modifiedForm);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -27,7 +29,9 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   try {
-    const res = await axiosInstance.post(`/auth/login`, form);
+    // Convert email to lowercase before sending the request
+    const modifiedForm = { ...form, email: form.email.toLowerCase() };
+    const res = await axiosInstance.post(`/auth/login`, modifiedForm);
     return res.data;
   } catch (error) {
     if (error.response && error.response.data) {
