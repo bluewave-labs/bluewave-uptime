@@ -14,38 +14,26 @@ export const register = createAsyncThunk(
   "auth/register",
   async (form, thunkApi) => {
     try {
-      // Convert email to lowercase before sending the request
-      const modifiedForm = { ...form, email: form.email.toLowerCase() };
-      const res = await axiosInstance.post("/auth/register", modifiedForm);
+      const res = await axiosInstance.post("/auth/register", form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      const payload = {
-        status: false,
-        msg: error.message ? error.message : "Unknown error",
-      };
-      return thunkApi.rejectWithValue(payload);
+      return thunkApi.rejectWithValue(error.message);
     }
   }
 );
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   try {
-    // Convert email to lowercase before sending the request
-    const modifiedForm = { ...form, email: form.email.toLowerCase() };
-    const res = await axiosInstance.post(`/auth/login`, modifiedForm);
+    const res = await axiosInstance.post("/auth/login", form);
     return res.data;
   } catch (error) {
     if (error.response && error.response.data) {
       return thunkApi.rejectWithValue(error.response.data);
     }
-    const payload = {
-      status: false,
-      msg: error.message ? error.message : "Unknown error",
-    };
-    return thunkApi.rejectWithValue(payload);
+    return thunkApi.rejectWithValue(error.message);
   }
 });
 
