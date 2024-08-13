@@ -120,12 +120,11 @@ const Monitors = () => {
   };
   const closeMenu = () => {
     setAnchorEl(null);
-    setActions({});
   };
 
   const [isOpen, setIsOpen] = useState(false);
   const openRemove = () => {
-    setAnchorEl(null);
+    closeMenu();
     setIsOpen(true);
   };
   const handleRemove = async (event) => {
@@ -220,7 +219,11 @@ const Monitors = () => {
                 aria-label="monitor actions"
                 onClick={(event) => {
                   event.stopPropagation();
-                  openMenu(event, monitor._id, monitor.url);
+                  openMenu(
+                    event,
+                    monitor._id,
+                    monitor.type === "ping" ? null : monitor.url
+                  );
                 }}
                 sx={{
                   "&:focus": {
@@ -326,13 +329,17 @@ const Monitors = () => {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
       >
-        <MenuItem
-          onClick={() => {
-            window.open(actions.url, "_blank", "noreferrer");
-          }}
-        >
-          Open site
-        </MenuItem>
+        {actions.url !== null ? (
+          <MenuItem
+            onClick={() => {
+              window.open(actions.url, "_blank", "noreferrer");
+            }}
+          >
+            Open site
+          </MenuItem>
+        ) : (
+          ""
+        )}
         <MenuItem onClick={() => navigate(`/monitors/${actions.id}`)}>
           Details
         </MenuItem>
