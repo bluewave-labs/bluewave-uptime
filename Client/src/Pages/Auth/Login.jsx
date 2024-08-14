@@ -263,9 +263,10 @@ const Login = () => {
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idMap[id];
+    const newValue = name === "email" ? value.toLowerCase() : value;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: newValue,
     }));
 
     const { error } = credentials.validate(

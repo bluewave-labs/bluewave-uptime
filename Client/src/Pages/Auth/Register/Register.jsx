@@ -474,7 +474,7 @@ const Register = ({ isAdmin }) => {
   const handleStepThree = async (e) => {
     e.preventDefault();
 
-    let registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+    let registerForm = { ...form, email: form.email.toLowerCase(), role: isAdmin ? ["admin"] : form.role };
     let error = validateForm(registerForm, {
       context: { password: form.password },
     });
@@ -510,9 +510,10 @@ const Register = ({ isAdmin }) => {
   const handleChange = (event) => {
     const { value, id } = event.target;
     const name = idMap[id];
+    const newValue = name === "email" ? value.toLowerCase() : value;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: newValue,
     }));
 
     const { error } = credentials.validate(
