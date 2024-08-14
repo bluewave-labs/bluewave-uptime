@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 const MonitorDetails60MinChart = ({ data }) => {
   const labelStyle = {
-    fontSize: "8px",
-    fill: "black",
+    fontSize: "10px",
+    fill: "#475467",
   };
 
   const color = {
