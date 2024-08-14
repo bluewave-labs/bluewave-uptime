@@ -28,15 +28,6 @@ const CustomToolTip = ({ active, payload, label }) => {
 };
 
 const MonitorDetailsAreaChart = ({ checks }) => {
-  //   SQUASH ERROR, NOT PERMANENT SOLUTION
-  const error = console.error;
-  console.error = (...args) => {
-    if (/defaultProps/.test(args[0])) return;
-    error(...args);
-  };
-
-  //   END SQUASH ERROR, NOT PERMANENT SOLUTION
-
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString("en-US", {
