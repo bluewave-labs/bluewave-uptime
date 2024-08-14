@@ -126,10 +126,22 @@ const getIncidents = (checks) => {
  * @param {Array} checks Array of check objects.
  * @returns {Array<Boolean>}  Array of booleans representing up/down.
  */
-const getStatusBarValues = (checks) => {
-  return checks.map((check) => {
-    return check.status;
+const getStatusBarValues = (monitor, checks) => {
+  const checksIn60Mins = Math.floor((60 * 60 * 1000) / monitor.interval);
+  const noBlankChecks = checksIn60Mins - checks.length;
+
+  const statusBarValues = checks.map((check) => {
+    return {
+      status: check.status,
+      responseTime: check.responseTime,
+      value: 75,
+    };
   });
+
+  for (let i = 0; i < noBlankChecks; i++) {
+    statusBarValues.push({ status: undefined, responseTime: 0, value: 75 });
+  }
+  return statusBarValues.reverse();
 };
 /**
  * Get stats by monitor ID
@@ -205,7 +217,7 @@ const getMonitorStatsById = async (req) => {
         getAverageResponseTime24Hours(checks24Hours);
       monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
       monitorStats.uptime30Days = getUptimePercentage(checks30Days);
-      monitorStats.statusBar = getStatusBarValues(checks60Mins);
+      monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
     }
 
     //Get checks for dateRange
