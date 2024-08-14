@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Box, Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
+import { Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { createToast } from "../../Utils/toastUtils";
+import axiosInstance from "../../Utils/axiosConfig";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
 import UserSvg from "../../assets/icons/user.svg?react";
@@ -76,21 +78,28 @@ function Sidebar() {
    *
    */
   const logout = async () => {
-    // Clear auth state
-    dispatch(clearAuthState());
-    dispatch(clearUptimeMonitorState());
-    // Make request to BE to remove JWT from user
-    await axiosIntance.post(
-      "/auth/logout",
-      { email: authState.user.email },
-      {
-        headers: {
-          Authorization: `Bearer ${authState.authToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    navigate("/login");
+    try {
+      // Make request to BE to remove JWT from user
+      await axiosInstance.post(
+        "/auth/logout",
+        { email: authState.user.email },
+        {
+          headers: {
+            Authorization: `Bearer ${authState.authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Clear auth state
+      dispatch(clearAuthState());
+      dispatch(clearUptimeMonitorState());
+      navigate("/login");
+    } catch (error) {
+      createToast({
+        body: error.message,
+      });
+    }
   };
 
   /**
