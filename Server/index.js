@@ -16,6 +16,7 @@ const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
 const { connectDbAndRunServer } = require("./configs/db");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
+const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
 
@@ -114,8 +115,9 @@ const startApp = async () => {
 
   // Create services
   await connectDbAndRunServer(app, db);
-  const jobQueue = await JobQueue.createJobQueue(db);
   const emailService = new EmailService();
+  const networkService = new NetworkService(db, emailService);
+  const jobQueue = await JobQueue.createJobQueue(db, networkService);
   const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {
