@@ -120,12 +120,11 @@ const Monitors = () => {
   };
   const closeMenu = () => {
     setAnchorEl(null);
-    setActions({});
   };
 
   const [isOpen, setIsOpen] = useState(false);
   const openRemove = () => {
-    setAnchorEl(null);
+    closeMenu();
     setIsOpen(true);
   };
   const handleRemove = async (event) => {
@@ -220,7 +219,11 @@ const Monitors = () => {
                 aria-label="monitor actions"
                 onClick={(event) => {
                   event.stopPropagation();
-                  openMenu(event, monitor._id, monitor.url);
+                  openMenu(
+                    event,
+                    monitor._id,
+                    monitor.type === "ping" ? null : monitor.url
+                  );
                 }}
                 sx={{
                   "&:focus": {
@@ -240,7 +243,7 @@ const Monitors = () => {
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
   return (
-    <Stack className="monitors" gap={theme.gap.large}>
+    <Stack className="monitors" pt={theme.gap.xl} gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -250,7 +253,10 @@ const Monitors = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography component="h1">
+            <Typography
+              component="h1"
+              sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+            >
               Hello, {authState.user.firstName}
             </Typography>
             {monitorState.monitors?.length !== 0 && (
@@ -299,7 +305,8 @@ const Monitors = () => {
               </Stack>
               <Stack
                 gap={theme.gap.large}
-                p={theme.gap.xl}
+                p={theme.gap.lgplus}
+                flex={1}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
                 backgroundColor={theme.palette.otherColors.white}
@@ -326,13 +333,17 @@ const Monitors = () => {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
       >
-        <MenuItem
-          onClick={() => {
-            window.open(actions.url, "_blank", "noreferrer");
-          }}
-        >
-          Open site
-        </MenuItem>
+        {actions.url !== null ? (
+          <MenuItem
+            onClick={() => {
+              window.open(actions.url, "_blank", "noreferrer");
+            }}
+          >
+            Open site
+          </MenuItem>
+        ) : (
+          ""
+        )}
         <MenuItem onClick={() => navigate(`/monitors/${actions.id}`)}>
           Details
         </MenuItem>
