@@ -35,7 +35,7 @@
 }
 
 .monitor-details .stat-box {
-  flex: 1;
+  flex: 1 20%;
   min-width: 100px;
   border: solid 1px;
   border-radius: var(--env-var-radius-1);

@@ -163,12 +163,12 @@ const DetailsPage = () => {
         <>
           <Button
             level="tertiary"
-            label="Back to Monitors"
+            label="Back"
             animate="slideLeft"
             img={<WestRoundedIcon />}
             onClick={() => navigate("/monitors")}
             sx={{
-              backgroundColor: "#f4f4f4",
+              backgroundColor: theme.palette.otherColors.fillGray,
               px: theme.gap.ml,
               "& svg.MuiSvgIcon-root": {
                 mr: theme.gap.small,
@@ -176,21 +176,24 @@ const DetailsPage = () => {
               },
             }}
           />
-          <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
+          <Stack gap={theme.gap.large}>
             <Stack
               direction="row"
               gap={theme.gap.small}
               mt={theme.gap.small}
-              alignItems={"end"}
+              alignItems="baseline"
             >
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
-              <Typography component="h1" sx={{ lineHeight: 1 }}>
-                {monitor.url?.replace(/^https?:\/\//, "") || "..."}
-              </Typography>
-              <MonitorDetails60MinChart data={monitor.statusBar} />
-            </Stack>
-            <Stack direction="row" gap={theme.gap.small}>
               <Box>
+                <Stack direction="row">
+                  <Typography
+                    component="h1"
+                    sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+                  >
+                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  </Typography>
+                  <MonitorDetails60MinChart data={monitor.statusBar} />
+                </Stack>
                 <Typography mt={theme.gap.small}>
                   <Typography
                     component="span"
@@ -203,8 +206,6 @@ const DetailsPage = () => {
                     Your site is {monitor?.status ? "up" : "down"}.
                   </Typography>{" "}
                   Checking every {formatDurationRounded(monitor?.interval)}.
-                  Last time checked{" "}
-                  {formatDurationRounded(monitor?.lastChecked)} ago.
                 </Typography>
               </Box>
               <Button
@@ -235,23 +236,18 @@ const DetailsPage = () => {
               direction="row"
               justifyContent="space-between"
               gap={theme.gap.large}
+              flexWrap="wrap"
             >
               <StatBox
                 title="Currently up for"
                 value={formatDuration(monitor?.uptimeDuration)}
               />
               <StatBox
-                title="Last checked"
+                title="Last check"
                 value={`${formatDuration(monitor?.lastChecked)} ago`}
               />
               <StatBox title="Incidents" value={monitor?.incidents} />
               <StatBox title="Certificate Expiry" value={certificateExpiry} />
-            </Stack>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              gap={theme.gap.large}
-            >
               <StatBox
                 title="Latest response time"
                 value={monitor?.latestResponseTime}
@@ -269,7 +265,7 @@ const DetailsPage = () => {
                   .replace(/\.?0+$/, "")}%`}
               />
               <StatBox
-                title="Uptime(30 days)"
+                title="Uptime (30 days)"
                 value={`${parseFloat(monitor?.uptime30Days)
                   .toFixed(2)
                   .replace(/\.?0+$/, "")}%`}
@@ -281,7 +277,7 @@ const DetailsPage = () => {
                 justifyContent="space-between"
                 mb={theme.gap.ml}
               >
-                <Typography component="h2" mb={theme.gap.small}>
+                <Typography component="h2" alignSelf="flex-end">
                   Response Times
                 </Typography>
                 <ButtonGroup>
@@ -317,7 +313,15 @@ const DetailsPage = () => {
                   />
                 </ButtonGroup>
               </Stack>
-              <Box sx={{ height: "200px" }}>
+              <Box
+                p={theme.gap.mlplus}
+                pb={theme.gap.xs}
+                backgroundColor={theme.palette.otherColors.white}
+                border={1}
+                borderColor={theme.palette.otherColors.graishWhite}
+                borderRadius={`${theme.shape.borderRadius}px`}
+                sx={{ height: "250px" }}
+              >
                 <MonitorDetailsAreaChart
                   checks={[...monitor.checks].reverse()}
                 />
