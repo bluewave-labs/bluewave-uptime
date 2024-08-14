@@ -88,10 +88,9 @@ const ForgotPassword = () => {
 
   return (
     <Stack className="forgot-password-page auth" overflow="hidden">
-      <img
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
       <Stack
         direction="row"
@@ -107,8 +106,8 @@ const ForgotPassword = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        p={theme.gap.xl}
-        pb={theme.gap.triplexl}
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.xl}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
@@ -123,7 +122,11 @@ const ForgotPassword = () => {
           },
         }}
       >
-        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+        <Stack
+          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          alignItems="center"
+          textAlign="center"
+        >
           <Box>
             <Key alt="password key icon" />
             <Typography component="h1">Forgot password?</Typography>
@@ -131,7 +134,7 @@ const ForgotPassword = () => {
               No worries, we'll send you reset instructions.
             </Typography>
           </Box>
-          <Box width="100%" maxWidth={400} textAlign="left">
+          <Box width="100%" textAlign="left">
             <form noValidate spellCheck={false} onSubmit={handleSubmit}>
               <Field
                 type="email"

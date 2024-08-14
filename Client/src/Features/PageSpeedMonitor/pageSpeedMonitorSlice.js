@@ -25,7 +25,11 @@ export const createPageSpeed = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -40,7 +44,11 @@ export const getPageSpeedMonitors = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -63,7 +71,11 @@ export const getPageSpeedByUserId = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -94,7 +106,11 @@ export const updatePageSpeed = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );
@@ -115,7 +131,11 @@ export const deletePageSpeed = createAsyncThunk(
       if (error.response && error.response.data) {
         return thunkApi.rejectWithValue(error.response.data);
       }
-      return thunkApi.rejectWithValue(error.message);
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
     }
   }
 );

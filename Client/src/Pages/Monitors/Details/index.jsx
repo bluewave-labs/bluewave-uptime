@@ -113,12 +113,13 @@ const DetailsPage = () => {
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
   const [dateRange, setDateRange] = useState("day");
+  const [certificateExpiry, setCertificateExpiry] = useState("N/A");
   const navigate = useNavigate();
 
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `/monitors/stats/${monitorId}?filter=${dateRange}&numToDisplay=50&normalize=true`,
+        `/monitors/stats/${monitorId}?dateRange=${dateRange}&numToDisplay=50&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -136,10 +137,23 @@ const DetailsPage = () => {
     fetchMonitor();
   }, [fetchMonitor]);
 
+  useEffect(() => {
+    const fetchCertificate = async () => {
+      const res = await axiosInstance.get(
+        `/monitors/certificate/${monitorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      setCertificateExpiry(res.data.data.certificateDate);
+    };
+    fetchCertificate();
+  }, [authToken, monitorId]);
+
   const theme = useTheme();
-
   let loading = Object.keys(monitor).length === 0;
-
   return (
     <Box className="monitor-details">
       {loading ? (
@@ -222,6 +236,35 @@ const DetailsPage = () => {
                 value={`${formatDuration(monitor?.lastChecked)} ago`}
               />
               <StatBox title="Incidents" value={monitor?.incidents} />
+              <StatBox title="Certificate Expiry" value={certificateExpiry} />
+            </Stack>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              gap={theme.gap.large}
+            >
+              <StatBox
+                title="Latest response time"
+                value={monitor?.latestResponseTime}
+              />
+              <StatBox
+                title="Average Repsonse Time (24 hours)"
+                value={parseFloat(monitor?.avgResponseTime24hours)
+                  .toFixed(2)
+                  .replace(/\.?0+$/, "")}
+              />
+              <StatBox
+                title="Uptime (24 hours)"
+                value={`${parseFloat(monitor?.uptime24Hours)
+                  .toFixed(2)
+                  .replace(/\.?0+$/, "")}%`}
+              />
+              <StatBox
+                title="Uptime(30 days)"
+                value={`${parseFloat(monitor?.uptime30Days)
+                  .toFixed(2)
+                  .replace(/\.?0+$/, "")}%`}
+              />
             </Stack>
             <Box>
               <Stack
@@ -266,7 +309,9 @@ const DetailsPage = () => {
                 </ButtonGroup>
               </Stack>
               <Box sx={{ height: "200px" }}>
-                <MonitorDetailsAreaChart checks={monitor.checks.reverse()} />
+                <MonitorDetailsAreaChart
+                  checks={[...monitor.checks].reverse()}
+                />
               </Box>
             </Box>
             <Stack gap={theme.gap.ml}>

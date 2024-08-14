@@ -6,11 +6,9 @@ import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
-  formatDate,
   formatDuration,
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
-import { getLastChecked } from "../../../Utils/monitorUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -365,7 +363,7 @@ const PageSpeedDetails = () => {
           <Stack
             direction="row"
             justifyContent="space-between"
-            gap={theme.gap.xl}
+            gap={theme.gap.large}
             flexWrap="wrap"
           >
             <StatBox
@@ -411,7 +409,7 @@ const PageSpeedDetails = () => {
             <PageSpeedLineChart pageSpeedChecks={monitor?.checks?.reverse()} />
           </Box>
           <Typography component="h2">Performance report</Typography>
-          <Stack direction="row" alignItems="center" overflow="hidden">
+          <Stack direction="row" alignItems="center" overflow="hidden" flex={1}>
             <Stack
               alignItems="center"
               textAlign="center"

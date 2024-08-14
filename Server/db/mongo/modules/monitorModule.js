@@ -149,7 +149,7 @@ const getMonitorStatsById = async (req) => {
 
   try {
     const { monitorId } = req.params;
-    let { status, limit, sortOrder, filter, numToDisplay, normalize } =
+    let { status, limit, sortOrder, dateRange, numToDisplay, normalize } =
       req.query;
 
     // This effectively removes limit, returning all checks
@@ -161,37 +161,44 @@ const getMonitorStatsById = async (req) => {
     // Get monitor
     const monitor = await Monitor.findById(monitorId);
 
+    // Determine if this is a pagespeed monitor or an http/ping monitor
     let model =
       monitor.type === "http" || monitor.type === "ping"
         ? Check
         : PageSpeedCheck;
 
+    // Build monitor stats object
     const monitorStats = {
       ...monitor.toObject(),
     };
-    // Get all checks to calculate stats
+
+    // Start building query
     const checksQuery = { monitorId: monitor._id };
+
     // Get all checks
     const checksAll = await model.find(checksQuery).sort({
       createdAt: sortOrder,
     });
 
     if (monitor.type === "http" || monitor.type === "ping") {
-      // Get checks in 24 hours
-      checksQuery.createdAt = { $gte: filterLookup.day };
-      const checks24Hours = await model.find(checksQuery).sort({
-        createdAt: sortOrder,
-      });
-      // Get checks in 30 days
-      checksQuery.createdAt = { $gte: filterLookup.month };
-      const checks30Days = await model.find(checksQuery).sort({
-        createdAt: sortOrder,
-      });
-      // Get checks in 60 mins
-      checksQuery.createdAt = { $gte: filterLookup.hour };
-      const checks60Mins = await model
-        .find(checksQuery)
-        .sort({ createdAt: sortOrder });
+      const checksQuery24Hours = {
+        ...checksQuery,
+        createdAt: { $gte: filterLookup.day },
+      };
+      const checksQuery30Days = {
+        ...checksQuery,
+        createdAt: { $gte: filterLookup.month },
+      };
+      const checksQuery60Mins = {
+        ...checksQuery,
+        createdAt: { $gte: filterLookup.hour },
+      };
+
+      const [checks24Hours, checks30Days, checks60Mins] = await Promise.all([
+        model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
+        model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
+        model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
+      ]);
 
       // HTTP/PING Specific stats
       monitorStats.avgResponseTime24hours =
@@ -202,14 +209,13 @@ const getMonitorStatsById = async (req) => {
     }
 
     //Get checks for dateRange
-
     if (status !== undefined) {
       checksQuery.status = status;
     }
 
     // Filter checks by "day", "week", or "month"
-    if (filter !== undefined) {
-      checksQuery.createdAt = { $gte: filterLookup[filter] };
+    if (dateRange !== undefined) {
+      checksQuery.createdAt = { $gte: filterLookup[dateRange] };
     }
 
     let dateRangeChecks = await model
@@ -218,6 +224,8 @@ const getMonitorStatsById = async (req) => {
         createdAt: sortOrder,
       })
       .limit(limit);
+
+    const incidents = getIncidents(dateRangeChecks);
 
     // If more than numToDisplay checks, pick every nth check
     if (
@@ -233,10 +241,9 @@ const getMonitorStatsById = async (req) => {
     if (normalize !== undefined) {
       dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
     }
-    
-    // Add common stats
-    const incidents = getIncidents(dateRangeChecks);
-    monitorStats.uptimeDuration = caluclteUptimeDuration(checksAll);
+
+    // Add common stats and stats that depend on the dateRange
+    monitorStats.uptimeDuration = calculateUptimeDuration(checksAll);
     monitorStats.lastChecked = getLastChecked(checksAll);
     monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
     monitorStats.incidents = incidents;

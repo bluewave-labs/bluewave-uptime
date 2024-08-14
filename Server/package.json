@@ -29,6 +29,7 @@
     "nodemailer": "^6.9.14",
     "ping": "0.4.4",
     "sharp": "0.33.4",
+    "ssl-checker": "2.0.10",
     "winston": "^3.13.0"
   },
   "devDependencies": {

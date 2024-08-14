@@ -57,6 +57,7 @@ const CheckSchema = mongoose.Schema(
      *
      * @type {Date}
      */
+
     expiry: {
       type: Date,
       default: Date.now,
@@ -84,43 +85,38 @@ CheckSchema.pre("save", async function (next) {
       });
 
       // Check if there are any notifications
-      if (notifications && notifications.length > 0) {
-        // Only send email if monitor status has changed
-        if (monitor.status !== this.status) {
-          const emailService = new EmailService();
 
-          if (monitor.status === true && this.status === false) {
-            // Notify users that the monitor is down
-            for (const notification of notifications) {
-              if (notification.type === "email") {
-                await emailService.buildAndSendEmail(
-                  "serverIsDownTemplate",
-                  { monitorName: monitor.name, monitorUrl: monitor.url },
-                  notification.address,
-                  `Monitor ${monitor.name} is down`
-                );
-              }
-            }
-          }
+      // Only send email if monitor status has changed
+      if (monitor.status !== this.status) {
+        const emailService = new EmailService();
 
-          if (monitor.status === false && this.status === true) {
-            // Notify users that the monitor is up
-            for (const notification of notifications) {
-              if (notification.type === "email") {
-                await emailService.buildAndSendEmail(
-                  "serverIsUpTemplate",
-                  { monitorName: monitor.name, monitorUrl: monitor.url },
-                  notification.address,
-                  `Monitor ${monitor.name} is back up`
-                );
-              }
-            }
-          }
-
-          // Update monitor status
-          monitor.status = this.status;
-          await monitor.save();
+        let template = "";
+        let status = "";
+        if (monitor.status === true && this.status === false) {
+          template = "serverIsDownTemplate";
+          status = "down";
         }
+
+        if (monitor.status === false && this.status === true) {
+          // Notify users that the monitor is up
+          template = "serverIsUpTemplate";
+          status = "up";
+        }
+
+        for (const notification of notifications) {
+          if (notification.type === "email") {
+            await emailService.buildAndSendEmail(
+              template,
+              { monitorName: monitor.name, monitorUrl: monitor.url },
+              notification.address,
+              `Monitor ${monitor.name} is ${status}`
+            );
+          }
+        }
+
+        // Update monitor status
+        monitor.status = this.status;
+        await monitor.save();
       }
     }
   } catch (error) {

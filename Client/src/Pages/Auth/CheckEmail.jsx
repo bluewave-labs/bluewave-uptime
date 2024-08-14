@@ -86,10 +86,9 @@ const CheckEmail = () => {
 
   return (
     <Stack className="check-email-page auth" overflow="hidden">
-      <img
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
       <Stack
         direction="row"
@@ -105,8 +104,8 @@ const CheckEmail = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        p={theme.gap.xl}
-        pb={theme.gap.triplexl}
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.xl}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
@@ -121,11 +120,15 @@ const CheckEmail = () => {
           },
         }}
       >
-        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+        <Stack
+          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          alignItems="center"
+          textAlign="center"
+        >
           <Box>
             <EmailIcon alt="email icon" />
             <Typography component="h1">Check your email</Typography>
-            <Typography mt={theme.gap.xs} sx={{ width: "max-content" }}>
+            <Typography mt={theme.gap.xs}>
               We sent a password reset link to{" "}
               <Typography className="email-sent-to" component="span">
                 {email || "username@email.com"}

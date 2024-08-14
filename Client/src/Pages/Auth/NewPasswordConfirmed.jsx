@@ -23,10 +23,9 @@ const NewPasswordConfirmed = () => {
 
   return (
     <Stack className="password-confirmed-page auth" overflow="hidden">
-      <img
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
       <Stack
         direction="row"
@@ -42,8 +41,8 @@ const NewPasswordConfirmed = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        p={theme.gap.xl}
-        pb={theme.gap.triplexl}
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.xl}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
@@ -58,7 +57,11 @@ const NewPasswordConfirmed = () => {
           },
         }}
       >
-        <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+        <Stack
+          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          alignItems="center"
+          textAlign="center"
+        >
           <Box>
             <ConfirmIcon alt="password confirm icon" />
             <Typography component="h1">Password reset</Typography>
