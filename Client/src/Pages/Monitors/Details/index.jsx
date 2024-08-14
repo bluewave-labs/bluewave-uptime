@@ -22,7 +22,11 @@ import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails6
 const StatBox = ({ title, value }) => {
   return (
     <Box className="stat-box">
-      <Typography variant="h6" sx={{ fontWeight: 400 }}>
+      <Typography
+        variant="h6"
+        mb="5px"
+        sx={{ fontWeight: 500, textTransform: "uppercase" }}
+      >
         {title}
       </Typography>
       <Typography variant="h4">{value}</Typography>
@@ -31,7 +35,7 @@ const StatBox = ({ title, value }) => {
 };
 
 StatBox.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
@@ -176,7 +180,7 @@ const DetailsPage = () => {
               },
             }}
           />
-          <Stack gap={theme.gap.large}>
+          <Stack gap={theme.gap.xl}>
             <Stack
               direction="row"
               gap={theme.gap.small}
@@ -244,7 +248,7 @@ const DetailsPage = () => {
               />
               <StatBox
                 title="Last check"
-                value={`${formatDuration(monitor?.lastChecked)} ago`}
+                value={`${formatDurationRounded(monitor?.lastChecked)} ago`}
               />
               <StatBox title="Incidents" value={monitor?.incidents} />
               <StatBox title="Certificate Expiry" value={certificateExpiry} />
@@ -253,19 +257,32 @@ const DetailsPage = () => {
                 value={monitor?.latestResponseTime}
               />
               <StatBox
-                title="Average Repsonse Time (24 hours)"
+                title={
+                  <>
+                    Avg Response Time{" "}
+                    <Typography component="span">(24-hr)</Typography>
+                  </>
+                }
                 value={parseFloat(monitor?.avgResponseTime24hours)
                   .toFixed(2)
                   .replace(/\.?0+$/, "")}
               />
               <StatBox
-                title="Uptime (24 hours)"
+                title={
+                  <>
+                    Uptime <Typography component="span">(24-hr)</Typography>
+                  </>
+                }
                 value={`${parseFloat(monitor?.uptime24Hours)
                   .toFixed(2)
                   .replace(/\.?0+$/, "")}%`}
               />
               <StatBox
-                title="Uptime (30 days)"
+                title={
+                  <>
+                    Uptime <Typography component="span">(30-day)</Typography>
+                  </>
+                }
                 value={`${parseFloat(monitor?.uptime30Days)
                   .toFixed(2)
                   .replace(/\.?0+$/, "")}%`}
