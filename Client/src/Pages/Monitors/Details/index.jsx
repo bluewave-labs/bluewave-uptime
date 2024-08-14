@@ -22,14 +22,12 @@ import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails6
 const StatBox = ({ title, value }) => {
   return (
     <Box className="stat-box">
-      <Typography
-        variant="h6"
-        mb="5px"
-        sx={{ fontWeight: 500, textTransform: "uppercase" }}
-      >
+      <Typography variant="h6" mb={1} fontWeight={500}>
         {title}
       </Typography>
-      <Typography variant="h4">{value}</Typography>
+      <Typography variant="h4" fontWeight={500}>
+        {value}
+      </Typography>
     </Box>
   );
 };
@@ -180,7 +178,7 @@ const DetailsPage = () => {
               },
             }}
           />
-          <Stack gap={theme.gap.xl}>
+          <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
             <Stack
               direction="row"
               gap={theme.gap.small}
@@ -259,7 +257,7 @@ const DetailsPage = () => {
               <StatBox
                 title={
                   <>
-                    Avg Response Time{" "}
+                    Avg. Response Time{" "}
                     <Typography component="span">(24-hr)</Typography>
                   </>
                 }
