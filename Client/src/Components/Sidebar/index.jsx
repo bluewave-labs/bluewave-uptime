@@ -23,13 +23,6 @@ import Arrow from "../../assets/icons/down-arrow.svg?react";
 
 import "./index.css";
 
-/**
- * @component
- * Sidebar component serves as a sidebar containing a menu.
- *
- * @returns {JSX.Element} The JSX element representing the Sidebar component.
- */
-
 const menu = [
   { name: "Monitors", path: "monitors", icon: <Monitors /> },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
@@ -47,6 +40,13 @@ const icons = {
   Password: <LockSvg />,
   Logout: <LogoutSvg />,
 };
+
+/**
+ * @component
+ * Sidebar component serves as a sidebar containing a menu.
+ *
+ * @returns {JSX.Element} The JSX element representing the Sidebar component.
+ */
 
 function Sidebar() {
   const theme = useTheme();
@@ -173,7 +173,7 @@ function Sidebar() {
           <Typography component="span" ml={theme.gap.xs}>
             {authState.user?.firstName} {authState.user?.lastName}
           </Typography>
-          <Arrow style={{marginTop: "2px"}}/>
+          <Arrow style={{ marginTop: "2px", marginLeft: "auto" }} />
         </Stack>
       </Tooltip>
       <Menu
