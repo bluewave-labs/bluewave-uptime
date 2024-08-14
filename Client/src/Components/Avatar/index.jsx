@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 const Avatar = ({ src, small, sx }) => {
   const { user } = useSelector((state) => state.auth);
 
-  const style = small ? { width: 25, height: 25 } : { width: 64, height: 64 };
+  const style = small ? { width: 32, height: 32 } : { width: 64, height: 64 };
   const border = small ? 1 : 3;
 
   const [image, setImage] = useState();
@@ -35,7 +35,7 @@ const Avatar = ({ src, small, sx }) => {
         src ? src : user?.avatarImage ? image : "/static/images/avatar/2.jpg"
       }
       sx={{
-        fontSize: small ? "13px" : "22px",
+        fontSize: small ? "16px" : "22px",
         fontWeight: 400,
         display: "inline-flex",
         "&::before": {
@@ -52,7 +52,8 @@ const Avatar = ({ src, small, sx }) => {
         ...sx,
       }}
     >
-      {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+      {user.firstName?.charAt(0)}
+      {!small && user.lastName?.charAt(0)}
     </MuiAvatar>
   );
 };
