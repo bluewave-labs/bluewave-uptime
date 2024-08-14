@@ -96,9 +96,10 @@ const theme = createTheme({
     ml: "16px",
     mlplus: "20px",
     large: "24px",
+    lgplus: "32px",
     xl: "40px",
     xxl: "60px",
-    triplexl: "120px"
+    triplexl: "120px",
   },
   alert: {
     info: {

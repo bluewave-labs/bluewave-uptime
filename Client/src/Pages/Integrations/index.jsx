@@ -108,7 +108,7 @@ const Integrations = () => {
   ];
 
   return (
-    <Stack className="integrations" gap={theme.gap.xs}>
+    <Stack className="integrations" pt={theme.gap.xl} gap={theme.gap.xs}>
       <Typography component="h1">Integrations</Typography>
       <Typography mb={theme.gap.large}>
         Connect BlueWave Uptime to your favorite service.

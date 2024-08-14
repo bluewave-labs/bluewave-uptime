@@ -75,7 +75,7 @@
 .configure-monitor-form {
   display: flex;
   flex-direction: column;
-  gap: var(--env-var-spacing-4);
+  gap: var(--env-var-spacing-2);
 }
 
 body:has(.configure-monitor) .select-dropdown .MuiMenuItem-root,
