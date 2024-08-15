@@ -105,13 +105,6 @@ const PasswordPanel = () => {
         spellCheck="false"
       >
         <div className="edit-password-form__wrapper">
-          <Alert
-            variant="info"
-            title="SSO login"
-            body="Since you logged in via SSO, you cannot reset or modify your password."
-          />
-        </div>
-        <div className="edit-password-form__wrapper">
           <Stack>
             <Typography component="h1">Current password</Typography>
           </Stack>
