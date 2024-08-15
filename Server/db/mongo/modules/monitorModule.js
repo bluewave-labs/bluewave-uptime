@@ -126,10 +126,22 @@ const getIncidents = (checks) => {
  * @param {Array} checks Array of check objects.
  * @returns {Array<Boolean>}  Array of booleans representing up/down.
  */
-const getStatusBarValues = (checks) => {
-  return checks.map((check) => {
-    return check.status;
+const getStatusBarValues = (monitor, checks) => {
+  const checksIn60Mins = Math.floor((60 * 60 * 1000) / monitor.interval);
+  const noBlankChecks = checksIn60Mins - checks.length;
+
+  const statusBarValues = checks.map((check) => {
+    return {
+      status: check.status,
+      responseTime: check.responseTime,
+      value: 75,
+    };
   });
+
+  for (let i = 0; i < noBlankChecks; i++) {
+    statusBarValues.push({ status: undefined, responseTime: 0, value: 75 });
+  }
+  return statusBarValues.reverse();
 };
 /**
  * Get stats by monitor ID
@@ -205,7 +217,7 @@ const getMonitorStatsById = async (req) => {
         getAverageResponseTime24Hours(checks24Hours);
       monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
       monitorStats.uptime30Days = getUptimePercentage(checks30Days);
-      monitorStats.statusBar = getStatusBarValues(checks60Mins);
+      monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
     }
 
     //Get checks for dateRange
@@ -263,69 +275,10 @@ const getMonitorStatsById = async (req) => {
  * @returns {Promise<Monitor>}
  * @throws {Error}
  */
-const getMonitorById = async (req, res) => {
+const getMonitorById = async (monitorId) => {
   try {
-    const { monitorId } = req.params;
-    let { status, limit, sortOrder, filter, numToDisplay, normalize } =
-      req.query;
-
-    const filterLookup = {
-      day: new Date(new Date().setDate(new Date().getDate() - 1)),
-      week: new Date(new Date().setDate(new Date().getDate() - 7)),
-      month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-    };
-
-    // This effectively removes limit, returning all checks
-    if (limit === undefined) limit = 0;
-
-    // Default sort order is newest -> oldest
-    if (sortOrder === "asc") {
-      sortOrder = 1;
-    } else if (sortOrder === "desc") {
-      sortOrder = -1;
-    } else sortOrder = -1;
-
     const monitor = await Monitor.findById(monitorId);
-
-    const checksQuery = { monitorId: monitor._id };
-
-    if (status !== undefined) {
-      checksQuery.status = status;
-    }
-
-    // Filter checks by "day", "week", or "month"
-    if (filter !== undefined) {
-      checksQuery.createdAt = { $gte: filterLookup[filter] };
-    }
-
-    // Determine model type
-    let model =
-      monitor.type === "http" || monitor.type === "ping"
-        ? Check
-        : PageSpeedCheck;
-
-    let checks = await model
-      .find(checksQuery)
-      .sort({
-        createdAt: sortOrder,
-      })
-      .limit(limit);
-
-    // If more than numToDisplay checks, pick every nth check
-    if (numToDisplay !== undefined && checks && checks.length > numToDisplay) {
-      const n = Math.ceil(checks.length / numToDisplay);
-      checks = checks.filter(
-        (_, index) => index % n === 0 || index === checks.length - 1
-      );
-    }
-
-    // Normalize checks if requested
-    if (normalize !== undefined) {
-      checks = NormalizeData(checks, 1, 100);
-    }
-    const notifications = await Notification.find({ monitorId: monitor._id });
-    const monitorWithChecks = { ...monitor.toObject(), checks, notifications };
-    return monitorWithChecks;
+    return monitor;
   } catch (error) {
     throw error;
   }
