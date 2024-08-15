@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import Skeleton from "../../assets/Images/create-placeholder.svg?react";
+import background from "../../assets/Images/background_pattern_decorative.png";
 import Button from "../Button";
 import Check from "../Check/Check";
 import { useNavigate } from "react-router-dom";
@@ -28,8 +29,12 @@ const Fallback = ({ title, checks, link = "/" }) => {
       alignItems="center"
       gap={theme.gap.xl}
     >
-      <Skeleton />
-      <Stack gap={theme.gap.small} maxWidth={"275px"}>
+      <Skeleton style={{ zIndex: 1 }} />
+      <Box
+        className="background-pattern-svg"
+        sx={{ backgroundImage: `url(${background})` }}
+      />
+      <Stack gap={theme.gap.small} maxWidth={"275px"} zIndex={1}>
         <Typography component="h1" marginY={theme.gap.medium}>
           A {title} is used to:
         </Typography>
