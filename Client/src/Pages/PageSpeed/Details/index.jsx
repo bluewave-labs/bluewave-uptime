@@ -299,7 +299,7 @@ const PageSpeedDetails = () => {
   const [expand, setExpand] = useState(false);
 
   let loading = Object.keys(monitor).length === 0;
-
+  const data = monitor?.checks ? [...monitor.checks].reverse() : [];
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
       {loading ? (
@@ -406,7 +406,7 @@ const PageSpeedDetails = () => {
           </Stack>
           <Typography component="h2">Score history</Typography>
           <Box height="300px">
-            <PageSpeedLineChart pageSpeedChecks={monitor?.checks?.reverse()} />
+            <PageSpeedLineChart pageSpeedChecks={data} />
           </Box>
           <Typography component="h2">Performance report</Typography>
           <Stack direction="row" alignItems="center" overflow="hidden" flex={1}>

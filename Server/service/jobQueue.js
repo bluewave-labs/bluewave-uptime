@@ -16,7 +16,7 @@ class JobQueue {
    * @constructor
    * @throws {Error}
    */
-  constructor() {
+  constructor(networkService) {
     this.queue = new Queue(QUEUE_NAME, {
       connection,
     });
@@ -32,11 +32,11 @@ class JobQueue {
    * @returns {Promise<JobQueue>} - Returns a new JobQueue
    *
    */
-  static async createJobQueue(db) {
+  static async createJobQueue(db, networkService) {
     const queue = new JobQueue();
     try {
       queue.db = db;
-      queue.networkService = new NetworkService(db);
+      queue.networkService = networkService;
       const monitors = await db.getAllMonitors();
       for (const monitor of monitors) {
         await queue.addJob(monitor.id, monitor);

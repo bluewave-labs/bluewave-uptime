@@ -3,13 +3,41 @@ const ping = require("ping");
 const logger = require("../utils/logger");
 
 class NetworkService {
-  constructor(db) {
+  constructor(db, emailService) {
     this.db = db;
+    this.emailService = emailService;
     this.TYPE_PING = "ping";
     this.TYPE_HTTP = "http";
     this.TYPE_PAGESPEED = "pagespeed";
     this.SERVICE_NAME = "NetworkService";
     this.NETWORK_ERROR = 5000;
+  }
+
+  async handleNotification(job, isAlive) {
+    const { _id } = job.data;
+    const monitor = await this.db.getMonitorById(_id);
+
+    // If monitor status changes, update monitor status and send notification
+    if (monitor.status !== isAlive) {
+      monitor.status = !monitor.status;
+      await monitor.save();
+
+      let template =
+        isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
+      let status = isAlive === true ? "up" : "down";
+
+      const notifications = await this.db.getNotificationsByMonitorId(_id);
+      for (const notification of notifications) {
+        if (notification.type === "email") {
+          await this.emailService.buildAndSendEmail(
+            template,
+            { monitorName: monitor.name, monitorUrl: monitor.url },
+            notification.address,
+            `Monitor ${monitor.name} is ${status}`
+          );
+        }
+      }
+    }
   }
 
   /**
@@ -42,10 +70,12 @@ class NetworkService {
       return response;
     };
 
+    let isAlive;
+
     try {
       const { responseTime, response } =
         await this.measureResponseTime(operation);
-      const isAlive = response.alive;
+      isAlive = response.alive;
 
       const checkData = {
         monitorId: job.data._id,
@@ -54,12 +84,15 @@ class NetworkService {
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
+      isAlive = false;
       const checkData = {
         monitorId: job.data._id,
-        status: false,
+        status: isAlive,
         responseTime: error.responseTime,
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
+    } finally {
+      this.handleNotification(job, isAlive);
     }
   }
 
@@ -75,13 +108,15 @@ class NetworkService {
       return response;
     };
 
+    let isAlive;
+
     // attempt connection
     try {
       const { responseTime, response } =
         await this.measureResponseTime(operation);
 
       // check if response is in the 200 range, if so, service is up
-      const isAlive = response.status >= 200 && response.status < 300;
+      isAlive = response.status >= 200 && response.status < 300;
 
       //Create a check with relevant data
       const checkData = {
@@ -92,9 +127,10 @@ class NetworkService {
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
+      isAlive = false;
       const checkData = {
         monitorId: job.data._id,
-        status: false,
+        status: isAlive,
         responseTime: error.responseTime,
       };
       // The server returned a response
@@ -104,6 +140,8 @@ class NetworkService {
         checkData.statusCode = this.NETWORK_ERROR;
       }
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
+    } finally {
+      this.handleNotification(job, isAlive);
     }
   }
 
@@ -122,6 +160,8 @@ class NetworkService {
    * @throws {Error} Throws an error if there is an issue with fetching or processing the PageSpeed insights.
    */
   async handlePagespeed(job) {
+    let isAlive;
+
     try {
       const url = job.data.url;
       const response = await axios.get(
@@ -145,9 +185,10 @@ class NetworkService {
       // Total Blocking Time	30%
       // Cumulative Layout Shift	25%
 
+      isAlive = true;
       const checkData = {
         monitorId: job.data._id,
-        status: true,
+        status: isAlive,
         accessibility: (categories.accessibility?.score || 0) * 100,
         bestPractices: (categories["best-practices"]?.score || 0) * 100,
         seo: (categories.seo?.score || 0) * 100,
@@ -163,15 +204,18 @@ class NetworkService {
 
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } catch (error) {
+      isAlive = false;
       const checkData = {
         monitorId: job.data._id,
-        status: false,
+        status: isAlive,
         accessibility: 0,
         bestPractices: 0,
         seo: 0,
         performance: 0,
       };
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
+    } finally {
+      this.handleNotification(job, isAlive);
     }
   }
 
