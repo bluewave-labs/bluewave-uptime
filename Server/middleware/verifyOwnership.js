@@ -31,7 +31,6 @@ const verifyOwnership = (Model, paramName) => {
 
       // If the userID does not match the document's userID, return a 403 error
       if (userId.toString() !== doc.userId.toString()) {
-        console.log(userId.toString(), doc.userId.toString());
         const error = new Error(errorMessages.VERIFY_OWNER_UNAUTHORIZED);
         error.status = 403;
         throw error;

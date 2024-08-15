@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
-import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import Settings from "../../assets/icons/settings-bold.svg?react";
@@ -153,49 +152,17 @@ const Monitors = () => {
 
   const down = monitorState.monitors.length - up;
 
-  // State variable for sorting -> default of 1 for ascending
-  const [sortOrder, setSortOrder] = useState(1);
-  // State variable for updating sorting of default monitors
-  const [sortedMonitors, setSortedMonitors] = useState(monitorState.monitors);
-  // Bool for sorting arrow
-  const [isSorted, setIsSorted] = useState(false);
-
-  // Function to handle sorting on click of status text
-  const handleSort = () => {
-    setSortOrder((prevOrder) => prevOrder * -1);
-
-    // Sort existing monitors with start of ascending order
-    const monitors = [...monitorState.monitors].sort((a) => {
-      return a.status ? -1 * sortOrder : 1 * sortOrder;
-    });
-
-    // Update state of monitors
-    setSortedMonitors(monitors);
-    // Trigger arrow visibility and direction
-    setIsSorted(true);
-  };
-
   const data = {
     cols: [
       { id: 1, name: "Host" },
       {
         id: 2,
         name: (
-          <Box
-            width="max-content"
-            onClick={handleSort}
-            style={{ cursor: "pointer" }}
-          >
+          <Box width="max-content">
             Status
-            {isSorted ? (
-              <span>
-                {sortOrder === -1 ? (
-                  <ArrowUpwardRoundedIcon />
-                ) : (
-                  <ArrowDownwardRoundedIcon />
-                )}
-              </span>
-            ) : null}
+            <span>
+              <ArrowDownwardRoundedIcon />
+            </span>
           </Box>
         ),
       },
@@ -206,9 +173,7 @@ const Monitors = () => {
     rows: [],
   };
 
-  console.log(monitorState.monitors);
-  // Render out sorted monitors/default monitors
-  data.rows = sortedMonitors.map((monitor, idx) => {
+  data.rows = monitorState.monitors.map((monitor, idx) => {
     const params = {
       url: monitor.url,
       title: monitor.name,
