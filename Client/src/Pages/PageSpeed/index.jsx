@@ -136,7 +136,7 @@ const PageSpeed = () => {
   let isActuallyLoading = isLoading && monitors.length === 0;
 
   return (
-    <Box className="page-speed">
+    <Box className="page-speed" pt={theme.gap.xl}>
       {isActuallyLoading ? (
         <SkeletonLayout />
       ) : monitors?.length !== 0 ? (

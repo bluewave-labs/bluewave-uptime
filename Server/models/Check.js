@@ -57,6 +57,7 @@ const CheckSchema = mongoose.Schema(
      *
      * @type {Date}
      */
+
     expiry: {
       type: Date,
       default: Date.now,
@@ -67,67 +68,5 @@ const CheckSchema = mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt timestamps
   }
 );
-
-/**
- * Pre-save middleware to handle status change notifications.
- *
- * This middleware checks if the status of the monitor associated
- * with the check has changed and sends notifications if necessary.
- */
-CheckSchema.pre("save", async function (next) {
-  try {
-    const monitor = await mongoose.model("Monitor").findById(this.monitorId);
-
-    if (monitor) {
-      const notifications = await Notification.find({
-        monitorId: this.monitorId,
-      });
-
-      // Check if there are any notifications
-      if (notifications && notifications.length > 0) {
-        // Only send email if monitor status has changed
-        if (monitor.status !== this.status) {
-          const emailService = new EmailService();
-
-          if (monitor.status === true && this.status === false) {
-            // Notify users that the monitor is down
-            for (const notification of notifications) {
-              if (notification.type === "email") {
-                await emailService.buildAndSendEmail(
-                  "serverIsDownTemplate",
-                  { monitorName: monitor.name, monitorUrl: monitor.url },
-                  notification.address,
-                  `Monitor ${monitor.name} is down`
-                );
-              }
-            }
-          }
-
-          if (monitor.status === false && this.status === true) {
-            // Notify users that the monitor is up
-            for (const notification of notifications) {
-              if (notification.type === "email") {
-                await emailService.buildAndSendEmail(
-                  "serverIsUpTemplate",
-                  { monitorName: monitor.name, monitorUrl: monitor.url },
-                  notification.address,
-                  `Monitor ${monitor.name} is back up`
-                );
-              }
-            }
-          }
-
-          // Update monitor status
-          monitor.status = this.status;
-          await monitor.save();
-        }
-      }
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    next();
-  }
-});
 
 module.exports = mongoose.model("Check", CheckSchema);

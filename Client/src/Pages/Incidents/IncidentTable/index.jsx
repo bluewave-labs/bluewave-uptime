@@ -9,6 +9,8 @@ import {
   Pagination,
   PaginationItem,
   Paper,
+  Typography,
+  Box,
 } from "@mui/material";
 
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -105,41 +107,55 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Monitor Name</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Date & Time</TableCell>
-              <TableCell>Message</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {checks.map((check) => {
-              const status = check.status === true ? "up" : "down";
-
-              return (
-                <TableRow key={check._id}>
-                  <TableCell>{monitors[check.monitorId]?.name}</TableCell>
-                  <TableCell>
-                    <StatusLabel
-                      status={status}
-                      text={status}
-                      customStyles={{ textTransform: "capitalize" }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {new Date(check.createdAt).toLocaleString()}
-                  </TableCell>
-                  <TableCell>{check.statusCode}</TableCell>
+      {checks?.length === 0 && selectedMonitor === "0" ? (
+        <Box>
+          <Typography textAlign="center">No incidents recorded yet.</Typography>
+        </Box>
+      ) : checks?.length === 0 ? (
+        <Box>
+          <Typography textAlign="center">
+            The monitor you have selected has no recorded incidents yet.
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Monitor Name</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Date & Time</TableCell>
+                  <TableCell>Message</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {paginationComponent}
+              </TableHead>
+              <TableBody>
+                {checks.map((check) => {
+                  const status = check.status === true ? "up" : "down";
+
+                  return (
+                    <TableRow key={check._id}>
+                      <TableCell>{monitors[check.monitorId]?.name}</TableCell>
+                      <TableCell>
+                        <StatusLabel
+                          status={status}
+                          text={status}
+                          customStyles={{ textTransform: "capitalize" }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {new Date(check.createdAt).toLocaleString()}
+                      </TableCell>
+                      <TableCell>{check.statusCode}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {paginationComponent}
+        </>
+      )}
     </>
   );
 };

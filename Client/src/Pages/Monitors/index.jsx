@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import Settings from "../../assets/icons/settings-bold.svg?react";
@@ -120,12 +121,11 @@ const Monitors = () => {
   };
   const closeMenu = () => {
     setAnchorEl(null);
-    setActions({});
   };
 
   const [isOpen, setIsOpen] = useState(false);
   const openRemove = () => {
-    setAnchorEl(null);
+    closeMenu();
     setIsOpen(true);
   };
   const handleRemove = async (event) => {
@@ -153,17 +153,38 @@ const Monitors = () => {
 
   const down = monitorState.monitors.length - up;
 
+  // State variable for sorting -> default of 1 for ascending
+  const [sortOrder, setSortOrder] = useState(1);
+  // State variable for updating sorting of default monitors
+  const [sortedMonitors, setSortedMonitors] = useState(monitorState.monitors);
+  // Bool for sorting arrow
+  const [isSorted, setIsSorted] = useState(false);
+
+  
+  // Function to handle sorting on click of status text
+  const handleSort = () => {
+    setSortOrder(prevOrder => prevOrder * -1);
+    
+    // Sort existing monitors with start of ascending order
+    const monitors = [...monitorState.monitors].sort(a => {
+      return a.status ? -1 * sortOrder : 1 * sortOrder;
+    });
+
+    // Update state of monitors
+    setSortedMonitors(monitors);
+    // Trigger arrow visibility and direction
+    setIsSorted(true);
+  };
+
   const data = {
     cols: [
       { id: 1, name: "Host" },
       {
         id: 2,
         name: (
-          <Box width="max-content">
+          <Box width="max-content" onClick={handleSort} style={{ cursor: "pointer" }}>
             Status
-            <span>
-              <ArrowDownwardRoundedIcon />
-            </span>
+            {isSorted ? <span>{sortOrder === -1 ? <ArrowUpwardRoundedIcon /> : <ArrowDownwardRoundedIcon />}</span> : null}
           </Box>
         ),
       },
@@ -174,7 +195,8 @@ const Monitors = () => {
     rows: [],
   };
 
-  data.rows = monitorState.monitors.map((monitor, idx) => {
+  // Render out sorted monitors/default monitors
+  data.rows = sortedMonitors.map((monitor, idx) => {
     const params = {
       url: monitor.url,
       title: monitor.name,
@@ -220,7 +242,11 @@ const Monitors = () => {
                 aria-label="monitor actions"
                 onClick={(event) => {
                   event.stopPropagation();
-                  openMenu(event, monitor._id, monitor.url);
+                  openMenu(
+                    event,
+                    monitor._id,
+                    monitor.type === "ping" ? null : monitor.url
+                  );
                 }}
                 sx={{
                   "&:focus": {
@@ -240,7 +266,7 @@ const Monitors = () => {
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
   return (
-    <Stack className="monitors" gap={theme.gap.large}>
+    <Stack className="monitors" pt={theme.gap.xl} gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -250,7 +276,10 @@ const Monitors = () => {
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography component="h1">
+            <Typography
+              component="h1"
+              sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+            >
               Hello, {authState.user.firstName}
             </Typography>
             {monitorState.monitors?.length !== 0 && (
@@ -299,7 +328,8 @@ const Monitors = () => {
               </Stack>
               <Stack
                 gap={theme.gap.large}
-                p={theme.gap.xl}
+                p={theme.gap.lgplus}
+                flex={1}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
                 backgroundColor={theme.palette.otherColors.white}
@@ -326,13 +356,17 @@ const Monitors = () => {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
       >
-        <MenuItem
-          onClick={() => {
-            window.open(actions.url, "_blank", "noreferrer");
-          }}
-        >
-          Open site
-        </MenuItem>
+        {actions.url !== null ? (
+          <MenuItem
+            onClick={() => {
+              window.open(actions.url, "_blank", "noreferrer");
+            }}
+          >
+            Open site
+          </MenuItem>
+        ) : (
+          ""
+        )}
         <MenuItem onClick={() => navigate(`/monitors/${actions.id}`)}>
           Details
         </MenuItem>

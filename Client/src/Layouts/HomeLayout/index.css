@@ -1,55 +1,59 @@
-.home-layout {
-  display: grid;
-  position: relative;
-  grid-template-areas:
-    "aside header"
-    "aside main";
-  grid-template-columns: var(--env-var-side-bar-width) auto;
-  grid-template-rows: var(--env-var-nav-bar-height) auto;
+#root:has(.home-layout) {
   background-color: var(--env-var-color-30);
+}
+
+.home-layout {
+  display: flex;
+  position: relative;
+  gap: var(--env-var-spacing-2);
   min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--env-var-spacing-2);
 }
 
 .home-layout aside {
-  grid-area: aside;
-  position: fixed;
-  top: 0;
-  height: 100%;
-  width: var(--env-var-side-bar-width);
+  position: sticky;
+  top: var(--env-var-spacing-2);
+  left: 0;
+
+  height: calc(100vh - var(--env-var-spacing-2) * 2);
+  max-width: var(--env-var-side-bar-width);
+  flex: 1;
+
+  border: 1px solid var(--color-border-0);
+  border-radius: var(--env-var-radius-1);
   background-color: var(--env-var-color-8);
-  border-right: 1px solid var(--color-border-0);
+
   padding: var(--env-var-spacing-1) var(--env-var-spacing-1-plus);
 }
-.home-layout header {
-  grid-area: header;
-  background-color: var(--env-var-color-30);
-}
+
 .home-layout > div {
+  min-height: calc(100vh - var(--env-var-spacing-2) * 2);
+  flex: 1;
+}
+
+.home-layout > div:has(> [class*="fallback__"]) {
+  border: solid 1px var(--env-var-color-6);
+  border-radius: var(--env-var-radius-1);
+  border-style: dashed;
+  background-color: var(--env-var-color-8);
+  overflow: hidden;
+  position: relative;
+}
+.home-layout > div:has(> [class*="fallback__"]) .background-pattern-svg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -33%);
+  z-index: 0;
+
+  width: 100%;
+  max-width: 800px;
   height: 100%;
-  grid-area: main;
-  padding: var(--env-var-spacing-2) calc(var(--env-var-spacing-4) * 2);
-  padding-bottom: var(--env-var-spacing-4);
-  max-width: 100%;
-}
-.home-layout > div:not(:has([class*="fallback"])) {
-  max-width: 1500px;
-}
+  max-height: 800px;
 
-@media (max-width: 600px) {
-  .home-layout {
-    grid-template-areas:
-      "header header"
-      "main main";
-    grid-template-columns: 1fr;
-    grid-template-rows: 64px auto;
-  }
-
-  aside {
-    display: none;
-    visibility: hidden;
-  }
-
-  .home-layout > div {
-    padding: var(--env-var-spacing-1);
-  }
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }

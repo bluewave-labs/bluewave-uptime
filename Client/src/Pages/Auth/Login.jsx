@@ -28,7 +28,11 @@ const LandingPage = ({ onContinue }) => {
 
   return (
     <>
-      <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+      <Stack
+        gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+        alignItems="center"
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Log In</Typography>
           <Typography>We are pleased to see you again!</Typography>
@@ -82,7 +86,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={theme.gap.large} textAlign="center">
+      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
         <Box>
           <Typography component="h1">Log In</Typography>
           <Typography>Enter your email address</Typography>
@@ -154,9 +158,16 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
     }
   }, []);
 
+  const handleNavigate = () => {
+    if (form.email !== "" && !errors.email) {
+      sessionStorage.setItem("email", form.email);
+    }
+    navigate("/forgot-password");
+  };
+
   return (
     <>
-      <Stack gap={theme.gap.large} textAlign="center">
+      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
         <Box>
           <Typography component="h1">Log In</Typography>
           <Typography>Enter your password</Typography>
@@ -209,7 +220,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
             component="span"
             ml={theme.gap.xs}
             sx={{ userSelect: "none" }}
-            onClick={() => navigate("/forgot-password")}
+            onClick={handleNavigate}
           >
             Reset password
           </Typography>
@@ -329,10 +340,9 @@ const Login = () => {
 
   return (
     <Stack className="login-page auth" overflow="hidden">
-      <img
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
       <Stack
         direction="row"
@@ -348,8 +358,8 @@ const Login = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        p={theme.gap.xl}
-        pb={theme.gap.triplexl}
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.xl}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {

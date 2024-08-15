@@ -1,15 +1,15 @@
-import "./index.css";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import React, { useEffect, useState } from "react";
-import EmailIcon from "../../assets/icons/email.svg?react";
-import Button from "../../Components/Button";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { createToast } from "../../Utils/toastUtils";
 import { forgotPassword } from "../../Features/Auth/authSlice";
+import Button from "../../Components/Button";
+import background from "../../assets/Images/background_pattern_decorative.png";
+import EmailIcon from "../../assets/icons/email.svg?react";
+import Logo from "../../assets/icons/bwu-icon.svg?react";
+import "./index.css";
 
 const CheckEmail = () => {
   const theme = useTheme();
@@ -79,28 +79,71 @@ const CheckEmail = () => {
     }
   };
 
+  const handleNavigate = () => {
+    sessionStorage.removeItem("email");
+    navigate("/login");
+  };
+
   return (
-    <div className="check-email-page">
-      <img
+    <Stack className="check-email-page auth" overflow="hidden">
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
-      <form className="check-email-form">
-        <Stack direction="column" alignItems="center" gap={theme.gap.small}>
-          <EmailIcon alt="EmailIcon" style={{ fill: "white" }} />
-          <Typography component="h1" sx={{ mt: theme.gap.ml }}>
-            Check your email
-          </Typography>
-          <Typography sx={{ width: "max-content" }}>
-            We sent a password reset link to{" "}
-            <Typography component="span">
-              {email || "username@email.com"}
+      <Stack
+        direction="row"
+        alignItems="center"
+        px={theme.gap.large}
+        gap={theme.gap.small}
+      >
+        <Logo style={{ borderRadius: theme.shape.borderRadius }} />
+        <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
+      </Stack>
+      <Stack
+        width="100%"
+        maxWidth={600}
+        flex={1}
+        justifyContent="center"
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.xl}
+        mx="auto"
+        sx={{
+          "& > .MuiStack-root": {
+            border: 1,
+            borderRadius: theme.shape.borderRadius,
+            borderColor: theme.palette.otherColors.graishWhite,
+            backgroundColor: theme.palette.otherColors.white,
+            padding: {
+              xs: theme.gap.large,
+              sm: theme.gap.xl,
+            },
+          },
+        }}
+      >
+        <Stack
+          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          alignItems="center"
+          textAlign="center"
+        >
+          <Box>
+            <EmailIcon alt="email icon" />
+            <Typography component="h1">Check your email</Typography>
+            <Typography mt={theme.gap.xs}>
+              We sent a password reset link to{" "}
+              <Typography className="email-sent-to" component="span">
+                {email || "username@email.com"}
+              </Typography>
             </Typography>
-          </Typography>
-        </Stack>
-        <Stack gap={theme.gap.ml} sx={{ mt: `calc(${theme.gap.ml}*2)` }}>
-          <Button level="primary" label="Open email app" onClick={openMail} />
+          </Box>
+          <Button
+            level="primary"
+            label="Open email app"
+            onClick={openMail}
+            sx={{
+              width: "100%",
+              maxWidth: 400,
+            }}
+          />
           <Typography sx={{ alignSelf: "center", mb: theme.gap.medium }}>
             Didn't receive the email?{" "}
             <Typography
@@ -108,7 +151,6 @@ const CheckEmail = () => {
               onClick={resendToken}
               sx={{
                 color: theme.palette.primary.main,
-                letterSpacing: "-0.1px",
                 userSelect: "none",
                 pointerEvents: disabled ? "none" : "auto",
                 cursor: disabled ? "default" : "pointer",
@@ -118,17 +160,20 @@ const CheckEmail = () => {
               Click to resend
             </Typography>
           </Typography>
-
-          <Button
-            level="tertiary"
-            label="Back to log in"
-            img={<ArrowBackRoundedIcon />}
-            sx={{ alignSelf: "center", width: "fit-content" }}
-            onClick={() => navigate("/login")}
-          />
         </Stack>
-      </form>
-    </div>
+      </Stack>
+      <Box textAlign="center" p={theme.gap.large}>
+        <Typography display="inline-block">Go back to —</Typography>
+        <Typography
+          component="span"
+          ml={theme.gap.xs}
+          onClick={handleNavigate}
+          sx={{ userSelect: "none" }}
+        >
+          Log In
+        </Typography>
+      </Box>
+    </Stack>
   );
 };
 

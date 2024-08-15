@@ -51,11 +51,11 @@ const insertUser = async (req, res) => {
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const getUserByEmail = async (req, res) => {
+const getUserByEmail = async (email) => {
   try {
     // Need the password to be able to compare, removed .select()
     // We can strip the hash before returing the user
-    const user = await UserModel.findOne({ email: req.body.email }).select(
+    const user = await UserModel.findOne({ email: email }).select(
       "-profileImage"
     );
     if (user) {
@@ -126,8 +126,7 @@ const updateUser = async (req, res) => {
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const deleteUser = async (req, res) => {
-  const userId = req.params.userId;
+const deleteUser = async (userId) => {
   try {
     const deletedUser = await UserModel.findByIdAndDelete(userId);
     if (!deletedUser) {

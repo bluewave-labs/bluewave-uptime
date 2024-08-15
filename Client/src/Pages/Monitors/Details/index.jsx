@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../Utils/axiosConfig";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
-import { StatusLabel } from "../../../Components/Label";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -18,20 +17,23 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
+import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 
 const StatBox = ({ title, value }) => {
   return (
     <Box className="stat-box">
-      <Typography variant="h6" sx={{ fontWeight: 400 }}>
+      <Typography variant="h6" mb={1} fontWeight={500}>
         {title}
       </Typography>
-      <Typography variant="h4">{value}</Typography>
+      <Typography variant="h4" fontWeight={500}>
+        {value}
+      </Typography>
     </Box>
   );
 };
 
 StatBox.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
@@ -114,12 +116,13 @@ const DetailsPage = () => {
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
   const [dateRange, setDateRange] = useState("day");
+  const [certificateExpiry, setCertificateExpiry] = useState("N/A");
   const navigate = useNavigate();
 
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
-        `/monitors/${monitorId}?sortOrder=asc&filter=${dateRange}&numToDisplay=50&normalize=true`,
+        `/monitors/stats/${monitorId}?dateRange=${dateRange}&numToDisplay=50&normalize=true`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -137,71 +140,23 @@ const DetailsPage = () => {
     fetchMonitor();
   }, [fetchMonitor]);
 
+  useEffect(() => {
+    const fetchCertificate = async () => {
+      const res = await axiosInstance.get(
+        `/monitors/certificate/${monitorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      setCertificateExpiry(res.data.data.certificateDate);
+    };
+    fetchCertificate();
+  }, [authToken, monitorId]);
+
   const theme = useTheme();
-
-  /**
-   * Function to calculate uptime duration based on the most recent check.
-   * @param {Array} checks Array of check objects.
-   * @returns {number} Uptime duration in ms.
-   */
-
-  // TODO:  This can be done more efficiently by iteratting backwards
-  //      and breaking when the first down check is found, calculate current time - downtime
-  const calculateUptimeDuration = (checks) => {
-    if (!checks || checks.length === 0) {
-      return 0;
-    }
-
-    const latestCheck = new Date(checks[checks.length - 1].createdAt);
-    let latestDownCheck = 0;
-
-    // Checks are ordered oldest -> newest
-    // So we iterate backwards and find the first down check
-    for (let i = checks.length - 1; i >= 0; i--) {
-      if (checks[i].status === false) {
-        latestDownCheck = new Date(checks[i].createdAt);
-        break;
-      }
-    }
-
-    // If no down check is found, uptime is from the first check to now
-    if (latestDownCheck === 0) {
-      return Date.now() - new Date(checks[0].createdAt);
-    }
-
-    // Otherwise the uptime is from the last check to the last down check
-    return latestCheck - latestDownCheck;
-  };
-
-  /**
-   * Helper function to get duration since last check
-   * @param {Array} checks Array of check objects.
-   * @returns {number} Timestamp of the most recent check.
-   */
-  const getLastChecked = (checks) => {
-    if (!checks || checks.length === 0) {
-      return 0; // Handle case when no checks are available
-    }
-    // Data is sorted oldest -> newest, so last check is the most recent
-    return new Date() - new Date(checks[checks.length - 1].createdAt);
-  };
-
-  /**
-   * Helper function to count incidents (checks with status === false).
-   * @param {Array} checks Array of check objects.
-   * @returns {number} Number of incidents.
-   */
-  const countIncidents = (checks) => {
-    if (!checks || checks.length === 0) {
-      return 0; // Handle case when no checks are available
-    }
-    return checks.reduce((acc, check) => {
-      return check.status === false ? (acc += 1) : acc;
-    }, 0);
-  };
-
   let loading = Object.keys(monitor).length === 0;
-
   return (
     <Box className="monitor-details">
       {loading ? (
@@ -210,12 +165,12 @@ const DetailsPage = () => {
         <>
           <Button
             level="tertiary"
-            label="Back to Monitors"
+            label="Back"
             animate="slideLeft"
             img={<WestRoundedIcon />}
             onClick={() => navigate("/monitors")}
             sx={{
-              backgroundColor: "#f4f4f4",
+              backgroundColor: theme.palette.otherColors.fillGray,
               px: theme.gap.ml,
               "& svg.MuiSvgIcon-root": {
                 mr: theme.gap.small,
@@ -224,12 +179,23 @@ const DetailsPage = () => {
             }}
           />
           <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+            <Stack
+              direction="row"
+              gap={theme.gap.small}
+              mt={theme.gap.small}
+              alignItems="baseline"
+            >
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
               <Box>
-                <Typography component="h1" sx={{ lineHeight: 1 }}>
-                  {monitor.url?.replace(/^https?:\/\//, "") || "..."}
-                </Typography>
+                <Stack direction="row">
+                  <Typography
+                    component="h1"
+                    sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+                  >
+                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  </Typography>
+                  <MonitorDetails60MinChart data={monitor.statusBar} />
+                </Stack>
                 <Typography mt={theme.gap.small}>
                   <Typography
                     component="span"
@@ -242,8 +208,6 @@ const DetailsPage = () => {
                     Your site is {monitor?.status ? "up" : "down"}.
                   </Typography>{" "}
                   Checking every {formatDurationRounded(monitor?.interval)}.
-                  Last time checked{" "}
-                  {formatDurationRounded(getLastChecked(monitor?.checks))} ago.
                 </Typography>
               </Box>
               <Button
@@ -274,18 +238,52 @@ const DetailsPage = () => {
               direction="row"
               justifyContent="space-between"
               gap={theme.gap.large}
+              flexWrap="wrap"
             >
               <StatBox
                 title="Currently up for"
-                value={formatDuration(calculateUptimeDuration(monitor.checks))}
+                value={formatDuration(monitor?.uptimeDuration)}
               />
               <StatBox
-                title="Last checked"
-                value={`${formatDuration(getLastChecked(monitor.checks))} ago`}
+                title="Last check"
+                value={`${formatDurationRounded(monitor?.lastChecked)} ago`}
+              />
+              <StatBox title="Incidents" value={monitor?.incidents} />
+              <StatBox title="Certificate Expiry" value={certificateExpiry} />
+              <StatBox
+                title="Latest response time"
+                value={monitor?.latestResponseTime}
               />
               <StatBox
-                title="Incidents"
-                value={countIncidents(monitor.checks)}
+                title={
+                  <>
+                    Avg. Response Time{" "}
+                    <Typography component="span">(24-hr)</Typography>
+                  </>
+                }
+                value={parseFloat(monitor?.avgResponseTime24hours)
+                  .toFixed(2)
+                  .replace(/\.?0+$/, "")}
+              />
+              <StatBox
+                title={
+                  <>
+                    Uptime <Typography component="span">(24-hr)</Typography>
+                  </>
+                }
+                value={`${parseFloat(monitor?.uptime24Hours)
+                  .toFixed(2)
+                  .replace(/\.?0+$/, "")}%`}
+              />
+              <StatBox
+                title={
+                  <>
+                    Uptime <Typography component="span">(30-day)</Typography>
+                  </>
+                }
+                value={`${parseFloat(monitor?.uptime30Days)
+                  .toFixed(2)
+                  .replace(/\.?0+$/, "")}%`}
               />
             </Stack>
             <Box>
@@ -294,7 +292,7 @@ const DetailsPage = () => {
                 justifyContent="space-between"
                 mb={theme.gap.ml}
               >
-                <Typography component="h2" mb={theme.gap.small}>
+                <Typography component="h2" alignSelf="flex-end">
                   Response Times
                 </Typography>
                 <ButtonGroup>
@@ -330,8 +328,18 @@ const DetailsPage = () => {
                   />
                 </ButtonGroup>
               </Stack>
-              <Box sx={{ height: "200px" }}>
-                <MonitorDetailsAreaChart checks={monitor.checks} />
+              <Box
+                p={theme.gap.mlplus}
+                pb={theme.gap.xs}
+                backgroundColor={theme.palette.otherColors.white}
+                border={1}
+                borderColor={theme.palette.otherColors.graishWhite}
+                borderRadius={`${theme.shape.borderRadius}px`}
+                sx={{ height: "250px" }}
+              >
+                <MonitorDetailsAreaChart
+                  checks={[...monitor.checks].reverse()}
+                />
               </Box>
             </Box>
             <Stack gap={theme.gap.ml}>
