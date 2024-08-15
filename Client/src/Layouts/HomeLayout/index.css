@@ -32,3 +32,28 @@
   min-height: calc(100vh - var(--env-var-spacing-2) * 2);
   flex: 1;
 }
+
+.home-layout > div:has(> [class*="fallback__"]) {
+  border: solid 1px var(--env-var-color-6);
+  border-radius: var(--env-var-radius-1);
+  border-style: dashed;
+  background-color: var(--env-var-color-8);
+  overflow: hidden;
+  position: relative;
+}
+.home-layout > div:has(> [class*="fallback__"]) .background-pattern-svg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -33%);
+  z-index: 0;
+
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  max-height: 800px;
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
