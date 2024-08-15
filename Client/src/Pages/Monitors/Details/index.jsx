@@ -18,6 +18,7 @@ import {
 } from "../../../Utils/timeUtils";
 import "./index.css";
 import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
+import MonitorDetailsRadialBarChart from "../../../Components/Charts/MonitorDetailsRadialBarChart";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -194,6 +195,7 @@ const DetailsPage = () => {
                   >
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
+                  <MonitorDetailsRadialBarChart width={200} height={200} />
                   <MonitorDetails60MinChart data={monitor.statusBar} />
                 </Stack>
                 <Typography mt={theme.gap.small}>
