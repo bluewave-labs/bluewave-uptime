@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import Settings from "../../assets/icons/settings-bold.svg?react";
@@ -152,28 +153,42 @@ const Monitors = () => {
 
   const down = monitorState.monitors.length - up;
 
+  // State variable to handle status of sorting
+  // Start with Up status -> Down status
+  const [sortOrder, setSortOrder] = useState('ascending');
+
+  // Sort existing monitors with default ascending order
+  const sortedMonitors = [...monitorState.monitors].sort(a => {
+    const sortDirection = sortOrder === 'ascending' ? 1 : -1;
+    return a.status ? -1 * sortDirection : 1 * sortDirection;
+  });
+
+  // Function to handle sorting on click of status text
+  const handleSort = () => {
+    setSortOrder(prevOrder => prevOrder === 'ascending' ? 'descending' : 'ascending');
+  };
+
   const data = {
     cols: [
-      { id: 1, name: "Host" },
+      { id: 1, name: 'Host' },
       {
         id: 2,
         name: (
-          <Box width="max-content">
+          <Box width='max-content' onClick={handleSort} style={{ cursor: 'pointer' }}>
             Status
-            <span>
-              <ArrowDownwardRoundedIcon />
-            </span>
+            <span>{sortOrder === 'ascending' ? <ArrowDownwardRoundedIcon /> : <ArrowUpwardRoundedIcon />}</span>
           </Box>
         ),
       },
-      { id: 3, name: "Response Time" },
-      { id: 4, name: "Type" },
-      { id: 5, name: "Actions" },
+      { id: 3, name: 'Response Time' },
+      { id: 4, name: 'Type' },
+      { id: 5, name: 'Actions' },
     ],
     rows: [],
   };
 
-  data.rows = monitorState.monitors.map((monitor, idx) => {
+  // Render out sorted monitors by ascending order
+  data.rows = sortedMonitors.map((monitor, idx) => {
     const params = {
       url: monitor.url,
       title: monitor.name,
