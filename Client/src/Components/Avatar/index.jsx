@@ -4,6 +4,27 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 /**
+ * Generates a color based on the input string.
+ * @param {string} string - The input string to generate the color from.
+ * @returns {string}
+ */
+const stringToColor = (string) => {
+  let hash = 0;
+  let i;
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+
+  return color;
+};
+
+/**
  * @component
  * @param {Object} props
  * @param {string} props.src - Path to image for avatar
@@ -18,7 +39,7 @@ import { useEffect, useState } from "react";
 const Avatar = ({ src, small, sx }) => {
   const { user } = useSelector((state) => state.auth);
 
-  const style = small ? { width: 25, height: 25 } : { width: 64, height: 64 };
+  const style = small ? { width: 32, height: 32 } : { width: 64, height: 64 };
   const border = small ? 1 : 3;
 
   const [image, setImage] = useState();
@@ -35,8 +56,9 @@ const Avatar = ({ src, small, sx }) => {
         src ? src : user?.avatarImage ? image : "/static/images/avatar/2.jpg"
       }
       sx={{
-        fontSize: small ? "13px" : "22px",
+        fontSize: small ? "16px" : "22px",
         fontWeight: 400,
+        backgroundColor: stringToColor(`${user?.firstName} ${user?.lastName}`),
         display: "inline-flex",
         "&::before": {
           content: `""`,
@@ -52,7 +74,8 @@ const Avatar = ({ src, small, sx }) => {
         ...sx,
       }}
     >
-      {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+      {user.firstName?.charAt(0)}
+      {user.lastName?.charAt(0)}
     </MuiAvatar>
   );
 };

@@ -1,4 +1,3 @@
-import NavBar from "../../Components/NavBar";
 import Sidebar from "../../Components/Sidebar";
 import { Outlet } from "react-router";
 import { Box } from "@mui/material";
@@ -9,7 +8,6 @@ const HomeLayout = () => {
   return (
     <Box className="home-layout">
       <Sidebar />
-      <NavBar />
       <Outlet />
     </Box>
   );

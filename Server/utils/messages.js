@@ -71,11 +71,13 @@ const successMessages = {
 
   //Monitor Controller
   MONITOR_GET_ALL: "Got all monitors successfully",
+  MONTIOR_STATS_BY_ID: "Got monitor stats by Id successfully",
   MONTIOR_GET_BY_ID: "Got monitor by Id successfully",
   MONITOR_GET_BY_USER_ID: (userId) => `Got monitor for ${userId} successfully"`,
   MONITOR_CREATE: "Monitor created successfully",
   MONITOR_DELETE: "Monitor deleted successfully",
   MONITOR_EDIT: "Monitor edited successfully",
+  MONITOR_CERTIFICATE: "Got monitor certificate successfully",
 
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",

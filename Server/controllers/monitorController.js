@@ -7,6 +7,7 @@ const {
   getMonitorsByUserIdQueryValidation,
 } = require("../validation/joi");
 
+const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
 const { runInNewContext } = require("vm");
@@ -27,6 +28,73 @@ const getAllMonitors = async (req, res, next) => {
       msg: successMessages.MONITOR_GET_ALL,
       data: monitors,
     });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+/**
+ * Returns monitor stats for monitor with matching ID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+const getMonitorStatsById = async (req, res, next) => {
+  try {
+    //Validation
+  } catch (error) {
+    error.status = 422;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const monitorStats = await req.db.getMonitorStatsById(req);
+    return res.json({
+      success: true,
+      msg: successMessages.MONTIOR_STATS_BY_ID,
+      data: monitorStats,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+const getMonitorCertificate = async (req, res, next) => {
+  try {
+    //validation
+  } catch (error) {
+    error.status = 422;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+  }
+
+  try {
+    const monitor = await req.db.getMonitorById(req, res);
+    const monitorUrl = new URL(monitor.url);
+    const certificate = await sslChecker(monitorUrl.hostname);
+    if (certificate && certificate.validTo) {
+      return res.json({
+        success: true,
+        msg: successMessages.MONITOR_CERTIFICATE,
+        data: {
+          certificateDate: new Date(certificate.validTo).toLocaleDateString(),
+        },
+      });
+    } else {
+      return res.json({
+        success: true,
+        msg: successMessages.MONITOR_CERTIFICATE,
+        data: { certificateDate: "N/A" },
+      });
+    }
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -269,6 +337,8 @@ const editMonitor = async (req, res, next) => {
 
 module.exports = {
   getAllMonitors,
+  getMonitorStatsById,
+  getMonitorCertificate,
   getMonitorById,
   getMonitorsByUserId,
   createMonitor,

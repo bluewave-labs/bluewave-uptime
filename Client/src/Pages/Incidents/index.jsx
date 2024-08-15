@@ -78,7 +78,7 @@ const Incidents = () => {
   };
 
   return (
-    <Stack className="incidents" gap={theme.gap.large}>
+    <Stack className="incidents" pt={theme.gap.xl} gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (

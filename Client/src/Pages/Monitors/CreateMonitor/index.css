@@ -59,7 +59,7 @@
 .create-monitor-form {
   display: flex;
   flex-direction: column;
-  gap: var(--env-var-spacing-4);
+  gap: var(--env-var-spacing-2);
 }
 
 .create-monitor .MuiStack-root .MuiButtonGroup-root button {

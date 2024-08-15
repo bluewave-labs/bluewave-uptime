@@ -29,7 +29,7 @@ const Account = ({ open = "profile" }) => {
   if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
 
   return (
-    <Box className="account">
+    <Box className="account" pt={theme.gap.xl}>
       <TabContext value={tab}>
         <Box
           sx={{

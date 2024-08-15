@@ -31,7 +31,11 @@ const LandingPage = ({ isAdmin, onSignup }) => {
 
   return (
     <>
-      <Stack gap={theme.gap.large} alignItems="center" textAlign="center">
+      <Stack
+        gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+        alignItems="center"
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>
@@ -87,7 +91,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={theme.gap.large} textAlign="center">
+      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Enter your personal details</Typography>
@@ -107,18 +111,16 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
             />
           </form>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
-            <Box my={theme.gap.ml}>
-              <Field
-                id="register-lastname-input"
-                label="Surname"
-                isRequired={true}
-                placeholder="Ellis"
-                autoComplete="family-name"
-                value={form.lastName}
-                onChange={onChange}
-                error={errors.lastName}
-              />
-            </Box>
+            <Field
+              id="register-lastname-input"
+              label="Surname"
+              isRequired={true}
+              placeholder="Ellis"
+              autoComplete="family-name"
+              value={form.lastName}
+              onChange={onChange}
+              error={errors.lastName}
+            />
           </form>
         </Box>
         <Stack direction="row" justifyContent="space-between">
@@ -129,7 +131,6 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
             img={<ArrowBackRoundedIcon />}
             onClick={onBack}
             sx={{
-              mb: theme.gap.medium,
               px: theme.gap.ml,
               "& svg.MuiSvgIcon-root": {
                 mr: theme.gap.xs,
@@ -173,7 +174,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={theme.gap.large} textAlign="center">
+      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Enter your email address</Typography>
@@ -202,7 +203,6 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
             img={<ArrowBackRoundedIcon />}
             onClick={onBack}
             sx={{
-              mb: theme.gap.medium,
               px: theme.gap.ml,
               "& svg.MuiSvgIcon-root": {
                 mr: theme.gap.xs,
@@ -246,7 +246,7 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={theme.gap.large} textAlign="center">
+      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Create your password</Typography>
@@ -267,23 +267,29 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
             />
           </form>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
-            <Box mt={theme.gap.ml}>
-              <Field
-                type="password"
-                id="register-confirm-input"
-                label="Confirm password"
-                isRequired={true}
-                placeholder="Confirm your password"
-                autoComplete="current-password"
-                value={form.confirm}
-                onChange={onChange}
-                error={errors.confirm}
-              />
-            </Box>
+            <Field
+              type="password"
+              id="register-confirm-input"
+              label="Confirm password"
+              isRequired={true}
+              placeholder="Confirm your password"
+              autoComplete="current-password"
+              value={form.confirm}
+              onChange={onChange}
+              error={errors.confirm}
+            />
           </form>
-          <Stack gap={theme.gap.small} my={theme.gap.large}>
+          <Stack
+            gap={theme.gap.small}
+            mb={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          >
             <Check
-              text="Must be at least 8 characters long"
+              text={
+                <>
+                  <Typography component="span">Must be at least</Typography> 8
+                  characters long
+                </>
+              }
               variant={
                 errors?.password === "Password is required"
                   ? "error"
@@ -295,7 +301,12 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               }
             />
             <Check
-              text="Must contain one special character and a number"
+              text={
+                <>
+                  <Typography component="span">Must contain</Typography> one
+                  special character and a number
+                </>
+              }
               variant={
                 errors?.password === "Password is required"
                   ? "error"
@@ -309,7 +320,14 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               }
             />
             <Check
-              text="Must contain at least one upper and lower character"
+              text={
+                <>
+                  <Typography component="span">
+                    Must contain at least
+                  </Typography>{" "}
+                  one upper and lower character
+                </>
+              }
               variant={
                 errors?.password === "Password is required"
                   ? "error"
@@ -330,7 +348,6 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
             img={<ArrowBackRoundedIcon />}
             onClick={onBack}
             sx={{
-              mb: theme.gap.medium,
               px: theme.gap.ml,
               "& svg.MuiSvgIcon-root": {
                 mr: theme.gap.xs,
@@ -513,10 +530,9 @@ const Register = ({ isAdmin }) => {
 
   return (
     <Stack className="register-page auth" overflow="hidden">
-      <img
+      <Box
         className="background-pattern-svg"
-        src={background}
-        alt="background pattern"
+        sx={{ backgroundImage: `url(${background})` }}
       />
       <Stack
         direction="row"
@@ -532,8 +548,8 @@ const Register = ({ isAdmin }) => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        p={theme.gap.xl}
-        pb={theme.gap.triplexl}
+        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
+        pb={theme.gap.xl}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {

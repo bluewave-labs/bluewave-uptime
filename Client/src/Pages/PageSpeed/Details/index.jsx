@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { formatDate, formatDurationRounded } from "../../../Utils/timeUtils";
-import { getLastChecked } from "../../../Utils/monitorUtils";
+import {
+  formatDuration,
+  formatDurationRounded,
+} from "../../../Utils/timeUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
@@ -185,7 +187,7 @@ const PageSpeedDetails = () => {
     const fetchMonitor = async () => {
       try {
         const res = await axiosInstance.get(
-          `/monitors/${monitorId}?sortOrder=desc`,
+          `/monitors/stats/${monitorId}?sortOrder=desc&limit=50`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -297,7 +299,7 @@ const PageSpeedDetails = () => {
   const [expand, setExpand] = useState(false);
 
   let loading = Object.keys(monitor).length === 0;
-
+  const data = monitor?.checks ? [...monitor.checks].reverse() : [];
   return (
     <Stack className="page-speed-details" gap={theme.gap.large}>
       {loading ? (
@@ -361,7 +363,7 @@ const PageSpeedDetails = () => {
           <Stack
             direction="row"
             justifyContent="space-between"
-            gap={theme.gap.xl}
+            gap={theme.gap.large}
             flexWrap="wrap"
           >
             <StatBox
@@ -369,14 +371,13 @@ const PageSpeedDetails = () => {
               title="Last checked"
               value={
                 <>
-                  {formatDate(getLastChecked(monitor?.checks, false))}{" "}
+                  {formatDuration(monitor?.lastChecked)}{" "}
                   <Typography
                     component="span"
                     fontStyle="italic"
                     sx={{ opacity: 0.8 }}
                   >
-                    ({formatDurationRounded(getLastChecked(monitor?.checks))}{" "}
-                    ago)
+                    ago
                   </Typography>
                 </>
               }
@@ -386,17 +387,13 @@ const PageSpeedDetails = () => {
               title="Checks since"
               value={
                 <>
-                  {formatDate(new Date(monitor?.createdAt))}{" "}
+                  {formatDuration(monitor?.uptimeDuration)}{" "}
                   <Typography
                     component="span"
                     fontStyle="italic"
                     sx={{ opacity: 0.8 }}
                   >
-                    (
-                    {formatDurationRounded(
-                      new Date() - new Date(monitor?.createdAt)
-                    )}{" "}
-                    ago)
+                    ago
                   </Typography>
                 </>
               }
@@ -409,12 +406,10 @@ const PageSpeedDetails = () => {
           </Stack>
           <Typography component="h2">Score history</Typography>
           <Box height="300px">
-            <PageSpeedLineChart
-              pageSpeedChecks={monitor?.checks?.slice(0, 25)}
-            />
+            <PageSpeedLineChart pageSpeedChecks={data} />
           </Box>
           <Typography component="h2">Performance report</Typography>
-          <Stack direction="row" alignItems="center" overflow="hidden">
+          <Stack direction="row" alignItems="center" overflow="hidden" flex={1}>
             <Stack
               alignItems="center"
               textAlign="center"
