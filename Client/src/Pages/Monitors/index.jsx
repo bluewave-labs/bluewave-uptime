@@ -160,13 +160,12 @@ const Monitors = () => {
   // Bool for sorting arrow
   const [isSorted, setIsSorted] = useState(false);
 
-  
   // Function to handle sorting on click of status text
   const handleSort = () => {
-    setSortOrder(prevOrder => prevOrder * -1);
-    
+    setSortOrder((prevOrder) => prevOrder * -1);
+
     // Sort existing monitors with start of ascending order
-    const monitors = [...monitorState.monitors].sort(a => {
+    const monitors = [...monitorState.monitors].sort((a) => {
       return a.status ? -1 * sortOrder : 1 * sortOrder;
     });
 
@@ -182,9 +181,21 @@ const Monitors = () => {
       {
         id: 2,
         name: (
-          <Box width="max-content" onClick={handleSort} style={{ cursor: "pointer" }}>
+          <Box
+            width="max-content"
+            onClick={handleSort}
+            style={{ cursor: "pointer" }}
+          >
             Status
-            {isSorted ? <span>{sortOrder === -1 ? <ArrowUpwardRoundedIcon /> : <ArrowDownwardRoundedIcon />}</span> : null}
+            {isSorted ? (
+              <span>
+                {sortOrder === -1 ? (
+                  <ArrowUpwardRoundedIcon />
+                ) : (
+                  <ArrowDownwardRoundedIcon />
+                )}
+              </span>
+            ) : null}
           </Box>
         ),
       },
@@ -195,6 +206,7 @@ const Monitors = () => {
     rows: [],
   };
 
+  console.log(monitorState.monitors);
   // Render out sorted monitors/default monitors
   data.rows = sortedMonitors.map((monitor, idx) => {
     const params = {
