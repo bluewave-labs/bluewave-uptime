@@ -78,28 +78,10 @@ function Sidebar() {
    *
    */
   const logout = async () => {
-    try {
-      // Make request to BE to remove JWT from user
-      await axiosInstance.post(
-        "/auth/logout",
-        { email: authState.user.email },
-        {
-          headers: {
-            Authorization: `Bearer ${authState.authToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Clear auth state
-      dispatch(clearAuthState());
-      dispatch(clearUptimeMonitorState());
-      navigate("/login");
-    } catch (error) {
-      createToast({
-        body: error.message,
-      });
-    }
+    // Clear auth state
+    dispatch(clearAuthState());
+    dispatch(clearUptimeMonitorState());
+    navigate("/login");
   };
 
   /**
