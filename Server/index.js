@@ -19,6 +19,8 @@ const JobQueue = require("./service/jobQueue");
 const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
+const userRouter = require("./routes/userRoute"); // Import the user router
+
 
 let cleaningUp = false;
 
@@ -76,6 +78,8 @@ const startApp = async () => {
   app.use("/api/v1/alerts", verifyJWT, alertRouter);
   app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
   app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
+  app.use("/api/v1/users", verifyJWT, userRouter); // Add this line to use the user router
+
   //Temporary route for testing, remove later
   app.use("/api/v1/job", queueRouter);
 

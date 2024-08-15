@@ -48,6 +48,8 @@ const getTokenFromHeaders = (headers) => {
  * @returns {{success: Boolean, msg: String}}
  */
 const registerController = async (req, res, next) => {
+
+  req.body.email = req.body.email.toLowerCase();
   // joi validation
   try {
     await registerValidation.validateAsync(req.body);
