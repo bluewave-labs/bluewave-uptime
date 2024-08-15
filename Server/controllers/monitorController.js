@@ -77,7 +77,8 @@ const getMonitorCertificate = async (req, res, next) => {
   }
 
   try {
-    const monitor = await req.db.getMonitorById(req, res);
+    const { monitorId } = req.params;
+    const monitor = await req.db.getMonitorById(monitorId);
     const monitorUrl = new URL(monitor.url);
     const certificate = await sslChecker(monitorUrl.hostname);
     if (certificate && certificate.validTo) {
