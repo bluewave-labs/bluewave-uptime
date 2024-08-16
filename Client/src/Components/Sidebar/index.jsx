@@ -1,13 +1,12 @@
 import { useState } from "react";
 import {
   Box,
+  Collapse,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Menu,
-  MenuItem,
   Stack,
   Tooltip,
   Typography,
@@ -31,30 +30,39 @@ import Incidents from "../../assets/icons/incidents.svg?react";
 import Integrations from "../../assets/icons/integrations.svg?react";
 import PageSpeed from "../../assets/icons/page-speed.svg?react";
 import Settings from "../../assets/icons/settings.svg?react";
-import Arrow from "../../assets/icons/down-arrow.svg?react";
+import ArrowDown from "../../assets/icons/down-arrow.svg?react";
+import ArrowUp from "../../assets/icons/up-arrow.svg?react";
 
 import "./index.css";
 
 const menu = [
-  { name: "Monitors", path: "monitors", icon: <Monitors /> },
+  {
+    name: "Dashboard",
+    icon: <Monitors />,
+    nested: [
+      { name: "Monitors", path: "monitors", icon: <Monitors /> },
+      { name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
+    ],
+  },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   { name: "Status pages", path: "status", icon: <StatusPages /> },
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
-  { name: "Page speed", path: "pagespeed", icon: <PageSpeed /> },
   { name: "Integrations", path: "integrations", icon: <Integrations /> },
+  {
+    name: "Account",
+    icon: <UserSvg />,
+    nested: [
+      { name: "Profile", path: "account/profile", icon: <UserSvg /> },
+      { name: "Password", path: "account/password", icon: <TeamSvg /> },
+      { name: "Team", path: "account/team", icon: <LockSvg /> },
+    ],
+  },
 ];
 
 const other = [
   { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },
 ];
-
-const icons = {
-  Profile: <UserSvg />,
-  Team: <TeamSvg />,
-  Password: <LockSvg />,
-  Logout: <LogoutSvg />,
-};
 
 /**
  * @component
@@ -68,23 +76,14 @@ function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const [anchorElUser, setAnchorElUser] = useState(null);
   const authState = useSelector((state) => state.auth);
+  const [open, setOpen] = useState({ Dashboard: false, Account: false });
 
   // Initialize settings and update based on user role
   let settings = ["Profile", "Password", "Team", "Logout"];
   if (authState.user?.role && !authState.user.role.includes("admin")) {
     settings = ["Profile", "Password", "Logout"];
   }
-
-  /**
-   * Handles opening the user menu.
-   *
-   * @param {React.MouseEvent<HTMLElement>} event - The event triggered by clicking the user menu button.
-   */
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
 
   /**
    * Handles logging out the user
@@ -95,29 +94,6 @@ function Sidebar() {
     dispatch(clearAuthState());
     dispatch(clearUptimeMonitorState());
     navigate("/login");
-  };
-
-  /**
-   * Handles closing the user menu.
-   */
-  const handleCloseUserMenu = (setting) => {
-    setAnchorElUser(null);
-    switch (setting) {
-      case "Profile":
-        navigate("/account/profile");
-        break;
-      case "Team":
-        navigate("/account/team");
-        break;
-      case "Password":
-        navigate("/account/password");
-        break;
-      case "Logout":
-        logout();
-        break;
-      default:
-        break;
-    }
   };
 
   return (
@@ -136,22 +112,68 @@ function Sidebar() {
         }
         sx={{ width: "100%" }}
       >
-        {menu.map((item) => (
-          <ListItemButton
-            className={
-              location.pathname.includes(item.path) ? "selected-path" : ""
-            }
-            key={item.path}
-            onClick={() => navigate(`/${item.path}`)}
-            sx={{
-              gap: theme.gap.medium,
-              borderRadius: `${theme.shape.borderRadius}px`,
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-            <ListItemText>{item.name}</ListItemText>
-          </ListItemButton>
-        ))}
+        {menu.map((item) =>
+          item.path ? (
+            <ListItemButton
+              className={
+                location.pathname.includes(item.path) ? "selected-path" : ""
+              }
+              key={item.path}
+              onClick={() => navigate(`/${item.path}`)}
+              sx={{
+                gap: theme.gap.medium,
+                borderRadius: `${theme.shape.borderRadius}px`,
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+              <ListItemText>{item.name}</ListItemText>
+            </ListItemButton>
+          ) : (
+            <>
+              <ListItemButton
+                key={item.name}
+                onClick={() =>
+                  setOpen((prev) => ({
+                    ...prev,
+                    [`${item.name}`]: !prev[`${item.name}`],
+                  }))
+                }
+                sx={{
+                  gap: theme.gap.medium,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+                <ListItemText>{item.name}</ListItemText>
+                {open[`${item.name}`] ? <ArrowUp /> : <ArrowDown />}
+              </ListItemButton>
+              <Collapse in={open[`${item.name}`]} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding sx={{ pl: theme.gap.large }}>
+                  {item.nested.map((child) => (
+                    <ListItemButton
+                      className={
+                        location.pathname.includes(child.path)
+                          ? "selected-path"
+                          : ""
+                      }
+                      key={child.path}
+                      onClick={() => navigate(`/${child.path}`)}
+                      sx={{
+                        gap: theme.gap.medium,
+                        borderRadius: `${theme.shape.borderRadius}px`,
+                      }}
+                    >
+                      <ListItemIcon sx={{ minWidth: 0 }}>
+                        {child.icon}
+                      </ListItemIcon>
+                      <ListItemText>{child.name}</ListItemText>
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Collapse>
+            </>
+          )
+        )}
       </List>
       {/* other */}
       <List
@@ -211,39 +233,13 @@ function Sidebar() {
           px={theme.gap.medium}
           gap={theme.gap.xs}
           borderRadius={`${theme.shape.borderRadius}px`}
-          onClick={handleOpenUserMenu}
         >
           <Avatar small={true} />
           <Typography component="span" ml={theme.gap.xs}>
             {authState.user?.firstName} {authState.user?.lastName}
           </Typography>
-          <Arrow style={{ marginTop: "2px", marginLeft: "auto" }} />
         </Stack>
       </Tooltip>
-      <Menu
-        className="sidebar-menu"
-        anchorEl={anchorElUser}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-        keepMounted
-        open={Boolean(anchorElUser)}
-        onClose={handleCloseUserMenu}
-        autoFocus={false}
-        sx={{
-          ml: theme.gap.xxl,
-        }}
-      >
-        {settings.map((setting) => (
-          <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-            {icons[setting]}
-            <Typography component="span" ml={theme.gap.small}>
-              {setting}
-            </Typography>
-          </MenuItem>
-        ))}
-      </Menu>
     </Stack>
   );
 }
