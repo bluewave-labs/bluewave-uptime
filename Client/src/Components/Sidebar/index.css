@@ -72,7 +72,7 @@ aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root::after {
   left: -8px;
   top: 50%;
   height: 1px;
-  width: 5px;
+  width: 7px;
   border-radius: 50%;
   background-color: var(--env-var-color-5);
   opacity: 0.3;

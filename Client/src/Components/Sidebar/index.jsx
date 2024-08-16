@@ -106,7 +106,7 @@ function Sidebar() {
 
   return (
     <Stack component="aside" gap={theme.gap.medium}>
-      <Box pt={theme.gap.large} pl={theme.gap.lgplus} pb={theme.gap.xs}>
+      <Box py={theme.gap.large} pl={theme.gap.lgplus}>
         <BWULogo alt="BlueWave Uptime Logo" />
       </Box>
       {/* menu */}
