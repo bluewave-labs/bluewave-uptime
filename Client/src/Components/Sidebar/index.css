@@ -6,7 +6,10 @@ aside .MuiStack-root:hover {
 aside .MuiList-root svg {
   width: 20px;
   height: 20px;
-  opacity: 0.8;
+  opacity: 0.9;
+}
+aside .MuiList-root svg path {
+  stroke: var(--env-var-color-2);
 }
 aside span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
@@ -16,13 +19,22 @@ aside .MuiListSubheader-root {
   font-size: var(--env-var-font-size-small);
   font-weight: 500;
   line-height: 1.5;
-  opacity: 0.6;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+  opacity: 0.6;
 }
 aside span.MuiTypography-root,
 aside .MuiListSubheader-root {
-  color: var(--env-var-color-2);
+  color: var(--env-var-color-5);
+}
+aside .MuiListItemButton-root:not(.selected-path) > * {
+  opacity: 0.8;
+}
+aside .selected-path > * {
+  opacity: 1;
+}
+aside .selected-path span.MuiTypography-root {
+  font-weight: 500;
 }
 aside .MuiStack-root:last-child {
   margin-top: auto;

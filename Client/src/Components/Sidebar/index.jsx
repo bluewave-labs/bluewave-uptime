@@ -244,33 +244,6 @@ function Sidebar() {
           </MenuItem>
         ))}
       </Menu>
-      {/* {menu.map((item) => (
-        <Stack
-          className={
-            location.pathname.includes(item.path) ? "selected-path" : ""
-          }
-          key={item.path}
-          direction="row"
-          alignItems="center"
-          py={theme.gap.small}
-          px={theme.gap.medium}
-          gap={theme.gap.small}
-          borderRadius={`${theme.shape.borderRadius}px`}
-          onClick={() =>
-            item.path === "support"
-              ? window.open(
-                  "https://github.com/bluewave-labs/bluewave-uptime",
-                  "_blank",
-                  "noreferrer"
-                )
-              : navigate(`/${item.path}`)
-          }
-        >
-          {item.icon}
-          <Typography component="span">{item.name}</Typography>
-        </Stack>
-      ))}
-       */}
     </Stack>
   );
 }
