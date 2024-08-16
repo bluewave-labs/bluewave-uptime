@@ -65,6 +65,10 @@ aside
   > .MuiListItemButton-root:last-child::before {
   height: 50%;
 }
+aside .MuiCollapse-wrapperInner .MuiList-root svg {
+  width: 18px;
+  height: 18px;
+}
 
 aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root::after {
   content: "";

@@ -52,7 +52,7 @@ const Host = ({ params }) => {
           "&:focus": {
             outline: "none",
           },
-          mr: "3px",
+          mr: "5px",
         }}
       >
         <OpenInNewPage

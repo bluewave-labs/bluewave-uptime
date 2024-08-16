@@ -10,7 +10,7 @@
 }
 .MuiTable-root .host div:nth-child(2) {
   width: fit-content;
-  font-weight: 700;
+  font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
