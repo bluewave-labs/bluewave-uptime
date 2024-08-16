@@ -29,7 +29,15 @@ const Account = ({ open = "profile" }) => {
   if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
 
   return (
-    <Box className="account" pt={theme.gap.xl}>
+    <Box
+      className="account"
+      px={theme.gap.xl}
+      py={theme.gap.large}
+      border={1}
+      borderColor={theme.palette.otherColors.graishWhite}
+      borderRadius={`${theme.shape.borderRadius}px`}
+      backgroundColor={theme.palette.otherColors.white}
+    >
       <TabContext value={tab}>
         <Box
           sx={{
