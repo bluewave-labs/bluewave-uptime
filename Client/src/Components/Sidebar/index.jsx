@@ -183,7 +183,7 @@ function Sidebar() {
                         key={child.path}
                         onClick={() => navigate(`/${child.path}`)}
                         sx={{
-                          gap: theme.gap.medium,
+                          gap: theme.gap.small,
                           borderRadius: `${theme.shape.borderRadius}px`,
                           pl: theme.gap.small,
                         }}
