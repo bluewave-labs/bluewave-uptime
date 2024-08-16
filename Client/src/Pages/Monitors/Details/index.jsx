@@ -195,7 +195,11 @@ const DetailsPage = () => {
                   >
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
-                  <MonitorDetailsRadialBarChart width={200} height={200} />
+                  <MonitorDetailsRadialBarChart
+                    width={500}
+                    height={500}
+                    data={monitor.statusBar}
+                  />
                   <MonitorDetails60MinChart data={monitor.statusBar} />
                 </Stack>
                 <Typography mt={theme.gap.small}>

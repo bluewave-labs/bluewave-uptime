@@ -4,17 +4,10 @@ import { Group } from "@visx/group";
 import { GradientLightgreenGreen } from "@visx/gradient";
 import { scaleBand, scaleRadial } from "@visx/scale";
 import { Text } from "@visx/text";
+import statusBarData from "./mock_data";
 import letterFrequency, {
   LetterFrequency,
 } from "@visx/mock-data/lib/mocks/letterFrequency";
-
-const data = letterFrequency;
-
-const getLetter = (d) => d.letter;
-const getLetterFrequency = (d) => Number(d.frequency) * 100;
-
-const frequencySort = (a, b) => b.frequency - a.frequency;
-const alphabeticalSort = (a, b) => a.letter.localeCompare(b.letter);
 
 const toRadians = (x) => (x * Math.PI) / 180;
 const toDegrees = (x) => (x * 180) / Math.PI;
@@ -23,10 +16,12 @@ const barColor = "#93F9B9";
 const margin = { top: 20, bottom: 20, left: 20, right: 20 };
 
 const MonitorDetailsRadialBarChart = ({
+  data,
   width,
   height,
   showControls = true,
 }) => {
+  console.log(data);
   const [rotation, setRotation] = useState(0);
   const [sortAlphabetically, setSortAlphabetically] = useState(true);
 
@@ -37,13 +32,7 @@ const MonitorDetailsRadialBarChart = ({
 
   const innerRadius = radiusMax / 3;
 
-  const xDomain = useMemo(
-    () =>
-      data
-        .sort(sortAlphabetically ? alphabeticalSort : frequencySort)
-        .map(getLetter),
-    [sortAlphabetically]
-  );
+  const xDomain = useMemo(() => data.map((_, idx) => idx), []);
 
   const xScale = useMemo(
     () =>
@@ -59,7 +48,7 @@ const MonitorDetailsRadialBarChart = ({
     () =>
       scaleRadial({
         range: [innerRadius, radiusMax],
-        domain: [0, Math.max(...data.map(getLetterFrequency))],
+        domain: [0, Math.max(...data.map((d) => d.responseTime))],
       }),
     [innerRadius, radiusMax]
   );
@@ -75,13 +64,13 @@ const MonitorDetailsRadialBarChart = ({
           rx={14}
         />
         <Group top={yMax / 2 + margin.top} left={xMax / 2 + margin.left}>
-          {data.map((d) => {
-            const letter = getLetter(d);
-            const startAngle = xScale(letter);
+          {data.map((d, idx) => {
+            const letter = d.responseTime;
+            const startAngle = xScale(idx);
             const midAngle = startAngle + xScale.bandwidth() / 2;
             const endAngle = startAngle + xScale.bandwidth();
 
-            const outerRadius = yScale(getLetterFrequency(d)) ?? 0;
+            const outerRadius = yScale(d.responseTime) ?? 0;
 
             // convert polar coordinates to cartesian for drawing labels
             const textRadius = outerRadius + 4;
@@ -104,12 +93,12 @@ const MonitorDetailsRadialBarChart = ({
                   y={textY}
                   dominantBaseline="end"
                   textAnchor="middle"
-                  fontSize={16}
+                  fontSize={8}
                   fontWeight="bold"
                   fill={barColor}
                   angle={toDegrees(midAngle)}
                 >
-                  {letter}
+                  {idx === 0 ? "Now" : ""}
                 </Text>
               </>
             );

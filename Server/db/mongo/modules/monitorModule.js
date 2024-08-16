@@ -130,18 +130,23 @@ const getStatusBarValues = (monitor, checks) => {
   const checksIn60Mins = Math.floor((60 * 60 * 1000) / monitor.interval);
   const noBlankChecks = checksIn60Mins - checks.length;
 
-  const statusBarValues = checks.map((check) => {
+  let statusBarValues = checks.map((check) => {
     return {
       status: check.status,
       responseTime: check.responseTime,
-      value: 75,
     };
   });
 
+  statusBarValues = NormalizeData(statusBarValues, 99, 100);
+
   for (let i = 0; i < noBlankChecks; i++) {
-    statusBarValues.push({ status: undefined, responseTime: 0, value: 75 });
+    statusBarValues.push({
+      status: undefined,
+      responseTime: Math.floor(Math.random() * 400) + 1,
+      value: 75,
+    });
   }
-  return statusBarValues.reverse();
+  return statusBarValues;
 };
 /**
  * Get stats by monitor ID
