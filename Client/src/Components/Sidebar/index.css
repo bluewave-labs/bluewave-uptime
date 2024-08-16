@@ -1,6 +1,5 @@
 aside .selected-path,
-aside .MuiListItemButton-root:hover,
-aside .MuiStack-root:hover {
+aside .MuiListItemButton-root:hover {
   background-color: var(--env-var-color-13);
 }
 aside .MuiList-root svg {
@@ -28,7 +27,7 @@ aside .MuiListSubheader-root {
   color: var(--env-var-color-5);
 }
 aside .MuiListItemButton-root:not(.selected-path) > * {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 aside .selected-path > * {
   opacity: 1;
@@ -38,29 +37,4 @@ aside .selected-path span.MuiTypography-root {
 }
 aside .MuiStack-root:last-child {
   margin-top: auto;
-}
-
-.sidebar-menu {
-  margin-top: -20px;
-}
-.sidebar-menu .MuiPaper-root {
-  box-shadow: var(--env-var-shadow-1);
-  border: solid 1px var(--env-var-color-6);
-  border-radius: var(--env-var-radius-1);
-  gap: 1px;
-}
-.sidebar-menu .MuiList-root {
-  min-width: 100px;
-  width: 150px;
-}
-.sidebar-menu li.MuiButtonBase-root {
-  min-height: fit-content;
-}
-.sidebar-menu .MuiList-root svg {
-  width: 16px;
-  height: 16px;
-}
-.sidebar-menu span {
-  font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Collapse,
@@ -81,12 +81,6 @@ function Sidebar() {
   const authState = useSelector((state) => state.auth);
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
 
-  // Initialize settings and update based on user role
-  let settings = ["Profile", "Password", "Team", "Logout"];
-  if (authState.user?.role && !authState.user.role.includes("admin")) {
-    settings = ["Profile", "Password", "Logout"];
-  }
-
   /**
    * Handles logging out the user
    *
@@ -131,9 +125,8 @@ function Sidebar() {
               <ListItemText>{item.name}</ListItemText>
             </ListItemButton>
           ) : (
-            <>
+            <React.Fragment key={item.name}>
               <ListItemButton
-                key={item.name}
                 onClick={() =>
                   setOpen((prev) => ({
                     ...prev,
@@ -149,35 +142,45 @@ function Sidebar() {
                 <ListItemText>{item.name}</ListItemText>
                 {open[`${item.name}`] ? <ArrowUp /> : <ArrowDown />}
               </ListItemButton>
-              <Collapse in={open[`${item.name}`]} timeout="auto" unmountOnExit>
+              <Collapse in={open[`${item.name}`]} timeout="auto">
                 <List
                   component="div"
                   disablePadding
                   sx={{ pl: theme.gap.large }}
                 >
-                  {item.nested.map((child) => (
-                    <ListItemButton
-                      className={
-                        location.pathname.includes(child.path)
-                          ? "selected-path"
-                          : ""
-                      }
-                      key={child.path}
-                      onClick={() => navigate(`/${child.path}`)}
-                      sx={{
-                        gap: theme.gap.medium,
-                        borderRadius: `${theme.shape.borderRadius}px`,
-                      }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 0 }}>
-                        {child.icon}
-                      </ListItemIcon>
-                      <ListItemText>{child.name}</ListItemText>
-                    </ListItemButton>
-                  ))}
+                  {item.nested.map((child) => {
+                    if (
+                      child.name === "Team" &&
+                      authState.user?.role &&
+                      !authState.user.role.includes("admin")
+                    ) {
+                      return null;
+                    }
+
+                    return (
+                      <ListItemButton
+                        className={
+                          location.pathname.includes(child.path)
+                            ? "selected-path"
+                            : ""
+                        }
+                        key={child.path}
+                        onClick={() => navigate(`/${child.path}`)}
+                        sx={{
+                          gap: theme.gap.medium,
+                          borderRadius: `${theme.shape.borderRadius}px`,
+                        }}
+                      >
+                        <ListItemIcon sx={{ minWidth: 0 }}>
+                          {child.icon}
+                        </ListItemIcon>
+                        <ListItemText>{child.name}</ListItemText>
+                      </ListItemButton>
+                    );
+                  })}
                 </List>
               </Collapse>
-            </>
+            </React.Fragment>
           )
         )}
       </List>
