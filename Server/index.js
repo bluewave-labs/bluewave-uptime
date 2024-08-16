@@ -5,7 +5,7 @@ require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
-
+const { errorMessages } = require("./utils/messages");
 const authRouter = require("./routes/authRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
@@ -126,12 +126,19 @@ const startApp = async () => {
       return;
     }
     cleaningUp = true;
-    console.log("Shutting down gracefully");
-    await jobQueue.obliterate();
-    console.log("Finished cleanup");
+    try {
+      console.log("Shutting down gracefully");
+      await jobQueue.obliterate();
+      console.log("Finished cleanup");
+    } catch (error) {
+      logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
+        service: SERVICE_NAME,
+        errorMsg: error.message,
+      });
+    }
     process.exit(0);
   };
-
+  process.on("SIGUSR2", cleanup);
   process.on("SIGINT", cleanup);
   process.on("SIGTERM", cleanup);
 };

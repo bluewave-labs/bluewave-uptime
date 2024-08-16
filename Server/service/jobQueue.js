@@ -280,13 +280,36 @@ class JobQueue {
     }
   }
 
+  async getMetrics() {
+    try {
+      const metrics = {
+        waiting: await this.queue.getWaitingCount(),
+        active: await this.queue.getActiveCount(),
+        completed: await this.queue.getCompletedCount(),
+        failed: await this.queue.getFailedCount(),
+        delayed: await this.queue.getDelayedCount(),
+        repeatableJobs: (await this.queue.getRepeatableJobs()).length,
+      };
+      return metrics;
+    } catch (error) {
+      logger.error("Failed to retrieve job queue metrics", {
+        service: SERVICE_NAME,
+        errorMsg: error.message,
+      });
+    }
+  }
+
   /**
    * @async
    * @returns {Promise<boolean>} - Returns true if obliteration is successful
    */
   async obliterate() {
     try {
+      let metrics = await this.getMetrics();
+      console.log(metrics);
+      await this.queue.pause();
       const jobs = await this.getJobs();
+
       for (const job of jobs) {
         await this.queue.removeRepeatableByKey(job.key);
         await this.queue.remove(job.id);
@@ -298,17 +321,16 @@ class JobQueue {
       );
 
       await this.queue.obliterate();
+      metrics = await this.getMetrics();
+      console.log(metrics);
       logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
         service: SERVICE_NAME,
       });
       return true;
     } catch (error) {
-      logger.error(errorMessages.JOB_QUEUE_OBLITERATE);
       throw error;
     }
   }
-
-  //TODO Cleanup Queue on shutdown
 }
 
 module.exports = JobQueue;
