@@ -23,6 +23,8 @@ import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 import BWULogo from "../../assets/Images/bwl-logo.svg?react";
 import Support from "../../assets/icons/support.svg?react";
+import Dashboard from "../../assets/icons/dashboard.svg?react";
+import Account from "../../assets/icons/user-edit.svg?react";
 import StatusPages from "../../assets/icons/status-pages.svg?react";
 import Maintenance from "../../assets/icons/maintenance.svg?react";
 import Monitors from "../../assets/icons/monitors.svg?react";
@@ -38,7 +40,7 @@ import "./index.css";
 const menu = [
   {
     name: "Dashboard",
-    icon: <Monitors />,
+    icon: <Dashboard />,
     nested: [
       { name: "Monitors", path: "monitors", icon: <Monitors /> },
       { name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
@@ -50,11 +52,11 @@ const menu = [
   { name: "Integrations", path: "integrations", icon: <Integrations /> },
   {
     name: "Account",
-    icon: <UserSvg />,
+    icon: <Account />,
     nested: [
       { name: "Profile", path: "account/profile", icon: <UserSvg /> },
-      { name: "Password", path: "account/password", icon: <TeamSvg /> },
-      { name: "Team", path: "account/team", icon: <LockSvg /> },
+      { name: "Password", path: "account/password", icon: <LockSvg /> },
+      { name: "Team", path: "account/team", icon: <TeamSvg /> },
     ],
   },
 ];
@@ -148,7 +150,11 @@ function Sidebar() {
                 {open[`${item.name}`] ? <ArrowUp /> : <ArrowDown />}
               </ListItemButton>
               <Collapse in={open[`${item.name}`]} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding sx={{ pl: theme.gap.large }}>
+                <List
+                  component="div"
+                  disablePadding
+                  sx={{ pl: theme.gap.large }}
+                >
                   {item.nested.map((child) => (
                     <ListItemButton
                       className={
