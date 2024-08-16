@@ -23,8 +23,12 @@ aside .MuiListSubheader-root {
   opacity: 0.6;
 }
 aside span.MuiTypography-root,
+aside p.MuiTypography-root,
 aside .MuiListSubheader-root {
   color: var(--env-var-color-5);
+}
+aside p.MuiTypography-root {
+  font-size: var(--env-var-font-size-small);
 }
 aside .MuiListItemButton-root:not(.selected-path) > * {
   opacity: 0.9;
@@ -33,7 +37,7 @@ aside .selected-path > * {
   opacity: 1;
 }
 aside .selected-path span.MuiTypography-root {
-  font-weight: 500;
+  font-weight: 600;
 }
 aside .MuiStack-root:last-child {
   margin-top: auto;

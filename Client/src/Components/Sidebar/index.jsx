@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Collapse,
+  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
@@ -106,7 +107,6 @@ function Sidebar() {
             Menu
           </ListSubheader>
         }
-        sx={{ width: "100%" }}
       >
         {menu.map((item) =>
           item.path ? (
@@ -193,7 +193,6 @@ function Sidebar() {
             Other
           </ListSubheader>
         }
-        sx={{ width: "100%" }}
       >
         {other.map((item) => (
           <ListItemButton
@@ -220,35 +219,31 @@ function Sidebar() {
           </ListItemButton>
         ))}
       </List>
-      <Tooltip
-        title="Open settings"
-        slotProps={{
-          popper: {
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [0, -14],
-                },
-              },
-            ],
-          },
-        }}
+
+      <Stack
+        direction="row"
+        alignItems="center"
+        py={theme.gap.small}
+        px={theme.gap.medium}
+        pr={0}
+        gap={theme.gap.xs}
+        borderRadius={`${theme.shape.borderRadius}px`}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          py={theme.gap.small}
-          px={theme.gap.medium}
-          gap={theme.gap.xs}
-          borderRadius={`${theme.shape.borderRadius}px`}
-        >
-          <Avatar small={true} />
-          <Typography component="span" ml={theme.gap.xs}>
+        <Avatar small={true} />
+        <Box ml={theme.gap.xs}>
+          <Typography component="span" fontWeight={500}>
             {authState.user?.firstName} {authState.user?.lastName}
           </Typography>
-        </Stack>
-      </Tooltip>
+          <Typography sx={{ textTransform: "capitalize" }}>
+            {authState.user?.role}
+          </Typography>
+        </Box>
+        <Tooltip title="Log Out">
+          <IconButton sx={{ ml: "auto" }}>
+            <LogoutSvg />
+          </IconButton>
+        </Tooltip>
+      </Stack>
     </Stack>
   );
 }
