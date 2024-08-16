@@ -1,40 +1,31 @@
-aside .MuiStack-root {
-  cursor: pointer;
-}
-aside > svg {
-  margin: var(--env-var-spacing-2) var(--env-var-spacing-1);
-}
 aside .selected-path,
+aside .MuiListItemButton-root:hover,
 aside .MuiStack-root:hover {
   background-color: var(--env-var-color-13);
 }
-aside .MuiStack-root svg {
+aside .MuiList-root svg {
   width: 20px;
   height: 20px;
   opacity: 0.8;
 }
 aside span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-5);
   line-height: 1;
 }
-aside .MuiStack-root:nth-last-child(3) {
-  margin-top: auto;
+aside .MuiListSubheader-root {
+  font-size: var(--env-var-font-size-small);
+  font-weight: 500;
+  line-height: 1.5;
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin-bottom: 5px;
 }
-aside .MuiStack-root:last-child,
-aside .MuiStack-root:nth-last-child(3) {
-  position: relative;
-}
-aside .MuiStack-root:last-child:before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 0;
-  width: 100%;
-  border-top: solid 1px var(--env-var-color-6);
+aside span.MuiTypography-root,
+aside .MuiListSubheader-root {
+  color: var(--env-var-color-2);
 }
 aside .MuiStack-root:last-child {
-  margin-top: 15px;
+  margin-top: auto;
 }
 
 .sidebar-menu {
@@ -49,11 +40,6 @@ aside .MuiStack-root:last-child {
 .sidebar-menu .MuiList-root {
   min-width: 100px;
   width: 150px;
-  padding-bottom: 0;
-}
-.sidebar-menu li.MuiButtonBase-root:last-child {
-  border-top: solid 1px var(--env-var-color-6);
-  padding: 12px 16px;
 }
 .sidebar-menu li.MuiButtonBase-root {
   min-height: fit-content;

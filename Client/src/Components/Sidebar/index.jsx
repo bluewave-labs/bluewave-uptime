@@ -1,12 +1,22 @@
 import { useState } from "react";
-import { Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+  Menu,
+  MenuItem,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { createToast } from "../../Utils/toastUtils";
-import axiosInstance from "../../Utils/axiosConfig";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
 import UserSvg from "../../assets/icons/user.svg?react";
@@ -32,6 +42,9 @@ const menu = [
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
   { name: "Page speed", path: "pagespeed", icon: <PageSpeed /> },
   { name: "Integrations", path: "integrations", icon: <Integrations /> },
+];
+
+const other = [
   { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },
 ];
@@ -108,34 +121,74 @@ function Sidebar() {
   };
 
   return (
-    <Stack component="aside" gap={theme.gap.xs}>
-      <BWULogo alt="BlueWave Uptime Logo" />
-      {menu.map((item) => (
-        <Stack
-          className={
-            location.pathname.includes(item.path) ? "selected-path" : ""
-          }
-          key={item.path}
-          direction="row"
-          alignItems="center"
-          py={theme.gap.small}
-          px={theme.gap.medium}
-          gap={theme.gap.small}
-          borderRadius={`${theme.shape.borderRadius}px`}
-          onClick={() =>
-            item.path === "support"
-              ? window.open(
-                  "https://github.com/bluewave-labs/bluewave-uptime",
-                  "_blank",
-                  "noreferrer"
-                )
-              : navigate(`/${item.path}`)
-          }
-        >
-          {item.icon}
-          <Typography component="span">{item.name}</Typography>
-        </Stack>
-      ))}
+    <Stack component="aside" gap={theme.gap.large}>
+      <Box pt={theme.gap.large} pl={theme.gap.ml} pb={theme.gap.xs}>
+        <BWULogo alt="BlueWave Uptime Logo" />
+      </Box>
+      {/* menu */}
+      <List
+        component="nav"
+        aria-labelledby="nested-menu-subheader"
+        subheader={
+          <ListSubheader component="div" id="nested-menu-subheader">
+            Menu
+          </ListSubheader>
+        }
+        sx={{ width: "100%" }}
+      >
+        {menu.map((item) => (
+          <ListItemButton
+            className={
+              location.pathname.includes(item.path) ? "selected-path" : ""
+            }
+            key={item.path}
+            onClick={() => navigate(`/${item.path}`)}
+            sx={{
+              gap: theme.gap.medium,
+              borderRadius: `${theme.shape.borderRadius}px`,
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+            <ListItemText>{item.name}</ListItemText>
+          </ListItemButton>
+        ))}
+      </List>
+      {/* other */}
+      <List
+        component="nav"
+        aria-labelledby="nested-other-subheader"
+        subheader={
+          <ListSubheader component="div" id="nested-other-subheader">
+            Other
+          </ListSubheader>
+        }
+        sx={{ width: "100%" }}
+      >
+        {other.map((item) => (
+          <ListItemButton
+            className={
+              location.pathname.includes(item.path) ? "selected-path" : ""
+            }
+            key={item.path}
+            onClick={() =>
+              item.path === "support"
+                ? window.open(
+                    "https://github.com/bluewave-labs/bluewave-uptime",
+                    "_blank",
+                    "noreferrer"
+                  )
+                : navigate(`/${item.path}`)
+            }
+            sx={{
+              gap: theme.gap.medium,
+              borderRadius: `${theme.shape.borderRadius}px`,
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+            <ListItemText>{item.name}</ListItemText>
+          </ListItemButton>
+        ))}
+      </List>
       <Tooltip
         title="Open settings"
         slotProps={{
@@ -191,6 +244,33 @@ function Sidebar() {
           </MenuItem>
         ))}
       </Menu>
+      {/* {menu.map((item) => (
+        <Stack
+          className={
+            location.pathname.includes(item.path) ? "selected-path" : ""
+          }
+          key={item.path}
+          direction="row"
+          alignItems="center"
+          py={theme.gap.small}
+          px={theme.gap.medium}
+          gap={theme.gap.small}
+          borderRadius={`${theme.shape.borderRadius}px`}
+          onClick={() =>
+            item.path === "support"
+              ? window.open(
+                  "https://github.com/bluewave-labs/bluewave-uptime",
+                  "_blank",
+                  "noreferrer"
+                )
+              : navigate(`/${item.path}`)
+          }
+        >
+          {item.icon}
+          <Typography component="span">{item.name}</Typography>
+        </Stack>
+      ))}
+       */}
     </Stack>
   );
 }
