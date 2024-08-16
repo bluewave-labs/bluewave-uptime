@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Collapse,
@@ -93,6 +93,16 @@ function Sidebar() {
     navigate("/login");
   };
 
+  useEffect(() => {
+    if (
+      location.pathname.includes("monitors") ||
+      location.pathname.includes("pagespeed")
+    )
+      setOpen((prev) => ({ ...prev, Dashboard: true }));
+    else if (location.pathname.includes("/account"))
+      setOpen((prev) => ({ ...prev, Account: true }));
+  }, []);
+
   return (
     <Stack component="aside" gap={theme.gap.large}>
       <Box pt={theme.gap.large} pl={theme.gap.ml} pb={theme.gap.xs}>
@@ -146,7 +156,7 @@ function Sidebar() {
                 <List
                   component="div"
                   disablePadding
-                  sx={{ pl: theme.gap.large }}
+                  sx={{ pl: theme.gap.lgplus }}
                 >
                   {item.nested.map((child) => {
                     if (
@@ -169,6 +179,7 @@ function Sidebar() {
                         sx={{
                           gap: theme.gap.medium,
                           borderRadius: `${theme.shape.borderRadius}px`,
+                          pl: theme.gap.small,
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: 0 }}>
@@ -239,8 +250,11 @@ function Sidebar() {
           </Typography>
         </Box>
         <Tooltip title="Log Out">
-          <IconButton sx={{ ml: "auto" }}>
-            <LogoutSvg />
+          <IconButton
+            sx={{ ml: "auto", "&:focus": { outline: "none" } }}
+            onClick={logout}
+          >
+            <LogoutSvg style={{ width: "20px", height: "20px" }} />
           </IconButton>
         </Tooltip>
       </Stack>

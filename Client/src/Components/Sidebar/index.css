@@ -29,6 +29,7 @@ aside .MuiListSubheader-root {
 }
 aside p.MuiTypography-root {
   font-size: var(--env-var-font-size-small);
+  opacity: 0.8;
 }
 aside .MuiListItemButton-root:not(.selected-path) > * {
   opacity: 0.9;
@@ -41,4 +42,38 @@ aside .selected-path span.MuiTypography-root {
 }
 aside .MuiStack-root:last-child {
   margin-top: auto;
+}
+aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root {
+  position: relative;
+}
+aside
+  .MuiCollapse-wrapperInner
+  .MuiList-root
+  > .MuiListItemButton-root::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  border-left: solid 1px var(--env-var-color-5);
+  opacity: 0.3;
+}
+aside
+  .MuiCollapse-wrapperInner
+  .MuiList-root
+  > .MuiListItemButton-root:last-child::before {
+  height: 50%;
+}
+
+aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root::after {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  height: 1px;
+  width: 5px;
+  border-radius: 50%;
+  background-color: var(--env-var-color-5);
+  opacity: 0.3;
 }
