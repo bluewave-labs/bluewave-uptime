@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const queueController = require("../controllers/queueController");
 
+router.get("/metrics", queueController.getMetrics);
+
 // Get Jobs
 router.get("/", queueController.getJobs);
 

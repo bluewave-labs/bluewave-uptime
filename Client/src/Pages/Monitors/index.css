@@ -1,7 +1,7 @@
 .monitors h1.MuiTypography-root,
 .monitors h2.MuiTypography-root {
   color: var(--env-var-color-1);
-  font-weight: 600;
+  font-weight: 500;
 }
 .monitors h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);

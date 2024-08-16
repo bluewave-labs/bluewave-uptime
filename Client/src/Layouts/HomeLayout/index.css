@@ -25,7 +25,11 @@
   border-radius: var(--env-var-radius-1);
   background-color: var(--env-var-color-8);
 
-  padding: var(--env-var-spacing-1) var(--env-var-spacing-1-plus);
+  padding: var(--env-var-spacing-1) 0;
+}
+.home-layout aside > *:not(:first-child) {
+  padding-left: var(--env-var-spacing-1-plus);
+  padding-right: var(--env-var-spacing-1-plus);
 }
 
 .home-layout > div {
