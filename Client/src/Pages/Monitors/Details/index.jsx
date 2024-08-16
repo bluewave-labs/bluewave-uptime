@@ -17,7 +17,6 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
-import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 import MonitorDetailsRadialBarChart from "../../../Components/Charts/MonitorDetailsRadialBarChart";
 
 const StatBox = ({ title, value }) => {
@@ -200,7 +199,6 @@ const DetailsPage = () => {
                     height={500}
                     data={monitor.statusBar}
                   />
-                  <MonitorDetails60MinChart data={monitor.statusBar} />
                 </Stack>
                 <Typography mt={theme.gap.small}>
                   <Typography
