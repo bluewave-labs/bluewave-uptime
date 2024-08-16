@@ -133,16 +133,19 @@ const getStatusBarValues = (monitor, checks) => {
   let statusBarValues = checks.map((check) => {
     return {
       status: check.status,
+      createdAt: check.createdAt,
       responseTime: check.responseTime,
     };
   });
 
-  statusBarValues = NormalizeData(statusBarValues, 99, 100);
+  statusBarValues = NormalizeData(statusBarValues, 33, 100);
+
+  // statusBarValues = NormalizeData(statusBarValues, 1, 100);
 
   for (let i = 0; i < noBlankChecks; i++) {
     statusBarValues.push({
       status: undefined,
-      responseTime: Math.floor(Math.random() * 400) + 1,
+      responseTime: 10,
       value: 75,
     });
   }
@@ -267,9 +270,7 @@ const getMonitorStatsById = async (req) => {
     monitorStats.checks = dateRangeChecks;
 
     return monitorStats;
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 /**
