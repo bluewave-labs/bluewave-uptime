@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Collapse,
+  Divider,
   IconButton,
   List,
   ListItemButton,
@@ -104,16 +105,21 @@ function Sidebar() {
   }, []);
 
   return (
-    <Stack component="aside" gap={theme.gap.large}>
-      <Box pt={theme.gap.large} pl={theme.gap.ml} pb={theme.gap.xs}>
+    <Stack component="aside" gap={theme.gap.medium}>
+      <Box pt={theme.gap.large} pl={theme.gap.lgplus} pb={theme.gap.xs}>
         <BWULogo alt="BlueWave Uptime Logo" />
       </Box>
       {/* menu */}
       <List
         component="nav"
         aria-labelledby="nested-menu-subheader"
+        disablePadding
         subheader={
-          <ListSubheader component="div" id="nested-menu-subheader">
+          <ListSubheader
+            component="div"
+            id="nested-menu-subheader"
+            sx={{ pt: theme.gap.small }}
+          >
             Menu
           </ListSubheader>
         }
@@ -195,12 +201,17 @@ function Sidebar() {
           )
         )}
       </List>
+      <Divider sx={{ my: theme.gap.small }} />
       {/* other */}
       <List
         component="nav"
         aria-labelledby="nested-other-subheader"
         subheader={
-          <ListSubheader component="div" id="nested-other-subheader">
+          <ListSubheader
+            component="div"
+            id="nested-other-subheader"
+            sx={{ pt: theme.gap.small }}
+          >
             Other
           </ListSubheader>
         }
@@ -230,13 +241,12 @@ function Sidebar() {
           </ListItemButton>
         ))}
       </List>
-
+      <Divider sx={{ mt: "auto" }} />
       <Stack
         direction="row"
         alignItems="center"
         py={theme.gap.small}
         px={theme.gap.medium}
-        pr={0}
         gap={theme.gap.xs}
         borderRadius={`${theme.shape.borderRadius}px`}
       >

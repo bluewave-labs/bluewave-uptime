@@ -40,11 +40,11 @@ aside .selected-path > * {
 aside .selected-path span.MuiTypography-root {
   font-weight: 600;
 }
-aside .MuiStack-root:last-child {
-  margin-top: auto;
-}
 aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root {
   position: relative;
+}
+aside .MuiDivider-root {
+  border-color: var(--env-var-color-6);
 }
 aside
   .MuiCollapse-wrapperInner
