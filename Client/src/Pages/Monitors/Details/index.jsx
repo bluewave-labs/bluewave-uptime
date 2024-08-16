@@ -194,11 +194,6 @@ const DetailsPage = () => {
                   >
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
-                  <MonitorDetailsRadialBarChart
-                    width={500}
-                    height={500}
-                    data={monitor.statusBar}
-                  />
                 </Stack>
                 <Typography mt={theme.gap.small}>
                   <Typography
@@ -238,57 +233,67 @@ const DetailsPage = () => {
                 }}
               />
             </Stack>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              gap={theme.gap.large}
-              flexWrap="wrap"
-            >
-              <StatBox
-                title="Currently up for"
-                value={formatDuration(monitor?.uptimeDuration)}
-              />
-              <StatBox
-                title="Last check"
-                value={`${formatDurationRounded(monitor?.lastChecked)} ago`}
-              />
-              <StatBox title="Incidents" value={monitor?.incidents} />
-              <StatBox title="Certificate Expiry" value={certificateExpiry} />
-              <StatBox
-                title="Latest response time"
-                value={monitor?.latestResponseTime}
-              />
-              <StatBox
-                title={
-                  <>
-                    Avg. Response Time{" "}
-                    <Typography component="span">(24-hr)</Typography>
-                  </>
-                }
-                value={parseFloat(monitor?.avgResponseTime24hours)
-                  .toFixed(2)
-                  .replace(/\.?0+$/, "")}
-              />
-              <StatBox
-                title={
-                  <>
-                    Uptime <Typography component="span">(24-hr)</Typography>
-                  </>
-                }
-                value={`${parseFloat(monitor?.uptime24Hours)
-                  .toFixed(2)
-                  .replace(/\.?0+$/, "")}%`}
-              />
-              <StatBox
-                title={
-                  <>
-                    Uptime <Typography component="span">(30-day)</Typography>
-                  </>
-                }
-                value={`${parseFloat(monitor?.uptime30Days)
-                  .toFixed(2)
-                  .replace(/\.?0+$/, "")}%`}
-              />
+
+            <Stack direction="row">
+              <div style={{ flex: "1", paddingRight: "2rem" }}>
+                <MonitorDetailsRadialBarChart
+                  data={monitor.statusBar}
+                  width={250}
+                  height={250}
+                />
+              </div>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                gap={theme.gap.large}
+                flexWrap="wrap"
+              >
+                <StatBox
+                  title="Currently up for"
+                  value={formatDuration(monitor?.uptimeDuration)}
+                />
+                <StatBox
+                  title="Last check"
+                  value={`${formatDurationRounded(monitor?.lastChecked)} ago`}
+                />
+                <StatBox title="Incidents" value={monitor?.incidents} />
+                <StatBox title="Certificate Expiry" value={certificateExpiry} />
+                <StatBox
+                  title="Latest response time"
+                  value={monitor?.latestResponseTime}
+                />
+                <StatBox
+                  title={
+                    <>
+                      Avg. Response Time{" "}
+                      <Typography component="span">(24-hr)</Typography>
+                    </>
+                  }
+                  value={parseFloat(monitor?.avgResponseTime24hours)
+                    .toFixed(2)
+                    .replace(/\.?0+$/, "")}
+                />
+                <StatBox
+                  title={
+                    <>
+                      Uptime <Typography component="span">(24-hr)</Typography>
+                    </>
+                  }
+                  value={`${parseFloat(monitor?.uptime24Hours)
+                    .toFixed(2)
+                    .replace(/\.?0+$/, "")}%`}
+                />
+                <StatBox
+                  title={
+                    <>
+                      Uptime <Typography component="span">(30-day)</Typography>
+                    </>
+                  }
+                  value={`${parseFloat(monitor?.uptime30Days)
+                    .toFixed(2)
+                    .replace(/\.?0+$/, "")}%`}
+                />
+              </Stack>
             </Stack>
             <Box>
               <Stack

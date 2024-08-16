@@ -1,31 +1,25 @@
 import React, { useMemo } from "react";
+
+// Visx components
 import { Arc } from "@visx/shape";
 import { Group } from "@visx/group";
-import { GradientLightgreenGreen } from "@visx/gradient";
 import { scaleBand, scaleRadial } from "@visx/scale";
 import { Text } from "@visx/text";
 import { Line } from "@visx/shape";
-
 import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
+// End visx components
+
 import { PropTypes } from "prop-types";
 import { Stack, Typography } from "@mui/material";
 
 const toDegrees = (x) => (x * 180) / Math.PI;
 
-const barColor = "#93F9B9";
-
 const color = {
-  true: barColor,
+  true: "var(--env-var-color-23)",
   false: "var(--env-var-color-24)",
   undefined: "var(--env-var-color-33)",
 };
-
-// const color = {
-//   true: "var(--env-var-color-23)",
-//   false: "var(--env-var-color-24)",
-//   undefined: "var(--env-var-color-33)",
-// };
 
 const margin = { top: 20, bottom: 20, left: 20, right: 20 };
 
@@ -110,12 +104,12 @@ const MonitorDetailsRadialBarChart = ({ data, width, height }) => {
   return width < 10 ? null : (
     <>
       <svg width={width} height={height}>
-        <GradientLightgreenGreen id="radial-bars-green" />
         <rect
           width={width}
           height={height}
-          fill="url(#radial-bars-green)"
-          rx={14}
+          stroke="#EBEBEB"
+          rx={4}
+          fill="#ffffff"
         />
         <Group top={yMax / 2 + margin.top} left={xMax / 2 + margin.left}>
           {data.map((d, idx) => {
@@ -183,13 +177,14 @@ const MonitorDetailsRadialBarChart = ({ data, width, height }) => {
                   />
                 )}
                 <Text
+                  className="chart-label"
                   x={textX}
                   y={textY}
                   dominantBaseline="end"
                   textAnchor="middle"
                   fontSize={13}
                   fontWeight="bold"
-                  fill={barColor}
+                  fill="#344054"
                   angle={toDegrees(midAngle)}
                 >
                   {idx === 0
