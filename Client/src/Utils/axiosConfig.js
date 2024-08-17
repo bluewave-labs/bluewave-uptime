@@ -43,16 +43,23 @@ axiosInstance.getMonitorsByUserId = async (
   sortOrder,
   normalize
 ) => {
-  const typeQuery = types.reduce((acc, type) => acc + `&type=${type}`, "");
-  return axiosInstance.get(
-    `/monitors/user/${userId}?limit=${limit}${typeQuery}&sortOrder=${sortOrder}&normalize=${normalize}`,
-    {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const params = new URLSearchParams();
+
+  if (limit) params.append("limit", limit);
+  if (types) {
+    types.forEach((type) => {
+      params.append("type", type);
+    });
+  }
+  if (sortOrder) params.append("sortOrder", sortOrder);
+  if (normalize) params.append("normalize", normalize);
+
+  return axiosInstance.get(`/monitors/user/${userId}?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  });
 };
 
 // Updates a single monitor

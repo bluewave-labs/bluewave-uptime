@@ -13,32 +13,7 @@ export const createPageSpeed = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-
-      const res = await axiosInstance.post(`/monitors`, monitor, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      return res.data;
-    } catch (error) {
-      if (error.response && error.response.data) {
-        return thunkApi.rejectWithValue(error.response.data);
-      }
-      const payload = {
-        status: false,
-        msg: error.message ? error.message : "Unknown error",
-      };
-      return thunkApi.rejectWithValue(payload);
-    }
-  }
-);
-
-export const getPageSpeedMonitors = createAsyncThunk(
-  "pageSpeedMonitors/getPageSpeedMonitors",
-  async (token, thunkApi) => {
-    try {
-      const res = await axiosInstance.get("/monitors");
+      const res = await axiosInstance.createMonitor(authToken, monitor);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -58,14 +33,15 @@ export const getPageSpeedByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await axiosInstance.get(
-        `/monitors/user/${user._id}?limit=25&type=pagespeed&sortOrder=desc`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await axiosInstance.getMonitorsByUserId(
+        token,
+        user._id,
+        25,
+        ["pagespeed"],
+        "desc",
+        false
       );
+
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -91,15 +67,10 @@ export const updatePageSpeed = createAsyncThunk(
         interval: monitor.interval,
         // notifications: monitor.notifications,
       };
-      const res = await axiosInstance.put(
-        `/monitors/${monitor._id}`,
-        updatedFields,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        }
+      const res = await axiosInstance.updateMonitor(
+        authToken,
+        monitor._id,
+        updatedFields
       );
       return res.data;
     } catch (error) {
@@ -120,12 +91,7 @@ export const deletePageSpeed = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await axiosInstance.delete(`/monitors/${monitor._id}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await axiosInstance.deleteMonitorById(authToken, monitor._id);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -153,25 +119,6 @@ const pageSpeedMonitorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // *****************************************************
-      // All Monitors
-      // *****************************************************
-      .addCase(getPageSpeedMonitors.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getPageSpeedMonitors.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
-        state.monitors = action.payload.data;
-      })
-      .addCase(getPageSpeedMonitors.rejected, (state, action) => {
-        state.isLoading = false;
-        state.success = false;
-        state.msg = action.payload
-          ? action.payload.msg
-          : "Getting montiors failed";
-      })
       // *****************************************************
       // Monitors by userId
       // *****************************************************
