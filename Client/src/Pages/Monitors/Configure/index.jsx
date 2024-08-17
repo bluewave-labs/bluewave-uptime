@@ -21,6 +21,7 @@ import {
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Checkbox from "../../../Components/Inputs/Checkbox";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -220,20 +221,12 @@ const Configure = () => {
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate(-1)}
-            sx={{
-              backgroundColor: "#f4f4f4",
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "monitors", path: "/monitors" },
+              { name: "details", path: `/monitors/${monitorId}` },
+              { name: "configure", path: `/monitors/configure/${monitorId}` },
+            ]}
           />
           <form
             className="configure-monitor-form"
@@ -460,7 +453,7 @@ const Configure = () => {
           }}
         >
           <Typography id="modal-delete-monitor" component="h2">
-          Do you really want to delete this monitor?
+            Do you really want to delete this monitor?
           </Typography>
           <Typography id="delete-monitor-confirmation">
             Once deleted, this monitor cannot be retrieved.
