@@ -90,4 +90,18 @@ axiosInstance.deleteMonitorById = async (authToken, monitorId) => {
   });
 };
 
+// **********************************
+// Register a new user
+// **********************************
+axiosInstance.registerUser = async (form) => {
+  return axiosInstance.post(`/auth/register`, form);
+};
+
+// **********************************
+// Log in an exisiting user
+// **********************************
+axiosInstance.loginUser = async (form) => {
+  return axiosInstance.post(`/auth/login`, form);
+};
+
 export default axiosInstance;

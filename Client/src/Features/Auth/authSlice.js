@@ -14,7 +14,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.post("/auth/register", form);
+      const res = await axiosInstance.registerUser(form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -31,7 +31,7 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   try {
-    const res = await axiosInstance.post(`/auth/login`, form);
+    const res = await axiosInstance.loginUser(form);
     return res.data;
   } catch (error) {
     if (error.response && error.response.data) {
