@@ -141,6 +141,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.MuiInputBase-root.Mui-disabled input {
+  cursor: not-allowed;
+}
+
 .Toastify__toast-container {
   width: auto;
 }
