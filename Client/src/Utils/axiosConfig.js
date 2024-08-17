@@ -24,4 +24,55 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+// Create a new monitor
+axiosInstance.createMonitor = async (authToken, monitor) => {
+  return axiosInstance.post(`/monitors`, monitor, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// Get all uptime monitors for a user
+axiosInstance.getMonitorsByUserId = async (
+  authToken,
+  userId,
+  limit,
+  types,
+  sortOrder,
+  normalize
+) => {
+  const typeQuery = types.reduce((acc, type) => acc + `&type=${type}`, "");
+  return axiosInstance.get(
+    `/monitors/user/${userId}?limit=${limit}${typeQuery}&sortOrder=${sortOrder}&normalize=${normalize}`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
+// Updates a single monitor
+axiosInstance.updateMonitor = async (authToken, monitorId, updatedFields) => {
+  return axiosInstance.put(`/monitors/${monitorId}`, updatedFields, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// Deletes a single monitor
+axiosInstance.deleteMonitorById = async (authToken, monitorId) => {
+  return axiosInstance.delete(`/monitors/${monitorId}`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 export default axiosInstance;
