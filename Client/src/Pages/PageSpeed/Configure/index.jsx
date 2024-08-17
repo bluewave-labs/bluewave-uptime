@@ -15,12 +15,11 @@ import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 import "./index.css";
-import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 /**
  * Renders a skeleton layout.
