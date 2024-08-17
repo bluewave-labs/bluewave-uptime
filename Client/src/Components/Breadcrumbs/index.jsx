@@ -1,9 +1,21 @@
+import PropTypes from "prop-types";
 import { Box, Breadcrumbs as MUIBreadcrumbs } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router";
 import ArrowRight from "../../assets/icons/right-arrow.svg?react";
 
 import "./index.css";
+
+/**
+ * Breadcrumbs component that displays a list of breadcrumb items.
+ *
+ * @param {Object} props
+ * @param {Array} props.list - Array of breadcrumb items. Each item should have `name` and `path` properties.
+ * @param {string} props.list.name - The name to display for the breadcrumb.
+ * @param {string} props.list.path - The path to navigate to when the breadcrumb is clicked.
+ *
+ * @returns {JSX.Element} The rendered Breadcrumbs component.
+ */
 
 const Breadcrumbs = ({ list }) => {
   const theme = useTheme();
@@ -37,6 +49,15 @@ const Breadcrumbs = ({ list }) => {
       })}
     </MUIBreadcrumbs>
   );
+};
+
+Breadcrumbs.propTypes = {
+  list: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+    }).isRequired
+  ).isRequired,
 };
 
 export default Breadcrumbs;
