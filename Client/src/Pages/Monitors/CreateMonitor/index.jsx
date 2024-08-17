@@ -146,7 +146,7 @@ const CreateMonitor = () => {
       <Breadcrumbs
         list={[
           { name: "monitors", path: "/monitors" },
-          { name: "details", path: `/monitors/create` },
+          { name: "create", path: `/monitors/create` },
         ]}
       />
       <Stack

@@ -20,6 +20,7 @@ import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 
 import "./index.css";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 /**
  * Renders a skeleton layout.
@@ -147,37 +148,25 @@ const PageSpeedConfigure = () => {
   let loading = Object.keys(monitor).length === 0;
 
   return (
-    <Box className="configure-pagespeed">
+    <Stack className="configure-pagespeed" gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate(-1)}
-            sx={{
-              backgroundColor: theme.palette.otherColors.fillGray,
-              mb: theme.gap.large,
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "pagespeed", path: "/pagespeed" },
+              { name: "details", path: `/pagespeed/${monitorId}` },
+              { name: "configure", path: `/pagespeed/configure/${monitorId}` },
+            ]}
           />
-          <form
+          <Stack
+            component="form"
             noValidate
             spellCheck="false"
             onSubmit={handleSave}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: theme.gap.large,
-              maxWidth: "1000px",
-            }}
+            flex={1}
+            gap={theme.gap.large}
           >
             <Stack direction="row" gap={theme.gap.small}>
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
@@ -300,7 +289,7 @@ const PageSpeedConfigure = () => {
                 </Stack>
               </Stack>
             </Stack>
-            <Stack direction="row" justifyContent="flex-end">
+            <Stack direction="row" justifyContent="flex-end" mt="auto">
               <Button
                 type="submit"
                 level="primary"
@@ -309,7 +298,7 @@ const PageSpeedConfigure = () => {
                 sx={{ px: theme.gap.large, mt: theme.gap.large }}
               />
             </Stack>
-          </form>
+          </Stack>
         </>
       )}
       <Modal
@@ -358,7 +347,7 @@ const PageSpeedConfigure = () => {
           </Stack>
         </Stack>
       </Modal>
-    </Box>
+    </Stack>
   );
 };
 
