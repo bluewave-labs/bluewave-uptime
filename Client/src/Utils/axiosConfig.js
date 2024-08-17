@@ -24,7 +24,9 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+// **********************************
 // Create a new monitor
+// **********************************
 axiosInstance.createMonitor = async (authToken, monitor) => {
   return axiosInstance.post(`/monitors`, monitor, {
     headers: {
@@ -34,7 +36,9 @@ axiosInstance.createMonitor = async (authToken, monitor) => {
   });
 };
 
+// **********************************
 // Get all uptime monitors for a user
+// **********************************
 axiosInstance.getMonitorsByUserId = async (
   authToken,
   userId,
@@ -62,7 +66,9 @@ axiosInstance.getMonitorsByUserId = async (
   });
 };
 
+// **********************************
 // Updates a single monitor
+// **********************************
 axiosInstance.updateMonitor = async (authToken, monitorId, updatedFields) => {
   return axiosInstance.put(`/monitors/${monitorId}`, updatedFields, {
     headers: {
@@ -72,7 +78,9 @@ axiosInstance.updateMonitor = async (authToken, monitorId, updatedFields) => {
   });
 };
 
+// **********************************
 // Deletes a single monitor
+// **********************************
 axiosInstance.deleteMonitorById = async (authToken, monitorId) => {
   return axiosInstance.delete(`/monitors/${monitorId}`, {
     headers: {
