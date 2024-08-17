@@ -5,15 +5,11 @@ import { useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import { getLastChecked } from "../../../Utils/monitorUtils";
-import "./index.css";
 import { monitorValidation } from "../../../Validation/validation";
 import Select from "../../../Components/Inputs/Select";
-import { formatDurationRounded } from "../../../Utils/timeUtils";
 import { createToast } from "../../../Utils/toastUtils";
 import {
   updateUptimeMonitor,
@@ -22,6 +18,7 @@ import {
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import "./index.css";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -97,7 +94,6 @@ const Configure = () => {
   const { user, authToken } = useSelector((state) => state.auth);
   const { monitors } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState({});
-  const [duration, setDuration] = useState(0);
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
 
@@ -118,7 +114,6 @@ const Configure = () => {
     setMonitor({
       ...data,
     });
-    setDuration(formatDurationRounded(data?.interval));
   }, [monitorId, authToken, monitors]);
 
   const handleChange = (event, name) => {
@@ -211,12 +206,10 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
-  var lastChecked = formatDurationRounded(getLastChecked(monitor?.checks));
-
   let loading = Object.keys(monitor).length === 0;
 
   return (
-    <Box className="configure-monitor">
+    <Stack className="configure-monitor" gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -228,49 +221,39 @@ const Configure = () => {
               { name: "configure", path: `/monitors/configure/${monitorId}` },
             ]}
           />
-          <form
-            className="configure-monitor-form"
+          <Stack
+            component="form"
             noValidate
             spellCheck="false"
-            style={{
-              marginTop: theme.gap.medium,
-            }}
+            gap={theme.gap.large}
+            flex={1}
           >
-            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+            <Stack direction="row" gap={theme.gap.small}>
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
               <Box>
                 {parsedUrl?.host ? (
-                  <Typography
-                    component="h1"
-                    mb={theme.gap.small}
-                    sx={{ lineHeight: 1 }}
-                  >
+                  <Typography component="h1" mb={theme.gap.xs} lineHeight={1}>
                     {parsedUrl.host || "..."}
                   </Typography>
                 ) : (
                   ""
                 )}
-                <Typography lineHeight={parsedUrl?.host ? 1 : theme.gap.large}>
-                  <Typography
-                    component="span"
-                    sx={{
-                      color: monitor?.status
-                        ? "var(--env-var-color-17)"
-                        : "var(--env-var-color-24)",
-                    }}
-                  >
-                    Your site is {monitor?.status ? "up" : "down"}.
-                  </Typography>{" "}
-                  Checking every {duration}.{" "}
-                  {lastChecked ? `Last time checked ${lastChecked} ago.` : ""}
+                <Typography
+                  component="span"
+                  lineHeight={theme.gap.large}
+                  sx={{
+                    color: monitor?.status
+                      ? "var(--env-var-color-17)"
+                      : "var(--env-var-color-24)",
+                  }}
+                >
+                  Your site is {monitor?.status ? "up" : "down"}.
                 </Typography>
               </Box>
-              <Stack
-                direction="row"
-                gap={theme.gap.medium}
+              <Box
                 sx={{
-                  ml: "auto",
                   alignSelf: "flex-end",
+                  ml: "auto",
                 }}
               >
                 <Button
@@ -279,9 +262,10 @@ const Configure = () => {
                   animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{
-                    backgroundColor: "#f4f4f4",
+                    backgroundColor: theme.palette.otherColors.fillGray,
                     pl: theme.gap.small,
                     pr: theme.gap.medium,
+                    mr: theme.gap.medium,
                     "& svg": {
                       mr: theme.gap.xs,
                     },
@@ -296,17 +280,16 @@ const Configure = () => {
                   }}
                   onClick={() => setIsOpen(true)}
                 />
-              </Stack>
+              </Box>
             </Stack>
             <Stack
               className="config-box"
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.xxl}
             >
               <Box>
                 <Typography component="h2">General settings</Typography>
-                <Typography component="p" sx={{ mt: theme.gap.small }}>
+                <Typography component="p" sx={{ mt: theme.gap.xs }}>
                   Here you can select the URL of the host, together with the
                   type of monitor.
                 </Typography>
@@ -338,11 +321,10 @@ const Configure = () => {
               className="config-box"
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.xxl}
             >
               <Box>
                 <Typography component="h2">Incident notifications</Typography>
-                <Typography component="p" mt={theme.gap.small}>
+                <Typography component="p" mt={theme.gap.xs}>
                   When there is an incident, notify users.
                 </Typography>
               </Box>
@@ -401,7 +383,6 @@ const Configure = () => {
               className="config-box"
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.xxl}
             >
               <Box>
                 <Typography component="h2">Advanced settings</Typography>
@@ -416,7 +397,7 @@ const Configure = () => {
                 />
               </Stack>
             </Stack>
-            <Stack direction="row" justifyContent="flex-end">
+            <Stack direction="row" justifyContent="flex-end" mt="auto">
               <Button
                 level="primary"
                 label="Save"
@@ -424,7 +405,7 @@ const Configure = () => {
                 onClick={handleSubmit}
               />
             </Stack>
-          </form>
+          </Stack>
         </>
       )}
       <Modal
@@ -473,7 +454,7 @@ const Configure = () => {
           </Stack>
         </Stack>
       </Modal>
-    </Box>
+    </Stack>
   );
 };
 
