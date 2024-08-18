@@ -11,16 +11,16 @@ import {
 } from "../../../Utils/timeUtils";
 import axiosInstance from "../../../Utils/axiosConfig";
 import Button from "../../../Components/Button";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
 import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
-
-import "./index.css";
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import "./index.css";
+
 
 /**
  * Displays a box with an icon, title, and value.
@@ -39,7 +39,8 @@ const StatBox = ({ icon, title, value }) => {
       className="stat-box"
       direction="row"
       gap={theme.gap.small}
-      p={theme.gap.ml}
+      pt={theme.gap.ml}
+      px={theme.gap.ml}
       pb={theme.gap.mlplus}
     >
       {icon}
@@ -306,21 +307,11 @@ const PageSpeedDetails = () => {
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate("/pagespeed")}
-            sx={{
-              width: "fit-content",
-              backgroundColor: theme.palette.otherColors.fillGray,
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "pagespeed", path: "/pagespeed" },
+              { name: "details", path: `/pagespeed/${monitorId}` },
+            ]}
           />
           <Stack direction="row" gap={theme.gap.small}>
             {monitor?.status ? <GreenCheck /> : <RedCheck />}

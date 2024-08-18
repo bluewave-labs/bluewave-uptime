@@ -2,7 +2,7 @@
   background-color: var(--env-var-color-8);
   border: solid 1px var(--env-var-color-6);
   border-radius: var(--env-var-radius-1);
-  padding: var(--env-var-default-2);
+  padding: var(--env-var-font-size-large-plus) var(--env-var-font-size-xlarge);
 }
 .configure-pagespeed h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
@@ -60,9 +60,12 @@ body:has(.configure-pagespeed) .select-dropdown .MuiMenuItem-root,
   text-transform: lowercase;
 }
 
+.configure-pagespeed h3.MuiTypography-root {
+  flex: 0.7;
+}
+
 .configure-pagespeed .field,
 .configure-pagespeed .section-disabled,
-.configure-pagespeed .select-wrapper,
-.configure-pagespeed h3.MuiTypography-root {
+.configure-pagespeed .select-wrapper {
   flex: 1;
 }
