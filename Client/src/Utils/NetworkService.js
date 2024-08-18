@@ -151,4 +151,29 @@ axiosInstance.setNewPassword = async (recoveryToken, form) => {
   });
 };
 
+// **********************************
+// Check for admin user
+// **********************************
+axiosInstance.doesAdminExist = async () => {
+  return axiosInstance.get("/auth/users/admin");
+};
+
+// **********************************
+// Get all users
+// **********************************
+axiosInstance.getAllUsers = async (authToken) => {
+  return axiosInstance.get("/auth/users", {
+    headers: { Authorization: `Bearer ${authToken}` },
+  });
+};
+
+// **********************************
+// Verify Invitation Token
+// **********************************
+axiosInstance.verifyInvitationToken = async (token) => {
+  return axiosInstance.post(`/auth/invite/verify`, {
+    token,
+  });
+};
+
 export default axiosInstance;

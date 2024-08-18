@@ -249,7 +249,7 @@ const Login = () => {
 
   useEffect(() => {
     axiosInstance
-      .get("/auth/users/admin")
+      .doesAdminExist()
       .then((response) => {
         if (response.data.data === false) {
           navigate("/register");

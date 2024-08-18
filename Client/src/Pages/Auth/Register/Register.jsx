@@ -397,9 +397,7 @@ const Register = ({ isAdmin }) => {
     const fetchInvite = async () => {
       if (token !== undefined) {
         try {
-          const res = await axiosInstance.post(`/auth/invite/verify`, {
-            token,
-          });
+          const res = await axiosInstance.verifyInvitationToken(token);
           const { role, email } = res.data.data;
           console.log(role);
           setForm({ ...form, email, role });

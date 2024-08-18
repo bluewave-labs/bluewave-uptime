@@ -52,10 +52,7 @@ const TeamPanel = () => {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const response = await axiosInstance.get("/auth/users", {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-
+        const response = await axiosInstance.getAllUsers(authToken);
         setMembers(response.data.data);
       } catch (error) {
         createToast({
