@@ -602,8 +602,8 @@
           "profilePicUrl",
           "isActive",
           "isVerified",
-          "updated_at",
-          "created_at"
+          "updatedAt",
+          "createdAt"
         ],
         "properties": {
           "firstname": {
@@ -625,10 +625,10 @@
           "isVerified": {
             "type": "boolean"
           },
-          "updated_at": {
+          "updatedAt": {
             "type": "string"
           },
-          "created_at": {
+          "createdAt": {
             "type": "string"
           }
         }
