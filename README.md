@@ -60,7 +60,10 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ![Alt](https://repobeats.axiom.co/api/embed/c35d999c82dbb31e967427ea4166c14da4172e73.svg "Repobeats analytics image")
 
-Also check other developer and contributor friendly projects of BlueWave: 
+[![Star History Chart](https://api.star-history.com/svg?repos=bluewave-labs/bluewave-uptime&type=Date)](https://star-history.com/#bluewave-labs/bluewave-uptime&Date)
+
+
+Also check other developer and contributor-friendly projects of BlueWave: 
 
 - [BlueWave HRM](https://github.com/bluewave-labs/bluewave-hrm)
 - [BlueWave Onboarding](https://github.com/bluewave-labs/bluewave-onboarding)
