@@ -320,10 +320,12 @@ const Login = () => {
             body: "Welcome back! You're successfully logged in.",
           });
         } else {
-          setErrors({
-            password: "The password you provided does not match our records",
-          });
           if (action.payload) {
+            if (action.payload.msg === "Incorrect password")
+              setErrors({
+                password:
+                  "The password you provided does not match our records",
+              });
             // dispatch errors
             createToast({
               body: action.payload.msg,

@@ -10,7 +10,7 @@
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
-![1](https://github.com/user-attachments/assets/207c74a0-a494-42c5-ab8d-3d7c1e7ead8a)
+![Dashboard](https://github.com/user-attachments/assets/0f92d7a3-19cf-430c-8b0f-fe13ff46c51b)
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
@@ -22,6 +22,7 @@ BlueWave Uptime is an open source server monitoring application used to track th
 - [x] Ping monitoring
 - [x] Incidents at a glance
 - [x] Page speed monitoring
+- [x] E-mail notifications 
 - [ ] Scheduled maintenance (in the works)
 
 **Roadmap (short term):**
@@ -58,6 +59,13 @@ We love contributors. Here's how you can contribute:
 Made with [contrib.rocks](https://contrib.rocks).
 
 ![Alt](https://repobeats.axiom.co/api/embed/c35d999c82dbb31e967427ea4166c14da4172e73.svg "Repobeats analytics image")
+
+Also check other developer and contributor friendly projects of BlueWave: 
+
+- [BlueWave HRM](https://github.com/bluewave-labs/bluewave-hrm)
+- [BlueWave Onboarding](https://github.com/bluewave-labs/bluewave-onboarding)
+- [BlueWave DataRoom](https://github.com/bluewave-labs/bluewave-dataroom)
+- [BlueWave ChatFabrica](https://github.com/bluewave-labs/bluewave-chatfabrica)
 
 ## Getting Started
 

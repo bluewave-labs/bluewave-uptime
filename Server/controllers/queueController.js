@@ -1,6 +1,17 @@
-const express = require("express");
-const logger = require("../utils/logger");
 const SERVICE_NAME = "JobQueue";
+
+const getMetrics = async (req, res, next) => {
+  try {
+    const metrics = await req.jobQueue.getMetrics();
+    res
+      .status(200)
+      .json({ success: true, msg: "Metrics retrieved", data: metrics });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
+  }
+};
 
 const getJobs = async (req, res, next) => {
   try {
@@ -36,6 +47,7 @@ const obliterateQueue = async (req, res, next) => {
 };
 
 module.exports = {
+  getMetrics,
   getJobs,
   addJob,
   obliterateQueue,
