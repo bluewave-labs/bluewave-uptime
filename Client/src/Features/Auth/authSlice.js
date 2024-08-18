@@ -51,9 +51,6 @@ export const update = createAsyncThunk(
     const { authToken: token, localData: form } = data;
     const user = jwtDecode(token);
     try {
-      //1.5s delay to show loading spinner
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
       const fd = new FormData();
       form.firstName && fd.append("firstName", form.firstName);
       form.lastName && fd.append("lastName", form.lastName);
@@ -69,12 +66,8 @@ export const update = createAsyncThunk(
       form.deleteProfileImage &&
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
-      const res = await axiosInstance.put(`/auth/user/${user._id}`, fd, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axiosInstance.updateUser(token, user._id, fd);
+
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -95,9 +88,7 @@ export const deleteUser = createAsyncThunk(
     const user = jwtDecode(data);
 
     try {
-      const res = await axiosInstance.delete(`/auth/user/${user._id}`, {
-        headers: { Authorization: `Bearer ${data}` },
-      });
+      const res = await axiosInstance.deleteUser(data, user._id);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -116,7 +107,7 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.post("/auth/recovery/request", form);
+      const res = await axiosInstance.forgotPassword(form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -136,13 +127,8 @@ export const setNewPassword = createAsyncThunk(
   async (data, thunkApi) => {
     const { token, form } = data;
     try {
-      await axiosInstance.post("/auth/recovery/validate", {
-        recoveryToken: token,
-      });
-      const res = await axiosInstance.post("/auth/recovery/reset", {
-        ...form,
-        recoveryToken: token,
-      });
+      await axiosInstance.validateRecoveryToken(token);
+      const res = await axiosInstance.setNewPassword(token, form);
       return res.data;
     } catch (error) {
       if (error.response.data) {

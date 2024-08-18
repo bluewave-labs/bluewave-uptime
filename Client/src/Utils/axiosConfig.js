@@ -104,4 +104,51 @@ axiosInstance.loginUser = async (form) => {
   return axiosInstance.post(`/auth/login`, form);
 };
 
+// **********************************
+// Update in an exisiting user
+// **********************************
+axiosInstance.updateUser = async (authToken, userId, form) => {
+  return axiosInstance.put(`/auth/user/${userId}`, form, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// **********************************
+// Delete an exisiting user
+// **********************************
+axiosInstance.deleteUser = async (authToken, userId) => {
+  return axiosInstance.delete(`/auth/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+// **********************************
+// Forgot password request
+// **********************************
+axiosInstance.forgotPassword = async (form) => {
+  return axiosInstance.post(`/auth/recovery/request`, form);
+};
+
+axiosInstance.validateRecoveryToken = async (recoveryToken) => {
+  return axiosInstance.post("/auth/recovery/validate", {
+    recoveryToken,
+  });
+};
+
+// **********************************
+// Set new password request
+// **********************************
+axiosInstance.setNewPassword = async (recoveryToken, form) => {
+  return axiosInstance.post("/auth/recovery/reset", {
+    ...form,
+    recoveryToken,
+  });
+};
+
 export default axiosInstance;
