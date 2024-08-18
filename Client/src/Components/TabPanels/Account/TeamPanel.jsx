@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
-import axiosInstance from "../../../Utils/axiosConfig";
+import axiosInstance from "../../../Utils/NetworkService";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";

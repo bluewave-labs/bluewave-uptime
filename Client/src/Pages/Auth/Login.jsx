@@ -7,7 +7,7 @@ import { login } from "../../Features/Auth/authSlice";
 import { useDispatch } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import Button from "../../Components/Button";
-import axiosInstance from "../../Utils/axiosConfig";
+import axiosInstance from "../../Utils/NetworkService";
 import Field from "../../Components/Inputs/Field";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../assets/icons/bwu-icon.svg?react";

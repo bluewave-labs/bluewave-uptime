@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../../Utils/axiosConfig";
+import axiosInstance from "../../../Utils/NetworkService";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";

@@ -8,7 +8,7 @@ import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 import { persistor, store } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
-import { injectStore } from "./Utils/axiosConfig.js";
+import { injectStore } from "./Utils/NetworkService.js";
 
 injectStore(store);
 

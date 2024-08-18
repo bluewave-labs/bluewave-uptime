@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../Utils/axiosConfig";
+import axiosInstance from "../Utils/NetworkService";
 
 const withAdminCheck = (WrappedComponent) => {
   const WithAdminCheck = (props) => {

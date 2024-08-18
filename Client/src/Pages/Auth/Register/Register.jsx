@@ -15,7 +15,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import axiosInstance from "../../../Utils/axiosConfig";
+import axiosInstance from "../../../Utils/NetworkService";
 import "../index.css";
 
 /**

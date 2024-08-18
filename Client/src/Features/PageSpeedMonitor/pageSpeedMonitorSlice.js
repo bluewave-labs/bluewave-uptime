@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-import axiosInstance from "../../Utils/axiosConfig";
+import axiosInstance from "../../Utils/NetworkService";
 const initialState = {
   isLoading: false,
   monitors: [],

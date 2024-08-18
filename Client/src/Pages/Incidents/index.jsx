@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ButtonGroup, Stack, Skeleton, Typography } from "@mui/material";
 import Button from "../../Components/Button";
-import axiosInstance from "../../Utils/axiosConfig";
+import axiosInstance from "../../Utils/NetworkService";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";

@@ -18,7 +18,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../Utils/axiosConfig";
+import axiosInstance from "../../../Utils/NetworkService";
 import { StatusLabel } from "../../../Components/Label";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
