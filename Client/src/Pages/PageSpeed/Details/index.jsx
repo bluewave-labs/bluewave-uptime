@@ -211,7 +211,7 @@ const PageSpeedDetails = () => {
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
         console.log(error);
-        navigate("/not-found");
+        navigate("/not-found", { replace: true });
       }
     };
 

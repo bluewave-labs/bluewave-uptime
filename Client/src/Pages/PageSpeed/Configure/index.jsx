@@ -93,7 +93,7 @@ const PageSpeedConfigure = () => {
     const data = monitors.find((monitor) => monitor._id === monitorId);
     if (!data) {
       console.error("Error fetching pagespeed monitor of id: " + monitorId);
-      navigate("/not-found");
+      navigate("/not-found", { replace: true });
     }
     setMonitor({
       ...data,

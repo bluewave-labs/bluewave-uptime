@@ -109,12 +109,12 @@ const Configure = () => {
     const data = monitors.find((monitor) => monitor._id === monitorId);
     if (!data) {
       console.error("Error fetching monitor of id: " + monitorId);
-      navigate("/not-found");
+      navigate("/not-found", { replace: true });
     }
     setMonitor({
       ...data,
     });
-  }, [monitorId, authToken, monitors]);
+  }, [monitorId, authToken, monitors, navigate]);
 
   const handleChange = (event, name) => {
     let { value, id } = event.target;
