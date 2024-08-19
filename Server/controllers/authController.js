@@ -450,7 +450,6 @@ const deleteUserController = async (req, res, next) => {
     }
 
     // 1. Find all the monitors associated with the user id
-    console.log("wtf");
 
     const monitors = await req.db.getMonitorsByUserId({
       params: { userId: _id },
