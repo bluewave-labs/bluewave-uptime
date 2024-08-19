@@ -21,6 +21,18 @@ import SelectorVertical from "../../assets/icons/selector-vertical.svg?react";
 import Button from "../Button";
 import "./index.css";
 
+/**
+ * Component for pagination actions (first, previous, next, last).
+ *
+ * @component
+ * @param {Object} props
+ * @param {number} props.count - Total number of items.
+ * @param {number} props.page - Current page number.
+ * @param {number} props.rowsPerPage - Number of rows per page.
+ * @param {function} props.onPageChange - Callback function to handle page change.
+ *
+ * @returns {JSX.Element} Pagination actions component.
+ */
 const TablePaginationActions = (props) => {
   const { count, page, rowsPerPage, onPageChange } = props;
 
@@ -160,6 +172,10 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
     return <div>No data</div>;
   }
 
+  /**
+   * Helper function to calculate the range of displayed rows.
+   * @returns {string}
+   */
   const getRange = () => {
     let start = page * rowsPerPage + 1;
     let end = Math.min(page * rowsPerPage + rowsPerPage, data.rows.length);
