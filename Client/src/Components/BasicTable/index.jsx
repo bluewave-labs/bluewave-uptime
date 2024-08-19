@@ -232,6 +232,7 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
           slotProps={{
             select: {
               MenuProps: {
+                keepMounted: true,
                 PaperProps: {
                   className: "pagination-dropdown",
                 },
