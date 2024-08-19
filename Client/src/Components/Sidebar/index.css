@@ -52,7 +52,7 @@ aside
   > .MuiListItemButton-root::before {
   content: "";
   position: absolute;
-  left: -8px;
+  left: -7px;
   top: 0;
   height: 100%;
   width: 100%;
@@ -65,7 +65,8 @@ aside
   > .MuiListItemButton-root:last-child::before {
   height: 50%;
 }
-aside .MuiCollapse-wrapperInner .MuiList-root svg {
+aside .MuiCollapse-wrapperInner .MuiList-root svg,
+aside .MuiList-root .MuiListItemText-root + svg {
   width: 18px;
   height: 18px;
 }
@@ -73,11 +74,18 @@ aside .MuiCollapse-wrapperInner .MuiList-root svg {
 aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root::after {
   content: "";
   position: absolute;
-  left: -8px;
+  left: -7px;
   top: 50%;
   height: 1px;
-  width: 7px;
+  width: 6px;
   border-radius: 50%;
   background-color: var(--env-var-color-5);
   opacity: 0.3;
+}
+
+aside {
+  transition: flex 300ms ease-out;
+}
+aside .MuiList-root {
+  transition: padding 100ms ease;
 }

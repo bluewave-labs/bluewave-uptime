@@ -36,6 +36,8 @@ import PageSpeed from "../../assets/icons/page-speed.svg?react";
 import Settings from "../../assets/icons/settings.svg?react";
 import ArrowDown from "../../assets/icons/down-arrow.svg?react";
 import ArrowUp from "../../assets/icons/up-arrow.svg?react";
+import ArrowRight from "../../assets/icons/right-arrow.svg?react";
+import ArrowLeft from "../../assets/icons/left-arrow.svg?react";
 
 import "./index.css";
 
@@ -82,6 +84,7 @@ function Sidebar() {
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
+  const [collapsed, setCollapsed] = useState(false);
 
   /**
    * Handles logging out the user
@@ -105,9 +108,42 @@ function Sidebar() {
   }, []);
 
   return (
-    <Stack component="aside" gap={theme.gap.medium}>
-      <Box py={theme.gap.large} pl={theme.gap.lgplus}>
-        <BWULogo alt="BlueWave Uptime Logo" />
+    <Stack
+      component="aside"
+      gap={theme.gap.medium}
+      sx={{ flex: collapsed ? 0 : 1 }}
+    >
+      <Box
+        width="100%"
+        py={theme.gap.large}
+        pl={collapsed ? theme.gap.medium : theme.gap.lgplus}
+      >
+        {!collapsed && <BWULogo alt="BlueWave Uptime Logo" />}
+        <IconButton
+          sx={{
+            position: "absolute",
+            right: 0,
+            transform: `translate(50%, 0)`,
+            backgroundColor: theme.palette.otherColors.fillGray,
+            border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+            p: "5px",
+            "& svg": {
+              width: theme.gap.ml,
+              height: theme.gap.ml,
+              "& path": {
+                stroke: theme.palette.otherColors.bluishGray,
+              },
+            },
+            "&:focus": { outline: "none" },
+            "&:hover": {
+              backgroundColor: "#e3e3e3",
+              borderColor: theme.palette.otherColors.graishWhite,
+            },
+          }}
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? <ArrowRight /> : <ArrowLeft />}
+        </IconButton>
       </Box>
       {/* menu */}
       <List
@@ -118,11 +154,16 @@ function Sidebar() {
           <ListSubheader
             component="div"
             id="nested-menu-subheader"
-            sx={{ pt: theme.gap.small }}
+            sx={{
+              pt: theme.gap.small,
+              px: collapsed ? theme.gap.xs : theme.gap.ml,
+              textAlign: collapsed ? "center" : "left",
+            }}
           >
             Menu
           </ListSubheader>
         }
+        sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
       >
         {menu.map((item) =>
           item.path ? (
@@ -135,10 +176,23 @@ function Sidebar() {
               sx={{
                 gap: theme.gap.medium,
                 borderRadius: `${theme.shape.borderRadius}px`,
+                justifyContent: collapsed ? "center" : "flex-start",
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-              <ListItemText>{item.name}</ListItemText>
+              {!collapsed && <ListItemText>{item.name}</ListItemText>}
+            </ListItemButton>
+          ) : collapsed ? (
+            <ListItemButton
+              key={item.name}
+              sx={{
+                gap: theme.gap.medium,
+                borderRadius: `${theme.shape.borderRadius}px`,
+                justifyContent: collapsed ? "center" : "flex-start",
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+              {!collapsed && <ListItemText>{item.name}</ListItemText>}
             </ListItemButton>
           ) : (
             <React.Fragment key={item.name}>
@@ -152,6 +206,7 @@ function Sidebar() {
                 sx={{
                   gap: theme.gap.medium,
                   borderRadius: `${theme.shape.borderRadius}px`,
+                  justifyContent: collapsed ? "center" : "flex-start",
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -210,11 +265,16 @@ function Sidebar() {
           <ListSubheader
             component="div"
             id="nested-other-subheader"
-            sx={{ pt: theme.gap.small }}
+            sx={{
+              pt: theme.gap.small,
+              px: collapsed ? theme.gap.xs : theme.gap.ml,
+              textAlign: collapsed ? "center" : "left",
+            }}
           >
             Other
           </ListSubheader>
         }
+        sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
       >
         {other.map((item) => (
           <ListItemButton
@@ -234,16 +294,20 @@ function Sidebar() {
             sx={{
               gap: theme.gap.medium,
               borderRadius: `${theme.shape.borderRadius}px`,
+              justifyContent: collapsed ? "center" : "flex-start",
             }}
           >
             <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-            <ListItemText>{item.name}</ListItemText>
+            {!collapsed && <ListItemText>{item.name}</ListItemText>}
           </ListItemButton>
         ))}
       </List>
       <Divider sx={{ mt: "auto" }} />
+
       <Stack
         direction="row"
+        height="50px"
+        justifyContent={collapsed ? "center" : "flex-start"}
         alignItems="center"
         py={theme.gap.small}
         px={theme.gap.medium}
@@ -251,22 +315,26 @@ function Sidebar() {
         borderRadius={`${theme.shape.borderRadius}px`}
       >
         <Avatar small={true} />
-        <Box ml={theme.gap.xs}>
-          <Typography component="span" fontWeight={500}>
-            {authState.user?.firstName} {authState.user?.lastName}
-          </Typography>
-          <Typography sx={{ textTransform: "capitalize" }}>
-            {authState.user?.role}
-          </Typography>
-        </Box>
-        <Tooltip title="Log Out">
-          <IconButton
-            sx={{ ml: "auto", "&:focus": { outline: "none" } }}
-            onClick={logout}
-          >
-            <LogoutSvg style={{ width: "20px", height: "20px" }} />
-          </IconButton>
-        </Tooltip>
+        {!collapsed && (
+          <>
+            <Box ml={theme.gap.xs}>
+              <Typography component="span" fontWeight={500}>
+                {authState.user?.firstName} {authState.user?.lastName}
+              </Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {authState.user?.role}
+              </Typography>
+            </Box>
+            <Tooltip title="Log Out">
+              <IconButton
+                sx={{ ml: "auto", "&:focus": { outline: "none" } }}
+                onClick={logout}
+              >
+                <LogoutSvg style={{ width: "20px", height: "20px" }} />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
       </Stack>
     </Stack>
   );
