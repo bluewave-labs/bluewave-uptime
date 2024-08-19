@@ -16,7 +16,6 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
-import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 const StatBox = ({ title, value }) => {
