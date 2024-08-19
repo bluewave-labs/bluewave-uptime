@@ -185,6 +185,7 @@ function Sidebar() {
         {menu.map((item) =>
           item.path ? (
             <Tooltip
+              key={item.path}
               placement="right"
               title={collapsed ? item.name : ""}
               slotProps={{
@@ -204,7 +205,6 @@ function Sidebar() {
                 className={
                   location.pathname.includes(item.path) ? "selected-path" : ""
                 }
-                key={item.path}
                 onClick={() => navigate(`/${item.path}`)}
                 sx={{
                   gap: theme.gap.medium,
@@ -381,6 +381,7 @@ function Sidebar() {
       >
         {other.map((item) => (
           <Tooltip
+            key={item.path}
             placement="right"
             title={collapsed ? item.name : ""}
             slotProps={{
@@ -400,7 +401,6 @@ function Sidebar() {
               className={
                 location.pathname.includes(item.path) ? "selected-path" : ""
               }
-              key={item.path}
               onClick={() =>
                 item.path === "support"
                   ? window.open(
