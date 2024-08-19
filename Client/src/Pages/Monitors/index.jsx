@@ -11,7 +11,6 @@ import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
-import Settings from "../../assets/icons/settings-bold.svg?react";
 import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
 import { createToast } from "../../Utils/toastUtils";
@@ -26,6 +25,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import ActionsMenu from "./ActionMenu";
 
 /**
  * Host component.
@@ -111,22 +111,8 @@ const Monitors = () => {
   const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch({});
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [actions, setActions] = useState({});
-  const openMenu = (event, id, url) => {
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
-    setActions({ id: id, url: url });
-  };
-  const closeMenu = () => {
-    setAnchorEl(null);
-  };
-
   const [isOpen, setIsOpen] = useState(false);
-  const openRemove = () => {
-    closeMenu();
-    setIsOpen(true);
-  };
+
   const handleRemove = async (event) => {
     event.preventDefault();
     let monitor = { _id: actions.id };
@@ -191,7 +177,9 @@ const Monitors = () => {
     return {
       id: monitor._id,
       // disabled for now
-      handleClick: () => navigate(`/monitors/${monitor._id}`),
+      handleClick: () => {
+        navigate(`/monitors/${monitor._id}`);
+      },
       data: [
         { id: idx, data: <Host params={params} /> },
         {
@@ -213,28 +201,7 @@ const Monitors = () => {
         },
         {
           id: idx + 4,
-          data: (
-            <>
-              <IconButton
-                aria-label="monitor actions"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  openMenu(
-                    event,
-                    monitor._id,
-                    monitor.type === "ping" ? null : monitor.url
-                  );
-                }}
-                sx={{
-                  "&:focus": {
-                    outline: "none",
-                  },
-                }}
-              >
-                <Settings />
-              </IconButton>
-            </>
-          ),
+          data: <ActionsMenu monitor={monitor} />,
         },
       ],
     };
@@ -327,33 +294,7 @@ const Monitors = () => {
           )}
         </>
       )}
-      <Menu
-        className="actions-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={closeMenu}
-      >
-        {actions.url !== null ? (
-          <MenuItem
-            onClick={() => {
-              window.open(actions.url, "_blank", "noreferrer");
-            }}
-          >
-            Open site
-          </MenuItem>
-        ) : (
-          ""
-        )}
-        <MenuItem onClick={() => navigate(`/monitors/${actions.id}`)}>
-          Details
-        </MenuItem>
-        {/* TODO - pass monitor id to Incidents page */}
-        <MenuItem disabled>Incidents</MenuItem>
-        <MenuItem onClick={() => navigate(`/monitors/configure/${actions.id}`)}>
-          Configure
-        </MenuItem>
-        <MenuItem onClick={openRemove}>Remove</MenuItem>
-      </Menu>
+
       <Modal
         aria-labelledby="modal-delete-monitor"
         aria-describedby="delete-monitor-confirmation"
