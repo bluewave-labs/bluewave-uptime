@@ -17,6 +17,7 @@ import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import axiosInstance from "../../../Utils/axiosConfig";
 import "../index.css";
+import { logger } from "../../../Utils/Logger";
 
 /**
  * Displays the initial landing page.
@@ -401,10 +402,9 @@ const Register = ({ isAdmin }) => {
             token,
           });
           const { role, email } = res.data.data;
-          console.log(role);
           setForm({ ...form, email, role });
         } catch (error) {
-          console.log(error);
+          logger.error(error);
         }
       }
     };

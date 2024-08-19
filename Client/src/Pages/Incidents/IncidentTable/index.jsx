@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../Utils/axiosConfig";
 import { StatusLabel } from "../../../Components/Label";
+import { logger } from "../../../Utils/Logger";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   const { authToken, user } = useSelector((state) => state.auth);
@@ -57,7 +58,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     };
     fetchPage();
@@ -72,7 +73,6 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   ]);
 
   const handlePageChange = (_, newPage) => {
-    console.log(newPage);
     setPaginationController({
       ...paginationController,
       page: newPage - 1, // 0-indexed

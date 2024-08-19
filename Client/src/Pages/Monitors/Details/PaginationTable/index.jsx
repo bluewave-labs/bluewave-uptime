@@ -17,6 +17,7 @@ import axiosInstance from "../../../../Utils/axiosConfig";
 import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import { logger } from "../../../../Utils/Logger";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
   const { authToken } = useSelector((state) => state.auth);
@@ -48,7 +49,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     };
     fetchPage();

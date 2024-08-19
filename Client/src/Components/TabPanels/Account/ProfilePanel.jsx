@@ -19,6 +19,7 @@ import ProgressUpload from "../../ProgressBars";
 import { formatBytes } from "../../../Utils/fileUtils";
 import { clearUptimeMonitorState } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -256,7 +257,7 @@ const ProfilePanel = () => {
             placeholder="Enter your email"
             autoComplete="email"
             // TODO - add onChange
-            onChange={() => console.log("Disabled.")}
+            onChange={() => logger.warn("disabled")}
             // error={errors[idToName["edit-email"]]}
             disabled={true}
           />

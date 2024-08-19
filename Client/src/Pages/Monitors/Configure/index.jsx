@@ -19,6 +19,7 @@ import {
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
+import { logger } from "../../../Utils/Logger";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -108,7 +109,7 @@ const Configure = () => {
   useEffect(() => {
     const data = monitors.find((monitor) => monitor._id === monitorId);
     if (!data) {
-      console.error("Error fetching monitor of id: " + monitorId);
+      logger.error("Error fetching monitor of id: " + monitorId);
       navigate("/not-found");
     }
     setMonitor({
@@ -337,7 +338,7 @@ const Configure = () => {
                   label="Notify via SMS (coming soon)"
                   isChecked={false}
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                   isDisabled={true}
                 />
                 <Checkbox
@@ -356,7 +357,7 @@ const Configure = () => {
                   label="Also notify via email to multiple addresses (coming soon)"
                   isChecked={false}
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                   isDisabled={true}
                 />
                 {monitor?.notifications?.some(
@@ -368,7 +369,7 @@ const Configure = () => {
                       type="text"
                       placeholder="name@gmail.com"
                       value=""
-                      onChange={() => console.log("disabled")}
+                      onChange={() => logger.warn("disabled")}
                     />
                     <Typography mt={theme.gap.small}>
                       You can separate multiple emails with a comma

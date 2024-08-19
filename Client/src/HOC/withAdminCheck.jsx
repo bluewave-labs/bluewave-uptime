@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../Utils/axiosConfig";
+import { logger } from "../Utils/Logger";
 
 const withAdminCheck = (WrappedComponent) => {
   const WithAdminCheck = (props) => {
@@ -15,7 +16,7 @@ const withAdminCheck = (WrappedComponent) => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          logger.error(error);
         });
     }, [navigate]);
     return <WrappedComponent {...props} isAdmin={true} />;

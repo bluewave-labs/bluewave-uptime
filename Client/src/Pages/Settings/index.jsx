@@ -4,7 +4,7 @@ import Button from "../../Components/Button";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
-
+import { logger } from "../../Utils/Logger";
 import "./index.css";
 
 const Settings = () => {
@@ -40,14 +40,14 @@ const Settings = () => {
               id="display-timezone"
               label="Display timezone"
               value="est"
-              onChange={() => console.log("disabled")}
+              onChange={() => logger.warn("disabled")}
               items={[{ _id: "est", name: "America / Toronto" }]}
             />
             <Select
               id="server-timezone"
               label="Server timezone"
               value="est"
-              onChange={() => console.log("disabled")}
+              onChange={() => logger.warn("disabled")}
               items={[{ _id: "est", name: "America / Toronto" }]}
             />
           </Stack>
@@ -74,7 +74,7 @@ const Settings = () => {
               optionalLabel="0 for infinite"
               placeholder="90"
               value=""
-              onChange={() => console.log("Disabled")}
+              onChange={() => logger.warn("Disabled")}
             />
             <Box>
               <Typography>Clear all stats. This is irreversible.</Typography>

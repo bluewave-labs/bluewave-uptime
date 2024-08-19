@@ -21,6 +21,7 @@ import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
 import PropTypes from "prop-types";
+import { logger } from "../../../Utils/Logger";
 
 const StatBox = ({ icon, title, value }) => {
   const theme = useTheme();
@@ -210,7 +211,7 @@ const PageSpeedDetails = () => {
         setMonitor(res?.data?.data ?? {});
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
-        console.log(error);
+        logger.error(logger);
         navigate("/not-found");
       }
     };
