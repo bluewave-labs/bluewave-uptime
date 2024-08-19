@@ -7,7 +7,6 @@ import { networkService } from "../../../main";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
@@ -18,6 +17,7 @@ import {
 } from "../../../Utils/timeUtils";
 import "./index.css";
 import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -161,39 +161,19 @@ const DetailsPage = () => {
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate("/monitors")}
-            sx={{
-              backgroundColor: theme.palette.otherColors.fillGray,
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "monitors", path: "/monitors" },
+              { name: "details", path: `/monitors/${monitorId}` },
+            ]}
           />
-          <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-            <Stack
-              direction="row"
-              gap={theme.gap.small}
-              mt={theme.gap.small}
-              alignItems="baseline"
-            >
+          <Stack gap={theme.gap.large} mt={theme.gap.large}>
+            <Stack direction="row" gap={theme.gap.small}>
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
               <Box>
-                <Stack direction="row">
-                  <Typography
-                    component="h1"
-                    sx={{ lineHeight: 1, alignSelf: "flex-end" }}
-                  >
-                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
-                  </Typography>
-                  <MonitorDetails60MinChart data={monitor.statusBar} />
-                </Stack>
+                <Typography component="h1" sx={{ lineHeight: 1 }}>
+                  {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                </Typography>
                 <Typography mt={theme.gap.small}>
                   <Typography
                     component="span"

@@ -67,7 +67,7 @@
   --env-var-width-2: 360px;
 
   --env-var-height-1: 100vh;
-  --env-var-height-2: 34px;
+  --env-var-height-2: 36px;
 
   --env-var-nav-bar-height: 70px;
   --env-var-side-bar-width: 250px;
@@ -139,6 +139,10 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.MuiInputBase-root.Mui-disabled input {
+  cursor: not-allowed;
 }
 
 .Toastify__toast-container {

@@ -11,26 +11,17 @@ import {
 } from "../../../Utils/timeUtils";
 import { networkService } from "../../../main";
 import Button from "../../../Components/Button";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
 import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
-
-import "./index.css";
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import "./index.css";
+import PropTypes from "prop-types";
 
-/**
- * Displays a box with an icon, title, and value.
- *
- * @param {Object} props
- * @param {ReactNode} props.icon - The icon to display in the box.
- * @param {string} props.title - The title text to display above the value.
- * @param {string | number} props.value - The value text to display in the box.
- * @returns {JSX.Element}
- */
 const StatBox = ({ icon, title, value }) => {
   const theme = useTheme();
 
@@ -39,7 +30,8 @@ const StatBox = ({ icon, title, value }) => {
       className="stat-box"
       direction="row"
       gap={theme.gap.small}
-      p={theme.gap.ml}
+      pt={theme.gap.ml}
+      px={theme.gap.ml}
       pb={theme.gap.mlplus}
     >
       {icon}
@@ -51,6 +43,12 @@ const StatBox = ({ icon, title, value }) => {
       </Box>
     </Stack>
   );
+};
+
+StatBox.propTypes = {
+  icon: PropTypes.element,
+  title: PropTypes.string,
+  value: PropTypes.node,
 };
 
 /**
@@ -83,6 +81,12 @@ const PieCenterLabel = ({ value, color, setExpand }) => {
       </text>
     </g>
   );
+};
+
+PieCenterLabel.propTypes = {
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
+  setExpand: PropTypes.func,
 };
 
 /**
@@ -126,6 +130,14 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
       </text>
     </g>
   );
+};
+
+PieValueLabel.propTypes = {
+  value: PropTypes.number,
+  startAngle: PropTypes.number,
+  endAngle: PropTypes.number,
+  color: PropTypes.string,
+  highlighted: PropTypes.bool,
 };
 
 /**
@@ -195,16 +207,16 @@ const PageSpeedDetails = () => {
           null,
           null
         );
-        setMonitor(res.data.data);
-        setAudits(res.data.data.checks[0].audits);
+        setMonitor(res?.data?.data ?? {});
+        setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
-        console.error("Error fetching pagespeed monitor of id: " + monitorId);
+        console.log(error);
         navigate("/not-found");
       }
     };
 
     fetchMonitor();
-  }, [monitorId]);
+  }, [monitorId, authToken, navigate]);
 
   /**
    * Weight constants for different performance metrics.
@@ -306,21 +318,11 @@ const PageSpeedDetails = () => {
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate("/pagespeed")}
-            sx={{
-              width: "fit-content",
-              backgroundColor: theme.palette.otherColors.fillGray,
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "pagespeed", path: "/pagespeed" },
+              { name: "details", path: `/pagespeed/${monitorId}` },
+            ]}
           />
           <Stack direction="row" gap={theme.gap.small}>
             {monitor?.status ? <GreenCheck /> : <RedCheck />}
@@ -660,6 +662,10 @@ const PageSpeedDetails = () => {
       )}
     </Stack>
   );
+};
+
+PageSpeedDetails.propTypes = {
+  push: PropTypes.func,
 };
 
 export default PageSpeedDetails;

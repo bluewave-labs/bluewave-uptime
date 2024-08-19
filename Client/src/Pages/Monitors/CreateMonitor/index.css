@@ -13,7 +13,9 @@
 .create-monitor button.MuiButtonBase-root {
   font-size: var(--env-var-font-size-medium);
 }
-.create-monitor h2.MuiTypography-root,
+.create-monitor h2.MuiTypography-root {
+  color: var(--env-var-color-5);
+}
 .create-monitor h6.MuiTypography-root,
 .create-monitor p.MuiTypography-root {
   color: var(--env-var-color-2);
@@ -43,23 +45,20 @@
   top: 100%;
 }
 .create-monitor .config-box {
-  padding: var(--env-var-spacing-4) 50px;
-  padding-bottom: 60px;
+  flex-direction: row;
   border: 1px solid var(--env-var-color-16);
   border-radius: var(--env-var-radius-1);
-  flex-direction: row;
-  gap: var(--env-var-spacing-4);
   background-color: var(--env-var-color-8);
 }
-.create-monitor .config-box .MuiBox-root,
-.create-monitor .config-box .MuiStack-root {
+.create-monitor .config-box > .MuiBox-root,
+.create-monitor .config-box > .MuiStack-root {
   flex: 1;
+  padding: 24px 30px;
+  padding-bottom: 40px;
 }
-
-.create-monitor-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--env-var-spacing-2);
+.create-monitor .config-box > *:first-child {
+  flex: 0.7;
+  border-right: solid 1px var(--env-var-color-16);
 }
 
 .create-monitor .MuiStack-root .MuiButtonGroup-root button {

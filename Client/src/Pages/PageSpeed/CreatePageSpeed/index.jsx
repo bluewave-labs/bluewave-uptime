@@ -10,7 +10,7 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
 
 const CreatePageSpeed = () => {
@@ -97,34 +97,22 @@ const CreatePageSpeed = () => {
   };
 
   return (
-    <Box className="create-page-speed">
-      <Button
-        level="tertiary"
-        label="Back"
-        animate="slideLeft"
-        img={<WestRoundedIcon />}
-        onClick={() => navigate("/pagespeed")}
-        sx={{
-          backgroundColor: theme.palette.otherColors.fillGray,
-          mb: theme.gap.medium,
-          px: theme.gap.ml,
-          "& svg.MuiSvgIcon-root": {
-            mr: theme.gap.small,
-            fill: theme.palette.otherColors.slateGray,
-          },
-        }}
+    <Stack className="create-page-speed" gap={theme.gap.mlplus}>
+      <Breadcrumbs
+        list={[
+          { name: "pagespeed", path: "/pagespeed" },
+          { name: "create", path: `/pagespeed/create` },
+        ]}
       />
-      <form
+      <Stack
+        component="form"
         noValidate
         spellCheck="false"
         onSubmit={handleCreate}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: theme.gap.large,
-        }}
+        gap={theme.gap.large}
+        flex={1}
       >
-        <Typography component="h1">Create a page speed monitor</Typography>
+        <Typography component="h1">Create pagespeed monitor</Typography>
         <Stack gap={theme.gap.xl}>
           <Stack direction="row">
             <Typography component="h3">Monitor friendly name</Typography>
@@ -197,7 +185,7 @@ const CreatePageSpeed = () => {
             </Stack>
           </Stack>
         </Stack>
-        <Stack direction="row" justifyContent="flex-end">
+        <Stack direction="row" justifyContent="flex-end" mt="auto">
           <Button
             type="submit"
             level="primary"
@@ -206,8 +194,8 @@ const CreatePageSpeed = () => {
             sx={{ px: theme.gap.large, mt: theme.gap.large }}
           />
         </Stack>
-      </form>
-    </Box>
+      </Stack>
+    </Stack>
   );
 };
 
