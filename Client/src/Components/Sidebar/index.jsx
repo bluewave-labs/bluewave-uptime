@@ -197,7 +197,11 @@ function Sidebar() {
           ) : collapsed ? (
             <React.Fragment key={item.name}>
               <ListItemButton
-                className={popup === item.name ? "selected-path" : ""}
+                className={
+                  Boolean(anchorEl) && popup === item.name
+                    ? "selected-path"
+                    : ""
+                }
                 onClick={(event) => openPopup(event, item.name)}
                 sx={{
                   position: "relative",
@@ -237,7 +241,10 @@ function Sidebar() {
                           : ""
                       }
                       key={child.path}
-                      onClick={() => navigate(`/${child.path}`)}
+                      onClick={() => {
+                        navigate(`/${child.path}`);
+                        closePopup();
+                      }}
                       sx={{
                         gap: theme.gap.small,
                         borderRadius: `${theme.shape.borderRadius}px`,
@@ -371,9 +378,70 @@ function Sidebar() {
         gap={theme.gap.xs}
         borderRadius={`${theme.shape.borderRadius}px`}
       >
-        <Avatar small={true} />
-        {!collapsed && (
+        {collapsed ? (
           <>
+            <Tooltip
+              title="Options"
+              slotProps={{
+                popper: {
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [0, -10],
+                      },
+                    },
+                  ],
+                },
+              }}
+            >
+              <IconButton
+                onClick={(event) => openPopup(event, "logout")}
+                sx={{ p: 0, "&:focus": { outline: "none" } }}
+              >
+                <Avatar small={true} />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              className="sidebar-popup"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl) && popup === "logout"}
+              onClose={closePopup}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              sx={{ ml: theme.gap.ml }}
+            >
+              <MenuItem sx={{ cursor: "default", minWidth: "150px" }}>
+                <Box>
+                  <Typography component="span" fontWeight={500} fontSize="13px">
+                    {authState.user?.firstName} {authState.user?.lastName}
+                  </Typography>
+                  <Typography
+                    sx={{ textTransform: "capitalize", fontSize: "12px" }}
+                  >
+                    {authState.user?.role}
+                  </Typography>
+                </Box>
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={logout}
+                sx={{
+                  gap: theme.gap.small,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  pl: theme.gap.small,
+                }}
+              >
+                <LogoutSvg />
+                Log out
+              </MenuItem>
+            </Menu>
+          </>
+        ) : (
+          <>
+            <Avatar small={true} />
             <Box ml={theme.gap.xs}>
               <Typography component="span" fontWeight={500}>
                 {authState.user?.firstName} {authState.user?.lastName}

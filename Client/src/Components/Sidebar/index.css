@@ -110,6 +110,12 @@ aside .MuiList-root {
 .sidebar-popup li.MuiButtonBase-root:hover{
   background-color: var(--env-var-color-13);
 }
+.sidebar-popup li.MuiButtonBase-root:has(.MuiBox-root):hover{
+  background-color: white;
+}
+.sidebar-popup li.MuiButtonBase-root:has(.MuiBox-root){
+  padding-bottom: 0;
+}
 .sidebar-popup .MuiModal-root p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
   color: var(--env-var-color-2);
