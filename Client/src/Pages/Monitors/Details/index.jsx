@@ -121,16 +121,18 @@ const DetailsPage = () => {
 
   const fetchMonitor = useCallback(async () => {
     try {
-      const res = await axiosInstance.get(
-        `/monitors/stats/${monitorId}?dateRange=${dateRange}&numToDisplay=50&normalize=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
+      const res = await axiosInstance.getStatsByMonitorId(
+        authToken,
+        monitorId,
+        null,
+        null,
+        dateRange,
+        50,
+        true
       );
       setMonitor(res.data.data);
     } catch (error) {
+      console.log(error);
       console.error("Error fetching monitor of id: " + monitorId);
       navigate("/not-found");
     }
@@ -142,13 +144,9 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
-      const res = await axiosInstance.get(
-        `/monitors/certificate/${monitorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
+      const res = await axiosInstance.getCertificateExpiry(
+        authToken,
+        monitorId
       );
       setCertificateExpiry(res.data.data.certificateDate);
     };

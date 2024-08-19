@@ -176,13 +176,10 @@ const TeamPanel = () => {
       setErrors((prev) => ({ ...prev, email: error.details[0].message }));
     } else
       try {
-        await axiosInstance.post(
-          "/auth/invite",
-          {
-            email: toInvite.email,
-            role: toInvite.role,
-          },
-          { headers: { Authorization: `Bearer ${authToken}` } }
+        await axiosInstance.requestInvitationToken(
+          authToken,
+          toInvite.email,
+          toInvite.role
         );
 
         closeInviteModal();

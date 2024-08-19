@@ -37,13 +37,15 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/checks/${monitorId}?sortOrder=desc&dateRange=${dateRange}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
+        const res = await axiosInstance.getChecksByMonitor(
+          authToken,
+          monitorId,
+          "desc",
+          null,
+          dateRange,
+          null,
+          paginationController.page,
+          paginationController.rowsPerPage
         );
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);

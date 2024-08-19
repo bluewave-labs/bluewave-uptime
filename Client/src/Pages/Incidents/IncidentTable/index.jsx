@@ -43,17 +43,30 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         return;
       }
       try {
-        let url = `/checks/${selectedMonitor}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
-
+        let res;
         if (selectedMonitor === "0") {
-          url = `/checks/user/${user._id}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
+          res = await axiosInstance.getChecksByUser(
+            authToken,
+            user._id,
+            "desc",
+            null,
+            null,
+            filter,
+            paginationController.page,
+            paginationController.rowsPerPage
+          );
+        } else {
+          res = await axiosInstance.getChecksByMonitor(
+            authToken,
+            selectedMonitor,
+            "desc",
+            null,
+            null,
+            filter,
+            paginationController.page,
+            paginationController.rowsPerPage
+          );
         }
-
-        const res = await axiosInstance.get(url, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {

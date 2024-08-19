@@ -186,15 +186,15 @@ const PageSpeedDetails = () => {
   useEffect(() => {
     const fetchMonitor = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/monitors/stats/${monitorId}?sortOrder=desc&limit=50`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
+        const res = await axiosInstance.getStatsByMonitorId(
+          authToken,
+          monitorId,
+          "desc",
+          50,
+          null,
+          null,
+          null
         );
-
         setMonitor(res.data.data);
         setAudits(res.data.data.checks[0].audits);
       } catch (error) {

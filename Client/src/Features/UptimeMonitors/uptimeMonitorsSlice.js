@@ -38,6 +38,7 @@ export const getUptimeMonitorsByUserId = createAsyncThunk(
         user._id,
         25,
         ["http", "ping"],
+        null,
         "desc",
         true
       );

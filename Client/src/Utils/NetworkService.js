@@ -44,6 +44,7 @@ axiosInstance.getMonitorsByUserId = async (
   userId,
   limit,
   types,
+  status,
   sortOrder,
   normalize
 ) => {
@@ -55,6 +56,7 @@ axiosInstance.getMonitorsByUserId = async (
       params.append("type", type);
     });
   }
+  if (status) params.append("status", status);
   if (sortOrder) params.append("sortOrder", sortOrder);
   if (normalize) params.append("normalize", normalize);
 
@@ -64,6 +66,35 @@ axiosInstance.getMonitorsByUserId = async (
       "Content-Type": "application/json",
     },
   });
+};
+
+// **********************************
+// Get stats for a monitor
+// **********************************
+axiosInstance.getStatsByMonitorId = async (
+  authToken,
+  monitorId,
+  sortOrder,
+  limit,
+  dateRange,
+  numToDisplay,
+  normalize
+) => {
+  const params = new URLSearchParams();
+  if (sortOrder) params.append("sortOrder", sortOrder);
+  if (limit) params.append("limit", limit);
+  if (dateRange) params.append("dateRange", dateRange);
+  if (numToDisplay) params.append("numToDisplay", numToDisplay);
+  if (normalize) params.append("normalize", normalize);
+
+  return axiosInstance.get(
+    `/monitors/stats/${monitorId}?${params.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
 };
 
 // **********************************
@@ -91,6 +122,17 @@ axiosInstance.deleteMonitorById = async (authToken, monitorId) => {
 };
 
 // **********************************
+// Get certificate
+// **********************************
+axiosInstance.getCertificateExpiry = async (authToken, monitorId) => {
+  return axiosInstance.get(`/monitors/certificate/${monitorId}`, {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+};
+
+// **********************************
 // Register a new user
 // **********************************
 axiosInstance.registerUser = async (form) => {
@@ -109,18 +151,6 @@ axiosInstance.loginUser = async (form) => {
 // **********************************
 axiosInstance.updateUser = async (authToken, userId, form) => {
   return axiosInstance.put(`/auth/user/${userId}`, form, {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-};
-
-// **********************************
-// Delete an exisiting user
-// **********************************
-axiosInstance.deleteUser = async (authToken, userId) => {
-  return axiosInstance.delete(`/auth/user/${userId}`, {
     headers: {
       Authorization: `Bearer ${authToken}`,
       "Content-Type": "application/json",
@@ -168,11 +198,76 @@ axiosInstance.getAllUsers = async (authToken) => {
 };
 
 // **********************************
+// Request Invitation Token
+// **********************************
+axiosInstance.requestInvitationToken = async (authToken, email, role) => {
+  return axiosInstance.post(
+    `/auth/invite`,
+    { email, role },
+    {
+      headers: { Authorization: `Bearer ${authToken}` },
+    }
+  );
+};
+
+// **********************************
 // Verify Invitation Token
 // **********************************
 axiosInstance.verifyInvitationToken = async (token) => {
   return axiosInstance.post(`/auth/invite/verify`, {
     token,
+  });
+};
+
+// **********************************
+// Get all checks for a given monitor
+// **********************************
+
+axiosInstance.getChecksByMonitor = async (
+  authToken,
+  monitorId,
+  sortOrder,
+  limit,
+  dateRange,
+  filter,
+  page,
+  rowsPerPage
+) => {
+  const params = new URLSearchParams();
+  if (sortOrder) params.append("sortOrder", sortOrder);
+  if (limit) params.append("limit", limit);
+  if (dateRange) params.append("dateRange", dateRange);
+  if (filter) params.append("filter", filter);
+  if (page) params.append("page", page);
+  if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
+
+  return axiosInstance.get(`/checks/${monitorId}?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${authToken}` },
+  });
+};
+
+// **********************************
+// Get all checks for a given user
+// **********************************
+axiosInstance.getChecksByUser = async (
+  authToken,
+  userId,
+  sortOrder,
+  limit,
+  dateRange,
+  filter,
+  page,
+  rowsPerPage
+) => {
+  const params = new URLSearchParams();
+  if (sortOrder) params.append("sortOrder", sortOrder);
+  if (limit) params.append("limit", limit);
+  if (dateRange) params.append("dateRange", dateRange);
+  if (filter) params.append("filter", filter);
+  if (page) params.append("page", page);
+  if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
+  return axiosInstance.get(`/checks/user/${userId}?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${authToken}` },
   });
 };
 
