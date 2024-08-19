@@ -26,6 +26,7 @@ import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 import BWULogo from "../../assets/Images/bwl-logo.svg?react";
+import BWULogoAbbreviated from "../../assets/icons/bwu-abbreviated.svg?react";
 import Support from "../../assets/icons/support.svg?react";
 import Dashboard from "../../assets/icons/dashboard.svg?react";
 import Account from "../../assets/icons/user-edit.svg?react";
@@ -125,17 +126,21 @@ function Sidebar() {
       gap={theme.gap.medium}
       sx={{ flex: collapsed ? 0 : 1 }}
     >
-      <Box
-        width="100%"
+      <Stack
+        alignItems={collapsed ? "center" : "flex-start"}
         py={theme.gap.large}
-        pl={collapsed ? theme.gap.medium : theme.gap.lgplus}
+        pl={collapsed ? 0 : theme.gap.lgplus}
       >
-        {!collapsed && <BWULogo alt="BlueWave Uptime Logo" />}
+        {collapsed ? (
+          <BWULogoAbbreviated />
+        ) : (
+          <BWULogo alt="BlueWave Uptime Logo" />
+        )}
         <IconButton
           sx={{
             position: "absolute",
             right: 0,
-            transform: `translate(50%, 0)`,
+            transform: `translate(50%, 50%)`,
             backgroundColor: theme.palette.otherColors.fillGray,
             border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
             p: "5px",
@@ -156,7 +161,7 @@ function Sidebar() {
         >
           {collapsed ? <ArrowRight /> : <ArrowLeft />}
         </IconButton>
-      </Box>
+      </Stack>
       {/* menu */}
       <List
         component="nav"
