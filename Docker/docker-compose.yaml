@@ -3,7 +3,7 @@ services:
   client:
     image: uptime_client:latest
     ports:
-      - "80:5173"
+      - "80:80"
     depends_on:
       - server
   server:
