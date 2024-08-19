@@ -9,6 +9,8 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Menu,
+  MenuItem,
   Stack,
   Tooltip,
   Typography,
@@ -85,6 +87,16 @@ function Sidebar() {
   const authState = useSelector((state) => state.auth);
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
   const [collapsed, setCollapsed] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [popup, setPopup] = useState();
+
+  const openPopup = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setPopup(id);
+  };
+  const closePopup = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Handles logging out the user
@@ -183,17 +195,62 @@ function Sidebar() {
               {!collapsed && <ListItemText>{item.name}</ListItemText>}
             </ListItemButton>
           ) : collapsed ? (
-            <ListItemButton
-              key={item.name}
-              sx={{
-                gap: theme.gap.medium,
-                borderRadius: `${theme.shape.borderRadius}px`,
-                justifyContent: collapsed ? "center" : "flex-start",
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-              {!collapsed && <ListItemText>{item.name}</ListItemText>}
-            </ListItemButton>
+            <React.Fragment key={item.name}>
+              <ListItemButton
+                className={popup === item.name ? "selected-path" : ""}
+                onClick={(event) => openPopup(event, item.name)}
+                sx={{
+                  position: "relative",
+                  gap: theme.gap.medium,
+                  borderRadius: `${theme.shape.borderRadius}px`,
+                  justifyContent: collapsed ? "center" : "flex-start",
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+                {!collapsed && <ListItemText>{item.name}</ListItemText>}
+              </ListItemButton>
+              <Menu
+                className="sidebar-popup"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl) && popup === item.name}
+                onClose={closePopup}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                sx={{ ml: theme.gap.small }}
+              >
+                {item.nested.map((child) => {
+                  if (
+                    child.name === "Team" &&
+                    authState.user?.role &&
+                    !authState.user.role.includes("admin")
+                  ) {
+                    return null;
+                  }
+
+                  return (
+                    <MenuItem
+                      className={
+                        location.pathname.includes(child.path)
+                          ? "selected-path"
+                          : ""
+                      }
+                      key={child.path}
+                      onClick={() => navigate(`/${child.path}`)}
+                      sx={{
+                        gap: theme.gap.small,
+                        borderRadius: `${theme.shape.borderRadius}px`,
+                        pl: theme.gap.small,
+                      }}
+                    >
+                      {child.icon}
+                      {child.name}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+            </React.Fragment>
           ) : (
             <React.Fragment key={item.name}>
               <ListItemButton
