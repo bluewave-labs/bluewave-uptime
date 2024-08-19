@@ -19,9 +19,17 @@ class NetworkService {
     );
   }
 
-  // **********************************
-  // Create a new monitor
-  // **********************************
+  /**
+   *
+   * ************************************
+   * Create a new monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {Object} monitor - The monitor object to be sent in the request body.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
   async createMonitor(authToken, monitor) {
     return this.axiosInstance.post(`/monitors`, monitor, {
       headers: {
@@ -31,9 +39,21 @@ class NetworkService {
     });
   }
 
-  // **********************************
-  // Get all uptime monitors for a user
-  // **********************************
+  /**
+   * ************************************
+   * Get all uptime monitors for a user
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} userId - The ID of the user whose monitors are to be retrieved.
+   * @param {number} [limit] - The maximum number of monitors to retrieve.
+   * @param {Array<string>} [types] - The types of monitors to retrieve.
+   * @param {string} [status] - The status of the monitors to retrieve.
+   * @param {string} [sortOrder] - The order in which to sort the retrieved monitors.
+   * @param {boolean} [normalize] - Whether to normalize the retrieved monitors.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   */
   async getMonitorsByUserId(
     authToken,
     userId,
@@ -66,9 +86,21 @@ class NetworkService {
     );
   }
 
-  // **********************************
-  // Get stats for a monitor
-  // **********************************
+  /**
+   * ************************************
+   * Get stats for a monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor whose statistics are to be retrieved.
+   * @param {string} [sortOrder] - The order in which to sort the retrieved statistics.
+   * @param {number} [limit] - The maximum number of statistics to retrieve.
+   * @param {string} [dateRange] - The date range for which to retrieve statistics.
+   * @param {number} [numToDisplay] - The number of statistics to display.
+   * @param {boolean} [normalize] - Whether to normalize the retrieved statistics.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   */
   async getStatsByMonitorId(
     authToken,
     monitorId,
@@ -95,9 +127,17 @@ class NetworkService {
     );
   }
 
-  // **********************************
-  // Updates a single monitor
-  // **********************************
+  /**
+   * ************************************
+   * Updates a single monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor to be updated.
+   * @param {Object} updatedFields - The fields to be updated for the monitor.
+   * @returns {Promise<AxiosResponse>} The response from the axios PUT request.
+   */
   async updateMonitor(authToken, monitorId, updatedFields) {
     return this.axiosInstance.put(`/monitors/${monitorId}`, updatedFields, {
       headers: {
@@ -106,9 +146,17 @@ class NetworkService {
       },
     });
   }
-  // **********************************
-  // Deletes a single monitor
-  // **********************************
+
+  /**
+   * ************************************
+   * Deletes a single monitor by its ID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor to be deleted.
+   * @returns {Promise<AxiosResponse>} The response from the axios DELETE request.
+   */
   async deleteMonitorById(authToken, monitorId) {
     return this.axiosInstance.delete(`/monitors/${monitorId}`, {
       headers: {
@@ -117,9 +165,18 @@ class NetworkService {
       },
     });
   }
-  // **********************************
-  // Get certificate
-  // **********************************
+
+  /**
+   * ************************************
+   * Gets the certificate expiry for a monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor whose certificate expiry is to be retrieved.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
   async getCertificateExpiry(authToken, monitorId) {
     return this.axiosInstance.get(`/monitors/certificate/${monitorId}`, {
       headers: {
@@ -128,23 +185,45 @@ class NetworkService {
     });
   }
 
-  // **********************************
-  // Register a new user
-  // **********************************
+  /**
+   * ************************************
+   * Registers a new user
+   * ************************************
+   *
+   * @async
+   * @param {Object} form - The form data for the new user to be registered.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
   async registerUser(form) {
     return this.axiosInstance.post(`/auth/register`, form);
   }
 
-  // **********************************
-  // Log in an exisiting user
-  // **********************************
+  /**
+   * ************************************
+   * Logs in a user
+   * ************************************
+   *
+   * @async
+   * @param {Object} form - The form data for the user to be logged in.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
   async loginUser(form) {
     return this.axiosInstance.post(`/auth/login`, form);
   }
 
-  // **********************************
-  // Update in an exisiting user
-  // **********************************
+  /**
+   * ************************************
+   * Updates a user
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} userId - The ID of the user to be updated.
+   * @param {Object} form - The form data for the user to be updated.
+   * @returns {Promise<AxiosResponse>} The response from the axios PUT request.
+   *
+   */
   async updateUser(authToken, userId, form) {
     return this.axiosInstance.put(`/auth/user/${userId}`, form, {
       headers: {
@@ -154,22 +233,46 @@ class NetworkService {
     });
   }
 
-  // **********************************
-  // Forgot password request
-  // **********************************
+  /**
+   * ************************************
+   * Forgot password request
+   * ************************************
+   *
+   * @async
+   * @param {Object} form - The form data for the password recovery request.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
   async forgotPassword(form) {
     return this.axiosInstance.post(`/auth/recovery/request`, form);
   }
 
+  /**
+   * ************************************
+   * Validates a recovery token
+   * ************************************
+   *
+   * @async
+   * @param {string} recoveryToken - The recovery token to be validated.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
   async validateRecoveryToken(recoveryToken) {
     return this.axiosInstance.post("/auth/recovery/validate", {
       recoveryToken,
     });
   }
 
-  // **********************************
-  // Set new password request
-  // **********************************
+  /**
+   * ************************************
+   * Requests password recovery
+   * ************************************
+   *
+   * @async
+   * @param {Object} form - The form data for the password recovery request.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
   async setNewPassword(recoveryToken, form) {
     return this.axiosInstance.post("/auth/recovery/reset", {
       ...form,
@@ -177,25 +280,47 @@ class NetworkService {
     });
   }
 
-  // **********************************
-  // Check for admin user
-  // **********************************
+  /**
+   * ************************************
+   * Checks if an admin user exists
+   * ************************************
+   *
+   * @async
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
   async doesAdminExist() {
     return this.axiosInstance.get("/auth/users/admin");
   }
 
-  // **********************************
-  // Get all users
-  // **********************************
+  /**
+   * ************************************
+   * Get all users
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
   async getAllUsers(authToken) {
     return this.axiosInstance.get("/auth/users", {
       headers: { Authorization: `Bearer ${authToken}` },
     });
   }
 
-  // **********************************
-  // Request Invitation Token
-  // **********************************
+  /**
+   * ************************************
+   * Requests an invitation token
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} email - The email of the user to be invited.
+   * @param {string} role - The role of the user to be invited.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
   async requestInvitationToken(authToken, email, role) {
     return this.axiosInstance.post(
       `/auth/invite`,
@@ -206,18 +331,39 @@ class NetworkService {
     );
   }
 
-  // **********************************
-  // Verify Invitation Token
-  // **********************************
+  /**
+   * ************************************
+   * Verifies an invitation token
+   * ************************************
+   *
+   * @async
+   * @param {string} token - The invitation token to be verified.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
   async verifyInvitationToken(token) {
     return this.axiosInstance.post(`/auth/invite/verify`, {
       token,
     });
   }
 
-  // **********************************
-  // Get all checks for a given monitor
-  // **********************************
+  /**
+   * ************************************
+   * Get all checks for a given monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor.
+   * @param {string} sortOrder - The order in which to sort the checks.
+   * @param {number} limit - The maximum number of checks to retrieve.
+   * @param {string} dateRange - The range of dates for which to retrieve checks.
+   * @param {string} filter - The filter to apply to the checks.
+   * @param {number} page - The page number to retrieve in a paginated list.
+   * @param {number} rowsPerPage - The number of rows per page in a paginated list.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
 
   async getChecksByMonitor(
     authToken,
@@ -242,9 +388,23 @@ class NetworkService {
     });
   }
 
-  // **********************************
-  // Get all checks for a given user
-  // **********************************
+  /**
+   * ************************************
+   * Get all checks for a given user
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} userId - The ID of the user.
+   * @param {string} sortOrder - The order in which to sort the checks.
+   * @param {number} limit - The maximum number of checks to retrieve.
+   * @param {string} dateRange - The range of dates for which to retrieve checks.
+   * @param {string} filter - The filter to apply to the checks.
+   * @param {number} page - The page number to retrieve in a paginated list.
+   * @param {number} rowsPerPage - The number of rows per page in a paginated list.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
   async getChecksByUser(
     authToken,
     userId,
