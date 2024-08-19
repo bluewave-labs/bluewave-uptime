@@ -10,6 +10,8 @@ import {
   TableBody,
   TablePagination,
   Box,
+  Typography,
+  Stack,
 } from "@mui/material";
 import LeftArrowDouble from "../../assets/icons/left-arrow-double.svg?react";
 import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
@@ -158,6 +160,12 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
     return <div>No data</div>;
   }
 
+  const getRange = () => {
+    let start = page * rowsPerPage + 1;
+    let end = Math.min(page * rowsPerPage + rowsPerPage, data.rows.length);
+    return `${start} - ${end}`;
+  };
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -188,41 +196,46 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        count={data.rows.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 15, 25]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        ActionsComponent={TablePaginationActions}
-        labelRowsPerPage="Rows per page"
-        labelDisplayedRows={({ page, count }) =>
-          `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
-        }
-        slotProps={{
-          select: {
-            MenuProps: {
-              PaperProps: {
-                className: "pagination-dropdown",
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography sx={{ opacity: 0.7 }}>
+          Showing {getRange()} of {data.rows.length} monitor(s)
+        </Typography>
+        <TablePagination
+          component="div"
+          count={data.rows.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+          labelRowsPerPage="Rows per page"
+          labelDisplayedRows={({ page, count }) =>
+            `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
+          }
+          slotProps={{
+            select: {
+              MenuProps: {
+                PaperProps: {
+                  className: "pagination-dropdown",
+                },
+                transformOrigin: { vertical: "bottom", horizontal: "left" },
+                anchorOrigin: { vertical: "top", horizontal: "left" },
+                sx: { mt: "-4px" },
               },
-              transformOrigin: { vertical: "bottom", horizontal: "left" },
-              anchorOrigin: { vertical: "top", horizontal: "left" },
-              sx: { mt: "-4px" },
+              inputProps: { id: "pagination-dropdown" },
+              IconComponent: SelectorVertical,
+              sx: {
+                ml: "8px",
+                mr: "25px",
+                minWidth: "50px",
+                textAlign: "left",
+                "&.Mui-focused > div": { backgroundColor: "white" },
+              },
             },
-            inputProps: { id: "pagination-dropdown" },
-            IconComponent: SelectorVertical,
-            sx: {
-              ml: "8px",
-              mr: "25px",
-              minWidth: "50px",
-              textAlign: "left",
-              "&.Mui-focused > div": { backgroundColor: "white" },
-            },
-          },
-        }}
-      />
+          }}
+        />
+      </Stack>
     </>
   );
 };
