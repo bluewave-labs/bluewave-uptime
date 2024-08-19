@@ -184,32 +184,29 @@ function Sidebar() {
       >
         {menu.map((item) =>
           item.path ? (
-            <ListItemButton
-              className={
-                location.pathname.includes(item.path) ? "selected-path" : ""
-              }
-              key={item.path}
-              onClick={() => navigate(`/${item.path}`)}
-              sx={{
-                gap: theme.gap.medium,
-                borderRadius: `${theme.shape.borderRadius}px`,
-                justifyContent: collapsed ? "center" : "flex-start",
+            <Tooltip
+              placement="right"
+              title={collapsed ? item.name : ""}
+              slotProps={{
+                popper: {
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [0, -16],
+                      },
+                    },
+                  ],
+                },
               }}
             >
-              <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-              {!collapsed && <ListItemText>{item.name}</ListItemText>}
-            </ListItemButton>
-          ) : collapsed ? (
-            <React.Fragment key={item.name}>
               <ListItemButton
                 className={
-                  Boolean(anchorEl) && popup === item.name
-                    ? "selected-path"
-                    : ""
+                  location.pathname.includes(item.path) ? "selected-path" : ""
                 }
-                onClick={(event) => openPopup(event, item.name)}
+                key={item.path}
+                onClick={() => navigate(`/${item.path}`)}
                 sx={{
-                  position: "relative",
                   gap: theme.gap.medium,
                   borderRadius: `${theme.shape.borderRadius}px`,
                   justifyContent: collapsed ? "center" : "flex-start",
@@ -218,6 +215,43 @@ function Sidebar() {
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
                 {!collapsed && <ListItemText>{item.name}</ListItemText>}
               </ListItemButton>
+            </Tooltip>
+          ) : collapsed ? (
+            <React.Fragment key={item.name}>
+              <Tooltip
+                placement="right"
+                title={collapsed ? item.name : ""}
+                slotProps={{
+                  popper: {
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -16],
+                        },
+                      },
+                    ],
+                  },
+                }}
+              >
+                <ListItemButton
+                  className={
+                    Boolean(anchorEl) && popup === item.name
+                      ? "selected-path"
+                      : ""
+                  }
+                  onClick={(event) => openPopup(event, item.name)}
+                  sx={{
+                    position: "relative",
+                    gap: theme.gap.medium,
+                    borderRadius: `${theme.shape.borderRadius}px`,
+                    justifyContent: collapsed ? "center" : "flex-start",
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+                  {!collapsed && <ListItemText>{item.name}</ListItemText>}
+                </ListItemButton>
+              </Tooltip>
               <Menu
                 className="sidebar-popup"
                 anchorEl={anchorEl}
@@ -346,29 +380,46 @@ function Sidebar() {
         sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
       >
         {other.map((item) => (
-          <ListItemButton
-            className={
-              location.pathname.includes(item.path) ? "selected-path" : ""
-            }
-            key={item.path}
-            onClick={() =>
-              item.path === "support"
-                ? window.open(
-                    "https://github.com/bluewave-labs/bluewave-uptime",
-                    "_blank",
-                    "noreferrer"
-                  )
-                : navigate(`/${item.path}`)
-            }
-            sx={{
-              gap: theme.gap.medium,
-              borderRadius: `${theme.shape.borderRadius}px`,
-              justifyContent: collapsed ? "center" : "flex-start",
+          <Tooltip
+            placement="right"
+            title={collapsed ? item.name : ""}
+            slotProps={{
+              popper: {
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -16],
+                    },
+                  },
+                ],
+              },
             }}
           >
-            <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-            {!collapsed && <ListItemText>{item.name}</ListItemText>}
-          </ListItemButton>
+            <ListItemButton
+              className={
+                location.pathname.includes(item.path) ? "selected-path" : ""
+              }
+              key={item.path}
+              onClick={() =>
+                item.path === "support"
+                  ? window.open(
+                      "https://github.com/bluewave-labs/bluewave-uptime",
+                      "_blank",
+                      "noreferrer"
+                    )
+                  : navigate(`/${item.path}`)
+              }
+              sx={{
+                gap: theme.gap.medium,
+                borderRadius: `${theme.shape.borderRadius}px`,
+                justifyContent: collapsed ? "center" : "flex-start",
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
+              {!collapsed && <ListItemText>{item.name}</ListItemText>}
+            </ListItemButton>
+          </Tooltip>
         ))}
       </List>
       <Divider sx={{ mt: "auto" }} />
