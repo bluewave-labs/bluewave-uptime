@@ -87,9 +87,6 @@ aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root::after {
 aside {
   transition: flex 300ms ease-out;
 }
-aside .MuiList-root {
-  transition: padding 100ms ease;
-}
 
 .sidebar-popup .MuiPaper-root {
   box-shadow: var(--env-var-shadow-1);
@@ -98,7 +95,7 @@ aside .MuiList-root {
   gap: 1px;
 }
 .sidebar-popup .MuiList-root {
-  padding: 6px 8px;
+  padding: 6px 6px;
   min-width: 100px;
 }
 .sidebar-popup li.MuiButtonBase-root {

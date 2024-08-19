@@ -132,7 +132,7 @@ function Sidebar() {
         pl={collapsed ? 0 : theme.gap.lgplus}
       >
         {collapsed ? (
-          <BWULogoAbbreviated />
+          <BWULogoAbbreviated alt="BlueWave Uptime Logo" />
         ) : (
           <BWULogo alt="BlueWave Uptime Logo" />
         )}
