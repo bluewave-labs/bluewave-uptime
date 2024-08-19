@@ -16,7 +16,6 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
-import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 const StatBox = ({ title, value }) => {
@@ -129,9 +128,10 @@ const DetailsPage = () => {
           },
         }
       );
-      setMonitor(res.data.data);
+      setMonitor(res?.data?.data ?? {});
     } catch (error) {
-      console.error("Error fetching monitor of id: " + monitorId);
+      console.error(error);
+
       navigate("/not-found");
     }
   }, [authToken, monitorId, navigate, dateRange]);
@@ -142,15 +142,19 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
-      const res = await axiosInstance.get(
-        `/monitors/certificate/${monitorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      setCertificateExpiry(res.data.data.certificateDate);
+      try {
+        const res = await axiosInstance.get(
+          `/monitors/certificate/${monitorId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchCertificate();
   }, [authToken, monitorId]);

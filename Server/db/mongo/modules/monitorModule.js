@@ -172,6 +172,9 @@ const getMonitorStatsById = async (req) => {
 
     // Get monitor
     const monitor = await Monitor.findById(monitorId);
+    if (monitor === null || monitor === undefined) {
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+    }
 
     // Determine if this is a pagespeed monitor or an http/ping monitor
     let model =
@@ -263,7 +266,7 @@ const getMonitorStatsById = async (req) => {
 
     return monitorStats;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 

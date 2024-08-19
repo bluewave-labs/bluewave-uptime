@@ -33,7 +33,6 @@ const DefaultValue = {
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
   const navigate = useNavigate();
-  console.log("NOT FOUND");
   return (
     <Stack className="not-found-page" justifyContent="center">
       <Stack gap="20px" alignItems="center">
