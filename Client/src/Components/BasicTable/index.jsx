@@ -17,10 +17,10 @@ import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
 import LeftArrow from "../../assets/icons/left-arrow.svg?react";
 import RightArrow from "../../assets/icons/right-arrow.svg?react";
 import "./index.css";
+import Button from "../Button";
 
 const TablePaginationActions = (props) => {
   const { count, page, rowsPerPage, onPageChange } = props;
-  console.log(count);
 
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0);
@@ -37,34 +37,34 @@ const TablePaginationActions = (props) => {
 
   return (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
+      <Button
+        level="secondary"
+        img={<LeftArrowDouble />}
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
         aria-label="first page"
-      >
-        <LeftArrowDouble />
-      </IconButton>
-      <IconButton
+      />
+      <Button
+        level="secondary"
+        img={<LeftArrow />}
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
-      >
-        <LeftArrow />
-      </IconButton>
-      <IconButton
+      />
+      <Button
+        level="secondary"
+        img={<RightArrow />}
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
-      >
-        <RightArrow />
-      </IconButton>
-      <IconButton
+      />
+      <Button
+        level="secondary"
+        img={<RightArrowDouble />}
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
-      >
-        <RightArrowDouble />
-      </IconButton>
+      />
     </Box>
   );
 };
@@ -193,6 +193,9 @@ const BasicTable = ({ data, paginated, type, reversed, rows = 5 }) => {
         rowsPerPageOptions={[5, 10, 15, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
+        labelDisplayedRows={({ page, count }) =>
+          `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
+        }
       />
     </>
   );
