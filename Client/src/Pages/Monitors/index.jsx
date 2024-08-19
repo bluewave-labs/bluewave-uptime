@@ -439,7 +439,6 @@ const Monitors = () => {
               <Stack
                 gap={theme.gap.large}
                 p={theme.gap.lgplus}
-                flex={1}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
                 backgroundColor={theme.palette.otherColors.white}

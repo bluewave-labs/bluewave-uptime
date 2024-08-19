@@ -10,14 +10,14 @@ import {
   TableBody,
   TablePagination,
   Box,
-  IconButton,
 } from "@mui/material";
 import LeftArrowDouble from "../../assets/icons/left-arrow-double.svg?react";
 import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
 import LeftArrow from "../../assets/icons/left-arrow.svg?react";
 import RightArrow from "../../assets/icons/right-arrow.svg?react";
-import "./index.css";
+import SelectorVertical from "../../assets/icons/selector-vertical.svg?react";
 import Button from "../Button";
+import "./index.css";
 
 const TablePaginationActions = (props) => {
   const { count, page, rowsPerPage, onPageChange } = props;
@@ -36,9 +36,10 @@ const TablePaginationActions = (props) => {
   };
 
   return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+    <Box sx={{ flexShrink: 0, ml: "25px" }}>
       <Button
         level="secondary"
+        label=""
         img={<LeftArrowDouble />}
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -46,6 +47,7 @@ const TablePaginationActions = (props) => {
       />
       <Button
         level="secondary"
+        label=""
         img={<LeftArrow />}
         onClick={handleBackButtonClick}
         disabled={page === 0}
@@ -53,6 +55,7 @@ const TablePaginationActions = (props) => {
       />
       <Button
         level="secondary"
+        label=""
         img={<RightArrow />}
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
@@ -60,6 +63,7 @@ const TablePaginationActions = (props) => {
       />
       <Button
         level="secondary"
+        label=""
         img={<RightArrowDouble />}
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
@@ -122,7 +126,7 @@ const TablePaginationActions = (props) => {
  * <BasicTable data={data} rows={rows} paginated={true} />
  */
 
-const BasicTable = ({ data, paginated, type, reversed, rows = 5 }) => {
+const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
   // Add headers to props validation
 
   const [page, setPage] = useState(0);
@@ -193,9 +197,31 @@ const BasicTable = ({ data, paginated, type, reversed, rows = 5 }) => {
         rowsPerPageOptions={[5, 10, 15, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}
         ActionsComponent={TablePaginationActions}
+        labelRowsPerPage="Rows per page"
         labelDisplayedRows={({ page, count }) =>
           `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
         }
+        slotProps={{
+          select: {
+            MenuProps: {
+              PaperProps: {
+                className: "pagination-dropdown",
+              },
+              transformOrigin: { vertical: "bottom", horizontal: "left" },
+              anchorOrigin: { vertical: "top", horizontal: "left" },
+              sx: { mt: "-4px" },
+            },
+            inputProps: { id: "pagination-dropdown" },
+            IconComponent: SelectorVertical,
+            sx: {
+              ml: "8px",
+              mr: "25px",
+              minWidth: "50px",
+              textAlign: "left",
+              "&.Mui-focused > div": { backgroundColor: "white" },
+            },
+          },
+        }}
       />
     </>
   );
