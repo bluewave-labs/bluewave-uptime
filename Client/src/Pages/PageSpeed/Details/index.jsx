@@ -20,17 +20,8 @@ import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
+import PropTypes from "prop-types";
 
-
-/**
- * Displays a box with an icon, title, and value.
- *
- * @param {Object} props
- * @param {ReactNode} props.icon - The icon to display in the box.
- * @param {string} props.title - The title text to display above the value.
- * @param {string | number} props.value - The value text to display in the box.
- * @returns {JSX.Element}
- */
 const StatBox = ({ icon, title, value }) => {
   const theme = useTheme();
 
@@ -52,6 +43,12 @@ const StatBox = ({ icon, title, value }) => {
       </Box>
     </Stack>
   );
+};
+
+StatBox.propTypes = {
+  icon: PropTypes.element,
+  title: PropTypes.string,
+  value: PropTypes.node,
 };
 
 /**
@@ -84,6 +81,12 @@ const PieCenterLabel = ({ value, color, setExpand }) => {
       </text>
     </g>
   );
+};
+
+PieCenterLabel.propTypes = {
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
+  setExpand: PropTypes.func,
 };
 
 /**
@@ -127,6 +130,14 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
       </text>
     </g>
   );
+};
+
+PieValueLabel.propTypes = {
+  value: PropTypes.number,
+  startAngle: PropTypes.number,
+  endAngle: PropTypes.number,
+  color: PropTypes.string,
+  highlighted: PropTypes.bool,
 };
 
 /**
@@ -196,16 +207,16 @@ const PageSpeedDetails = () => {
           }
         );
 
-        setMonitor(res.data.data);
-        setAudits(res.data.data.checks[0].audits);
+        setMonitor(res?.data?.data ?? {});
+        setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
-        console.error("Error fetching pagespeed monitor of id: " + monitorId);
+        console.log(error);
         navigate("/not-found");
       }
     };
 
     fetchMonitor();
-  }, [monitorId]);
+  }, [monitorId, authToken, navigate]);
 
   /**
    * Weight constants for different performance metrics.
@@ -651,6 +662,10 @@ const PageSpeedDetails = () => {
       )}
     </Stack>
   );
+};
+
+PageSpeedDetails.propTypes = {
+  push: PropTypes.func,
 };
 
 export default PageSpeedDetails;
