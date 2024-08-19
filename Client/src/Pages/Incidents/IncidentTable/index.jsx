@@ -18,7 +18,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../Utils/NetworkService";
+import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
@@ -45,7 +45,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
       try {
         let res;
         if (selectedMonitor === "0") {
-          res = await axiosInstance.getChecksByUser(
+          res = await networkService.getChecksByUser(
             authToken,
             user._id,
             "desc",
@@ -56,7 +56,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
             paginationController.rowsPerPage
           );
         } else {
-          res = await axiosInstance.getChecksByMonitor(
+          res = await networkService.getChecksByMonitor(
             authToken,
             selectedMonitor,
             "desc",

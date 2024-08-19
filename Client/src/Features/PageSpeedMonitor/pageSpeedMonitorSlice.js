@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-import axiosInstance from "../../Utils/NetworkService";
+import { networkService } from "../../main";
 const initialState = {
   isLoading: false,
   monitors: [],
@@ -13,7 +13,7 @@ export const createPageSpeed = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await axiosInstance.createMonitor(authToken, monitor);
+      const res = await networkService.createMonitor(authToken, monitor);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -33,7 +33,7 @@ export const getPageSpeedByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await axiosInstance.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByUserId(
         token,
         user._id,
         25,
@@ -68,7 +68,7 @@ export const updatePageSpeed = createAsyncThunk(
         interval: monitor.interval,
         // notifications: monitor.notifications,
       };
-      const res = await axiosInstance.updateMonitor(
+      const res = await networkService.updateMonitor(
         authToken,
         monitor._id,
         updatedFields
@@ -92,7 +92,10 @@ export const deletePageSpeed = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await axiosInstance.deleteMonitorById(authToken, monitor._id);
+      const res = await networkService.deleteMonitorById(
+        authToken,
+        monitor._id
+      );
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {

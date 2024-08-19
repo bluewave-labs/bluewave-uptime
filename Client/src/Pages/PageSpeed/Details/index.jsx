@@ -9,7 +9,7 @@ import {
   formatDuration,
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
-import axiosInstance from "../../../Utils/NetworkService";
+import { networkService } from "../../../main";
 import Button from "../../../Components/Button";
 import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
@@ -186,7 +186,7 @@ const PageSpeedDetails = () => {
   useEffect(() => {
     const fetchMonitor = async () => {
       try {
-        const res = await axiosInstance.getStatsByMonitorId(
+        const res = await networkService.getStatsByMonitorId(
           authToken,
           monitorId,
           "desc",

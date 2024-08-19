@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ButtonGroup, Stack, Skeleton, Typography } from "@mui/material";
 import Button from "../../Components/Button";
-import axiosInstance from "../../Utils/NetworkService";
+import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";
@@ -48,7 +48,7 @@ const Incidents = () => {
   useEffect(() => {
     const fetchMonitors = async () => {
       setLoading(true);
-      const res = await axiosInstance.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByUserId(
         authState.authToken,
         authState.user._id,
         1,

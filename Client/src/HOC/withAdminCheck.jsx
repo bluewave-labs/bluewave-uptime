@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../Utils/NetworkService";
+import { networkService } from "../main";
 
 const withAdminCheck = (WrappedComponent) => {
   const WithAdminCheck = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      axiosInstance
+      networkService
         .doesAdminExist()
         .then((response) => {
           if (response.data.data === true) {

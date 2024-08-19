@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../../Utils/NetworkService";
+import { networkService } from "../../../main";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
@@ -121,7 +121,7 @@ const DetailsPage = () => {
 
   const fetchMonitor = useCallback(async () => {
     try {
-      const res = await axiosInstance.getStatsByMonitorId(
+      const res = await networkService.getStatsByMonitorId(
         authToken,
         monitorId,
         null,
@@ -144,7 +144,7 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
-      const res = await axiosInstance.getCertificateExpiry(
+      const res = await networkService.getCertificateExpiry(
         authToken,
         monitorId
       );

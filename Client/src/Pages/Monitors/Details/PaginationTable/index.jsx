@@ -13,7 +13,7 @@ import {
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../../Utils/NetworkService";
+import { networkService } from "../../../../main";
 import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
@@ -37,7 +37,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await axiosInstance.getChecksByMonitor(
+        const res = await networkService.getChecksByMonitor(
           authToken,
           monitorId,
           "desc",

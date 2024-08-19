@@ -15,7 +15,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import axiosInstance from "../../../Utils/NetworkService";
+import { networkService } from "../../../main";
 import "../index.css";
 
 /**
@@ -397,7 +397,7 @@ const Register = ({ isAdmin }) => {
     const fetchInvite = async () => {
       if (token !== undefined) {
         try {
-          const res = await axiosInstance.verifyInvitationToken(token);
+          const res = await networkService.verifyInvitationToken(token);
           const { role, email } = res.data.data;
           console.log(role);
           setForm({ ...form, email, role });

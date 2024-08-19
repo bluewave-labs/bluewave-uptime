@@ -1,4 +1,4 @@
-import axiosInstance from "../../Utils/NetworkService";
+import { networkService } from "../../main";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 
@@ -14,7 +14,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.registerUser(form);
+      const res = await networkService.registerUser(form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -31,7 +31,7 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   try {
-    const res = await axiosInstance.loginUser(form);
+    const res = await networkService.loginUser(form);
     return res.data;
   } catch (error) {
     if (error.response && error.response.data) {
@@ -57,7 +57,7 @@ export const update = createAsyncThunk(
       form.password && fd.append("password", form.password);
       form.newPassword && fd.append("newPassword", form.newPassword);
       if (form.file && form.file !== "") {
-        const imageResult = await axiosInstance.get(form.file, {
+        const imageResult = await networkService.get(form.file, {
           responseType: "blob",
           baseURL: "",
         });
@@ -66,7 +66,7 @@ export const update = createAsyncThunk(
       form.deleteProfileImage &&
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
-      const res = await axiosInstance.updateUser(token, user._id, fd);
+      const res = await networkService.updateUser(token, user._id, fd);
 
       return res.data;
     } catch (error) {
@@ -88,7 +88,7 @@ export const deleteUser = createAsyncThunk(
     const user = jwtDecode(data);
 
     try {
-      const res = await axiosInstance.deleteUser(data, user._id);
+      const res = await networkService.deleteUser(data, user._id);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -107,7 +107,7 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.forgotPassword(form);
+      const res = await networkService.forgotPassword(form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -127,8 +127,8 @@ export const setNewPassword = createAsyncThunk(
   async (data, thunkApi) => {
     const { token, form } = data;
     try {
-      await axiosInstance.validateRecoveryToken(token);
-      const res = await axiosInstance.setNewPassword(token, form);
+      await networkService.validateRecoveryToken(token);
+      const res = await networkService.setNewPassword(token, form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
