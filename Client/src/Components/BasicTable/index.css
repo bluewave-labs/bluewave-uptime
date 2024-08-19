@@ -177,10 +177,11 @@
 }
 .pagination-dropdown li {
   font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-2);
   padding: 4px;
 }
 .pagination-dropdown li.Mui-selected,
 .pagination-dropdown li.Mui-selected.Mui-focusVisible,
-.pagination-dropdown li.Mui-selected:hover  {
+.pagination-dropdown li.Mui-selected:hover {
   background-color: #f4f4f4;
 }

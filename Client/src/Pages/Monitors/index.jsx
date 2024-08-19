@@ -436,8 +436,7 @@ const Monitors = () => {
                 <ServerStatus title="Down" value={down} state="down" />
                 <ServerStatus title="Paused" value={0} state="pause" />
               </Stack>
-              <Stack
-                gap={theme.gap.large}
+              <Box
                 p={theme.gap.lgplus}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
@@ -446,7 +445,7 @@ const Monitors = () => {
                   borderRadius: `${theme.shape.borderRadius}px`,
                 }}
               >
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" alignItems="center" mb={theme.gap.large}>
                   <Typography component="h2">Current monitors</Typography>
                   <Box className="current-monitors-counter">
                     {monitorState.monitors.length}
@@ -454,7 +453,7 @@ const Monitors = () => {
                   {/* TODO - add search bar */}
                 </Stack>
                 <BasicTable data={data} paginated={true} />
-              </Stack>{" "}
+              </Box>
             </>
           )}
         </>

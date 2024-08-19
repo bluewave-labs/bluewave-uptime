@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useTheme } from "@emotion/react";
 import {
   TableContainer,
   Paper,
@@ -20,7 +21,6 @@ import RightArrow from "../../assets/icons/right-arrow.svg?react";
 import SelectorVertical from "../../assets/icons/selector-vertical.svg?react";
 import Button from "../Button";
 import "./index.css";
-
 /**
  * Component for pagination actions (first, previous, next, last).
  *
@@ -50,7 +50,7 @@ const TablePaginationActions = (props) => {
   };
 
   return (
-    <Box sx={{ flexShrink: 0, ml: "25px" }}>
+    <Box sx={{ flexShrink: 0, ml: "24px" }}>
       <Button
         level="secondary"
         label=""
@@ -141,8 +141,7 @@ const TablePaginationActions = (props) => {
  */
 
 const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
-  // Add headers to props validation
-
+  const theme = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rows);
 
@@ -243,14 +242,17 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
               inputProps: { id: "pagination-dropdown" },
               IconComponent: SelectorVertical,
               sx: {
-                ml: "8px",
-                mr: "25px",
-                minWidth: "50px",
+                ml: theme.gap.small,
+                mr: theme.gap.large,
+                minWidth: theme.gap.xl,
                 textAlign: "left",
-                "&.Mui-focused > div": { backgroundColor: "white" },
+                "&.Mui-focused > div": {
+                  backgroundColor: theme.palette.otherColors.white,
+                },
               },
             },
           }}
+          sx={{ mt: theme.gap.medium }}
         />
       </Stack>
     </>
