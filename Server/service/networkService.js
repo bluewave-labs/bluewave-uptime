@@ -16,6 +16,14 @@ class NetworkService {
   async handleNotification(job, isAlive) {
     const { _id } = job.data;
     const monitor = await this.db.getMonitorById(_id);
+    if (monitor === null || monitor === undefined) {
+      logger.error(`Null Monitor: ${_id}`, {
+        method: "handleNotification",
+        service: this.SERVICE_NAME,
+        jobId: job.id,
+      });
+      return;
+    }
 
     // If monitor status changes, update monitor status and send notification
     if (monitor.status !== isAlive) {
