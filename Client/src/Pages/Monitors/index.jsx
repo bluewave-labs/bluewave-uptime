@@ -27,6 +27,7 @@ import {
 } from "@mui/material";
 
 import Settings from "../../assets/icons/settings-bold.svg?react";
+import PropTypes from "prop-types";
 
 const ActionsMenu = ({ monitor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -192,6 +193,14 @@ const ActionsMenu = ({ monitor }) => {
   );
 };
 
+ActionsMenu.propTypes = {
+  monitor: PropTypes.shape({
+    _id: PropTypes.string,
+    url: PropTypes.string,
+    type: PropTypes.string,
+  }).isRequired,
+};
+
 /**
  * Host component.
  * This subcomponent receives a params object and displays the host details.
@@ -235,6 +244,15 @@ const Host = ({ params }) => {
       </Box>
     </Stack>
   );
+};
+
+Host.propTypes = {
+  params: PropTypes.shape({
+    url: PropTypes.string,
+    title: PropTypes.string,
+    percentageColor: PropTypes.string,
+    percentage: PropTypes.number,
+  }).isRequired,
 };
 
 /**
