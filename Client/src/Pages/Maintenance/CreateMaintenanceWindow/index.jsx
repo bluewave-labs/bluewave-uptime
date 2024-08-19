@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import "./index.css";
 import React, { useState } from "react";
 import Button from "../../../Components/Button";
-import Back from "../../../assets/icons/left-arrow.svg?react";
+import Back from "../../../assets/icons/left-arrow-long.svg?react";
 import Select from "../../../Components/Inputs/Select";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
