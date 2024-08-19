@@ -4,7 +4,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import Button from "../../Components/Button";
 import axiosInstance from "../../Utils/axiosConfig";
@@ -13,6 +13,7 @@ import background from "../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import PropTypes from "prop-types";
 
 import "./index.css";
 
@@ -61,6 +62,10 @@ const LandingPage = ({ onContinue }) => {
       </Stack>
     </>
   );
+};
+
+LandingPage.propTypes = {
+  onContinue: PropTypes.func.isRequired,
 };
 
 /**
@@ -134,6 +139,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
       </Stack>
     </>
   );
+};
+
+StepOne.propTypes = {
+  form: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
 };
 
 /**
@@ -230,10 +243,21 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepTwo.propTypes = {
+  form: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+};
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
+
+  const authState = useSelector((state) => state.auth);
+  const { authToken } = authState;
 
   const idMap = {
     "login-email-input": "email",
@@ -248,6 +272,10 @@ const Login = () => {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    if (authToken) {
+      navigate("/monitors");
+      return;
+    }
     axiosInstance
       .get("/auth/users/admin")
       .then((response) => {
@@ -258,7 +286,7 @@ const Login = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [navigate]);
+  }, [authToken, navigate]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
