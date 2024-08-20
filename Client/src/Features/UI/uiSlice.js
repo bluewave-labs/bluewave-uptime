@@ -3,7 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 // Initial state for UI settings.
 // Add more settings as needed (e.g., theme preferences, user settings)
 const initialState = {
-  table: {
+  monitors: {
+    rowsPerPage: 5,
+  },
+  team: {
     rowsPerPage: 5,
   },
   sidebar: {
@@ -16,7 +19,7 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     setRowsPerPage: (state, action) => {
-      state.table.rowsPerPage = action.payload;
+      state[action.payload.table].rowsPerPage = action.payload.value;
     },
     toggleSidebar: (state) => {
       state.sidebar.collapsed = !state.sidebar.collapsed;
