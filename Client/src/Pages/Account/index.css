@@ -42,17 +42,11 @@
   justify-content: space-between;
   align-items: flex-start;
 }
-.edit-password-form__wrapper > .MuiStack-root:not(.row-stack) {
-  flex-direction: column;
-  gap: 8px;
-  margin-right: 10px;
-}
 #modal-delete-account,
 #modal-edit-org-name,
 #modal-invite-member {
   font-size: var(--env-var-font-size-large);
 }
-.edit-password-form__wrapper:not(:first-of-type),
 .edit-team-form__wrapper:not(:first-of-type) {
   margin-top: var(--env-var-spacing-4);
 }
