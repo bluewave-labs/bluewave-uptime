@@ -16,7 +16,6 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
-import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { logger } from "../../../Utils/Logger";
 
@@ -131,7 +130,7 @@ const DetailsPage = () => {
         50,
         true
       );
-      setMonitor(res.data.data);
+      setMonitor(res?.data?.data ?? {});
     } catch (error) {
       logger.error(error);
       navigate("/not-found", { replace: true });
@@ -144,11 +143,16 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
+      try {
       const res = await networkService.getCertificateExpiry(
         authToken,
         monitorId
       );
-      setCertificateExpiry(res.data.data.certificateDate);
+      setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
+      } catch (error) {
+        console.error(error);
+      }
+
     };
     fetchCertificate();
   }, [authToken, monitorId]);
