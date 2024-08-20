@@ -13,8 +13,8 @@ const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setTablePreferences: (state, action) => {
-      state.table = { ...action };
+    setRowsPerPage: (state, action) => {
+      state.table.rowsPerPage = action.payload;
     },
     toggleSidebar: (state) => {
       state.sidebar.collapsed = !state.sidebar.collapsed;
@@ -23,4 +23,4 @@ const uiSlice = createSlice({
 });
 
 export default uiSlice.reducer;
-export const { setTablePreferences, toggleSidebar } = uiSlice.actions;
+export const { setRowsPerPage, toggleSidebar } = uiSlice.actions;

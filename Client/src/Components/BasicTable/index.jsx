@@ -14,6 +14,8 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setRowsPerPage } from "../../Features/UI/uiSlice";
 import LeftArrowDouble from "../../assets/icons/left-arrow-double.svg?react";
 import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
 import LeftArrow from "../../assets/icons/left-arrow.svg?react";
@@ -142,8 +144,10 @@ const TablePaginationActions = (props) => {
 
 const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const { table } = useSelector((state) => state.ui);
+  let rowsPerPage = table.rowsPerPage;
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(rows);
 
   useEffect(() => {
     setPage(0);
@@ -154,7 +158,7 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    dispatch(setRowsPerPage(parseInt(event.target.value, 10)));
     setPage(0);
   };
 
@@ -211,50 +215,59 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {paginated && <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography sx={{ opacity: 0.7 }}>
-          Showing {getRange()} of {data.rows.length} monitor(s)
-        </Typography>
-        <TablePagination
-          component="div"
-          count={data.rows.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 15, 25]}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          ActionsComponent={TablePaginationActions}
-          labelRowsPerPage="Rows per page"
-          labelDisplayedRows={({ page, count }) =>
-            `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
-          }
-          slotProps={{
-            select: {
-              MenuProps: {
-                keepMounted: true,
-                PaperProps: {
-                  className: "pagination-dropdown",
+      {paginated && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography sx={{ opacity: 0.7 }}>
+            Showing {getRange()} of {data.rows.length} monitor(s)
+          </Typography>
+          <TablePagination
+            component="div"
+            count={data.rows.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[5, 10, 15, 25]}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            ActionsComponent={TablePaginationActions}
+            labelRowsPerPage="Rows per page"
+            labelDisplayedRows={({ page, count }) =>
+              `Page ${page + 1} of ${Math.max(
+                0,
+                Math.ceil(count / rowsPerPage)
+              )}`
+            }
+            slotProps={{
+              select: {
+                MenuProps: {
+                  keepMounted: true,
+                  PaperProps: {
+                    className: "pagination-dropdown",
+                  },
+                  transformOrigin: { vertical: "bottom", horizontal: "left" },
+                  anchorOrigin: { vertical: "top", horizontal: "left" },
+                  sx: { mt: "-4px" },
                 },
-                transformOrigin: { vertical: "bottom", horizontal: "left" },
-                anchorOrigin: { vertical: "top", horizontal: "left" },
-                sx: { mt: "-4px" },
-              },
-              inputProps: { id: "pagination-dropdown" },
-              IconComponent: SelectorVertical,
-              sx: {
-                ml: theme.gap.small,
-                mr: theme.gap.large,
-                minWidth: theme.gap.xl,
-                textAlign: "left",
-                "&.Mui-focused > div": {
-                  backgroundColor: theme.palette.otherColors.white,
+                inputProps: { id: "pagination-dropdown" },
+                IconComponent: SelectorVertical,
+                sx: {
+                  ml: theme.gap.small,
+                  mr: theme.gap.large,
+                  minWidth: theme.gap.xl,
+                  textAlign: "left",
+                  "&.Mui-focused > div": {
+                    backgroundColor: theme.palette.otherColors.white,
+                  },
                 },
               },
-            },
-          }}
-          sx={{ mt: theme.gap.medium }}
-        />
-      </Stack>}
+            }}
+            sx={{ mt: theme.gap.medium }}
+          />
+        </Stack>
+      )}
     </>
   );
 };
