@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import Field from "../../../Components/Inputs/Field";
+import axios from "axios";
 
 const directory = {
   title: "Create a maintenance window",
@@ -69,6 +70,29 @@ const CreateNewMaintenanceWindow = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async () => {
+    const data = {
+      repeat: values.repeat,
+      date: values.date.format("YYYY-MM-DD"),
+      startTime: values.startTime.format("HH:mm"),
+      duration: values.duration,
+      unit: values.unit,
+      friendlyName: values.friendlyName,
+      addMonitors: values.AddMonitors,
+    };
+
+    console.log("Submitting data: ", data);
+
+    await axios
+      .post("/address-of-the-route", data)
+      .then((res) => {
+        console.log("Response: ", res.data);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
   };
 
   const configOptions = [
@@ -246,6 +270,7 @@ const CreateNewMaintenanceWindow = () => {
             }}
             level="primary"
             label="Create"
+            onClick={handleSubmit}
           />
         </Stack>
       </Stack>
