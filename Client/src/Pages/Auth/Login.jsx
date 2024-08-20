@@ -427,7 +427,9 @@ const Login = () => {
         )}
       </Stack>
       <Box textAlign="center" p={theme.gap.large}>
-        <Typography display="inline-block">Don't have an account? —</Typography>
+        <Typography display="inline-block">
+          Don&apos;t have an account? —
+        </Typography>
         <Typography
           component="span"
           ml={theme.gap.xs}
