@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
@@ -17,6 +17,7 @@ import {
 } from "../../../Utils/timeUtils";
 import "./index.css";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { logger } from "../../../Utils/Logger";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -120,19 +121,19 @@ const DetailsPage = () => {
 
   const fetchMonitor = useCallback(async () => {
     try {
-      const res = await axiosInstance.get(
-        `/monitors/stats/${monitorId}?dateRange=${dateRange}&numToDisplay=50&normalize=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
+      const res = await networkService.getStatsByMonitorId(
+        authToken,
+        monitorId,
+        null,
+        null,
+        dateRange,
+        50,
+        true
       );
       setMonitor(res?.data?.data ?? {});
     } catch (error) {
-      console.error(error);
-
-      navigate("/not-found");
+      logger.error(error);
+      navigate("/not-found", { replace: true });
     }
   }, [authToken, monitorId, navigate, dateRange]);
 
@@ -143,18 +144,15 @@ const DetailsPage = () => {
   useEffect(() => {
     const fetchCertificate = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/monitors/certificate/${monitorId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
-        setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
+      const res = await networkService.getCertificateExpiry(
+        authToken,
+        monitorId
+      );
+      setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
       } catch (error) {
         console.error(error);
       }
+
     };
     fetchCertificate();
   }, [authToken, monitorId]);

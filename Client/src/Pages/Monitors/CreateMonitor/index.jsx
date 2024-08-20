@@ -13,6 +13,7 @@ import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import { createToast } from "../../../Utils/toastUtils";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { logger } from "../../../Utils/Logger";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -267,7 +268,7 @@ const CreateMonitor = () => {
               label="Notify via SMS (coming soon)"
               isChecked={false}
               value=""
-              onChange={() => console.log("disabled")}
+              onChange={() => logger.warn("disabled")}
               isDisabled={true}
             />
             <Checkbox
@@ -284,7 +285,7 @@ const CreateMonitor = () => {
               label="Also notify via email to multiple addresses (coming soon)"
               isChecked={false}
               value=""
-              onChange={() => console.log("disabled")}
+              onChange={() => logger.warn("disabled")}
               isDisabled={true}
             />
             {monitor.notifications.some(
@@ -296,7 +297,7 @@ const CreateMonitor = () => {
                   type="text"
                   placeholder="name@gmail.com"
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                 />
                 <Typography mt={theme.gap.small}>
                   You can separate multiple emails with a comma

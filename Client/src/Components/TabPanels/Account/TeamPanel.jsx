@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
@@ -52,10 +52,7 @@ const TeamPanel = () => {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const response = await axiosInstance.get("/auth/users", {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-
+        const response = await networkService.getAllUsers(authToken);
         setMembers(response.data.data);
       } catch (error) {
         createToast({
@@ -179,13 +176,10 @@ const TeamPanel = () => {
       setErrors((prev) => ({ ...prev, email: error.details[0].message }));
     } else
       try {
-        await axiosInstance.post(
-          "/auth/invite",
-          {
-            email: toInvite.email,
-            role: toInvite.role,
-          },
-          { headers: { Authorization: `Bearer ${authToken}` } }
+        await networkService.requestInvitationToken(
+          authToken,
+          toInvite.email,
+          toInvite.role
         );
 
         closeInviteModal();

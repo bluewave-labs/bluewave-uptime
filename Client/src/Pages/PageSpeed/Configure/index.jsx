@@ -18,6 +18,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { logger } from "../../../Utils/Logger";
 
 import "./index.css";
 
@@ -92,8 +93,8 @@ const PageSpeedConfigure = () => {
   useEffect(() => {
     const data = monitors.find((monitor) => monitor._id === monitorId);
     if (!data) {
-      console.error("Error fetching pagespeed monitor of id: " + monitorId);
-      navigate("/not-found");
+      logger.error("Error fetching pagespeed monitor of id: " + monitorId);
+      navigate("/not-found", { replace: true });
     }
     setMonitor({
       ...data,
@@ -278,7 +279,7 @@ const PageSpeedConfigure = () => {
                       id="notify-emails-list"
                       placeholder="notifications@gmail.com"
                       value=""
-                      onChange={() => console.log("disabled")}
+                      onChange={() => logger.warn("disabled")}
                       error=""
                     />
                     <Typography mt={theme.gap.small}>

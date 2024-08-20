@@ -297,7 +297,7 @@ const getMonitorById = async (monitorId) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize } = req.query;
+    let { limit, type, status, sortOrder, normalize } = req.query || {};
     const monitorQuery = { userId: req.params.userId };
 
     if (type !== undefined) {

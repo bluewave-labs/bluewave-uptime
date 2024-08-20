@@ -13,10 +13,11 @@ import {
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../../Utils/axiosConfig";
+import { networkService } from "../../../../main";
 import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import { logger } from "../../../../Utils/Logger";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
   const { authToken } = useSelector((state) => state.auth);
@@ -37,18 +38,20 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/checks/${monitorId}?sortOrder=desc&dateRange=${dateRange}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
+        const res = await networkService.getChecksByMonitor(
+          authToken,
+          monitorId,
+          "desc",
+          null,
+          dateRange,
+          null,
+          paginationController.page,
+          paginationController.rowsPerPage
         );
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     };
     fetchPage();
