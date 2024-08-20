@@ -12,6 +12,7 @@ import { createToast } from "../../../Utils/toastUtils";
 import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
+import { logger } from "../../../Utils/Logger";
 
 const CreatePageSpeed = () => {
   const theme = useTheme();
@@ -175,7 +176,7 @@ const CreatePageSpeed = () => {
                   id="notify-emails-list"
                   placeholder="notifications@gmail.com"
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                   error=""
                 />
                 <Typography mt={theme.gap.small}>
