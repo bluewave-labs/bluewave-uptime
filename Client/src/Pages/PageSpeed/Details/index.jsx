@@ -9,7 +9,7 @@ import {
   formatDuration,
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import Button from "../../../Components/Button";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
@@ -198,15 +198,15 @@ const PageSpeedDetails = () => {
   useEffect(() => {
     const fetchMonitor = async () => {
       try {
-        const res = await axiosInstance.get(
-          `/monitors/stats/${monitorId}?sortOrder=desc&limit=50`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
+        const res = await networkService.getStatsByMonitorId(
+          authToken,
+          monitorId,
+          "desc",
+          50,
+          null,
+          null,
+          null
         );
-
         setMonitor(res?.data?.data ?? {});
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {

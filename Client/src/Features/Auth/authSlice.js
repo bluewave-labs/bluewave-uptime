@@ -1,4 +1,4 @@
-import axiosInstance from "../../Utils/axiosConfig";
+import { networkService } from "../../main";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 
@@ -14,7 +14,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.post("/auth/register", form);
+      const res = await networkService.registerUser(form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -31,7 +31,7 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk("auth/login", async (form, thunkApi) => {
   try {
-    const res = await axiosInstance.post(`/auth/login`, form);
+    const res = await networkService.loginUser(form);
     return res.data;
   } catch (error) {
     if (error.response && error.response.data) {
@@ -51,16 +51,13 @@ export const update = createAsyncThunk(
     const { authToken: token, localData: form } = data;
     const user = jwtDecode(token);
     try {
-      //1.5s delay to show loading spinner
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
       const fd = new FormData();
       form.firstName && fd.append("firstName", form.firstName);
       form.lastName && fd.append("lastName", form.lastName);
       form.password && fd.append("password", form.password);
       form.newPassword && fd.append("newPassword", form.newPassword);
       if (form.file && form.file !== "") {
-        const imageResult = await axiosInstance.get(form.file, {
+        const imageResult = await networkService.get(form.file, {
           responseType: "blob",
           baseURL: "",
         });
@@ -69,12 +66,8 @@ export const update = createAsyncThunk(
       form.deleteProfileImage &&
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
-      const res = await axiosInstance.put(`/auth/user/${user._id}`, fd, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await networkService.updateUser(token, user._id, fd);
+
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -95,9 +88,7 @@ export const deleteUser = createAsyncThunk(
     const user = jwtDecode(data);
 
     try {
-      const res = await axiosInstance.delete(`/auth/user/${user._id}`, {
-        headers: { Authorization: `Bearer ${data}` },
-      });
+      const res = await networkService.deleteUser(data, user._id);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -116,7 +107,7 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (form, thunkApi) => {
     try {
-      const res = await axiosInstance.post("/auth/recovery/request", form);
+      const res = await networkService.forgotPassword(form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
@@ -136,13 +127,8 @@ export const setNewPassword = createAsyncThunk(
   async (data, thunkApi) => {
     const { token, form } = data;
     try {
-      await axiosInstance.post("/auth/recovery/validate", {
-        recoveryToken: token,
-      });
-      const res = await axiosInstance.post("/auth/recovery/reset", {
-        ...form,
-        recoveryToken: token,
-      });
+      await networkService.validateRecoveryToken(token);
+      const res = await networkService.setNewPassword(token, form);
       return res.data;
     } catch (error) {
       if (error.response.data) {
