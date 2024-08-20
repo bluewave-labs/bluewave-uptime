@@ -36,7 +36,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
       ...paginationController,
       page: 0,
     });
-  }, [filter, selectedMonitor]);
+  }, [filter, selectedMonitor, paginationController]);
 
   useEffect(() => {
     const fetchPage = async () => {

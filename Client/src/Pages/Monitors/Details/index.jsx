@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -144,15 +144,14 @@ const DetailsPage = () => {
   useEffect(() => {
     const fetchCertificate = async () => {
       try {
-      const res = await networkService.getCertificateExpiry(
-        authToken,
-        monitorId
-      );
-      setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
+        const res = await networkService.getCertificateExpiry(
+          authToken,
+          monitorId
+        );
+        setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
       } catch (error) {
         console.error(error);
       }
-
     };
     fetchCertificate();
   }, [authToken, monitorId]);

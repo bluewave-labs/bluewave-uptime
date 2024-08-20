@@ -1,5 +1,5 @@
 import "./index.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
 import { Box, ButtonGroup, Stack, Typography } from "@mui/material";

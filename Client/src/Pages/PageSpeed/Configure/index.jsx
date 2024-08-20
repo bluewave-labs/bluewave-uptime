@@ -99,7 +99,7 @@ const PageSpeedConfigure = () => {
     setMonitor({
       ...data,
     });
-  }, [monitorId]);
+  }, [monitorId, monitors, navigate]);
 
   const handleChange = (event, id) => {
     let { value } = event.target;

@@ -33,7 +33,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
       ...paginationController,
       page: 0,
     });
-  }, [dateRange]);
+  }, [dateRange, paginationController]);
 
   useEffect(() => {
     const fetchPage = async () => {
