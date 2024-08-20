@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
@@ -19,6 +19,7 @@ import "./index.css";
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
+  const { monitors } = useSelector((state) => state.uptimeMonitors);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -31,6 +32,7 @@ const CreateMonitor = () => {
     "notify-email-default": "notification-email",
   };
 
+  const { monitorId } = useParams();
   const [monitor, setMonitor] = useState({
     url: "",
     name: "",
@@ -40,6 +42,21 @@ const CreateMonitor = () => {
   });
   const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if(monitorId){
+      const data = monitors.find((monitor) => monitor._id === monitorId);
+      if (!data) {
+        console.error("Error fetching monitor of id: " + monitorId);
+        navigate("/not-found");
+      }
+      const {url, name, ...rest} = data;
+      rest.interval = rest.interval/60000;
+      setMonitor({
+        ...rest,
+      });
+    }
+  }, [monitorId, authToken, monitors]);
 
   const handleChange = (event, name) => {
     const { value, id } = event.target;

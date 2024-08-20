@@ -145,6 +145,14 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
             Configure
           </MenuItem>
         )}
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/monitors/clone/${actions.id}`);
+          }}
+        >
+          Clone
+        </MenuItem>
         {isAdmin && (
           <MenuItem
             onClick={(e) => {
