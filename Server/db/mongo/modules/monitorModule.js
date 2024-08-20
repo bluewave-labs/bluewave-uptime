@@ -263,7 +263,6 @@ const getMonitorStatsById = async (req) => {
     monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
     monitorStats.incidents = incidents;
     monitorStats.checks = dateRangeChecks;
-
     return monitorStats;
   } catch (error) {
     throw error;
