@@ -15,13 +15,13 @@ const authTransform = createTransform(
   // No transformation on rehydration
   null,
   // Only applies to auth
-  { whitelist: ["auth", "ui"] }
+  { whitelist: ["auth"] }
 );
 
 const persistConfig = {
   key: "root",
   storage,
-  whitielist: ["auth", "monitors", "pageSpeed"],
+  whitielist: ["auth", "monitors", "pageSpeed", "ui"],
   transforms: [authTransform],
 };
 
