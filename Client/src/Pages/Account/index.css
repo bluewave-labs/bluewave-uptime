@@ -19,7 +19,6 @@
   padding: 0;
   margin-top: 50px;
 }
-
 .account .MuiDivider-root,
 .account .MuiButtonGroup-root button {
   border-color: var(--env-var-color-16);
@@ -30,28 +29,10 @@
 .account .field {
   flex: 1;
 }
-.account [class$="-form"] {
-  width: inherit;
-}
-.account [class$="__wrapper"],
-.account [class$="__wrapper compact"] {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-}
 #modal-delete-account,
 #modal-edit-org-name,
 #modal-invite-member {
   font-size: var(--env-var-font-size-large);
-}
-.edit-team-form__wrapper:not(:first-of-type) {
-  margin-top: var(--env-var-spacing-4);
-}
-.edit-team-form__wrapper.compact {
-  margin-top: var(--env-var-spacing-3);
-  justify-content: flex-start;
-  align-items: center;
 }
 
 .account .MuiStack-root:has(span.MuiTypography-root.input-error) {
@@ -62,22 +43,9 @@
   top: 100%;
 }
 
-.edit-profile-form__wrapper .MuiFormControl-root,
-.edit-password-form__wrapper .MuiFormControl-root {
-  width: 100%;
+.account .MuiTable-root .MuiTableBody-root .MuiTableCell-root {
+  color: var(--env-var-color-25);
 }
-.edit-profile-form__wrapper .MuiStack-root:has(.MuiFormControl-root),
-.edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root) {
-  margin: 0;
-}
-
-.edit-organization-form {
-  display: flex;
-  align-items: center;
-}
-.edit-team-form .MuiTableCell-root {
-  color: var(--env-var-color-25) !important;
-}
-.edit-team-form .MuiTableBody-root .MuiTableCell-root {
-  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2) !important;
+.account .MuiTableBody-root .MuiTableCell-root {
+  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
 }
