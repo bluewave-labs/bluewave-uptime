@@ -19,6 +19,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
+import { toggleSidebar } from "../../Features/UI/uiSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
@@ -86,8 +87,9 @@ function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
+  const { sidebar } = useSelector((state) => state.ui);
+  let collapsed = sidebar.collapsed;
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
-  const [collapsed, setCollapsed] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [popup, setPopup] = useState();
 
@@ -157,7 +159,7 @@ function Sidebar() {
               borderColor: theme.palette.otherColors.graishWhite,
             },
           }}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => dispatch(toggleSidebar())}
         >
           {collapsed ? <ArrowRight /> : <ArrowLeft />}
         </IconButton>
