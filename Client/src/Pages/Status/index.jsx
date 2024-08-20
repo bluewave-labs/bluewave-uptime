@@ -1,9 +1,6 @@
 import Fallback from "../../Components/Fallback";
-import { useTheme } from "@emotion/react";
 
 const Status = () => {
-  const theme = useTheme();
-
   return (
     <div className="status">
       <Fallback
