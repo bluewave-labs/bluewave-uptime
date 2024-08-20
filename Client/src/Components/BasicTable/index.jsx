@@ -1,3 +1,6 @@
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import { useTheme } from "@emotion/react";
 import {
   TableContainer,
   Paper,
@@ -6,14 +9,83 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Pagination,
-  PaginationItem,
+  TablePagination,
+  Box,
+  Typography,
+  Stack,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import LeftArrowDouble from "../../assets/icons/left-arrow-double.svg?react";
+import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
+import LeftArrow from "../../assets/icons/left-arrow.svg?react";
+import RightArrow from "../../assets/icons/right-arrow.svg?react";
+import SelectorVertical from "../../assets/icons/selector-vertical.svg?react";
+import Button from "../Button";
 import "./index.css";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+/**
+ * Component for pagination actions (first, previous, next, last).
+ *
+ * @component
+ * @param {Object} props
+ * @param {number} props.count - Total number of items.
+ * @param {number} props.page - Current page number.
+ * @param {number} props.rowsPerPage - Number of rows per page.
+ * @param {function} props.onPageChange - Callback function to handle page change.
+ *
+ * @returns {JSX.Element} Pagination actions component.
+ */
+const TablePaginationActions = (props) => {
+  const { count, page, rowsPerPage, onPageChange } = props;
+
+  const handleFirstPageButtonClick = (event) => {
+    onPageChange(event, 0);
+  };
+  const handleBackButtonClick = (event) => {
+    onPageChange(event, page - 1);
+  };
+  const handleNextButtonClick = (event) => {
+    onPageChange(event, page + 1);
+  };
+  const handleLastPageButtonClick = (event) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <Box sx={{ flexShrink: 0, ml: "24px" }}>
+      <Button
+        level="secondary"
+        label=""
+        img={<LeftArrowDouble />}
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      />
+      <Button
+        level="secondary"
+        label=""
+        img={<LeftArrow />}
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      />
+      <Button
+        level="secondary"
+        label=""
+        img={<RightArrow />}
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      />
+      <Button
+        level="secondary"
+        label=""
+        img={<RightArrowDouble />}
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      />
+    </Box>
+  );
+};
 
 /**
  * BasicTable Component
@@ -68,10 +140,10 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
  * <BasicTable data={data} rows={rows} paginated={true} />
  */
 
-const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
-  // Add headers to props validation
-
+const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
+  const theme = useTheme();
   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rows);
 
   useEffect(() => {
     setPage(0);
@@ -79,6 +151,11 @@ const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   let displayData = [];
@@ -94,35 +171,15 @@ const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
     return <div>No data</div>;
   }
 
-  let paginationComponent = <></>;
-  if (paginated === true && data.rows.length > rowsPerPage) {
-    paginationComponent = (
-      <Pagination
-        count={Math.ceil(data.rows.length / rowsPerPage)}
-        page={page + 1}
-        onChange={(event, value) => handleChangePage(event, value - 1)}
-        shape="rounded"
-        renderItem={(item) => (
-          <PaginationItem
-            slots={{
-              previous: ArrowBackRoundedIcon,
-              next: ArrowForwardRoundedIcon,
-            }}
-            {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
-            }}
-          />
-        )}
-      />
-    );
-  }
+  /**
+   * Helper function to calculate the range of displayed rows.
+   * @returns {string}
+   */
+  const getRange = () => {
+    let start = page * rowsPerPage + 1;
+    let end = Math.min(page * rowsPerPage + rowsPerPage, data.rows.length);
+    return `${start} - ${end}`;
+  };
 
   return (
     <>
@@ -154,8 +211,50 @@ const BasicTable = ({ data, paginated, reversed, rowsPerPage = 5 }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {paginationComponent}
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography sx={{ opacity: 0.7 }}>
+          Showing {getRange()} of {data.rows.length} monitor(s)
+        </Typography>
+        <TablePagination
+          component="div"
+          count={data.rows.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+          labelRowsPerPage="Rows per page"
+          labelDisplayedRows={({ page, count }) =>
+            `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
+          }
+          slotProps={{
+            select: {
+              MenuProps: {
+                keepMounted: true,
+                PaperProps: {
+                  className: "pagination-dropdown",
+                },
+                transformOrigin: { vertical: "bottom", horizontal: "left" },
+                anchorOrigin: { vertical: "top", horizontal: "left" },
+                sx: { mt: "-4px" },
+              },
+              inputProps: { id: "pagination-dropdown" },
+              IconComponent: SelectorVertical,
+              sx: {
+                ml: theme.gap.small,
+                mr: theme.gap.large,
+                minWidth: theme.gap.xl,
+                textAlign: "left",
+                "&.Mui-focused > div": {
+                  backgroundColor: theme.palette.otherColors.white,
+                },
+              },
+            },
+          }}
+          sx={{ mt: theme.gap.medium }}
+        />
+      </Stack>
     </>
   );
 };
