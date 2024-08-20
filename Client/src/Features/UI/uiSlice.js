@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Initial state for UI settings.
+// Add more settings as needed (e.g., theme preferences, user settings)
 const initialState = {
   table: {
     rowsPerPage: 5,

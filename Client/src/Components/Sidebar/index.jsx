@@ -202,6 +202,7 @@ function Sidebar() {
                   ],
                 },
               }}
+              disableInteractive
             >
               <ListItemButton
                 className={
@@ -235,6 +236,7 @@ function Sidebar() {
                     ],
                   },
                 }}
+                disableInteractive
               >
                 <ListItemButton
                   className={
@@ -398,6 +400,7 @@ function Sidebar() {
                 ],
               },
             }}
+            disableInteractive
           >
             <ListItemButton
               className={
@@ -452,6 +455,7 @@ function Sidebar() {
                   ],
                 },
               }}
+              disableInteractive
             >
               <IconButton
                 onClick={(event) => openPopup(event, "logout")}

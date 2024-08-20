@@ -186,3 +186,6 @@ body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
 .pagination-dropdown li.Mui-selected:hover {
   background-color: #f4f4f4;
 }
+body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
+  font-size: var(--env-var-font-size-small-plus);
+}
