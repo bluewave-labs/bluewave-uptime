@@ -212,7 +212,7 @@ const PageSpeedDetails = () => {
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
         logger.error(logger);
-        navigate("/not-found");
+        navigate("/not-found", { replace: true });
       }
     };
 

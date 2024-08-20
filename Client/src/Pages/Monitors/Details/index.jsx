@@ -134,7 +134,7 @@ const DetailsPage = () => {
       setMonitor(res.data.data);
     } catch (error) {
       logger.error(error);
-      navigate("/not-found");
+      navigate("/not-found", { replace: true });
     }
   }, [authToken, monitorId, navigate, dateRange]);
 
