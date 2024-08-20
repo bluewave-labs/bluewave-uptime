@@ -29,11 +29,11 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   });
 
   useEffect(() => {
-    setPaginationController({
-      ...paginationController,
+    setPaginationController((prevPaginationController) => ({
+      ...prevPaginationController,
       page: 0,
-    });
-  }, [dateRange, paginationController]);
+    }));
+  }, [dateRange]);
 
   useEffect(() => {
     const fetchPage = async () => {

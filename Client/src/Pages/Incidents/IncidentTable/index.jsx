@@ -32,11 +32,11 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   });
 
   useEffect(() => {
-    setPaginationController({
-      ...paginationController,
+    setPaginationController((prevPaginationController) => ({
+      ...prevPaginationController,
       page: 0,
-    });
-  }, [filter, selectedMonitor, paginationController]);
+    }));
+  }, [filter, selectedMonitor]);
 
   useEffect(() => {
     const fetchPage = async () => {
