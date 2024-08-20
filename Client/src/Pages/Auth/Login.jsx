@@ -14,7 +14,7 @@ import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PropTypes from "prop-types";
-
+import { logger } from "../../Utils/Logger";
 import "./index.css";
 
 /**
@@ -284,7 +284,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        logger.error(error);
       });
   }, [authToken, navigate]);
 

@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { logger } from "../Utils/Logger";
 import { networkService } from "../main";
 
 const withAdminCheck = (WrappedComponent) => {
@@ -15,7 +17,7 @@ const withAdminCheck = (WrappedComponent) => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          logger.error(error);
         });
     }, [navigate]);
     return <WrappedComponent {...props} isAdmin={true} />;

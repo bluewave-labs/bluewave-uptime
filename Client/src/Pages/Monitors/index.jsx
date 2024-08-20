@@ -28,6 +28,7 @@ import {
 
 import Settings from "../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
+import { logger } from "../../Utils/Logger";
 
 const ActionsMenu = ({ monitor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -36,7 +37,6 @@ const ActionsMenu = ({ monitor }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const authState = useSelector((state) => state.auth);
-
   const handleRemove = async (event) => {
     event.preventDefault();
     event.stopPropagation();

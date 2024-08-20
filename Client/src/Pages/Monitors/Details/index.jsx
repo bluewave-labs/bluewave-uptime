@@ -18,6 +18,7 @@ import {
 import "./index.css";
 import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { logger } from "../../../Utils/Logger";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -132,8 +133,7 @@ const DetailsPage = () => {
       );
       setMonitor(res.data.data);
     } catch (error) {
-      console.log(error);
-      console.error("Error fetching monitor of id: " + monitorId);
+      logger.error(error);
       navigate("/not-found");
     }
   }, [authToken, monitorId, navigate, dateRange]);
