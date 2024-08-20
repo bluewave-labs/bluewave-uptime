@@ -376,7 +376,7 @@ const Monitors = () => {
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
   return (
-    <Stack className="monitors" pt={theme.gap.xl} gap={theme.gap.large}>
+    <Stack className="monitors" gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -395,10 +395,11 @@ const Monitors = () => {
             {monitorState.monitors?.length !== 0 && (
               <Button
                 level="primary"
-                label="Create new monitor"
+                label="Create monitor"
                 onClick={() => {
                   navigate("/monitors/create");
                 }}
+                sx={{ fontWeight: 500 }}
               />
             )}
           </Stack>

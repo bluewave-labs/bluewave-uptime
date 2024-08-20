@@ -211,7 +211,7 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      {paginated && <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography sx={{ opacity: 0.7 }}>
           Showing {getRange()} of {data.rows.length} monitor(s)
         </Typography>
@@ -254,7 +254,7 @@ const BasicTable = ({ data, paginated, reversed, rows = 5 }) => {
           }}
           sx={{ mt: theme.gap.medium }}
         />
-      </Stack>
+      </Stack>}
     </>
   );
 };

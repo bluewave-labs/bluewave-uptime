@@ -322,13 +322,13 @@ const ProfilePanel = () => {
       <Divider aria-hidden="true" />
       <form className="delete-profile-form" noValidate spellCheck="false">
         <div className="delete-profile-form__wrapper">
-          <Stack direction="column" gap="15px">
+          <Stack direction="column" gap="8px">
             <Typography component="h1">Delete account</Typography>
             <Typography component="p">
               Note that deleting your account will remove all data from our
               system. This is permanent and non-recoverable.
             </Typography>
-            <Box sx={{ mt: theme.spacing(1) }}>
+            <Box sx={{ mt: theme.spacing(2) }}>
               <Button
                 level="error"
                 label="Delete account"
@@ -399,7 +399,7 @@ const ProfilePanel = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: 450,
             bgcolor: "white",
             border: "solid 1px #f2f2f2",
             borderRadius: `${theme.shape.borderRadius}px`,
