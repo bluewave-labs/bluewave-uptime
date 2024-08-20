@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ButtonGroup, Stack, Skeleton, Typography } from "@mui/material";
 import Button from "../../Components/Button";
-import axiosInstance from "../../Utils/axiosConfig";
+import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";
@@ -48,13 +48,14 @@ const Incidents = () => {
   useEffect(() => {
     const fetchMonitors = async () => {
       setLoading(true);
-      const res = await axiosInstance.get(
-        `/monitors/user/${authState.user._id}?status=false&limit=1`,
-        {
-          headers: {
-            Authorization: `Bearer ${authState.authToken}`,
-          },
-        }
+      const res = await networkService.getMonitorsByUserId(
+        authState.authToken,
+        authState.user._id,
+        1,
+        null,
+        null,
+        null,
+        null
       );
 
       // Reduce to a lookup object for 0(1) lookup
