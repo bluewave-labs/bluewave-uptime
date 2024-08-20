@@ -15,11 +15,6 @@
 .account h1.MuiTypography-root {
   font-weight: 600;
 }
-.account .MuiStack-root:not(.table-stack) {
-  flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-}
 .account .MuiTabPanel-root {
   padding: 0;
   margin-top: 50px;
@@ -34,6 +29,9 @@
 .account button:not(.MuiIconButton-root) {
   height: 34px;
 }
+.account .field {
+  flex: 1;
+}
 .account [class$="-form"] {
   width: inherit;
 }
@@ -44,22 +42,16 @@
   justify-content: space-between;
   align-items: flex-start;
 }
-.edit-profile-form__wrapper > .MuiStack-root:not(.row-stack),
 .edit-password-form__wrapper > .MuiStack-root:not(.row-stack) {
   flex-direction: column;
   gap: 8px;
   margin-right: 10px;
-}
-.edit-profile-form__wrapper p.MuiTypography-root,
-.delete-profile-form__wrapper p.MuiTypography-root {
-  opacity: 0.6;
 }
 #modal-delete-account,
 #modal-edit-org-name,
 #modal-invite-member {
   font-size: var(--env-var-font-size-large);
 }
-.edit-profile-form__wrapper:not(:first-of-type),
 .edit-password-form__wrapper:not(:first-of-type),
 .edit-team-form__wrapper:not(:first-of-type) {
   margin-top: var(--env-var-spacing-4);
@@ -68,15 +60,6 @@
   margin-top: var(--env-var-spacing-3);
   justify-content: flex-start;
   align-items: center;
-}
-
-/* for testing, will remove later */
-@media only screen and (max-width: 1600px) {
-  .edit-profile-form__wrapper .MuiStack-root:not(.row-stack),
-  .edit-password-form__wrapper .MuiStack-root:not(.row-stack),
-  .edit-organization-form__wrapper .MuiStack-root:not(.row-stack) {
-    margin-right: 30px;
-  }
 }
 
 .account .MuiStack-root:has(span.MuiTypography-root.input-error) {
