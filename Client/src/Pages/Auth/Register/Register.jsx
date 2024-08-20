@@ -69,6 +69,11 @@ const LandingPage = ({ isAdmin, onSignup }) => {
   );
 };
 
+LandingPage.propTypes = {
+  isAdmin: PropTypes.bool,
+  onSignup: PropTypes.func,
+};
+
 /**
  * Renders the first step of the sign up process.
  *
@@ -152,6 +157,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepOne.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
+};
+
 /**
  * Renders the second step of the sign up process.
  *
@@ -222,6 +235,14 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
       </Stack>
     </>
   );
+};
+
+StepTwo.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
 };
 
 /**
@@ -369,6 +390,14 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepThree.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
+};
+
 const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -407,7 +436,7 @@ const Register = ({ isAdmin }) => {
       }
     };
     fetchInvite();
-  }, [token]);
+  }, [token, form]);
 
   /**
    * Validates the form data against the validation schema.
