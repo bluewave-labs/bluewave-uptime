@@ -302,7 +302,6 @@ const ProfilePanel = () => {
         </Stack>
         <Divider
           aria-hidden="true"
-          className="short-divider"
           width="0"
           sx={{ marginY: theme.spacing(1) }}
         />
@@ -324,7 +323,7 @@ const ProfilePanel = () => {
           </Box>
         </Stack>
       </Stack>
-      <Divider aria-hidden="true" />
+      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(6) }} />
       <Stack
         component="form"
         noValidate

@@ -19,9 +19,7 @@
   padding: 0;
   margin-top: 50px;
 }
-.account .MuiDivider-root:not(.short-divider) {
-  margin: 50px 0;
-}
+
 .account .MuiDivider-root,
 .account .MuiButtonGroup-root button {
   border-color: var(--env-var-color-16);

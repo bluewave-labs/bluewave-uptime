@@ -131,9 +131,6 @@ const TeamPanel = () => {
   };
   const handleRename = () => {};
 
-  //TODO - implement save team function
-  const handleSaveTeam = () => {};
-
   // INVITE MEMBER
   const [isOpen, setIsOpen] = useState(false);
 
@@ -200,12 +197,11 @@ const TeamPanel = () => {
 
   return (
     <TabPanel value="team">
-      <form className="edit-organization-form">
+      <Stack component="form">
         <Box sx={{ alignSelf: "flex-start" }}>
           <Typography component="h1">Organization name</Typography>
         </Box>
         <Stack
-          className="row-stack"
           direction="row"
           justifyContent="flex-end"
           alignItems="center"
@@ -245,21 +241,13 @@ const TeamPanel = () => {
             }}
           />
         </Stack>
-      </form>
-      <Divider
-        aria-hidden="true"
-        className="short-divider"
-        sx={{ marginY: theme.spacing(4) }}
-      />
-      <form
-        className="edit-team-form"
+      </Stack>
+      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(4) }} />
+      <Stack
+        component="form"
         noValidate
         spellCheck="false"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: theme.gap.large,
-        }}
+        gap={theme.gap.large}
       >
         <Typography component="h1">Team members</Typography>
         <Stack direction="row" justifyContent="space-between">
@@ -307,22 +295,7 @@ const TeamPanel = () => {
           />
         </Stack>
         <BasicTable data={tableData} paginated={false} reversed={true} />
-        <Stack direction="row" justifyContent="flex-end">
-          <Box width="fit-content">
-            <ButtonSpinner
-              level="primary"
-              label="Save"
-              onClick={handleSaveTeam}
-              isLoading={false}
-              loadingText="Saving..."
-              disabled={true}
-              sx={{
-                paddingX: "40px",
-              }}
-            />
-          </Box>
-        </Stack>
-      </form>
+      </Stack>
       <Modal
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"
