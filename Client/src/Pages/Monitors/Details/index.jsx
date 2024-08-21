@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
 import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
@@ -17,7 +16,8 @@ import {
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import "./index.css";
-import MonitorDetails60MinChart from "../../../Components/Charts/MonitorDetails60MinChart";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { logger } from "../../../Utils/Logger";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -121,18 +121,19 @@ const DetailsPage = () => {
 
   const fetchMonitor = useCallback(async () => {
     try {
-      const res = await axiosInstance.get(
-        `/monitors/stats/${monitorId}?dateRange=${dateRange}&numToDisplay=50&normalize=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
+      const res = await networkService.getStatsByMonitorId(
+        authToken,
+        monitorId,
+        null,
+        null,
+        dateRange,
+        50,
+        true
       );
-      setMonitor(res.data.data);
+      setMonitor(res?.data?.data ?? {});
     } catch (error) {
-      console.error("Error fetching monitor of id: " + monitorId);
-      navigate("/not-found");
+      logger.error(error);
+      navigate("/not-found", { replace: true });
     }
   }, [authToken, monitorId, navigate, dateRange]);
 
@@ -142,15 +143,15 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
-      const res = await axiosInstance.get(
-        `/monitors/certificate/${monitorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      setCertificateExpiry(res.data.data.certificateDate);
+      try {
+        const res = await networkService.getCertificateExpiry(
+          authToken,
+          monitorId
+        );
+        setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchCertificate();
   }, [authToken, monitorId]);
@@ -163,39 +164,19 @@ const DetailsPage = () => {
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate("/monitors")}
-            sx={{
-              backgroundColor: theme.palette.otherColors.fillGray,
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "monitors", path: "/monitors" },
+              { name: "details", path: `/monitors/${monitorId}` },
+            ]}
           />
-          <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-            <Stack
-              direction="row"
-              gap={theme.gap.small}
-              mt={theme.gap.small}
-              alignItems="baseline"
-            >
+          <Stack gap={theme.gap.large} mt={theme.gap.large}>
+            <Stack direction="row" gap={theme.gap.small}>
               {monitor?.status ? <GreenCheck /> : <RedCheck />}
               <Box>
-                <Stack direction="row">
-                  <Typography
-                    component="h1"
-                    sx={{ lineHeight: 1, alignSelf: "flex-end" }}
-                  >
-                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
-                  </Typography>
-                  <MonitorDetails60MinChart data={monitor.statusBar} />
-                </Stack>
+                <Typography component="h1" sx={{ lineHeight: 1 }}>
+                  {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                </Typography>
                 <Typography mt={theme.gap.small}>
                   <Typography
                     component="span"

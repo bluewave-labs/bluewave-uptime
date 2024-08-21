@@ -8,10 +8,8 @@ import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 import { persistor, store } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
-import { injectStore } from "./Utils/axiosConfig.js";
-
-injectStore(store);
-
+import NetworkService from "./Utils/NetworkService.js";
+export const networkService = new NetworkService(store);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>

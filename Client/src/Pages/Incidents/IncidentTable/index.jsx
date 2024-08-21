@@ -18,8 +18,9 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
+import { logger } from "../../../Utils/Logger";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   const { authToken, user } = useSelector((state) => state.auth);
@@ -31,10 +32,10 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   });
 
   useEffect(() => {
-    setPaginationController({
-      ...paginationController,
+    setPaginationController((prevPaginationController) => ({
+      ...prevPaginationController,
       page: 0,
-    });
+    }));
   }, [filter, selectedMonitor]);
 
   useEffect(() => {
@@ -43,21 +44,34 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         return;
       }
       try {
-        let url = `/checks/${selectedMonitor}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
-
+        let res;
         if (selectedMonitor === "0") {
-          url = `/checks/user/${user._id}?sortOrder=desc&filter=${filter}&page=${paginationController.page}&rowsPerPage=${paginationController.rowsPerPage}`;
+          res = await networkService.getChecksByUser(
+            authToken,
+            user._id,
+            "desc",
+            null,
+            null,
+            filter,
+            paginationController.page,
+            paginationController.rowsPerPage
+          );
+        } else {
+          res = await networkService.getChecksByMonitor(
+            authToken,
+            selectedMonitor,
+            "desc",
+            null,
+            null,
+            filter,
+            paginationController.page,
+            paginationController.rowsPerPage
+          );
         }
-
-        const res = await axiosInstance.get(url, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {
-        console.log(error);
+        logger.error(error);
       }
     };
     fetchPage();
@@ -72,7 +86,6 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   ]);
 
   const handlePageChange = (_, newPage) => {
-    console.log(newPage);
     setPaginationController({
       ...paginationController,
       page: newPage - 1, // 0-indexed

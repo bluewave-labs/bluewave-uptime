@@ -15,8 +15,9 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import "../index.css";
+import { logger } from "../../../Utils/Logger";
 
 /**
  * Displays the initial landing page.
@@ -66,6 +67,11 @@ const LandingPage = ({ isAdmin, onSignup }) => {
       </Stack>
     </>
   );
+};
+
+LandingPage.propTypes = {
+  isAdmin: PropTypes.bool,
+  onSignup: PropTypes.func,
 };
 
 /**
@@ -151,6 +157,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepOne.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
+};
+
 /**
  * Renders the second step of the sign up process.
  *
@@ -221,6 +235,14 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
       </Stack>
     </>
   );
+};
+
+StepTwo.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
 };
 
 /**
@@ -368,6 +390,14 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepThree.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
+};
+
 const Register = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -397,19 +427,16 @@ const Register = ({ isAdmin }) => {
     const fetchInvite = async () => {
       if (token !== undefined) {
         try {
-          const res = await axiosInstance.post(`/auth/invite/verify`, {
-            token,
-          });
+          const res = await networkService.verifyInvitationToken(token);
           const { role, email } = res.data.data;
-          console.log(role);
           setForm({ ...form, email, role });
         } catch (error) {
-          console.log(error);
+          logger.error(error);
         }
       }
     };
     fetchInvite();
-  }, [token]);
+  }, [token, form]);
 
   /**
    * Validates the form data against the validation schema.

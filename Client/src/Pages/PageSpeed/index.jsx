@@ -11,6 +11,7 @@ import "./index.css";
 import Button from "../../Components/Button";
 import { useNavigate } from "react-router";
 import { getLastChecked } from "../../Utils/monitorUtils";
+import PropTypes from "prop-types";
 
 const Card = ({ data }) => {
   const theme = useTheme();
@@ -55,6 +56,10 @@ const Card = ({ data }) => {
       </Stack>
     </Grid>
   );
+};
+
+Card.propTypes = {
+  data: PropTypes.object.isRequired,
 };
 
 /**
@@ -129,7 +134,7 @@ const PageSpeed = () => {
   );
   useEffect(() => {
     dispatch(getPageSpeedByUserId(authToken));
-  }, []);
+  }, [authToken, dispatch]);
 
   // will show skeletons only on initial load
   // since monitor state is being added to redux persist, there's no reason to display skeletons on every render

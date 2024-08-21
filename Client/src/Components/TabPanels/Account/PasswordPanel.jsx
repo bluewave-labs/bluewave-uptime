@@ -98,16 +98,17 @@ const PasswordPanel = () => {
 
   return (
     <TabPanel value="password">
-      <form
+      <Stack
+        component="form"
         onSubmit={handleSubmit}
-        className="edit-password-form"
         noValidate
         spellCheck="false"
+        gap={theme.gap.xl}
       >
-        <div className="edit-password-form__wrapper">
-          <Stack>
+        <Stack direction="row">
+          <Box flex={0.9}>
             <Typography component="h1">Current password</Typography>
-          </Stack>
+          </Box>
           <Field
             type="password"
             id="edit-current-password"
@@ -117,11 +118,11 @@ const PasswordPanel = () => {
             onChange={handleChange}
             error={errors[idToName["edit-current-password"]]}
           />
-        </div>
-        <div className="edit-password-form__wrapper">
-          <Stack>
+        </Stack>
+        <Stack direction="row">
+          <Box flex={0.9}>
             <Typography component="h1">New password</Typography>
-          </Stack>
+          </Box>
           <Field
             type="password"
             id="edit-new-password"
@@ -131,11 +132,11 @@ const PasswordPanel = () => {
             onChange={handleChange}
             error={errors[idToName["edit-new-password"]]}
           />
-        </div>
-        <div className="edit-password-form__wrapper">
-          <Stack>
+        </Stack>
+        <Stack direction="row">
+          <Box flex={0.9}>
             <Typography component="h1">Confirm new password</Typography>
-          </Stack>
+          </Box>
           <Field
             type="password"
             id="edit-confirm-password"
@@ -145,33 +146,32 @@ const PasswordPanel = () => {
             onChange={handleChange}
             error={errors[idToName["edit-confirm-password"]]}
           />
-        </div>
-        <div className="edit-password-form__wrapper">
-          <Stack></Stack>
+        </Stack>
+        <Stack direction="row">
+          <Box flex={0.9}></Box>
           <Box sx={{ flex: 1 }}>
             <Alert
               variant="warning"
               body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
             />
           </Box>
-        </div>
-        <Divider aria-hidden="true" width="0" />
-        <Stack direction="row" justifyContent="flex-end">
-          <Box width="fit-content">
-            <ButtonSpinner
-              level="primary"
-              label="Save"
-              onClick={handleSubmit}
-              isLoading={isLoading}
-              loadingText="Saving..."
-              disabled={Object.keys(errors).length !== 0 && true}
-              sx={{
-                paddingX: theme.gap.xl,
-              }}
-            />
-          </Box>
         </Stack>
-      </form>
+        <Stack direction="row" justifyContent="flex-end">
+          <ButtonSpinner
+            level="primary"
+            label="Save"
+            onClick={handleSubmit}
+            isLoading={isLoading}
+            loadingText="Saving..."
+            disabled={Object.keys(errors).length !== 0 && true}
+            sx={{
+              paddingX: theme.gap.large,
+              width: "fit-content",
+              mt: theme.gap.xl,
+            }}
+          />
+        </Stack>
+      </Stack>
     </TabPanel>
   );
 };

@@ -172,6 +172,9 @@ const getMonitorStatsById = async (req) => {
 
     // Get monitor
     const monitor = await Monitor.findById(monitorId);
+    if (monitor === null || monitor === undefined) {
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+    }
 
     // Determine if this is a pagespeed monitor or an http/ping monitor
     let model =
@@ -260,10 +263,9 @@ const getMonitorStatsById = async (req) => {
     monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
     monitorStats.incidents = incidents;
     monitorStats.checks = dateRangeChecks;
-
     return monitorStats;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 
@@ -294,7 +296,7 @@ const getMonitorById = async (monitorId) => {
  */
 const getMonitorsByUserId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize } = req.query;
+    let { limit, type, status, sortOrder, normalize } = req.query || {};
     const monitorQuery = { userId: req.params.userId };
 
     if (type !== undefined) {

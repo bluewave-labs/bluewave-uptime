@@ -22,9 +22,10 @@
 
 .server-status-tile-title {
   font-size: var(--font-size-0);
-  font-weight: bold;
+  font-weight: 500;
   margin-bottom: calc(var(--spacing-general-1) / 2);
-  color: var(--env-var-color-1);
+  color: var(--env-var-color-5);
+  opacity: 0.6;
 }
 
 .server-status-tile-value {

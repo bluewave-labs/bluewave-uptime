@@ -10,7 +10,7 @@
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
-![1](https://github.com/user-attachments/assets/207c74a0-a494-42c5-ab8d-3d7c1e7ead8a)
+![Dashboard](https://github.com/user-attachments/assets/0f92d7a3-19cf-430c-8b0f-fe13ff46c51b)
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
@@ -22,6 +22,7 @@ BlueWave Uptime is an open source server monitoring application used to track th
 - [x] Ping monitoring
 - [x] Incidents at a glance
 - [x] Page speed monitoring
+- [x] E-mail notifications
 - [ ] Scheduled maintenance (in the works)
 
 **Roadmap (short term):**
@@ -58,6 +59,15 @@ We love contributors. Here's how you can contribute:
 Made with [contrib.rocks](https://contrib.rocks).
 
 ![Alt](https://repobeats.axiom.co/api/embed/c35d999c82dbb31e967427ea4166c14da4172e73.svg "Repobeats analytics image")
+
+[![Star History Chart](https://api.star-history.com/svg?repos=bluewave-labs/bluewave-uptime&type=Date)](https://star-history.com/#bluewave-labs/bluewave-uptime&Date)
+
+Also check other developer and contributor-friendly projects of BlueWave:
+
+- [BlueWave HRM](https://github.com/bluewave-labs/bluewave-hrm)
+- [BlueWave Onboarding](https://github.com/bluewave-labs/bluewave-onboarding)
+- [BlueWave DataRoom](https://github.com/bluewave-labs/bluewave-dataroom)
+- [BlueWave ChatFabrica](https://github.com/bluewave-labs/bluewave-chatfabrica)
 
 ## Getting Started
 
@@ -180,6 +190,7 @@ SYSTEM_EMAIL_PASSWORD=<system_email_password>
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
+VITE_APP_API_LOG_LEVEL="debug"
 ```
 
 4.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
@@ -200,9 +211,10 @@ That's it, the application is ready to use on port 80.
 
 ##### Environmental Variables <a id="env-vars-client"></a>
 
-| ENV Variable Name     | Required/Optional | Type     | Description        | Accepted Values |
-| --------------------- | ----------------- | -------- | ------------------ | --------------- |
-| VITE_APP_API_BASE_URL | Required          | `string` | Base URL of server | {host}/api/v1   |
+| ENV Variable Name     | Required/Optional | Type     | Description        | Accepted Values                    |
+| --------------------- | ----------------- | -------- | ------------------ | ---------------------------------- |
+| VITE_APP_API_BASE_URL | Required          | `string` | Base URL of server | {host}/api/v1                      |
+| VITE_APP_LOG_LEVEL    | Optional          | `string` | Log level          | `"none"`\|`"error"` \| `"warn"` \| |
 
 <br/>
 

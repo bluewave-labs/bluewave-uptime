@@ -1,0 +1,31 @@
+.MuiBreadcrumbs-root {
+  height: 36px;
+}
+.MuiBreadcrumbs-root svg {
+  width: 16px;
+  height: 16px;
+}
+.MuiBreadcrumbs-root .MuiBreadcrumbs-li a {
+  font-size: var(--env-var-font-size-medium);
+  color: var(--env-var-color-2);
+  opacity: 0.8;
+  font-weight: 400;
+}
+.MuiBreadcrumbs-root .MuiBreadcrumbs-li:hover a {
+  color: var(--env-var-color-2);
+}
+.MuiBreadcrumbs-root .MuiBreadcrumbs-li:not(:last-child):hover a {
+  opacity: 1;
+  background-color: #e3e3e3;
+}
+.MuiBreadcrumbs-root .MuiBreadcrumbs-li:not(:last-child) {
+  cursor: pointer;
+}
+.MuiBreadcrumbs-root .MuiBreadcrumbs-li:last-child a {
+  font-weight: 500;
+  opacity: 1;
+  cursor: default;
+}
+.MuiBreadcrumbs-root .MuiBreadcrumbs-separator {
+  margin: 0;
+}

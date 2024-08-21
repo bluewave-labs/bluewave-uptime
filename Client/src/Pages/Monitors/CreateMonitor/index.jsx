@@ -1,5 +1,5 @@
 import "./index.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import RadioButton from "../../../Components/RadioButton";
 import Button from "../../../Components/Button";
 import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
@@ -8,11 +8,12 @@ import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import { createToast } from "../../../Utils/toastUtils";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { logger } from "../../../Utils/Logger";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -143,33 +144,26 @@ const CreateMonitor = () => {
 
   return (
     <Box className="create-monitor">
-      <Button
-        level="tertiary"
-        label="Back"
-        animate="slideLeft"
-        img={<WestRoundedIcon />}
-        onClick={() => navigate("/monitors")}
-        sx={{
-          backgroundColor: theme.palette.otherColors.fillGray,
-          mb: theme.gap.medium,
-          px: theme.gap.ml,
-          "& svg.MuiSvgIcon-root": {
-            mr: theme.gap.small,
-            fill: theme.palette.otherColors.slateGray,
-          },
-        }}
+      <Breadcrumbs
+        list={[
+          { name: "monitors", path: "/monitors" },
+          { name: "create", path: `/monitors/create` },
+        ]}
       />
-      <form
+      <Stack
+        component="form"
         className="create-monitor-form"
         onSubmit={handleCreateMonitor}
         noValidate
         spellCheck="false"
+        gap={theme.gap.large}
+        mt={theme.gap.mlplus}
       >
         <Typography component="h1">Create new monitor</Typography>
         <Stack className="config-box">
           <Box>
             <Typography component="h2">General settings</Typography>
-            <Typography component="p" mt={theme.gap.small}>
+            <Typography component="p" mt={theme.gap.xs}>
               Here you can select the URL of the host, together with the type of
               monitor.
             </Typography>
@@ -200,7 +194,7 @@ const CreateMonitor = () => {
         <Stack className="config-box">
           <Box>
             <Typography component="h2">Checks to perform</Typography>
-            <Typography component="p" mt={theme.gap.small}>
+            <Typography component="p" mt={theme.gap.xs}>
               You can always add or remove checks after adding your site.
             </Typography>
           </Box>
@@ -249,34 +243,32 @@ const CreateMonitor = () => {
               checked={monitor.type === "ping"}
               onChange={(event) => handleChange(event)}
             />
-            <Box className="error-container">
-              {errors["type"] ? (
+            {errors["type"] ? (
+              <Box className="error-container">
                 <Typography component="p" className="input-error">
                   {errors["type"]}
                 </Typography>
-              ) : (
-                ""
-              )}
-            </Box>
+              </Box>
+            ) : (
+              ""
+            )}
           </Stack>
         </Stack>
         <Stack className="config-box">
           <Box>
             <Typography component="h2">Incident notifications</Typography>
-            <Typography component="p" mt={theme.gap.small}>
+            <Typography component="p" mt={theme.gap.xs}>
               When there is an incident, notify users.
             </Typography>
           </Box>
           <Stack gap={theme.gap.medium}>
-            <Typography component="p" mt={theme.gap.small}>
-              When there is a new incident,
-            </Typography>
+            <Typography component="p">When there is a new incident,</Typography>
             <Checkbox
               id="notify-sms"
               label="Notify via SMS (coming soon)"
               isChecked={false}
               value=""
-              onChange={() => console.log("disabled")}
+              onChange={() => logger.warn("disabled")}
               isDisabled={true}
             />
             <Checkbox
@@ -293,7 +285,7 @@ const CreateMonitor = () => {
               label="Also notify via email to multiple addresses (coming soon)"
               isChecked={false}
               value=""
-              onChange={() => console.log("disabled")}
+              onChange={() => logger.warn("disabled")}
               isDisabled={true}
             />
             {monitor.notifications.some(
@@ -305,7 +297,7 @@ const CreateMonitor = () => {
                   type="text"
                   placeholder="name@gmail.com"
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                 />
                 <Typography mt={theme.gap.small}>
                   You can separate multiple emails with a comma
@@ -404,7 +396,7 @@ const CreateMonitor = () => {
             disabled={Object.keys(errors).length !== 0 && true}
           />
         </Stack>
-      </form>
+      </Stack>
     </Box>
   );
 };
