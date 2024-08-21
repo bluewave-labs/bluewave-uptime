@@ -90,7 +90,7 @@ const registerController = async (req, res, next) => {
 
     const token = issueToken(userForToken);
 
-    req.emailService.buildAndSendEmail(
+    await req.emailService.buildAndSendEmail(
       "welcomeEmailTemplate",
       { name: newUser.firstName },
       newUser.email,
@@ -240,7 +240,7 @@ const inviteController = async (req, res, next) => {
     }
 
     const inviteToken = await req.db.requestInviteToken(req, res);
-    req.emailService.buildAndSendEmail(
+    await req.emailService.buildAndSendEmail(
       "employeeActivationTemplate",
       {
         name: firstname,

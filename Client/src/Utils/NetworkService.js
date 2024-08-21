@@ -231,6 +231,12 @@ class NetworkService {
     });
   }
 
+  async deleteUser(authToken, userId) {
+    return this.axiosInstance.delete(`/auth/user/${userId}`, {
+      headers: { Authorization: `Bearer ${authToken}` },
+    });
+  }
+
   /**
    * ************************************
    * Forgot password request
