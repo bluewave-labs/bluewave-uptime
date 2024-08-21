@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
+import ImportExportIcon from '@mui/icons-material/ImportExport';
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import Settings from "../../assets/icons/settings-bold.svg?react";
@@ -152,17 +154,52 @@ const Monitors = () => {
 
   const down = monitorState.monitors.length - up;
 
+  const [sortOrder, setSortOrder] = useState(-1);
+  const [sortedMonitors, setSortedMonitors] = useState(monitorState.monitors);
+  const [isSorted, setIsSorted] = useState(false);
+
+  useEffect(() => {
+    const savedSortOrder = localStorage.getItem('monitorSortOrder');
+    const parsedSortOrder = parseInt(savedSortOrder, 10) || 1;
+  
+    if (savedSortOrder) {
+      setSortOrder(parsedSortOrder);
+      const monitors = [...monitorState.monitors].sort(a => {
+        return a.status ? -1 * parsedSortOrder : 1 * parsedSortOrder;
+      });
+      setSortedMonitors(monitors);
+      setIsSorted(true);
+    } else {
+      setSortedMonitors(monitorState.monitors);
+    }
+  }, [monitorState.monitors]);
+  
+  
+  const handleSort = () => {
+    const newSortOrder = sortOrder * -1;
+    setSortOrder(newSortOrder);
+  
+    const monitors = [...monitorState.monitors].sort(a => {
+      return a.status ? -1 * newSortOrder : 1 * newSortOrder;
+    });
+  
+    setSortedMonitors(monitors);
+    setIsSorted(true);
+  
+    localStorage.setItem('monitorSortOrder', newSortOrder);
+    localStorage.setItem('monitorIsSorted', true);
+  };
+  
+
   const data = {
     cols: [
       { id: 1, name: "Host" },
       {
         id: 2,
         name: (
-          <Box width="max-content">
+          <Box width="max-content" onClick={handleSort} style={{ cursor: "pointer" }}>
             Status
-            <span>
-              <ArrowDownwardRoundedIcon />
-            </span>
+            {isSorted ? <span>{sortOrder === 1 ? <ArrowUpwardRoundedIcon /> : <ArrowDownwardRoundedIcon />}</span> : <span><ImportExportIcon /></span>}
           </Box>
         ),
       },
@@ -173,7 +210,7 @@ const Monitors = () => {
     rows: [],
   };
 
-  data.rows = monitorState.monitors.map((monitor, idx) => {
+  data.rows = sortedMonitors.map((monitor, idx) => {
     const params = {
       url: monitor.url,
       title: monitor.name,
