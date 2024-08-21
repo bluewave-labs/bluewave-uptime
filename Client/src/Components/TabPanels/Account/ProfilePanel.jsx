@@ -217,11 +217,17 @@ const ProfilePanel = () => {
 
   return (
     <TabPanel value="profile">
-      <form className="edit-profile-form" noValidate spellCheck="false">
-        <div className="edit-profile-form__wrapper">
-          <Stack>
+      <Stack
+        component="form"
+        className="edit-profile-form"
+        noValidate
+        spellCheck="false"
+        gap={theme.gap.xl}
+      >
+        <Stack direction="row">
+          <Box flex={0.9}>
             <Typography component="h1">First name</Typography>
-          </Stack>
+          </Box>
           <Field
             id="edit-first-name"
             value={localData.firstName}
@@ -230,11 +236,11 @@ const ProfilePanel = () => {
             onChange={handleChange}
             error={errors[idToName["edit-first-name"]]}
           />
-        </div>
-        <div className="edit-profile-form__wrapper">
-          <Stack>
+        </Stack>
+        <Stack direction="row">
+          <Box flex={0.9}>
             <Typography component="h1">Last name</Typography>
-          </Stack>
+          </Box>
           <Field
             id="edit-last-name"
             placeholder="Enter your last name"
@@ -243,11 +249,11 @@ const ProfilePanel = () => {
             onChange={handleChange}
             error={errors[idToName["edit-last-name"]]}
           />
-        </div>
-        <div className="edit-profile-form__wrapper">
-          <Stack>
+        </Stack>
+        <Stack direction="row">
+          <Stack flex={0.9}>
             <Typography component="h1">Email</Typography>
-            <Typography component="p">
+            <Typography component="p" sx={{ opacity: 0.6 }}>
               This is your current email address — it cannot be changed.
             </Typography>
           </Stack>
@@ -256,20 +262,19 @@ const ProfilePanel = () => {
             value={user.email}
             placeholder="Enter your email"
             autoComplete="email"
-            // TODO - add onChange
             onChange={() => logger.warn("disabled")}
             // error={errors[idToName["edit-email"]]}
             disabled={true}
           />
-        </div>
-        <div className="edit-profile-form__wrapper">
-          <Stack>
+        </Stack>
+        <Stack direction="row">
+          <Stack flex={0.9}>
             <Typography component="h1">Your photo</Typography>
-            <Typography component="p">
+            <Typography component="p" sx={{ opacity: 0.6 }}>
               This photo will be displayed in your profile page.
             </Typography>
           </Stack>
-          <Stack className="row-stack" direction="row" alignItems="center">
+          <Stack direction="row" alignItems="center" flex={1}>
             <Avatar
               src={
                 localData?.deleteProfileImage
@@ -294,10 +299,9 @@ const ProfilePanel = () => {
               }}
             />
           </Stack>
-        </div>
+        </Stack>
         <Divider
           aria-hidden="true"
-          className="short-divider"
           width="0"
           sx={{ marginY: theme.spacing(1) }}
         />
@@ -313,31 +317,33 @@ const ProfilePanel = () => {
                 Object.keys(errors).length !== 0 && !errors?.picture && true
               }
               sx={{
-                paddingX: "40px",
+                paddingX: theme.gap.large,
               }}
             />
           </Box>
         </Stack>
-      </form>
-      <Divider aria-hidden="true" />
-      <form className="delete-profile-form" noValidate spellCheck="false">
-        <div className="delete-profile-form__wrapper">
-          <Stack direction="column" gap="8px">
-            <Typography component="h1">Delete account</Typography>
-            <Typography component="p">
-              Note that deleting your account will remove all data from our
-              system. This is permanent and non-recoverable.
-            </Typography>
-            <Box sx={{ mt: theme.spacing(2) }}>
-              <Button
-                level="error"
-                label="Delete account"
-                onClick={() => setIsOpen("delete")}
-              />
-            </Box>
-          </Stack>
-        </div>
-      </form>
+      </Stack>
+      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(6) }} />
+      <Stack
+        component="form"
+        noValidate
+        spellCheck="false"
+        gap={theme.gap.small}
+      >
+        <Box>
+          <Typography component="h1">Delete account</Typography>
+          <Typography component="p" sx={{ opacity: 0.6 }}>
+            Note that deleting your account will remove all data from our
+            system. This is permanent and non-recoverable.
+          </Typography>
+        </Box>
+        <Button
+          level="error"
+          label="Delete account"
+          onClick={() => setIsOpen("delete")}
+          sx={{ width: "fit-content", mt: theme.gap.small }}
+        />
+      </Stack>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}
       <Modal
         aria-labelledby="modal-delete-account"
