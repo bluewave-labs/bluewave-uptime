@@ -119,6 +119,7 @@ const maintenanceWindowValidation = joi.object({
     "any.required": "Start time is required.",
   }),
   duration: joi.number().required().messages({
+    "number.empty": "duration is required.",
     "number.base": "Duration must be a number.",
     "any.required": "Duration is required.",
   }),
@@ -127,13 +128,13 @@ const maintenanceWindowValidation = joi.object({
     "any.only": "Unit must be one of ['minutes', 'hours', 'days'].",
     "any.required": "Unit is required.",
   }),
-  friendlyName: joi.string().required().max(100).messages({
-    "string.max": "Friendly name must be less than 100 characters.",
-    "any.required": "Friendly name is required.",
+  friendlyName: joi.string().max(50).required().messages({
+    "string.empty": "Friendly name is required.",
+    "string.max": "Friendly name must be less than 50 characters long",
   }),
-  addMonitors: joi.string().required().messages({
-    "string.base": "Add monitors must be a string.",
-    "any.required": "Add monitors is required.",
+  addMonitors: joi.string().max(50).required().messages({
+    "string.empty": "Add monitors is required.",
+    "string.max": "Add monitors must be less than 50 characters long",
   }),
 });
 

@@ -163,6 +163,7 @@ const CreateNewMaintenanceWindow = () => {
             placeholder="60"
             onChange={(e) => handleChange(e, "duration")}
             value={values.duration}
+            error={errors.duration}
           />
           <Select
             onChange={(e) => handleChange(e, "unit")}
@@ -181,6 +182,7 @@ const CreateNewMaintenanceWindow = () => {
           placeholder="Maintanence at __ : __ for ___ minutes"
           value={values.friendlyName}
           onChange={(e) => handleChange(e, "friendlyName")}
+          error={errors.friendlyName}
         />
       ),
     },
@@ -197,6 +199,7 @@ const CreateNewMaintenanceWindow = () => {
             placeholder="Start typing to search for current monitors"
             value={values.AddMonitors}
             onChange={(e) => handleChange(e, "AddMonitors")}
+            error={errors.addMonitors}
           />
           <Typography
             sx={{
