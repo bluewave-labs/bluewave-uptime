@@ -28,7 +28,6 @@ import {
 
 import Settings from "../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
-import { logger } from "../../Utils/Logger";
 
 const ActionsMenu = ({ monitor }) => {
   const [anchorEl, setAnchorEl] = useState(null);

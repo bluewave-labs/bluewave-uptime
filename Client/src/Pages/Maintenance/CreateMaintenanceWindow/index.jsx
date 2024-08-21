@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import "./index.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "../../../Components/Button";
 import Back from "../../../assets/icons/left-arrow-long.svg?react";
 import Select from "../../../Components/Inputs/Select";

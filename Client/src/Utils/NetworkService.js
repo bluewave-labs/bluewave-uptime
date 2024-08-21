@@ -1,7 +1,6 @@
 import axios from "axios";
-import { clearAuthState } from "../Features/Auth/authSlice";
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
-
+import { logger } from "./Logger";
 class NetworkService {
   constructor(store) {
     this.store = store;
@@ -9,10 +8,9 @@ class NetworkService {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        console.error(error);
+        logger.error(error);
         if (error.response && error.response.status === 401) {
-          console.log("Invalid token revoked");
-          networkService;
+          logger.error("Invalid token received");
         }
         return Promise.reject(error);
       }
