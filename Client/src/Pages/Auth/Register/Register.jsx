@@ -60,8 +60,26 @@ const LandingPage = ({ isAdmin, onSignup }) => {
         <Box maxWidth={400}>
           <Typography className="tos-p">
             By signing up, you agree to our{" "}
-            <Typography component="span">Terms of Service</Typography> and{" "}
-            <Typography component="span">Privacy Policy.</Typography>
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/terms-of-service-open-source",
+                  "_blank"
+                );
+              }}
+            >
+              Terms of Service
+            </Typography>{" "}
+            and{" "}
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open("https://bluewavelabs.ca/privacy-policy", "_blank");
+              }}
+            >
+              Privacy Policy.
+            </Typography>
           </Typography>
         </Box>
       </Stack>
