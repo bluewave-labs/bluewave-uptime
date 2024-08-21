@@ -72,14 +72,10 @@ const credentials = joi.object({
 });
 
 const monitorValidation = joi.object({
-  url: joi
-    .string()
-    .uri({ allowRelative: true })
-    .trim()
-    .messages({
-      "string.empty": "This field is required.",
-      "string.uri": "The URL you provided is not valid.",
-    }),
+  url: joi.string().uri({ allowRelative: true }).trim().messages({
+    "string.empty": "This field is required.",
+    "string.uri": "The URL you provided is not valid.",
+  }),
   name: joi.string().trim().max(50).allow("").messages({
     "string.max": "This field should not exceed the 50 characters limit.",
   }),
@@ -108,4 +104,42 @@ const imageValidation = joi.object({
     }),
 });
 
-export { credentials, imageValidation, monitorValidation };
+const maintenanceWindowValidation = joi.object({
+  repeat: joi.number().valid(1, 2, 3).required().messages({
+    "number.base": "Repeat must be a number.",
+    "any.only": "Repeat must be one of [1, 2, 3].",
+    "any.required": "Repeat is required.",
+  }),
+  date: joi.date().required().messages({
+    "date.base": "Date must be a valid date.",
+    "any.required": "Date is required.",
+  }),
+  startTime: joi.string().required().messages({
+    "string.base": "Start time must be a valid time.",
+    "any.required": "Start time is required.",
+  }),
+  duration: joi.number().required().messages({
+    "number.base": "Duration must be a number.",
+    "any.required": "Duration is required.",
+  }),
+  unit: joi.string().valid("minutes", "hours", "days").required().messages({
+    "string.base": "Unit must be a string.",
+    "any.only": "Unit must be one of ['minutes', 'hours', 'days'].",
+    "any.required": "Unit is required.",
+  }),
+  friendlyName: joi.string().required().max(100).messages({
+    "string.max": "Friendly name must be less than 100 characters.",
+    "any.required": "Friendly name is required.",
+  }),
+  addMonitors: joi.string().required().messages({
+    "string.base": "Add monitors must be a string.",
+    "any.required": "Add monitors is required.",
+  }),
+});
+
+export {
+  credentials,
+  imageValidation,
+  monitorValidation,
+  maintenanceWindowValidation,
+};

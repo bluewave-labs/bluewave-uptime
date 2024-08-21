@@ -10,7 +10,9 @@ import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import Field from "../../../Components/Inputs/Field";
-import axios from "axios";
+import { maintenanceWindowValidation } from "../../../Validation/validation";
+import { logger } from "../../../Utils/Logger";
+import { createToast } from "../../../Utils/toastUtils";
 
 const directory = {
   title: "Create a maintenance window",
@@ -63,6 +65,7 @@ const CreateNewMaintenanceWindow = () => {
     friendlyName: "",
     AddMonitors: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (event, name) => {
     const { value } = event.target;
@@ -83,16 +86,26 @@ const CreateNewMaintenanceWindow = () => {
       addMonitors: values.AddMonitors,
     };
 
-    console.log("Submitting data: ", data);
-
-    await axios
-      .post("/address-of-the-route", data)
-      .then((res) => {
-        console.log("Response: ", res.data);
-      })
-      .catch((err) => {
-        console.log("Error: ", err);
+    const { error } = maintenanceWindowValidation.validate(data, {
+      abortEarly: false,
+    });
+    logger.log("error: ", error);
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
       });
+      setErrors(newErrors);
+      createToast({
+        body:
+          error.details && error.details.length > 0
+            ? error.details[0].message
+            : "Error validating data",
+      });
+      logger.error("Validation errors:", error.details);
+    }
+
+    logger.log("Submitting data: ", data);
   };
 
   const configOptions = [
