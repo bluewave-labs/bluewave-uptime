@@ -10,15 +10,14 @@ import {
 } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
-import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { logger } from "../../../Utils/Logger";
+import PulseDot from "../../../Components/Animated/PulseDot";
 
 import "./index.css";
 
@@ -168,8 +167,14 @@ const PageSpeedConfigure = () => {
             flex={1}
             gap={theme.gap.large}
           >
-            <Stack direction="row" gap={theme.gap.small}>
-              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+            <Stack direction="row" gap={theme.gap.xs}>
+              <PulseDot
+                color={
+                  monitor?.status
+                    ? theme.label.up.dotColor
+                    : theme.label.down.dotColor
+                }
+              />
               <Box>
                 <Typography
                   component="h1"

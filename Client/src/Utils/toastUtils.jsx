@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
+import { toast, Slide } from "react-toastify";
 import Alert from "../Components/Alert";
 
 /**
@@ -23,6 +23,7 @@ export const createToast = ({
     autoClose: 3000,
     hideProgressBar: true,
     closeButton: false,
+    transition: Slide,
     ...config,
   };
 

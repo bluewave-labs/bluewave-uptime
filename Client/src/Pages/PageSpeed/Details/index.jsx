@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts";
@@ -9,19 +10,17 @@ import {
   formatDuration,
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
+import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
 import Button from "../../../Components/Button";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
 import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
-import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
-import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
-import PropTypes from "prop-types";
-import { logger } from "../../../Utils/Logger";
 
 const StatBox = ({ icon, title, value }) => {
   const theme = useTheme();
@@ -325,8 +324,14 @@ const PageSpeedDetails = () => {
               { name: "details", path: `/pagespeed/${monitorId}` },
             ]}
           />
-          <Stack direction="row" gap={theme.gap.small}>
-            {monitor?.status ? <GreenCheck /> : <RedCheck />}
+          <Stack direction="row" gap={theme.gap.xs}>
+            <PulseDot
+              color={
+                monitor?.status
+                  ? theme.label.up.dotColor
+                  : theme.label.down.dotColor
+              }
+            />
             <Box>
               <Typography
                 component="h1"

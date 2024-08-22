@@ -168,6 +168,17 @@ body .MuiSkeleton-root {
   background-color: var(--env-var-color-15);
 }
 
+@keyframes ripple {
+  from {
+    opacity: 1;
+    transform: scale(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
