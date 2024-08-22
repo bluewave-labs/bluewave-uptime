@@ -26,8 +26,6 @@ import LockSvg from "../../assets/icons/lock.svg?react";
 import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
-import BWULogo from "../../assets/Images/bwl-logo.svg?react";
-import BWULogoAbbreviated from "../../assets/icons/bwu-abbreviated.svg?react";
 import Support from "../../assets/icons/support.svg?react";
 import Dashboard from "../../assets/icons/dashboard.svg?react";
 import Account from "../../assets/icons/user-edit.svg?react";
@@ -128,17 +126,44 @@ function Sidebar() {
       gap={theme.gap.medium}
       sx={{ flex: collapsed ? 0 : 1 }}
     >
-      <Stack py={theme.gap.large} pl={theme.gap.mlplus}>
-        {collapsed ? (
-          <BWULogoAbbreviated alt="BlueWave Uptime Logo" />
-        ) : (
-          <BWULogo alt="BlueWave Uptime Logo" />
-        )}
+      <Stack
+        pt={theme.gap.medium}
+        pb={theme.gap.large}
+        pl={collapsed ? theme.gap.ml : theme.gap.mlplus}
+      >
+        <Stack direction="row" alignItems="center" gap={theme.gap.small}>
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            minWidth={theme.gap.lgplus}
+            minHeight={theme.gap.lgplus}
+            fontSize="18px"
+            color="white"
+            sx={{
+              position: "relative",
+              backgroundColor: theme.palette.primary.main,
+              borderRadius: "4px",
+              userSelect: "none",
+            }}
+          >
+            BU
+          </Stack>
+          {!collapsed && (
+            <Typography
+              component="span"
+              mt={theme.gap.xs}
+              sx={{ opacity: 0.8, fontWeight: 500 }}
+            >
+              BlueWave Uptime
+            </Typography>
+          )}
+        </Stack>
         <IconButton
           sx={{
             position: "absolute",
+            top: 60,
             right: 0,
-            transform: `translate(50%, 50%)`,
+            transform: `translate(50%, 0)`,
             backgroundColor: theme.palette.otherColors.fillGray,
             border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
             p: "5px",
