@@ -7,8 +7,6 @@ import { networkService } from "../../../main";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
-import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
-import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import PaginationTable from "./PaginationTable";
 import {
