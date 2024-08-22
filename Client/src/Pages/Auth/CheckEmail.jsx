@@ -145,7 +145,7 @@ const CheckEmail = () => {
             }}
           />
           <Typography sx={{ alignSelf: "center", mb: theme.gap.medium }}>
-            Didn't receive the email?{" "}
+            Didn&apos;t receive the email?{" "}
             <Typography
               component="span"
               onClick={resendToken}

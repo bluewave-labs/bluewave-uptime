@@ -452,6 +452,7 @@ const deleteUserController = async (req, res, next) => {
     }
 
     // 1. Find all the monitors associated with the user id
+
     const monitors = await req.db.getMonitorsByUserId({
       params: { userId: _id },
     });
@@ -461,6 +462,7 @@ const deleteUserController = async (req, res, next) => {
       await Promise.all(
         monitors.map(async (monitor) => {
           await req.jobQueue.deleteJob(monitor);
+
           await req.db.deleteChecks(monitor._id);
           await req.db.deleteAlertByMonitorId(monitor._id);
           await req.db.deletePageSpeedChecksByMonitorId(monitor._id);

@@ -131,7 +131,7 @@ const ForgotPassword = () => {
             <Key alt="password key icon" />
             <Typography component="h1">Forgot password?</Typography>
             <Typography>
-              No worries, we'll send you reset instructions.
+              No worries, we&apos;ll send you reset instructions.
             </Typography>
           </Box>
           <Box width="100%" textAlign="left">

@@ -19,9 +19,7 @@ const JobQueue = require("./service/jobQueue");
 const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
-const userRouter = require("./routes/userRoute"); // Import the user router
-
-
+const SERVICE_NAME = "Server";
 let cleaningUp = false;
 
 // Need to wrap server setup in a function to handle async nature of JobQueue

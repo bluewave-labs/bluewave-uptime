@@ -2,10 +2,10 @@
   background-color: var(--env-var-color-8);
   border: solid 1px var(--env-var-color-6);
   border-radius: var(--env-var-radius-1);
-  padding: var(--env-var-default-2);
+  padding: var(--env-var-font-size-large-plus) var(--env-var-font-size-xlarge);
 }
 .create-page-speed h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large);
+  font-size: 22px;
   color: var(--env-var-color-1);
 }
 .create-page-speed p.MuiTypography-root,
@@ -50,9 +50,12 @@ body:has(.create-page-speed) .select-dropdown .MuiMenuItem-root,
   text-transform: lowercase;
 }
 
+.create-page-speed h3.MuiTypography-root {
+  flex: 0.7;
+}
+
 .create-page-speed .field,
 .create-page-speed .section-disabled,
-.create-page-speed .select-wrapper,
-.create-page-speed h3.MuiTypography-root {
+.create-page-speed .select-wrapper {
   flex: 1;
 }

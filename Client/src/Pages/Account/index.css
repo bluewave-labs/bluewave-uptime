@@ -15,17 +15,9 @@
 .account h1.MuiTypography-root {
   font-weight: 600;
 }
-.account .MuiStack-root:not(.table-stack) {
-  flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-}
 .account .MuiTabPanel-root {
   padding: 0;
   margin-top: 50px;
-}
-.account .MuiDivider-root:not(.short-divider) {
-  margin: 50px 0;
 }
 .account .MuiDivider-root,
 .account .MuiButtonGroup-root button {
@@ -34,49 +26,13 @@
 .account button:not(.MuiIconButton-root) {
   height: 34px;
 }
-.account [class$="-form"] {
-  width: inherit;
-}
-.account [class$="__wrapper"],
-.account [class$="__wrapper compact"] {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-.edit-profile-form__wrapper > .MuiStack-root:not(.row-stack),
-.edit-password-form__wrapper > .MuiStack-root:not(.row-stack) {
-  flex-direction: column;
-  gap: 8px;
-  margin-right: 10px;
-}
-.edit-profile-form__wrapper p.MuiTypography-root,
-.delete-profile-form__wrapper p.MuiTypography-root {
-  opacity: 0.6;
+.account .field {
+  flex: 1;
 }
 #modal-delete-account,
 #modal-edit-org-name,
 #modal-invite-member {
   font-size: var(--env-var-font-size-large);
-}
-.edit-profile-form__wrapper:not(:first-of-type),
-.edit-password-form__wrapper:not(:first-of-type),
-.edit-team-form__wrapper:not(:first-of-type) {
-  margin-top: var(--env-var-spacing-4);
-}
-.edit-team-form__wrapper.compact {
-  margin-top: var(--env-var-spacing-3);
-  justify-content: flex-start;
-  align-items: center;
-}
-
-/* for testing, will remove later */
-@media only screen and (max-width: 1600px) {
-  .edit-profile-form__wrapper .MuiStack-root:not(.row-stack),
-  .edit-password-form__wrapper .MuiStack-root:not(.row-stack),
-  .edit-organization-form__wrapper .MuiStack-root:not(.row-stack) {
-    margin-right: 30px;
-  }
 }
 
 .account .MuiStack-root:has(span.MuiTypography-root.input-error) {
@@ -87,22 +43,9 @@
   top: 100%;
 }
 
-.edit-profile-form__wrapper .MuiFormControl-root,
-.edit-password-form__wrapper .MuiFormControl-root {
-  width: 100%;
+.account .MuiTable-root .MuiTableBody-root .MuiTableCell-root {
+  color: var(--env-var-color-25);
 }
-.edit-profile-form__wrapper .MuiStack-root:has(.MuiFormControl-root),
-.edit-password-form__wrapper .MuiStack-root:has(.MuiFormControl-root) {
-  margin: 0;
-}
-
-.edit-organization-form {
-  display: flex;
-  align-items: center;
-}
-.edit-team-form .MuiTableCell-root {
-  color: var(--env-var-color-25) !important;
-}
-.edit-team-form .MuiTableBody-root .MuiTableCell-root {
-  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2) !important;
+.account .MuiTableBody-root .MuiTableCell-root {
+  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
 }

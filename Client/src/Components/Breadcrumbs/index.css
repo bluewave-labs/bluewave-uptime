@@ -22,7 +22,7 @@
   cursor: pointer;
 }
 .MuiBreadcrumbs-root .MuiBreadcrumbs-li:last-child a {
-  font-weight: 600;
+  font-weight: 500;
   opacity: 1;
   cursor: default;
 }

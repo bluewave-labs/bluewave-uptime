@@ -1,7 +1,7 @@
 .monitors h1.MuiTypography-root,
 .monitors h2.MuiTypography-root {
   color: var(--env-var-color-1);
-  font-weight: 500;
+  font-weight: 600;
 }
 .monitors h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
@@ -11,8 +11,6 @@
 }
 .monitors p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
-}
-.monitors p.MuiTypography-root {
   color: var(--env-var-color-5);
 }
 .monitors .MuiStack-root > button:not(.MuiIconButton-root) {
