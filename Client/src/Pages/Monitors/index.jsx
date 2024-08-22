@@ -453,7 +453,7 @@ const Monitors = () => {
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>
-                <BasicTable data={data} paginated={true} />
+                <BasicTable data={data} paginated={true} table={"monitors"} />
               </Box>
             </>
           )}
