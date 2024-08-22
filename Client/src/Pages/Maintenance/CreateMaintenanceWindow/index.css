@@ -23,7 +23,7 @@
 }
 
 .duration-config .field-text .MuiTextField-root,
-.duration-config .field {
+.maintenance-options .duration-config .field {
   width: 70px;
   min-width: 70px;
   max-width: 70px;
