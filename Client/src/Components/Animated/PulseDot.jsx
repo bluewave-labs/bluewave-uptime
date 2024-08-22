@@ -1,4 +1,18 @@
+import PropTypes from "prop-types";
 import { Box, Stack } from "@mui/material";
+
+/**
+ * A component that renders a pulsating dot with a specified color.
+ *
+ * @component
+ * @example
+ * // Example usage:
+ * <PulseDot color="#f00" />
+ *
+ * @param {Object} props
+ * @param {string} props.color - The color of the dot.
+ * @returns {JSX.Element} The PulseDot component.
+ */
 
 const PulseDot = ({ color }) => {
   return (
@@ -28,6 +42,10 @@ const PulseDot = ({ color }) => {
       />
     </Stack>
   );
+};
+
+PulseDot.propTypes = {
+  color: PropTypes.string.isRequired,
 };
 
 export default PulseDot;
