@@ -123,14 +123,10 @@ function Sidebar() {
   return (
     <Stack
       component="aside"
+      className={collapsed ? "collapsed" : "expanded"}
       gap={theme.gap.medium}
-      sx={{ flex: collapsed ? 0 : 1 }}
     >
-      <Stack
-        pt={theme.gap.medium}
-        pb={theme.gap.large}
-        pl={collapsed ? theme.gap.ml : theme.gap.mlplus}
-      >
+      <Stack pt={theme.gap.medium} pb={theme.gap.large} pl={theme.gap.ml}>
         <Stack direction="row" alignItems="center" gap={theme.gap.small}>
           <Stack
             justifyContent="center"
@@ -148,15 +144,13 @@ function Sidebar() {
           >
             BU
           </Stack>
-          {!collapsed && (
-            <Typography
-              component="span"
-              mt={theme.gap.xs}
-              sx={{ opacity: 0.8, fontWeight: 500 }}
-            >
-              BlueWave Uptime
-            </Typography>
-          )}
+          <Typography
+            component="span"
+            mt={theme.gap.xs}
+            sx={{ opacity: 0.8, fontWeight: 500 }}
+          >
+            BlueWave Uptime
+          </Typography>
         </Stack>
         <IconButton
           sx={{
@@ -180,7 +174,10 @@ function Sidebar() {
               borderColor: theme.palette.otherColors.graishWhite,
             },
           }}
-          onClick={() => dispatch(toggleSidebar())}
+          onClick={() => {
+            setOpen({ Dashboard: false, Account: false });
+            dispatch(toggleSidebar());
+          }}
         >
           {collapsed ? <ArrowRight /> : <ArrowLeft />}
         </IconButton>
@@ -196,8 +193,7 @@ function Sidebar() {
             id="nested-menu-subheader"
             sx={{
               pt: theme.gap.small,
-              px: collapsed ? 0 : theme.gap.small,
-              textAlign: collapsed ? "center" : "left",
+              px: collapsed ? theme.gap.xs : theme.gap.small,
             }}
           >
             Menu
@@ -231,13 +227,14 @@ function Sidebar() {
                 }
                 onClick={() => navigate(`/${item.path}`)}
                 sx={{
+                  height: "37px",
                   gap: theme.gap.small,
                   borderRadius: `${theme.shape.borderRadius}px`,
                   px: theme.gap.small,
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-                {!collapsed && <ListItemText>{item.name}</ListItemText>}
+                <ListItemText>{item.name}</ListItemText>
               </ListItemButton>
             </Tooltip>
           ) : collapsed ? (
@@ -274,7 +271,7 @@ function Sidebar() {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-                  {!collapsed && <ListItemText>{item.name}</ListItemText>}
+                  <ListItemText>{item.name}</ListItemText>
                 </ListItemButton>
               </Tooltip>
               <Menu
@@ -286,7 +283,7 @@ function Sidebar() {
                   vertical: "top",
                   horizontal: "right",
                 }}
-                sx={{ ml: theme.gap.small }}
+                sx={{ ml: theme.gap.ml }}
               >
                 {item.nested.map((child) => {
                   if (
@@ -313,6 +310,7 @@ function Sidebar() {
                         gap: theme.gap.small,
                         borderRadius: `${theme.shape.borderRadius}px`,
                         pl: theme.gap.small,
+                        mb:"1px"
                       }}
                     >
                       {child.icon}
@@ -396,7 +394,6 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? 0 : theme.gap.small,
-              textAlign: collapsed ? "center" : "left",
             }}
           >
             Other
@@ -443,7 +440,7 @@ function Sidebar() {
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-              {!collapsed && <ListItemText>{item.name}</ListItemText>}
+              <ListItemText>{item.name}</ListItemText>
             </ListItemButton>
           </Tooltip>
         ))}

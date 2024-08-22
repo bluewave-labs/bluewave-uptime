@@ -91,10 +91,6 @@ aside
   transform: scale(1.2);
 }
 
-aside {
-  transition: flex 300ms ease-out;
-}
-
 .sidebar-popup .MuiPaper-root {
   box-shadow: var(--env-var-shadow-1);
   border: solid 1px var(--env-var-color-6);
@@ -102,7 +98,7 @@ aside {
   gap: 1px;
 }
 .sidebar-popup .MuiList-root {
-  padding: 6px 6px;
+  padding: 3px;
   min-width: 100px;
 }
 .sidebar-popup li.MuiButtonBase-root {
@@ -128,4 +124,48 @@ aside {
   width: 16px;
   height: 16px;
   opacity: 0.9;
+}
+
+/* TRANSITIONS */
+aside {
+  flex: 1;
+  transition: max-width 650ms cubic-bezier(0.36, -0.01, 0, 0.77);
+}
+.home-layout aside.collapsed {
+  max-width: 64px;
+}
+
+aside.expanded .MuiTypography-root,
+aside.expanded p.MuiTypography-root,
+aside.expanded .MuiListItemText-root + svg,
+aside.expanded .MuiAvatar-root + .MuiBox-root + .MuiIconButton-root {
+  visibility: visible;
+  animation: fadeIn 1s ease;
+}
+
+aside.collapsed .MuiTypography-root,
+aside.collapsed p.MuiTypography-root,
+aside.collapsed .MuiListItemText-root + svg,
+aside.collapsed .MuiAvatar-root + .MuiBox-root + .MuiIconButton-root {
+  opacity: 0;
+  visibility: hidden;
+}
+
+aside .MuiListSubheader-root {
+  transition: all 200ms ease;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  30% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 0.9;
+    visibility: visible;
+  }
 }
