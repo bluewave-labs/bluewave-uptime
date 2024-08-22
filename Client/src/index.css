@@ -175,7 +175,7 @@ body .MuiSkeleton-root {
   }
   to {
     opacity: 0;
-    transform: scale(2.3);
+    transform: scale(2);
   }
 }
 

@@ -23,8 +23,8 @@ const PulseDot = ({ color }) => {
       justifyContent="center"
     >
       <Box
-        width="14px"
-        height="14px"
+        minWidth="16px"
+        minHeight="16px"
         sx={{
           position: "relative",
           backgroundColor: color,
@@ -37,6 +37,17 @@ const PulseDot = ({ color }) => {
             backgroundColor: "inherit",
             borderRadius: "50%",
             animation: "ripple 1.8s ease-out infinite",
+          },
+          "&::after": {
+            content: `""`,
+            position: "absolute",
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "white",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
           },
         }}
       />
