@@ -28,6 +28,7 @@ import {
 
 import Settings from "../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
+import BarChart from "../../Components/Charts/BarChart";
 
 const ActionsMenu = ({ monitor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -357,7 +358,7 @@ const Monitors = () => {
             />
           ),
         },
-        { id: idx + 2, data: <ResponseTimeChart checks={reversedChecks} /> },
+        { id: idx + 2, data: <BarChart checks={reversedChecks} /> },
         {
           id: idx + 3,
           data: (

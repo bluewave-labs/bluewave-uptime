@@ -310,7 +310,7 @@ function Sidebar() {
                         gap: theme.gap.small,
                         borderRadius: `${theme.shape.borderRadius}px`,
                         pl: theme.gap.small,
-                        mb:"1px"
+                        mb: "1px",
                       }}
                     >
                       {child.icon}
