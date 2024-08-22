@@ -44,7 +44,11 @@ const registerValidation = joi.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
     ),
   profileImage: joi.any(),
-  role: joi.array().required(),
+  role: joi
+    .array()
+    .items(joi.string().valid("admin", "user"))
+    .min(1)
+    .required(),
 });
 
 const editUserParamValidation = joi.object({
