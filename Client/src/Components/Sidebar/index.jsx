@@ -128,11 +128,7 @@ function Sidebar() {
       gap={theme.gap.medium}
       sx={{ flex: collapsed ? 0 : 1 }}
     >
-      <Stack
-        alignItems={collapsed ? "center" : "flex-start"}
-        py={theme.gap.large}
-        pl={collapsed ? 0 : theme.gap.lgplus}
-      >
+      <Stack py={theme.gap.large} pl={theme.gap.mlplus}>
         {collapsed ? (
           <BWULogoAbbreviated alt="BlueWave Uptime Logo" />
         ) : (
@@ -175,14 +171,14 @@ function Sidebar() {
             id="nested-menu-subheader"
             sx={{
               pt: theme.gap.small,
-              px: collapsed ? theme.gap.xs : theme.gap.ml,
+              px: collapsed ? 0 : theme.gap.small,
               textAlign: collapsed ? "center" : "left",
             }}
           >
             Menu
           </ListSubheader>
         }
-        sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
+        sx={{ px: theme.gap.medium }}
       >
         {menu.map((item) =>
           item.path ? (
@@ -210,9 +206,9 @@ function Sidebar() {
                 }
                 onClick={() => navigate(`/${item.path}`)}
                 sx={{
-                  gap: theme.gap.medium,
+                  gap: theme.gap.small,
                   borderRadius: `${theme.shape.borderRadius}px`,
-                  justifyContent: collapsed ? "center" : "flex-start",
+                  px: theme.gap.small,
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -247,9 +243,9 @@ function Sidebar() {
                   onClick={(event) => openPopup(event, item.name)}
                   sx={{
                     position: "relative",
-                    gap: theme.gap.medium,
+                    gap: theme.gap.small,
                     borderRadius: `${theme.shape.borderRadius}px`,
-                    justifyContent: collapsed ? "center" : "flex-start",
+                    px: theme.gap.small,
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -311,9 +307,9 @@ function Sidebar() {
                   }))
                 }
                 sx={{
-                  gap: theme.gap.medium,
+                  gap: theme.gap.small,
                   borderRadius: `${theme.shape.borderRadius}px`,
-                  justifyContent: collapsed ? "center" : "flex-start",
+                  px: theme.gap.small,
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -324,7 +320,7 @@ function Sidebar() {
                 <List
                   component="div"
                   disablePadding
-                  sx={{ pl: theme.gap.lgplus }}
+                  sx={{ pl: theme.gap.large }}
                 >
                   {item.nested.map((child) => {
                     if (
@@ -374,14 +370,14 @@ function Sidebar() {
             id="nested-other-subheader"
             sx={{
               pt: theme.gap.small,
-              px: collapsed ? theme.gap.xs : theme.gap.ml,
+              px: collapsed ? 0 : theme.gap.small,
               textAlign: collapsed ? "center" : "left",
             }}
           >
             Other
           </ListSubheader>
         }
-        sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
+        sx={{ px: theme.gap.medium }}
       >
         {other.map((item) => (
           <Tooltip
@@ -416,9 +412,9 @@ function Sidebar() {
                   : navigate(`/${item.path}`)
               }
               sx={{
-                gap: theme.gap.medium,
+                gap: theme.gap.small,
                 borderRadius: `${theme.shape.borderRadius}px`,
-                justifyContent: collapsed ? "center" : "flex-start",
+                px: theme.gap.small,
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -432,10 +428,9 @@ function Sidebar() {
       <Stack
         direction="row"
         height="50px"
-        justifyContent={collapsed ? "center" : "flex-start"}
         alignItems="center"
         py={theme.gap.small}
-        px={theme.gap.medium}
+        px={theme.gap.ml}
         gap={theme.gap.xs}
         borderRadius={`${theme.shape.borderRadius}px`}
       >
