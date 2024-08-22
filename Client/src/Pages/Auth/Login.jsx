@@ -60,7 +60,8 @@ const LandingPage = ({ onContinue }) => {
               onClick={() => {
                 window.open(
                   "https://bluewavelabs.ca/terms-of-service-open-source",
-                  "_blank"
+                  "_blank",
+                  "noreferrer"
                 );
               }}
             >
@@ -70,7 +71,11 @@ const LandingPage = ({ onContinue }) => {
             <Typography
               component="span"
               onClick={() => {
-                window.open("https://bluewavelabs.ca/privacy-policy", "_blank");
+                window.open(
+                  "https://bluewavelabs.ca/privacy-policy-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
               }}
             >
               Privacy Policy.
