@@ -56,11 +56,7 @@ function App() {
             element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
           />
           <Route
-            path="/monitors/create"
-            element={<ProtectedRoute Component={CreateMonitor} />}
-          />
-          <Route
-            path="/monitors/clone/:monitorId"
+            path="/monitors/create/:monitorId?"
             element={<ProtectedRoute Component={CreateMonitor} />}
           />
           <Route

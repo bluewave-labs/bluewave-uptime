@@ -48,10 +48,12 @@ const CreateMonitor = () => {
       const data = monitors.find((monitor) => monitor._id === monitorId);
       if (!data) {
         console.error("Error fetching monitor of id: " + monitorId);
-        navigate("/not-found");
+        navigate("/not-found", {replace: true});
       }
-      const {url, name, ...rest} = data;
-      rest.interval = rest.interval/60000;
+      const {name, ...rest} = data;   //data.name is read-only
+      if(rest.type == 'http')  rest.url = rest.url.substring(8, rest.url.length)
+      rest.name = `${name} (Clone)`;
+      rest.interval /= 60000;
       setMonitor({
         ...rest,
       });
