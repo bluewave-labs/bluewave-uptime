@@ -4,18 +4,19 @@ import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
+import { logger } from "../../../Utils/Logger";
+import {
+  formatDuration,
+  formatDurationRounded,
+} from "../../../Utils/timeUtils";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "../../../Components/Button";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import PaginationTable from "./PaginationTable";
-import {
-  formatDuration,
-  formatDurationRounded,
-} from "../../../Utils/timeUtils";
-import "./index.css";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { logger } from "../../../Utils/Logger";
+import PulseDot from "../../../Components/Animated/PulseDot";
+import "./index.css";
 
 const StatBox = ({ title, value }) => {
   return (
@@ -170,33 +171,13 @@ const DetailsPage = () => {
           />
           <Stack gap={theme.gap.large} mt={theme.gap.large}>
             <Stack direction="row" gap={theme.gap.xs}>
-              <Stack
-                width={theme.gap.large}
-                height={theme.gap.large}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Box
-                  width="14px"
-                  height="14px"
-                  sx={{
-                    position: "relative",
-                    backgroundColor: monitor?.status
-                      ? theme.label.up.dotColor
-                      : theme.label.down.dotColor,
-                    borderRadius: "50%",
-                    "&::before": {
-                      content: `""`,
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "inherit",
-                      borderRadius: "50%",
-                      animation: "ripple 1.8s ease-out infinite",
-                    },
-                  }}
-                />
-              </Stack>
+              <PulseDot
+                color={
+                  monitor?.status
+                    ? theme.label.up.dotColor
+                    : theme.label.down.dotColor
+                }
+              />
               <Box>
                 <Typography component="h1" sx={{ lineHeight: 1 }}>
                   {monitor.url?.replace(/^https?:\/\//, "") || "..."}

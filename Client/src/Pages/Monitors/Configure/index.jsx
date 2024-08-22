@@ -2,22 +2,23 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import Button from "../../../Components/Button";
-import Field from "../../../Components/Inputs/Field";
 import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
-import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { monitorValidation } from "../../../Validation/validation";
-import Select from "../../../Components/Inputs/Select";
 import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
 import {
   updateUptimeMonitor,
   getUptimeMonitorsByUserId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import Button from "../../../Components/Button";
+import Field from "../../../Components/Inputs/Field";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
-import { logger } from "../../../Utils/Logger";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -228,33 +229,13 @@ const Configure = () => {
             flex={1}
           >
             <Stack direction="row" gap={theme.gap.xs}>
-              <Stack
-                width={theme.gap.large}
-                height={theme.gap.large}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Box
-                  width="14px"
-                  height="14px"
-                  sx={{
-                    position: "relative",
-                    backgroundColor: monitor?.status
-                      ? theme.label.up.dotColor
-                      : theme.label.down.dotColor,
-                    borderRadius: "50%",
-                    "&::before": {
-                      content: `""`,
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "inherit",
-                      borderRadius: "50%",
-                      animation: "ripple 1.8s ease-out infinite",
-                    },
-                  }}
-                />
-              </Stack>
+              <PulseDot
+                color={
+                  monitor?.status
+                    ? theme.label.up.dotColor
+                    : theme.label.down.dotColor
+                }
+              />
               <Box>
                 {parsedUrl?.host ? (
                   <Typography component="h1" mb={theme.gap.xs} lineHeight={1}>

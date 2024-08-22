@@ -19,6 +19,7 @@ import ClockIcon from "../../../assets/icons/maintenance.svg?react";
 import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
 
 const StatBox = ({ icon, title, value }) => {
@@ -324,33 +325,13 @@ const PageSpeedDetails = () => {
             ]}
           />
           <Stack direction="row" gap={theme.gap.xs}>
-            <Stack
-              width={theme.gap.large}
-              height={theme.gap.large}
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Box
-                width="14px"
-                height="14px"
-                sx={{
-                  position: "relative",
-                  backgroundColor: monitor?.status
-                    ? theme.label.up.dotColor
-                    : theme.label.down.dotColor,
-                  borderRadius: "50%",
-                  "&::before": {
-                    content: `""`,
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "inherit",
-                    borderRadius: "50%",
-                    animation: "ripple 1.8s ease-out infinite",
-                  },
-                }}
-              />
-            </Stack>
+            <PulseDot
+              color={
+                monitor?.status
+                  ? theme.label.up.dotColor
+                  : theme.label.down.dotColor
+              }
+            />
             <Box>
               <Typography
                 component="h1"

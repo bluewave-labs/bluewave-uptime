@@ -10,15 +10,14 @@ import {
 } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
-import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { logger } from "../../../Utils/Logger";
+import PulseDot from "../../../Components/Animated/PulseDot";
 
 import "./index.css";
 
@@ -169,33 +168,13 @@ const PageSpeedConfigure = () => {
             gap={theme.gap.large}
           >
             <Stack direction="row" gap={theme.gap.xs}>
-              <Stack
-                width={theme.gap.large}
-                height={theme.gap.large}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Box
-                  width="14px"
-                  height="14px"
-                  sx={{
-                    position: "relative",
-                    backgroundColor: monitor?.status
-                      ? theme.label.up.dotColor
-                      : theme.label.down.dotColor,
-                    borderRadius: "50%",
-                    "&::before": {
-                      content: `""`,
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "inherit",
-                      borderRadius: "50%",
-                      animation: "ripple 1.8s ease-out infinite",
-                    },
-                  }}
-                />
-              </Stack>
+              <PulseDot
+                color={
+                  monitor?.status
+                    ? theme.label.up.dotColor
+                    : theme.label.down.dotColor
+                }
+              />
               <Box>
                 <Typography
                   component="h1"
