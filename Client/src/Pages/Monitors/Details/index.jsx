@@ -171,8 +171,34 @@ const DetailsPage = () => {
             ]}
           />
           <Stack gap={theme.gap.large} mt={theme.gap.large}>
-            <Stack direction="row" gap={theme.gap.small}>
-              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+            <Stack direction="row" gap={theme.gap.xs}>
+              <Stack
+                width={theme.gap.large}
+                height={theme.gap.large}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Box
+                  width="14px"
+                  height="14px"
+                  sx={{
+                    position: "relative",
+                    backgroundColor: monitor?.status
+                      ? theme.label.up.dotColor
+                      : theme.label.down.dotColor,
+                    borderRadius: "50%",
+                    "&::before": {
+                      content: `""`,
+                      position: "absolute",
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "inherit",
+                      borderRadius: "50%",
+                      animation: "ripple 1.8s ease-out infinite",
+                    },
+                  }}
+                />
+              </Stack>
               <Box>
                 <Typography component="h1" sx={{ lineHeight: 1 }}>
                   {monitor.url?.replace(/^https?:\/\//, "") || "..."}
