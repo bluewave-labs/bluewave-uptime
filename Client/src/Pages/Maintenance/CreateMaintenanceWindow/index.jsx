@@ -90,7 +90,9 @@ const CreateNewMaintenanceWindow = () => {
       abortEarly: false,
     });
     logger.log("error: ", error);
-    if (error) {
+    if (!error || error.details.length === 0) {
+      setErrors({});
+    } else {
       const newErrors = {};
       error.details.forEach((err) => {
         newErrors[err.path[0]] = err.message;
@@ -164,6 +166,7 @@ const CreateNewMaintenanceWindow = () => {
             onChange={(e) => handleChange(e, "duration")}
             value={values.duration}
             error={errors.duration}
+            type="number"
           />
           <Select
             onChange={(e) => handleChange(e, "unit")}
