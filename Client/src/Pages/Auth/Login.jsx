@@ -55,8 +55,31 @@ const LandingPage = ({ onContinue }) => {
         <Box maxWidth={400}>
           <Typography className="tos-p">
             By continuing, you agree to our{" "}
-            <Typography component="span">Terms of Service</Typography> and{" "}
-            <Typography component="span">Privacy Policy.</Typography>
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/terms-of-service-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
+              }}
+            >
+              Terms of Service
+            </Typography>{" "}
+            and{" "}
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/privacy-policy-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
+              }}
+            >
+              Privacy Policy.
+            </Typography>
           </Typography>
         </Box>
       </Stack>
