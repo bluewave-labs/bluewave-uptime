@@ -26,8 +26,6 @@ import LockSvg from "../../assets/icons/lock.svg?react";
 import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
-import BWULogo from "../../assets/Images/bwl-logo.svg?react";
-import BWULogoAbbreviated from "../../assets/icons/bwu-abbreviated.svg?react";
 import Support from "../../assets/icons/support.svg?react";
 import Dashboard from "../../assets/icons/dashboard.svg?react";
 import Account from "../../assets/icons/user-edit.svg?react";
@@ -125,24 +123,41 @@ function Sidebar() {
   return (
     <Stack
       component="aside"
+      className={collapsed ? "collapsed" : "expanded"}
       gap={theme.gap.medium}
-      sx={{ flex: collapsed ? 0 : 1 }}
     >
-      <Stack
-        alignItems={collapsed ? "center" : "flex-start"}
-        py={theme.gap.large}
-        pl={collapsed ? 0 : theme.gap.lgplus}
-      >
-        {collapsed ? (
-          <BWULogoAbbreviated alt="BlueWave Uptime Logo" />
-        ) : (
-          <BWULogo alt="BlueWave Uptime Logo" />
-        )}
+      <Stack pt={theme.gap.medium} pb={theme.gap.large} pl={theme.gap.ml}>
+        <Stack direction="row" alignItems="center" gap={theme.gap.small}>
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            minWidth={theme.gap.lgplus}
+            minHeight={theme.gap.lgplus}
+            fontSize="18px"
+            color="white"
+            sx={{
+              position: "relative",
+              backgroundColor: theme.palette.primary.main,
+              borderRadius: "4px",
+              userSelect: "none",
+            }}
+          >
+            BU
+          </Stack>
+          <Typography
+            component="span"
+            mt={theme.gap.xs}
+            sx={{ opacity: 0.8, fontWeight: 500 }}
+          >
+            BlueWave Uptime
+          </Typography>
+        </Stack>
         <IconButton
           sx={{
             position: "absolute",
+            top: 60,
             right: 0,
-            transform: `translate(50%, 50%)`,
+            transform: `translate(50%, 0)`,
             backgroundColor: theme.palette.otherColors.fillGray,
             border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
             p: "5px",
@@ -159,7 +174,10 @@ function Sidebar() {
               borderColor: theme.palette.otherColors.graishWhite,
             },
           }}
-          onClick={() => dispatch(toggleSidebar())}
+          onClick={() => {
+            setOpen({ Dashboard: false, Account: false });
+            dispatch(toggleSidebar());
+          }}
         >
           {collapsed ? <ArrowRight /> : <ArrowLeft />}
         </IconButton>
@@ -175,14 +193,13 @@ function Sidebar() {
             id="nested-menu-subheader"
             sx={{
               pt: theme.gap.small,
-              px: collapsed ? theme.gap.xs : theme.gap.ml,
-              textAlign: collapsed ? "center" : "left",
+              px: collapsed ? theme.gap.xs : theme.gap.small,
             }}
           >
             Menu
           </ListSubheader>
         }
-        sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
+        sx={{ px: theme.gap.medium }}
       >
         {menu.map((item) =>
           item.path ? (
@@ -210,13 +227,14 @@ function Sidebar() {
                 }
                 onClick={() => navigate(`/${item.path}`)}
                 sx={{
-                  gap: theme.gap.medium,
+                  height: "37px",
+                  gap: theme.gap.small,
                   borderRadius: `${theme.shape.borderRadius}px`,
-                  justifyContent: collapsed ? "center" : "flex-start",
+                  px: theme.gap.small,
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-                {!collapsed && <ListItemText>{item.name}</ListItemText>}
+                <ListItemText>{item.name}</ListItemText>
               </ListItemButton>
             </Tooltip>
           ) : collapsed ? (
@@ -247,13 +265,13 @@ function Sidebar() {
                   onClick={(event) => openPopup(event, item.name)}
                   sx={{
                     position: "relative",
-                    gap: theme.gap.medium,
+                    gap: theme.gap.small,
                     borderRadius: `${theme.shape.borderRadius}px`,
-                    justifyContent: collapsed ? "center" : "flex-start",
+                    px: theme.gap.small,
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-                  {!collapsed && <ListItemText>{item.name}</ListItemText>}
+                  <ListItemText>{item.name}</ListItemText>
                 </ListItemButton>
               </Tooltip>
               <Menu
@@ -265,7 +283,7 @@ function Sidebar() {
                   vertical: "top",
                   horizontal: "right",
                 }}
-                sx={{ ml: theme.gap.small }}
+                sx={{ ml: theme.gap.ml }}
               >
                 {item.nested.map((child) => {
                   if (
@@ -292,6 +310,7 @@ function Sidebar() {
                         gap: theme.gap.small,
                         borderRadius: `${theme.shape.borderRadius}px`,
                         pl: theme.gap.small,
+                        mb:"1px"
                       }}
                     >
                       {child.icon}
@@ -311,9 +330,9 @@ function Sidebar() {
                   }))
                 }
                 sx={{
-                  gap: theme.gap.medium,
+                  gap: theme.gap.small,
                   borderRadius: `${theme.shape.borderRadius}px`,
-                  justifyContent: collapsed ? "center" : "flex-start",
+                  px: theme.gap.small,
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -324,7 +343,7 @@ function Sidebar() {
                 <List
                   component="div"
                   disablePadding
-                  sx={{ pl: theme.gap.lgplus }}
+                  sx={{ pl: theme.gap.large }}
                 >
                   {item.nested.map((child) => {
                     if (
@@ -374,14 +393,13 @@ function Sidebar() {
             id="nested-other-subheader"
             sx={{
               pt: theme.gap.small,
-              px: collapsed ? theme.gap.xs : theme.gap.ml,
-              textAlign: collapsed ? "center" : "left",
+              px: collapsed ? 0 : theme.gap.small,
             }}
           >
             Other
           </ListSubheader>
         }
-        sx={{ px: collapsed ? theme.gap.xs : theme.gap.ml }}
+        sx={{ px: theme.gap.medium }}
       >
         {other.map((item) => (
           <Tooltip
@@ -416,13 +434,13 @@ function Sidebar() {
                   : navigate(`/${item.path}`)
               }
               sx={{
-                gap: theme.gap.medium,
+                gap: theme.gap.small,
                 borderRadius: `${theme.shape.borderRadius}px`,
-                justifyContent: collapsed ? "center" : "flex-start",
+                px: theme.gap.small,
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-              {!collapsed && <ListItemText>{item.name}</ListItemText>}
+              <ListItemText>{item.name}</ListItemText>
             </ListItemButton>
           </Tooltip>
         ))}
@@ -432,10 +450,9 @@ function Sidebar() {
       <Stack
         direction="row"
         height="50px"
-        justifyContent={collapsed ? "center" : "flex-start"}
         alignItems="center"
         py={theme.gap.small}
-        px={theme.gap.medium}
+        px={theme.gap.ml}
         gap={theme.gap.xs}
         borderRadius={`${theme.shape.borderRadius}px`}
       >
