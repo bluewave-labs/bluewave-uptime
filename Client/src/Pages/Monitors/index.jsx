@@ -10,11 +10,9 @@ import Button from "../../Components/Button";
 import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
-import OpenInNewPage from "../../assets/icons/open-in-new-page.svg?react";
 import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
 import { createToast } from "../../Utils/toastUtils";
-import ResponseTimeChart from "../../Components/Charts/ResponseTimeChart";
 import {
   Box,
   IconButton,
@@ -28,6 +26,7 @@ import {
 
 import Settings from "../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
+import BarChart from "../../Components/Charts/BarChart";
 
 const ActionsMenu = ({ monitor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -206,7 +205,6 @@ ActionsMenu.propTypes = {
  *
  * @component
  * @param {Object} params - An object containing the following properties:
- * @param {string} params.url - The URL of the host.
  * @param {string} params.title - The name of the host.
  * @param {string} params.percentageColor - The color of the percentage text.
  * @param {number} params.percentage - The percentage to display.
@@ -214,40 +212,17 @@ ActionsMenu.propTypes = {
  */
 const Host = ({ params }) => {
   return (
-    <Stack direction="row" alignItems="center" className="host">
-      <IconButton
-        aria-label="monitor link"
-        onClick={(event) => {
-          event.stopPropagation();
-          window.open(params.url, "_blank", "noreferrer");
-        }}
-        sx={{
-          "&:focus": {
-            outline: "none",
-          },
-          mr: "5px",
-        }}
-      >
-        <OpenInNewPage
-          style={{
-            marginTop: "-1px",
-            marginRight: "-1px",
-          }}
-        />
-      </IconButton>
-      <Box>
-        {params.title}
-        <Typography component="span" sx={{ color: params.percentageColor }}>
-          {params.percentage}%
-        </Typography>
-      </Box>
+    <Stack direction="row" alignItems="baseline" className="host">
+      {params.title}
+      <Typography component="span" sx={{ color: params.percentageColor }}>
+        {params.percentage}%
+      </Typography>
     </Stack>
   );
 };
 
 Host.propTypes = {
   params: PropTypes.shape({
-    url: PropTypes.string,
     title: PropTypes.string,
     percentageColor: PropTypes.string,
     percentage: PropTypes.number,
@@ -326,7 +301,6 @@ const Monitors = () => {
 
   data.rows = monitorState.monitors.map((monitor, idx) => {
     const params = {
-      url: monitor.url,
       title: monitor.name,
       percentage: 100,
       percentageColor:
@@ -357,7 +331,7 @@ const Monitors = () => {
             />
           ),
         },
-        { id: idx + 2, data: <ResponseTimeChart checks={reversedChecks} /> },
+        { id: idx + 2, data: <BarChart checks={reversedChecks} /> },
         {
           id: idx + 3,
           data: (

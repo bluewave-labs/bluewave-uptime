@@ -23,8 +23,8 @@ const PulseDot = ({ color }) => {
       justifyContent="center"
     >
       <Box
-        minWidth="16px"
-        minHeight="16px"
+        minWidth="18px"
+        minHeight="18px"
         sx={{
           position: "relative",
           backgroundColor: color,
