@@ -53,9 +53,9 @@ const menu = [
     ],
   },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
-  { name: "Status pages", path: "status", icon: <StatusPages /> },
+  // { name: "Status pages", path: "status", icon: <StatusPages /> },
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
-  { name: "Integrations", path: "integrations", icon: <Integrations /> },
+  // { name: "Integrations", path: "integrations", icon: <Integrations /> },
   {
     name: "Account",
     icon: <Account />,
@@ -310,7 +310,7 @@ function Sidebar() {
                         gap: theme.gap.small,
                         borderRadius: `${theme.shape.borderRadius}px`,
                         pl: theme.gap.small,
-                        mb:"1px"
+                        mb: "1px",
                       }}
                     >
                       {child.icon}
