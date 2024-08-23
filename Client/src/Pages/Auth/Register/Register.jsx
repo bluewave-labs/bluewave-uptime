@@ -226,6 +226,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               placeholder="jordan.ellis@domain.com"
               autoComplete="email"
               value={form.email}
+              onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
               onChange={onChange}
               error={errors.email}
               ref={inputRef}
