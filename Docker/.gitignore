@@ -2,6 +2,5 @@
 !build_images.sh
 mongo/data/*
 redis/data/*
-nginx/*
-certbot/*
 *.env
+certbot/*
