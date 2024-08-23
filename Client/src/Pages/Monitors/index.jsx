@@ -437,6 +437,7 @@ const Monitors = () => {
                 <ServerStatus title="Paused" value={0} state="pause" />
               </Stack>
               <Box
+                flex={1}
                 p={theme.gap.lgplus}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
@@ -452,7 +453,7 @@ const Monitors = () => {
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>
-                <BasicTable data={data} paginated={true} />
+                <BasicTable data={data} paginated={true} table={"monitors"} />
               </Box>
             </>
           )}

@@ -15,7 +15,6 @@ import {
   Stack,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import { setRowsPerPage } from "../../Features/UI/uiSlice";
 import LeftArrowDouble from "../../assets/icons/left-arrow-double.svg?react";
 import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
@@ -150,13 +149,11 @@ TablePaginationActions.propTypes = {
  * <BasicTable data={data} rows={rows} paginated={true} />
  */
 
-const BasicTable = ({ data, paginated, reversed }) => {
+const BasicTable = ({ data, paginated, reversed, table }) => {
   const DEFAULT_ROWS_PER_PAGE = 5;
   const theme = useTheme();
-  const location = useLocation();
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
-  let table = location.pathname.split("/").pop();
   let rowsPerPage = uiState?.[table]?.rowsPerPage ?? DEFAULT_ROWS_PER_PAGE;
   const [page, setPage] = useState(0);
 
@@ -293,6 +290,7 @@ BasicTable.propTypes = {
   paginated: PropTypes.bool,
   reversed: PropTypes.bool,
   rowPerPage: PropTypes.number,
+  table: PropTypes.string,
 };
 
 export default BasicTable;

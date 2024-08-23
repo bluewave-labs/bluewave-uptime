@@ -294,7 +294,12 @@ const TeamPanel = () => {
             onClick={() => setIsOpen(true)}
           />
         </Stack>
-        <BasicTable data={tableData} paginated={false} reversed={true} />
+        <BasicTable
+          data={tableData}
+          paginated={false}
+          reversed={true}
+          table={"team"}
+        />
       </Stack>
       <Modal
         aria-labelledby="modal-invite-member"

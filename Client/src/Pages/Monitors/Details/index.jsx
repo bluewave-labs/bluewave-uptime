@@ -330,9 +330,7 @@ const DetailsPage = () => {
             </Box>
             <Stack gap={theme.gap.ml}>
               <Typography component="h2">History</Typography>
-              {/* TODO New Table */}
               <PaginationTable monitorId={monitorId} dateRange={dateRange} />
-              {/* <BasicTable data={data} paginated={true} /> */}
             </Stack>
           </Stack>
         </>
