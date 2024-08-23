@@ -1,5 +1,7 @@
 import { useTheme } from "@emotion/react";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
+import { formatDate } from "../../../Utils/timeUtils";
+import "./index.css";
 
 const BarChart = ({ checks = [] }) => {
   const theme = useTheme();
@@ -7,31 +9,88 @@ const BarChart = ({ checks = [] }) => {
   return (
     <Stack direction="row" flexWrap="nowrap" gap={theme.gap.xs} height="50px">
       {checks.map((check) => (
-        <Box
+        <Tooltip
+          title={
+            <>
+              <Typography>
+                {formatDate(new Date(check.createdAt), { year: undefined })}
+              </Typography>
+              <Box mt={theme.gap.xs}>
+                <Box
+                  display="inline-block"
+                  width={theme.gap.small}
+                  height={theme.gap.small}
+                  backgroundColor={
+                    check.status
+                      ? theme.label.up.dotColor
+                      : theme.label.down.dotColor
+                  }
+                  sx={{ borderRadius: "50%" }}
+                />
+                <Stack
+                  display="inline-flex"
+                  direction="row"
+                  justifyContent="space-between"
+                  ml={theme.gap.xs}
+                  gap={theme.gap.large}
+                >
+                  <Typography component="span" sx={{ opacity: 0.8 }}>
+                    Response Time
+                  </Typography>
+                  <Typography component="span">
+                    {check.originalResponseTime}
+                    <Typography component="span" sx={{ opacity: 0.8 }}>
+                      {" "}
+                      ms
+                    </Typography>
+                  </Typography>
+                </Stack>
+              </Box>
+            </>
+          }
+          placement="top"
           key={`check-${check?._id}`}
-          position="relative"
-          width="8px"
-          height="100%"
-          backgroundColor="#f4f4f4"
-          sx={{
-            borderRadius: theme.gap.xs,
+          slotProps={{
+            popper: {
+              className: "bar-tooltip",
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, -12],
+                  },
+                },
+              ],
+            },
           }}
         >
           <Box
-            position="absolute"
-            bottom={0}
-            width="100%"
-            height={`${check.responseTime}%`}
+            position="relative"
+            width="8px"
+            height="100%"
             backgroundColor={
-              check.status === true
-                ? "var(--env-var-color-23)"
-                : "var(--env-var-color-24)"
+              check.status ? theme.label.up.bgColor : theme.label.down.bgColor
             }
             sx={{
               borderRadius: theme.gap.xs,
             }}
-          />
-        </Box>
+          >
+            <Box
+              position="absolute"
+              bottom={0}
+              width="100%"
+              height={`${check.responseTime}%`}
+              backgroundColor={
+                check.status
+                  ? theme.label.up.dotColor
+                  : theme.label.down.dotColor
+              }
+              sx={{
+                borderRadius: theme.gap.xs,
+              }}
+            />
+          </Box>
+        </Tooltip>
       ))}
     </Stack>
   );
