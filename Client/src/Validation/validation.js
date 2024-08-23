@@ -49,6 +49,13 @@ const credentials = joi.object({
     .string()
     .trim()
     .email({ tlds: { allow: false } })
+    .custom((value, helpers) => {
+      const lowercasedValue = value.toLowerCase();
+      if (value !== lowercasedValue) {
+        return helpers.message("Email must be in lowercase");
+      }
+      return lowercasedValue;
+    })
     .messages({
       "string.empty": "Email is required",
       "string.email": "Must be a valid email address",
@@ -72,14 +79,10 @@ const credentials = joi.object({
 });
 
 const monitorValidation = joi.object({
-  url: joi
-    .string()
-    .uri({ allowRelative: true })
-    .trim()
-    .messages({
-      "string.empty": "This field is required.",
-      "string.uri": "The URL you provided is not valid.",
-    }),
+  url: joi.string().uri({ allowRelative: true }).trim().messages({
+    "string.empty": "This field is required.",
+    "string.uri": "The URL you provided is not valid.",
+  }),
   name: joi.string().trim().max(50).allow("").messages({
     "string.max": "This field should not exceed the 50 characters limit.",
   }),

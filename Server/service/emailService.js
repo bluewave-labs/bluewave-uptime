@@ -3,6 +3,8 @@ const path = require("path");
 const nodemailer = require("nodemailer");
 const { compile } = require("handlebars");
 const mjml2html = require("mjml");
+const SERVICE_NAME = "EmailService";
+const logger = require("../utils/logger");
 
 /**
  * Represents an email service that can load templates, build, and send emails.
@@ -19,12 +21,19 @@ class EmailService {
      * @returns {Function} A compiled template function that can be used to generate HTML email content.
      */
     this.loadTemplate = (templateName) => {
-      const templatePath = path.join(
-        __dirname,
-        `../templates/${templateName}.mjml`
-      );
-      const templateContent = fs.readFileSync(templatePath, "utf8");
-      return compile(templateContent);
+      try {
+        const templatePath = path.join(
+          __dirname,
+          `../templates/${templateName}.mjml`
+        );
+        const templateContent = fs.readFileSync(templatePath, "utf8");
+        return compile(templateContent);
+      } catch (error) {
+        logger.error("Error loading Email templates", {
+          error,
+          service: this.SERVICE_NAME,
+        });
+      }
     };
 
     /**
@@ -67,25 +76,51 @@ class EmailService {
    */
   buildAndSendEmail = async (template, context, to, subject) => {
     const buildHtml = async (template, context) => {
-      const mjml = this.templateLookup[template](context);
-      const html = await mjml2html(mjml);
-      return html.html;
+      try {
+        const mjml = this.templateLookup[template](context);
+        const html = await mjml2html(mjml);
+        return html.html;
+      } catch (error) {
+        logger.error("Error building Email HTML", {
+          error,
+          service: SERVICE_NAME,
+        });
+      }
     };
 
     const sendEmail = async (to, subject, html) => {
-      const info = await this.transporter.sendMail({
-        to: to,
-        subject: subject,
-        html: html,
-      });
-      return info;
+      try {
+        const info = await this.transporter.sendMail({
+          to: to,
+          subject: subject,
+          html: html,
+        });
+        return info;
+      } catch (error) {
+        logger.error("Error sending Email", {
+          error,
+          service: SERVICE_NAME,
+        });
+      }
     };
-    const info = await sendEmail(
-      to,
-      subject,
-      await buildHtml(template, context)
-    );
-    return info.messageId;
+
+    try {
+      const info = await sendEmail(
+        to,
+        subject,
+        await buildHtml(template, context)
+      );
+      return info.messageId;
+    } catch (error) {
+      error.service = SERVICE_NAME;
+      if (error.method === undefined) {
+        error.method = "buildAndSendEmail";
+      }
+      logger.error("Error building and sending Email", {
+        error,
+        service: SERVICE_NAME,
+      });
+    }
   };
 }
 

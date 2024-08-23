@@ -1,22 +1,12 @@
-.MuiTable-root .host a {
-  width: var(--env-var-img-width-2);
-  height: var(--env-var-img-width-2);
-  color: var(--env-var-color-5);
-  margin-right: 10px;
-}
-.MuiTable-root .host a svg {
-  width: var(--env-var-font-size-large);
-  height: var(--env-var-font-size-large);
-}
-.MuiTable-root .host div:nth-child(2) {
+.MuiTable-root .host {
   width: fit-content;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
-.MuiTable-root .host div:nth-child(2) span {
+.MuiTable-root .host span {
   font-size: var(--env-var-font-size-small);
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .MuiTable-root .label {
@@ -128,6 +118,7 @@
 .MuiTablePagination-root p {
   color: var(--env-var-color-2);
   font-weight: 500;
+  font-size: var(--env-var-font-size-small-plus);
 }
 .MuiTablePagination-root button,
 .MuiTablePagination-root .MuiSelect-select {
