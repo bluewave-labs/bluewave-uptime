@@ -427,7 +427,7 @@ function Sidebar() {
               onClick={() =>
                 item.path === "support"
                   ? window.open(
-                      "https://github.com/bluewave-labs/bluewave-uptime",
+                      "https://github.com/bluewave-labs/bluewave-uptime/issues",
                       "_blank",
                       "noreferrer"
                     )

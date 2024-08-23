@@ -1,10 +1,16 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import { formatDate } from "../../../Utils/timeUtils";
+import { useEffect, useState } from "react";
 import "./index.css";
 
 const BarChart = ({ checks = [] }) => {
   const theme = useTheme();
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true);
+  });
 
   // set responseTime to average if there's only one check
   if (checks.length === 1) {
@@ -106,15 +112,15 @@ const BarChart = ({ checks = [] }) => {
               sx={{
                 borderRadius: "3px",
                 "&:hover > .MuiBox-root": {
-                    filter: "brightness(0.8)",
-                  },
+                  filter: "brightness(0.8)",
+                },
               }}
             >
               <Box
                 position="absolute"
                 bottom={0}
                 width="100%"
-                height={`${check.responseTime}%`}
+                height={`${animate ? check.responseTime : 0}%`}
                 backgroundColor={
                   check.status
                     ? theme.label.up.dotColor
@@ -122,6 +128,7 @@ const BarChart = ({ checks = [] }) => {
                 }
                 sx={{
                   borderRadius: "3px",
+                  transition: "height 600ms cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               />
             </Box>
