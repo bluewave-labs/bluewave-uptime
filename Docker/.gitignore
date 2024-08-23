@@ -3,3 +3,4 @@
 mongo/data/*
 redis/data/*
 *.env
+certbot/*
