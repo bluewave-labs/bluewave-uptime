@@ -7,7 +7,17 @@ const BarChart = ({ checks = [] }) => {
   const theme = useTheme();
 
   return (
-    <Stack direction="row" flexWrap="nowrap" gap={theme.gap.xs} height="50px">
+    <Stack
+      direction="row"
+      flexWrap="nowrap"
+      gap="3px"
+      height="50px"
+      width="fit-content"
+      onClick={(event) => event.stopPropagation()}
+      sx={{
+        cursor: "default",
+      }}
+    >
       {checks.map((check) => (
         <Tooltip
           title={
@@ -57,7 +67,7 @@ const BarChart = ({ checks = [] }) => {
                 {
                   name: "offset",
                   options: {
-                    offset: [0, -12],
+                    offset: [0, -10],
                   },
                 },
               ],
@@ -66,13 +76,13 @@ const BarChart = ({ checks = [] }) => {
         >
           <Box
             position="relative"
-            width="8px"
+            width="9px"
             height="100%"
             backgroundColor={
               check.status ? theme.label.up.bgColor : theme.label.down.bgColor
             }
             sx={{
-              borderRadius: theme.gap.xs,
+              borderRadius: "3px",
             }}
           >
             <Box
@@ -86,7 +96,7 @@ const BarChart = ({ checks = [] }) => {
                   : theme.label.down.dotColor
               }
               sx={{
-                borderRadius: theme.gap.xs,
+                borderRadius: "3px",
               }}
             />
           </Box>
