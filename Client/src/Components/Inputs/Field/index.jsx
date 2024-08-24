@@ -177,7 +177,14 @@ const Field = forwardRef(
 );
 
 Field.propTypes = {
-  type: PropTypes.oneOf(["text", "password", "url", "email", "description"]),
+  type: PropTypes.oneOf([
+    "text",
+    "password",
+    "url",
+    "email",
+    "description",
+    "number",
+  ]),
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
   https: PropTypes.bool,
