@@ -15,6 +15,7 @@ import { createToast } from "../../../Utils/toastUtils";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
+import ButtonSpinner from "../../../Components/ButtonSpinner";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -31,6 +32,7 @@ const CreateMonitor = () => {
     "notify-email-default": "notification-email",
   };
 
+  const [isLoading, setIsLoading] = useState(false);
   const [monitor, setMonitor] = useState({
     url: "",
     name: "",
@@ -92,6 +94,7 @@ const CreateMonitor = () => {
 
   const handleCreateMonitor = async (event) => {
     try {
+      setIsLoading(true);
       event.preventDefault();
       //obj to submit
       let form = {
@@ -105,14 +108,6 @@ const CreateMonitor = () => {
         interval: monitor.interval * MS_PER_MINUTE,
       };
 
-      try {
-        console.log(form.url);
-        await networkService.verifyUrl(authToken, form.url);
-      } catch (error) {
-        console.log(error);
-        throw new Error("URL doesn't resolve");
-      }
-
       const { error } = monitorValidation.validate(form, {
         abortEarly: false,
       });
@@ -124,6 +119,7 @@ const CreateMonitor = () => {
         });
         setErrors(newErrors);
         createToast({ body: "Error validation data." });
+        setIsLoading(false);
       } else {
         form = {
           ...form,
@@ -131,11 +127,22 @@ const CreateMonitor = () => {
           userId: user._id,
           notifications: monitor.notifications,
         };
+
+        try {
+          await networkService.verifyUrl(authToken, form.url);
+        } catch (error) {
+          const newErrors = { ...errors };
+          newErrors["url"] = "URL doesn't resolve";
+          setErrors(newErrors);
+          throw new Error("URL doesn't resolve");
+        }
+
         const action = await dispatch(
           createUptimeMonitor({ authToken, monitor: form })
         );
 
         if (action.meta.requestStatus === "fulfilled") {
+          setIsLoading(false);
           createToast({ body: "Monitor created successfully!" });
           navigate("/monitors");
         } else {
@@ -143,6 +150,8 @@ const CreateMonitor = () => {
         }
       }
     } catch (error) {
+      setIsLoading(false);
+
       createToast({ body: error.message });
     }
   };
@@ -402,13 +411,20 @@ const CreateMonitor = () => {
         }
       /> */}
         <Stack direction="row" justifyContent="flex-end">
-          <Button
+          <ButtonSpinner
             id="create-new-monitor-btn"
             level="primary"
             label="Create new monitor"
             onClick={handleCreateMonitor}
-            disabled={Object.keys(errors).length !== 0 && true}
+            isLoading={isLoading}
           />
+          {/* <Button
+            id="create-new-monitor-btn"
+            level="primary"
+            label="Create new monitor"
+            onClick={handleCreateMonitor}
+            disabled={isLoading === true}
+          /> */}
         </Stack>
       </Stack>
     </Box>

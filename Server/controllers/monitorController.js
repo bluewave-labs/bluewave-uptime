@@ -188,7 +188,8 @@ const getMonitorsByUserId = async (req, res, next) => {
 const verifyUrl = async (req, res, next) => {
   try {
     const { url } = req.body;
-    const res = await axios.get(url);
+    console.log(url);
+    await axios.get(url);
     return res.status(200).json({ status: true, msg: "URL is valid" });
   } catch (error) {
     error.method = "verifyUrl";
