@@ -143,7 +143,10 @@ const ActionsMenu = ({ monitor }) => {
         aria-labelledby="modal-delete-monitor"
         aria-describedby="delete-monitor-confirmation"
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={(e) => {
+          e.stopPropagation();
+          setIsOpen(false);
+        }}
         disablePortal
       >
         <Stack
