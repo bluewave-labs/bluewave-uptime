@@ -1,4 +1,3 @@
-import "./index.css";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -6,11 +5,7 @@ import {
   getUptimeMonitorsByUserId,
 } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
-import Button from "../../Components/Button";
-import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
-import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
-import BasicTable from "../../Components/BasicTable";
 import { StatusLabel } from "../../Components/Label";
 import { createToast } from "../../Utils/toastUtils";
 import {
@@ -23,10 +18,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-
+import BasicTable from "../../Components/BasicTable";
+import Button from "../../Components/Button";
+import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import Settings from "../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
 import BarChart from "../../Components/Charts/BarChart";
+import Breadcrumbs from "../../Components/Breadcrumbs";
+import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import "./index.css";
 
 const ActionsMenu = ({ monitor }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -177,7 +177,10 @@ const ActionsMenu = ({ monitor }) => {
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setIsOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(false);
+              }}
             />
             <Button
               level="error"
@@ -212,12 +215,39 @@ ActionsMenu.propTypes = {
  */
 const Host = ({ params }) => {
   return (
-    <Stack direction="row" alignItems="baseline" className="host">
-      {params.title}
-      <Typography component="span" sx={{ color: params.percentageColor }}>
+    <Box className="host">
+      <Box
+        display="inline-block"
+        position="relative"
+        sx={{
+          fontWeight: 500,
+          "&:before": {
+            position: "absolute",
+            content: `""`,
+            width: "4px",
+            height: "4px",
+            borderRadius: "50%",
+            backgroundColor: "gray",
+            opacity: 0.8,
+            right: "-10px",
+            top: "42%",
+          },
+        }}
+      >
+        {params.title}
+      </Box>
+      <Typography
+        component="span"
+        sx={{
+          color: params.percentageColor,
+          fontWeight: 500,
+          ml: "15px",
+        }}
+      >
         {params.percentage}%
       </Typography>
-    </Stack>
+      <Box sx={{ opacity: 0.6 }}>{params.url}</Box>
+    </Box>
   );
 };
 
@@ -301,6 +331,7 @@ const Monitors = () => {
 
   data.rows = monitorState.monitors.map((monitor, idx) => {
     const params = {
+      url: monitor.url,
       title: monitor.name,
       percentage: 100,
       percentageColor:
@@ -348,34 +379,73 @@ const Monitors = () => {
 
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
+  const now = new Date();
+  const hour = now.getHours();
+
+  let greeting = "";
+  let emoji = "";
+  if (hour < 12) {
+    greeting = "morning";
+    emoji = "🌅";
+  } else if (hour < 18) {
+    greeting = "afternoon";
+    emoji = "🌞";
+  } else {
+    greeting = "evening";
+    emoji = "🌙";
+  }
+
   return (
     <Stack className="monitors" gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
         <>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              component="h1"
-              sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+          <Box>
+            <Breadcrumbs list={[{ name: `monitors`, path: "/monitors" }]} />
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              mt={theme.gap.medium}
             >
-              Hello, {authState.user.firstName}
-            </Typography>
-            {monitorState.monitors?.length !== 0 && (
-              <Button
-                level="primary"
-                label="Create monitor"
-                onClick={() => {
-                  navigate("/monitors/create");
-                }}
-                sx={{ fontWeight: 500 }}
-              />
-            )}
-          </Stack>
+              <Box>
+                <Typography component="h1" lineHeight={1}>
+                  <Typography
+                    component="span"
+                    fontSize="inherit"
+                    color={theme.palette.otherColors.bluishGray}
+                  >
+                    Good {greeting},{" "}
+                  </Typography>
+                  <Typography
+                    component="span"
+                    fontSize="inherit"
+                    fontWeight="inherit"
+                  >
+                    {authState.user.firstName} {emoji}
+                  </Typography>
+                </Typography>
+                <Typography
+                  sx={{ opacity: 0.8 }}
+                  lineHeight={1}
+                  fontWeight={300}
+                >
+                  Here’s an overview of your uptime monitors.
+                </Typography>
+              </Box>
+              {monitorState.monitors?.length !== 0 && (
+                <Button
+                  level="primary"
+                  label="Create monitor"
+                  onClick={() => {
+                    navigate("/monitors/create");
+                  }}
+                  sx={{ fontWeight: 500, alignSelf: "flex-end" }}
+                />
+              )}
+            </Stack>
+          </Box>
           {monitorState.monitors?.length === 0 ? (
             <Stack
               alignItems="center"
@@ -412,7 +482,8 @@ const Monitors = () => {
               </Stack>
               <Box
                 flex={1}
-                p={theme.gap.lgplus}
+                py={theme.gap.large}
+                px={theme.gap.lgplus}
                 border={1}
                 borderColor={theme.palette.otherColors.graishWhite}
                 backgroundColor={theme.palette.otherColors.white}
@@ -420,8 +491,10 @@ const Monitors = () => {
                   borderRadius: `${theme.shape.borderRadius}px`,
                 }}
               >
-                <Stack direction="row" alignItems="center" mb={theme.gap.large}>
-                  <Typography component="h2">Current monitors</Typography>
+                <Stack direction="row" alignItems="center" mb={theme.gap.ml}>
+                  <Typography component="h2" letterSpacing={-0.5}>
+                    Actively monitoring
+                  </Typography>
                   <Box className="current-monitors-counter">
                     {monitorState.monitors.length}
                   </Box>

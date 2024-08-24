@@ -98,7 +98,7 @@ const CreateMonitor = () => {
         monitor.type === "http"
           ? `http${https ? "s" : ""}://` + monitor.url
           : monitor.url,
-      name: monitor.name === "" ? monitor.url : monitor.name,
+      name: monitor.name,
       type: monitor.type,
       interval: monitor.interval * MS_PER_MINUTE,
     };
