@@ -20,12 +20,13 @@ import {
 } from "@mui/material";
 import BasicTable from "../../Components/BasicTable";
 import Button from "../../Components/Button";
-import ServerStatus from "../../Components/Charts/Servers/ServerStatus";
 import Settings from "../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
 import BarChart from "../../Components/Charts/BarChart";
 import Breadcrumbs from "../../Components/Breadcrumbs";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import background from "../../assets/Images/background-grid.svg";
+import Arrow from "../../assets/icons/top-right-arrow.svg?react";
 import "./index.css";
 
 const ActionsMenu = ({ monitor }) => {
@@ -259,6 +260,94 @@ Host.propTypes = {
   }).isRequired,
 };
 
+const StatusBox = ({ title, value }) => {
+  const theme = useTheme();
+
+  let sharedStyles = { position: "absolute", right: 8, opacity: 0.5 };
+
+  let color;
+  let icon;
+  if (title === "up") {
+    color = theme.pie.green.stroke;
+    icon = (
+      <Box sx={{ ...sharedStyles, top: 8 }}>
+        <Arrow />
+      </Box>
+    );
+  } else if (title === "down") {
+    color = theme.pie.red.stroke;
+    icon = (
+      <Box sx={{ ...sharedStyles, transform: "rotate(180deg)", top: 5 }}>
+        <Arrow />
+      </Box>
+    );
+  } else if (title === "paused") {
+    color = theme.pie.yellow.stroke;
+  }
+
+  return (
+    <Box
+      position="relative"
+      flex={1}
+      border={1}
+      borderColor={theme.palette.otherColors.graishWhite}
+      borderRadius={`${theme.shape.borderRadius}px`}
+      backgroundColor={theme.palette.otherColors.white}
+      px={theme.gap.large}
+      py={theme.gap.ml}
+      overflow="hidden"
+      sx={{
+        "&:hover": {
+          backgroundColor: "#f9fafb",
+        },
+        // backgroundImage:
+        //   "linear-gradient(to right bottom, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #fefefe, #fefefe, #fdfdfd, #fcfcfd, #fafbfc, #f9fafb)",
+        "&:after": {
+          position: "absolute",
+          content: `""`,
+          backgroundImage: `url(${background})`,
+          width: "400px",
+          height: "200px",
+          top: "-10%",
+          left: "5%",
+          zIndex: 10000,
+        },
+      }}
+    >
+      <Box
+        textTransform="uppercase"
+        fontSize={15}
+        letterSpacing={0.5}
+        color={theme.palette.otherColors.bluishGray}
+        mb={theme.gap.ml}
+        sx={{ opacity: 0.6 }}
+      >
+        {title}
+      </Box>
+      {icon}
+      <Stack
+        direction="row"
+        alignItems="flex-start"
+        fontSize={36}
+        fontWeight={600}
+        color={color}
+        gap="2px"
+      >
+        {value}
+        <Typography
+          component="span"
+          fontSize={20}
+          fontWeight={300}
+          color={theme.palette.otherColors.bluishGray}
+          sx={{ opacity: 0.3 }}
+        >
+          #
+        </Typography>
+      </Stack>
+    </Box>
+  );
+};
+
 /**
  * Renders a skeleton layout.
  *
@@ -476,9 +565,9 @@ const Monitors = () => {
                 direction="row"
                 justifyContent="space-between"
               >
-                <ServerStatus title="Up" value={up} state="up" />
-                <ServerStatus title="Down" value={down} state="down" />
-                <ServerStatus title="Paused" value={0} state="pause" />
+                <StatusBox title="up" value={up} />
+                <StatusBox title="down" value={down} />
+                <StatusBox title="paused" value={0} />
               </Stack>
               <Box
                 flex={1}

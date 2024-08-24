@@ -194,6 +194,7 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? theme.gap.xs : theme.gap.small,
+              backgroundColor: "transparent"
             }}
           >
             Menu
@@ -394,6 +395,7 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? 0 : theme.gap.small,
+              backgroundColor: "transparent"
             }}
           >
             Other
