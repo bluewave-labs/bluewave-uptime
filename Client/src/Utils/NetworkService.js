@@ -185,6 +185,31 @@ class NetworkService {
 
   /**
    * ************************************
+   * Verify a URL resolves
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} url - The URL to be verified.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
+  async verifyUrl(authToken, url) {
+    return this.axiosInstance.post(
+      `/monitors/verify`,
+      {
+        url,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
    * Registers a new user
    * ************************************
    *

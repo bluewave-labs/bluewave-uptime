@@ -14,6 +14,7 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import { createToast } from "../../../Utils/toastUtils";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { logger } from "../../../Utils/Logger";
+import { networkService } from "../../../main";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -90,46 +91,59 @@ const CreateMonitor = () => {
   };
 
   const handleCreateMonitor = async (event) => {
-    event.preventDefault();
-    //obj to submit
-    let form = {
-      url:
-        //preprending protocol for url
-        monitor.type === "http"
-          ? `http${https ? "s" : ""}://` + monitor.url
-          : monitor.url,
-      name: monitor.name === "" ? monitor.url : monitor.name,
-      type: monitor.type,
-      interval: monitor.interval * MS_PER_MINUTE,
-    };
-
-    const { error } = monitorValidation.validate(form, {
-      abortEarly: false,
-    });
-
-    if (error) {
-      const newErrors = {};
-      error.details.forEach((err) => {
-        newErrors[err.path[0]] = err.message;
-      });
-      setErrors(newErrors);
-      createToast({ body: "Error validation data." });
-    } else {
-      form = {
-        ...form,
-        description: form.name,
-        userId: user._id,
-        notifications: monitor.notifications,
+    try {
+      event.preventDefault();
+      //obj to submit
+      let form = {
+        url:
+          //preprending protocol for url
+          monitor.type === "http"
+            ? `http${https ? "s" : ""}://` + monitor.url
+            : monitor.url,
+        name: monitor.name === "" ? monitor.url : monitor.name,
+        type: monitor.type,
+        interval: monitor.interval * MS_PER_MINUTE,
       };
-      const action = await dispatch(
-        createUptimeMonitor({ authToken, monitor: form })
-      );
-      if (action.meta.requestStatus === "fulfilled") {
-        createToast({ body: "Monitor created successfully!" });
-        navigate("/monitors");
-      } else {
-        createToast({ body: "Failed to create monitor." });
+
+      try {
+        console.log(form.url);
+        await networkService.verifyUrl(authToken, form.url);
+      } catch (error) {
+        console.log(error);
+        throw new Error("URL doesn't resolve");
       }
+
+      const { error } = monitorValidation.validate(form, {
+        abortEarly: false,
+      });
+
+      if (error) {
+        const newErrors = {};
+        error.details.forEach((err) => {
+          newErrors[err.path[0]] = err.message;
+        });
+        setErrors(newErrors);
+        createToast({ body: "Error validation data." });
+      } else {
+        form = {
+          ...form,
+          description: form.name,
+          userId: user._id,
+          notifications: monitor.notifications,
+        };
+        const action = await dispatch(
+          createUptimeMonitor({ authToken, monitor: form })
+        );
+
+        if (action.meta.requestStatus === "fulfilled") {
+          createToast({ body: "Monitor created successfully!" });
+          navigate("/monitors");
+        } else {
+          throw new Error("Failed to create monitor.");
+        }
+      }
+    } catch (error) {
+      createToast({ body: error.message });
     }
   };
 

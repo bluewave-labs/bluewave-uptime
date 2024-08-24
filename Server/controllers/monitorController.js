@@ -7,10 +7,10 @@ const {
   getMonitorsByUserIdQueryValidation,
 } = require("../validation/joi");
 
+const axios = require("axios");
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-const { runInNewContext } = require("vm");
 
 /**
  * Returns all monitors
@@ -174,6 +174,27 @@ const getMonitorsByUserId = async (req, res, next) => {
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
+  }
+};
+
+/**
+ * Verifies a monitor URL
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+const verifyUrl = async (req, res, next) => {
+  try {
+    const { url } = req.body;
+    const res = await axios.get(url);
+    return res.status(200).json({ status: true, msg: "URL is valid" });
+  } catch (error) {
+    error.method = "verifyUrl";
+    error.service = SERVICE_NAME;
+    next(error);
+    return;
   }
 };
 
@@ -343,6 +364,7 @@ module.exports = {
   getMonitorCertificate,
   getMonitorById,
   getMonitorsByUserId,
+  verifyUrl,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,

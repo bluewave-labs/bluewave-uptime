@@ -9,7 +9,9 @@ router.get("/certificate/:monitorId", monitorController.getMonitorCertificate);
 router.get("/:monitorId", monitorController.getMonitorById);
 router.get("/user/:userId", monitorController.getMonitorsByUserId);
 
+router.post("/verify", monitorController.verifyUrl);
 router.post("/", monitorController.createMonitor);
+
 router.delete(
   "/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
