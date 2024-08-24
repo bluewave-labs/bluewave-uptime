@@ -27,6 +27,7 @@ import Breadcrumbs from "../../Components/Breadcrumbs";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import background from "../../assets/Images/background-grid.svg";
 import Arrow from "../../assets/icons/top-right-arrow.svg?react";
+import ClockSnooze from "../../assets/icons/clock-snooze.svg?react";
 import "./index.css";
 
 const ActionsMenu = ({ monitor }) => {
@@ -260,6 +261,16 @@ Host.propTypes = {
   }).isRequired,
 };
 
+/**
+ * StatusBox component displays a status box with a title and value.
+ * The icon and color change based on the status title.
+ *
+ * @param {Object} props
+ * @param {string} props.title - The status title, which determines the icon and color.
+ * @param {number|string} props.value - The value to be displayed inside the box.
+ * @returns {JSX.Element} The rendered StatusBox component.
+ */
+
 const StatusBox = ({ title, value }) => {
   const theme = useTheme();
 
@@ -283,6 +294,11 @@ const StatusBox = ({ title, value }) => {
     );
   } else if (title === "paused") {
     color = theme.pie.yellow.stroke;
+    icon = (
+      <Box sx={{ ...sharedStyles, top: 12, right: 12 }}>
+        <ClockSnooze />
+      </Box>
+    );
   }
 
   return (
@@ -300,8 +316,6 @@ const StatusBox = ({ title, value }) => {
         "&:hover": {
           backgroundColor: "#f9fafb",
         },
-        // backgroundImage:
-        //   "linear-gradient(to right bottom, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #fefefe, #fefefe, #fdfdfd, #fcfcfd, #fafbfc, #f9fafb)",
         "&:after": {
           position: "absolute",
           content: `""`,
@@ -311,6 +325,7 @@ const StatusBox = ({ title, value }) => {
           top: "-10%",
           left: "5%",
           zIndex: 10000,
+          pointerEvents: "none",
         },
       }}
     >
@@ -346,6 +361,11 @@ const StatusBox = ({ title, value }) => {
       </Stack>
     </Box>
   );
+};
+
+StatusBox.propTypes = {
+  title: PropTypes.oneOf(["up", "down", "paused"]).isRequired,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 /**
