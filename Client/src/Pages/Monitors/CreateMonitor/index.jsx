@@ -53,7 +53,7 @@ const CreateMonitor = () => {
       const {name, ...rest} = data;   //data.name is read-only
       if(rest.type == 'http')  rest.url = rest.url.substring(8, rest.url.length)
       rest.name = `${name} (Clone)`;
-      rest.interval /= 60000;
+      rest.interval /= MS_PER_MINUTE;
       setMonitor({
         ...rest,
       });
