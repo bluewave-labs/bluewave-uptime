@@ -8,6 +8,7 @@ const {
 } = require("../validation/joi");
 
 const axios = require("axios");
+const ping = require("ping");
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
@@ -187,11 +188,26 @@ const getMonitorsByUserId = async (req, res, next) => {
  */
 const verifyUrl = async (req, res, next) => {
   try {
-    const { url } = req.body;
-    console.log(url);
-    await axios.get(url);
+    const { type, url } = req.body;
+
+    if (type === "ping") {
+      const response = await ping.promise.probe(url);
+      if (response.alive === false) {
+        throw new Error("IP is not valid");
+      }
+    } else if (type === "http" || type === "pagespeed") {
+      try {
+        await axios.get(url);
+      } catch (error) {
+        throw new Error("URL is not valid");
+      }
+    } else {
+      throw new Error("Invalid type");
+    }
+
     return res.status(200).json({ status: true, msg: "URL is valid" });
   } catch (error) {
+    error.status = 422;
     error.method = "verifyUrl";
     error.service = SERVICE_NAME;
     next(error);

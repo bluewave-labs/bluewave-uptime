@@ -119,7 +119,6 @@ const CreateMonitor = () => {
         });
         setErrors(newErrors);
         createToast({ body: "Error validation data." });
-        setIsLoading(false);
       } else {
         form = {
           ...form,
@@ -129,12 +128,15 @@ const CreateMonitor = () => {
         };
 
         try {
-          await networkService.verifyUrl(authToken, form.url);
+          await networkService.verifyUrl(authToken, form.type, form.url);
         } catch (error) {
           const newErrors = { ...errors };
           newErrors["url"] = "URL doesn't resolve";
           setErrors(newErrors);
-          throw new Error("URL doesn't resolve");
+          if (error?.response?.data?.msg) {
+            error.message = error.response.data.msg;
+          }
+          throw error;
         }
 
         const action = await dispatch(
@@ -142,7 +144,6 @@ const CreateMonitor = () => {
         );
 
         if (action.meta.requestStatus === "fulfilled") {
-          setIsLoading(false);
           createToast({ body: "Monitor created successfully!" });
           navigate("/monitors");
         } else {
@@ -151,8 +152,9 @@ const CreateMonitor = () => {
       }
     } catch (error) {
       setIsLoading(false);
-
       createToast({ body: error.message });
+    } finally {
+      setIsLoading(false);
     }
   };
 

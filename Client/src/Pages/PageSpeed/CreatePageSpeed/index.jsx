@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Button from "../../../Components/Button";
+import ButtonSpinner from "../../../Components/ButtonSpinner";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
@@ -13,11 +14,13 @@ import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMon
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
 import { logger } from "../../../Utils/Logger";
+import { networkService } from "../../../main";
 
 const CreatePageSpeed = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
@@ -73,27 +76,41 @@ const CreatePageSpeed = () => {
       });
       setErrors(newErrors);
       createToast({ body: "Error validating data." });
-    } else {
-      monitor = {
-        ...monitor,
-        description: monitor.name,
-        userId: user._id,
-        interval: form.interval * MS_PER_MINUTE,
-        type: "pagespeed",
-      };
+      return;
+    }
+
+    monitor = {
+      ...monitor,
+      description: monitor.name,
+      userId: user._id,
+      interval: form.interval * MS_PER_MINUTE,
+      type: "pagespeed",
+    };
+
+    try {
+      setIsLoading(true);
       try {
-        const action = await dispatch(createPageSpeed({ authToken, monitor }));
-        if (action.meta.requestStatus === "fulfilled") {
-          navigate("/pagespeed");
-        }
+        await networkService.verifyUrl(authToken, monitor.type, monitor.url);
       } catch (error) {
-        createToast({
-          body:
-            error.details && error.details.length > 0
-              ? error.details[0].message
-              : "Unknown error.",
-        });
+        const newErrors = { ...errors };
+        newErrors["url"] = "URL doesn't resolve";
+        setErrors(newErrors);
+        throw error;
       }
+      const action = await dispatch(createPageSpeed({ authToken, monitor }));
+      if (action.meta.requestStatus === "fulfilled") {
+        navigate("/pagespeed");
+      }
+    } catch (error) {
+      if (error.details && error.details.length > 0) {
+        createToast({
+          body: error.details[0].message,
+        });
+      } else if (error.response?.data?.msg) {
+        createToast({ body: error.response.data.msg });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -187,10 +204,11 @@ const CreatePageSpeed = () => {
           </Stack>
         </Stack>
         <Stack direction="row" justifyContent="flex-end" mt="auto">
-          <Button
+          <ButtonSpinner
             type="submit"
             level="primary"
             label="Create"
+            isLoading={isLoading}
             onClick={handleCreate}
             sx={{ px: theme.gap.large, mt: theme.gap.large }}
           />

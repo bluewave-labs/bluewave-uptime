@@ -194,10 +194,11 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async verifyUrl(authToken, url) {
+  async verifyUrl(authToken, type, url) {
     return this.axiosInstance.post(
       `/monitors/verify`,
       {
+        type,
         url,
       },
       {
