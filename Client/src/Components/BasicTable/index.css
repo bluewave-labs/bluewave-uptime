@@ -5,8 +5,7 @@
   white-space: nowrap;
 }
 .MuiTable-root .host span {
-  font-size: var(--env-var-font-size-small);
-  margin-left: 8px;
+  font-size: 11px;
 }
 
 .MuiTable-root .label {
@@ -179,4 +178,17 @@ body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
 }
 body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
   font-size: var(--env-var-font-size-small-plus);
+}
+
+.monitors .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
+  text-transform: uppercase;
+  color: var(--env-var-color-5);
+  opacity: 0.8;
+  font-size: var(--env-var-font-size-small-plus);
+  font-weight: 400;
+}
+.monitors .MuiTableCell-root:not(:first-of-type):not(:last-of-type),
+.monitors .MuiTableCell-root:not(:first-of-type):not(:last-of-type) {
+  padding-left: var(--env-var-spacing-1);
+  padding-right: var(--env-var-spacing-1);
 }
