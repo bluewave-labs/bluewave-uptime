@@ -53,9 +53,9 @@ const menu = [
     ],
   },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
-  { name: "Status pages", path: "status", icon: <StatusPages /> },
+  // { name: "Status pages", path: "status", icon: <StatusPages /> },
   { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
-  { name: "Integrations", path: "integrations", icon: <Integrations /> },
+  // { name: "Integrations", path: "integrations", icon: <Integrations /> },
   {
     name: "Account",
     icon: <Account />,
@@ -194,6 +194,7 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? theme.gap.xs : theme.gap.small,
+              backgroundColor: "transparent"
             }}
           >
             Menu
@@ -310,7 +311,7 @@ function Sidebar() {
                         gap: theme.gap.small,
                         borderRadius: `${theme.shape.borderRadius}px`,
                         pl: theme.gap.small,
-                        mb:"1px"
+                        mb: "1px",
                       }}
                     >
                       {child.icon}
@@ -394,6 +395,7 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? 0 : theme.gap.small,
+              backgroundColor: "transparent"
             }}
           >
             Other
@@ -427,7 +429,7 @@ function Sidebar() {
               onClick={() =>
                 item.path === "support"
                   ? window.open(
-                      "https://github.com/bluewave-labs/bluewave-uptime",
+                      "https://github.com/bluewave-labs/bluewave-uptime/issues",
                       "_blank",
                       "noreferrer"
                     )

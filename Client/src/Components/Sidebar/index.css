@@ -15,6 +15,9 @@ aside span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
   line-height: 1;
 }
+aside .MuiStack-root + span.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium-plus);
+}
 aside .MuiListSubheader-root {
   font-size: var(--env-var-font-size-small);
   font-weight: 500;

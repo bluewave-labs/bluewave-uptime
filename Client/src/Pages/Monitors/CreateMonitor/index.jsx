@@ -182,9 +182,20 @@ const CreateMonitor = () => {
         noValidate
         spellCheck="false"
         gap={theme.gap.large}
-        mt={theme.gap.mlplus}
+        mt={theme.gap.medium}
       >
-        <Typography component="h1">Create new monitor</Typography>
+        <Typography component="h1">
+          <Typography
+            component="span"
+            fontSize="inherit"
+            color={theme.palette.otherColors.bluishGray}
+          >
+            Create your{" "}
+          </Typography>
+          <Typography component="span" fontSize="inherit" fontWeight="inherit">
+            monitor
+          </Typography>
+        </Typography>
         <Stack className="config-box">
           <Box>
             <Typography component="h2">General settings</Typography>
@@ -416,7 +427,7 @@ const CreateMonitor = () => {
           <ButtonSpinner
             id="create-new-monitor-btn"
             level="primary"
-            label="Create new monitor"
+            label="Create monitor"
             onClick={handleCreateMonitor}
             isLoading={isLoading}
           />

@@ -1,22 +1,11 @@
-.MuiTable-root .host a {
-  width: var(--env-var-img-width-2);
-  height: var(--env-var-img-width-2);
-  color: var(--env-var-color-5);
-  margin-right: 10px;
-}
-.MuiTable-root .host a svg {
-  width: var(--env-var-font-size-large);
-  height: var(--env-var-font-size-large);
-}
-.MuiTable-root .host div:nth-child(2) {
+.MuiTable-root .host {
   width: fit-content;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
-.MuiTable-root .host div:nth-child(2) span {
-  font-size: var(--env-var-font-size-small);
-  margin-left: 10px;
+.MuiTable-root .host span {
+  font-size: 11px;
 }
 
 .MuiTable-root .label {
@@ -128,6 +117,7 @@
 .MuiTablePagination-root p {
   color: var(--env-var-color-2);
   font-weight: 500;
+  font-size: var(--env-var-font-size-small-plus);
 }
 .MuiTablePagination-root button,
 .MuiTablePagination-root .MuiSelect-select {
@@ -188,4 +178,17 @@ body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
 }
 body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
   font-size: var(--env-var-font-size-small-plus);
+}
+
+.monitors .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
+  text-transform: uppercase;
+  color: var(--env-var-color-5);
+  opacity: 0.8;
+  font-size: var(--env-var-font-size-small-plus);
+  font-weight: 400;
+}
+.monitors .MuiTableCell-root:not(:first-of-type):not(:last-of-type),
+.monitors .MuiTableCell-root:not(:first-of-type):not(:last-of-type) {
+  padding-left: var(--env-var-spacing-1);
+  padding-right: var(--env-var-spacing-1);
 }

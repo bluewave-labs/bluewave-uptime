@@ -43,7 +43,7 @@ export const formatDurationRounded = (ms) => {
   return time;
 };
 
-export const formatDate = (date) => {
+export const formatDate = (date, customOptions) => {
   const options = {
     year: "numeric",
     month: "long",
@@ -51,6 +51,7 @@ export const formatDate = (date) => {
     hour: "numeric",
     minute: "numeric",
     hour12: true,
+    ...customOptions
   };
 
   // Return the date using the specified options

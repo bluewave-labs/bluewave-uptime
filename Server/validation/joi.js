@@ -16,7 +16,17 @@ const roleValidatior = (role) => (value, helpers) => {
 //****************************************
 
 const loginValidation = joi.object({
-  email: joi.string().email().required(),
+  email: joi
+    .string()
+    .email()
+    .required()
+    .custom((value, helpers) => {
+      const lowercasedValue = value.toLowerCase();
+      if (value !== lowercasedValue) {
+        return helpers.message("Email must be in lowercase");
+      }
+      return lowercasedValue;
+    }),
   password: joi
     .string()
     .min(8)
@@ -35,7 +45,17 @@ const registerValidation = joi.object({
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
-  email: joi.string().email().required(),
+  email: joi
+    .string()
+    .email()
+    .required()
+    .custom((value, helpers) => {
+      const lowercasedValue = value.toLowerCase();
+      if (value !== lowercasedValue) {
+        return helpers.message("Email must be in lowercase");
+      }
+      return lowercasedValue;
+    }),
   password: joi
     .string()
     .min(8)

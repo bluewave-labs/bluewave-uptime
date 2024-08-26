@@ -74,7 +74,8 @@ const TeamPanel = () => {
         { id: 1, name: "NAME" },
         { id: 2, name: "EMAIL" },
         { id: 3, name: "ROLE" },
-        { id: 4, name: "ACTION" },
+        // FEATURE STILL TO BE IMPLEMENTED
+        // { id: 4, name: "ACTION" },
       ],
       rows: team?.map((member, idx) => {
         return {
@@ -101,22 +102,23 @@ const TeamPanel = () => {
               id: idx + 2,
               data: member.role.includes("admin") ? "Administrator" : "Member",
             },
-            {
-              // TODO - Add delete onClick
-              id: idx + 3,
-              data: (
-                <IconButton
-                  aria-label="remove member"
-                  sx={{
-                    "&:focus": {
-                      outline: "none",
-                    },
-                  }}
-                >
-                  <Remove />
-                </IconButton>
-              ),
-            },
+            // FEATURE STILL TO BE IMPLEMENTED
+            // {
+            //   // TODO - Add delete onClick
+            //   id: idx + 3,
+            //   data: (
+            //     <IconButton
+            //       aria-label="remove member"
+            //       sx={{
+            //         "&:focus": {
+            //           outline: "none",
+            //         },
+            //       }}
+            //     >
+            //       <Remove />
+            //     </IconButton>
+            //   ),
+            // },
           ],
         };
       }),
@@ -197,7 +199,8 @@ const TeamPanel = () => {
 
   return (
     <TabPanel value="team">
-      <Stack component="form">
+      {/* FEATURE STILL TO BE IMPLEMENTED */}
+      {/* <Stack component="form">
         <Box sx={{ alignSelf: "flex-start" }}>
           <Typography component="h1">Organization name</Typography>
         </Box>
@@ -242,7 +245,7 @@ const TeamPanel = () => {
           />
         </Stack>
       </Stack>
-      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(4) }} />
+      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(4) }} /> */}
       <Stack
         component="form"
         noValidate
