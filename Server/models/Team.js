@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
 
-const TeamSchema = mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    immutable: true,
+const TeamSchema = mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Team", TeamSchema);

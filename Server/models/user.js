@@ -40,6 +40,11 @@ const UserSchema = mongoose.Schema(
       default: "user",
       enum: ["user", "admin", "superadmin"],
     },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      immutable: true,
+    },
   },
   {
     timestamps: true,

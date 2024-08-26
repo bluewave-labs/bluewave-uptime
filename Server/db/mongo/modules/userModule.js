@@ -1,4 +1,5 @@
 const UserModel = require("../../../models/user");
+const TeamModel = require("../../../models/Team");
 const { errorMessages } = require("../../../utils/messages");
 const { GenerateAvatarImage } = require("../../../utils/imageProcessing");
 
@@ -27,7 +28,19 @@ const insertUser = async (req, res) => {
       const avatar = await GenerateAvatarImage(req.file);
       userData.avatarImage = avatar;
     }
+
+    let teamId;
+    // Is user superadmin? If so, create team
+    if (userData.role.includes("superadmin")) {
+      const team = new TeamModel({
+        email: userData.email,
+      });
+      teamId = team._id;
+      await team.save();
+    }
+
     const newUser = new UserModel(userData);
+    newUser.teamId = teamId;
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })
       .select("-password")
