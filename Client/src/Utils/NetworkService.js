@@ -293,8 +293,8 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async doesAdminExist() {
-    return this.axiosInstance.get("/auth/users/admin");
+  async doesSuperAdminExist() {
+    return this.axiosInstance.get("/auth/users/superadmin");
   }
 
   /**

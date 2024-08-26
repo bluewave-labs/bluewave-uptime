@@ -23,11 +23,11 @@ import { logger } from "../../../Utils/Logger";
  * Displays the initial landing page.
  *
  * @param {Object} props
- * @param {boolean} props.isAdmin - Whether the user is creating and admin account
+ * @param {boolean} props.isSuperAdmin - Whether the user is creating and admin account
  * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
  * @returns {JSX.Element}
  */
-const LandingPage = ({ isAdmin, onSignup }) => {
+const LandingPage = ({ isSuperAdmin, onSignup }) => {
   const theme = useTheme();
 
   return (
@@ -40,7 +40,8 @@ const LandingPage = ({ isAdmin, onSignup }) => {
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>
-            Create your {isAdmin ? "admin " : ""}account to get started.
+            Create your {isSuperAdmin ? "Super admin " : ""}account to get
+            started.
           </Typography>
         </Box>
         <Box width="100%">
@@ -93,7 +94,7 @@ const LandingPage = ({ isAdmin, onSignup }) => {
 };
 
 LandingPage.propTypes = {
-  isAdmin: PropTypes.bool,
+  isSuperAdmin: PropTypes.bool,
   onSignup: PropTypes.func,
 };
 
@@ -422,7 +423,7 @@ StepThree.propTypes = {
   onBack: PropTypes.func,
 };
 
-const Register = ({ isAdmin }) => {
+const Register = ({ isSuperAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
@@ -525,7 +526,10 @@ const Register = ({ isAdmin }) => {
   const handleStepThree = async (e) => {
     e.preventDefault();
 
-    let registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+    let registerForm = {
+      ...form,
+      role: isSuperAdmin ? ["superadmin"] : form.role,
+    };
     let error = validateForm(registerForm, {
       context: { password: form.password },
     });
@@ -616,7 +620,10 @@ const Register = ({ isAdmin }) => {
         }}
       >
         {step === 0 ? (
-          <LandingPage isAdmin={isAdmin} onSignup={() => setStep(1)} />
+          <LandingPage
+            isSuperAdmin={isSuperAdmin}
+            onSignup={() => setStep(1)}
+          />
         ) : step === 1 ? (
           <StepOne
             form={form}
@@ -664,6 +671,6 @@ const Register = ({ isAdmin }) => {
   );
 };
 Register.propTypes = {
-  isAdmin: PropTypes.bool,
+  isSuperAdmin: PropTypes.bool,
 };
 export default Register;

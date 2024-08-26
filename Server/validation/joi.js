@@ -5,8 +5,11 @@ const joi = require("joi");
 //****************************************
 
 const roleValidatior = (role) => (value, helpers) => {
-  if (!value.includes(role)) {
-    throw new joi.ValidationError(`You do not have ${role} authorization`);
+  const hasRole = roles.some((role) => value.includes(role));
+  if (!hasRole) {
+    throw new Joi.ValidationError(
+      `You do not have the required authorization. Required roles: ${roles.join(", ")}`
+    );
   }
   return value;
 };
@@ -66,7 +69,7 @@ const registerValidation = joi.object({
   profileImage: joi.any(),
   role: joi
     .array()
-    .items(joi.string().valid("admin", "user"))
+    .items(joi.string().valid("superadmin", "admin", "user"))
     .min(1)
     .required(),
 });
@@ -123,7 +126,7 @@ const deleteUserParamValidation = joi.object({
 });
 
 const inviteRoleValidation = joi.object({
-  roles: joi.custom(roleValidatior("admin")).required(),
+  roles: joi.custom(roleValidatior(["admin", "superadmin"])).required(),
 });
 
 const inviteBodyValidation = joi.object({

@@ -301,7 +301,7 @@ const Login = () => {
       return;
     }
     networkService
-      .doesAdminExist()
+      .doesSuperAdminExist()
       .then((response) => {
         if (response.data.data === false) {
           navigate("/register");
