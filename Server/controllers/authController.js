@@ -226,7 +226,8 @@ const inviteController = async (req, res, next) => {
   try {
     // Only admins can invite
     const token = getTokenFromHeaders(req.headers);
-    const { role, firstname } = jwt.decode(token);
+    const { role, firstname, teamId } = jwt.decode(token);
+    req.body.teamId = teamId;
     try {
       await inviteRoleValidation.validateAsync({ roles: role });
       await inviteBodyValidation.validateAsync(req.body);

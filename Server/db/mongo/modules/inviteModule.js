@@ -8,6 +8,7 @@ const requestInviteToken = async (req, res) => {
     let inviteToken = new InviteToken({
       email: req.body.email,
       role: req.body.role,
+      teamId: req.body.teamId,
       token: crypto.randomBytes(32).toString("hex"),
     });
     await inviteToken.save();

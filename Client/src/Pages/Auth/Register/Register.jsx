@@ -444,24 +444,26 @@ const Register = ({ isSuperAdmin }) => {
     password: "",
     confirm: "",
     role: [],
+    teamId: "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     const fetchInvite = async () => {
+      console.log("FETCHING");
       if (token !== undefined) {
         try {
           const res = await networkService.verifyInvitationToken(token);
-          const { role, email } = res.data.data;
-          setForm({ ...form, email, role });
+          const { role, email, teamId } = res.data.data;
+          setForm({ ...form, email, role, teamId });
         } catch (error) {
           logger.error(error);
         }
       }
     };
     fetchInvite();
-  }, [token, form]);
+  }, []);
 
   /**
    * Validates the form data against the validation schema.
@@ -494,7 +496,6 @@ const Register = ({ isSuperAdmin }) => {
 
   const handleStepOne = async (e) => {
     e.preventDefault();
-
     let error = validateForm({
       firstName: form.firstName,
       lastName: form.lastName,

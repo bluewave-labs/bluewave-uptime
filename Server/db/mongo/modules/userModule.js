@@ -37,6 +37,8 @@ const insertUser = async (req, res) => {
       });
       teamId = team._id;
       await team.save();
+    } else {
+      teamId = userData.teamId;
     }
 
     const newUser = new UserModel(userData);

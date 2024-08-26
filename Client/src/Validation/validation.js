@@ -76,6 +76,7 @@ const credentials = joi.object({
       return value;
     }),
   role: joi.array(),
+  teamId: joi.string().allow("").optional(),
 });
 
 const monitorValidation = joi.object({

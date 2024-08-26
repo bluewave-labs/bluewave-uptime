@@ -5,7 +5,7 @@ const joi = require("joi");
 //****************************************
 
 const roleValidatior = (role) => (value, helpers) => {
-  const hasRole = roles.some((role) => value.includes(role));
+  const hasRole = role.some((role) => value.includes(role));
   if (!hasRole) {
     throw new Joi.ValidationError(
       `You do not have the required authorization. Required roles: ${roles.join(", ")}`
@@ -72,6 +72,7 @@ const registerValidation = joi.object({
     .items(joi.string().valid("superadmin", "admin", "user"))
     .min(1)
     .required(),
+  teamId: joi.string().allow("").required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -135,6 +136,7 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
+  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
