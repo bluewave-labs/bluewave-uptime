@@ -6,13 +6,6 @@ const secondaryMain = "#475467";
 const tertiaryMain = "#475467";
 const tertiaryLinkHover = "#eff8ff";
 
-// Label Colors
-const labelOrange = "#F79009";
-const labelGray = "#475467";
-const labelPurple = "#6941C6";
-const labelGreen = "#067647";
-const labelRed = "#F04438";
-
 // Section colors
 const sectionBorder = "#D0D5DD";
 const sectionBg = "#F8F9F8";
@@ -39,6 +32,25 @@ const fontFamilyDefault =
 const theme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
+    common: { main: "#1570ef" },
+    text: {
+      primary: "#1c2130",
+      secondary: "#344054",
+      tertiary: "#475467",
+      accent: "#838c99",
+    },
+    background: {
+      primary: "#FFFFFF",
+      secondary: "#FCFCFD",
+      fill: "#F4F4F4",
+      accent: "#f9fafb",
+    },
+    border: { light: "#eaecf0", dark: "#d0d5dd" },
+    success: { main: "#17b26a", light: "#d4f4e1", bg: "#ecfdf3" },
+    error: { main: "#f04438", light: "#fbd1d1", bg: "#f9eced" },
+    warning: { main: "#fdb022", light: "#fffcf5", bg: "#ffecbc" },
+    unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
+    other: {},
     primary: {
       main: primaryMain,
     },
@@ -48,21 +60,6 @@ const theme = createTheme({
     tertiary: {
       main: tertiaryMain,
       linkHover: tertiaryLinkHover,
-    },
-    labelOrange: {
-      color: labelOrange,
-    },
-    labelGray: {
-      color: labelGray,
-    },
-    labelPurple: {
-      color: labelPurple,
-    },
-    labelGreen: {
-      color: labelGreen,
-    },
-    labelRed: {
-      color: labelRed,
     },
     section: {
       borderColor: sectionBorder,
@@ -84,10 +81,6 @@ const theme = createTheme({
     borderRadius: 4,
     borderThick: 2,
     boxShadow: shadow,
-  },
-  content: {
-    pX: "80px",
-    pY: "40px",
   },
   gap: {
     xs: "4px",
