@@ -451,14 +451,13 @@ const Register = ({ isSuperAdmin }) => {
 
   useEffect(() => {
     const fetchInvite = async () => {
-      console.log("FETCHING");
       if (token !== undefined) {
         try {
           const res = await networkService.verifyInvitationToken(token);
           const { role, email, teamId } = res.data.data;
           setForm({ ...form, email, role, teamId });
         } catch (error) {
-          logger.error(error);
+          navigate("/register", { replace: true });
         }
       }
     };

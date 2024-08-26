@@ -90,12 +90,20 @@ const registerController = async (req, res, next) => {
 
     const token = issueToken(userForToken);
 
-    await req.emailService.buildAndSendEmail(
-      "welcomeEmailTemplate",
-      { name: newUser.firstName },
-      newUser.email,
-      "Welcome to Uptime Monitor"
-    );
+    req.emailService
+      .buildAndSendEmail(
+        "welcomeEmailTemplate",
+        { name: newUser.firstName },
+        newUser.email,
+        "Welcome to Uptime Monitor"
+      )
+      .catch((error) => {
+        logger.error("Error sending welcome email", {
+          service: SERVICE_NAME,
+          error: error.message,
+        });
+      });
+
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
@@ -241,15 +249,22 @@ const inviteController = async (req, res, next) => {
     }
 
     const inviteToken = await req.db.requestInviteToken(req, res);
-    await req.emailService.buildAndSendEmail(
-      "employeeActivationTemplate",
-      {
-        name: firstname,
-        link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
-      },
-      req.body.email,
-      "Welcome to Uptime Monitor"
-    );
+    req.emailService
+      .buildAndSendEmail(
+        "employeeActivationTemplate",
+        {
+          name: firstname,
+          link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+        },
+        req.body.email,
+        "Welcome to Uptime Monitor"
+      )
+      .catch((error) => {
+        logger.error("Error sending invite email", {
+          service: SERVICE_NAME,
+          error: error.message,
+        });
+      });
 
     return res
       .status(200)
@@ -275,7 +290,6 @@ const inviteVerifyController = async (req, res, next) => {
 
   try {
     const invite = await req.db.getInviteToken(req, res);
-
     res
       .status(200)
       .json({ status: "success", msg: "Invite verified", data: invite });
