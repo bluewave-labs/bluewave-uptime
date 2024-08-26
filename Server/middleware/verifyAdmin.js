@@ -42,7 +42,7 @@ const verifyAdmin = (req, res, next) => {
         .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
     }
 
-    if (decoded.role.includes("admin") === false) {
+    if (decoded.role.includes("superadmin") === false) {
       logger.error(errorMessages.INVALID_AUTH_TOKEN, {
         service: SERVICE_NAME,
       });
