@@ -14,7 +14,7 @@ const {
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
-  checkAdminController,
+  checkSuperadminController,
   getAllUsersController,
   deleteUserController,
   inviteController,
@@ -30,7 +30,7 @@ router.put(
   verifyJWT,
   userEditController
 );
-router.get("/users/admin", checkAdminController);
+router.get("/users/superadmin", checkSuperadminController);
 router.get("/users", verifyJWT, verifyAdmin, getAllUsersController);
 router.delete(
   "/user/:userId",

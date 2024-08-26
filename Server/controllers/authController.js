@@ -293,13 +293,13 @@ const inviteVerifyController = async (req, res, next) => {
  * @returns {Promise<Express.Response>}
  */
 
-const checkAdminController = async (req, res) => {
+const checkSuperadminController = async (req, res) => {
   try {
-    const adminExists = await req.db.checkAdmin(req, res);
+    const superAdminExists = await req.db.checkSuperadmin(req, res);
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_ADMIN_EXISTS,
-      data: adminExists,
+      data: superAdminExists,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -508,7 +508,7 @@ module.exports = {
   userEditController,
   inviteController,
   inviteVerifyController,
-  checkAdminController,
+  checkSuperadminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,
