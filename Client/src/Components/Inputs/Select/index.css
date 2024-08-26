@@ -13,21 +13,21 @@
 .MuiMenu-List .MuiMenuItem-root,
 .select-wrapper h3.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .select-wrapper h3.MuiTypography-root {
   font-weight: 500;
 }
 .MuiInputBase-root:has(> .MuiSelect-select) fieldset {
-  border-color: var(--env-var-color-29);
+  border-color: var(--border-color-dark);
 }
 .MuiInputBase-root:not(.Mui-focused):has(> .MuiSelect-select):hover fieldset {
-  border-color: var(--env-var-color-29);
+  border-color: var(--border-color-dark);
 }
 
 .select-dropdown.MuiPaper-root {
   box-shadow: var(--env-var-shadow-1);
-  border: solid 1px var(--env-var-color-6);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
 }
 .select-dropdown .MuiList-root {
@@ -35,12 +35,12 @@
 }
 .select-dropdown li {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
   padding: 5px 8px;
   border-radius: var(--env-var-radius-1);
 }
 .select-dropdown li.Mui-selected,
 .select-dropdown li.Mui-selected.Mui-focusVisible,
 .select-dropdown li.Mui-selected:hover {
-  background-color: #f4f4f4;
+  background-color: var(--primary-bg-fill);
 }

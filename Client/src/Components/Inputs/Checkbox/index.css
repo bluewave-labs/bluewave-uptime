@@ -2,11 +2,11 @@
   border-radius: var(--env-var-radius-1);
 }
 .checkbox-wrapper:not(:has(.Mui-disabled)):hover {
-  background-color: var(--env-var-color-15);
+  background-color: var(--unresolved-bg);
 }
 .checkbox-wrapper span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
 }
 .checkbox-wrapper .MuiButtonBase-root {
   margin-right: var(--env-var-spacing-1);

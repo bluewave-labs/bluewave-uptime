@@ -22,7 +22,11 @@ const Card = ({ data }) => {
       item
       lg={6}
       flexGrow={1}
-      sx={{ "&:hover > .MuiStack-root": { backgroundColor: "#f9fafb" } }}
+      sx={{
+        "&:hover > .MuiStack-root": {
+          backgroundColor: "var(--primary-bg-accent)",
+        },
+      }}
     >
       <Stack
         direction="row"

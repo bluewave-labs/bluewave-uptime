@@ -11,5 +11,5 @@
 }
 .not-found-page h1,
 .not-found-page p {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }

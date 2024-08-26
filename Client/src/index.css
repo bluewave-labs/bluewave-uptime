@@ -21,10 +21,12 @@
   --secondary-color-light-accent: #838c99;
 
   --primary-bg: #ffffff;
+  --primary-bg-fill: #f4f4f4;
   --primary-bg-accent: #f9fafb;
   --secondary-bg: #fcfcfd;
 
   --border-color: #eaecf0;
+  --border-color-dark: #d0d5dd;
 
   /* OTHER COLORS */
   --success-color: #17b26a;

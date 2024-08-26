@@ -2,7 +2,7 @@
 .image-field-wrapper p.MuiTypography-root,
 .image-field-wrapper + p.MuiTypography-root,
 .MuiStack-root:has(#modal-update-picture) h1.MuiTypography-root {
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
 }
 .MuiStack-root:has(#modal-update-picture) h1.MuiTypography-root {
   font-weight: 600;
@@ -24,6 +24,6 @@
   font-size: var(--env-var-font-size-small-plus);
 }
 .image-field-wrapper h2.MuiTypography-root span {
-  color: var(--env-var-color-3);
+  color: var(--theme-main);
   font-weight: 500;
 }

@@ -13,7 +13,7 @@
 }
 
 .maintenance-title {
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   font-size: 16px;
   font-weight: bold;
   margin-top: 40px;
@@ -22,7 +22,7 @@
 
 .checklist-item {
   font-size: 13px;
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   display: flex;
   margin-bottom: 10px;
 }

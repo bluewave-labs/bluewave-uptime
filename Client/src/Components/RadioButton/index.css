@@ -6,7 +6,7 @@
 }
 .create-monitor-form .custom-radio-button.MuiFormControlLabel-root:hover,
 .configure-monitor .custom-radio-button.MuiFormControlLabel-root:hover {
-  background-color: var(--env-var-color-15);
+  background-color: var(--unresolved-bg);
 }
 
 .custom-radio-button.MuiFormControlLabel-root .MuiButtonBase-root {

@@ -4,7 +4,7 @@
 }
 .progress-bar-container h2.MuiTypography-root,
 .progress-bar-container p.MuiTypography-root {
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   font-size: var(--env-var-font-size-medium);
 }
 .progress-bar-container p.MuiTypography-root {
@@ -17,16 +17,16 @@
   padding-left: 2px;
 }
 .progress-bar-container:has(p.input-error){
-  border-color: var(--env-var-color-19);
-  background-color: var(--env-var-color-21);
+  border-color: var(--error-color);
+  background-color: var(--error-bg);
   padding: 8px var(--env-var-spacing-1-plus);
 }
 .progress-bar-container p.input-error{
-  color: var(--env-var-color-24);
+  color: var(--error-color);
   opacity: 0.8;
 }
 .progress-bar-container:has(p.input-error)>.MuiStack-root>svg{
-  fill: var(--env-var-color-24);
+  fill: var(--error-color);
   width: 20px;
   height: 20px;
 }

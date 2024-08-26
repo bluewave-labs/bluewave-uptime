@@ -1,6 +1,6 @@
 .area-tooltip {
   background-color: white;
-  border: solid 1px var(--env-var-color-4);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
   padding: var(--env-var-spacing-1) var(--env-var-spacing-2);
 }
@@ -9,11 +9,11 @@
   padding: 0;
 }
 .area-tooltip p:first-of-type {
-  color: var(--env-var-color-3);
+  color: var(--theme-main);
   font-size: var(--env-var-font-size-medium);
 }
 .area-tooltip p:last-of-type {
   margin-top: 5px;
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
   font-size: var(--env-var-font-size-small);
 }

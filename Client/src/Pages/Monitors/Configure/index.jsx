@@ -249,8 +249,8 @@ const Configure = () => {
                   lineHeight={theme.gap.large}
                   sx={{
                     color: monitor?.status
-                      ? "var(--env-var-color-17)"
-                      : "var(--env-var-color-24)",
+                      ? "var(--success-color)"
+                      : "var(--error-color)",
                   }}
                 >
                   Your site is {monitor?.status ? "up" : "down"}.

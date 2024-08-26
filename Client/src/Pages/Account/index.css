@@ -10,7 +10,7 @@
 .account p.MuiTypography-root,
 .account input,
 .account .MuiSelect-select {
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
 }
 .account h1.MuiTypography-root {
   font-weight: 600;
@@ -21,7 +21,7 @@
 }
 .account .MuiDivider-root,
 .account .MuiButtonGroup-root button {
-  border-color: var(--env-var-color-16);
+  border-color: var(--border-color);
 }
 .account button:not(.MuiIconButton-root) {
   height: 34px;
@@ -43,8 +43,9 @@
   top: 100%;
 }
 
-.account .MuiTable-root .MuiTableBody-root .MuiTableCell-root {
-  color: var(--env-var-color-25);
+.account .MuiTable-root .MuiTableBody-root .MuiTableCell-root,
+.account .MuiTable-root p + p {
+  color: var(--secondary-color-light-accent);
 }
 .account .MuiTableBody-root .MuiTableCell-root {
   padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);

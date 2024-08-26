@@ -18,8 +18,8 @@ const ResponseTimeChart = ({ checks = [] }) => {
                 key={`cell-${index}`}
                 fill={
                   check.status === true
-                    ? "var(--env-var-color-23)"
-                    : "var(--env-var-color-24)"
+                    ? "var(--success-color)"
+                    : "var(--error-color)"
                 }
               />
             ))}

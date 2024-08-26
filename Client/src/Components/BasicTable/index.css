@@ -17,7 +17,7 @@
 
 .MuiPaper-root:has(table.MuiTable-root) {
   box-shadow: none;
-  border: solid 1px var(--env-var-color-16);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
 }
 .MuiTable-root
@@ -28,7 +28,7 @@
 }
 .MuiTable-root .MuiTableHead-root,
 .MuiTable-root .MuiTableRow-root:hover {
-  background-color: var(--env-var-color-13);
+  background-color: var(--primary-bg-accent);
 }
 .MuiTable-root .MuiTableHead-root .MuiTableCell-root,
 .MuiTable-root .MuiTableBody-root .MuiTableCell-root {
@@ -37,7 +37,7 @@
 .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
   padding: var(--env-var-spacing-1) var(--env-var-spacing-2);
   font-weight: 500;
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
 }
 .MuiTable-root .MuiTableHead-root span {
   display: inline-block;
@@ -52,7 +52,7 @@
   height: 20px;
 }
 .MuiTable-root .MuiTableBody-root .MuiTableCell-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
   padding: 6px var(--env-var-spacing-2);
 }
 .MuiTable-root .MuiTableBody-root .MuiTableRow-root {
@@ -61,7 +61,8 @@
 
 .MuiPaper-root + .MuiPagination-root {
   margin-top: 24px;
-  border: solid 1px var(--env-var-color-16);
+  background-color: var(--primary-bg);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
   padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
 }
@@ -74,7 +75,7 @@
   li:not(:first-child):not(:last-child)
   button {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
   font-weight: 500;
 }
 .MuiPaper-root + .MuiPagination-root ul li:first-child {
@@ -85,7 +86,7 @@
 }
 .MuiPaper-root + .MuiPagination-root ul li:first-child button,
 .MuiPaper-root + .MuiPagination-root ul li:last-child button {
-  border: solid 1px var(--env-var-color-16);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
 }
 .MuiPaper-root + .MuiPagination-root ul li:first-child button {
@@ -108,20 +109,20 @@
   margin-right: 15px;
 }
 .MuiPaper-root + .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
-  background-color: var(--env-var-color-15);
+  background-color: var(--primary-bg-fill);
 }
 .MuiPaper-root + .MuiPagination-root div.MuiPaginationItem-root {
   user-select: none;
 }
 
 .MuiTablePagination-root p {
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   font-weight: 500;
   font-size: var(--env-var-font-size-small-plus);
 }
 .MuiTablePagination-root button,
 .MuiTablePagination-root .MuiSelect-select {
-  border: solid 1px #ebebeb;
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
 }
 .MuiTablePagination-root .MuiTablePagination-select.MuiSelect-select {
@@ -138,7 +139,7 @@
   height: 22px;
 }
 .MuiTablePagination-root svg path {
-  stroke: var(--env-var-color-2);
+  stroke: var(--secondary-color-light);
   stroke-width: 1.3;
 }
 .MuiTablePagination-root .MuiSelect-icon {
@@ -152,13 +153,13 @@
   opacity: 0.4;
 }
 .MuiTablePagination-root button:not(.Mui-disabled):hover {
-  background-color: #f4f4f4;
-  border-color: #f4f4f4;
+  background-color: var(--primary-bg-fill);
+  border-color: var(--primary-bg-fill);
 }
 
 .pagination-dropdown.MuiPaper-root {
   box-shadow: var(--env-var-shadow-1);
-  border: solid 1px var(--env-var-color-6);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
 }
 .pagination-dropdown ul {
@@ -168,13 +169,13 @@
 .pagination-dropdown li,
 body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   padding: 4px;
 }
 .pagination-dropdown li.Mui-selected,
 .pagination-dropdown li.Mui-selected.Mui-focusVisible,
 .pagination-dropdown li.Mui-selected:hover {
-  background-color: #f4f4f4;
+  background-color: var(--primary-bg-fill);
 }
 body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
   font-size: var(--env-var-font-size-small-plus);
@@ -182,7 +183,7 @@ body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
 
 .monitors .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
   text-transform: uppercase;
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
   opacity: 0.8;
   font-size: var(--env-var-font-size-small-plus);
   font-weight: 400;

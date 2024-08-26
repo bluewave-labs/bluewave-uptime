@@ -1,7 +1,7 @@
 aside .selected-path,
 .sidebar-popup .selected-path,
 aside .MuiListItemButton-root:hover {
-  background-color: var(--env-var-color-13);
+  background-color: var(--primary-bg-accent);
 }
 aside .MuiList-root svg {
   width: 20px;
@@ -9,7 +9,7 @@ aside .MuiList-root svg {
   opacity: 0.9;
 }
 aside .MuiList-root svg path {
-  stroke: var(--env-var-color-2);
+  stroke: var(--secondary-color-light);
 }
 aside span.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
@@ -29,7 +29,7 @@ aside .MuiListSubheader-root {
 aside span.MuiTypography-root,
 aside p.MuiTypography-root,
 aside .MuiListSubheader-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 aside p.MuiTypography-root {
   font-size: var(--env-var-font-size-small);
@@ -48,7 +48,7 @@ aside .MuiCollapse-wrapperInner .MuiList-root > .MuiListItemButton-root {
   position: relative;
 }
 aside .MuiDivider-root {
-  border-color: var(--env-var-color-6);
+  border-color: var(--border-color);
 }
 aside
   .MuiCollapse-wrapperInner
@@ -60,7 +60,7 @@ aside
   top: 0;
   height: 100%;
   width: 100%;
-  border-left: solid 1px var(--env-var-color-5);
+  border-left: solid 1px var(--secondary-color);
   opacity: 0.2;
 }
 aside
@@ -90,13 +90,13 @@ aside
   .MuiCollapse-wrapperInner
   .MuiList-root
   > .selected-path.MuiListItemButton-root::after {
-  background-color: var(--env-var-color-2);
+  background-color: var(--secondary-color-light);
   transform: scale(1.2);
 }
 
 .sidebar-popup .MuiPaper-root {
   box-shadow: var(--env-var-shadow-1);
-  border: solid 1px var(--env-var-color-6);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
   gap: 1px;
 }
@@ -106,12 +106,12 @@ aside
 }
 .sidebar-popup li.MuiButtonBase-root {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
   padding: 5px 8px;
   border-radius: var(--env-var-radius-1);
 }
 .sidebar-popup li.MuiButtonBase-root:hover {
-  background-color: var(--env-var-color-13);
+  background-color: var(--primary-bg-accent);
 }
 .sidebar-popup li.MuiButtonBase-root:has(.MuiBox-root):hover {
   background-color: white;
@@ -121,7 +121,7 @@ aside
 }
 .sidebar-popup .MuiModal-root p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
 }
 .sidebar-popup svg {
   width: 16px;

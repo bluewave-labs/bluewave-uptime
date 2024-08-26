@@ -9,9 +9,9 @@ const MonitorDetails60MinChart = ({ data }) => {
   };
 
   const color = {
-    true: "var(--env-var-color-23)",
-    false: "var(--env-var-color-24)",
-    undefined: "var(--env-var-color-33)",
+    true: "var(--success-color)",
+    false: "var(--error-color)",
+    undefined: "var(--unresolved-color)",
   };
   return (
     <BarChart

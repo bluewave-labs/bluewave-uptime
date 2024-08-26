@@ -342,7 +342,7 @@ const PageSpeedDetails = () => {
               </Typography>
               <Typography
                 component="span"
-                sx={{ color: "var(--env-var-color-17)" }}
+                sx={{ color: "var(--success-color)" }}
               >
                 Your pagespeed monitor is live.
               </Typography>

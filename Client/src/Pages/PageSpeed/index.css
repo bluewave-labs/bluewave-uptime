@@ -1,10 +1,10 @@
 .page-speed h1.MuiTypography-root,
 .page-speed span.MuiTypography-root,
 .page-speed p.MuiTypography-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .page-speed h2.MuiTypography-root {
-  color: var(--env-var-color-3);
+  color: var(--theme-main);
   line-height: 1.1;
 }
 .page-speed h1.MuiTypography-root,
@@ -20,9 +20,9 @@
   font-size: var(--env-var-font-size-small-plus);
 }
 .page-speed .MuiGrid-item > .MuiStack-root {
-  border: solid 1px var(--env-var-color-6);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
+  background-color: var(--primary-bg);
 }
 .page-speed .label {
   padding: 7px;

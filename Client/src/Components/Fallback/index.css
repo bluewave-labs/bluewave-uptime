@@ -9,7 +9,7 @@
 }
 [class*="fallback__"] .check span.MuiTypography-root,
 [class*="fallback__"] h1.MuiTypography-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 [class*="fallback__"] button.MuiButtonBase-root,
 [class*="fallback__"] .check {

@@ -12,13 +12,13 @@
 .field h5.MuiTypography-root,
 .field input,
 .field textarea {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .field h3.MuiTypography-root {
   font-weight: 500;
 }
 .field h3.MuiTypography-root span.field-required {
-  color: var(--env-var-color-19);
+  color: var(--error-color);
   margin-left: 2px;
 }
 .field h3.MuiTypography-root span.field-optional {
@@ -53,7 +53,7 @@
   margin-right: 5px;
 }
 .field .MuiInputBase-root .MuiInputAdornment-root .MuiButtonBase-root:hover {
-  border-color: var(--env-var-color-29);
+  border-color: var(--border-color-dark);
 }
 .field input {
   height: 100%;
@@ -63,20 +63,20 @@
   padding: var(--env-var-spacing-1-minus);
 }
 .field .MuiOutlinedInput-root fieldset {
-  border-color: var(--env-var-color-29);
+  border-color: var(--border-color-dark);
   border-radius: var(--env-var-radius-1);
 }
 .field:not(:has(.Mui-disabled)):not(:has(.input-error))
   .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus))
   fieldset {
-  border-color: var(--env-var-color-29);
+  border-color: var(--border-color-dark);
 }
 .field .input-error {
-  color: var(--env-var-color-24);
+  color: var(--error-color);
   opacity: 0.8;
 }
 .field:has(.input-error) .MuiOutlinedInput-root fieldset {
-  border-color: var(--env-var-color-19);
+  border-color: var(--error-color);
 }
 
 .register-page .field .MuiOutlinedInput-root fieldset,

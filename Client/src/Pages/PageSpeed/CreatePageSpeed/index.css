@@ -1,16 +1,16 @@
 .create-page-speed form > .MuiStack-root:not(:last-of-type) {
-  background-color: var(--env-var-color-8);
-  border: solid 1px var(--env-var-color-6);
+  background-color: var(--primary-bg);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
   padding: var(--env-var-font-size-large-plus) var(--env-var-font-size-xlarge);
 }
 .create-page-speed h1.MuiTypography-root {
   font-size: 22px;
-  color: var(--env-var-color-1);
+  color: var(--primary-bg);
 }
 .create-page-speed p.MuiTypography-root,
 .create-page-speed h3.MuiTypography-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .create-page-speed h1.MuiTypography-root,
 .create-page-speed h3.MuiTypography-root {

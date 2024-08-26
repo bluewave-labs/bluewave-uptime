@@ -9,11 +9,11 @@
 
 .bar-tooltip .MuiTooltip-tooltip p {
   font-size: var(--env-var-font-size-small-plus);
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   font-weight: 500;
 }
 .bar-tooltip .MuiTooltip-tooltip span {
   font-size: var(--env-var-font-size-small);
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
   font-weight: 600;
 }

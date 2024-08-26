@@ -1,6 +1,6 @@
 .create-monitor h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
-  color: var(--env-var-color-1);
+  color: var(--primary-color);
   font-weight: 500;
 }
 .create-monitor h2.MuiTypography-root {
@@ -12,11 +12,11 @@
   font-size: var(--env-var-font-size-medium);
 }
 .create-monitor h2.MuiTypography-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .create-monitor h6.MuiTypography-root,
 .create-monitor p.MuiTypography-root {
-  color: var(--env-var-color-2);
+  color: var(--secondary-color-light);
 }
 .create-monitor h6.MuiTypography-root,
 .create-monitor .MuiBox-root .field + p.MuiTypography-root {
@@ -30,7 +30,7 @@
   position: relative;
 }
 .create-monitor .error-container p.MuiTypography-root.input-error {
-  color: var(--env-var-color-24);
+  color: var(--error-color);
   opacity: 0.8;
   position: absolute;
   top: 0;
@@ -44,9 +44,9 @@
 }
 .create-monitor .config-box {
   flex-direction: row;
-  border: 1px solid var(--env-var-color-16);
+  border: 1px solid var(--border-color);
   border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
+  background-color: var(--primary-bg);
 }
 .create-monitor .config-box > .MuiBox-root,
 .create-monitor .config-box > .MuiStack-root {
@@ -56,7 +56,7 @@
 }
 .create-monitor .config-box > *:first-child {
   flex: 0.7;
-  border-right: solid 1px var(--env-var-color-16);
+  border-right: solid 1px var(--border-color);
 }
 
 .create-monitor .MuiStack-root .MuiButtonGroup-root button {

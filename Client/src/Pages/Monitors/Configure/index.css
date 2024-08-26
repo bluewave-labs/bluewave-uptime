@@ -1,6 +1,6 @@
 .configure-monitor h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
-  color: var(--env-var-color-1);
+  color: var(--primary-color);
   font-weight: 600;
 }
 .configure-monitor h2.MuiTypography-root {
@@ -10,10 +10,10 @@
 .configure-monitor h2.MuiTypography-root,
 .configure-monitor .config-box p.MuiTypography-root,
 .configure-monitor .MuiSelect-select {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .configure-monitor .MuiModal-root h2.MuiTypography-root {
-  color: var(--env-var-color-1);
+  color: var(--primary-color);
 }
 .configure-monitor p.MuiTypography-root,
 .configure-monitor .MuiSelect-select {
@@ -33,9 +33,9 @@
   height: var(--env-var-height-2);
 }
 .configure-monitor .config-box {
-  border: 1px solid var(--env-var-color-16);
+  border: 1px solid var(--border-color);
   border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
+  background-color: var(--primary-bg);
 }
 .configure-monitor .config-box > .MuiBox-root,
 .configure-monitor .config-box > .MuiStack-root {
@@ -45,7 +45,7 @@
 }
 .configure-monitor .config-box > *:first-child {
   flex: 0.7;
-  border-right: solid 1px var(--env-var-color-16);
+  border-right: solid 1px var(--border-color);
 }
 .configure-monitor .MuiStack-root:has(span.MuiTypography-root.input-error) {
   position: relative;
@@ -55,7 +55,7 @@
   top: 100%;
 }
 .configure-monitor .MuiInputBase-root:has(> .Mui-disabled) {
-  background-color: var(--env-var-color-13);
+  background-color: var(--primary-bg-accent);
 }
 
 .MuiInputBase-root:has(#monitor-interval) {
@@ -69,7 +69,7 @@
   align-items: center;
 }
 .MuiInputBase-root:not(.Mui-focused):has(#monitor-interval):hover fieldset {
-  border-color: var(--env-var-color-29);
+  border-color: var(--border-color-dark);
 }
 
 body:has(.configure-monitor) .select-dropdown .MuiMenuItem-root,

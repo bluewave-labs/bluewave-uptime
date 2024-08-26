@@ -1,6 +1,6 @@
 .incidents h1.MuiTypography-root,
 .incidents p.MuiTypography-root {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .incidents h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
@@ -12,14 +12,14 @@
 }
 .incidents button.MuiButtonBase-root {
   height: 34px;
-  border-color: var(--env-var-color-16);
+  border-color: var(--border-color);
 }
 .incidents .MuiPagination-root {
-  background-color: var(--env-var-color-8);
+  background-color: var(--primary-bg);
 }
 .incidents > .MuiBox-root {
-  background-color: var(--env-var-color-8);
-  border: solid 1px var(--env-var-color-6);
+  background-color: var(--primary-bg);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
   padding: 60px;
 }

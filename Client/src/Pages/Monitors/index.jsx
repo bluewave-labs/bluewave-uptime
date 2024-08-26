@@ -448,8 +448,8 @@ const Monitors = () => {
       percentage: 100,
       percentageColor:
         monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
+          ? "var(--success-color)"
+          : "var(--error-color)",
       status: monitor.status === true ? "up" : "down",
     };
 

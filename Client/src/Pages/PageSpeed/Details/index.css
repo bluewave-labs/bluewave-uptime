@@ -1,6 +1,6 @@
 .page-speed-details h1 {
   font-size: var(--env-var-font-size-large-plus);
-  color: var(--env-var-color-1);
+  color: var(--primary-color);
 }
 .page-speed-details h2,
 .page-speed-details h6 {
@@ -18,10 +18,10 @@
 .page-speed-details h2,
 .page-speed-details h4,
 .page-speed-details p {
-  color: var(--env-var-color-5);
+  color: var(--secondary-color);
 }
 .page-speed-details h6 {
-  color: var(--env-var-color-3);
+  color: var(--theme-main);
   line-height: 22px;
 }
 .page-speed-details h1,
@@ -36,9 +36,9 @@
 .page-speed-details .stat-box,
 .page-speed-details > .MuiStack-root:last-child,
 .page-speed-details > .MuiBox-root:nth-last-child(3) {
-  border: solid 1px var(--env-var-color-6);
+  border: solid 1px var(--border-color);
   border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
+  background-color: var(--primary-bg);
   min-width: 200px;
 }
 .page-speed-details .stat-box {

@@ -90,7 +90,7 @@ const TeamPanel = () => {
                   >
                     {member.firstName + " " + member.lastName}
                   </Typography>
-                  <Typography sx={{ opacity: 0.6 }}>
+                  <Typography>
                     Created {new Date(member.createdAt).toLocaleDateString()}
                   </Typography>
                 </Stack>

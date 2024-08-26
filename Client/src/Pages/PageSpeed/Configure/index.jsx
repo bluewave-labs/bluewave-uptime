@@ -187,8 +187,8 @@ const PageSpeedConfigure = () => {
                   component="span"
                   sx={{
                     color: monitor?.status
-                      ? "var(--env-var-color-17)"
-                      : "var(--env-var-color-24)",
+                      ? "var(--success-color)"
+                      : "var(--error-color)",
                   }}
                 >
                   Your pagespeed monitor is {monitor?.status ? "live" : "down"}.
