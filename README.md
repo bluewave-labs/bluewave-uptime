@@ -10,7 +10,11 @@
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
-![Dashboard](https://github.com/user-attachments/assets/0f92d7a3-19cf-430c-8b0f-fe13ff46c51b)
+
+https://github.com/user-attachments/assets/c8234cce-edf8-4d7e-8f6b-f18b06669fcc
+
+
+
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 

@@ -233,6 +233,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
+          px={theme.gap.small}
         >
           <Typography sx={{ opacity: 0.7 }}>
             Showing {getRange()} of {data.rows.length} monitor(s)
@@ -277,7 +278,10 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                 },
               },
             }}
-            sx={{ mt: theme.gap.medium }}
+            sx={{
+              mt: theme.gap.medium,
+              color: theme.palette.otherColors.bluishGray,
+            }}
           />
         </Stack>
       )}
