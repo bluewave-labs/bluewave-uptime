@@ -271,11 +271,11 @@ const getChecksQueryValidation = joi.object({
   rowsPerPage: joi.number(),
 });
 
-const getUserChecksParamValidation = joi.object({
-  userId: joi.string().required(),
+const getTeamChecksParamValidation = joi.object({
+  teamId: joi.string().required(),
 });
 
-const getUserChecksQueryValidation = joi.object({
+const getTeamChecksQueryValidation = joi.object({
   sortOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
   dateRange: joi.string().valid("day", "week", "month"),
@@ -364,8 +364,8 @@ module.exports = {
   createCheckBodyValidation,
   getChecksParamValidation,
   getChecksQueryValidation,
-  getUserChecksParamValidation,
-  getUserChecksQueryValidation,
+  getTeamChecksParamValidation,
+  getTeamChecksQueryValidation,
   deleteChecksParamValidation,
   deleteUserParamValidation,
   getPageSpeedCheckParamValidation,
