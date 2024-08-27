@@ -122,7 +122,6 @@ const CreateMonitor = () => {
         userId: user._id,
         notifications: monitor.notifications,
       };
-      console.log(form);
       const action = await dispatch(
         createUptimeMonitor({ authToken, monitor: form })
       );
