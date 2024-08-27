@@ -57,7 +57,6 @@ const Incidents = () => {
         null,
         null
       );
-      console.log(res);
       // Reduce to a lookup object for 0(1) lookup
       if (res.data && res.data.data.length > 0) {
         const monitorLookup = res.data.data.reduce((acc, monitor) => {
