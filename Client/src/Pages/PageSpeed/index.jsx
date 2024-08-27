@@ -123,7 +123,7 @@ const SkeletonLayout = () => {
   );
 };
 
-const PageSpeed = () => {
+const PageSpeed = ({ isAdmin }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -178,10 +178,14 @@ const PageSpeed = () => {
             "Give suggestions on how the page can be improved",
           ]}
           link="/pagespeed/create"
+          isAdmin={isAdmin}
         />
       )}
     </Box>
   );
+};
+PageSpeed.propTypes = {
+  isAdmin: PropTypes.bool,
 };
 
 export default PageSpeed;
