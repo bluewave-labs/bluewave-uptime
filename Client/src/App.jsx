@@ -33,7 +33,7 @@ function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
   const MonitorsWithAdminProp = withAdminProp(Monitors);
   const DetailsWithAdminProp = withAdminProp(Details);
-
+  const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   return (
     <>
       <Routes>
@@ -98,7 +98,7 @@ function App() {
           />
           <Route
             path="pagespeed"
-            element={<ProtectedRoute Component={PageSpeed} />}
+            element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
           />
           <Route
             path="pagespeed/create"
