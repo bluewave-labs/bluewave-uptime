@@ -28,8 +28,8 @@ export const createUptimeMonitor = createAsyncThunk(
   }
 );
 
-export const getUptimeMonitorsByUserId = createAsyncThunk(
-  "montiors/getMonitorsByUserId",
+export const getUptimeMonitorsByTeamId = createAsyncThunk(
+  "montiors/getMonitorsByTeamId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
@@ -126,15 +126,15 @@ const uptimeMonitorsSlice = createSlice({
       // Monitors by userId
       // *****************************************************
 
-      .addCase(getUptimeMonitorsByUserId.pending, (state) => {
+      .addCase(getUptimeMonitorsByTeamId.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getUptimeMonitorsByUserId.fulfilled, (state, action) => {
+      .addCase(getUptimeMonitorsByTeamId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getUptimeMonitorsByUserId.rejected, (state, action) => {
+      .addCase(getUptimeMonitorsByTeamId.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload

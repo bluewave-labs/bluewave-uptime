@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   deleteUptimeMonitor,
-  getUptimeMonitorsByUserId,
+  getUptimeMonitorsByTeamId,
 } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Components/Button";
@@ -44,7 +44,7 @@ const ActionsMenu = ({ monitor }) => {
     );
     if (action.meta.requestStatus === "fulfilled") {
       setIsOpen(false); // close modal
-      dispatch(getUptimeMonitorsByUserId(authState.authToken));
+      dispatch(getUptimeMonitorsByTeamId(authState.authToken));
       createToast({ body: "Monitor deleted successfully." });
     } else {
       createToast({ body: "Failed to delete monitor." });
@@ -269,7 +269,7 @@ const Monitors = () => {
   const dispatch = useDispatch({});
 
   useEffect(() => {
-    dispatch(getUptimeMonitorsByUserId(authState.authToken));
+    dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
 
   const up = monitorState.monitors.reduce((acc, cur) => {
