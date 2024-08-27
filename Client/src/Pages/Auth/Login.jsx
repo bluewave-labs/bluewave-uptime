@@ -4,16 +4,17 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import Button from "../../Components/Button";
-import axiosInstance from "../../Utils/axiosConfig";
+import { networkService } from "../../main";
 import Field from "../../Components/Inputs/Field";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-
+import PropTypes from "prop-types";
+import { logger } from "../../Utils/Logger";
 import "./index.css";
 
 /**
@@ -54,13 +55,40 @@ const LandingPage = ({ onContinue }) => {
         <Box maxWidth={400}>
           <Typography className="tos-p">
             By continuing, you agree to our{" "}
-            <Typography component="span">Terms of Service</Typography> and{" "}
-            <Typography component="span">Privacy Policy.</Typography>
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/terms-of-service-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
+              }}
+            >
+              Terms of Service
+            </Typography>{" "}
+            and{" "}
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/privacy-policy-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
+              }}
+            >
+              Privacy Policy.
+            </Typography>
           </Typography>
         </Box>
       </Stack>
     </>
   );
+};
+
+LandingPage.propTypes = {
+  onContinue: PropTypes.func.isRequired,
 };
 
 /**
@@ -101,6 +129,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               placeholder="jordan.ellis@domain.com"
               autoComplete="email"
               value={form.email}
+              onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
               onChange={onChange}
               error={errors.email}
               ref={inputRef}
@@ -134,6 +163,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
       </Stack>
     </>
   );
+};
+
+StepOne.propTypes = {
+  form: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
 };
 
 /**
@@ -230,10 +267,21 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepTwo.propTypes = {
+  form: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+};
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
+
+  const authState = useSelector((state) => state.auth);
+  const { authToken } = authState;
 
   const idMap = {
     "login-email-input": "email",
@@ -248,17 +296,21 @@ const Login = () => {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    axiosInstance
-      .get("/auth/users/admin")
+    if (authToken) {
+      navigate("/monitors");
+      return;
+    }
+    networkService
+      .doesSuperAdminExist()
       .then((response) => {
         if (response.data.data === false) {
           navigate("/register");
         }
       })
       .catch((error) => {
-        console.log(error);
+        logger.error(error);
       });
-  }, [navigate]);
+  }, [authToken, navigate]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -399,7 +451,9 @@ const Login = () => {
         )}
       </Stack>
       <Box textAlign="center" p={theme.gap.large}>
-        <Typography display="inline-block">Don't have an account? —</Typography>
+        <Typography display="inline-block">
+          Don&apos;t have an account? —
+        </Typography>
         <Typography
           component="span"
           ml={theme.gap.xs}

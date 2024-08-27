@@ -1,19 +1,19 @@
-.monitors h1.MuiTypography-root,
-.monitors h2.MuiTypography-root {
+.monitors h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large-plus);
   color: var(--env-var-color-1);
   font-weight: 500;
 }
-.monitors h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large-plus);
-}
 .monitors h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-5);
+  font-weight: 500;
 }
 .monitors p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
-}
-.monitors p.MuiTypography-root {
   color: var(--env-var-color-5);
+}
+.monitors h1.MuiTypography-root + p.MuiTypography-root {
+  font-size: var(--env-var-font-size-medium-plus);
 }
 .monitors .MuiStack-root > button:not(.MuiIconButton-root) {
   font-size: var(--env-var-font-size-medium);
@@ -33,7 +33,7 @@
   border-radius: 50%;
   font-size: var(--env-var-font-size-medium);
   font-weight: 500;
-  color: var(--env-var-color-5);
+  color: var(--env-var-color-1);
   margin-left: 10px;
   line-height: 0.8;
 }

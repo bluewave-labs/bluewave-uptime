@@ -11,7 +11,7 @@ import NotFoundSvg from "../../../src/assets/Images/sushi_404.svg";
  * So That why we're using JavaScript default parameters instead.
  */
 const DefaultValue = {
-  title: "We cannot find this page",
+  title: "Oh no! You dropped your sushi!",
   desc: "Either the URL doesn’t exist, or you don’t have access to it.",
 };
 
@@ -27,20 +27,18 @@ const DefaultValue = {
  * />
  *
  * @param {Object} props - The component props.
- * @param {string} [props.title="We cannot find this page"] - The title of the error page.
+ * @param {string} [props.title="Oh no! You dropped your sushi!"] - The title of the error page.
  * @param {string} [props.desc="Either the URL doesn’t exist, or you don’t have access to it."] - The description of the error page.
  * @returns {JSX.Element} The rendered error page component.
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
   const navigate = useNavigate();
-  console.log("NOT FOUND");
   return (
     <Stack className="not-found-page" justifyContent="center">
       <Stack gap="20px" alignItems="center">
+        <img src={NotFoundSvg} alt="404" style={{ maxHeight: "25rem" }} />
         <Typography component="h1">{title}</Typography>
         <Typography>{desc}</Typography>
-        <img src={NotFoundSvg} alt="404" style={{ maxHeight: "25rem" }} />
-        <Typography>Oh no! You dropped your sushi!</Typography>
         <Button
           label="Go to the main dashboard"
           level="primary"

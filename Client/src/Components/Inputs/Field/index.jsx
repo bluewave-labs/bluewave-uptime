@@ -48,6 +48,7 @@ const Field = forwardRef(
       placeholder,
       value,
       onChange,
+      onInput,
       error,
       disabled,
     },
@@ -87,6 +88,7 @@ const Field = forwardRef(
           multiline={type === "description"}
           rows={type === "description" ? 4 : 1}
           value={value}
+          onInput={onInput}
           onChange={onChange}
           disabled={disabled}
           inputRef={ref}
@@ -176,8 +178,17 @@ const Field = forwardRef(
   }
 );
 
+Field.displayName = "Field";
+
 Field.propTypes = {
-  type: PropTypes.oneOf(["text", "password", "url", "email", "description"]),
+  type: PropTypes.oneOf([
+    "text",
+    "password",
+    "url",
+    "email",
+    "description",
+    "number",
+  ]),
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
   https: PropTypes.bool,
@@ -189,6 +200,7 @@ Field.propTypes = {
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func,
+  onInput: PropTypes.func,
   error: PropTypes.string,
   disabled: PropTypes.bool,
 };

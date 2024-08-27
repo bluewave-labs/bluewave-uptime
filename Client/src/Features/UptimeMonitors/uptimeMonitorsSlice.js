@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-import axiosInstance from "../../Utils/axiosConfig";
+import { networkService } from "../../main";
 const initialState = {
   isLoading: false,
   monitors: [],
@@ -13,32 +13,7 @@ export const createUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-
-      const res = await axiosInstance.post(`/monitors`, monitor, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-      return res.data;
-    } catch (error) {
-      if (error.response && error.response.data) {
-        return thunkApi.rejectWithValue(error.response.data);
-      }
-      const payload = {
-        status: false,
-        msg: error.message ? error.message : "Unknown error",
-      };
-      return thunkApi.rejectWithValue(payload);
-    }
-  }
-);
-
-export const getUptimeMonitors = createAsyncThunk(
-  "monitors/getMonitors",
-  async (token, thunkApi) => {
-    try {
-      const res = await axiosInstance.get("/monitors");
+      const res = await networkService.createMonitor(authToken, monitor);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -58,13 +33,14 @@ export const getUptimeMonitorsByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await axiosInstance.get(
-        `/monitors/user/${user._id}?limit=25&type=http&type=ping&sortOrder=desc&normalize=true`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await networkService.getMonitorsByUserId(
+        token,
+        user._id,
+        25,
+        ["http", "ping"],
+        null,
+        "desc",
+        true
       );
       return res.data;
     } catch (error) {
@@ -91,15 +67,10 @@ export const updateUptimeMonitor = createAsyncThunk(
         interval: monitor.interval,
         notifications: monitor.notifications,
       };
-      const res = await axiosInstance.put(
-        `/monitors/${monitor._id}`,
-        updatedFields,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        }
+      const res = await networkService.updateMonitor(
+        authToken,
+        monitor._id,
+        updatedFields
       );
       return res.data;
     } catch (error) {
@@ -120,12 +91,10 @@ export const deleteUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await axiosInstance.delete(`/monitors/${monitor._id}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await networkService.deleteMonitorById(
+        authToken,
+        monitor._id
+      );
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -153,25 +122,6 @@ const uptimeMonitorsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // *****************************************************
-      // All Monitors
-      // *****************************************************
-      .addCase(getUptimeMonitors.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getUptimeMonitors.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.success = action.payload.success;
-        state.msg = action.payload.msg;
-        state.monitors = action.payload.data;
-      })
-      .addCase(getUptimeMonitors.rejected, (state, action) => {
-        state.isLoading = false;
-        state.success = false;
-        state.msg = action.payload
-          ? action.payload.msg
-          : "Getting uptime monitors failed";
-      })
       // *****************************************************
       // Monitors by userId
       // *****************************************************

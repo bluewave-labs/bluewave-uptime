@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
@@ -32,6 +32,12 @@ import Select from "../../Inputs/Select";
  */
 
 const TeamPanel = () => {
+  const roleMap = {
+    superadmin: "Super admin",
+    admin: "Admin",
+    user: "Team member",
+  };
+
   const theme = useTheme();
 
   const { authToken, user } = useSelector((state) => state.auth);
@@ -52,10 +58,7 @@ const TeamPanel = () => {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const response = await axiosInstance.get("/auth/users", {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-
+        const response = await networkService.getAllUsers(authToken);
         setMembers(response.data.data);
       } catch (error) {
         createToast({
@@ -77,9 +80,11 @@ const TeamPanel = () => {
         { id: 1, name: "NAME" },
         { id: 2, name: "EMAIL" },
         { id: 3, name: "ROLE" },
-        { id: 4, name: "ACTION" },
+        // FEATURE STILL TO BE IMPLEMENTED
+        // { id: 4, name: "ACTION" },
       ],
       rows: team?.map((member, idx) => {
+        const roles = member.role.map((role) => roleMap[role]).join(",");
         return {
           id: member._id,
           data: [
@@ -102,24 +107,25 @@ const TeamPanel = () => {
             {
               // TODO - Add select dropdown
               id: idx + 2,
-              data: member.role.includes("admin") ? "Administrator" : "Member",
+              data: roles,
             },
-            {
-              // TODO - Add delete onClick
-              id: idx + 3,
-              data: (
-                <IconButton
-                  aria-label="remove member"
-                  sx={{
-                    "&:focus": {
-                      outline: "none",
-                    },
-                  }}
-                >
-                  <Remove />
-                </IconButton>
-              ),
-            },
+            // FEATURE STILL TO BE IMPLEMENTED
+            // {
+            //   // TODO - Add delete onClick
+            //   id: idx + 3,
+            //   data: (
+            //     <IconButton
+            //       aria-label="remove member"
+            //       sx={{
+            //         "&:focus": {
+            //           outline: "none",
+            //         },
+            //       }}
+            //     >
+            //       <Remove />
+            //     </IconButton>
+            //   ),
+            // },
           ],
         };
       }),
@@ -133,9 +139,6 @@ const TeamPanel = () => {
     setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
   };
   const handleRename = () => {};
-
-  //TODO - implement save team function
-  const handleSaveTeam = () => {};
 
   // INVITE MEMBER
   const [isOpen, setIsOpen] = useState(false);
@@ -179,13 +182,10 @@ const TeamPanel = () => {
       setErrors((prev) => ({ ...prev, email: error.details[0].message }));
     } else
       try {
-        await axiosInstance.post(
-          "/auth/invite",
-          {
-            email: toInvite.email,
-            role: toInvite.role,
-          },
-          { headers: { Authorization: `Bearer ${authToken}` } }
+        await networkService.requestInvitationToken(
+          authToken,
+          toInvite.email,
+          toInvite.role
         );
 
         closeInviteModal();
@@ -206,12 +206,12 @@ const TeamPanel = () => {
 
   return (
     <TabPanel value="team">
-      <form className="edit-organization-form">
+      {/* FEATURE STILL TO BE IMPLEMENTED */}
+      {/* <Stack component="form">
         <Box sx={{ alignSelf: "flex-start" }}>
           <Typography component="h1">Organization name</Typography>
         </Box>
         <Stack
-          className="row-stack"
           direction="row"
           justifyContent="flex-end"
           alignItems="center"
@@ -251,21 +251,13 @@ const TeamPanel = () => {
             }}
           />
         </Stack>
-      </form>
-      <Divider
-        aria-hidden="true"
-        className="short-divider"
-        sx={{ marginY: theme.spacing(4) }}
-      />
-      <form
-        className="edit-team-form"
+      </Stack>
+      <Divider aria-hidden="true" sx={{ marginY: theme.spacing(4) }} /> */}
+      <Stack
+        component="form"
         noValidate
         spellCheck="false"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: theme.gap.large,
-        }}
+        gap={theme.gap.large}
       >
         <Typography component="h1">Team members</Typography>
         <Stack direction="row" justifyContent="space-between">
@@ -312,23 +304,13 @@ const TeamPanel = () => {
             onClick={() => setIsOpen(true)}
           />
         </Stack>
-        <BasicTable data={tableData} paginated={false} reversed={true} />
-        <Stack direction="row" justifyContent="flex-end">
-          <Box width="fit-content">
-            <ButtonSpinner
-              level="primary"
-              label="Save"
-              onClick={handleSaveTeam}
-              isLoading={false}
-              loadingText="Saving..."
-              disabled={true}
-              sx={{
-                paddingX: "40px",
-              }}
-            />
-          </Box>
-        </Stack>
-      </form>
+        <BasicTable
+          data={tableData}
+          paginated={false}
+          reversed={true}
+          table={"team"}
+        />
+      </Stack>
       <Modal
         aria-labelledby="modal-invite-member"
         aria-describedby="invite-member-to-team"

@@ -7,6 +7,7 @@ const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
 const { errorMessages } = require("./utils/messages");
 const authRouter = require("./routes/authRoute");
+const inviteRouter = require("./routes/inviteRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
 const alertRouter = require("./routes/alertRoute");
@@ -19,7 +20,7 @@ const JobQueue = require("./service/jobQueue");
 const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
-
+const SERVICE_NAME = "Server";
 let cleaningUp = false;
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
@@ -71,6 +72,7 @@ const startApp = async () => {
 
   //routes
   app.use("/api/v1/auth", authRouter);
+  app.use("/api/v1/invite", inviteRouter);
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
   app.use("/api/v1/alerts", verifyJWT, alertRouter);

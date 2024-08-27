@@ -303,7 +303,8 @@ const editMonitor = async (req, res, next) => {
   }
 
   try {
-    const monitorBeforeEdit = await req.db.getMonitorById(req, res);
+    const { monitorId } = req.params;
+    const monitorBeforeEdit = await req.db.getMonitorById(monitorId);
 
     // Get notifications from the request body
     const notifications = req.body.notifications;

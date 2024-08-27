@@ -37,7 +37,7 @@
 .page-speed-details > .MuiStack-root:last-child,
 .page-speed-details > .MuiBox-root:nth-last-child(3) {
   border: solid 1px var(--env-var-color-6);
-  border-radius: var(--env-var-radius-2);
+  border-radius: var(--env-var-radius-1);
   background-color: var(--env-var-color-8);
   min-width: 200px;
 }

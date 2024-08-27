@@ -5,8 +5,11 @@ const joi = require("joi");
 //****************************************
 
 const roleValidatior = (role) => (value, helpers) => {
-  if (!value.includes(role)) {
-    throw new joi.ValidationError(`You do not have ${role} authorization`);
+  const hasRole = role.some((role) => value.includes(role));
+  if (!hasRole) {
+    throw new Joi.ValidationError(
+      `You do not have the required authorization. Required roles: ${roles.join(", ")}`
+    );
   }
   return value;
 };
@@ -16,7 +19,17 @@ const roleValidatior = (role) => (value, helpers) => {
 //****************************************
 
 const loginValidation = joi.object({
-  email: joi.string().email().required(),
+  email: joi
+    .string()
+    .email()
+    .required()
+    .custom((value, helpers) => {
+      const lowercasedValue = value.toLowerCase();
+      if (value !== lowercasedValue) {
+        return helpers.message("Email must be in lowercase");
+      }
+      return lowercasedValue;
+    }),
   password: joi
     .string()
     .min(8)
@@ -26,7 +39,7 @@ const loginValidation = joi.object({
     ),
 });
 
-const registerValidation = joi.object({
+const registrationBodyValidation = joi.object({
   firstName: joi
     .string()
     .required()
@@ -35,7 +48,17 @@ const registerValidation = joi.object({
     .string()
     .required()
     .pattern(/^[A-Za-z]+$/),
-  email: joi.string().email().required(),
+  email: joi
+    .string()
+    .email()
+    .required()
+    .custom((value, helpers) => {
+      const lowercasedValue = value.toLowerCase();
+      if (value !== lowercasedValue) {
+        return helpers.message("Email must be in lowercase");
+      }
+      return lowercasedValue;
+    }),
   password: joi
     .string()
     .min(8)
@@ -44,7 +67,12 @@ const registerValidation = joi.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
     ),
   profileImage: joi.any(),
-  role: joi.array().required(),
+  role: joi
+    .array()
+    .items(joi.string().valid("superadmin", "admin", "user"))
+    .min(1)
+    .required(),
+  teamId: joi.string().allow("").required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -99,7 +127,7 @@ const deleteUserParamValidation = joi.object({
 });
 
 const inviteRoleValidation = joi.object({
-  roles: joi.custom(roleValidatior("admin")).required(),
+  roles: joi.custom(roleValidatior(["admin", "superadmin"])).required(),
 });
 
 const inviteBodyValidation = joi.object({
@@ -108,6 +136,7 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
+  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
@@ -307,7 +336,7 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
 module.exports = {
   roleValidatior,
   loginValidation,
-  registerValidation,
+  registrationBodyValidation,
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,

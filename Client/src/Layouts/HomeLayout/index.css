@@ -19,17 +19,12 @@
 
   height: calc(100vh - var(--env-var-spacing-2) * 2);
   max-width: var(--env-var-side-bar-width);
-  flex: 1;
 
-  border: 1px solid var(--color-border-0);
+  border: 1px solid var(--env-var-color-6);
   border-radius: var(--env-var-radius-1);
   background-color: var(--env-var-color-8);
 
   padding: var(--env-var-spacing-1) 0;
-}
-.home-layout aside > *:not(:first-child) {
-  padding-left: var(--env-var-spacing-1-plus);
-  padding-right: var(--env-var-spacing-1-plus);
 }
 
 .home-layout > div {

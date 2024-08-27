@@ -15,18 +15,19 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
 import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
-import axiosInstance from "../../../Utils/axiosConfig";
+import { networkService } from "../../../main";
 import "../index.css";
+import { logger } from "../../../Utils/Logger";
 
 /**
  * Displays the initial landing page.
  *
  * @param {Object} props
- * @param {boolean} props.isAdmin - Whether the user is creating and admin account
+ * @param {boolean} props.isSuperAdmin - Whether the user is creating and admin account
  * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
  * @returns {JSX.Element}
  */
-const LandingPage = ({ isAdmin, onSignup }) => {
+const LandingPage = ({ isSuperAdmin, onSignup }) => {
   const theme = useTheme();
 
   return (
@@ -39,7 +40,8 @@ const LandingPage = ({ isAdmin, onSignup }) => {
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>
-            Create your {isAdmin ? "admin " : ""}account to get started.
+            Create your {isSuperAdmin ? "Super admin " : ""}account to get
+            started.
           </Typography>
         </Box>
         <Box width="100%">
@@ -59,13 +61,41 @@ const LandingPage = ({ isAdmin, onSignup }) => {
         <Box maxWidth={400}>
           <Typography className="tos-p">
             By signing up, you agree to our{" "}
-            <Typography component="span">Terms of Service</Typography> and{" "}
-            <Typography component="span">Privacy Policy.</Typography>
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/terms-of-service-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
+              }}
+            >
+              Terms of Service
+            </Typography>{" "}
+            and{" "}
+            <Typography
+              component="span"
+              onClick={() => {
+                window.open(
+                  "https://bluewavelabs.ca/privacy-policy-open-source",
+                  "_blank",
+                  "noreferrer"
+                );
+              }}
+            >
+              Privacy Policy.
+            </Typography>
           </Typography>
         </Box>
       </Stack>
     </>
   );
+};
+
+LandingPage.propTypes = {
+  isSuperAdmin: PropTypes.bool,
+  onSignup: PropTypes.func,
 };
 
 /**
@@ -151,6 +181,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
+StepOne.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
+};
+
 /**
  * Renders the second step of the sign up process.
  *
@@ -189,6 +227,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               placeholder="jordan.ellis@domain.com"
               autoComplete="email"
               value={form.email}
+              onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
               onChange={onChange}
               error={errors.email}
               ref={inputRef}
@@ -221,6 +260,14 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
       </Stack>
     </>
   );
+};
+
+StepTwo.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
 };
 
 /**
@@ -368,7 +415,15 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
   );
 };
 
-const Register = ({ isAdmin }) => {
+StepThree.propTypes = {
+  form: PropTypes.object,
+  errors: PropTypes.object,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onBack: PropTypes.func,
+};
+
+const Register = ({ isSuperAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
@@ -389,6 +444,7 @@ const Register = ({ isAdmin }) => {
     password: "",
     confirm: "",
     role: [],
+    teamId: "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
@@ -397,19 +453,17 @@ const Register = ({ isAdmin }) => {
     const fetchInvite = async () => {
       if (token !== undefined) {
         try {
-          const res = await axiosInstance.post(`/auth/invite/verify`, {
-            token,
-          });
-          const { role, email } = res.data.data;
-          console.log(role);
-          setForm({ ...form, email, role });
+          const res = await networkService.verifyInvitationToken(token);
+          const invite = res.data.data;
+          const { role, email, teamId } = invite;
+          setForm({ ...form, email, role, teamId });
         } catch (error) {
-          console.log(error);
+          navigate("/register", { replace: true });
         }
       }
     };
     fetchInvite();
-  }, [token]);
+  }, []);
 
   /**
    * Validates the form data against the validation schema.
@@ -442,7 +496,6 @@ const Register = ({ isAdmin }) => {
 
   const handleStepOne = async (e) => {
     e.preventDefault();
-
     let error = validateForm({
       firstName: form.firstName,
       lastName: form.lastName,
@@ -474,7 +527,10 @@ const Register = ({ isAdmin }) => {
   const handleStepThree = async (e) => {
     e.preventDefault();
 
-    let registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+    let registerForm = {
+      ...form,
+      role: isSuperAdmin ? ["superadmin"] : form.role,
+    };
     let error = validateForm(registerForm, {
       context: { password: form.password },
     });
@@ -565,7 +621,10 @@ const Register = ({ isAdmin }) => {
         }}
       >
         {step === 0 ? (
-          <LandingPage isAdmin={isAdmin} onSignup={() => setStep(1)} />
+          <LandingPage
+            isSuperAdmin={isSuperAdmin}
+            onSignup={() => setStep(1)}
+          />
         ) : step === 1 ? (
           <StepOne
             form={form}
@@ -613,6 +672,6 @@ const Register = ({ isAdmin }) => {
   );
 };
 Register.propTypes = {
-  isAdmin: PropTypes.bool,
+  isSuperAdmin: PropTypes.bool,
 };
 export default Register;

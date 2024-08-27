@@ -1,4 +1,5 @@
 const UserModel = require("../../../models/user");
+const TeamModel = require("../../../models/Team");
 const { errorMessages } = require("../../../utils/messages");
 const { GenerateAvatarImage } = require("../../../utils/imageProcessing");
 
@@ -13,20 +14,29 @@ const { ParseBoolean } = require("../../../utils/utils");
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const insertUser = async (req, res) => {
+const insertUser = async (userData, imageFile) => {
   try {
-    const userData = { ...req.body };
-    if (req.file) {
+    if (imageFile) {
       // 1.  Save the full size image
       userData.profileImage = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype,
+        data: imageFile.buffer,
+        contentType: imageFile.mimetype,
       };
 
       // 2.  Get the avatar sized image
-      const avatar = await GenerateAvatarImage(req.file);
+      const avatar = await GenerateAvatarImage(imageFile);
       userData.avatarImage = avatar;
     }
+
+    //  Handle creating team if superadmin
+    if (userData.role.includes("superadmin")) {
+      const team = new TeamModel({
+        email: userData.email,
+      });
+      userData.teamId = team._id;
+      await team.save();
+    }
+
     const newUser = new UserModel(userData);
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })

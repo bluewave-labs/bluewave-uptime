@@ -7,6 +7,12 @@ const InviteTokenSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      immutable: true,
+      required: true,
+    },
     role: {
       type: Array,
       required: true,

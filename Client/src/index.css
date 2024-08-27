@@ -85,7 +85,7 @@
   --env-var-font-size-medium: 13px;
   --env-var-font-size-medium-plus: 14px;
   --env-var-font-size-large: 16px;
-  --env-var-font-size-large-plus: 24px;
+  --env-var-font-size-large-plus: 22px;
   --env-var-font-size-xlarge: 30px;
 
   --env-var-img-width-1: 20px;
@@ -141,6 +141,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.MuiInputBase-root.Mui-disabled input {
+  cursor: not-allowed;
+}
+
 .Toastify__toast-container {
   width: auto;
 }
@@ -162,6 +166,17 @@ button:focus-visible {
 
 body .MuiSkeleton-root {
   background-color: var(--env-var-color-15);
+}
+
+@keyframes ripple {
+  from {
+    opacity: 1;
+    transform: scale(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
 }
 
 @media (prefers-color-scheme: light) {

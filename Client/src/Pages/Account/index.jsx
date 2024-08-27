@@ -1,14 +1,13 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 import { Box, Tab, useTheme } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
-import "./index.css";
 import ProfilePanel from "../../Components/TabPanels/Account/ProfilePanel";
 import PasswordPanel from "../../Components/TabPanels/Account/PasswordPanel";
 import TeamPanel from "../../Components/TabPanels/Account/TeamPanel";
-import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import "./index.css";
 
 /**
  * Account component renders a settings page with tabs for Profile, Password, and Team settings.
@@ -26,7 +25,11 @@ const Account = ({ open = "profile" }) => {
 
   let tabList = ["Profile", "Password", "Team"];
   const { user } = useSelector((state) => state.auth);
-  if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
+  const requiredRoles = ["superadmin", "admin"];
+  const hideTeams = !requiredRoles.some((role) => user.role.includes(role));
+  if (hideTeams) {
+    tabList = ["Profile", "Password"];
+  }
 
   return (
     <Box
@@ -72,7 +75,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-        {user.role.includes("admin") && <TeamPanel />}
+        {!hideTeams && <TeamPanel />}
       </TabContext>
     </Box>
   );

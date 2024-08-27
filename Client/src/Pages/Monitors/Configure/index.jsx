@@ -2,25 +2,23 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import Button from "../../../Components/Button";
-import Field from "../../../Components/Inputs/Field";
 import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
-import WestRoundedIcon from "@mui/icons-material/WestRounded";
-import GreenCheck from "../../../assets/icons/checkbox-green.svg?react";
-import RedCheck from "../../../assets/icons/checkbox-red.svg?react";
-import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import { getLastChecked } from "../../../Utils/monitorUtils";
-import "./index.css";
 import { monitorValidation } from "../../../Validation/validation";
-import Select from "../../../Components/Inputs/Select";
-import { formatDurationRounded } from "../../../Utils/timeUtils";
 import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
 import {
   updateUptimeMonitor,
   getUptimeMonitorsByUserId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import Button from "../../../Components/Button";
+import Field from "../../../Components/Inputs/Field";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import PulseDot from "../../../Components/Animated/PulseDot";
+import "./index.css";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -96,7 +94,6 @@ const Configure = () => {
   const { user, authToken } = useSelector((state) => state.auth);
   const { monitors } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState({});
-  const [duration, setDuration] = useState(0);
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
 
@@ -111,14 +108,13 @@ const Configure = () => {
   useEffect(() => {
     const data = monitors.find((monitor) => monitor._id === monitorId);
     if (!data) {
-      console.error("Error fetching monitor of id: " + monitorId);
-      navigate("/not-found");
+      logger.error("Error fetching monitor of id: " + monitorId);
+      navigate("/not-found", { replace: true });
     }
     setMonitor({
       ...data,
     });
-    setDuration(formatDurationRounded(data?.interval));
-  }, [monitorId, authToken, monitors]);
+  }, [monitorId, authToken, monitors, navigate]);
 
   const handleChange = (event, name) => {
     let { value, id } = event.target;
@@ -210,74 +206,60 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
-  var lastChecked = formatDurationRounded(getLastChecked(monitor?.checks));
-
   let loading = Object.keys(monitor).length === 0;
 
   return (
-    <Box className="configure-monitor">
+    <Stack className="configure-monitor" gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
         <>
-          <Button
-            level="tertiary"
-            label="Back"
-            animate="slideLeft"
-            img={<WestRoundedIcon />}
-            onClick={() => navigate(-1)}
-            sx={{
-              backgroundColor: "#f4f4f4",
-              px: theme.gap.ml,
-              "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.small,
-                fill: theme.palette.otherColors.slateGray,
-              },
-            }}
+          <Breadcrumbs
+            list={[
+              { name: "monitors", path: "/monitors" },
+              { name: "details", path: `/monitors/${monitorId}` },
+              { name: "configure", path: `/monitors/configure/${monitorId}` },
+            ]}
           />
-          <form
-            className="configure-monitor-form"
+          <Stack
+            component="form"
             noValidate
             spellCheck="false"
-            style={{
-              marginTop: theme.gap.medium,
-            }}
+            gap={theme.gap.large}
+            flex={1}
           >
-            <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-              {monitor?.status ? <GreenCheck /> : <RedCheck />}
+            <Stack direction="row" gap={theme.gap.xs}>
+              <PulseDot
+                color={
+                  monitor?.status
+                    ? theme.label.up.dotColor
+                    : theme.label.down.dotColor
+                }
+              />
               <Box>
                 {parsedUrl?.host ? (
-                  <Typography
-                    component="h1"
-                    mb={theme.gap.small}
-                    sx={{ lineHeight: 1 }}
-                  >
+                  <Typography component="h1" mb={theme.gap.xs} lineHeight={1}>
                     {parsedUrl.host || "..."}
                   </Typography>
                 ) : (
                   ""
                 )}
-                <Typography lineHeight={parsedUrl?.host ? 1 : theme.gap.large}>
-                  <Typography
-                    component="span"
-                    sx={{
-                      color: monitor?.status
-                        ? "var(--env-var-color-17)"
-                        : "var(--env-var-color-24)",
-                    }}
-                  >
-                    Your site is {monitor?.status ? "up" : "down"}.
-                  </Typography>{" "}
-                  Checking every {duration}.{" "}
-                  {lastChecked ? `Last time checked ${lastChecked} ago.` : ""}
+                <Typography
+                  component="span"
+                  lineHeight={theme.gap.large}
+                  sx={{
+                    color: monitor?.status
+                      ? "var(--env-var-color-17)"
+                      : "var(--env-var-color-24)",
+                  }}
+                >
+                  Your site is {monitor?.status ? "up" : "down"}.
                 </Typography>
               </Box>
-              <Stack
-                direction="row"
-                gap={theme.gap.medium}
+              <Box
                 sx={{
-                  ml: "auto",
                   alignSelf: "flex-end",
+                  ml: "auto",
                 }}
               >
                 <Button
@@ -286,9 +268,10 @@ const Configure = () => {
                   animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{
-                    backgroundColor: "#f4f4f4",
+                    backgroundColor: theme.palette.otherColors.fillGray,
                     pl: theme.gap.small,
                     pr: theme.gap.medium,
+                    mr: theme.gap.medium,
                     "& svg": {
                       mr: theme.gap.xs,
                     },
@@ -303,17 +286,16 @@ const Configure = () => {
                   }}
                   onClick={() => setIsOpen(true)}
                 />
-              </Stack>
+              </Box>
             </Stack>
             <Stack
               className="config-box"
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.xxl}
             >
               <Box>
                 <Typography component="h2">General settings</Typography>
-                <Typography component="p" sx={{ mt: theme.gap.small }}>
+                <Typography component="p" sx={{ mt: theme.gap.xs }}>
                   Here you can select the URL of the host, together with the
                   type of monitor.
                 </Typography>
@@ -345,11 +327,10 @@ const Configure = () => {
               className="config-box"
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.xxl}
             >
               <Box>
                 <Typography component="h2">Incident notifications</Typography>
-                <Typography component="p" mt={theme.gap.small}>
+                <Typography component="p" mt={theme.gap.xs}>
                   When there is an incident, notify users.
                 </Typography>
               </Box>
@@ -362,7 +343,7 @@ const Configure = () => {
                   label="Notify via SMS (coming soon)"
                   isChecked={false}
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                   isDisabled={true}
                 />
                 <Checkbox
@@ -381,7 +362,7 @@ const Configure = () => {
                   label="Also notify via email to multiple addresses (coming soon)"
                   isChecked={false}
                   value=""
-                  onChange={() => console.log("disabled")}
+                  onChange={() => logger.warn("disabled")}
                   isDisabled={true}
                 />
                 {monitor?.notifications?.some(
@@ -393,7 +374,7 @@ const Configure = () => {
                       type="text"
                       placeholder="name@gmail.com"
                       value=""
-                      onChange={() => console.log("disabled")}
+                      onChange={() => logger.warn("disabled")}
                     />
                     <Typography mt={theme.gap.small}>
                       You can separate multiple emails with a comma
@@ -408,7 +389,6 @@ const Configure = () => {
               className="config-box"
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.xxl}
             >
               <Box>
                 <Typography component="h2">Advanced settings</Typography>
@@ -423,7 +403,7 @@ const Configure = () => {
                 />
               </Stack>
             </Stack>
-            <Stack direction="row" justifyContent="flex-end">
+            <Stack direction="row" justifyContent="flex-end" mt="auto">
               <Button
                 level="primary"
                 label="Save"
@@ -431,7 +411,7 @@ const Configure = () => {
                 onClick={handleSubmit}
               />
             </Stack>
-          </form>
+          </Stack>
         </>
       )}
       <Modal
@@ -460,7 +440,7 @@ const Configure = () => {
           }}
         >
           <Typography id="modal-delete-monitor" component="h2">
-          Do you really want to delete this monitor?
+            Do you really want to delete this monitor?
           </Typography>
           <Typography id="delete-monitor-confirmation">
             Once deleted, this monitor cannot be retrieved.
@@ -480,7 +460,7 @@ const Configure = () => {
           </Stack>
         </Stack>
       </Modal>
-    </Box>
+    </Stack>
   );
 };
 
