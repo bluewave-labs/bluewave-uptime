@@ -364,7 +364,6 @@ const getMonitorsByTeamId = async (req, res) => {
  */
 const createMonitor = async (req, res) => {
   try {
-    console.log(req.body);
     const monitor = new Monitor({ ...req.body });
     // Remove notifications fom monitor as they aren't needed here
     monitor.notifications = undefined;
