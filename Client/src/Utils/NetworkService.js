@@ -327,7 +327,7 @@ class NetworkService {
    */
   async requestInvitationToken(authToken, email, role) {
     return this.axiosInstance.post(
-      `/auth/invite`,
+      `/invite`,
       { email, role },
       {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -346,7 +346,7 @@ class NetworkService {
    *
    */
   async verifyInvitationToken(token) {
-    return this.axiosInstance.post(`/auth/invite/verify`, {
+    return this.axiosInstance.post(`/invite/verify`, {
       token,
     });
   }

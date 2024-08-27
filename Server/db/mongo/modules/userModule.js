@@ -14,35 +14,30 @@ const { ParseBoolean } = require("../../../utils/utils");
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const insertUser = async (req, res) => {
+const insertUser = async (userData, imageFile) => {
   try {
-    const userData = { ...req.body };
-    if (req.file) {
+    if (imageFile) {
       // 1.  Save the full size image
       userData.profileImage = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype,
+        data: imageFile.buffer,
+        contentType: imageFile.mimetype,
       };
 
       // 2.  Get the avatar sized image
-      const avatar = await GenerateAvatarImage(req.file);
+      const avatar = await GenerateAvatarImage(imageFile);
       userData.avatarImage = avatar;
     }
 
-    let teamId;
-    // Is user superadmin? If so, create team
+    //  Handle creating team if superadmin
     if (userData.role.includes("superadmin")) {
       const team = new TeamModel({
         email: userData.email,
       });
-      teamId = team._id;
+      userData.teamId = team._id;
       await team.save();
-    } else {
-      teamId = userData.teamId;
     }
 
     const newUser = new UserModel(userData);
-    newUser.teamId = teamId;
     await newUser.save();
     return await UserModel.findOne({ _id: newUser._id })
       .select("-password")

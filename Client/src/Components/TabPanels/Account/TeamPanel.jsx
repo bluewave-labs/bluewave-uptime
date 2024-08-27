@@ -32,6 +32,12 @@ import Select from "../../Inputs/Select";
  */
 
 const TeamPanel = () => {
+  const roleMap = {
+    superadmin: "Super admin",
+    admin: "Admin",
+    user: "Team member",
+  };
+
   const theme = useTheme();
 
   const { authToken, user } = useSelector((state) => state.auth);
@@ -78,6 +84,7 @@ const TeamPanel = () => {
         // { id: 4, name: "ACTION" },
       ],
       rows: team?.map((member, idx) => {
+        const roles = member.role.map((role) => roleMap[role]).join(",");
         return {
           id: member._id,
           data: [
@@ -100,7 +107,7 @@ const TeamPanel = () => {
             {
               // TODO - Add select dropdown
               id: idx + 2,
-              data: member.role.includes("admin") ? "Administrator" : "Member",
+              data: roles,
             },
             // FEATURE STILL TO BE IMPLEMENTED
             // {

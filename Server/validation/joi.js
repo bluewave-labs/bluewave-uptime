@@ -39,7 +39,7 @@ const loginValidation = joi.object({
     ),
 });
 
-const registerValidation = joi.object({
+const registrationBodyValidation = joi.object({
   firstName: joi
     .string()
     .required()
@@ -336,7 +336,7 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
 module.exports = {
   roleValidatior,
   loginValidation,
-  registerValidation,
+  registrationBodyValidation,
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,

@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  registerValidation,
+  registrationBodyValidation,
   loginValidation,
   editUserParamValidation,
   editUserBodyValidation,
@@ -50,7 +50,7 @@ const getTokenFromHeaders = (headers) => {
 const registerController = async (req, res, next) => {
   // joi validation
   try {
-    await registerValidation.validateAsync(req.body);
+    await registrationBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -78,7 +78,7 @@ const registerController = async (req, res, next) => {
 
   // Create a new user
   try {
-    const newUser = await req.db.insertUser(req, res);
+    const newUser = await req.db.insertUser({ ...req.body }, req.file);
     logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,
       userId: newUser._id,
