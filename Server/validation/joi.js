@@ -160,11 +160,11 @@ const getMonitorByIdQueryValidation = joi.object({
   normalize: joi.boolean(),
 });
 
-const getMonitorsByUserIdValidation = joi.object({
-  userId: joi.string().required(),
+const getMonitorsByTeamIdValidation = joi.object({
+  teamId: joi.string().required(),
 });
 
-const getMonitorsByUserIdQueryValidation = joi.object({
+const getMonitorsByTeamIdQueryValidation = joi.object({
   status: joi.boolean(),
   sortOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
@@ -180,6 +180,7 @@ const getMonitorsByUserIdQueryValidation = joi.object({
 const createMonitorBodyValidation = joi.object({
   _id: joi.string(),
   userId: joi.string().required(),
+  teamId: joi.string().required(),
   name: joi.string().required(),
   description: joi.string().required(),
   type: joi.string().required(),
@@ -346,8 +347,8 @@ module.exports = {
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
-  getMonitorsByUserIdValidation,
-  getMonitorsByUserIdQueryValidation,
+  getMonitorsByTeamIdValidation,
+  getMonitorsByTeamIdQueryValidation,
   editMonitorBodyValidation,
   editUserParamValidation,
   editUserBodyValidation,

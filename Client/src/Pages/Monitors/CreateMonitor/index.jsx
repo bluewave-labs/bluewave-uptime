@@ -118,9 +118,11 @@ const CreateMonitor = () => {
       form = {
         ...form,
         description: form.name,
+        teamId: user.teamId,
         userId: user._id,
         notifications: monitor.notifications,
       };
+      console.log(form);
       const action = await dispatch(
         createUptimeMonitor({ authToken, monitor: form })
       );

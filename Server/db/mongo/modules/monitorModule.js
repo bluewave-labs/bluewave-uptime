@@ -287,17 +287,17 @@ const getMonitorById = async (monitorId) => {
 };
 
 /**
- * Get monitors by UserID
+ * Get monitors by TeamID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @returns {Promise<Array<Monitor>>}
  * @throws {Error}
  */
-const getMonitorsByUserId = async (req, res) => {
+const getMonitorsByTeamId = async (req, res) => {
   try {
     let { limit, type, status, sortOrder, normalize } = req.query || {};
-    const monitorQuery = { userId: req.params.userId };
+    const monitorQuery = { teamId: req.params.teamId };
 
     if (type !== undefined) {
       const types = Array.isArray(type) ? type : [type];
@@ -364,10 +364,10 @@ const getMonitorsByUserId = async (req, res) => {
  */
 const createMonitor = async (req, res) => {
   try {
+    console.log(req.body);
     const monitor = new Monitor({ ...req.body });
     // Remove notifications fom monitor as they aren't needed here
     monitor.notifications = undefined;
-    monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
   } catch (error) {
@@ -453,7 +453,7 @@ module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
-  getMonitorsByUserId,
+  getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,

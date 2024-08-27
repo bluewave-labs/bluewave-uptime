@@ -33,9 +33,9 @@ export const getUptimeMonitorsByUserId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByTeamId(
         token,
-        user._id,
+        user.teamId,
         25,
         ["http", "ping"],
         null,
