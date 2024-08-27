@@ -7,7 +7,7 @@ import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
-import Monitors from "./Pages/Monitors";
+import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
