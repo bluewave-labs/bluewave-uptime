@@ -159,35 +159,27 @@ const Monitors = () => {
   const [isSorted, setIsSorted] = useState(false);
 
   useEffect(() => {
-    const savedSortOrder = localStorage.getItem('monitorSortOrder');
-    const parsedSortOrder = parseInt(savedSortOrder, 10) || 1;
-  
-    if (savedSortOrder) {
-      setSortOrder(parsedSortOrder);
-      const monitors = [...monitorState.monitors].sort(a => {
-        return a.status ? -1 * parsedSortOrder : 1 * parsedSortOrder;
-      });
-      setSortedMonitors(monitors);
-      setIsSorted(true);
-    } else {
+    if (!isSorted) {
       setSortedMonitors(monitorState.monitors);
     }
-  }, [monitorState.monitors]);
-  
-  
+    else {
+      const monitors = [...monitorState.monitors].sort(a => {
+        return a.status ? -sortOrder : sortOrder;
+      });
+      setSortedMonitors(monitors);
+    }
+
+  }, [monitorState.monitors, sortOrder, isSorted]);
+
   const handleSort = () => {
-    const newSortOrder = sortOrder * -1;
-    setSortOrder(newSortOrder);
+    setSortOrder(-sortOrder);
   
     const monitors = [...monitorState.monitors].sort(a => {
-      return a.status ? -1 * newSortOrder : 1 * newSortOrder;
+      return a.status ? -sortOrder : sortOrder;
     });
   
     setSortedMonitors(monitors);
     setIsSorted(true);
-  
-    localStorage.setItem('monitorSortOrder', newSortOrder);
-    localStorage.setItem('monitorIsSorted', true);
   };
   
 
