@@ -314,7 +314,7 @@ const Configure = () => {
                 <Field
                   type="text"
                   id="monitor-name"
-                  label="display name"
+                  label="Display name"
                   isOptional={true}
                   placeholder="Google"
                   value={monitor?.name || ""}
