@@ -77,6 +77,7 @@ const Button = ({
         fontWeight: 400,
         boxShadow: "none",
         textTransform: "none",
+        borderRadius: "4px",
         "&:focus": {
           outline: "none",
         },

@@ -18,8 +18,10 @@ import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { logger } from "../../../../Utils/Logger";
+import { useTheme } from "@emotion/react";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
+  const theme = useTheme();
   const { authToken } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
@@ -78,6 +80,19 @@ const PaginationTable = ({ monitorId, dateRange }) => {
         page={paginationController.page + 1} //0-indexed
         onChange={handlePageChange}
         shape="rounded"
+        sx={{
+          backgroundColor: theme.palette.background.main,
+          border: 1,
+          borderColor: theme.palette.border.light,
+          "& button": {
+            color: theme.palette.text.tertiary,
+            borderRadius: theme.shape.borderRadius,
+          },
+          "& li:first-of-type button, & li:last-of-type button": {
+            border: 1,
+            borderColor: theme.palette.border.light,
+          },
+        }}
         renderItem={(item) => (
           <PaginationItem
             slots={{
@@ -93,6 +108,9 @@ const PaginationTable = ({ monitorId, dateRange }) => {
                 pointerEvents: "none",
                 display: "none",
               },
+              "&.Mui-selected, &.Mui-selected:hover": {
+                backgroundColor: theme.palette.background.fill,
+              },
             }}
           />
         )}
@@ -102,13 +120,29 @@ const PaginationTable = ({ monitorId, dateRange }) => {
 
   return (
     <>
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          border: `solid 1px ${theme.palette.border.light}`,
+          borderRadius: theme.shape.borderRadius,
+        }}
+      >
         <Table>
-          <TableHead>
+          <TableHead
+            sx={{
+              backgroundColor: theme.palette.background.accent,
+            }}
+          >
             <TableRow>
-              <TableCell>Status</TableCell>
-              <TableCell>Date & Time</TableCell>
-              <TableCell>Message</TableCell>
+              <TableCell sx={{ color: theme.palette.text.secondary }}>
+                Status
+              </TableCell>
+              <TableCell sx={{ color: theme.palette.text.secondary }}>
+                Date & Time
+              </TableCell>
+              <TableCell sx={{ color: theme.palette.text.secondary }}>
+                Message
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

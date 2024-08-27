@@ -309,11 +309,11 @@ const StatusBox = ({ title, value }) => {
       position="relative"
       flex={1}
       border={1}
-      borderColor={theme.palette.otherColors.graishWhite}
-      borderRadius={`${theme.shape.borderRadius}px`}
-      backgroundColor={theme.palette.otherColors.white}
-      px={theme.gap.large}
-      py={theme.gap.ml}
+      borderColor={theme.palette.border.light}
+      borderRadius={theme.shape.borderRadius}
+      backgroundColor={theme.palette.background.main}
+      px={theme.spacing(12)}
+      py={theme.spacing(8)}
       overflow="hidden"
       sx={{
         "&:hover": {
@@ -447,9 +447,7 @@ const Monitors = () => {
       title: monitor.name,
       percentage: 100,
       percentageColor:
-        monitor.status === true
-          ? "var(--success-color)"
-          : "var(--error-color)",
+        monitor.status === true ? "var(--success-color)" : "var(--error-color)",
       status: monitor.status === true ? "up" : "down",
     };
 

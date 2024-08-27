@@ -1,10 +1,17 @@
-import "./index.css";
 import PropTypes from "prop-types";
+import { Stack } from "@mui/material";
 import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
+import "./index.css";
 
 const ResponseTimeChart = ({ checks = [] }) => {
   return (
-    <div className="chart-container">
+    <Stack
+      flexDirection="row"
+      justifyContent="space-around"
+      alignItems="flex-end"
+      height="50px"
+      width="300px"
+    >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={150}
@@ -26,7 +33,7 @@ const ResponseTimeChart = ({ checks = [] }) => {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </Stack>
   );
 };
 

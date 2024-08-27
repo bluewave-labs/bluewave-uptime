@@ -22,7 +22,7 @@
 
   border: 1px solid var(--border-color);
   border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
+  background-color: var(--primary-bg);
 
   padding: var(--env-var-spacing-1) 0;
 }
