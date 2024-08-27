@@ -7,7 +7,7 @@ router.get("/", monitorController.getAllMonitors);
 router.get("/stats/:monitorId", monitorController.getMonitorStatsById);
 router.get("/certificate/:monitorId", monitorController.getMonitorCertificate);
 router.get("/:monitorId", monitorController.getMonitorById);
-router.get("/user/:userId", monitorController.getMonitorsByUserId);
+router.get("/team/:teamId", monitorController.getMonitorsByTeamId);
 
 router.post("/", monitorController.createMonitor);
 router.delete(

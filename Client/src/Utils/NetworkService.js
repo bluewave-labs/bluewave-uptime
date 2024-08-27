@@ -52,9 +52,9 @@ class NetworkService {
    * @param {boolean} [normalize] - Whether to normalize the retrieved monitors.
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    */
-  async getMonitorsByUserId(
+  async getMonitorsByTeamId(
     authToken,
-    userId,
+    teamId,
     limit,
     types,
     status,
@@ -74,7 +74,7 @@ class NetworkService {
     if (normalize) params.append("normalize", normalize);
 
     return this.axiosInstance.get(
-      `/monitors/user/${userId}?${params.toString()}`,
+      `/monitors/team/${teamId}?${params.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
