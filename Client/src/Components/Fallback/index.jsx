@@ -19,7 +19,7 @@ import "./index.css";
  * @returns {JSX.Element} The rendered fallback UI.
  */
 
-const Fallback = ({ title, checks, link = "/" }) => {
+const Fallback = ({ title, checks, link = "/", isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ const Fallback = ({ title, checks, link = "/" }) => {
       />
       <Stack gap={theme.gap.small} maxWidth={"275px"} zIndex={1}>
         <Typography component="h1" marginY={theme.gap.medium}>
-          A {title} is used to:
+          A {title} monitor is used to:
         </Typography>
         {checks.map((check, index) => (
           <Check
@@ -46,12 +46,14 @@ const Fallback = ({ title, checks, link = "/" }) => {
           />
         ))}
       </Stack>
-      <Button
-        level="primary"
-        label={`Let's create your ${title}`}
-        sx={{ alignSelf: "center" }}
-        onClick={() => navigate(link)}
-      />
+      {isAdmin && (
+        <Button
+          level="primary"
+          label={`Let's create your ${title}`}
+          sx={{ alignSelf: "center" }}
+          onClick={() => navigate(link)}
+        />
+      )}
     </Stack>
   );
 };
@@ -60,6 +62,7 @@ Fallback.propTypes = {
   title: PropTypes.string.isRequired,
   checks: PropTypes.arrayOf(PropTypes.string).isRequired,
   link: PropTypes.string,
+  isAdmin: PropTypes.bool,
 };
 
 export default Fallback;

@@ -30,13 +30,14 @@ import Arrow from "../../assets/icons/top-right-arrow.svg?react";
 import ClockSnooze from "../../assets/icons/clock-snooze.svg?react";
 import "./index.css";
 
-const ActionsMenu = ({ monitor }) => {
+const ActionsMenu = ({ monitor, isAdmin }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [actions, setActions] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const theme = useTheme();
   const authState = useSelector((state) => state.auth);
+
   const handleRemove = async (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -121,23 +122,27 @@ const ActionsMenu = ({ monitor }) => {
         </MenuItem>
         {/* TODO - pass monitor id to Incidents page */}
         <MenuItem disabled>Incidents</MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
+        {isAdmin && (
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
 
-            navigate(`/monitors/configure/${actions.id}`);
-          }}
-        >
-          Configure
-        </MenuItem>
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            openRemove(e);
-          }}
-        >
-          Remove
-        </MenuItem>
+              navigate(`/monitors/configure/${actions.id}`);
+            }}
+          >
+            Configure
+          </MenuItem>
+        )}
+        {isAdmin && (
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              openRemove(e);
+            }}
+          >
+            Remove
+          </MenuItem>
+        )}
       </Menu>
       <Modal
         aria-labelledby="modal-delete-monitor"
@@ -205,6 +210,7 @@ ActionsMenu.propTypes = {
     url: PropTypes.string,
     type: PropTypes.string,
   }).isRequired,
+  isAdmin: PropTypes.bool,
 };
 
 /**
@@ -403,7 +409,7 @@ const SkeletonLayout = () => {
   );
 };
 
-const Monitors = () => {
+const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const monitorState = useSelector((state) => state.uptimeMonitors);
@@ -483,7 +489,7 @@ const Monitors = () => {
         },
         {
           id: idx + 4,
-          data: <ActionsMenu monitor={monitor} />,
+          data: <ActionsMenu monitor={monitor} isAdmin={isAdmin} />,
         },
       ],
     };
@@ -572,14 +578,16 @@ const Monitors = () => {
               <Typography>
                 It looks like you don’t have any monitors set up yet.
               </Typography>
-              <Button
-                level="primary"
-                label="Create your first monitor"
-                onClick={() => {
-                  navigate("/monitors/create");
-                }}
-                sx={{ mt: theme.gap.large }}
-              />
+              {isAdmin && (
+                <Button
+                  level="primary"
+                  label="Create your first monitor"
+                  onClick={() => {
+                    navigate("/monitors/create");
+                  }}
+                  sx={{ mt: theme.gap.large }}
+                />
+              )}
             </Stack>
           ) : (
             <>
@@ -622,4 +630,7 @@ const Monitors = () => {
   );
 };
 
+Monitors.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default Monitors;
