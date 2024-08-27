@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { verifyJWT } = require("../middleware/verifyJWT");
-const { verifySuperAdmin } = require("../middleware/verifySuperAdmin");
 const { verifyOwnership } = require("../middleware/verifyOwnership");
+const { isAllowed } = require("../middleware/isAllowed");
 const multer = require("multer");
 const upload = multer();
 const User = require("../models/user");
@@ -29,7 +29,12 @@ router.put(
   userEditController
 );
 router.get("/users/superadmin", checkSuperadminController);
-router.get("/users", verifyJWT, verifySuperAdmin, getAllUsersController);
+router.get(
+  "/users",
+  verifyJWT,
+  isAllowed(["admin", "superadmin"]),
+  getAllUsersController
+);
 router.delete(
   "/user/:userId",
   verifyJWT,

@@ -17,6 +17,9 @@ const errorMessages = {
   VERIFY_OWNER_NOT_FOUND: "Document not found",
   VERIFY_OWNER_UNAUTHORIZED: "Unauthorized access",
 
+  //Permissions Middleware
+  INSUFFICIENT_PERMISSIONS: "Insufficient permissions",
+
   //DB Errors
   DB_USER_EXISTS: "User already exists",
   DB_USER_NOT_FOUND: "User not found",

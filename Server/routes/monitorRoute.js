@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const monitorController = require("../controllers/monitorController");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
-const Monitor = require("../models/Monitor");
+const { isAllowed } = require("../middleware/isAllowed");
 
 router.get("/", monitorController.getAllMonitors);
 router.get("/stats/:monitorId", monitorController.getMonitorStatsById);
@@ -9,17 +8,27 @@ router.get("/certificate/:monitorId", monitorController.getMonitorCertificate);
 router.get("/:monitorId", monitorController.getMonitorById);
 router.get("/team/:teamId", monitorController.getMonitorsByTeamId);
 
-router.post("/", monitorController.createMonitor);
+router.post(
+  "/",
+  isAllowed(["admin", "superadmin"]),
+  monitorController.createMonitor
+);
+
 router.delete(
   "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
+  isAllowed(["admin", "superadmin"]),
   monitorController.deleteMonitor
 );
+
 router.put(
   "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
+  isAllowed(["admin", "superadmin"]),
   monitorController.editMonitor
 );
 
-router.delete("/all", monitorController.deleteAllMonitors);
+router.delete(
+  "/all",
+  isAllowed(["superadmin"]),
+  monitorController.deleteAllMonitors
+);
 module.exports = router;
