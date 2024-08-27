@@ -62,7 +62,7 @@ const CreateNewMaintenanceWindow = () => {
     startTime: dayjs(),
     duration: "60",
     unit: "minutes",
-    friendlyName: "",
+    displayName: "",
     AddMonitors: "",
   });
   const [errors, setErrors] = useState({});
@@ -82,7 +82,7 @@ const CreateNewMaintenanceWindow = () => {
       startTime: values.startTime.format("HH:mm"),
       duration: values.duration,
       unit: values.unit,
-      friendlyName: values.friendlyName,
+      displayName: values.displayName,
       addMonitors: values.AddMonitors,
     };
 
@@ -178,14 +178,14 @@ const CreateNewMaintenanceWindow = () => {
       ),
     },
     {
-      title: "Friendly name",
+      title: "Display name",
       component: (
         <Field
-          id="friendly-name"
+          id="display-name"
           placeholder="Maintanence at __ : __ for ___ minutes"
-          value={values.friendlyName}
-          onChange={(e) => handleChange(e, "friendlyName")}
-          error={errors.friendlyName}
+          value={values.displayName}
+          onChange={(e) => handleChange(e, "displayName")}
+          error={errors.displayName}
         />
       ),
     },

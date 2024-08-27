@@ -135,9 +135,9 @@ const maintenanceWindowValidation = joi.object({
     "any.only": "Unit must be one of ['minutes', 'hours', 'days'].",
     "any.required": "Unit is required.",
   }),
-  friendlyName: joi.string().max(50).required().messages({
-    "string.empty": "Friendly name is required.",
-    "string.max": "Friendly name must be less than 50 characters long",
+  displayName: joi.string().max(50).required().messages({
+    "string.empty": "Display name is required.",
+    "string.max": "Display name must be less than 50 characters long",
   }),
   addMonitors: joi.string().max(50).required().messages({
     "string.empty": "Add monitors is required.",
