@@ -1,32 +1,10 @@
-.progress-bar-container {
-  background-color: #fafafa;
-  padding: var(--env-var-spacing-1-plus);
-}
 .progress-bar-container h2.MuiTypography-root,
 .progress-bar-container p.MuiTypography-root {
-  color: var(--secondary-color-light);
   font-size: var(--env-var-font-size-medium);
-}
-.progress-bar-container p.MuiTypography-root {
-  opacity: 0.6;
 }
 .progress-bar-container p.MuiTypography-root:has(span) {
   font-size: 12px;
 }
 .progress-bar-container p.MuiTypography-root span {
   padding-left: 2px;
-}
-.progress-bar-container:has(p.input-error){
-  border-color: var(--error-color);
-  background-color: var(--error-bg);
-  padding: 8px var(--env-var-spacing-1-plus);
-}
-.progress-bar-container p.input-error{
-  color: var(--error-color);
-  opacity: 0.8;
-}
-.progress-bar-container:has(p.input-error)>.MuiStack-root>svg{
-  fill: var(--error-color);
-  width: 20px;
-  height: 20px;
 }

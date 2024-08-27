@@ -1,6 +1,6 @@
 import "./index.css";
 import { useState } from "react";
-import RadioButton from "../../../Components/RadioButton";
+import Radio from "../../../Components/Inputs/Radio";
 import Button from "../../../Components/Button";
 import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
@@ -211,7 +211,7 @@ const CreateMonitor = () => {
           </Box>
           <Stack gap={theme.gap.large}>
             <Stack gap={theme.gap.medium}>
-              <RadioButton
+              <Radio
                 id="monitor-checks-http"
                 title="Website monitoring"
                 desc="Use HTTP(s) to monitor your website or API endpoint."
@@ -245,7 +245,7 @@ const CreateMonitor = () => {
                 ""
               )}
             </Stack>
-            <RadioButton
+            <Radio
               id="monitor-checks-ping"
               title="Ping monitoring"
               desc="Check whether your server is available or not."

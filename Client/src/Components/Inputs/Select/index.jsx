@@ -55,15 +55,22 @@ const Select = ({
   const theme = useTheme();
   const itemStyles = {
     fontSize: "var(--env-var-font-size-medium)",
-    color: theme.palette.otherColors.bluishGray,
-    textTransform: "capitalize",
-    borderRadius: `${theme.shape.borderRadius}px`,
-    margin: theme.gap.xs,
+    color: theme.palette.text.tertiary,
+    borderRadius: theme.shape.borderRadius,
+    margin: theme.spacing(2),
   };
 
   return (
-    <Stack gap={theme.gap.xs} className="select-wrapper">
-      {label && <Typography component="h3">{label}</Typography>}
+    <Stack gap={theme.spacing(2)} className="select-wrapper">
+      {label && (
+        <Typography
+          component="h3"
+          color={theme.palette.text.secondary}
+          fontWeight={500}
+        >
+          {label}
+        </Typography>
+      )}
       <MuiSelect
         className="select-component"
         value={value}
@@ -72,17 +79,43 @@ const Select = ({
         inputProps={{ id: id }}
         MenuProps={{
           PaperProps: {
-            className: "select-dropdown",
-            style: {
-              marginTop: theme.gap.xs,
+            sx: {
+              marginTop: theme.spacing(2),
+              border: 1,
+              borderColor: theme.palette.border.light,
+              borderRadius: theme.shape.borderRadius,
+              boxShadow: theme.shape.boxShadow,
             },
           },
           MenuListProps: {
-            style: { padding: 0 },
+            sx: {
+              p: 0,
+              "& li": {
+                color: theme.palette.text.secondary,
+                fontSize: 13,
+                px: theme.spacing(4),
+                py: theme.spacing(2.5),
+                borderRadius: theme.shape.borderRadius,
+              },
+              "& li.Mui-selected, & li.Mui-selected.Mui-focusVisible, & li.Mui-selected:hover":
+                {
+                  backgroundColor: theme.palette.background.fill,
+                },
+            },
           },
         }}
         IconComponent={KeyboardArrowDownIcon}
-        sx={{ ...sx }}
+        sx={{
+          minWidth: "125px",
+          "& fieldset": {
+            borderRadius: theme.shape.borderRadius,
+            borderColor: theme.palette.border.dark,
+          },
+          "&:not(.Mui-focused):hover fieldset": {
+            borderColor: theme.palette.border.dark,
+          },
+          ...sx,
+        }}
       >
         {placeholder && (
           <MenuItem

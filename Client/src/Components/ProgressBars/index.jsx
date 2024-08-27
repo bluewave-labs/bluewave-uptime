@@ -32,21 +32,36 @@ const ProgressUpload = ({
   error,
 }) => {
   const theme = useTheme();
+
   return (
     <Box
       className="progress-bar-container"
-      mt="20px"
+      mt={theme.spacing(10)}
+      p={theme.spacing(8)}
       sx={{
         minWidth: "200px",
         height: "fit-content",
-        borderRadius: `${theme.shape.borderRadius}px`,
-        border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+        borderRadius: theme.shape.borderRadius,
+        border: 1,
+        borderColor: theme.palette.border.light,
+        backgroundColor: "#fafafa",
+        "&:has(.input-error)": {
+          borderColor: theme.palette.error.main,
+          backgroundColor: theme.palette.error.bg,
+          py: theme.spacing(4),
+          px: theme.spacing(8),
+          "& > .MuiStack-root > svg": {
+            fill: theme.palette.error.text,
+            width: "20px",
+            height: "20px",
+          },
+        },
       }}
     >
       <Stack
         direction="row"
-        mb={error ? "0" : "10px"}
-        gap="10px"
+        mb={error ? 0 : theme.spacing(5)}
+        gap={theme.spacing(5)}
         alignItems={error ? "center" : "flex-end"}
       >
         {error ? (
@@ -54,10 +69,11 @@ const ProgressUpload = ({
         ) : icon ? (
           <IconButton
             sx={{
-              backgroundColor: theme.palette.otherColors.white,
+              backgroundColor: theme.palette.background.main,
               pointerEvents: "none",
-              borderRadius: `${theme.shape.borderRadius}px`,
-              border: `solid ${theme.shape.borderThick}px ${theme.palette.otherColors.graishWhite}`,
+              borderRadius: theme.shape.borderRadius,
+              border: 2,
+              borderColor: theme.palette.border.light,
               boxShadow: theme.shape.boxShadow,
             }}
           >
@@ -67,15 +83,21 @@ const ProgressUpload = ({
           ""
         )}
         {error ? (
-          <Typography component="p" className="input-error">
+          <Typography
+            component="p"
+            className="input-error"
+            color={theme.palette.error.text}
+          >
             {error}
           </Typography>
         ) : (
-          <Box>
-            <Typography component="h2" mb="5px">
+          <Box color={theme.palette.text.tertiary}>
+            <Typography component="h2" mb={theme.spacing(1.5)}>
               {error ? error : label}
             </Typography>
-            <Typography component="p">{!error && size}</Typography>
+            <Typography component="p" sx={{ opacity: 0.6 }}>
+              {!error && size}
+            </Typography>
           </Box>
         )}
         <IconButton
@@ -85,9 +107,9 @@ const ProgressUpload = ({
               ? {
                   alignSelf: "flex-start",
                   ml: "auto",
-                  mr: "-5px",
-                  mt: "-5px",
-                  padding: "5px",
+                  mr: theme.spacing(-2.5),
+                  mt: theme.spacing(-2.5),
+                  padding: theme.spacing(2.5),
                   "&:focus": {
                     outline: "none",
                   },
@@ -109,20 +131,23 @@ const ProgressUpload = ({
       </Stack>
       {!error ? (
         <Stack direction="row" alignItems="center">
-          <Box sx={{ width: "100%", mr: "10px" }}>
+          <Box sx={{ width: "100%", mr: theme.spacing(5) }}>
             <LinearProgress
               variant="determinate"
               value={progress}
               sx={{
                 width: "100%",
                 height: "10px",
-                borderRadius: `${theme.shape.borderRadius}px`,
+                borderRadius: theme.shape.borderRadius,
                 maxWidth: "500px",
-                backgroundColor: theme.palette.otherColors.graishWhite,
+                backgroundColor: theme.palette.border.light,
               }}
             />
           </Box>
-          <Typography component="p" sx={{ minWidth: "max-content" }}>
+          <Typography
+            component="p"
+            sx={{ minWidth: "max-content", opacity: 0.6 }}
+          >
             {progress}
             <span>%</span>
           </Typography>

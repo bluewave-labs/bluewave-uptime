@@ -27,15 +27,19 @@ const Fallback = ({ title, checks, link = "/" }) => {
     <Stack
       className={`fallback__${title.trim().split(" ")[0]}`}
       alignItems="center"
-      gap={theme.gap.xl}
+      gap={theme.spacing(20)}
     >
       <Skeleton style={{ zIndex: 1 }} />
       <Box
         className="background-pattern-svg"
         sx={{ backgroundImage: `url(${background})` }}
       />
-      <Stack gap={theme.gap.small} maxWidth={"275px"} zIndex={1}>
-        <Typography component="h1" marginY={theme.gap.medium}>
+      <Stack gap={theme.spacing(4)} maxWidth={"275px"} zIndex={1}>
+        <Typography
+          component="h1"
+          marginY={theme.spacing(6)}
+          color={theme.palette.text.secondary}
+        >
           A {title} is used to:
         </Typography>
         {checks.map((check, index) => (

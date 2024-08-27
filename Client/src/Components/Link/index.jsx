@@ -16,24 +16,24 @@ const Link = ({ level, label, url }) => {
   const levelConfig = {
     primary: {},
     secondary: {
-      color: theme.palette.otherColors.bluishGray,
+      color: theme.palette.text.secondary,
       sx: {
         ":hover": {
-          color: theme.palette.otherColors.bluishGray,
+          color: theme.palette.text.secondary,
         },
       },
     },
     tertiary: {
-      color: theme.palette.tertiary.main,
+      color: theme.palette.text.tertiary,
       sx: {
         textDecoration: "underline",
         textDecorationStyle: "dashed",
-        textDecorationColor: theme.palette.primary.main,
+        textDecorationColor: theme.palette.common.main,
         textUnderlineOffset: "1px",
         ":hover": {
-          color: theme.palette.tertiary.main,
-          textDecorationColor: theme.palette.primary.main,
-          backgroundColor: theme.palette.tertiary.linkHover,
+          color: theme.palette.text.tertiary,
+          textDecorationColor: theme.palette.common.main,
+          backgroundColor: theme.palette.background.fill,
         },
       },
     },
