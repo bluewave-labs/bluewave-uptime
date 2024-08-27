@@ -409,9 +409,9 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async getChecksByUser(
+  async getChecksByTeam(
     authToken,
-    userId,
+    teamId,
     sortOrder,
     limit,
     dateRange,
@@ -427,7 +427,7 @@ class NetworkService {
     if (page) params.append("page", page);
     if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
     return this.axiosInstance.get(
-      `/checks/user/${userId}?${params.toString()}`,
+      `/checks/team/${teamId}?${params.toString()}`,
       {
         headers: { Authorization: `Bearer ${authToken}` },
       }

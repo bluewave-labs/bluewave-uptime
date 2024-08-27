@@ -116,12 +116,12 @@ const getChecks = async (req) => {
   }
 };
 
-const getUserChecks = async (req) => {
-  const { userId } = req.params;
+const getTeamChecks = async (req) => {
+  const { teamId } = req.params;
   let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 
   // Get monitorIDs
-  const userMonitors = await Monitor.find({ userId: userId });
+  const userMonitors = await Monitor.find({ teamId: teamId });
   const monitorIds = userMonitors.map((monitor) => monitor._id);
 
   //Build check query
@@ -189,6 +189,6 @@ module.exports = {
   createCheck,
   getChecksCount,
   getChecks,
-  getUserChecks,
+  getTeamChecks,
   deleteChecks,
 };
