@@ -15,10 +15,10 @@ const connect = async () => {
   }
 };
 
-const checkAdmin = async (req, res) => {
+const checkSuperadmin = async (req, res) => {
   try {
-    const admin = await UserModel.findOne({ role: "admin" });
-    if (admin !== null) {
+    const superAdmin = await UserModel.findOne({ role: "superadmin" });
+    if (superAdmin !== null) {
       return true;
     }
     return false;
@@ -141,7 +141,7 @@ module.exports = {
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
-  checkAdmin,
+  checkSuperadmin,
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,

@@ -5,8 +5,11 @@ const joi = require("joi");
 //****************************************
 
 const roleValidatior = (role) => (value, helpers) => {
-  if (!value.includes(role)) {
-    throw new joi.ValidationError(`You do not have ${role} authorization`);
+  const hasRole = role.some((role) => value.includes(role));
+  if (!hasRole) {
+    throw new Joi.ValidationError(
+      `You do not have the required authorization. Required roles: ${roles.join(", ")}`
+    );
   }
   return value;
 };
@@ -36,7 +39,7 @@ const loginValidation = joi.object({
     ),
 });
 
-const registerValidation = joi.object({
+const registrationBodyValidation = joi.object({
   firstName: joi
     .string()
     .required()
@@ -66,9 +69,10 @@ const registerValidation = joi.object({
   profileImage: joi.any(),
   role: joi
     .array()
-    .items(joi.string().valid("admin", "user"))
+    .items(joi.string().valid("superadmin", "admin", "user"))
     .min(1)
     .required(),
+  teamId: joi.string().allow("").required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -123,7 +127,7 @@ const deleteUserParamValidation = joi.object({
 });
 
 const inviteRoleValidation = joi.object({
-  roles: joi.custom(roleValidatior("admin")).required(),
+  roles: joi.custom(roleValidatior(["admin", "superadmin"])).required(),
 });
 
 const inviteBodyValidation = joi.object({
@@ -132,6 +136,7 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
+  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
@@ -331,7 +336,7 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
 module.exports = {
   roleValidatior,
   loginValidation,
-  registerValidation,
+  registrationBodyValidation,
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,

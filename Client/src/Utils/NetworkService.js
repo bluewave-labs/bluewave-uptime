@@ -293,8 +293,8 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async doesAdminExist() {
-    return this.axiosInstance.get("/auth/users/admin");
+  async doesSuperAdminExist() {
+    return this.axiosInstance.get("/auth/users/superadmin");
   }
 
   /**
@@ -327,7 +327,7 @@ class NetworkService {
    */
   async requestInvitationToken(authToken, email, role) {
     return this.axiosInstance.post(
-      `/auth/invite`,
+      `/invite`,
       { email, role },
       {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -346,7 +346,7 @@ class NetworkService {
    *
    */
   async verifyInvitationToken(token) {
-    return this.axiosInstance.post(`/auth/invite/verify`, {
+    return this.axiosInstance.post(`/invite/verify`, {
       token,
     });
   }

@@ -38,7 +38,12 @@ const UserSchema = mongoose.Schema(
     role: {
       type: [String],
       default: "user",
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "superadmin"],
+    },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      immutable: true,
     },
   },
   {
