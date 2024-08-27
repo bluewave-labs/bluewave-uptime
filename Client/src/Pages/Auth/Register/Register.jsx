@@ -454,7 +454,8 @@ const Register = ({ isSuperAdmin }) => {
       if (token !== undefined) {
         try {
           const res = await networkService.verifyInvitationToken(token);
-          const { role, email, teamId } = res.data.data;
+          const invite = res.data.data;
+          const { role, email, teamId } = invite;
           setForm({ ...form, email, role, teamId });
         } catch (error) {
           navigate("/register", { replace: true });
