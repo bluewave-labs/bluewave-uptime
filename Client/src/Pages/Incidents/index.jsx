@@ -48,7 +48,7 @@ const Incidents = () => {
   useEffect(() => {
     const fetchMonitors = async () => {
       setLoading(true);
-      const res = await networkService.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByTeamId(
         authState.authToken,
         authState.user._id,
         1,
