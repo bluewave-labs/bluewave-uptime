@@ -18,7 +18,7 @@ const SkeletonLayout = () => {
 
   return (
     <>
-      <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
+      <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
         <Skeleton variant="rounded" width={150} height={34} />
         <Skeleton variant="rounded" width="15%" height={34} />
         <Skeleton

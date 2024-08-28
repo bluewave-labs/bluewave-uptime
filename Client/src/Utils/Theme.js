@@ -54,6 +54,15 @@ const theme = createTheme({
     },
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
     other: {},
+    primary: {
+      main: "#1570EF",
+    },
+    secondary: {
+      main: "#475467",
+    },
+    tertiary: {
+      main: "#475467",
+    },
   },
   spacing: 2,
   components: {},

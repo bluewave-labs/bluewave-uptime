@@ -62,7 +62,7 @@ const Settings = () => {
               timezone of your server.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.xl}>
+          <Stack gap={theme.spacing(20)}>
             <Select
               id="display-timezone"
               label="Display timezone"
@@ -87,7 +87,7 @@ const Settings = () => {
               remove all past data.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.xl}>
+          <Stack gap={theme.spacing(20)}>
             <Field
               type="text"
               id="history-monitoring"

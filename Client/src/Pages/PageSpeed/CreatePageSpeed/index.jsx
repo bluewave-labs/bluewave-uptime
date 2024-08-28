@@ -211,7 +211,7 @@ const CreatePageSpeed = () => {
                 label="Notify via email to following emails"
                 isChecked={false}
               />
-              <Box mx={`calc(${theme.gap.ml} * 2)`}>
+              <Box mx={theme.spacing(16)}>
                 <Field
                   id="notify-emails-list"
                   placeholder="notifications@gmail.com"

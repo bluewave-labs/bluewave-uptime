@@ -157,7 +157,7 @@ const PageSpeed = ({ isAdmin }) => {
   return (
     <Box
       className="page-speed"
-      pt={theme.gap.xl}
+      pt={theme.spacing(20)}
       sx={{
         ':has(> [class*="fallback__"])': {
           position: "relative",

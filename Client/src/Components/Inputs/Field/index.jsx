@@ -56,7 +56,7 @@ const Field = forwardRef(
 
     return (
       <Stack
-        gap={theme.gap.xs}
+        gap={theme.spacing(2)}
         className={`field field-${type}`}
         sx={{
           "& fieldset": {
@@ -127,8 +127,8 @@ const Field = forwardRef(
               ? {
                   "& .MuiInputBase-root": { padding: 0 },
                   "& .MuiStack-root": {
-                    borderTopLeftRadius: `${theme.shape.borderRadius}px`,
-                    borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
+                    borderTopLeftRadius: theme.shape.borderRadius,
+                    borderBottomLeftRadius: theme.shape.borderRadius,
                   },
                 }
               : {}
@@ -140,9 +140,9 @@ const Field = forwardRef(
                 alignItems="center"
                 height="100%"
                 sx={{
-                  borderRight: `solid 1px ${theme.palette.section.borderColor}`,
+                  borderRight: `solid 1px ${theme.palette.border.dark}`,
                   backgroundColor: "#f9f9fa",
-                  pl: theme.gap.medium,
+                  pl: theme.spacing(6),
                 }}
               >
                 <Typography
@@ -161,8 +161,8 @@ const Field = forwardRef(
                   onClick={() => setVisible((show) => !show)}
                   tabIndex={-1}
                   sx={{
-                    color: theme.palette.section.borderColor,
-                    padding: `calc(${theme.gap.xs} / 2)`,
+                    color: theme.palette.border.dark,
+                    padding: theme.spacing(1),
                     "&:focus": {
                       outline: "none",
                     },
@@ -183,7 +183,7 @@ const Field = forwardRef(
             component="span"
             className="input-error"
             color={theme.palette.error.text}
-            mt={theme.gap.xs}
+            mt={theme.spacing(2)}
             sx={{
               opacity: 0.8,
             }}

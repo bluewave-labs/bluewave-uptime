@@ -381,7 +381,7 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
             />
           </Box>
           <Stack
-            gap={theme.gap.small}
+            gap={theme.spacing(4)}
             mb={{ xs: theme.spacing(6), sm: theme.spacing(8) }}
           >
             <Check

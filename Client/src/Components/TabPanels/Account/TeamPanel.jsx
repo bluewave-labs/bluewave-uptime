@@ -92,9 +92,7 @@ const TeamPanel = () => {
               id: idx,
               data: (
                 <Stack>
-                  <Typography
-                    style={{ color: theme.palette.otherColors.blackish }}
-                  >
+                  <Typography style={{ color: theme.palette.text.secondary }}>
                     {member.firstName + " " + member.lastName}
                   </Typography>
                   <Typography>
@@ -247,7 +245,7 @@ const TeamPanel = () => {
               },
             }}
             inputProps={{
-              sx: { textAlign: "end", padding: theme.gap.small },
+              sx: { textAlign: "end", padding: theme.spacing(4) },
             }}
           />
           <Button
@@ -257,8 +255,8 @@ const TeamPanel = () => {
             onClick={() => toggleEdit()}
             sx={{
               minWidth: 0,
-              paddingX: theme.gap.small,
-              ml: orgStates.isEdit ? theme.gap.small : 0,
+              paddingX: theme.spacing(4),
+              ml: orgStates.isEdit ? theme.spacing(4) : 0,
             }}
           />
         </Stack>
