@@ -104,7 +104,21 @@ const SetNewPassword = () => {
   };
 
   return (
-    <Stack className="set-new-password-page auth" overflow="hidden">
+    <Stack
+      className="set-new-password-page auth"
+      overflow="hidden"
+      sx={{
+        "& h1": {
+          color: theme.palette.common.main,
+          fontWeight: 600,
+          fontSize: 24,
+        },
+        "& p": {
+          fontSize: 14,
+          color: theme.palette.text.accent,
+        },
+      }}
+    >
       <Box
         className="background-pattern-svg"
         sx={{ backgroundImage: `url(${background})` }}
@@ -112,8 +126,8 @@ const SetNewPassword = () => {
       <Stack
         direction="row"
         alignItems="center"
-        px={theme.gap.large}
-        gap={theme.gap.small}
+        px={theme.spacing(12)}
+        gap={theme.spacing(4)}
       >
         <Logo style={{ borderRadius: theme.shape.borderRadius }} />
         <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
@@ -123,24 +137,24 @@ const SetNewPassword = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
-        pb={theme.gap.large}
+        px={{ xs: theme.spacing(12), lg: theme.spacing(20) }}
+        pb={theme.spacing(12)}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
             border: 1,
-            borderRadius: theme.shape.borderRadius,
-            borderColor: theme.palette.otherColors.graishWhite,
-            backgroundColor: theme.palette.otherColors.white,
+            borderRadius: theme.spacing(5),
+            borderColor: theme.palette.border.light,
+            backgroundColor: theme.palette.background.main,
             padding: {
-              xs: theme.gap.large,
-              sm: theme.gap.xl,
+              xs: theme.spacing(12),
+              sm: theme.spacing(20),
             },
           },
         }}
       >
         <Stack
-          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
           alignItems="center"
           textAlign="center"
         >
@@ -176,7 +190,7 @@ const SetNewPassword = () => {
                 error={errors.confirm}
               />
             </form>
-            <Stack gap={theme.gap.small} mb={theme.gap.large}>
+            <Stack gap={theme.spacing(4)} mb={theme.spacing(12)}>
               <Check
                 text={
                   <>
@@ -244,11 +258,12 @@ const SetNewPassword = () => {
           />
         </Stack>
       </Stack>
-      <Box textAlign="center" p={theme.gap.large}>
+      <Box textAlign="center" p={theme.spacing(12)}>
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
           component="span"
-          ml={theme.gap.xs}
+          color={theme.palette.common.main}
+          ml={theme.spacing(2)}
           onClick={() => navigate("/login")}
           sx={{ userSelect: "none" }}
         >

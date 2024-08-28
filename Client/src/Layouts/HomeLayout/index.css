@@ -19,12 +19,6 @@
 
   height: calc(100vh - var(--env-var-spacing-2) * 2);
   max-width: var(--env-var-side-bar-width);
-
-  border: 1px solid var(--border-color);
-  border-radius: var(--env-var-radius-1);
-  background-color: var(--primary-bg);
-
-  padding: var(--env-var-spacing-1) 0;
 }
 
 .home-layout > div {
@@ -32,19 +26,11 @@
   flex: 1;
 }
 
-.home-layout > div:has(> [class*="fallback__"]) {
-  border: solid 1px var(--border-color);
-  border-radius: var(--env-var-radius-1);
-  border-style: dashed;
-  background-color: var(--primary-bg);
-  overflow: hidden;
-  position: relative;
-}
 .home-layout > div:has(> [class*="fallback__"]) .background-pattern-svg {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -33%);
+  transform: translate(-50%, -47%);
   z-index: 0;
 
   width: 100%;

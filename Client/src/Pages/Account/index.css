@@ -6,22 +6,12 @@
 .account .MuiSelect-select {
   font-size: var(--env-var-font-size-medium);
 }
-.account h1.MuiTypography-root,
-.account p.MuiTypography-root,
-.account input,
-.account .MuiSelect-select {
-  color: var(--secondary-color-light);
-}
 .account h1.MuiTypography-root {
   font-weight: 600;
 }
 .account .MuiTabPanel-root {
   padding: 0;
   margin-top: 50px;
-}
-.account .MuiDivider-root,
-.account .MuiButtonGroup-root button {
-  border-color: var(--border-color);
 }
 .account button:not(.MuiIconButton-root) {
   height: 34px;
@@ -43,10 +33,6 @@
   top: 100%;
 }
 
-.account .MuiTable-root .MuiTableBody-root .MuiTableCell-root,
-.account .MuiTable-root p + p {
-  color: var(--secondary-color-light-accent);
-}
 .account .MuiTableBody-root .MuiTableCell-root {
   padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
 }

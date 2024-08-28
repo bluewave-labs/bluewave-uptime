@@ -97,13 +97,20 @@ const PasswordPanel = () => {
   };
 
   return (
-    <TabPanel value="password">
+    <TabPanel
+      value="password"
+      sx={{
+        "& h1, & input": {
+          color: theme.palette.text.tertiary,
+        },
+      }}
+    >
       <Stack
         component="form"
         onSubmit={handleSubmit}
         noValidate
         spellCheck="false"
-        gap={theme.gap.xl}
+        gap={theme.spacing(20)}
       >
         <Stack direction="row">
           <Box flex={0.9}>
@@ -165,9 +172,9 @@ const PasswordPanel = () => {
             loadingText="Saving..."
             disabled={Object.keys(errors).length !== 0 && true}
             sx={{
-              paddingX: theme.gap.large,
+              paddingX: theme.spacing(12),
               width: "fit-content",
-              mt: theme.gap.xl,
+              mt: theme.spacing(20),
             }}
           />
         </Stack>

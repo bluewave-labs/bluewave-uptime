@@ -124,8 +124,13 @@ function Sidebar() {
     <Stack
       component="aside"
       className={collapsed ? "collapsed" : "expanded"}
+      py={theme.spacing(6)}
       gap={theme.spacing(6)}
       sx={{
+        border: 1,
+        borderColor: theme.palette.border.light,
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: theme.palette.background.main,
         "& .selected-path, & .MuiListItemButton-root:hover": {
           backgroundColor: theme.palette.background.accent,
         },

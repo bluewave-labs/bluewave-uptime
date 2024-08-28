@@ -5,7 +5,6 @@
 .auth h1 {
   font-size: var(--env-var-font-size-xlarge);
   font-weight: 600;
-  color: var(--theme-main);
 }
 .auth button:not(.MuiIconButton-root),
 .auth p,
@@ -13,16 +12,8 @@
 .auth span {
   font-size: var(--env-var-font-size-medium-plus);
 }
-.auth p {
-  color: var(--secondary-color-light-accent);
-}
-.auth .field h3.MuiTypography-root,
-.auth .field input {
-  color: var(--secondary-color);
-}
 
 .auth p + span {
-  color: var(--theme-main);
   opacity: 0.8;
   cursor: pointer;
   transition: opacity 300ms ease-in;
@@ -34,7 +25,6 @@
   transition: all 200ms;
 }
 .auth p > span:not(.email-sent-to):hover {
-  color: var(--secondary-color-light);
   text-underline-offset: 4px;
 }
 .auth p + span:hover {

@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { forwardRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import {
   IconButton,
@@ -9,10 +10,7 @@ import {
 } from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import Button from "../../Button";
 import "./index.css";
-import { forwardRef, useState } from "react";
 
 /**
  * @param {Object} props
@@ -119,6 +117,11 @@ const Field = forwardRef(
           onChange={onChange}
           disabled={disabled}
           inputRef={ref}
+          inputProps={{
+            sx: {
+              color: theme.palette.text.secondary,
+            },
+          }}
           sx={
             type === "url"
               ? {
