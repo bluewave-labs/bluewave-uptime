@@ -106,7 +106,7 @@ const Monitors = ({ isAdmin }) => {
               )}
             </Stack>
           </Box>
-          {monitorState.monitors?.length === 0 && (
+          {isAdmin && monitorState.monitors?.length === 0 && (
             <Fallback isAdmin={isAdmin} />
           )}
 
