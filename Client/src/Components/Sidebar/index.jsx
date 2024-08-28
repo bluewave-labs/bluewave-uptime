@@ -194,6 +194,7 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? theme.gap.xs : theme.gap.small,
+              backgroundColor: "transparent"
             }}
           >
             Menu
@@ -289,7 +290,7 @@ function Sidebar() {
                   if (
                     child.name === "Team" &&
                     authState.user?.role &&
-                    !authState.user.role.includes("admin")
+                    !authState.user.role.includes("superadmin")
                   ) {
                     return null;
                   }
@@ -349,7 +350,7 @@ function Sidebar() {
                     if (
                       child.name === "Team" &&
                       authState.user?.role &&
-                      !authState.user.role.includes("admin")
+                      !authState.user.role.includes("superadmin")
                     ) {
                       return null;
                     }
@@ -394,6 +395,7 @@ function Sidebar() {
             sx={{
               pt: theme.gap.small,
               px: collapsed ? 0 : theme.gap.small,
+              backgroundColor: "transparent"
             }}
           >
             Other

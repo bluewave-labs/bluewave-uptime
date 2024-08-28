@@ -122,7 +122,6 @@ const CreateMonitor = () => {
         userId: user._id,
         notifications: monitor.notifications,
       };
-      console.log(form);
       const action = await dispatch(
         createUptimeMonitor({ authToken, monitor: form })
       );
@@ -159,9 +158,20 @@ const CreateMonitor = () => {
         noValidate
         spellCheck="false"
         gap={theme.gap.large}
-        mt={theme.gap.mlplus}
+        mt={theme.gap.medium}
       >
-        <Typography component="h1">Create new monitor</Typography>
+        <Typography component="h1">
+          <Typography
+            component="span"
+            fontSize="inherit"
+            color={theme.palette.otherColors.bluishGray}
+          >
+            Create your{" "}
+          </Typography>
+          <Typography component="span" fontSize="inherit" fontWeight="inherit">
+            monitor
+          </Typography>
+        </Typography>
         <Stack className="config-box">
           <Box>
             <Typography component="h2">General settings</Typography>
@@ -184,7 +194,7 @@ const CreateMonitor = () => {
             <Field
               type="text"
               id="monitor-name"
-              label="Friendly name"
+              label="Display name"
               isOptional={true}
               placeholder="Google"
               value={monitor.name}
@@ -391,9 +401,9 @@ const CreateMonitor = () => {
       /> */}
         <Stack direction="row" justifyContent="flex-end">
           <Button
-            id="create-new-monitor-btn"
+            id="create-monitor-btn"
             level="primary"
-            label="Create new monitor"
+            label="Create monitor"
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           />

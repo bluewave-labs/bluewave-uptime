@@ -1,13 +1,11 @@
 .create-monitor h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
   color: var(--env-var-color-1);
-}
-.create-monitor h1.MuiTypography-root,
-.create-monitor h2.MuiTypography-root {
-  font-weight: 600;
+  font-weight: 500;
 }
 .create-monitor h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
+  font-weight: 600;
 }
 .create-monitor p.MuiTypography-root,
 .create-monitor button.MuiButtonBase-root {

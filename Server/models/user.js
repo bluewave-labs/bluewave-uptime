@@ -75,4 +75,10 @@ UserSchema.methods.comparePassword = async function (submittedPassword) {
   return res;
 };
 
+const User = mongoose.model("User", UserSchema);
+
+User.init().then(() => {
+  console.log("User model initialized");
+});
+
 module.exports = mongoose.model("User", UserSchema);
