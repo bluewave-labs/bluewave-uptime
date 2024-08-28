@@ -194,8 +194,8 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
           </Typography>
           <Stack
             direction="row"
-            gap={theme.gap.small}
-            mt={theme.gap.large}
+            gap={theme.spacing(4)}
+            mt={theme.spacing(12)}
             justifyContent="flex-end"
           >
             <Button

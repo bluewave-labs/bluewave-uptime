@@ -13,36 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* Generalized Stylings */
-  --theme-main: #1570ef;
-
-  --primary-color: #1c2130;
-  --secondary-color: #344054;
-  --secondary-color-light: #475467;
-  --secondary-color-light-accent: #838c99;
-
-  --primary-bg: #ffffff;
-  --primary-bg-fill: #f4f4f4;
-  --primary-bg-accent: #f9fafb;
-  --secondary-bg: #fcfcfd;
-
-  --border-color: #eaecf0;
-  --border-color-dark: #d0d5dd;
-
-  /* OTHER COLORS */
-  --success-color: #17b26a;
-  --success-color-light: #d4f4e1;
-  --success-bg: #ecfdf3;
-  --error-color: #f04438;
-  --error-color-light: #fbd1d1;
-  --error-bg: #f9eced;
-  --warning-color: #fdb022;
-  --warning-color-light: #fffcf5;
-  --warning-bg: #ffecbc;
-  --unresolved-color: #4e5ba6;
-  --unresolved-color-light: #e2eaf7;
-  --unresolved-bg: #f2f4f7;
-
-  /*  */
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
 
