@@ -197,6 +197,10 @@ const editMonitorBodyValidation = joi.object({
   notifications: joi.array().items(joi.object()),
 });
 
+const pauseMonitorParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+
 //****************************************
 // Alerts
 //****************************************
@@ -350,6 +354,7 @@ module.exports = {
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,
   editMonitorBodyValidation,
+  pauseMonitorParamValidation,
   editUserParamValidation,
   editUserBodyValidation,
   createAlertParamValidation,

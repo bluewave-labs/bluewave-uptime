@@ -264,7 +264,7 @@ const Configure = () => {
               >
                 <Button
                   level="tertiary"
-                  label="Pause"
+                  label={monitor?.isActive ? "Pause" : "Resume"}
                   animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{

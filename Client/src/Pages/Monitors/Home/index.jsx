@@ -24,11 +24,20 @@ const Monitors = ({ isAdmin }) => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
 
-  const up = monitorState.monitors.reduce((acc, cur) => {
-    return cur.status === true ? acc + 1 : acc;
-  }, 0);
+  const monitorStats = monitorState.monitors.reduce(
+    (acc, monitor) => {
+      if (monitor.isActive === false) {
+        acc["paused"] += 1;
+      } else if (monitor.status === true) {
+        acc["up"] += 1;
+      } else {
+        acc["down"] += 1;
+      }
+      return acc;
+    },
+    { paused: 0, up: 0, down: 0 }
+  );
 
-  const down = monitorState.monitors.length - up;
   const data = buildData(monitorState.monitors, isAdmin, navigate);
 
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
@@ -73,9 +82,9 @@ const Monitors = ({ isAdmin }) => {
                 direction="row"
                 justifyContent="space-between"
               >
-                <StatusBox title="up" value={up} />
-                <StatusBox title="down" value={down} />
-                <StatusBox title="paused" value={0} />
+                <StatusBox title="up" value={monitorStats.up} />
+                <StatusBox title="down" value={monitorStats.down} />
+                <StatusBox title="paused" value={monitorStats.paused} />
               </Stack>
               <Box
                 flex={1}
