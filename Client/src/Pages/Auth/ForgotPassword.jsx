@@ -148,31 +148,36 @@ const ForgotPassword = () => {
               No worries, we&apos;ll send you reset instructions.
             </Typography>
           </Box>
-          <Box width="100%" textAlign="left">
-            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
-              <Field
-                type="email"
-                id="forgot-password-email-input"
-                label="Email"
-                isRequired={true}
-                placeholder="Enter your email"
-                value={form.email}
-                onChange={handleChange}
-                error={errors.email}
-              />
-              <ButtonSpinner
-                disabled={errors.email !== undefined}
-                onClick={handleSubmit}
-                isLoading={isLoading}
-                level="primary"
-                label="Send instructions"
-                sx={{
-                  width: "100%",
-                  fontWeight: 400,
-                  mt: theme.spacing(10),
-                }}
-              />
-            </form>
+          <Box
+            component="form"
+            width="100%"
+            textAlign="left"
+            noValidate
+            spellCheck={false}
+            onSubmit={handleSubmit}
+          >
+            <Field
+              type="email"
+              id="forgot-password-email-input"
+              label="Email"
+              isRequired={true}
+              placeholder="Enter your email"
+              value={form.email}
+              onChange={handleChange}
+              error={errors.email}
+            />
+            <ButtonSpinner
+              disabled={errors.email !== undefined}
+              onClick={handleSubmit}
+              isLoading={isLoading}
+              level="primary"
+              label="Send instructions"
+              sx={{
+                width: "100%",
+                fontWeight: 400,
+                mt: theme.spacing(15),
+              }}
+            />
           </Box>
         </Stack>
       </Stack>

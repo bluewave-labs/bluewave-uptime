@@ -165,8 +165,21 @@ const SetNewPassword = () => {
               Your new password must be different to previously used passwords.
             </Typography>
           </Box>
-          <Box width="100%" textAlign="left">
-            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
+          <Box
+            width="100%"
+            textAlign="left"
+            sx={{
+              "& .input-error": {
+                display: "none",
+              },
+            }}
+          >
+            <Box
+              component="form"
+              noValidate
+              spellCheck={false}
+              onSubmit={handleSubmit}
+            >
               <Field
                 type="password"
                 id="register-password-input"
@@ -177,8 +190,13 @@ const SetNewPassword = () => {
                 onChange={handleChange}
                 error={errors.password}
               />
-            </form>
-            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
+            </Box>
+            <Box
+              component="form"
+              noValidate
+              spellCheck={false}
+              onSubmit={handleSubmit}
+            >
               <Field
                 type="password"
                 id="confirm-password-input"
@@ -189,7 +207,7 @@ const SetNewPassword = () => {
                 onChange={handleChange}
                 error={errors.confirm}
               />
-            </form>
+            </Box>
             <Stack gap={theme.spacing(4)} mb={theme.spacing(12)}>
               <Check
                 text={

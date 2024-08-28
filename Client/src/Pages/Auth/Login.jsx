@@ -132,7 +132,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
           <Typography component="h1">Log In</Typography>
           <Typography>Enter your email address</Typography>
         </Box>
-        <Box textAlign="left">
+        <Box textAlign="left" mb={theme.spacing(5)}>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
             <Field
               type="email"
@@ -225,7 +225,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
           <Typography component="h1">Log In</Typography>
           <Typography>Enter your password</Typography>
         </Box>
-        <Box textAlign="left">
+        <Box textAlign="left" mb={theme.spacing(5)}>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
             <Field
               type="password"
@@ -266,7 +266,11 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
           />
         </Stack>
         <Box textAlign="center">
-          <Typography className="forgot-p" display="inline-block">
+          <Typography
+            className="forgot-p"
+            display="inline-block"
+            color={theme.palette.common.main}
+          >
             Forgot password?
           </Typography>
           <Typography

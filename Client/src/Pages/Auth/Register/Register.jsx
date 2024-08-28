@@ -139,7 +139,13 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
           <Typography>Enter your personal details</Typography>
         </Box>
         <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(10)}
+          >
             <Field
               id="register-firstname-input"
               label="Name"
@@ -151,8 +157,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.firstName}
               ref={inputRef}
             />
-          </form>
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          </Box>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(5)}
+          >
             <Field
               id="register-lastname-input"
               label="Surname"
@@ -163,7 +175,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.lastName}
             />
-          </form>
+          </Box>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
@@ -233,7 +245,13 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
           <Typography>Enter your email address</Typography>
         </Box>
         <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(5)}
+          >
             <Field
               type="email"
               id="register-email-input"
@@ -247,7 +265,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.email}
               ref={inputRef}
             />
-          </form>
+          </Box>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
@@ -316,8 +334,20 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
           <Typography component="h1">Sign Up</Typography>
           <Typography>Create your password</Typography>
         </Box>
-        <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+        <Box
+          textAlign="left"
+          sx={{
+            "& .input-error": {
+              display: "none",
+            },
+          }}
+        >
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+          >
             <Field
               type="password"
               id="register-password-input"
@@ -330,8 +360,13 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.password}
               ref={inputRef}
             />
-          </form>
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          </Box>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+          >
             <Field
               type="password"
               id="register-confirm-input"
@@ -343,10 +378,10 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.confirm}
             />
-          </form>
+          </Box>
           <Stack
             gap={theme.gap.small}
-            mb={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+            mb={{ xs: theme.spacing(6), sm: theme.spacing(8) }}
           >
             <Check
               text={

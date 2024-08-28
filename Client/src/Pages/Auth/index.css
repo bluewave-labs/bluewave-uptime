@@ -76,11 +76,12 @@
   background-repeat: no-repeat;
 }
 
-.forgot-password-page h1,
-.check-email-page h1,
-.password-confirmed-page h1,
-.set-new-password-page h1 {
-  font-size: 22px;
+.auth .field {
+  position: relative;
+}
+.auth .input-error {
+  position: absolute;
+  top: calc(100% - 2px);
 }
 
 @media (max-width: 800px) {
