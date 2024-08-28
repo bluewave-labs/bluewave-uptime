@@ -3,7 +3,7 @@ import { useTheme } from "@emotion/react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
 
-const Maintenance = () => {
+const Maintenance = ({ isAdmin }) => {
   const theme = useTheme();
 
   return (
@@ -29,6 +29,7 @@ const Maintenance = () => {
           "Stop sending alerts in maintenance windows",
         ]}
         link="/maintenance/create"
+        isAdmin={isAdmin}
       />
     </Box>
   );

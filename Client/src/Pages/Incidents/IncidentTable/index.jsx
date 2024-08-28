@@ -21,8 +21,10 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
+import { useTheme } from "@emotion/react";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
@@ -100,6 +102,19 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         page={paginationController.page + 1} //0-indexed
         onChange={handlePageChange}
         shape="rounded"
+        sx={{
+          backgroundColor: theme.palette.background.main,
+          border: 1,
+          borderColor: theme.palette.border.light,
+          "& button": {
+            color: theme.palette.text.tertiary,
+            borderRadius: theme.shape.borderRadius,
+          },
+          "& li:first-of-type button, & li:last-of-type button": {
+            border: 1,
+            borderColor: theme.palette.border.light,
+          },
+        }}
         renderItem={(item) => (
           <PaginationItem
             slots={{
@@ -111,6 +126,13 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               "&:focus": {
                 outline: "none",
               },
+              "& .MuiTouchRipple-root": {
+                pointerEvents: "none",
+                display: "none",
+              },
+              "&.Mui-selected, &.Mui-selected:hover": {
+                backgroundColor: theme.palette.background.fill,
+              },
             }}
           />
         )}
@@ -118,24 +140,50 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
     );
   }
 
+  let sharedStyles = {
+    border: 1,
+    borderColor: theme.palette.border.light,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.main,
+    p: theme.spacing(30),
+  };
+
   return (
     <>
       {checks?.length === 0 && selectedMonitor === "0" ? (
-        <Box>
-          <Typography textAlign="center">No incidents recorded yet.</Typography>
+        <Box sx={{ ...sharedStyles }}>
+          <Typography textAlign="center" color={theme.palette.text.secondary}>
+            No incidents recorded yet.
+          </Typography>
         </Box>
       ) : checks?.length === 0 ? (
-        <Box>
-          <Typography textAlign="center">
+        <Box sx={{ ...sharedStyles }}>
+          <Typography textAlign="center" color={theme.palette.text.secondary}>
             The monitor you have selected has no recorded incidents yet.
           </Typography>
         </Box>
       ) : (
         <>
-          <TableContainer component={Paper}>
+          <TableContainer
+            component={Paper}
+            sx={{
+              border: `solid 1px ${theme.palette.border.light}`,
+              borderRadius: theme.shape.borderRadius,
+            }}
+          >
             <Table>
-              <TableHead>
-                <TableRow>
+              <TableHead
+                sx={{
+                  backgroundColor: theme.palette.background.accent,
+                }}
+              >
+                <TableRow
+                  sx={{
+                    "& > .MuiTableCell-root": {
+                      color: theme.palette.text.secondary,
+                    },
+                  }}
+                >
                   <TableCell>Monitor Name</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Date & Time</TableCell>

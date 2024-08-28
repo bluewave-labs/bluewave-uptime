@@ -275,6 +275,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
           </Typography>
           <Typography
             component="span"
+            color={theme.palette.common.main}
             ml={theme.spacing(2)}
             sx={{ userSelect: "none" }}
             onClick={handleNavigate}

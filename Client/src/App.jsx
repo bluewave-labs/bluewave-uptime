@@ -34,6 +34,7 @@ function App() {
   const MonitorsWithAdminProp = withAdminProp(Monitors);
   const DetailsWithAdminProp = withAdminProp(Details);
   const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
+  const MaintenanceWithAdminProp = withAdminProp(Maintenance);
   return (
     <>
       <Routes>
@@ -74,7 +75,7 @@ function App() {
           />
           <Route
             path="maintenance"
-            element={<ProtectedRoute Component={Maintenance} />}
+            element={<ProtectedRoute Component={MaintenanceWithAdminProp} />}
           />
           <Route
             path="/maintenance/create"

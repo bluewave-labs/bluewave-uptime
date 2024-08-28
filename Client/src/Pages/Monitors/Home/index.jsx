@@ -12,6 +12,7 @@ import SkeletonLayout from "./skeleton";
 import Fallback from "./fallback";
 import StatusBox from "./StatusBox";
 import { buildData } from "./monitorData";
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
@@ -33,35 +34,73 @@ const Monitors = ({ isAdmin }) => {
 
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
+  const now = new Date();
+  const hour = now.getHours();
+
+  let greeting = "";
+  let emoji = "";
+  if (hour < 12) {
+    greeting = "morning";
+    emoji = "🌅";
+  } else if (hour < 18) {
+    greeting = "afternoon";
+    emoji = "🌞";
+  } else {
+    greeting = "evening";
+    emoji = "🌙";
+  }
+
   return (
     <Stack className="monitors" gap={theme.gap.large}>
       {loading ? (
         <SkeletonLayout />
       ) : (
         <>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              component="h1"
-              sx={{ lineHeight: 1, alignSelf: "flex-end" }}
+          <Box>
+            <Breadcrumbs list={[{ name: `monitors`, path: "/monitors" }]} />
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              mt={theme.spacing(5)}
             >
-              Hello, {authState.user.firstName}
-            </Typography>
-            {monitorState.monitors?.length !== 0 && (
-              <Button
-                level="primary"
-                label="Create monitor"
-                onClick={() => {
-                  navigate("/monitors/create");
-                }}
-                sx={{ fontWeight: 500 }}
-              />
-            )}
-          </Stack>
-
+              <Box>
+                <Typography component="h1" lineHeight={1}>
+                  <Typography
+                    component="span"
+                    fontSize="inherit"
+                    color={theme.palette.otherColors.bluishGray}
+                  >
+                    Good {greeting},{" "}
+                  </Typography>
+                  <Typography
+                    component="span"
+                    fontSize="inherit"
+                    fontWeight="inherit"
+                  >
+                    {authState.user.firstName} {emoji}
+                  </Typography>
+                </Typography>
+                <Typography
+                  sx={{ opacity: 0.8 }}
+                  lineHeight={1}
+                  fontWeight={300}
+                >
+                  Here’s an overview of your uptime monitors.
+                </Typography>
+              </Box>
+              {monitorState.monitors?.length !== 0 && (
+                <Button
+                  level="primary"
+                  label="Create monitor"
+                  onClick={() => {
+                    navigate("/monitors/create");
+                  }}
+                  sx={{ fontWeight: 500 }}
+                />
+              )}
+            </Stack>
+          </Box>
           {monitorState.monitors?.length === 0 && (
             <Fallback isAdmin={isAdmin} />
           )}

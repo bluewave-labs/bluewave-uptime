@@ -33,6 +33,3 @@
   height: 34px;
   align-self: flex-end;
 }
-.page-speed [class*="fallback__"] h1 {
-  margin-left: var(--env-var-spacing-3);
-}

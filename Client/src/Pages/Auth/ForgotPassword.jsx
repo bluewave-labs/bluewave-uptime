@@ -150,7 +150,7 @@ const ForgotPassword = () => {
           </Box>
           <Box
             component="form"
-            width="100%"
+            width="95%"
             textAlign="left"
             noValidate
             spellCheck={false}
@@ -185,6 +185,7 @@ const ForgotPassword = () => {
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
           component="span"
+          color={theme.palette.common.main}
           ml={theme.spacing(2)}
           onClick={handleNavigate}
           sx={{ userSelect: "none" }}

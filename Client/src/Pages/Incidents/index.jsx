@@ -78,13 +78,17 @@ const Incidents = () => {
   };
 
   return (
-    <Stack className="incidents" pt={theme.gap.xl} gap={theme.gap.large}>
+    <Stack className="incidents" pt={theme.spacing(20)} gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
         <>
-          <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
-            <Typography display="inline-block" component="h1">
+          <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
+            <Typography
+              display="inline-block"
+              component="h1"
+              color={theme.palette.text.secondary}
+            >
               Incidents for
             </Typography>
             <Select
@@ -93,15 +97,27 @@ const Incidents = () => {
               value={selectedMonitor}
               onChange={handleSelect}
               items={Object.values(monitors)}
+              sx={{
+                backgroundColor: theme.palette.background.main,
+              }}
             />
-            <ButtonGroup sx={{ ml: "auto" }}>
+            <ButtonGroup
+              sx={{
+                ml: "auto",
+                "& .MuiButtonBase-root, & .MuiButtonBase-root:hover": {
+                  borderColor: theme.palette.border.light,
+                },
+              }}
+            >
               <Button
                 level="secondary"
                 label="All"
                 onClick={() => setFilter("all")}
                 sx={{
                   backgroundColor:
-                    filter === "all" && theme.palette.otherColors.fillGray,
+                    filter === "all"
+                      ? theme.palette.background.fill
+                      : theme.palette.background.main,
                 }}
               />
               <Button
@@ -110,7 +126,9 @@ const Incidents = () => {
                 onClick={() => setFilter("down")}
                 sx={{
                   backgroundColor:
-                    filter === "down" && theme.palette.otherColors.fillGray,
+                    filter === "down"
+                      ? theme.palette.background.fill
+                      : theme.palette.background.main,
                 }}
               />
               <Button
@@ -119,7 +137,9 @@ const Incidents = () => {
                 onClick={() => setFilter("resolve")}
                 sx={{
                   backgroundColor:
-                    filter === "resolve" && theme.palette.otherColors.fillGray,
+                    filter === "resolve"
+                      ? theme.palette.background.fill
+                      : theme.palette.background.main,
                 }}
               />
             </ButtonGroup>

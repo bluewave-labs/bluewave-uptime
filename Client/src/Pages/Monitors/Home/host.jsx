@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 /**
  * Host component.
@@ -13,12 +13,39 @@ import PropTypes from "prop-types";
  */
 const Host = ({ params }) => {
   return (
-    <Stack direction="row" alignItems="baseline" className="host">
-      {params.title}
-      <Typography component="span" sx={{ color: params.percentageColor }}>
+    <Box className="host">
+      <Box
+        display="inline-block"
+        position="relative"
+        sx={{
+          fontWeight: 500,
+          "&:before": {
+            position: "absolute",
+            content: `""`,
+            width: "4px",
+            height: "4px",
+            borderRadius: "50%",
+            backgroundColor: "gray",
+            opacity: 0.8,
+            right: "-10px",
+            top: "42%",
+          },
+        }}
+      >
+        {params.title}
+      </Box>
+      <Typography
+        component="span"
+        sx={{
+          color: params.percentageColor,
+          fontWeight: 500,
+          ml: "15px",
+        }}
+      >
         {params.percentage}%
       </Typography>
-    </Stack>
+      <Box sx={{ opacity: 0.6 }}>{params.url}</Box>
+    </Box>
   );
 };
 

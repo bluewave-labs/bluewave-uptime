@@ -29,12 +29,11 @@ const data = {
 export const buildData = (monitors, isAdmin, navigate) => {
   data.rows = monitors.map((monitor, idx) => {
     const params = {
+      url: monitor.url,
       title: monitor.name,
       percentage: 100,
       percentageColor:
-        monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
+        monitor.status === true ? "var(--success-color)" : "var(--error-color)",
       status: monitor.status === true ? "up" : "down",
     };
 
@@ -43,7 +42,6 @@ export const buildData = (monitors, isAdmin, navigate) => {
 
     return {
       id: monitor._id,
-      // disabled for now
       handleClick: () => {
         navigate(`/monitors/${monitor._id}`);
       },

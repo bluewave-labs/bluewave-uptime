@@ -1,10 +1,10 @@
 import Button from "../../Components/Button";
-import "./index.css";
 import React from "react";
 import PropTypes from "prop-types";
+import NotFoundSvg from "../../../src/assets/Images/sushi_404.svg";
 import { Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
-import NotFoundSvg from "../../../src/assets/Images/sushi_404.svg";
+import { useTheme } from "@emotion/react";
 
 /**
  * Support for defaultProps will be removed from function components in a future major release
@@ -33,16 +33,24 @@ const DefaultValue = {
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+
   return (
-    <Stack className="not-found-page" justifyContent="center">
-      <Stack gap="20px" alignItems="center">
+    <Stack height="100vh" justifyContent="center">
+      <Stack
+        gap={theme.spacing(2)}
+        alignItems="center"
+        color={theme.palette.text.secondary}
+      >
         <img src={NotFoundSvg} alt="404" style={{ maxHeight: "25rem" }} />
-        <Typography component="h1">{title}</Typography>
-        <Typography>{desc}</Typography>
+        <Typography component="h1" fontSize={16} fontWeight={600}>
+          {title}
+        </Typography>
+        <Typography fontSize={13}>{desc}</Typography>
         <Button
           label="Go to the main dashboard"
           level="primary"
-          sx={{ mt: "24px" }}
+          sx={{ mt: theme.spacing(10) }}
           onClick={() => navigate("/")}
         />
       </Stack>

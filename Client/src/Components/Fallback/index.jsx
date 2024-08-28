@@ -40,7 +40,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
           marginY={theme.spacing(6)}
           color={theme.palette.text.secondary}
         >
-          A {title} monitor is used to:
+          A {title} is used to:
         </Typography>
         {checks.map((check, index) => (
           <Check
@@ -50,6 +50,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
           />
         ))}
       </Stack>
+      {/* TODO - display a different fallback if user is not an admin*/}
       {isAdmin && (
         <Button
           level="primary"

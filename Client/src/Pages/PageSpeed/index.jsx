@@ -189,7 +189,7 @@ const PageSpeed = ({ isAdmin }) => {
         </Stack>
       ) : (
         <Fallback
-          title="page speed"
+          title="pagespeed monitor"
           checks={[
             "Report on the user experience of a page",
             "Help analyze webpage speed",
