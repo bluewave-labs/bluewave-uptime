@@ -8,7 +8,7 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import {
   updateUptimeMonitor,
-  getUptimeMonitorsByUserId,
+  getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Button from "../../../Components/Button";
@@ -177,7 +177,7 @@ const Configure = () => {
     );
     if (action.meta.requestStatus === "fulfilled") {
       createToast({ body: "Monitor updated successfully!" });
-      dispatch(getUptimeMonitorsByUserId(authToken));
+      dispatch(getUptimeMonitorsByTeamId(authToken));
     } else {
       createToast({ body: "Failed to update monitor." });
     }
@@ -314,7 +314,7 @@ const Configure = () => {
                 <Field
                   type="text"
                   id="monitor-name"
-                  label="Friendly name"
+                  label="Display name"
                   isOptional={true}
                   placeholder="Google"
                   value={monitor?.name || ""}

@@ -15,10 +15,10 @@ const connect = async () => {
   }
 };
 
-const checkAdmin = async (req, res) => {
+const checkSuperadmin = async (req, res) => {
   try {
-    const admin = await UserModel.findOne({ role: "admin" });
-    if (admin !== null) {
+    const superAdmin = await UserModel.findOne({ role: "superadmin" });
+    if (superAdmin !== null) {
       return true;
     }
     return false;
@@ -66,7 +66,7 @@ const {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
-  getMonitorsByUserId,
+  getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
@@ -92,7 +92,7 @@ const {
   createCheck,
   getChecksCount,
   getChecks,
-  getUserChecks,
+  getTeamChecks,
   deleteChecks,
 } = require("./modules/checkModule");
 
@@ -141,11 +141,11 @@ module.exports = {
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
-  checkAdmin,
+  checkSuperadmin,
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
-  getMonitorsByUserId,
+  getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
@@ -153,7 +153,7 @@ module.exports = {
   createCheck,
   getChecksCount,
   getChecks,
-  getUserChecks,
+  getTeamChecks,
   deleteChecks,
   createAlert,
   getAlertsByUserId,

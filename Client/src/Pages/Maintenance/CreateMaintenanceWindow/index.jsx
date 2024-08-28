@@ -10,6 +10,9 @@ import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import Field from "../../../Components/Inputs/Field";
+import { maintenanceWindowValidation } from "../../../Validation/validation";
+import { logger } from "../../../Utils/Logger";
+import { createToast } from "../../../Utils/toastUtils";
 
 const directory = {
   title: "Create a maintenance window",
@@ -59,9 +62,10 @@ const CreateNewMaintenanceWindow = () => {
     startTime: dayjs(),
     duration: "60",
     unit: "minutes",
-    friendlyName: "",
+    displayName: "",
     AddMonitors: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (event, name) => {
     const { value } = event.target;
@@ -69,6 +73,41 @@ const CreateNewMaintenanceWindow = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async () => {
+    const data = {
+      repeat: values.repeat,
+      date: values.date.format("YYYY-MM-DD"),
+      startTime: values.startTime.format("HH:mm"),
+      duration: values.duration,
+      unit: values.unit,
+      displayName: values.displayName,
+      addMonitors: values.AddMonitors,
+    };
+
+    const { error } = maintenanceWindowValidation.validate(data, {
+      abortEarly: false,
+    });
+    logger.log("error: ", error);
+    if (!error || error.details.length === 0) {
+      setErrors({});
+    } else {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      createToast({
+        body:
+          error.details && error.details.length > 0
+            ? error.details[0].message
+            : "Error validating data",
+      });
+      logger.error("Validation errors:", error.details);
+    }
+
+    logger.log("Submitting data: ", data);
   };
 
   const configOptions = [
@@ -126,6 +165,8 @@ const CreateNewMaintenanceWindow = () => {
             placeholder="60"
             onChange={(e) => handleChange(e, "duration")}
             value={values.duration}
+            error={errors.duration}
+            type="number"
           />
           <Select
             onChange={(e) => handleChange(e, "unit")}
@@ -137,13 +178,14 @@ const CreateNewMaintenanceWindow = () => {
       ),
     },
     {
-      title: "Friendly name",
+      title: "Display name",
       component: (
         <Field
-          id="friendly-name"
+          id="display-name"
           placeholder="Maintanence at __ : __ for ___ minutes"
-          value={values.friendlyName}
-          onChange={(e) => handleChange(e, "friendlyName")}
+          value={values.displayName}
+          onChange={(e) => handleChange(e, "displayName")}
+          error={errors.displayName}
         />
       ),
     },
@@ -160,6 +202,7 @@ const CreateNewMaintenanceWindow = () => {
             placeholder="Start typing to search for current monitors"
             value={values.AddMonitors}
             onChange={(e) => handleChange(e, "AddMonitors")}
+            error={errors.addMonitors}
           />
           <Typography
             sx={{
@@ -246,6 +289,7 @@ const CreateNewMaintenanceWindow = () => {
             }}
             level="primary"
             label="Create"
+            onClick={handleSubmit}
           />
         </Stack>
       </Stack>

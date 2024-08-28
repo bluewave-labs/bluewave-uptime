@@ -118,6 +118,7 @@ const CreateMonitor = () => {
       form = {
         ...form,
         description: form.name,
+        teamId: user.teamId,
         userId: user._id,
         notifications: monitor.notifications,
       };
@@ -193,7 +194,7 @@ const CreateMonitor = () => {
             <Field
               type="text"
               id="monitor-name"
-              label="Friendly name"
+              label="Display name"
               isOptional={true}
               placeholder="Google"
               value={monitor.name}

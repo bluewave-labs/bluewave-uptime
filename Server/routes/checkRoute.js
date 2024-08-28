@@ -9,13 +9,9 @@ router.post(
   checkController.createCheck
 );
 
-router.get(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  checkController.getChecks
-);
+router.get("/:monitorId", checkController.getChecks);
 
-router.get("/user/:userId", checkController.getUserChecks);
+router.get("/team/:teamId", checkController.getTeamChecks);
 
 router.delete(
   "/:monitorId",

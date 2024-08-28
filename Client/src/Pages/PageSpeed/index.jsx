@@ -4,7 +4,7 @@ import { useTheme } from "@emotion/react";
 import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
 import { StatusLabel } from "../../Components/Label";
 import { useDispatch, useSelector } from "react-redux";
-import { getPageSpeedByUserId } from "../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { getPageSpeedByTeamId } from "../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
@@ -127,7 +127,7 @@ const SkeletonLayout = () => {
   );
 };
 
-const PageSpeed = () => {
+const PageSpeed = ({ isAdmin }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -137,7 +137,7 @@ const PageSpeed = () => {
     (state) => state.pageSpeedMonitors
   );
   useEffect(() => {
-    dispatch(getPageSpeedByUserId(authToken));
+    dispatch(getPageSpeedByTeamId(authToken));
   }, [authToken, dispatch]);
 
   // will show skeletons only on initial load
@@ -196,10 +196,14 @@ const PageSpeed = () => {
             "Give suggestions on how the page can be improved",
           ]}
           link="/pagespeed/create"
+          isAdmin={isAdmin}
         />
       )}
     </Box>
   );
+};
+PageSpeed.propTypes = {
+  isAdmin: PropTypes.bool,
 };
 
 export default PageSpeed;

@@ -116,7 +116,7 @@ const CreatePageSpeed = () => {
         <Typography component="h1">Create pagespeed monitor</Typography>
         <Stack gap={theme.gap.xl}>
           <Stack direction="row">
-            <Typography component="h3">Monitor friendly name</Typography>
+            <Typography component="h3">Monitor display name</Typography>
             <Field
               type="text"
               id="monitor-name"

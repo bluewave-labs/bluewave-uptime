@@ -48,16 +48,15 @@ const Incidents = () => {
   useEffect(() => {
     const fetchMonitors = async () => {
       setLoading(true);
-      const res = await networkService.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByTeamId(
         authState.authToken,
-        authState.user._id,
+        authState.user.teamId,
         1,
         null,
         null,
         null,
         null
       );
-
       // Reduce to a lookup object for 0(1) lookup
       if (res.data && res.data.data.length > 0) {
         const monitorLookup = res.data.data.reduce((acc, monitor) => {

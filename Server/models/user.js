@@ -38,7 +38,12 @@ const UserSchema = mongoose.Schema(
     role: {
       type: [String],
       default: "user",
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "superadmin"],
+    },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      immutable: true,
     },
   },
   {
@@ -69,5 +74,11 @@ UserSchema.methods.comparePassword = async function (submittedPassword) {
   res = await bcrypt.compare(submittedPassword, this.password);
   return res;
 };
+
+const User = mongoose.model("User", UserSchema);
+
+User.init().then(() => {
+  console.log("User model initialized");
+});
 
 module.exports = mongoose.model("User", UserSchema);

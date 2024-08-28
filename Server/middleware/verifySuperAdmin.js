@@ -11,7 +11,7 @@ const { errorMessages } = require("../utils/messages");
  * @param {express.NextFunction} next
  * @returns {express.Response}
  */
-const verifyAdmin = (req, res, next) => {
+const verifySuperAdmin = (req, res, next) => {
   const token = req.headers["authorization"];
   // Make sure a token is provided
   if (!token) {
@@ -42,7 +42,7 @@ const verifyAdmin = (req, res, next) => {
         .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
     }
 
-    if (decoded.role.includes("admin") === false) {
+    if (decoded.role.includes("superadmin") === false) {
       logger.error(errorMessages.INVALID_AUTH_TOKEN, {
         service: SERVICE_NAME,
       });
@@ -54,4 +54,4 @@ const verifyAdmin = (req, res, next) => {
   });
 };
 
-module.exports = { verifyAdmin };
+module.exports = { verifySuperAdmin };

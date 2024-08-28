@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  registerValidation,
+  registrationBodyValidation,
   loginValidation,
   editUserParamValidation,
   editUserBodyValidation,
@@ -50,7 +50,7 @@ const getTokenFromHeaders = (headers) => {
 const registerController = async (req, res, next) => {
   // joi validation
   try {
-    await registerValidation.validateAsync(req.body);
+    await registrationBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -78,7 +78,7 @@ const registerController = async (req, res, next) => {
 
   // Create a new user
   try {
-    const newUser = await req.db.insertUser(req, res);
+    const newUser = await req.db.insertUser({ ...req.body }, req.file);
     logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,
       userId: newUser._id,
@@ -90,12 +90,20 @@ const registerController = async (req, res, next) => {
 
     const token = issueToken(userForToken);
 
-    await req.emailService.buildAndSendEmail(
-      "welcomeEmailTemplate",
-      { name: newUser.firstName },
-      newUser.email,
-      "Welcome to Uptime Monitor"
-    );
+    req.emailService
+      .buildAndSendEmail(
+        "welcomeEmailTemplate",
+        { name: newUser.firstName },
+        newUser.email,
+        "Welcome to Uptime Monitor"
+      )
+      .catch((error) => {
+        logger.error("Error sending welcome email", {
+          service: SERVICE_NAME,
+          error: error.message,
+        });
+      });
+
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
@@ -226,7 +234,8 @@ const inviteController = async (req, res, next) => {
   try {
     // Only admins can invite
     const token = getTokenFromHeaders(req.headers);
-    const { role, firstname } = jwt.decode(token);
+    const { role, firstname, teamId } = jwt.decode(token);
+    req.body.teamId = teamId;
     try {
       await inviteRoleValidation.validateAsync({ roles: role });
       await inviteBodyValidation.validateAsync(req.body);
@@ -240,15 +249,22 @@ const inviteController = async (req, res, next) => {
     }
 
     const inviteToken = await req.db.requestInviteToken(req, res);
-    await req.emailService.buildAndSendEmail(
-      "employeeActivationTemplate",
-      {
-        name: firstname,
-        link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
-      },
-      req.body.email,
-      "Welcome to Uptime Monitor"
-    );
+    req.emailService
+      .buildAndSendEmail(
+        "employeeActivationTemplate",
+        {
+          name: firstname,
+          link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+        },
+        req.body.email,
+        "Welcome to Uptime Monitor"
+      )
+      .catch((error) => {
+        logger.error("Error sending invite email", {
+          service: SERVICE_NAME,
+          error: error.message,
+        });
+      });
 
     return res
       .status(200)
@@ -274,7 +290,6 @@ const inviteVerifyController = async (req, res, next) => {
 
   try {
     const invite = await req.db.getInviteToken(req, res);
-
     res
       .status(200)
       .json({ status: "success", msg: "Invite verified", data: invite });
@@ -293,13 +308,13 @@ const inviteVerifyController = async (req, res, next) => {
  * @returns {Promise<Express.Response>}
  */
 
-const checkAdminController = async (req, res) => {
+const checkSuperadminController = async (req, res) => {
   try {
-    const adminExists = await req.db.checkAdmin(req, res);
+    const superAdminExists = await req.db.checkSuperadmin(req, res);
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_ADMIN_EXISTS,
-      data: adminExists,
+      data: superAdminExists,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
@@ -508,7 +523,7 @@ module.exports = {
   userEditController,
   inviteController,
   inviteVerifyController,
-  checkAdminController,
+  checkSuperadminController,
   recoveryRequestController,
   validateRecoveryTokenController,
   resetPasswordController,

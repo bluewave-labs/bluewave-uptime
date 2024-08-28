@@ -339,7 +339,7 @@ function Sidebar() {
                   if (
                     child.name === "Team" &&
                     authState.user?.role &&
-                    !authState.user.role.includes("admin")
+                    !authState.user.role.includes("superadmin")
                   ) {
                     return null;
                   }
@@ -399,7 +399,7 @@ function Sidebar() {
                     if (
                       child.name === "Team" &&
                       authState.user?.role &&
-                      !authState.user.role.includes("admin")
+                      !authState.user.role.includes("superadmin")
                     ) {
                       return null;
                     }

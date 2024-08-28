@@ -110,7 +110,7 @@ const SkeletonLayout = () => {
  * Details page component displaying monitor details and related information.
  * @component
  */
-const DetailsPage = () => {
+const DetailsPage = ({ isAdmin }) => {
   const [monitor, setMonitor] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
@@ -196,29 +196,31 @@ const DetailsPage = () => {
                   Checking every {formatDurationRounded(monitor?.interval)}.
                 </Typography>
               </Box>
-              <Button
-                level="tertiary"
-                label="Configure"
-                animate="rotate90"
-                img={
-                  <SettingsIcon
-                    style={{
-                      minWidth: theme.gap.mlplus,
-                      minHeight: theme.gap.mlplus,
-                    }}
-                  />
-                }
-                onClick={() => navigate(`/monitors/configure/${monitorId}`)}
-                sx={{
-                  ml: "auto",
-                  alignSelf: "flex-end",
-                  backgroundColor: "#f4f4f4",
-                  px: theme.gap.medium,
-                  "& svg": {
-                    mr: "6px",
-                  },
-                }}
-              />
+              {isAdmin && (
+                <Button
+                  level="tertiary"
+                  label="Configure"
+                  animate="rotate90"
+                  img={
+                    <SettingsIcon
+                      style={{
+                        minWidth: theme.gap.mlplus,
+                        minHeight: theme.gap.mlplus,
+                      }}
+                    />
+                  }
+                  onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+                  sx={{
+                    ml: "auto",
+                    alignSelf: "flex-end",
+                    backgroundColor: "#f4f4f4",
+                    px: theme.gap.medium,
+                    "& svg": {
+                      mr: "6px",
+                    },
+                  }}
+                />
+              )}
             </Stack>
             <Stack
               direction="row"
@@ -339,4 +341,7 @@ const DetailsPage = () => {
   );
 };
 
+DetailsPage.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default DetailsPage;

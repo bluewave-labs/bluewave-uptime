@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
   deletePageSpeed,
-  getPageSpeedByUserId,
+  getPageSpeedByTeamId,
   updatePageSpeed,
 } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import { monitorValidation } from "../../../Validation/validation";
@@ -127,7 +127,7 @@ const PageSpeedConfigure = () => {
     );
     if (action.meta.requestStatus === "fulfilled") {
       createToast({ body: "Monitor updated successfully!" });
-      dispatch(getPageSpeedByUserId(authToken));
+      dispatch(getPageSpeedByTeamId(authToken));
     } else {
       createToast({ body: "Failed to update monitor." });
     }
@@ -223,7 +223,7 @@ const PageSpeedConfigure = () => {
             </Stack>
             <Stack gap={theme.gap.xl}>
               <Stack direction="row">
-                <Typography component="h3">Monitor friendly name</Typography>
+                <Typography component="h3">Monitor display name</Typography>
                 <Field
                   type="text"
                   id="monitor-name"

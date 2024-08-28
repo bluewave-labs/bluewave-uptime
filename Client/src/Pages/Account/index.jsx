@@ -25,7 +25,11 @@ const Account = ({ open = "profile" }) => {
 
   let tabList = ["Profile", "Password", "Team"];
   const { user } = useSelector((state) => state.auth);
-  if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
+  const requiredRoles = ["superadmin", "admin"];
+  const hideTeams = !requiredRoles.some((role) => user.role.includes(role));
+  if (hideTeams) {
+    tabList = ["Profile", "Password"];
+  }
 
   return (
     <Box
@@ -71,7 +75,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-        {user.role.includes("admin") && <TeamPanel />}
+        {!hideTeams && <TeamPanel />}
       </TabContext>
     </Box>
   );

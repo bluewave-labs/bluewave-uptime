@@ -7,7 +7,7 @@ import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
-import Monitors from "./Pages/Monitors";
+import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
@@ -21,6 +21,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
+import withAdminProp from "./HOC/withAdminProp";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
@@ -30,6 +31,9 @@ import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
+  const MonitorsWithAdminProp = withAdminProp(Monitors);
+  const DetailsWithAdminProp = withAdminProp(Details);
+  const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   return (
     <>
       <Routes>
@@ -37,11 +41,11 @@ function App() {
           <Route
             exact
             path="/"
-            element={<ProtectedRoute Component={Monitors} />}
+            element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
           />
           <Route
             path="/monitors"
-            element={<ProtectedRoute Component={Monitors} />}
+            element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
           />
           <Route
             path="/monitors/create"
@@ -49,7 +53,7 @@ function App() {
           />
           <Route
             path="/monitors/:monitorId/"
-            element={<ProtectedRoute Component={Details} />}
+            element={<ProtectedRoute Component={DetailsWithAdminProp} />}
           />
           <Route
             path="/monitors/configure/:monitorId/"
@@ -94,7 +98,7 @@ function App() {
           />
           <Route
             path="pagespeed"
-            element={<ProtectedRoute Component={PageSpeed} />}
+            element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
           />
           <Route
             path="pagespeed/create"

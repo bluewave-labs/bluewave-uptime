@@ -52,9 +52,9 @@ class NetworkService {
    * @param {boolean} [normalize] - Whether to normalize the retrieved monitors.
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    */
-  async getMonitorsByUserId(
+  async getMonitorsByTeamId(
     authToken,
-    userId,
+    teamId,
     limit,
     types,
     status,
@@ -74,7 +74,7 @@ class NetworkService {
     if (normalize) params.append("normalize", normalize);
 
     return this.axiosInstance.get(
-      `/monitors/user/${userId}?${params.toString()}`,
+      `/monitors/team/${teamId}?${params.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -293,8 +293,8 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async doesAdminExist() {
-    return this.axiosInstance.get("/auth/users/admin");
+  async doesSuperAdminExist() {
+    return this.axiosInstance.get("/auth/users/superadmin");
   }
 
   /**
@@ -327,7 +327,7 @@ class NetworkService {
    */
   async requestInvitationToken(authToken, email, role) {
     return this.axiosInstance.post(
-      `/auth/invite`,
+      `/invite`,
       { email, role },
       {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -346,7 +346,7 @@ class NetworkService {
    *
    */
   async verifyInvitationToken(token) {
-    return this.axiosInstance.post(`/auth/invite/verify`, {
+    return this.axiosInstance.post(`/invite/verify`, {
       token,
     });
   }
@@ -409,9 +409,9 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async getChecksByUser(
+  async getChecksByTeam(
     authToken,
-    userId,
+    teamId,
     sortOrder,
     limit,
     dateRange,
@@ -427,7 +427,7 @@ class NetworkService {
     if (page) params.append("page", page);
     if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
     return this.axiosInstance.get(
-      `/checks/user/${userId}?${params.toString()}`,
+      `/checks/team/${teamId}?${params.toString()}`,
       {
         headers: { Authorization: `Bearer ${authToken}` },
       }

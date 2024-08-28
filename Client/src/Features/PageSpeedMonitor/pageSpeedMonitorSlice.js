@@ -28,12 +28,12 @@ export const createPageSpeed = createAsyncThunk(
   }
 );
 
-export const getPageSpeedByUserId = createAsyncThunk(
-  "pageSpeedMonitors/getPageSpeedByUserId",
+export const getPageSpeedByTeamId = createAsyncThunk(
+  "pageSpeedMonitors/getPageSpeedByTeamId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByTeamId(
         token,
         user._id,
         25,
@@ -127,15 +127,15 @@ const pageSpeedMonitorSlice = createSlice({
       // Monitors by userId
       // *****************************************************
 
-      .addCase(getPageSpeedByUserId.pending, (state) => {
+      .addCase(getPageSpeedByTeamId.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getPageSpeedByUserId.fulfilled, (state, action) => {
+      .addCase(getPageSpeedByTeamId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getPageSpeedByUserId.rejected, (state, action) => {
+      .addCase(getPageSpeedByTeamId.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
