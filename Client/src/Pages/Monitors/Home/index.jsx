@@ -4,13 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../Components/Button";
-import ServerStatus from "../../../Components/Charts/Servers/ServerStatus";
 import { useTheme } from "@emotion/react";
 import BasicTable from "../../../Components/BasicTable";
 import { Box, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import SkeletonLayout from "./skeleton";
 import Fallback from "./fallback";
+import StatusBox from "./StatusBox";
 import { buildData } from "./monitorData";
 
 const Monitors = ({ isAdmin }) => {
@@ -73,9 +73,9 @@ const Monitors = ({ isAdmin }) => {
                 direction="row"
                 justifyContent="space-between"
               >
-                <ServerStatus title="Up" value={up} state="up" />
-                <ServerStatus title="Down" value={down} state="down" />
-                <ServerStatus title="Paused" value={0} state="pause" />
+                <StatusBox title="up" value={up} />
+                <StatusBox title="down" value={down} />
+                <StatusBox title="paused" value={0} />
               </Stack>
               <Box
                 flex={1}
