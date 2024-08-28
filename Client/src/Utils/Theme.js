@@ -53,7 +53,12 @@ const theme = createTheme({
       light: "#ffffff",
       border: "#D0D5DD",
     },
-    success: { main: "#17b26a", light: "#d4f4e1", bg: "#ecfdf3" },
+    success: {
+      text: "#079455",
+      main: "#17b26a",
+      light: "#d4f4e1",
+      bg: "#ecfdf3",
+    },
     error: {
       text: "#f04438",
       main: "#d32f2f",

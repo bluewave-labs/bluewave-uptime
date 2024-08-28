@@ -29,17 +29,28 @@ const StatBox = ({ icon, title, value }) => {
     <Stack
       className="stat-box"
       direction="row"
-      gap={theme.gap.small}
-      pt={theme.gap.ml}
-      px={theme.gap.ml}
-      pb={theme.gap.mlplus}
+      gap={theme.spacing(4)}
+      pt={theme.spacing(8)}
+      px={theme.spacing(8)}
+      pb={theme.spacing(10)}
+      border={1}
+      borderColor={theme.palette.border.light}
+      borderRadius={theme.shape.borderRadius}
+      backgroundColor={theme.palette.background.main}
+      minWidth="200px"
     >
       {icon}
       <Box>
-        <Typography variant="h6" mb={theme.gap.medium}>
+        <Typography
+          variant="h6"
+          color={theme.palette.common.main}
+          mb={theme.spacing(6)}
+        >
           {title}
         </Typography>
-        <Typography variant="h4">{value}</Typography>
+        <Typography variant="h4" color={theme.palette.text.secondary}>
+          {value}
+        </Typography>
       </Box>
     </Stack>
   );
@@ -151,7 +162,7 @@ const SkeletonLayout = () => {
   return (
     <>
       <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack direction="row" gap={theme.gap.small}>
+      <Stack direction="row" gap={theme.spacing(4)}>
         <Skeleton variant="circular" style={{ minWidth: 24, minHeight: 24 }} />
         <Box width="85%">
           <Skeleton variant="rounded" width="50%" height={24} />
@@ -159,7 +170,7 @@ const SkeletonLayout = () => {
             variant="rounded"
             width="50%"
             height={18}
-            sx={{ mt: theme.gap.small }}
+            sx={{ mt: theme.spacing(4) }}
           />
         </Box>
         <Skeleton
@@ -172,7 +183,7 @@ const SkeletonLayout = () => {
       <Stack
         direction="row"
         justifyContent="space-between"
-        gap={theme.gap.xl}
+        gap={theme.spacing(20)}
         flexWrap="wrap"
       >
         <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
@@ -237,10 +248,37 @@ const PageSpeedDetails = () => {
    * @returns {{stroke: string, text: string, bg: string}} The color properties for the given performance value.
    */
   const getColors = (value) => {
-    if (value >= 90 && value <= 100) return theme.pie.green;
-    else if (value >= 50 && value < 90) return theme.pie.yellow;
-    else if (value >= 0 && value < 50) return theme.pie.red;
-    return theme.pie.default;
+    if (value >= 90 && value <= 100)
+      return {
+        stroke: theme.palette.success.main,
+        strokeBg: theme.palette.success.light,
+        text: theme.palette.success.text,
+        bg: theme.palette.success.bg,
+        shape: "circle",
+      };
+    else if (value >= 50 && value < 90)
+      return {
+        stroke: theme.palette.warning.main,
+        strokeBg: theme.palette.warning.bg,
+        text: theme.palette.warning.text,
+        bg: theme.palette.warning.light,
+        shape: "square",
+      };
+    else if (value >= 0 && value < 50)
+      return {
+        stroke: theme.palette.error.text,
+        strokeBg: theme.palette.error.light,
+        text: theme.palette.error.text,
+        bg: theme.palette.error.bg,
+        shape: "circle",
+      };
+    return {
+      stroke: theme.palette.unresolved.main,
+      strokeBg: theme.palette.unresolved.light,
+      text: theme.palette.unresolved.main,
+      bg: theme.palette.unresolved.bg,
+      shape: "",
+    };
   };
 
   /**
@@ -312,8 +350,15 @@ const PageSpeedDetails = () => {
 
   let loading = Object.keys(monitor).length === 0;
   const data = monitor?.checks ? [...monitor.checks].reverse() : [];
+
+  let sharedStyles = {
+    border: 1,
+    borderColor: theme.palette.border.light,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.main,
+  };
   return (
-    <Stack className="page-speed-details" gap={theme.gap.large}>
+    <Stack className="page-speed-details" gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -324,25 +369,30 @@ const PageSpeedDetails = () => {
               { name: "details", path: `/pagespeed/${monitorId}` },
             ]}
           />
-          <Stack direction="row" gap={theme.gap.xs}>
+          <Stack direction="row" gap={theme.spacing(2)}>
             <PulseDot
               color={
                 monitor?.status
-                  ? theme.label.up.dotColor
-                  : theme.label.down.dotColor
+                  ? theme.palette.success.main
+                  : theme.palette.error.main
               }
             />
             <Box>
               <Typography
                 component="h1"
-                mb={theme.gap.xs}
+                mb={theme.spacing(2)}
+                color={theme.palette.text.primary}
                 sx={{ lineHeight: 1 }}
               >
                 {monitor?.url}
               </Typography>
               <Typography
                 component="span"
-                sx={{ color: "var(--success-color)" }}
+                color={
+                  monitor?.status
+                    ? theme.palette.success.main
+                    : theme.palette.error.text
+                }
               >
                 Your pagespeed monitor is live.
               </Typography>
@@ -353,15 +403,18 @@ const PageSpeedDetails = () => {
               animate="rotate90"
               img={
                 <SettingsIcon
-                  style={{ width: theme.gap.mlplus, height: theme.gap.mlplus }}
+                  style={{
+                    width: theme.spacing(10),
+                    height: theme.spacing(10),
+                  }}
                 />
               }
               onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
               sx={{
                 ml: "auto",
                 alignSelf: "flex-end",
-                backgroundColor: theme.palette.otherColors.fillGray,
-                px: theme.gap.medium,
+                backgroundColor: theme.palette.background.fill,
+                px: theme.spacing(6),
                 "& svg": {
                   mr: "6px",
                 },
@@ -371,7 +424,7 @@ const PageSpeedDetails = () => {
           <Stack
             direction="row"
             justifyContent="space-between"
-            gap={theme.gap.large}
+            gap={theme.spacing(12)}
             flexWrap="wrap"
           >
             <StatBox
@@ -412,19 +465,39 @@ const PageSpeedDetails = () => {
               value={formatDurationRounded(monitor?.interval)}
             ></StatBox>
           </Stack>
-          <Typography component="h2">Score history</Typography>
-          <Box height="300px">
+          <Typography component="h2" color={theme.palette.text.secondary}>
+            Score history
+          </Typography>
+          <Box
+            height="300px"
+            sx={{
+              ...sharedStyles,
+            }}
+          >
             <PageSpeedLineChart pageSpeedChecks={data} />
           </Box>
-          <Typography component="h2">Performance report</Typography>
-          <Stack direction="row" alignItems="center" overflow="hidden" flex={1}>
+          <Typography component="h2" color={theme.palette.text.secondary}>
+            Performance report
+          </Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            overflow="hidden"
+            flex={1}
+            sx={{
+              "& p": {
+                color: theme.palette.text.secondary,
+              },
+              ...sharedStyles,
+            }}
+          >
             <Stack
               alignItems="center"
               textAlign="center"
               minWidth="300px"
               flex={1}
-              px={theme.gap.xl}
-              py={theme.gap.ml}
+              px={theme.spacing(20)}
+              py={theme.spacing(8)}
             >
               <Box onMouseLeave={() => setExpand(false)}>
                 {expand ? (
@@ -514,12 +587,12 @@ const PageSpeedDetails = () => {
                   </PieChart>
                 )}
               </Box>
-              <Typography mt={theme.gap.medium}>
+              <Typography mt={theme.spacing(6)}>
                 Values are estimated and may vary.{" "}
                 <Typography
                   component="span"
                   sx={{
-                    color: theme.palette.primary.main,
+                    color: theme.palette.common.main,
                     fontWeight: 500,
                     textDecoration: "underline",
                     cursor: "pointer",
@@ -530,21 +603,23 @@ const PageSpeedDetails = () => {
               </Typography>
             </Stack>
             <Box
-              px={theme.gap.xl}
-              py={theme.gap.ml}
+              px={theme.spacing(20)}
+              py={theme.spacing(8)}
               height="100%"
               flex={1}
               sx={{
-                borderLeft: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+                borderLeft: 1,
+                borderLeftColor: theme.palette.border.light,
               }}
             >
               <Typography
-                mb={theme.gap.medium}
-                pb={theme.gap.ml}
-                color={theme.palette.secondary.main}
+                mb={theme.spacing(6)}
+                pb={theme.spacing(8)}
+                color={theme.palette.text.secondary}
                 textAlign="center"
                 sx={{
-                  borderBottom: `solid 1px ${theme.palette.otherColors.graishWhite}`,
+                  borderBottom: 1,
+                  borderBottomColor: theme.palette.border.light,
                   borderBottomStyle: "dashed",
                 }}
               >
@@ -552,7 +627,7 @@ const PageSpeedDetails = () => {
                 <Typography
                   component="span"
                   sx={{
-                    color: theme.palette.primary.main,
+                    color: theme.palette.common.main,
                     fontWeight: 500,
                     textDecoration: "underline",
                     cursor: "pointer",
@@ -569,8 +644,8 @@ const PageSpeedDetails = () => {
               <Stack
                 direction="row"
                 flexWrap="wrap"
-                pt={theme.gap.ml}
-                gap={theme.gap.ml}
+                pt={theme.spacing(8)}
+                gap={theme.spacing(8)}
               >
                 {Object.keys(audits).map((key) => {
                   if (key === "_id") return;
@@ -581,8 +656,8 @@ const PageSpeedDetails = () => {
                   let shape = (
                     <Box
                       sx={{
-                        width: theme.gap.medium,
-                        height: theme.gap.medium,
+                        width: theme.spacing(6),
+                        height: theme.spacing(6),
                         borderRadius: "50%",
                         backgroundColor: metricParams.stroke,
                       }}
@@ -592,8 +667,8 @@ const PageSpeedDetails = () => {
                     shape = (
                       <Box
                         sx={{
-                          width: theme.gap.medium,
-                          height: theme.gap.medium,
+                          width: theme.spacing(6),
+                          height: theme.spacing(6),
                           backgroundColor: metricParams.stroke,
                         }}
                       ></Box>
@@ -604,10 +679,14 @@ const PageSpeedDetails = () => {
                         sx={{
                           width: 0,
                           height: 0,
-                          ml: `calc((${theme.gap.medium} - ${theme.gap.small}) / -2)`,
-                          borderLeft: `${theme.gap.small} solid transparent`,
-                          borderRight: `${theme.gap.small} solid transparent`,
-                          borderBottom: `${theme.gap.medium} solid ${metricParams.stroke}`,
+                          ml: `calc((${theme.spacing(6)} - ${theme.spacing(
+                            4
+                          )}) / -2)`,
+                          borderLeft: `${theme.spacing(4)} solid transparent`,
+                          borderRight: `${theme.spacing(4)} solid transparent`,
+                          borderBottom: `${theme.spacing(6)} solid ${
+                            metricParams.stroke
+                          }`,
                         }}
                       ></Box>
                     );
@@ -630,7 +709,7 @@ const PageSpeedDetails = () => {
                       className="metric"
                       key={`${key}-box`}
                       direction="row"
-                      gap={theme.gap.small}
+                      gap={theme.spacing(4)}
                     >
                       {shape}
                       <Box>
@@ -650,8 +729,8 @@ const PageSpeedDetails = () => {
                             component="span"
                             ml="2px"
                             sx={{
-                              color: theme.palette.secondary.main,
-                              fontSize: "13px",
+                              color: theme.palette.text.secondary,
+                              fontSize: 13,
                             }}
                           >
                             {unit}

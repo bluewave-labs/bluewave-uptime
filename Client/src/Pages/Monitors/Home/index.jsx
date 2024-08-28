@@ -51,7 +51,7 @@ const Monitors = ({ isAdmin }) => {
   }
 
   return (
-    <Stack className="monitors" gap={theme.gap.large}>
+    <Stack className="monitors" gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -65,11 +65,15 @@ const Monitors = ({ isAdmin }) => {
               mt={theme.spacing(5)}
             >
               <Box>
-                <Typography component="h1" lineHeight={1}>
+                <Typography
+                  component="h1"
+                  lineHeight={1}
+                  color={theme.palette.text.primary}
+                >
                   <Typography
                     component="span"
                     fontSize="inherit"
-                    color={theme.palette.otherColors.bluishGray}
+                    color={theme.palette.text.secondary}
                   >
                     Good {greeting},{" "}
                   </Typography>
@@ -85,6 +89,7 @@ const Monitors = ({ isAdmin }) => {
                   sx={{ opacity: 0.8 }}
                   lineHeight={1}
                   fontWeight={300}
+                  color={theme.palette.text.secondary}
                 >
                   Here’s an overview of your uptime monitors.
                 </Typography>
@@ -108,7 +113,7 @@ const Monitors = ({ isAdmin }) => {
           {monitorState.monitors?.length !== 0 && (
             <>
               <Stack
-                gap={theme.gap.large}
+                gap={theme.spacing(12)}
                 direction="row"
                 justifyContent="space-between"
               >
@@ -118,17 +123,30 @@ const Monitors = ({ isAdmin }) => {
               </Stack>
               <Box
                 flex={1}
-                p={theme.gap.lgplus}
+                p={theme.spacing(16)}
                 border={1}
-                borderColor={theme.palette.otherColors.graishWhite}
-                backgroundColor={theme.palette.otherColors.white}
-                sx={{
-                  borderRadius: `${theme.shape.borderRadius}px`,
-                }}
+                borderColor={theme.palette.border.light}
+                borderRadius={theme.shape.borderRadius}
+                backgroundColor={theme.palette.background.main}
               >
-                <Stack direction="row" alignItems="center" mb={theme.gap.large}>
-                  <Typography component="h2">Current monitors</Typography>
-                  <Box className="current-monitors-counter">
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  mb={theme.spacing(12)}
+                >
+                  <Typography
+                    component="h2"
+                    color={theme.palette.text.secondary}
+                  >
+                    Current monitors
+                  </Typography>
+                  <Box
+                    className="current-monitors-counter"
+                    color={theme.palette.text.primary}
+                    border={1}
+                    borderColor={theme.palette.border.light}
+                    backgroundColor={theme.palette.unresolved.bg}
+                  >
                     {monitorState.monitors.length}
                   </Box>
                   {/* TODO - add search bar */}

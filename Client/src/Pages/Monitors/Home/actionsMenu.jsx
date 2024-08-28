@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useTheme } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
 import { createToast } from "../../../Utils/toastUtils";
 import {
   IconButton,
@@ -14,10 +16,8 @@ import {
   getUptimeMonitorsByTeamId,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Settings from "../../../assets/icons/settings-bold.svg?react";
-import { useTheme } from "@emotion/react";
 import Button from "../../../Components/Button";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 
 const ActionsMenu = ({ monitor, isAdmin }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -87,6 +87,30 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={(e) => closeMenu(e)}
+        slotProps={{
+          paper: {
+            sx: {
+              border: 1,
+              borderColor: theme.palette.border.light,
+              borderRadius: theme.shape.borderRadius,
+              boxShadow: theme.shape.boxShadow,
+              "& ul": {
+                p: theme.spacing(2.5),
+                minWidth: "100px",
+              },
+              "& li": {
+                color: theme.palette.text.secondary,
+                fontSize: 13,
+                px: theme.spacing(4),
+                py: theme.spacing(2.5),
+                borderRadius: theme.shape.borderRadius,
+              },
+              "& li:last-of-type": {
+                color: theme.palette.error.text,
+              },
+            },
+          },
+        }}
       >
         {actions.url !== null ? (
           <MenuItem
@@ -137,31 +161,35 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
         aria-labelledby="modal-delete-monitor"
         aria-describedby="delete-monitor-confirmation"
         open={isOpen}
-        onClose={() => setIsOpen(false)}
-        disablePortal
+        onClose={(e) => {
+          e.stopPropagation();
+          setIsOpen(false);
+        }}
       >
         <Stack
-          gap={theme.gap.xs}
+          gap={theme.spacing(2)}
+          color={theme.palette.text.secondary}
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: `${theme.shape.borderRadius}px`,
+            bgcolor: theme.palette.background.main,
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
             boxShadow: 24,
-            p: "30px",
+            p: theme.spacing(15),
             "&:focus": {
               outline: "none",
             },
           }}
         >
-          <Typography id="modal-delete-monitor" component="h2">
+          <Typography id="modal-delete-monitor" component="h2" fontWeight={600}>
             Do you really want to delete this monitor?
           </Typography>
-          <Typography id="delete-monitor-confirmation">
+          <Typography id="delete-monitor-confirmation" fontSize={13}>
             Once deleted, this monitor cannot be retrieved.
           </Typography>
           <Stack
@@ -173,12 +201,18 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
             <Button
               level="tertiary"
               label="Cancel"
-              onClick={() => setIsOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(false);
+              }}
             />
             <Button
               level="error"
               label="Delete"
-              onClick={(e) => handleRemove(e)}
+              onClick={(e) => {
+                e.stopPropagation(e);
+                handleRemove(e);
+              }}
             />
           </Stack>
         </Stack>

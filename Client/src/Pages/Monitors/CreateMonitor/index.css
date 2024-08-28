@@ -1,22 +1,10 @@
 .create-monitor h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
-  color: var(--primary-color);
   font-weight: 500;
-}
-.create-monitor h2.MuiTypography-root {
-  font-size: var(--env-var-font-size-large);
-  font-weight: 600;
 }
 .create-monitor p.MuiTypography-root,
 .create-monitor button.MuiButtonBase-root {
   font-size: var(--env-var-font-size-medium);
-}
-.create-monitor h2.MuiTypography-root {
-  color: var(--secondary-color);
-}
-.create-monitor h6.MuiTypography-root,
-.create-monitor p.MuiTypography-root {
-  color: var(--secondary-color-light);
 }
 .create-monitor h6.MuiTypography-root,
 .create-monitor .MuiBox-root .field + p.MuiTypography-root {
@@ -26,11 +14,11 @@
 .create-monitor button.MuiButtonBase-root {
   height: 34px;
 }
+
 .create-monitor .error-container {
   position: relative;
 }
 .create-monitor .error-container p.MuiTypography-root.input-error {
-  color: var(--error-color);
   opacity: 0.8;
   position: absolute;
   top: 0;
@@ -42,30 +30,9 @@
   position: absolute;
   top: 100%;
 }
-.create-monitor .config-box {
-  flex-direction: row;
-  border: 1px solid var(--border-color);
-  border-radius: var(--env-var-radius-1);
-  background-color: var(--primary-bg);
-}
-.create-monitor .config-box > .MuiBox-root,
-.create-monitor .config-box > .MuiStack-root {
-  flex: 1;
-  padding: 24px 30px;
-  padding-bottom: 40px;
-}
-.create-monitor .config-box > *:first-child {
-  flex: 0.7;
-  border-right: solid 1px var(--border-color);
-}
 
 .create-monitor .MuiStack-root .MuiButtonGroup-root button {
   font-size: var(--env-var-font-size-small);
   height: 28px;
   padding: 8px;
-}
-
-body:has(.create-monitor) .select-dropdown .MuiMenuItem-root,
-.create-monitor .select-wrapper .select-component > .MuiSelect-select {
-  text-transform: lowercase;
 }

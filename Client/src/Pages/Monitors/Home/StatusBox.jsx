@@ -13,21 +13,21 @@ const StatusBox = ({ title, value }) => {
   let color;
   let icon;
   if (title === "up") {
-    color = theme.pie.green.stroke;
+    color = theme.palette.success.main;
     icon = (
       <Box sx={{ ...sharedStyles, top: 8 }}>
         <Arrow />
       </Box>
     );
   } else if (title === "down") {
-    color = theme.pie.red.stroke;
+    color = theme.palette.error.text;
     icon = (
       <Box sx={{ ...sharedStyles, transform: "rotate(180deg)", top: 5 }}>
         <Arrow />
       </Box>
     );
   } else if (title === "paused") {
-    color = theme.pie.yellow.stroke;
+    color = theme.palette.warning.main;
     icon = (
       <Box sx={{ ...sharedStyles, top: 12, right: 12 }}>
         <ClockSnooze />
@@ -40,11 +40,11 @@ const StatusBox = ({ title, value }) => {
       position="relative"
       flex={1}
       border={1}
-      borderColor={theme.palette.otherColors.graishWhite}
-      borderRadius={`${theme.shape.borderRadius}px`}
-      backgroundColor={theme.palette.otherColors.white}
-      px={theme.gap.large}
-      py={theme.gap.ml}
+      borderColor={theme.palette.border.light}
+      borderRadius={theme.shape.borderRadius}
+      backgroundColor={theme.palette.background.main}
+      px={theme.spacing(12)}
+      py={theme.spacing(8)}
       overflow="hidden"
       sx={{
         "&:hover": {
@@ -67,8 +67,8 @@ const StatusBox = ({ title, value }) => {
         textTransform="uppercase"
         fontSize={15}
         letterSpacing={0.5}
-        color={theme.palette.otherColors.bluishGray}
-        mb={theme.gap.ml}
+        color={theme.palette.text.secondary}
+        mb={theme.spacing(8)}
         sx={{ opacity: 0.6 }}
       >
         {title}
@@ -87,7 +87,7 @@ const StatusBox = ({ title, value }) => {
           component="span"
           fontSize={20}
           fontWeight={300}
-          color={theme.palette.otherColors.bluishGray}
+          color={theme.palette.text.secondary}
           sx={{ opacity: 0.3 }}
         >
           #

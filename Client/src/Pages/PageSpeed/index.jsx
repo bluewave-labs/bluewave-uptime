@@ -30,15 +30,25 @@ const Card = ({ data }) => {
     >
       <Stack
         direction="row"
-        gap={theme.gap.medium}
-        p={theme.gap.ml}
+        gap={theme.spacing(6)}
+        p={theme.spacing(8)}
         onClick={() => navigate(`/pagespeed/${data._id}`)}
+        border={1}
+        borderColor={theme.palette.border.light}
+        borderRadius={theme.shape.borderRadius}
+        backgroundColor={theme.palette.background.main}
         sx={{ cursor: "pointer" }}
       >
-        <PageSpeedIcon style={{ width: theme.gap.ml, height: theme.gap.ml }} />
+        <PageSpeedIcon
+          style={{ width: theme.spacing(8), height: theme.spacing(8) }}
+        />
         <Box flex={1}>
           <Stack direction="row" justifyContent="space-between">
-            <Typography component="h2" mb={theme.gap.xs}>
+            <Typography
+              component="h2"
+              mb={theme.spacing(2)}
+              color={theme.palette.common.main}
+            >
               {data.name}
             </Typography>
             <StatusLabel
@@ -47,7 +57,7 @@ const Card = ({ data }) => {
             />
           </Stack>
           <Typography>{data.url.replace(/^https?:\/\//, "")}</Typography>
-          <Typography mt={theme.gap.large}>
+          <Typography mt={theme.spacing(12)}>
             <Typography component="span" fontWeight={600}>
               Last checked:{" "}
             </Typography>
@@ -75,11 +85,11 @@ const SkeletonLayout = () => {
   const theme = useTheme();
 
   return (
-    <Stack gap={theme.gap.xs}>
+    <Stack gap={theme.spacing(2)}>
       <Stack
         direction="row"
         justifyContent="space-between"
-        mb={theme.gap.large}
+        mb={theme.spacing(12)}
       >
         <Box width="80%">
           <Skeleton variant="rounded" width="25%" height={24} />
@@ -87,7 +97,7 @@ const SkeletonLayout = () => {
             variant="rounded"
             width="50%"
             height={19.5}
-            sx={{ mt: theme.gap.xs }}
+            sx={{ mt: theme.spacing(2) }}
           />
         </Box>
         <Skeleton
@@ -97,7 +107,7 @@ const SkeletonLayout = () => {
           sx={{ alignSelf: "flex-end" }}
         />
       </Stack>
-      <Stack direction="row" flexWrap="wrap" gap={theme.gap.large}>
+      <Stack direction="row" flexWrap="wrap" gap={theme.spacing(12)}>
         <Skeleton
           variant="rounded"
           width="100%"
@@ -163,15 +173,22 @@ const PageSpeed = ({ isAdmin }) => {
       {isActuallyLoading ? (
         <SkeletonLayout />
       ) : monitors?.length !== 0 ? (
-        <Stack gap={theme.gap.xs}>
+        <Stack
+          gap={theme.spacing(2)}
+          sx={{
+            "& h1, & span.MuiTypography-root, & p": {
+              color: theme.palette.text.secondary,
+            },
+          }}
+        >
           <Stack
             direction="row"
             justifyContent="space-between"
-            mb={theme.gap.large}
+            mb={theme.spacing(12)}
           >
             <Box>
               <Typography component="h1">All page speed monitors</Typography>
-              <Typography mt={theme.gap.xs}>
+              <Typography mt={theme.spacing(2)}>
                 Click on one of the monitors to get more site speed information.
               </Typography>
             </Box>
@@ -181,7 +198,7 @@ const PageSpeed = ({ isAdmin }) => {
               onClick={() => navigate("/pagespeed/create")}
             />
           </Stack>
-          <Grid container spacing={theme.gap.large}>
+          <Grid container spacing={theme.spacing(12)}>
             {monitors?.map((monitor) => (
               <Card data={monitor} key={`monitor-${monitor._id}`} />
             ))}
