@@ -27,7 +27,6 @@ import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
-import ComponentText from "./Pages/ComponentText";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
