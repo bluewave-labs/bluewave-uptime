@@ -35,7 +35,7 @@ export const getPageSpeedByTeamId = createAsyncThunk(
     try {
       const res = await networkService.getMonitorsByTeamId(
         token,
-        user._id,
+        user.teamId,
         25,
         ["pagespeed"],
         null,

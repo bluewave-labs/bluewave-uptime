@@ -78,6 +78,7 @@ const CreatePageSpeed = () => {
         ...monitor,
         description: monitor.name,
         userId: user._id,
+        teamId: user.teamId,
         interval: form.interval * MS_PER_MINUTE,
         type: "pagespeed",
       };

@@ -44,6 +44,9 @@ const errorMessages = {
   JOB_QUEUE_WORKER_CLOSE: "Error closing worker",
   JOB_QUEUE_DELETE_JOB: "Job not found in queue",
   JOB_QUEUE_OBLITERATE: "Error obliterating queue",
+
+  // PING Operations
+  PING_CANNOT_RESOLVE: "No response",
 };
 
 const successMessages = {
@@ -88,6 +91,9 @@ const successMessages = {
   //Maintenance Window Controller
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
   MAINTEANCE_WINDOW_GET_BY_USER: "Got Maintenance Windows by User successfully",
+
+  //Ping Operations
+  PING_SUCCESS: "Success",
 };
 
 module.exports = {
