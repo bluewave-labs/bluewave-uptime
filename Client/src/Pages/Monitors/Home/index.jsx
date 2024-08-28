@@ -50,7 +50,7 @@ const Monitors = ({ isAdmin }) => {
             >
               Hello, {authState.user.firstName}
             </Typography>
-            {monitorState.monitors?.length !== 0 && (
+            {isAdmin && monitorState.monitors?.length !== 0 && (
               <Button
                 level="primary"
                 label="Create monitor"
