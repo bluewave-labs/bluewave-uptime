@@ -1,0 +1,19 @@
+.auto-complete-field .MuiStack-root svg {
+  width: var(--env-var-img-width-2);
+  height: var(--env-var-img-width-2);
+}
+
+.auto-complete-field .MuiStack-root .MuiAutocomplete-root div input {
+  height: var(--env-var-default-1);
+  outline: none;
+  border: none;
+}
+
+.auto-complete-field
+  .MuiStack-root
+  .MuiAutocomplete-root
+  div
+  input::placeholder {
+  font-size: var(--env-var-font-size-large);
+  color: var(--env-var-color-14);
+}
