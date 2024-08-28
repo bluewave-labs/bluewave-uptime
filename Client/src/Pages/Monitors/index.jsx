@@ -552,7 +552,7 @@ const Monitors = ({ isAdmin }) => {
                   Here’s an overview of your uptime monitors.
                 </Typography>
               </Box>
-              {monitorState.monitors?.length !== 0 && (
+              {isAdmin && monitorState.monitors?.length !== 0 && (
                 <Button
                   level="primary"
                   label="Create monitor"
