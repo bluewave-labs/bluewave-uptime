@@ -8,6 +8,7 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import {
   updateUptimeMonitor,
+  pauseUptimeMonitor,
   getUptimeMonitorById,
   getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
@@ -136,7 +137,19 @@ const Configure = () => {
 
   const handlePause = async () => {
     try {
-    } catch (error) {}
+      const action = await dispatch(
+        pauseUptimeMonitor({ authToken, monitorId })
+      );
+      if (pauseUptimeMonitor.fulfilled.match(action)) {
+        const monitor = action.payload.data;
+        setMonitor(monitor);
+      } else if (pauseUptimeMonitor.rejected.match(action)) {
+        throw new Error(action.error.message);
+      }
+    } catch (error) {
+      logger.error("Error pausing monitor: " + monitorId);
+      createToast({ body: "Failed to pause monitor" });
+    }
   };
 
   const handleSubmit = async (event) => {

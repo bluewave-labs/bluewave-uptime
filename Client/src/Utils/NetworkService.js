@@ -195,12 +195,16 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios POST request.
    */
   async pauseMonitorById(authToken, monitorId) {
-    return this.axiosInstance.post(`/monitors/pause/${monitorId}`, {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-    });
+    return this.axiosInstance.post(
+      `/monitors/pause/${monitorId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
   /**

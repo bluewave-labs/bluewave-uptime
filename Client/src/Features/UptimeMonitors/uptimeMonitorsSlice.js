@@ -133,8 +133,8 @@ export const pauseUptimeMonitor = createAsyncThunk(
   "monitors/pauseMonitor",
   async (data, thunkApi) => {
     try {
-      const { authToken, monitor } = data;
-      const res = await networkService.pauseMonitorById(authToken, monitor._id);
+      const { authToken, monitorId } = data;
+      const res = await networkService.pauseMonitorById(authToken, monitorId);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
