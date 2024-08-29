@@ -124,7 +124,7 @@ const getMonitorById = async (req, res, next) => {
   }
 
   try {
-    const monitor = await req.db.getMonitorById(req, res);
+    const monitor = await req.db.getMonitorById(req.params.monitorId);
     if (!monitor) {
       const error = new Error(errorMessages.MONITOR_GET_BY_ID);
       error.status = 404;

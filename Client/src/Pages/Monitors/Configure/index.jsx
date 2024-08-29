@@ -8,6 +8,7 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import {
   updateUptimeMonitor,
+  getUptimeMonitorById,
   getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
@@ -19,6 +20,7 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
+import { networkService } from "../../../main";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -92,7 +94,6 @@ const Configure = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
@@ -106,15 +107,25 @@ const Configure = () => {
   };
 
   useEffect(() => {
-    const data = monitors.find((monitor) => monitor._id === monitorId);
-    if (!data) {
-      logger.error("Error fetching monitor of id: " + monitorId);
-      navigate("/not-found", { replace: true });
-    }
-    setMonitor({
-      ...data,
-    });
-  }, [monitorId, authToken, monitors, navigate]);
+    const fetchMonitor = async () => {
+      try {
+        const action = await dispatch(
+          getUptimeMonitorById({ authToken, monitorId })
+        );
+
+        if (getUptimeMonitorById.fulfilled.match(action)) {
+          const monitor = action.payload.data;
+          setMonitor(monitor);
+        } else if (getUptimeMonitorById.rejected.match(action)) {
+          throw new Error(action.error.message);
+        }
+      } catch (error) {
+        logger.error("Error fetching monitor of id: " + monitorId);
+        navigate("/not-found", { replace: true });
+      }
+    };
+    fetchMonitor();
+  }, [monitorId, authToken, navigate]);
 
   const handleChange = (event, name) => {
     let { value, id } = event.target;
@@ -168,6 +179,11 @@ const Configure = () => {
         return updatedErrors;
       });
     }
+  };
+
+  const handlePause = async () => {
+    try {
+    } catch (error) {}
   };
 
   const handleSubmit = async (event) => {
@@ -276,6 +292,7 @@ const Configure = () => {
                       mr: theme.gap.xs,
                     },
                   }}
+                  onClick={handlePause}
                 />
                 <Button
                   level="error"
