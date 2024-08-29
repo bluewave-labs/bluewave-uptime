@@ -21,6 +21,7 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
 import SkeletonLayout from "./skeleton";
+import ButtonSpinner from "../../../Components/ButtonSpinner";
 /**
  * Parses a URL string and returns a URL object.
  *
@@ -174,11 +175,9 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
-  let loading = Object.keys(monitor).length === 0;
-
   return (
     <Stack className="configure-monitor" gap={theme.gap.large}>
-      {loading ? (
+      {false ? (
         <SkeletonLayout />
       ) : (
         <>
@@ -230,7 +229,8 @@ const Configure = () => {
                   ml: "auto",
                 }}
               >
-                <Button
+                <ButtonSpinner
+                  isLoading={isLoading}
                   level="tertiary"
                   label={monitor?.isActive ? "Pause" : "Resume"}
                   animate="rotate180"
@@ -246,7 +246,8 @@ const Configure = () => {
                   }}
                   onClick={handlePause}
                 />
-                <Button
+                <ButtonSpinner
+                  isLoading={isLoading}
                   level="error"
                   label="Remove"
                   sx={{
@@ -373,7 +374,8 @@ const Configure = () => {
               </Stack>
             </Stack>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
-              <Button
+              <ButtonSpinner
+                isLoading={isLoading}
                 level="primary"
                 label="Save"
                 sx={{ px: theme.gap.large }}
