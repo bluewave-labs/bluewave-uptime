@@ -94,6 +94,7 @@ const Configure = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { user, authToken } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
