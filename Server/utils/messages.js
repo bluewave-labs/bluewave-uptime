@@ -87,6 +87,8 @@ const successMessages = {
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",
   JOB_QUEUE_OBLITERATE: "Queue OBLITERATED!!!",
+  JOB_QUEUE_PAUSE_JOB: "Job paused successfully",
+  JOB_QUEUE_RESUME_JOB: "Job resumed successfully",
 
   //Maintenance Window Controller
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",

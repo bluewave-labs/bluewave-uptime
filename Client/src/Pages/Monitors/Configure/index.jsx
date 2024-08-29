@@ -2,13 +2,15 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Modal, Stack, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../styled";
 import {
   updateUptimeMonitor,
+  pauseUptimeMonitor,
+  getUptimeMonitorById,
   getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
@@ -20,7 +22,8 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
-
+import SkeletonLayout from "./skeleton";
+import ButtonSpinner from "../../../Components/ButtonSpinner";
 /**
  * Parses a URL string and returns a URL object.
  *
@@ -36,54 +39,6 @@ const parseUrl = (url) => {
 };
 
 /**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)}>
-        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
-          <Skeleton
-            variant="circular"
-            style={{ minWidth: 24, minHeight: 24 }}
-          />
-          <Box width="80%">
-            <Skeleton
-              variant="rounded"
-              width="50%"
-              height={24}
-              sx={{ mb: theme.spacing(4) }}
-            />
-            <Skeleton variant="rounded" width="50%" height={18} />
-          </Box>
-          <Stack
-            direction="row"
-            gap={theme.spacing(6)}
-            sx={{
-              ml: "auto",
-              alignSelf: "flex-end",
-            }}
-          >
-            <Skeleton variant="rounded" width={150} height={34} />
-          </Stack>
-        </Stack>
-        <Skeleton variant="rounded" width="100%" height={200} />
-        <Skeleton variant="rounded" width="100%" height={200} />
-        <Skeleton variant="rounded" width="100%" height={200} />
-        <Stack direction="row" justifyContent="flex-end">
-          <Skeleton variant="rounded" width="15%" height={34} />
-        </Stack>
-      </Stack>
-    </>
-  );
-};
-
-/**
  * Configure page displays monitor configurations and allows for editing actions.
  * @component
  */
@@ -93,7 +48,7 @@ const Configure = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.uptimeMonitors);
+  const { isLoading } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
@@ -107,15 +62,25 @@ const Configure = () => {
   };
 
   useEffect(() => {
-    const data = monitors.find((monitor) => monitor._id === monitorId);
-    if (!data) {
-      logger.error("Error fetching monitor of id: " + monitorId);
-      navigate("/not-found", { replace: true });
-    }
-    setMonitor({
-      ...data,
-    });
-  }, [monitorId, authToken, monitors, navigate]);
+    const fetchMonitor = async () => {
+      try {
+        const action = await dispatch(
+          getUptimeMonitorById({ authToken, monitorId })
+        );
+
+        if (getUptimeMonitorById.fulfilled.match(action)) {
+          const monitor = action.payload.data;
+          setMonitor(monitor);
+        } else if (getUptimeMonitorById.rejected.match(action)) {
+          throw new Error(action.error.message);
+        }
+      } catch (error) {
+        logger.error("Error fetching monitor of id: " + monitorId);
+        navigate("/not-found", { replace: true });
+      }
+    };
+    fetchMonitor();
+  }, [monitorId, authToken, navigate]);
 
   const handleChange = (event, name) => {
     let { value, id } = event.target;
@@ -171,6 +136,23 @@ const Configure = () => {
     }
   };
 
+  const handlePause = async () => {
+    try {
+      const action = await dispatch(
+        pauseUptimeMonitor({ authToken, monitorId })
+      );
+      if (pauseUptimeMonitor.fulfilled.match(action)) {
+        const monitor = action.payload.data;
+        setMonitor(monitor);
+      } else if (pauseUptimeMonitor.rejected.match(action)) {
+        throw new Error(action.error.message);
+      }
+    } catch (error) {
+      logger.error("Error pausing monitor: " + monitorId);
+      createToast({ body: "Failed to pause monitor" });
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const action = await dispatch(
@@ -207,11 +189,9 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
-  let loading = Object.keys(monitor).length === 0;
-
   return (
     <Stack className="configure-monitor" gap={theme.spacing(12)}>
-      {loading ? (
+      {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
         <>
@@ -268,9 +248,10 @@ const Configure = () => {
                   ml: "auto",
                 }}
               >
-                <Button
+                <ButtonSpinner
+                  isLoading={isLoading}
                   level="tertiary"
-                  label="Pause"
+                  label={monitor?.isActive ? "Pause" : "Resume"}
                   animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{
@@ -282,8 +263,10 @@ const Configure = () => {
                       mr: theme.spacing(2),
                     },
                   }}
+                  onClick={handlePause}
                 />
-                <Button
+                <ButtonSpinner
+                  isLoading={isLoading}
                   level="error"
                   label="Remove"
                   sx={{
@@ -398,7 +381,8 @@ const Configure = () => {
               </Stack>
             </ConfigBox>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
-              <Button
+              <ButtonSpinner
+                isLoading={isLoading}
                 level="primary"
                 label="Save"
                 sx={{ px: theme.spacing(12) }}

@@ -73,7 +73,14 @@ const TeamPanel = () => {
   useEffect(() => {
     let team = members;
     if (filter !== "all")
-      team = members.filter((member) => member.role.includes(filter));
+      team = members.filter((member) => {
+        if (filter === "admin") {
+          return (
+            member.role.includes("admin") || member.role.includes("superadmin")
+          );
+        }
+        return member.role.includes(filter);
+      });
 
     const data = {
       cols: [
