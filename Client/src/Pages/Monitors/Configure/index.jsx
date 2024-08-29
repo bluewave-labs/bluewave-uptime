@@ -190,7 +190,7 @@ const Configure = () => {
 
   return (
     <Stack className="configure-monitor" gap={theme.gap.large}>
-      {false ? (
+      {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
         <>
