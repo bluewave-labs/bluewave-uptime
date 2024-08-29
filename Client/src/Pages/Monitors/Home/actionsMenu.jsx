@@ -93,11 +93,6 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
         slotProps={{
           paper: {
             sx: {
-              border: 1,
-              borderColor: theme.palette.border.light,
-              borderRadius: theme.shape.borderRadius,
-              boxShadow: theme.shape.boxShadow,
-              backgroundColor: theme.palette.background.main,
               "& ul": {
                 p: theme.spacing(2.5),
                 minWidth: "100px",

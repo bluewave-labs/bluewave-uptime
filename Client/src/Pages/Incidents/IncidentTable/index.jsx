@@ -102,19 +102,6 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         page={paginationController.page + 1} //0-indexed
         onChange={handlePageChange}
         shape="rounded"
-        sx={{
-          backgroundColor: theme.palette.background.main,
-          border: 1,
-          borderColor: theme.palette.border.light,
-          "& button": {
-            color: theme.palette.text.tertiary,
-            borderRadius: theme.shape.borderRadius,
-          },
-          "& li:first-of-type button, & li:last-of-type button": {
-            border: 1,
-            borderColor: theme.palette.border.light,
-          },
-        }}
         renderItem={(item) => (
           <PaginationItem
             slots={{
@@ -122,18 +109,6 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               next: ArrowForwardRoundedIcon,
             }}
             {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
-              "&.Mui-selected, &.Mui-selected:hover": {
-                backgroundColor: theme.palette.background.fill,
-              },
-            }}
           />
         )}
       />
@@ -164,30 +139,10 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         </Box>
       ) : (
         <>
-          <TableContainer
-            component={Paper}
-            sx={{
-              border: `solid 1px ${theme.palette.border.light}`,
-              borderRadius: theme.shape.borderRadius,
-              backgroundColor: theme.palette.background.main,
-              "& .MuiTableCell-root": {
-                borderBottomColor: theme.palette.border.light,
-              },
-            }}
-          >
+          <TableContainer component={Paper}>
             <Table>
-              <TableHead
-                sx={{
-                  backgroundColor: theme.palette.background.accent,
-                }}
-              >
-                <TableRow
-                  sx={{
-                    "& > .MuiTableCell-root": {
-                      color: theme.palette.text.secondary,
-                    },
-                  }}
-                >
+              <TableHead>
+                <TableRow>
                   <TableCell>Monitor Name</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Date & Time</TableCell>

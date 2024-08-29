@@ -29,7 +29,8 @@ import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWin
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
 import { ThemeProvider } from "@emotion/react";
-import theme, { darkTheme } from "./Utils/Theme";
+import lightTheme from "./Utils/Theme/lightTheme";
+import darkTheme from "./Utils/Theme/darkTheme";
 import { useSelector } from "react-redux";
 
 function App() {
@@ -42,7 +43,7 @@ function App() {
   const mode = useSelector((state) => state.ui.mode);
 
   return (
-    <ThemeProvider theme={mode === "light" ? theme : darkTheme}>
+    <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
       <Routes>
         <Route exact path="/" element={<HomeLayout />}>
           <Route

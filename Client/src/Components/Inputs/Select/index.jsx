@@ -78,16 +78,6 @@ const Select = ({
         displayEmpty
         inputProps={{ id: id }}
         MenuProps={{
-          PaperProps: {
-            sx: {
-              marginTop: theme.spacing(2),
-              border: 1,
-              borderColor: theme.palette.border.light,
-              borderRadius: theme.shape.borderRadius,
-              boxShadow: theme.shape.boxShadow,
-              backgroundColor: theme.palette.background.main,
-            },
-          },
           MenuListProps: {
             sx: {
               p: 0,

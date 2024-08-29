@@ -55,7 +55,7 @@ const theme = createTheme({
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
     other: {
       icon: "#667085",
-      line: "#d6d9dd"
+      line: "#d6d9dd",
     },
     primary: {
       main: "#1570EF",
@@ -68,7 +68,59 @@ const theme = createTheme({
     },
   },
   spacing: 2,
-  components: {},
+  components: {
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          marginTop: 4,
+          border: 1,
+          borderStyle: "solid",
+          borderColor: "#eaecf0",
+          borderRadius: 4,
+          boxShadow: shadow,
+          backgroundColor: "#FFFFFF",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          borderBottomColor: "#eaecf0",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f9fafb",
+        },
+      },
+    },
+    MuiPagination: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#FFFFFF",
+          border: 1,
+          borderStyle: "solid",
+          borderColor: "#eaecf0",
+          "& button": {
+            color: "#475467",
+            borderRadius: 4,
+          },
+          "& li:first-of-type button, & li:last-of-type button": {
+            border: 1,
+            borderStyle: "solid",
+            borderColor: "#eaecf0",
+          },
+        },
+      },
+    },
+  },
   shape: {
     borderRadius: 2,
     borderThick: 2,
@@ -123,7 +175,7 @@ export const darkTheme = createTheme({
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
     other: {
       icon: "#e6e6e6",
-      line: "#27272a"
+      line: "#27272a",
     },
     primary: {
       main: "#1570ef",
@@ -136,7 +188,59 @@ export const darkTheme = createTheme({
     },
   },
   spacing: 2,
-  components: {},
+  components: {
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          marginTop: 4,
+          border: 1,
+          borderStyle: "solid",
+          borderColor: "#27272a",
+          borderRadius: 4,
+          boxShadow: shadow,
+          backgroundColor: "#151518",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          borderBottomColor: "#27272a",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#18181a",
+        },
+      },
+    },
+    MuiPagination: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#151518",
+          border: 1,
+          borderStyle: "solid",
+          borderColor: "#27272a",
+          "& button": {
+            color: "#a1a1aa",
+            borderRadius: 4,
+          },
+          "& li:first-of-type button, & li:last-of-type button": {
+            border: 1,
+            borderStyle: "solid",
+            borderColor: "#27272a",
+          },
+        },
+      },
+    },
+  },
   shape: {
     borderRadius: 2,
     borderThick: 2,

@@ -298,11 +298,8 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                   PaperProps: {
                     className: "pagination-dropdown",
                     sx: {
-                      border: 1,
-                      borderColor: theme.palette.border.light,
-                      borderRadius: theme.shape.borderRadius,
-                      boxShadow: theme.shape.boxShadow,
-                      backgroundColor: theme.palette.background.main,
+                      mt: 0,
+                      mb: theme.spacing(2),
                       "& li": {
                         p: theme.spacing(2),
                         color: theme.palette.text.tertiary,

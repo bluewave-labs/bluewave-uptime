@@ -80,19 +80,6 @@ const PaginationTable = ({ monitorId, dateRange }) => {
         page={paginationController.page + 1} //0-indexed
         onChange={handlePageChange}
         shape="rounded"
-        sx={{
-          backgroundColor: theme.palette.background.main,
-          border: 1,
-          borderColor: theme.palette.border.light,
-          "& button": {
-            color: theme.palette.text.tertiary,
-            borderRadius: theme.shape.borderRadius,
-          },
-          "& li:first-of-type button, & li:last-of-type button": {
-            border: 1,
-            borderColor: theme.palette.border.light,
-          },
-        }}
         renderItem={(item) => (
           <PaginationItem
             slots={{
@@ -100,18 +87,6 @@ const PaginationTable = ({ monitorId, dateRange }) => {
               next: ArrowForwardRoundedIcon,
             }}
             {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
-              "&.Mui-selected, &.Mui-selected:hover": {
-                backgroundColor: theme.palette.background.fill,
-              },
-            }}
           />
         )}
       />
@@ -120,45 +95,13 @@ const PaginationTable = ({ monitorId, dateRange }) => {
 
   return (
     <>
-      <TableContainer
-        component={Paper}
-        sx={{
-          border: `solid 1px ${theme.palette.border.light}`,
-          borderRadius: theme.shape.borderRadius,
-          backgroundColor: theme.palette.background.main,
-        }}
-      >
+      <TableContainer component={Paper}>
         <Table>
-          <TableHead
-            sx={{
-              backgroundColor: theme.palette.background.accent,
-            }}
-          >
+          <TableHead>
             <TableRow>
-              <TableCell
-                sx={{
-                  color: theme.palette.text.secondary,
-                  borderBottomColor: theme.palette.border.light,
-                }}
-              >
-                Status
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: theme.palette.text.secondary,
-                  borderBottomColor: theme.palette.border.light,
-                }}
-              >
-                Date & Time
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: theme.palette.text.secondary,
-                  borderBottomColor: theme.palette.border.light,
-                }}
-              >
-                Message
-              </TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Date & Time</TableCell>
+              <TableCell>Message</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -167,31 +110,17 @@ const PaginationTable = ({ monitorId, dateRange }) => {
 
               return (
                 <TableRow key={check._id}>
-                  <TableCell
-                    sx={{
-                      borderBottomColor: theme.palette.border.light,
-                    }}
-                  >
+                  <TableCell>
                     <StatusLabel
                       status={status}
                       text={status}
                       customStyles={{ textTransform: "capitalize" }}
                     />
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      borderBottomColor: theme.palette.border.light,
-                    }}
-                  >
+                  <TableCell>
                     {new Date(check.createdAt).toLocaleString()}
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      borderBottomColor: theme.palette.border.light,
-                    }}
-                  >
-                    {check.statusCode}
-                  </TableCell>
+                  <TableCell>{check.statusCode}</TableCell>
                 </TableRow>
               );
             })}
