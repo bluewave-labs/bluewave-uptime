@@ -15,7 +15,7 @@ const { NormalizeData } = require("../../../utils/dataUtils");
  */
 const getAllMonitors = async (req, res) => {
   try {
-    const monitors = await Monitor.find({ isActive: true });
+    const monitors = await Monitor.find();
     return monitors;
   } catch (error) {
     throw error;
@@ -431,9 +431,7 @@ const deleteMonitorsByUserId = async (userId) => {
  * @returns {Promise<Monitor>}
  * @throws {Error}
  */
-const editMonitor = async (req, res) => {
-  const candidateId = req.params.monitorId;
-  const candidateMonitor = req.body;
+const editMonitor = async (candidateId, candidateMonitor) => {
   candidateMonitor.notifications = undefined;
 
   try {

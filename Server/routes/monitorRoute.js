@@ -31,4 +31,11 @@ router.delete(
   isAllowed(["superadmin"]),
   monitorController.deleteAllMonitors
 );
+
+router.post(
+  "/pause/:monitorId",
+  isAllowed(["admin", "superadmin"]),
+  monitorController.pauseMonitor
+);
+
 module.exports = router;

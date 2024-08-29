@@ -25,6 +25,27 @@ class NetworkService {
    *
    * @async
    * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The monitor ID to be sent in the param.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   */
+
+  async getMonitorByid(authToken, monitorId) {
+    return this.axiosInstance.get(`/monitors/${monitorId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  /**
+   *
+   * ************************************
+   * Create a new monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
    * @param {Object} monitor - The monitor object to be sent in the request body.
    * @returns {Promise<AxiosResponse>} The response from the axios POST request.
    */
@@ -162,6 +183,28 @@ class NetworkService {
         "Content-Type": "application/json",
       },
     });
+  }
+  /**
+   * ************************************
+   * Pauses a single monitor by its ID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor to be paused.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
+  async pauseMonitorById(authToken, monitorId) {
+    return this.axiosInstance.post(
+      `/monitors/pause/${monitorId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
   /**
