@@ -41,7 +41,7 @@ const Radio = (props) => {
             color: "transparent",
             width: 16,
             height: 16,
-            boxShadow: "inset 0 0 0 1px rgb(16 22 26 / 40%)",
+            boxShadow: "inset 0 0 0 1px #656a74",
             mt: theme.spacing(0.5),
           }}
         />
@@ -50,7 +50,11 @@ const Radio = (props) => {
       label={
         <>
           <Typography component="p">{props.title}</Typography>
-          <Typography component="h6" mt={theme.spacing(1)}>
+          <Typography
+            component="h6"
+            mt={theme.spacing(1)}
+            color={theme.palette.text.secondary}
+          >
             {props.desc}
           </Typography>
         </>
@@ -62,7 +66,7 @@ const Radio = (props) => {
         m: theme.spacing(-2.5),
         borderRadius: theme.shape.borderRadius,
         "&:hover": {
-          backgroundColor: theme.palette.unresolved.bg,
+          backgroundColor: theme.palette.background.accent,
         },
         "& .MuiButtonBase-root": {
           p: 0,

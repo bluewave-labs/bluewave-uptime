@@ -19,7 +19,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { toggleSidebar } from "../../Features/UI/uiSlice";
+import { setMode, toggleSidebar } from "../../Features/UI/uiSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
@@ -40,6 +40,7 @@ import ArrowDown from "../../assets/icons/down-arrow.svg?react";
 import ArrowUp from "../../assets/icons/up-arrow.svg?react";
 import ArrowRight from "../../assets/icons/right-arrow.svg?react";
 import ArrowLeft from "../../assets/icons/left-arrow.svg?react";
+import DotsVertical from "../../assets/icons/dots-vertical.svg?react";
 
 import "./index.css";
 
@@ -309,6 +310,8 @@ function Sidebar() {
                       borderColor: theme.palette.border.light,
                       borderRadius: theme.shape.borderRadius,
                       boxShadow: theme.shape.boxShadow,
+                      backgroundColor: theme.palette.background.main,
+                      ml: theme.spacing(1),
                     },
                   },
                 }}
@@ -424,7 +427,7 @@ function Sidebar() {
                             left: "-7px",
                             height: "100%",
                             borderLeft: 1,
-                            borderLeftColor: "#d6d9dd",
+                            borderLeftColor: theme.palette.other.line,
                           },
                           "&:last-child::before": {
                             height: "50%",
@@ -437,7 +440,7 @@ function Sidebar() {
                             height: "3px",
                             width: "3px",
                             borderRadius: "50%",
-                            backgroundColor: "#d6d9dd",
+                            backgroundColor: theme.palette.other.line,
                           },
                           "&.selected-path::after": {
                             backgroundColor: theme.palette.text.tertiary,
@@ -560,71 +563,6 @@ function Sidebar() {
                 <Avatar small={true} />
               </IconButton>
             </Tooltip>
-            <Menu
-              className="sidebar-popup"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl) && popup === "logout"}
-              onClose={closePopup}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              slotProps={{
-                paper: {
-                  sx: {
-                    border: 1,
-                    borderColor: theme.palette.border.light,
-                    borderRadius: theme.shape.borderRadius,
-                    boxShadow: theme.shape.boxShadow,
-                  },
-                },
-              }}
-              MenuListProps={{
-                sx: {
-                  p: 3,
-                  minWidth: "100px",
-                  "& li": {
-                    color: theme.palette.text.secondary,
-                    fontSize: 13,
-                    px: theme.spacing(4),
-                    py: theme.spacing(2.5),
-                    borderRadius: theme.shape.borderRadius,
-                  },
-                  "& li:hover": {
-                    backgroundColor: theme.palette.background.accent,
-                  },
-                  "& li:has(.MuiBox-root):hover": {
-                    backgroundColor: theme.palette.background.main,
-                  },
-                },
-              }}
-              sx={{ ml: theme.spacing(8) }}
-            >
-              <MenuItem sx={{ cursor: "default", minWidth: "150px" }}>
-                <Box>
-                  <Typography component="span" fontWeight={500} fontSize={13}>
-                    {authState.user?.firstName} {authState.user?.lastName}
-                  </Typography>
-                  <Typography
-                    sx={{ textTransform: "capitalize", fontSize: 12 }}
-                  >
-                    {authState.user?.role}
-                  </Typography>
-                </Box>
-              </MenuItem>
-              <Divider sx={{ borderColor: theme.palette.border.light }} />
-              <MenuItem
-                onClick={logout}
-                sx={{
-                  gap: theme.spacing(4),
-                  borderRadius: theme.shape.borderRadius,
-                  pl: theme.spacing(4),
-                }}
-              >
-                <LogoutSvg />
-                Log out
-              </MenuItem>
-            </Menu>
           </>
         ) : (
           <>
@@ -637,16 +575,101 @@ function Sidebar() {
                 {authState.user?.role}
               </Typography>
             </Box>
-            <Tooltip title="Log Out" disableInteractive>
+            <Tooltip title="Controls" disableInteractive>
               <IconButton
-                sx={{ ml: "auto", "&:focus": { outline: "none" } }}
-                onClick={logout}
+                sx={{
+                  ml: "auto",
+                  mr: "-8px",
+                  "&:focus": { outline: "none" },
+                  "& svg": {
+                    width: "20px",
+                    height: "20px",
+                  },
+                  "& svg path": {
+                    stroke: theme.palette.other.icon,
+                  },
+                }}
+                onClick={(event) => openPopup(event, "logout")}
               >
-                <LogoutSvg style={{ width: "20px", height: "20px" }} />
+                <DotsVertical />
               </IconButton>
             </Tooltip>
           </>
         )}
+        <Menu
+          className="sidebar-popup"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl) && popup === "logout"}
+          onClose={closePopup}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                border: 1,
+                borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
+                boxShadow: theme.shape.boxShadow,
+                backgroundColor: theme.palette.background.main,
+                marginTop: theme.spacing(-4),
+                marginLeft: collapsed ? theme.spacing(2) : 0,
+              },
+            },
+          }}
+          MenuListProps={{
+            sx: {
+              p: 3,
+              minWidth: "100px",
+              "& li": {
+                color: theme.palette.text.secondary,
+                fontSize: 13,
+                px: theme.spacing(4),
+                py: theme.spacing(2.5),
+                borderRadius: theme.shape.borderRadius,
+              },
+              "& li:hover": {
+                backgroundColor: theme.palette.background.accent,
+              },
+              "& li:has(.MuiBox-root):hover": {
+                backgroundColor: theme.palette.background.main,
+              },
+            },
+          }}
+          sx={{
+            ml: theme.spacing(8),
+          }}
+        >
+          {collapsed && (
+            <MenuItem sx={{ cursor: "default", minWidth: "150px" }}>
+              <Box mb={theme.spacing(2)}>
+                <Typography component="span" fontWeight={500} fontSize={13}>
+                  {authState.user?.firstName} {authState.user?.lastName}
+                </Typography>
+                <Typography sx={{ textTransform: "capitalize", fontSize: 12 }}>
+                  {authState.user?.role}
+                </Typography>
+              </Box>
+            </MenuItem>
+          )}
+          {collapsed && (
+            <Divider sx={{ borderColor: theme.palette.border.light }} />
+          )}
+          <MenuItem onClick={() => dispatch(setMode("light"))}>Light</MenuItem>
+          <MenuItem onClick={() => dispatch(setMode("dark"))}>Dark</MenuItem>
+          <MenuItem
+            onClick={logout}
+            sx={{
+              gap: theme.spacing(4),
+              borderRadius: theme.shape.borderRadius,
+              pl: theme.spacing(4),
+            }}
+          >
+            <LogoutSvg />
+            Log out
+          </MenuItem>
+        </Menu>
       </Stack>
     </Stack>
   );

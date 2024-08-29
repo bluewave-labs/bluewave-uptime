@@ -28,6 +28,9 @@ import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
+import { ThemeProvider } from "@emotion/react";
+import theme, { darkTheme } from "./Utils/Theme";
+import { useSelector } from "react-redux";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -35,8 +38,11 @@ function App() {
   const DetailsWithAdminProp = withAdminProp(Details);
   const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   const MaintenanceWithAdminProp = withAdminProp(Maintenance);
+
+  const { mode } = useSelector((state) => state.ui);
+
   return (
-    <>
+    <ThemeProvider theme={mode === "light" ? theme : darkTheme}>
       <Routes>
         <Route exact path="/" element={<HomeLayout />}>
           <Route
@@ -130,7 +136,7 @@ function App() {
         />
       </Routes>
       <ToastContainer />
-    </>
+    </ThemeProvider>
   );
 }
 

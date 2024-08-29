@@ -203,6 +203,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
       <TableContainer
         component={Paper}
         sx={{
+          backgroundColor: theme.palette.background.main,
           border: `solid 1px ${theme.palette.border.light}`,
           borderRadius: theme.shape.borderRadius,
         }}
@@ -219,6 +220,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                   key={col.id}
                   sx={{
                     color: theme.palette.text.secondary,
+                    borderBottomColor: theme.palette.border.light,
                   }}
                 >
                   {col.name}
@@ -245,6 +247,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                         key={cell.id}
                         sx={{
                           color: theme.palette.text.secondary,
+                          borderBottomColor: theme.palette.border.light,
                         }}
                       >
                         {cell.data}
@@ -299,6 +302,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                       borderColor: theme.palette.border.light,
                       borderRadius: theme.shape.borderRadius,
                       boxShadow: theme.shape.boxShadow,
+                      backgroundColor: theme.palette.background.main,
                       "& li": {
                         p: theme.spacing(2),
                         color: theme.palette.text.tertiary,
@@ -329,7 +333,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
             sx={{
               mt: theme.spacing(6),
               color: theme.palette.text.secondary,
-              "& button, & .MuiSelect-select": {
+              "& button.MuiButtonBase-root, & .MuiSelect-select": {
                 border: 1,
                 borderColor: theme.palette.border.light,
                 borderRadius: theme.shape.borderRadius,

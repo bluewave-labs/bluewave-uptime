@@ -145,7 +145,7 @@ const Monitors = ({ isAdmin }) => {
                     color={theme.palette.text.primary}
                     border={1}
                     borderColor={theme.palette.border.light}
-                    backgroundColor={theme.palette.unresolved.bg}
+                    backgroundColor={theme.palette.background.accent}
                   >
                     {monitorState.monitors.length}
                   </Box>

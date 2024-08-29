@@ -141,7 +141,7 @@ const Field = forwardRef(
                 height="100%"
                 sx={{
                   borderRight: `solid 1px ${theme.palette.border.dark}`,
-                  backgroundColor: "#f9f9fa",
+                  backgroundColor: theme.palette.background.accent,
                   pl: theme.spacing(6),
                 }}
               >

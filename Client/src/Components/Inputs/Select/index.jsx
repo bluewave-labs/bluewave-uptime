@@ -85,6 +85,7 @@ const Select = ({
               borderColor: theme.palette.border.light,
               borderRadius: theme.shape.borderRadius,
               boxShadow: theme.shape.boxShadow,
+              backgroundColor: theme.palette.background.main,
             },
           },
           MenuListProps: {
@@ -113,6 +114,9 @@ const Select = ({
           },
           "&:not(.Mui-focused):hover fieldset": {
             borderColor: theme.palette.border.dark,
+          },
+          "& svg path": {
+            fill: theme.palette.other.icon,
           },
           ...sx,
         }}

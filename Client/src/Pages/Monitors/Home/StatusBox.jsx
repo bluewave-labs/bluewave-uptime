@@ -8,7 +8,12 @@ import ClockSnooze from "../../../assets/icons/clock-snooze.svg?react";
 const StatusBox = ({ title, value }) => {
   const theme = useTheme();
 
-  let sharedStyles = { position: "absolute", right: 8, opacity: 0.5 };
+  let sharedStyles = {
+    position: "absolute",
+    right: 8,
+    opacity: 0.5,
+    "& svg path": { stroke: theme.palette.other.icon },
+  };
 
   let color;
   let icon;
@@ -48,7 +53,7 @@ const StatusBox = ({ title, value }) => {
       overflow="hidden"
       sx={{
         "&:hover": {
-          backgroundColor: "#f9fafb",
+          backgroundColor: theme.palette.background.accent,
         },
         "&:after": {
           position: "absolute",

@@ -125,6 +125,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
         sx={{
           border: `solid 1px ${theme.palette.border.light}`,
           borderRadius: theme.shape.borderRadius,
+          backgroundColor: theme.palette.background.main,
         }}
       >
         <Table>
@@ -134,13 +135,28 @@ const PaginationTable = ({ monitorId, dateRange }) => {
             }}
           >
             <TableRow>
-              <TableCell sx={{ color: theme.palette.text.secondary }}>
+              <TableCell
+                sx={{
+                  color: theme.palette.text.secondary,
+                  borderBottomColor: theme.palette.border.light,
+                }}
+              >
                 Status
               </TableCell>
-              <TableCell sx={{ color: theme.palette.text.secondary }}>
+              <TableCell
+                sx={{
+                  color: theme.palette.text.secondary,
+                  borderBottomColor: theme.palette.border.light,
+                }}
+              >
                 Date & Time
               </TableCell>
-              <TableCell sx={{ color: theme.palette.text.secondary }}>
+              <TableCell
+                sx={{
+                  color: theme.palette.text.secondary,
+                  borderBottomColor: theme.palette.border.light,
+                }}
+              >
                 Message
               </TableCell>
             </TableRow>
@@ -151,17 +167,31 @@ const PaginationTable = ({ monitorId, dateRange }) => {
 
               return (
                 <TableRow key={check._id}>
-                  <TableCell>
+                  <TableCell
+                    sx={{
+                      borderBottomColor: theme.palette.border.light,
+                    }}
+                  >
                     <StatusLabel
                       status={status}
                       text={status}
                       customStyles={{ textTransform: "capitalize" }}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell
+                    sx={{
+                      borderBottomColor: theme.palette.border.light,
+                    }}
+                  >
                     {new Date(check.createdAt).toLocaleString()}
                   </TableCell>
-                  <TableCell>{check.statusCode}</TableCell>
+                  <TableCell
+                    sx={{
+                      borderBottomColor: theme.palette.border.light,
+                    }}
+                  >
+                    {check.statusCode}
+                  </TableCell>
                 </TableRow>
               );
             })}

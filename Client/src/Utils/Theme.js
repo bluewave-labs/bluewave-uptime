@@ -53,7 +53,10 @@ const theme = createTheme({
       border: "#fec84b",
     },
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
-    other: {},
+    other: {
+      icon: "#667085",
+      line: "#d6d9dd"
+    },
     primary: {
       main: "#1570EF",
     },
@@ -62,6 +65,74 @@ const theme = createTheme({
     },
     tertiary: {
       main: "#475467",
+    },
+  },
+  spacing: 2,
+  components: {},
+  shape: {
+    borderRadius: 2,
+    borderThick: 2,
+    boxShadow: shadow,
+  },
+});
+
+export const darkTheme = createTheme({
+  typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
+  palette: {
+    common: { main: "#1570ef" },
+    text: {
+      primary: "#fafafa",
+      secondary: "#e6e6e6",
+      tertiary: "#a1a1aa",
+      accent: "#e6e6e6",
+    },
+    background: {
+      main: "#151518",
+      alt: "#09090b",
+      fill: "#2e2e2e",
+      accent: "#18181a",
+    },
+    border: { light: "#27272a", dark: "#2c2c2c" },
+    info: {
+      text: "#475467",
+      main: "#475467",
+      bg: "#ffffff",
+      light: "#ffffff",
+      border: "#D0D5DD",
+    },
+    success: {
+      text: "#079455",
+      main: "#45bb7a",
+      light: "#93d5aa",
+      bg: "#27272a",
+    },
+    error: {
+      text: "#f04438",
+      main: "#d32f2f",
+      light: "#f04438",
+      bg: "#27272a",
+      border: "#f04438",
+    },
+    warning: {
+      text: "#DC6803",
+      main: "#e88c30",
+      light: "#fffcf5",
+      bg: "#ffecbc",
+      border: "#fec84b",
+    },
+    unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
+    other: {
+      icon: "#e6e6e6",
+      line: "#27272a"
+    },
+    primary: {
+      main: "#1570ef",
+    },
+    secondary: {
+      main: "#e6e6e6",
+    },
+    tertiary: {
+      main: "#e6e6e6",
     },
   },
   spacing: 2,

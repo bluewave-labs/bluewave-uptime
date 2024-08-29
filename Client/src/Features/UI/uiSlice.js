@@ -12,6 +12,7 @@ const initialState = {
   sidebar: {
     collapsed: false,
   },
+  mode: "light",
 };
 
 const uiSlice = createSlice({
@@ -24,8 +25,11 @@ const uiSlice = createSlice({
     toggleSidebar: (state) => {
       state.sidebar.collapsed = !state.sidebar.collapsed;
     },
+    setMode: (state, action) => {
+      state.mode = action.payload;
+    },
   },
 });
 
 export default uiSlice.reducer;
-export const { setRowsPerPage, toggleSidebar } = uiSlice.actions;
+export const { setRowsPerPage, toggleSidebar, setMode } = uiSlice.actions;

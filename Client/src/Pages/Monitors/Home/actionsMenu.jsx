@@ -77,6 +77,9 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
           "&:focus": {
             outline: "none",
           },
+          "& svg path": {
+            stroke: theme.palette.other.icon,
+          },
         }}
       >
         <Settings />
@@ -94,6 +97,7 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
               borderColor: theme.palette.border.light,
               borderRadius: theme.shape.borderRadius,
               boxShadow: theme.shape.boxShadow,
+              backgroundColor: theme.palette.background.main,
               "& ul": {
                 p: theme.spacing(2.5),
                 minWidth: "100px",

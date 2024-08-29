@@ -237,6 +237,10 @@ const CreateMonitor = () => {
                     onClick={() => setHttps(true)}
                     sx={{
                       backgroundColor: https && theme.palette.background.fill,
+                      borderColor: theme.palette.border.dark,
+                      "&:hover": {
+                        borderColor: theme.palette.border.dark,
+                      },
                     }}
                   />
                   <Button
@@ -245,6 +249,10 @@ const CreateMonitor = () => {
                     onClick={() => setHttps(false)}
                     sx={{
                       backgroundColor: !https && theme.palette.background.fill,
+                      borderColor: theme.palette.border.dark,
+                      "&:hover": {
+                        borderColor: theme.palette.border.dark,
+                      },
                     }}
                   />
                 </ButtonGroup>

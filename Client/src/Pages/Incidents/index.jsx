@@ -78,7 +78,11 @@ const Incidents = () => {
   };
 
   return (
-    <Stack className="incidents" pt={theme.spacing(20)} gap={theme.spacing(12)}>
+    <Stack
+      className="incidents"
+      pt={theme.spacing(21)}
+      gap={theme.spacing(12)}
+    >
       {loading ? (
         <SkeletonLayout />
       ) : (

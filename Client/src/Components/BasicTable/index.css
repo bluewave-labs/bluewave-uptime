@@ -53,7 +53,6 @@
 }
 
 .MuiPaper-root + .MuiPagination-root {
-  margin-top: 24px;
   border-radius: var(--env-var-radius-1);
   padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
 }

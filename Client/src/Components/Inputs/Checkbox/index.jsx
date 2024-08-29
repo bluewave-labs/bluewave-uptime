@@ -72,7 +72,7 @@ const Checkbox = ({
           mr: theme.spacing(6),
         },
         "&:not(:has(.Mui-disabled)):hover": {
-          backgroundColor: theme.palette.unresolved.bg,
+          backgroundColor: theme.palette.background.accent,
         },
         "& span.MuiTypography-root": {
           fontSize: 13,

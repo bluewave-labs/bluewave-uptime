@@ -30,7 +30,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   const [checksCount, setChecksCount] = useState(0);
   const [paginationController, setPaginationController] = useState({
     page: 0,
-    rowsPerPage: 12,
+    rowsPerPage: 14,
   });
 
   useEffect(() => {
@@ -169,6 +169,10 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
             sx={{
               border: `solid 1px ${theme.palette.border.light}`,
               borderRadius: theme.shape.borderRadius,
+              backgroundColor: theme.palette.background.main,
+              "& .MuiTableCell-root": {
+                borderBottomColor: theme.palette.border.light,
+              },
             }}
           >
             <Table>
