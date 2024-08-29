@@ -20,7 +20,10 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     setRowsPerPage: (state, action) => {
-      state[action.payload.table].rowsPerPage = action.payload.value;
+      const { table, value } = action.payload;
+      if (state[table]) {
+        state[table].rowsPerPage = value;
+      }
     },
     toggleSidebar: (state) => {
       state.sidebar.collapsed = !state.sidebar.collapsed;

@@ -39,7 +39,7 @@ function App() {
   const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   const MaintenanceWithAdminProp = withAdminProp(Maintenance);
 
-  const { mode } = useSelector((state) => state.ui);
+  const mode = useSelector((state) => state.ui.mode);
 
   return (
     <ThemeProvider theme={mode === "light" ? theme : darkTheme}>

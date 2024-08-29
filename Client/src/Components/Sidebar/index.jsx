@@ -86,8 +86,7 @@ function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
-  const { sidebar } = useSelector((state) => state.ui);
-  let collapsed = sidebar.collapsed;
+  const collapsed = useSelector((state) => state.ui.sidebar.collapsed);
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
   const [anchorEl, setAnchorEl] = useState(null);
   const [popup, setPopup] = useState();

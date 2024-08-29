@@ -140,6 +140,7 @@ const SkeletonLayout = () => {
  * @component
  */
 const DetailsPage = ({ isAdmin }) => {
+  const theme = useTheme();
   const [monitor, setMonitor] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
@@ -184,7 +185,6 @@ const DetailsPage = ({ isAdmin }) => {
     fetchCertificate();
   }, [authToken, monitorId]);
 
-  const theme = useTheme();
   let loading = Object.keys(monitor).length === 0;
   return (
     <Box className="monitor-details">
