@@ -89,7 +89,6 @@ const getUserByEmail = async (email) => {
 
 const updateUser = async (req, res) => {
   const candidateUserId = req.params.userId;
-
   try {
     const candidateUser = { ...req.body };
     // ******************************************

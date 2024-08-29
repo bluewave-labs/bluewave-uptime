@@ -1,6 +1,7 @@
 import { networkService } from "../../main";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const initialState = {
   isLoading: false,
@@ -57,9 +58,8 @@ export const update = createAsyncThunk(
       form.password && fd.append("password", form.password);
       form.newPassword && fd.append("newPassword", form.newPassword);
       if (form.file && form.file !== "") {
-        const imageResult = await networkService.get(form.file, {
+        const imageResult = await axios.get(form.file, {
           responseType: "blob",
-          baseURL: "",
         });
         fd.append("profileImage", imageResult.data);
       }

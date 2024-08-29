@@ -226,7 +226,6 @@ class NetworkService {
     return this.axiosInstance.put(`/auth/user/${userId}`, form, {
       headers: {
         Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
       },
     });
   }
