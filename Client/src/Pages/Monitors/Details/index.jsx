@@ -142,6 +142,9 @@ const DetailsPage = ({ isAdmin }) => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
+      if (monitor?.type !== "http") {
+        return;
+      }
       try {
         const res = await networkService.getCertificateExpiry(
           authToken,
@@ -153,7 +156,7 @@ const DetailsPage = ({ isAdmin }) => {
       }
     };
     fetchCertificate();
-  }, [authToken, monitorId]);
+  }, [authToken, monitorId, monitor]);
 
   const theme = useTheme();
   let loading = Object.keys(monitor).length === 0;
