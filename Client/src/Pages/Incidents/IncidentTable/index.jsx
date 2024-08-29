@@ -139,6 +139,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                   <TableCell>Monitor Name</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Date & Time</TableCell>
+                  <TableCell>Status Code</TableCell>
                   <TableCell>Message</TableCell>
                 </TableRow>
               </TableHead>
@@ -159,7 +160,10 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                       <TableCell>
                         {new Date(check.createdAt).toLocaleString()}
                       </TableCell>
-                      <TableCell>{check.statusCode}</TableCell>
+                      <TableCell>
+                        {check.statusCode ? check.statusCode : "N/A"}
+                      </TableCell>
+                      <TableCell>{check.message}</TableCell>
                     </TableRow>
                   );
                 })}
