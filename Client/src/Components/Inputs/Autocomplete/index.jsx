@@ -4,6 +4,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
+import { useTheme } from "@emotion/react";
 
 /**
  * AutoCompleteField component.
@@ -14,8 +15,6 @@ import match from "autosuggest-highlight/match";
  * @param {string} props.type - The type of the input field (text or number).
  * @param {Array} props.options - The options for the autocomplete field.
  * @param {string} props.placeholder - The placeholder text for the input field.
- * @param {function} props.onChange - The function to handle onChange event.
- * @param {string} props.value - The value of the input field.
  * @param {boolean} props.disabled - Indicates if the field is disabled.
  * @param {string} props.setWidth - The width of the input field.
  * @returns {JSX.Element} The AutoCompleteField component.
@@ -31,6 +30,7 @@ const AutoCompleteField = ({
 }) => {
   const [value, setValue] = React.useState();
   const [inputValue, setInputValue] = React.useState("");
+  const theme = useTheme();
 
   return (
     <Autocomplete
@@ -83,6 +83,20 @@ const AutoCompleteField = ({
           </li>
         );
       }}
+      slotProps={{
+        paper: {
+          sx: {
+            marginTop: theme.spacing(2),
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
+            boxShadow: theme.shape.boxShadow,
+            backgroundColor: theme.palette.background.main,
+            padding: 1,
+            fontSize: "var(--env-var-font-size-medium)",
+          },
+        },
+      }}
     />
   );
 };
@@ -94,8 +108,6 @@ AutoCompleteField.propTypes = {
   type: PropTypes.oneOf(["text", "number"]),
   options: PropTypes.array,
   placeholder: PropTypes.string,
-  onChange: PropTypes.func,
-  value: PropTypes.string,
   disabled: PropTypes.bool,
   setWidth: PropTypes.string,
 };
