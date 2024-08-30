@@ -12,8 +12,8 @@ const SkeletonLayout = () => {
   return (
     <>
       <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)}>
+        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
           <Skeleton
             variant="circular"
             style={{ minWidth: 24, minHeight: 24 }}
@@ -23,13 +23,13 @@ const SkeletonLayout = () => {
               variant="rounded"
               width="50%"
               height={24}
-              sx={{ mb: theme.gap.small }}
+              sx={{ mb: theme.spacing(4) }}
             />
             <Skeleton variant="rounded" width="50%" height={18} />
           </Box>
           <Stack
             direction="row"
-            gap={theme.gap.medium}
+            gap={theme.spacing(6)}
             sx={{
               ml: "auto",
               alignSelf: "flex-end",
