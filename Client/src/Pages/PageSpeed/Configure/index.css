@@ -1,22 +1,8 @@
-.configure-pagespeed form > .MuiStack-root:nth-child(2) {
-  background-color: var(--env-var-color-8);
-  border: solid 1px var(--env-var-color-6);
-  border-radius: var(--env-var-radius-1);
-  padding: var(--env-var-font-size-large-plus) var(--env-var-font-size-xlarge);
-}
 .configure-pagespeed h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
 }
-.configure-pagespeed h1.MuiTypography-root,
-.configure-pagespeed h2.MuiTypography-root {
-  color: var(--env-var-color-1);
-}
 .configure-pagespeed span.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
-}
-.configure-pagespeed p.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root {
-  color: var(--env-var-color-5);
 }
 .configure-pagespeed h1.MuiTypography-root,
 .configure-pagespeed h3.MuiTypography-root,
@@ -38,13 +24,10 @@
 .configure-pagespeed .checkbox-wrapper {
   margin-bottom: 1px;
 }
-.configure-pagespeed .MuiInputBase-root:has(> .Mui-disabled) {
-  background-color: var(--env-var-color-13);
-}
+
 /* to be removed */
 .configure-pagespeed .section-disabled {
   opacity: 0.4;
-  background-color: #f1f1f2;
   padding: 10px;
   border-radius: 8px;
   user-select: none;
@@ -53,11 +36,6 @@
 
 .configure-pagespeed button {
   height: var(--env-var-height-2);
-}
-
-body:has(.configure-pagespeed) .select-dropdown .MuiMenuItem-root,
-.configure-pagespeed .select-wrapper .select-component > .MuiSelect-select {
-  text-transform: lowercase;
 }
 
 .configure-pagespeed h3.MuiTypography-root {

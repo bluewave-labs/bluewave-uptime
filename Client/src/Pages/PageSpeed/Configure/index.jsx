@@ -32,8 +32,8 @@ const SkeletonLayout = () => {
   return (
     <>
       <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack gap={theme.gap.xl} mt={theme.gap.medium} maxWidth="1000px">
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)} maxWidth="1000px">
+        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
           <Skeleton
             variant="circular"
             style={{ minWidth: 24, minHeight: 24 }}
@@ -43,13 +43,13 @@ const SkeletonLayout = () => {
               variant="rounded"
               width="50%"
               height={24}
-              sx={{ mb: theme.gap.small }}
+              sx={{ mb: theme.spacing(4) }}
             />
             <Skeleton variant="rounded" width="50%" height={18} />
           </Box>
           <Stack
             direction="row"
-            gap={theme.gap.medium}
+            gap={theme.spacing(6)}
             sx={{
               ml: "auto",
               alignSelf: "flex-end",
@@ -147,7 +147,7 @@ const PageSpeedConfigure = () => {
   let loading = Object.keys(monitor).length === 0;
 
   return (
-    <Stack className="configure-pagespeed" gap={theme.gap.large}>
+    <Stack className="configure-pagespeed" gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -165,21 +165,22 @@ const PageSpeedConfigure = () => {
             spellCheck="false"
             onSubmit={handleSave}
             flex={1}
-            gap={theme.gap.large}
+            gap={theme.spacing(12)}
           >
-            <Stack direction="row" gap={theme.gap.xs}>
+            <Stack direction="row" gap={theme.spacing(2)}>
               <PulseDot
                 color={
                   monitor?.status
-                    ? theme.label.up.dotColor
-                    : theme.label.down.dotColor
+                    ? theme.palette.success.main
+                    : theme.palette.error.main
                 }
               />
               <Box>
                 <Typography
                   component="h1"
-                  mb={theme.gap.xs}
+                  mb={theme.spacing(2)}
                   sx={{ lineHeight: 1 }}
+                  color={theme.palette.text.primary}
                 >
                   {monitor?.url}
                 </Typography>
@@ -187,8 +188,8 @@ const PageSpeedConfigure = () => {
                   component="span"
                   sx={{
                     color: monitor?.status
-                      ? "var(--env-var-color-17)"
-                      : "var(--env-var-color-24)",
+                      ? theme.palette.success.main
+                      : theme.palette.error.text,
                   }}
                 >
                   Your pagespeed monitor is {monitor?.status ? "live" : "down"}.
@@ -201,11 +202,11 @@ const PageSpeedConfigure = () => {
                   animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{
-                    backgroundColor: theme.palette.otherColors.fillGray,
-                    pl: theme.gap.small,
-                    pr: theme.gap.medium,
+                    backgroundColor: theme.palette.background.fill,
+                    pl: theme.spacing(4),
+                    pr: theme.spacing(6),
                     "& svg": {
-                      mr: theme.gap.xs,
+                      mr: theme.spacing(2),
                     },
                   }}
                 />
@@ -214,14 +215,27 @@ const PageSpeedConfigure = () => {
                   label="Remove"
                   sx={{
                     boxShadow: "none",
-                    px: theme.gap.ml,
-                    ml: theme.gap.medium,
+                    px: theme.spacing(8),
+                    ml: theme.spacing(6),
                   }}
                   onClick={() => setIsOpen(true)}
                 />
               </Box>
             </Stack>
-            <Stack gap={theme.gap.xl}>
+            <Stack
+              border={1}
+              borderColor={theme.palette.border.light}
+              borderRadius={theme.shape.borderRadius}
+              backgroundColor={theme.palette.background.main}
+              p={theme.spacing(20)}
+              pl={theme.spacing(15)}
+              gap={theme.spacing(20)}
+              sx={{
+                "& h3, & p": {
+                  color: theme.palette.text.secondary,
+                },
+              }}
+            >
               <Stack direction="row">
                 <Typography component="h3">Monitor display name</Typography>
                 <Field
@@ -233,7 +247,14 @@ const PageSpeedConfigure = () => {
                   error={errors.name}
                 />
               </Stack>
-              <Stack direction="row">
+              <Stack
+                direction="row"
+                sx={{
+                  ".MuiInputBase-root:has(> .Mui-disabled)": {
+                    backgroundColor: theme.palette.background.accent,
+                  },
+                }}
+              >
                 <Typography component="h3">URL</Typography>
                 <Field
                   type="url"
@@ -259,8 +280,11 @@ const PageSpeedConfigure = () => {
                   Incidents notifications{" "}
                   <Typography component="span">(coming soon)</Typography>
                 </Typography>
-                <Stack className="section-disabled">
-                  <Typography mb={theme.gap.small}>
+                <Stack
+                  className="section-disabled"
+                  backgroundColor={theme.palette.background.fill}
+                >
+                  <Typography mb={theme.spacing(4)}>
                     When there is a new incident,
                   </Typography>
                   <Checkbox
@@ -279,7 +303,7 @@ const PageSpeedConfigure = () => {
                     label="Notify via email to following emails"
                     isChecked={false}
                   />
-                  <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                  <Box mx={theme.spacing(16)}>
                     <Field
                       id="notify-emails-list"
                       placeholder="notifications@gmail.com"
@@ -287,7 +311,7 @@ const PageSpeedConfigure = () => {
                       onChange={() => logger.warn("disabled")}
                       error=""
                     />
-                    <Typography mt={theme.gap.small}>
+                    <Typography mt={theme.spacing(4)}>
                       You can separate multiple emails with a comma
                     </Typography>
                   </Box>
@@ -300,7 +324,7 @@ const PageSpeedConfigure = () => {
                 level="primary"
                 label="Save"
                 onClick={handleSave}
-                sx={{ px: theme.gap.large, mt: theme.gap.large }}
+                sx={{ px: theme.spacing(12), mt: theme.spacing(12) }}
               />
             </Stack>
           </Stack>
@@ -314,33 +338,41 @@ const PageSpeedConfigure = () => {
         disablePortal
       >
         <Stack
-          gap={theme.gap.xs}
+          gap={theme.spacing(2)}
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: `${theme.shape.borderRadius}px`,
+            bgcolor: theme.palette.background.main,
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
             boxShadow: 24,
-            p: "30px",
+            p: theme.spacing(15),
             "&:focus": {
               outline: "none",
             },
           }}
         >
-          <Typography id="modal-delete-pagespeed-monitor" component="h2">
+          <Typography
+            id="modal-delete-pagespeed-monitor"
+            component="h2"
+            color={theme.palette.text.secondary}
+          >
             Do you really want to delete this monitor?
           </Typography>
-          <Typography id="delete-pagespeed-monitor-confirmation">
+          <Typography
+            id="delete-pagespeed-monitor-confirmation"
+            color={theme.palette.text.tertiary}
+          >
             Once deleted, this monitor cannot be retrieved.
           </Typography>
           <Stack
             direction="row"
-            gap={theme.gap.small}
-            mt={theme.gap.large}
+            gap={theme.spacing(4)}
+            mt={theme.spacing(12)}
             justifyContent="flex-end"
           >
             <Button

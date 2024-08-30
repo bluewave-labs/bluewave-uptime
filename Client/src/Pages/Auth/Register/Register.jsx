@@ -33,7 +33,7 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
   return (
     <>
       <Stack
-        gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
         alignItems="center"
         textAlign="center"
       >
@@ -53,7 +53,7 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
             sx={{
               width: "100%",
               "& svg": {
-                mr: theme.gap.small,
+                mr: theme.spacing(4),
               },
             }}
           />
@@ -70,6 +70,11 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
                   "noreferrer"
                 );
               }}
+              sx={{
+                "&:hover": {
+                  color: theme.palette.text.tertiary,
+                },
+              }}
             >
               Terms of Service
             </Typography>{" "}
@@ -82,6 +87,11 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
                   "_blank",
                   "noreferrer"
                 );
+              }}
+              sx={{
+                "&:hover": {
+                  color: theme.palette.text.tertiary,
+                },
               }}
             >
               Privacy Policy.
@@ -121,13 +131,22 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Enter your personal details</Typography>
         </Box>
         <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(10)}
+          >
             <Field
               id="register-firstname-input"
               label="Name"
@@ -139,8 +158,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.firstName}
               ref={inputRef}
             />
-          </form>
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          </Box>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(5)}
+          >
             <Field
               id="register-lastname-input"
               label="Surname"
@@ -151,7 +176,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.lastName}
             />
-          </form>
+          </Box>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
@@ -161,9 +186,9 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
             img={<ArrowBackRoundedIcon />}
             onClick={onBack}
             sx={{
-              px: theme.gap.ml,
+              px: theme.spacing(8),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(2),
               },
             }}
             props={{ tabIndex: -1 }}
@@ -212,13 +237,22 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Enter your email address</Typography>
         </Box>
         <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(5)}
+          >
             <Field
               type="email"
               id="register-email-input"
@@ -232,7 +266,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.email}
               ref={inputRef}
             />
-          </form>
+          </Box>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
@@ -242,9 +276,9 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
             img={<ArrowBackRoundedIcon />}
             onClick={onBack}
             sx={{
-              px: theme.gap.ml,
+              px: theme.spacing(8),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(2),
               },
             }}
             props={{ tabIndex: -1 }}
@@ -293,13 +327,28 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Create your password</Typography>
         </Box>
-        <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+        <Box
+          textAlign="left"
+          sx={{
+            "& .input-error": {
+              display: "none",
+            },
+          }}
+        >
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+          >
             <Field
               type="password"
               id="register-password-input"
@@ -312,8 +361,13 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.password}
               ref={inputRef}
             />
-          </form>
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          </Box>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+          >
             <Field
               type="password"
               id="register-confirm-input"
@@ -325,10 +379,10 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.confirm}
             />
-          </form>
+          </Box>
           <Stack
-            gap={theme.gap.small}
-            mb={{ xs: theme.gap.ml, sm: theme.gap.large }}
+            gap={theme.spacing(4)}
+            mb={{ xs: theme.spacing(6), sm: theme.spacing(8) }}
           >
             <Check
               text={
@@ -395,9 +449,9 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
             img={<ArrowBackRoundedIcon />}
             onClick={onBack}
             sx={{
-              px: theme.gap.ml,
+              px: theme.spacing(8),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(2),
               },
             }}
             props={{ tabIndex: -1 }}
@@ -585,7 +639,21 @@ const Register = ({ isSuperAdmin }) => {
   };
 
   return (
-    <Stack className="register-page auth" overflow="hidden">
+    <Stack
+      className="register-page auth"
+      overflow="hidden"
+      sx={{
+        "& h1": {
+          color: theme.palette.common.main,
+          fontWeight: 600,
+          fontSize: 30,
+        },
+        "& p": {
+          fontSize: 14,
+          color: theme.palette.text.accent,
+        },
+      }}
+    >
       <Box
         className="background-pattern-svg"
         sx={{ backgroundImage: `url(${background})` }}
@@ -593,8 +661,8 @@ const Register = ({ isSuperAdmin }) => {
       <Stack
         direction="row"
         alignItems="center"
-        px={theme.gap.large}
-        gap={theme.gap.small}
+        px={theme.spacing(12)}
+        gap={theme.spacing(4)}
       >
         <Logo style={{ borderRadius: theme.shape.borderRadius }} />
         <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
@@ -604,18 +672,18 @@ const Register = ({ isSuperAdmin }) => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
-        pb={theme.gap.xl}
+        px={{ xs: theme.spacing(12), lg: theme.spacing(20) }}
+        pb={theme.spacing(20)}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
             border: 1,
-            borderRadius: theme.shape.borderRadius,
-            borderColor: theme.palette.otherColors.graishWhite,
-            backgroundColor: theme.palette.otherColors.white,
+            borderRadius: theme.spacing(5),
+            borderColor: theme.palette.border.light,
+            backgroundColor: theme.palette.background.main,
             padding: {
-              xs: theme.gap.large,
-              sm: theme.gap.xl,
+              xs: theme.spacing(12),
+              sm: theme.spacing(20),
             },
           },
         }}
@@ -653,17 +721,17 @@ const Register = ({ isSuperAdmin }) => {
           ""
         )}
       </Stack>
-      <Box textAlign="center" p={theme.gap.large}>
+      <Box textAlign="center" p={theme.spacing(12)}>
         <Typography display="inline-block">
           Already have an account? —
         </Typography>
         <Typography
           component="span"
-          ml={theme.gap.xs}
+          ml={theme.spacing(2)}
           onClick={() => {
             navigate("/login");
           }}
-          sx={{ userSelect: "none" }}
+          sx={{ userSelect: "none", color: theme.palette.common.main }}
         >
           Log In
         </Typography>

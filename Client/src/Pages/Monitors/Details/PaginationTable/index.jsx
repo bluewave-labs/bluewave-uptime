@@ -18,8 +18,10 @@ import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { logger } from "../../../../Utils/Logger";
+import { useTheme } from "@emotion/react";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
+  const theme = useTheme();
   const { authToken } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
@@ -85,15 +87,6 @@ const PaginationTable = ({ monitorId, dateRange }) => {
               next: ArrowForwardRoundedIcon,
             }}
             {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
-            }}
           />
         )}
       />

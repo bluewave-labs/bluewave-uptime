@@ -87,7 +87,21 @@ const ForgotPassword = () => {
   };
 
   return (
-    <Stack className="forgot-password-page auth" overflow="hidden">
+    <Stack
+      className="forgot-password-page auth"
+      overflow="hidden"
+      sx={{
+        "& h1": {
+          color: theme.palette.common.main,
+          fontWeight: 600,
+          fontSize: 24,
+        },
+        "& p": {
+          fontSize: 14,
+          color: theme.palette.text.accent,
+        },
+      }}
+    >
       <Box
         className="background-pattern-svg"
         sx={{ backgroundImage: `url(${background})` }}
@@ -95,8 +109,8 @@ const ForgotPassword = () => {
       <Stack
         direction="row"
         alignItems="center"
-        px={theme.gap.large}
-        gap={theme.gap.small}
+        px={theme.spacing(12)}
+        gap={theme.spacing(4)}
       >
         <Logo style={{ borderRadius: theme.shape.borderRadius }} />
         <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
@@ -106,24 +120,24 @@ const ForgotPassword = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
-        pb={theme.gap.xl}
+        px={{ xs: theme.spacing(12), lg: theme.spacing(20) }}
+        pb={theme.spacing(20)}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
             border: 1,
-            borderRadius: theme.shape.borderRadius,
-            borderColor: theme.palette.otherColors.graishWhite,
-            backgroundColor: theme.palette.otherColors.white,
+            borderRadius: theme.spacing(5),
+            borderColor: theme.palette.border.light,
+            backgroundColor: theme.palette.background.main,
             padding: {
-              xs: theme.gap.large,
-              sm: theme.gap.xl,
+              xs: theme.spacing(12),
+              sm: theme.spacing(20),
             },
           },
         }}
       >
         <Stack
-          gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+          gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
           alignItems="center"
           textAlign="center"
         >
@@ -134,39 +148,45 @@ const ForgotPassword = () => {
               No worries, we&apos;ll send you reset instructions.
             </Typography>
           </Box>
-          <Box width="100%" textAlign="left">
-            <form noValidate spellCheck={false} onSubmit={handleSubmit}>
-              <Field
-                type="email"
-                id="forgot-password-email-input"
-                label="Email"
-                isRequired={true}
-                placeholder="Enter your email"
-                value={form.email}
-                onChange={handleChange}
-                error={errors.email}
-              />
-              <ButtonSpinner
-                disabled={errors.email !== undefined}
-                onClick={handleSubmit}
-                isLoading={isLoading}
-                level="primary"
-                label="Send instructions"
-                sx={{
-                  width: "100%",
-                  fontWeight: 400,
-                  mt: theme.gap.mlplus,
-                }}
-              />
-            </form>
+          <Box
+            component="form"
+            width="95%"
+            textAlign="left"
+            noValidate
+            spellCheck={false}
+            onSubmit={handleSubmit}
+          >
+            <Field
+              type="email"
+              id="forgot-password-email-input"
+              label="Email"
+              isRequired={true}
+              placeholder="Enter your email"
+              value={form.email}
+              onChange={handleChange}
+              error={errors.email}
+            />
+            <ButtonSpinner
+              disabled={errors.email !== undefined}
+              onClick={handleSubmit}
+              isLoading={isLoading}
+              level="primary"
+              label="Send instructions"
+              sx={{
+                width: "100%",
+                fontWeight: 400,
+                mt: theme.spacing(15),
+              }}
+            />
           </Box>
         </Stack>
       </Stack>
-      <Box textAlign="center" p={theme.gap.large}>
+      <Box textAlign="center" p={theme.spacing(12)}>
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
           component="span"
-          ml={theme.gap.xs}
+          color={theme.palette.common.main}
+          ml={theme.spacing(2)}
           onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >

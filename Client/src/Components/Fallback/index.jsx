@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import Skeleton from "../../assets/Images/create-placeholder.svg?react";
-import background from "../../assets/Images/background_pattern_decorative.png";
+import Background from "../../assets/Images/background-grid.svg?react";
 import Button from "../Button";
 import Check from "../Check/Check";
 import { useNavigate } from "react-router-dom";
@@ -27,16 +27,26 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
     <Stack
       className={`fallback__${title.trim().split(" ")[0]}`}
       alignItems="center"
-      gap={theme.gap.xl}
+      gap={theme.spacing(20)}
     >
       <Skeleton style={{ zIndex: 1 }} />
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
-      <Stack gap={theme.gap.small} maxWidth={"275px"} zIndex={1}>
-        <Typography component="h1" marginY={theme.gap.medium}>
-          A {title} monitor is used to:
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
+      <Stack gap={theme.spacing(4)} maxWidth={"275px"} zIndex={1}>
+        <Typography
+          component="h1"
+          marginY={theme.spacing(4)}
+          color={theme.palette.text.secondary}
+        >
+          A {title} is used to:
         </Typography>
         {checks.map((check, index) => (
           <Check
@@ -46,6 +56,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
           />
         ))}
       </Stack>
+      {/* TODO - display a different fallback if user is not an admin*/}
       {isAdmin && (
         <Button
           level="primary"

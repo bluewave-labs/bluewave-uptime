@@ -1,24 +1,12 @@
 .monitor-details h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
-  color: var(--env-var-color-1);
   font-weight: 600;
 }
 .monitor-details h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
 }
-.monitor-details h2.MuiTypography-root{
+.monitor-details h2.MuiTypography-root {
   font-weight: 600;
-}
-.monitor-details h2.MuiTypography-root,
-.monitor-details h4.MuiTypography-root {
-  color: var(--env-var-color-5);
-}
-.monitor-details h6.MuiTypography-root {
-  color: var(--env-var-color-3);
-}
-.monitor-details button.MuiButtonBase-root,
-.monitor-details h4.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
 }
 .monitor-details button.MuiButtonBase-root {
   height: var(--env-var-height-2);
@@ -27,29 +15,4 @@
 .monitor-details p.MuiTypography-root,
 .monitor-details p.MuiTypography-root span.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
-}
-.monitor-details p.MuiTypography-root {
-  color: var(--env-var-color-2);
-}
-
-.monitor-details .stat-box {
-  flex: 1 20%;
-  min-width: 100px;
-  border: solid 1px;
-  border-radius: var(--env-var-radius-1);
-  padding: var(--env-var-spacing-1) 16px;
-  background-color: var(--env-var-color-8);
-}
-.monitor-details h6.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium-plus);
-}
-.monitor-details h6.MuiTypography-root span.MuiTypography-root {
-  font-style: italic;
-  font-size: var(--env-var-font-size-medium);
-  color: var(--env-var-color-5);
-  opacity: 0.7;
-}
-.monitor-details button.MuiButtonBase-root,
-.monitor-details .stat-box {
-  border-color: var(--env-var-color-16);
 }

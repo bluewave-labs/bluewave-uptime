@@ -5,7 +5,6 @@
 .auth h1 {
   font-size: var(--env-var-font-size-xlarge);
   font-weight: 600;
-  color: var(--env-var-color-3);
 }
 .auth button:not(.MuiIconButton-root),
 .auth p,
@@ -13,16 +12,8 @@
 .auth span {
   font-size: var(--env-var-font-size-medium-plus);
 }
-.auth p {
-  color: var(--env-var-color-2-light);
-}
-.auth .field h3.MuiTypography-root,
-.auth .field input {
-  color: var(--env-var-color-5);
-}
 
 .auth p + span {
-  color: var(--env-var-color-3);
   opacity: 0.8;
   cursor: pointer;
   transition: opacity 300ms ease-in;
@@ -34,7 +25,6 @@
   transition: all 200ms;
 }
 .auth p > span:not(.email-sent-to):hover {
-  color: var(--env-var-color-2);
   text-underline-offset: 4px;
 }
 .auth p + span:hover {
@@ -86,11 +76,12 @@
   background-repeat: no-repeat;
 }
 
-.forgot-password-page h1,
-.check-email-page h1,
-.password-confirmed-page h1,
-.set-new-password-page h1 {
-  font-size: 22px;
+.auth .field {
+  position: relative;
+}
+.auth .input-error {
+  position: absolute;
+  top: calc(100% - 2px);
 }
 
 @media (max-width: 800px) {

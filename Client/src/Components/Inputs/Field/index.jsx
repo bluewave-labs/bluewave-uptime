@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { forwardRef, useState } from "react";
 import { useTheme } from "@emotion/react";
 import {
   IconButton,
@@ -9,10 +10,7 @@ import {
 } from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import Button from "../../Button";
 import "./index.css";
-import { forwardRef, useState } from "react";
 
 /**
  * @param {Object} props
@@ -23,7 +21,6 @@ import { forwardRef, useState } from "react";
  * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
  * @param {boolean} [props.isOptional] - Indicates if the field is optional, will display optional text.
  * @param {string} [props.optionalLabel] - Optional label for the input field.
- * @param {boolean} [props.hasCopy] - Indicates if the field supports copying.
  * @param {string} [props.autoComplete] - Autocomplete value for the input field.
  * @param {string} [props.placeholder] - Placeholder text for the input field.
  * @param {string} props.value - Value of the input field.
@@ -43,7 +40,6 @@ const Field = forwardRef(
       isRequired,
       isOptional,
       optionalLabel,
-      hasCopy,
       autoComplete,
       placeholder,
       value,
@@ -56,25 +52,54 @@ const Field = forwardRef(
   ) => {
     const theme = useTheme();
 
-    // TODO - are we using this feature anywhere ?
-    const [copy, setCopy] = useState(false);
-    const handleCopy = () => {
-      setCopy(true);
-      setTimeout(() => setCopy(false), 1000);
-    };
-
     const [isVisible, setVisible] = useState(false);
 
     return (
-      <Stack gap={theme.gap.xs} className={`field field-${type}`}>
+      <Stack
+        gap={theme.spacing(2)}
+        className={`field field-${type}`}
+        sx={{
+          "& fieldset": {
+            borderColor: theme.palette.border.dark,
+            borderRadius: theme.shape.borderRadius,
+          },
+          "&:not(:has(.Mui-disabled)):not(:has(.input-error)) .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus)) fieldset":
+            {
+              borderColor: theme.palette.border.dark,
+            },
+          "&:has(.input-error) .MuiOutlinedInput-root fieldset": {
+            borderColor: theme.palette.error.text,
+          },
+        }}
+      >
         {label && (
-          <Typography component="h3">
+          <Typography
+            component="h3"
+            color={theme.palette.text.secondary}
+            fontWeight={500}
+          >
             {label}
-            {isRequired ? <span className="field-required">*</span> : ""}
+            {isRequired ? (
+              <Typography
+                component="span"
+                ml={theme.spacing(1)}
+                color={theme.palette.error.text}
+              >
+                *
+              </Typography>
+            ) : (
+              ""
+            )}
             {isOptional ? (
-              <span className="field-optional">
+              <Typography
+                component="span"
+                fontSize="inherit"
+                fontWeight={400}
+                ml={theme.spacing(2)}
+                sx={{ opacity: 0.6 }}
+              >
                 {optionalLabel || "(optional)"}
-              </span>
+              </Typography>
             ) : (
               ""
             )}
@@ -92,13 +117,18 @@ const Field = forwardRef(
           onChange={onChange}
           disabled={disabled}
           inputRef={ref}
+          inputProps={{
+            sx: {
+              color: theme.palette.text.secondary,
+            },
+          }}
           sx={
             type === "url"
               ? {
                   "& .MuiInputBase-root": { padding: 0 },
                   "& .MuiStack-root": {
-                    borderTopLeftRadius: `${theme.shape.borderRadius}px`,
-                    borderBottomLeftRadius: `${theme.shape.borderRadius}px`,
+                    borderTopLeftRadius: theme.shape.borderRadius,
+                    borderBottomLeftRadius: theme.shape.borderRadius,
                   },
                 }
               : {}
@@ -110,65 +140,53 @@ const Field = forwardRef(
                 alignItems="center"
                 height="100%"
                 sx={{
-                  borderRight: `solid 1px ${theme.palette.section.borderColor}`,
-                  backgroundColor: "#f9f9fa",
-                  pl: theme.gap.medium,
+                  borderRight: `solid 1px ${theme.palette.border.dark}`,
+                  backgroundColor: theme.palette.background.accent,
+                  pl: theme.spacing(6),
                 }}
               >
-                <Typography component="h5" sx={{ lineHeight: 1 }}>
+                <Typography
+                  component="h5"
+                  color={theme.palette.text.secondary}
+                  sx={{ lineHeight: 1 }}
+                >
                   {https ? "https" : "http"}://
                 </Typography>
               </Stack>
             ),
-            endAdornment:
-              type === "password" ? (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setVisible((show) => !show)}
-                    tabIndex={-1}
-                    sx={{
-                      color: theme.palette.section.borderColor,
-                      padding: `calc(${theme.gap.xs} / 2)`,
-                      "&:focus": {
-                        outline: "none",
-                      },
-                      "& .MuiTouchRipple-root": {
-                        pointerEvents: "none",
-                        display: "none",
-                      },
-                    }}
-                  >
-                    {!isVisible ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ) : (
-                hasCopy && (
-                  <InputAdornment className="copy" position="end">
-                    <Button
-                      level="tertiary"
-                      label={copy ? "Copied" : "Copy"}
-                      img={<ContentCopyIcon />}
-                      onClick={handleCopy}
-                      sx={{
-                        borderLeft: `solid 1px ${theme.palette.section.borderColor}`,
-                        lineHeight: 0,
-                        "& .MuiTouchRipple-root": {
-                          pointerEvents: "none",
-                          display: "none",
-                        },
-                      }}
-                    />
-                  </InputAdornment>
-                )
-              ),
+            endAdornment: type === "password" && (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setVisible((show) => !show)}
+                  tabIndex={-1}
+                  sx={{
+                    color: theme.palette.border.dark,
+                    padding: theme.spacing(1),
+                    "&:focus": {
+                      outline: "none",
+                    },
+                    "& .MuiTouchRipple-root": {
+                      pointerEvents: "none",
+                      display: "none",
+                    },
+                  }}
+                >
+                  {!isVisible ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
           }}
         />
         {error && (
           <Typography
             component="span"
             className="input-error"
-            mt={theme.gap.xs}
+            color={theme.palette.error.text}
+            mt={theme.spacing(2)}
+            sx={{
+              opacity: 0.8,
+            }}
           >
             {error}
           </Typography>
@@ -195,7 +213,6 @@ Field.propTypes = {
   isRequired: PropTypes.bool,
   isOptional: PropTypes.bool,
   optionalLabel: PropTypes.string,
-  hasCopy: PropTypes.bool,
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,

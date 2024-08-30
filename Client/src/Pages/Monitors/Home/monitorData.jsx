@@ -4,6 +4,7 @@ import BarChart from "../../../Components/Charts/BarChart";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { StatusLabel } from "../../../Components/Label";
 import { Box } from "@mui/material";
+import { useTheme } from "@emotion/react";
 
 const data = {
   cols: [
@@ -27,14 +28,17 @@ const data = {
 };
 
 export const buildData = (monitors, isAdmin, navigate) => {
+  const theme = useTheme();
+
   data.rows = monitors.map((monitor, idx) => {
     const params = {
+      url: monitor.url,
       title: monitor.name,
       percentage: 100,
       percentageColor:
         monitor.status === true
-          ? "var(--env-var-color-17)"
-          : "var(--env-var-color-19)",
+          ? theme.palette.success.main
+          : theme.palette.error.text,
       status: monitor.status === true ? "up" : "down",
     };
 
@@ -43,7 +47,6 @@ export const buildData = (monitors, isAdmin, navigate) => {
 
     return {
       id: monitor._id,
-      // disabled for now
       handleClick: () => {
         navigate(`/monitors/${monitor._id}`);
       },

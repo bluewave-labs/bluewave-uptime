@@ -25,23 +25,36 @@ const Breadcrumbs = ({ list }) => {
     <MUIBreadcrumbs
       separator={<ArrowRight />}
       aria-label="breadcrumb"
-      p={theme.gap.small}
+      px={theme.spacing(2)}
+      py={theme.spacing(3.5)}
       width="fit-content"
-      backgroundColor={theme.palette.otherColors.fillGray}
-      borderRadius={`${theme.shape.borderRadius}px`}
+      backgroundColor={theme.palette.background.fill}
+      borderRadius={theme.shape.borderRadius}
       lineHeight="18px"
+      sx={{
+        "& .MuiBreadcrumbs-li:not(:last-of-type):hover a": {
+          backgroundColor: theme.palette.other.fill,
+          opacity: 1,
+        },
+      }}
     >
       {list.map((item, index) => {
         return (
           <Box
             component="a"
             key={`${item.name}-${index}`}
-            px={theme.gap.small}
-            pt={theme.gap.xs}
-            pb="6px"
-            sx={{ textTransform: "capitalize" }}
-            borderRadius={`${theme.shape.borderRadius}px`}
+            px={theme.spacing(4)}
+            pt={theme.spacing(2)}
+            pb={theme.spacing(3)}
+            borderRadius={theme.shape.borderRadius}
             onClick={() => navigate(item.path)}
+            sx={{
+              opacity: 0.8,
+              textTransform: "capitalize",
+              "&, &:hover": {
+                color: theme.palette.text.tertiary,
+              },
+            }}
           >
             {item.name}
           </Box>

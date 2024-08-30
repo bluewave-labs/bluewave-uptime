@@ -25,13 +25,17 @@ const IntegrationsComponent = ({ icon, header, info, onClick }) => {
       <Stack
         direction="row"
         justifyContent="space-between"
-        gap={theme.gap.large}
-        p={theme.gap.ml}
-        pl={theme.gap.large}
+        gap={theme.spacing(12)}
+        p={theme.spacing(8)}
+        pl={theme.spacing(12)}
         height="100%"
+        border={1}
+        borderColor={theme.palette.border.light}
+        borderRadius={theme.shape.borderRadius}
+        backgroundColor={theme.palette.background.main}
       >
         {icon}
-        <Stack gap={theme.gap.xs} flex={1}>
+        <Stack gap={theme.spacing(2)} flex={1}>
           <Typography component="h1">{header}</Typography>
           <Typography
             sx={{
@@ -108,12 +112,21 @@ const Integrations = () => {
   ];
 
   return (
-    <Stack className="integrations" pt={theme.gap.xl} gap={theme.gap.xs}>
+    <Stack
+      className="integrations"
+      pt={theme.spacing(20)}
+      gap={theme.spacing(2)}
+      sx={{
+        "& h1, & p": {
+          color: theme.palette.text.secondary,
+        },
+      }}
+    >
       <Typography component="h1">Integrations</Typography>
-      <Typography mb={theme.gap.large}>
+      <Typography mb={theme.spacing(12)}>
         Connect BlueWave Uptime to your favorite service.
       </Typography>
-      <Grid container spacing={theme.gap.large}>
+      <Grid container spacing={theme.spacing(12)}>
         {integrations.map((integration, index) => (
           <IntegrationsComponent
             key={index}

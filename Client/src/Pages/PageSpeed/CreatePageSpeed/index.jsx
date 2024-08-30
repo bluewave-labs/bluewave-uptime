@@ -99,7 +99,7 @@ const CreatePageSpeed = () => {
   };
 
   return (
-    <Stack className="create-page-speed" gap={theme.gap.mlplus}>
+    <Stack className="create-page-speed" gap={theme.spacing(6)}>
       <Breadcrumbs
         list={[
           { name: "pagespeed", path: "/pagespeed" },
@@ -111,11 +111,47 @@ const CreatePageSpeed = () => {
         noValidate
         spellCheck="false"
         onSubmit={handleCreate}
-        gap={theme.gap.large}
+        gap={theme.spacing(12)}
         flex={1}
       >
-        <Typography component="h1">Create pagespeed monitor</Typography>
-        <Stack gap={theme.gap.xl}>
+        <Typography
+          component="h1"
+          lineHeight={1}
+          fontSize={21}
+          color={theme.palette.text.primary}
+        >
+          <Typography
+            component="span"
+            fontSize="inherit"
+            color={theme.palette.text.secondary}
+          >
+            Create your{" "}
+          </Typography>
+          <Typography component="span" fontSize="inherit" fontWeight="inherit">
+            pagespeed{" "}
+          </Typography>
+          <Typography
+            component="span"
+            fontSize="inherit"
+            color={theme.palette.text.secondary}
+          >
+            monitor
+          </Typography>
+        </Typography>
+        <Stack
+          border={1}
+          borderColor={theme.palette.border.light}
+          borderRadius={theme.shape.borderRadius}
+          backgroundColor={theme.palette.background.main}
+          p={theme.spacing(20)}
+          pl={theme.spacing(15)}
+          gap={theme.spacing(20)}
+          sx={{
+            "& h3, & p": {
+              color: theme.palette.text.secondary,
+            },
+          }}
+        >
           <Stack direction="row">
             <Typography component="h3">Monitor display name</Typography>
             <Field
@@ -152,8 +188,11 @@ const CreatePageSpeed = () => {
               Incidents notifications{" "}
               <Typography component="span">(coming soon)</Typography>
             </Typography>
-            <Stack className="section-disabled">
-              <Typography mb={theme.gap.small}>
+            <Stack
+              className="section-disabled"
+              backgroundColor={theme.palette.background.fill}
+            >
+              <Typography mb={theme.spacing(4)}>
                 When there is a new incident,
               </Typography>
               <Checkbox
@@ -172,7 +211,7 @@ const CreatePageSpeed = () => {
                 label="Notify via email to following emails"
                 isChecked={false}
               />
-              <Box mx={`calc(${theme.gap.ml} * 2)`}>
+              <Box mx={theme.spacing(16)}>
                 <Field
                   id="notify-emails-list"
                   placeholder="notifications@gmail.com"
@@ -180,7 +219,7 @@ const CreatePageSpeed = () => {
                   onChange={() => logger.warn("disabled")}
                   error=""
                 />
-                <Typography mt={theme.gap.small}>
+                <Typography mt={theme.spacing(4)}>
                   You can separate multiple emails with a comma
                 </Typography>
               </Box>
@@ -193,7 +232,7 @@ const CreatePageSpeed = () => {
             level="primary"
             label="Create"
             onClick={handleCreate}
-            sx={{ px: theme.gap.large, mt: theme.gap.large }}
+            sx={{ px: theme.spacing(12), mt: theme.spacing(12) }}
           />
         </Stack>
       </Stack>

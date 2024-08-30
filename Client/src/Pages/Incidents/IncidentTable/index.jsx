@@ -21,14 +21,16 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
+import { useTheme } from "@emotion/react";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
   const [paginationController, setPaginationController] = useState({
     page: 0,
-    rowsPerPage: 12,
+    rowsPerPage: 14,
   });
 
   useEffect(() => {
@@ -107,26 +109,31 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               next: ArrowForwardRoundedIcon,
             }}
             {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-            }}
           />
         )}
       />
     );
   }
 
+  let sharedStyles = {
+    border: 1,
+    borderColor: theme.palette.border.light,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.main,
+    p: theme.spacing(30),
+  };
+
   return (
     <>
       {checks?.length === 0 && selectedMonitor === "0" ? (
-        <Box>
-          <Typography textAlign="center">No incidents recorded yet.</Typography>
+        <Box sx={{ ...sharedStyles }}>
+          <Typography textAlign="center" color={theme.palette.text.secondary}>
+            No incidents recorded yet.
+          </Typography>
         </Box>
       ) : checks?.length === 0 ? (
-        <Box>
-          <Typography textAlign="center">
+        <Box sx={{ ...sharedStyles }}>
+          <Typography textAlign="center" color={theme.palette.text.secondary}>
             The monitor you have selected has no recorded incidents yet.
           </Typography>
         </Box>

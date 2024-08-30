@@ -99,12 +99,10 @@ const TeamPanel = () => {
               id: idx,
               data: (
                 <Stack>
-                  <Typography
-                    style={{ color: theme.palette.otherColors.blackish }}
-                  >
+                  <Typography style={{ color: theme.palette.text.secondary }}>
                     {member.firstName + " " + member.lastName}
                   </Typography>
-                  <Typography sx={{ opacity: 0.6 }}>
+                  <Typography>
                     Created {new Date(member.createdAt).toLocaleDateString()}
                   </Typography>
                 </Stack>
@@ -212,7 +210,18 @@ const TeamPanel = () => {
   };
 
   return (
-    <TabPanel value="team">
+    <TabPanel
+      value="team"
+      sx={{
+        "& h1": {
+          color: theme.palette.text.tertiary,
+        },
+        "& .MuiTable-root .MuiTableBody-root .MuiTableCell-root, & .MuiTable-root p + p":
+          {
+            color: theme.palette.text.accent,
+          },
+      }}
+    >
       {/* FEATURE STILL TO BE IMPLEMENTED */}
       {/* <Stack component="form">
         <Box sx={{ alignSelf: "flex-start" }}>
@@ -243,7 +252,7 @@ const TeamPanel = () => {
               },
             }}
             inputProps={{
-              sx: { textAlign: "end", padding: theme.gap.small },
+              sx: { textAlign: "end", padding: theme.spacing(4) },
             }}
           />
           <Button
@@ -253,8 +262,8 @@ const TeamPanel = () => {
             onClick={() => toggleEdit()}
             sx={{
               minWidth: 0,
-              paddingX: theme.gap.small,
-              ml: orgStates.isEdit ? theme.gap.small : 0,
+              paddingX: theme.spacing(4),
+              ml: orgStates.isEdit ? theme.spacing(4) : 0,
             }}
           />
         </Stack>
@@ -264,24 +273,30 @@ const TeamPanel = () => {
         component="form"
         noValidate
         spellCheck="false"
-        gap={theme.gap.large}
+        gap={theme.spacing(12)}
       >
         <Typography component="h1">Team members</Typography>
         <Stack direction="row" justifyContent="space-between">
           <Stack
             direction="row"
             alignItems="flex-end"
-            gap={theme.gap.medium}
-            sx={{ fontSize: "14px" }}
+            gap={theme.spacing(6)}
+            sx={{ fontSize: 14 }}
           >
-            <ButtonGroup>
+            <ButtonGroup
+              sx={{
+                "& button, & button:hover": {
+                  borderColor: theme.palette.border.light,
+                },
+              }}
+            >
               <Button
                 level="secondary"
                 label="All"
                 onClick={() => setFilter("all")}
                 sx={{
                   backgroundColor:
-                    filter === "all" && theme.palette.otherColors.fillGray,
+                    filter === "all" && theme.palette.background.fill,
                 }}
               />
               <Button
@@ -290,7 +305,7 @@ const TeamPanel = () => {
                 onClick={() => setFilter("admin")}
                 sx={{
                   backgroundColor:
-                    filter === "admin" && theme.palette.otherColors.fillGray,
+                    filter === "admin" && theme.palette.background.fill,
                 }}
               />
               <Button
@@ -299,7 +314,7 @@ const TeamPanel = () => {
                 onClick={() => setFilter("user")}
                 sx={{
                   backgroundColor:
-                    filter === "user" && theme.palette.otherColors.fillGray,
+                    filter === "user" && theme.palette.background.fill,
                 }}
               />
             </ButtonGroup>
@@ -307,7 +322,7 @@ const TeamPanel = () => {
           <Button
             level="primary"
             label="Invite a team member"
-            sx={{ paddingX: "30px" }}
+            sx={{ paddingX: theme.spacing(15) }}
             onClick={() => setIsOpen(true)}
           />
         </Stack>
@@ -326,18 +341,19 @@ const TeamPanel = () => {
         disablePortal
       >
         <Stack
-          gap="10px"
+          gap={theme.spacing(5)}
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: `${theme.shape.borderRadius}px`,
+            bgcolor: theme.palette.background.main,
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
             boxShadow: 24,
-            p: "30px",
+            p: theme.spacing(15),
             "&:focus": {
               outline: "none",
             },
@@ -349,7 +365,7 @@ const TeamPanel = () => {
           <Typography
             id="invite-member-to-team"
             component="p"
-            sx={{ mb: theme.gap.medium }}
+            sx={{ mb: theme.spacing(6) }}
           >
             When you add a new team member, they will get access to all
             monitors.
@@ -374,14 +390,14 @@ const TeamPanel = () => {
               }))
             }
             items={[
-              { _id: "admin", name: "admin" },
-              { _id: "user", name: "user" },
+              { _id: "admin", name: "Admin" },
+              { _id: "user", name: "User" },
             ]}
           />
           <Stack
             direction="row"
-            gap={theme.gap.small}
-            mt={theme.gap.ml}
+            gap={theme.spacing(4)}
+            mt={theme.spacing(8)}
             justifyContent="flex-end"
           >
             <Button

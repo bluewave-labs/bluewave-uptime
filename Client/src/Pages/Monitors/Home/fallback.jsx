@@ -11,12 +11,13 @@ const Fallback = ({ isAdmin }) => {
   return (
     <Stack
       alignItems="center"
-      backgroundColor={theme.palette.otherColors.white}
-      p={theme.gap.xxl}
-      gap={theme.gap.xs}
+      backgroundColor={theme.palette.background.main}
+      p={theme.spacing(30)}
+      gap={theme.spacing(2)}
       border={1}
-      borderRadius={`${theme.shape.borderRadius}px`}
-      borderColor={theme.palette.otherColors.graishWhite}
+      borderRadius={theme.shape.borderRadius}
+      borderColor={theme.palette.border.light}
+      color={theme.palette.text.secondary}
     >
       <Typography component="h2">No monitors found</Typography>
       <Typography>
@@ -29,7 +30,7 @@ const Fallback = ({ isAdmin }) => {
           onClick={() => {
             navigate("/monitors/create");
           }}
-          sx={{ mt: theme.gap.large }}
+          sx={{ mt: theme.spacing(12) }}
         />
       )}
     </Stack>

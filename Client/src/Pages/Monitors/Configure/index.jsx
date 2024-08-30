@@ -6,6 +6,7 @@ import { Box, Modal, Stack, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
+import { ConfigBox } from "../styled";
 import {
   updateUptimeMonitor,
   pauseUptimeMonitor,
@@ -189,7 +190,7 @@ const Configure = () => {
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
   return (
-    <Stack className="configure-monitor" gap={theme.gap.large}>
+    <Stack className="configure-monitor" gap={theme.spacing(12)}>
       {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
@@ -205,20 +206,25 @@ const Configure = () => {
             component="form"
             noValidate
             spellCheck="false"
-            gap={theme.gap.large}
+            gap={theme.spacing(12)}
             flex={1}
           >
-            <Stack direction="row" gap={theme.gap.xs}>
+            <Stack direction="row" gap={theme.spacing(2)}>
               <PulseDot
                 color={
                   monitor?.status
-                    ? theme.label.up.dotColor
-                    : theme.label.down.dotColor
+                    ? theme.palette.success.main
+                    : theme.palette.error.main
                 }
               />
               <Box>
                 {parsedUrl?.host ? (
-                  <Typography component="h1" mb={theme.gap.xs} lineHeight={1}>
+                  <Typography
+                    component="h1"
+                    mb={theme.spacing(2)}
+                    lineHeight={1}
+                    color={theme.palette.text.primary}
+                  >
                     {parsedUrl.host || "..."}
                   </Typography>
                 ) : (
@@ -226,11 +232,11 @@ const Configure = () => {
                 )}
                 <Typography
                   component="span"
-                  lineHeight={theme.gap.large}
+                  lineHeight={theme.spacing(12)}
                   sx={{
                     color: monitor?.status
-                      ? "var(--env-var-color-17)"
-                      : "var(--env-var-color-24)",
+                      ? theme.palette.success.main
+                      : theme.palette.error.text,
                   }}
                 >
                   Your site is {monitor?.status ? "up" : "down"}.
@@ -249,12 +255,12 @@ const Configure = () => {
                   animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{
-                    backgroundColor: theme.palette.otherColors.fillGray,
-                    pl: theme.gap.small,
-                    pr: theme.gap.medium,
-                    mr: theme.gap.medium,
+                    backgroundColor: theme.palette.background.main,
+                    pl: theme.spacing(4),
+                    pr: theme.spacing(6),
+                    mr: theme.spacing(6),
                     "& svg": {
-                      mr: theme.gap.xs,
+                      mr: theme.spacing(2),
                     },
                   }}
                   onClick={handlePause}
@@ -265,25 +271,21 @@ const Configure = () => {
                   label="Remove"
                   sx={{
                     boxShadow: "none",
-                    px: theme.gap.ml,
+                    px: theme.spacing(8),
                   }}
                   onClick={() => setIsOpen(true)}
                 />
               </Box>
             </Stack>
-            <Stack
-              className="config-box"
-              direction="row"
-              justifyContent="space-between"
-            >
+            <ConfigBox>
               <Box>
                 <Typography component="h2">General settings</Typography>
-                <Typography component="p" sx={{ mt: theme.gap.xs }}>
+                <Typography component="p">
                   Here you can select the URL of the host, together with the
                   type of monitor.
                 </Typography>
               </Box>
-              <Stack gap={theme.gap.xl}>
+              <Stack gap={theme.spacing(20)}>
                 <Field
                   type={monitor?.type === "http" ? "url" : "text"}
                   https={protocol === "https"}
@@ -305,20 +307,16 @@ const Configure = () => {
                   error={errors["name"]}
                 />
               </Stack>
-            </Stack>
-            <Stack
-              className="config-box"
-              direction="row"
-              justifyContent="space-between"
-            >
+            </ConfigBox>
+            <ConfigBox>
               <Box>
                 <Typography component="h2">Incident notifications</Typography>
-                <Typography component="p" mt={theme.gap.xs}>
+                <Typography component="p">
                   When there is an incident, notify users.
                 </Typography>
               </Box>
-              <Stack gap={theme.gap.medium}>
-                <Typography component="p" mt={theme.gap.small}>
+              <Stack gap={theme.spacing(6)}>
+                <Typography component="p">
                   When there is a new incident,
                 </Typography>
                 <Checkbox
@@ -351,7 +349,7 @@ const Configure = () => {
                 {monitor?.notifications?.some(
                   (notification) => notification.type === "emails"
                 ) ? (
-                  <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                  <Box mx={theme.spacing(16)}>
                     <Field
                       id="notify-email-list"
                       type="text"
@@ -359,7 +357,7 @@ const Configure = () => {
                       value=""
                       onChange={() => logger.warn("disabled")}
                     />
-                    <Typography mt={theme.gap.small}>
+                    <Typography mt={theme.spacing(4)}>
                       You can separate multiple emails with a comma
                     </Typography>
                   </Box>
@@ -367,16 +365,12 @@ const Configure = () => {
                   ""
                 )}
               </Stack>
-            </Stack>
-            <Stack
-              className="config-box"
-              direction="row"
-              justifyContent="space-between"
-            >
+            </ConfigBox>
+            <ConfigBox>
               <Box>
                 <Typography component="h2">Advanced settings</Typography>
               </Box>
-              <Stack gap={theme.gap.xl}>
+              <Stack gap={theme.spacing(20)}>
                 <Select
                   id="monitor-interval-configure"
                   label="Check frequency"
@@ -385,13 +379,13 @@ const Configure = () => {
                   items={frequencies}
                 />
               </Stack>
-            </Stack>
+            </ConfigBox>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
               <ButtonSpinner
                 isLoading={isLoading}
                 level="primary"
                 label="Save"
-                sx={{ px: theme.gap.large }}
+                sx={{ px: theme.spacing(12) }}
                 onClick={handleSubmit}
               />
             </Stack>
@@ -406,33 +400,43 @@ const Configure = () => {
         disablePortal
       >
         <Stack
-          gap={theme.gap.xs}
+          gap={theme.spacing(2)}
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: `${theme.shape.borderRadius}px`,
+            bgcolor: theme.palette.background.main,
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
             boxShadow: 24,
-            p: "30px",
+            p: theme.spacing(15),
             "&:focus": {
               outline: "none",
             },
           }}
         >
-          <Typography id="modal-delete-monitor" component="h2">
+          <Typography
+            id="modal-delete-monitor"
+            component="h2"
+            fontSize={16}
+            color={theme.palette.text.primary}
+            fontWeight={600}
+          >
             Do you really want to delete this monitor?
           </Typography>
-          <Typography id="delete-monitor-confirmation">
+          <Typography
+            id="delete-monitor-confirmation"
+            color={theme.palette.text.tertiary}
+          >
             Once deleted, this monitor cannot be retrieved.
           </Typography>
           <Stack
             direction="row"
-            gap={theme.gap.small}
-            mt={theme.gap.large}
+            gap={theme.spacing(4)}
+            mt={theme.spacing(12)}
             justifyContent="flex-end"
           >
             <Button

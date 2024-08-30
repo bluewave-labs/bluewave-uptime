@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, styled, Typography } from "@mui/material";
 import Button from "../../Components/Button";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
@@ -10,6 +10,33 @@ import "./index.css";
 const Settings = () => {
   const theme = useTheme();
 
+  const ConfigBox = styled("div")({
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: theme.spacing(20),
+    paddingTop: theme.spacing(12),
+    paddingInline: theme.spacing(15),
+    paddingBottom: theme.spacing(25),
+    backgroundColor: theme.palette.background.main,
+    border: 1,
+    borderStyle: "solid",
+    borderColor: theme.palette.border.light,
+    borderRadius: theme.spacing(2),
+    "& > div:first-of-type": {
+      flex: 0.7,
+    },
+    "& > div:last-of-type": {
+      flex: 1,
+    },
+    "& h1, & h2": {
+      color: theme.palette.text.secondary,
+    },
+    "& p": {
+      color: theme.palette.text.tertiary,
+    },
+  });
+
   return (
     <Box
       className="settings"
@@ -17,16 +44,16 @@ const Settings = () => {
         paddingBottom: 0,
       }}
     >
-      <form className="settings-form" noValidate spellCheck="false">
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
+      <Stack
+        component="form"
+        gap={theme.spacing(12)}
+        noValidate
+        spellCheck="false"
+      >
+        <ConfigBox>
           <Box>
             <Typography component="h1">General Settings</Typography>
-            <Typography sx={{ mt: theme.gap.small, mb: theme.gap.xs }}>
+            <Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(2) }}>
               <Typography component="span">Display timezone</Typography>- The
               timezone of the dashboard you publicly display.
             </Typography>
@@ -35,7 +62,7 @@ const Settings = () => {
               timezone of your server.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.xl}>
+          <Stack gap={theme.spacing(20)}>
             <Select
               id="display-timezone"
               label="Display timezone"
@@ -51,21 +78,16 @@ const Settings = () => {
               items={[{ _id: "est", name: "America / Toronto" }]}
             />
           </Stack>
-        </Stack>
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
+        </ConfigBox>
+        <ConfigBox>
           <Box>
             <Typography component="h1">History and monitoring</Typography>
-            <Typography sx={{ mt: theme.gap.small }}>
+            <Typography sx={{ mt: theme.spacing(2) }}>
               Define here for how long you want to keep the data. You can also
               remove all past data.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.xl}>
+          <Stack gap={theme.spacing(20)}>
             <Field
               type="text"
               id="history-monitoring"
@@ -81,24 +103,19 @@ const Settings = () => {
               <Button
                 level="error"
                 label="Clear all stats"
-                sx={{ mt: theme.gap.small }}
+                sx={{ mt: theme.spacing(4) }}
               />
             </Box>
           </Stack>
-        </Stack>
-        <Stack
-          className="config-box"
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.gap.xxl}
-        >
+        </ConfigBox>
+        <ConfigBox>
           <Box>
             <Typography component="h1">About</Typography>
           </Box>
           <Box>
             <Typography component="h2">BlueWave Uptime v1.0.0</Typography>
             <Typography
-              sx={{ mt: theme.gap.xs, mb: theme.gap.medium, opacity: 0.6 }}
+              sx={{ mt: theme.spacing(2), mb: theme.spacing(6), opacity: 0.6 }}
             >
               Developed by Bluewave Labs.
             </Typography>
@@ -108,11 +125,15 @@ const Settings = () => {
               label="https://github.com/bluewave-labs"
             />
           </Box>
-        </Stack>
+        </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
-          <Button level="primary" label="Save" sx={{ px: theme.gap.large }} />
+          <Button
+            level="primary"
+            label="Save"
+            sx={{ px: theme.spacing(12), mt: theme.spacing(20) }}
+          />
         </Stack>
-      </form>
+      </Stack>
     </Box>
   );
 };

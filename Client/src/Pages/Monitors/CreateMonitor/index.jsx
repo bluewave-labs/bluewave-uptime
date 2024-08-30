@@ -1,19 +1,20 @@
-import "./index.css";
 import { useState } from "react";
-import RadioButton from "../../../Components/RadioButton";
-import Button from "../../../Components/Button";
 import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
+import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
+import { ConfigBox } from "../styled";
+import Radio from "../../../Components/Inputs/Radio";
+import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
-import { createToast } from "../../../Utils/toastUtils";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { logger } from "../../../Utils/Logger";
+import "./index.css";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
@@ -33,7 +34,7 @@ const CreateMonitor = () => {
   const [monitor, setMonitor] = useState({
     url: "",
     name: "",
-    type: "",
+    type: "http",
     notifications: [],
     interval: 1,
   });
@@ -144,7 +145,14 @@ const CreateMonitor = () => {
   ];
 
   return (
-    <Box className="create-monitor">
+    <Box
+      className="create-monitor"
+      sx={{
+        "& h1": {
+          color: theme.palette.text.primary,
+        },
+      }}
+    >
       <Breadcrumbs
         list={[
           { name: "monitors", path: "/monitors" },
@@ -157,14 +165,14 @@ const CreateMonitor = () => {
         onSubmit={handleCreateMonitor}
         noValidate
         spellCheck="false"
-        gap={theme.gap.large}
-        mt={theme.gap.medium}
+        gap={theme.spacing(12)}
+        mt={theme.spacing(6)}
       >
         <Typography component="h1">
           <Typography
             component="span"
             fontSize="inherit"
-            color={theme.palette.otherColors.bluishGray}
+            color={theme.palette.text.secondary}
           >
             Create your{" "}
           </Typography>
@@ -172,15 +180,15 @@ const CreateMonitor = () => {
             monitor
           </Typography>
         </Typography>
-        <Stack className="config-box">
+        <ConfigBox>
           <Box>
             <Typography component="h2">General settings</Typography>
-            <Typography component="p" mt={theme.gap.xs}>
+            <Typography component="p">
               Here you can select the URL of the host, together with the type of
               monitor.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.xl}>
+          <Stack gap={theme.spacing(15)}>
             <Field
               type={monitor.type === "http" ? "url" : "text"}
               id="monitor-url"
@@ -202,17 +210,17 @@ const CreateMonitor = () => {
               error={errors["name"]}
             />
           </Stack>
-        </Stack>
-        <Stack className="config-box">
+        </ConfigBox>
+        <ConfigBox>
           <Box>
             <Typography component="h2">Checks to perform</Typography>
-            <Typography component="p" mt={theme.gap.xs}>
+            <Typography component="p">
               You can always add or remove checks after adding your site.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.large}>
-            <Stack gap={theme.gap.medium}>
-              <RadioButton
+          <Stack gap={theme.spacing(12)}>
+            <Stack gap={theme.spacing(6)}>
+              <Radio
                 id="monitor-checks-http"
                 title="Website monitoring"
                 desc="Use HTTP(s) to monitor your website or API endpoint."
@@ -228,8 +236,11 @@ const CreateMonitor = () => {
                     label="HTTPS"
                     onClick={() => setHttps(true)}
                     sx={{
-                      backgroundColor:
-                        https && theme.palette.otherColors.fillGray,
+                      backgroundColor: https && theme.palette.background.fill,
+                      borderColor: theme.palette.border.dark,
+                      "&:hover": {
+                        borderColor: theme.palette.border.dark,
+                      },
                     }}
                   />
                   <Button
@@ -237,8 +248,11 @@ const CreateMonitor = () => {
                     label="HTTP"
                     onClick={() => setHttps(false)}
                     sx={{
-                      backgroundColor:
-                        !https && theme.palette.otherColors.fillGray,
+                      backgroundColor: !https && theme.palette.background.fill,
+                      borderColor: theme.palette.border.dark,
+                      "&:hover": {
+                        borderColor: theme.palette.border.dark,
+                      },
                     }}
                   />
                 </ButtonGroup>
@@ -246,7 +260,7 @@ const CreateMonitor = () => {
                 ""
               )}
             </Stack>
-            <RadioButton
+            <Radio
               id="monitor-checks-ping"
               title="Ping monitoring"
               desc="Check whether your server is available or not."
@@ -257,7 +271,11 @@ const CreateMonitor = () => {
             />
             {errors["type"] ? (
               <Box className="error-container">
-                <Typography component="p" className="input-error">
+                <Typography
+                  component="p"
+                  className="input-error"
+                  color={theme.palette.error.text}
+                >
                   {errors["type"]}
                 </Typography>
               </Box>
@@ -265,15 +283,15 @@ const CreateMonitor = () => {
               ""
             )}
           </Stack>
-        </Stack>
-        <Stack className="config-box">
+        </ConfigBox>
+        <ConfigBox>
           <Box>
             <Typography component="h2">Incident notifications</Typography>
-            <Typography component="p" mt={theme.gap.xs}>
+            <Typography component="p">
               When there is an incident, notify users.
             </Typography>
           </Box>
-          <Stack gap={theme.gap.medium}>
+          <Stack gap={theme.spacing(6)}>
             <Typography component="p">When there is a new incident,</Typography>
             <Checkbox
               id="notify-sms"
@@ -303,7 +321,7 @@ const CreateMonitor = () => {
             {monitor.notifications.some(
               (notification) => notification.type === "emails"
             ) ? (
-              <Box mx={`calc(${theme.gap.ml} * 2)`}>
+              <Box mx={theme.spacing(16)}>
                 <Field
                   id="notify-email-list"
                   type="text"
@@ -311,7 +329,7 @@ const CreateMonitor = () => {
                   value=""
                   onChange={() => logger.warn("disabled")}
                 />
-                <Typography mt={theme.gap.small}>
+                <Typography mt={theme.spacing(4)}>
                   You can separate multiple emails with a comma
                 </Typography>
               </Box>
@@ -319,12 +337,12 @@ const CreateMonitor = () => {
               ""
             )}
           </Stack>
-        </Stack>
-        <Stack className="config-box">
+        </ConfigBox>
+        <ConfigBox>
           <Box>
             <Typography component="h2">Advanced settings</Typography>
           </Box>
-          <Stack gap={theme.gap.large}>
+          <Stack gap={theme.spacing(12)}>
             <Select
               id="monitor-interval"
               label="Check frequency"
@@ -332,73 +350,8 @@ const CreateMonitor = () => {
               onChange={(event) => handleChange(event, "interval")}
               items={frequencies}
             />
-            {/* TODO */}
-            {/* <FlexibileTextField
-              id="monitor-settings-retries"
-              title="Maximum retries before the service is marked as down"
-              type="number"
-              value={advancedSettings.retries}
-              onChange={(event) =>
-                handleChange(event, "retries", setAdvancedSettings)
-              }
-            />
-            <FlexibileTextField
-              id="monitor-settings-codes"
-              title="Accepted status codes"
-              type="number"
-              value={advancedSettings.codes}
-              onChange={(event) =>
-                handleChange(event, "codes", setAdvancedSettings)
-              }
-            />
-            <FlexibileTextField
-              id="monitor-settings-redirects"
-              title="Maximum redirects"
-              type="number"
-              value={advancedSettings.redirects}
-              onChange={(event) =>
-                handleChange(event, "redirects", setAdvancedSettings)
-              }
-            /> */}
           </Stack>
-        </Stack>
-        {/* TODO */}
-        {/*
-      <ConfigBox
-        leftLayout={
-          <div className="config-box-desc">
-            <div className="config-box-desc-title">Proxy settings</div>
-          </div>
-        }
-        rightLayout={
-          <div className="proxy-setting-config">
-            <CustomizableCheckBox
-              id="monitor-proxy-enable"
-              title="Enable proxy"
-              isChecked={proxy.enabled}
-              handleChange={() => handleCheck("enabled", setProxy)}
-            />
-            <FlexibileTextField
-              id="monitor-proxy-protocol"
-              title="Proxy protocol"
-              value={proxy.protocol}
-              onChange={(event) => handleChange(event, "protocol", setProxy)}
-            />
-            <FlexibileTextField
-              id="monitor-proxy-address"
-              title="Proxy address"
-              value={proxy.address}
-              onChange={(event) => handleChange(event, "address", setProxy)}
-            />
-            <FlexibileTextField
-              id="monitor-proxy-port"
-              title="Proxy port"
-              value={proxy.proxy_port}
-              onChange={(event) => handleChange(event, "proxy_port", setProxy)}
-            />
-          </div>
-        }
-      /> */}
+        </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
           <Button
             id="create-monitor-btn"

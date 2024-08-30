@@ -7,59 +7,12 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
-
-  /* color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424; */
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   /* Generalized Stylings */
-
-  --env-var-font-familt-1: "Roboto", "Helvetica", "Arial", sans-serif;
-
-  --env-var-color-0: #fff;
-  --env-var-color-1: #1c2130;
-  --env-var-color-2: #475467;
-  --env-var-color-2-light: #838c99;
-  --env-var-color-3: #1570ef;
-
-  --env-var-color-4: #d0d5dd;
-  --env-var-color-5: #344054;
-  --env-var-color-6: #eaecf0;
-  --env-var-color-7: #7f56d9;
-  --env-var-color-8: #fff;
-  --env-var-color-9: #f2f2f2;
-  --env-var-color-10: #175cd3;
-  --env-var-color-11: #5d6b98;
-  --env-var-color-12: #182230;
-  --env-var-color-13: #f9fafb;
-  --env-var-color-14: #98a2b3;
-  --env-var-color-15: #f2f4f7;
-  --env-var-color-16: #ebebeb;
-  --env-var-color-17: #079455;
-  --env-var-color-18: #ffc301;
-  --env-var-color-19: #f04438;
-  --env-var-color-20: #ecfdf3;
-  --env-var-color-21: hsla(0, 100%, 52%, 0.06);
-  --env-var-color-22: #4e5ba6;
-  --env-var-color-23: #17b26a;
-  --env-var-color-24: #d92d20;
-  --env-var-color-25: #667085;
-  --env-var-color-26: #ff1818;
-
-  --env-var-color-27: #fecf60;
-  --lighter-env-var-color-27: rgba(254, 207, 96, 0.1);
-  --env-var-color-28: #f79009;
-  --env-var-color-29: #d0d5dd;
-  --env-var-color-30: #fcfcfd;
-  --env-var-color-31: #1a1919;
-  --env-var-color-32: #f5f5f5;
-  --env-var-color-33: rgba(83, 83, 83, 0.1);
-
   --env-var-radius-1: 4px;
   --env-var-radius-2: 8px;
 
@@ -99,46 +52,10 @@
     0px 3px 3px -3px rgba(16, 24, 40, 0.03);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   min-width: 320px;
   height: 100%;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-
-button:hover {
-  border-color: #646cff;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 .MuiInputBase-root.Mui-disabled input {
@@ -165,7 +82,7 @@ button:focus-visible {
 }
 
 body .MuiSkeleton-root {
-  background-color: var(--env-var-color-15);
+  background-color: #f2f4f7;
 }
 
 @keyframes ripple {
@@ -176,20 +93,5 @@ body .MuiSkeleton-root {
   to {
     opacity: 0;
     transform: scale(2);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
   }
 }

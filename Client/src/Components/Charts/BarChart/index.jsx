@@ -26,7 +26,7 @@ const BarChart = ({ checks = [] }) => {
     <Stack
       direction="row"
       flexWrap="nowrap"
-      gap="3px"
+      gap={theme.spacing(1.5)}
       height="50px"
       width="fit-content"
       onClick={(event) => event.stopPropagation()}
@@ -39,11 +39,11 @@ const BarChart = ({ checks = [] }) => {
           <Box
             key={`${check}-${index}`}
             position="relative"
-            width="9px"
+            width={theme.spacing(4.5)}
             height="100%"
-            backgroundColor={theme.palette.otherColors.fillGray}
+            backgroundColor={theme.palette.background.fill}
             sx={{
-              borderRadius: "3px",
+              borderRadius: theme.spacing(1.5),
             }}
           />
         ) : (
@@ -53,15 +53,15 @@ const BarChart = ({ checks = [] }) => {
                 <Typography>
                   {formatDate(new Date(check.createdAt), { year: undefined })}
                 </Typography>
-                <Box mt={theme.gap.xs}>
+                <Box mt={theme.spacing(2)}>
                   <Box
                     display="inline-block"
-                    width={theme.gap.small}
-                    height={theme.gap.small}
+                    width={theme.spacing(4)}
+                    height={theme.spacing(4)}
                     backgroundColor={
                       check.status
-                        ? theme.label.up.dotColor
-                        : theme.label.down.dotColor
+                        ? theme.palette.success.main
+                        : theme.palette.error.text
                     }
                     sx={{ borderRadius: "50%" }}
                   />
@@ -69,8 +69,8 @@ const BarChart = ({ checks = [] }) => {
                     display="inline-flex"
                     direction="row"
                     justifyContent="space-between"
-                    ml={theme.gap.xs}
-                    gap={theme.gap.large}
+                    ml={theme.spacing(2)}
+                    gap={theme.spacing(12)}
                   >
                     <Typography component="span" sx={{ opacity: 0.8 }}>
                       Response Time
@@ -99,6 +99,27 @@ const BarChart = ({ checks = [] }) => {
                     },
                   },
                 ],
+                sx: {
+                  "& .MuiTooltip-tooltip": {
+                    backgroundColor: theme.palette.background.main,
+                    border: 1,
+                    borderColor: theme.palette.border.dark,
+                    borderRadius: theme.shape.borderRadius,
+                    boxShadow: theme.shape.boxShadow,
+                    px: theme.spacing(4),
+                    py: theme.spacing(2),
+                  },
+                  "& .MuiTooltip-tooltip p": {
+                    fontSize: 12,
+                    color: theme.palette.text.tertiary,
+                    fontWeight: 500,
+                  },
+                  "& .MuiTooltip-tooltip span": {
+                    fontSize: 11,
+                    color: theme.palette.text.tertiary,
+                    fontWeight: 600,
+                  },
+                },
               },
             }}
           >
@@ -107,10 +128,10 @@ const BarChart = ({ checks = [] }) => {
               width="9px"
               height="100%"
               backgroundColor={
-                check.status ? theme.label.up.bgColor : theme.label.down.bgColor
+                check.status ? theme.palette.success.bg : theme.palette.error.bg
               }
               sx={{
-                borderRadius: "3px",
+                borderRadius: theme.spacing(1.5),
                 "&:hover > .MuiBox-root": {
                   filter: "brightness(0.8)",
                 },
@@ -123,11 +144,11 @@ const BarChart = ({ checks = [] }) => {
                 height={`${animate ? check.responseTime : 0}%`}
                 backgroundColor={
                   check.status
-                    ? theme.label.up.dotColor
-                    : theme.label.down.dotColor
+                    ? theme.palette.success.main
+                    : theme.palette.error.text
                 }
                 sx={{
-                  borderRadius: "3px",
+                  borderRadius: theme.spacing(1.5),
                   transition: "height 600ms cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               />

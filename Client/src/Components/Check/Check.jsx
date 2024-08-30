@@ -2,7 +2,7 @@ import "./check.css";
 import PropTypes from "prop-types";
 import CheckGrey from "../../assets/icons/check.svg?react";
 import CheckOutlined from "../../assets/icons/check-outlined.svg?react";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
 /**
@@ -22,25 +22,41 @@ import { useTheme } from "@emotion/react";
  */
 const Check = ({ text, variant = "info", outlined = false }) => {
   const theme = useTheme();
+  const colors = {
+    success: theme.palette.success.main,
+    error: theme.palette.error.text,
+    info: theme.palette.info.border,
+  };
+
   return (
     <Stack
       direction="row"
-      gap={outlined ? theme.gap.medium : theme.gap.small}
-      className={`check${
-        variant === "error"
-          ? " check-error"
-          : variant === "success"
-          ? " check-success"
-          : " check-info"
-      }`}
+      className="check"
+      gap={outlined ? theme.spacing(6) : theme.spacing(4)}
       alignItems="center"
     >
       {outlined ? (
         <CheckOutlined alt="check" />
       ) : (
-        <CheckGrey alt="form checks" />
+        <Box
+          lineHeight={0}
+          sx={{
+            "& svg > path": { fill: colors[variant] },
+          }}
+        >
+          <CheckGrey alt="form checks" />
+        </Box>
       )}
-      <Typography component="span">{text}</Typography>
+      <Typography
+        component="span"
+        sx={{
+          color:
+            variant === "info" ? theme.palette.text.tertiary : colors[variant],
+          opacity: 0.8,
+        }}
+      >
+        {text}
+      </Typography>
     </Stack>
   );
 };

@@ -74,12 +74,13 @@ const ButtonSpinner = ({
       sx={{
         boxShadow: "none",
         textTransform: "none",
+        borderRadius: "4px",
         "&:focus": {
           outline: "none",
         },
         "&:hover": {
           boxShadow: "none",
-          transition: "none"
+          transition: "none",
         },
         ...sx,
       }}
