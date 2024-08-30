@@ -598,8 +598,9 @@ function Sidebar() {
           MenuListProps={{
             sx: {
               p: 2,
+              "& li": { m: 0 },
               "& li:has(.MuiBox-root):hover": {
-                backgroundColor: theme.palette.background.main,
+                backgroundColor: "transparent",
               },
             },
           }}
@@ -620,8 +621,22 @@ function Sidebar() {
             </MenuItem>
           )}
           {collapsed && <Divider />}
-          <MenuItem onClick={() => dispatch(setMode("light"))}>Light</MenuItem>
-          <MenuItem onClick={() => dispatch(setMode("dark"))}>Dark</MenuItem>
+          <MenuItem
+            onClick={() => {
+              dispatch(setMode("light"));
+              closePopup();
+            }}
+          >
+            Light
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              dispatch(setMode("dark"));
+              closePopup();
+            }}
+          >
+            Dark
+          </MenuItem>
           <Divider />
           <MenuItem
             onClick={logout}
