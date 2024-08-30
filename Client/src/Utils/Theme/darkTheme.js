@@ -61,6 +61,7 @@ const darkTheme = createTheme({
       icon: "#e6e6e6",
       line: "#27272a",
       fill: "#18181a",
+      grid: "#454546",
     },
     // TO BE REMOVED //
     primary: {
