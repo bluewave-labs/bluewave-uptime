@@ -280,7 +280,11 @@ const getMonitorStatsById = async (req) => {
 const getMonitorById = async (monitorId) => {
   try {
     const monitor = await Monitor.findById(monitorId);
-    return monitor;
+    // Get notifications
+    const notifications = await Notification.find({
+      monitorId: monitorId,
+    });
+    return { ...monitor.toObject(), notifications };
   } catch (error) {
     throw error;
   }
