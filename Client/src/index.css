@@ -67,6 +67,8 @@ body {
 }
 .Toastify__toast-body .alert {
   min-width: 150px;
+  padding: 5px 10px;
+  align-items: center;
 }
 .Toastify [class^="Toastify__toast"] {
   padding: 0;
@@ -75,6 +77,9 @@ body {
 .Toastify__toast {
   min-height: 0;
   border-radius: 4px;
+}
+.Toastify [class*="Toastify__toast-theme"] {
+  background-color: transparent;
 }
 
 .MuiTouchRipple-root {

@@ -22,7 +22,6 @@ const shadow =
 const lightTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
-    mode: "dark",
     common: { main: "#1570ef" },
     text: text,
     background: background,

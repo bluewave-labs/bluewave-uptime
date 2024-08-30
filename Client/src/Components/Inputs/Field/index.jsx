@@ -120,6 +120,10 @@ const Field = forwardRef(
           inputProps={{
             sx: {
               color: theme.palette.text.secondary,
+              "&:-webkit-autofill": {
+                WebkitBoxShadow: `0 0 0 100px ${theme.palette.background.fill} inset`,
+                WebkitTextFillColor: theme.palette.text.secondary,
+              },
             },
           }}
           sx={
