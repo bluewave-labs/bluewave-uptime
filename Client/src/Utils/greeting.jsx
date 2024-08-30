@@ -1,9 +1,22 @@
+import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
-import React from "react";
 import { useSelector } from "react-redux";
 
-const Greeting = ({ type }) => {
+/**
+ * Greeting component that displays a personalized greeting message
+ * based on the time of day and the user's first name.
+ *
+ * @component
+ * @example
+ * return <Greeting type={"pagespeed"} />;
+ *
+ * @param {Object} props
+ * @param {string} props.type - The type of monitor to be displayed in the message
+ * @returns {JSX.Element} The rendered Greeting component
+ */
+
+const Greeting = ({ type = "" }) => {
   const theme = useTheme();
   const { firstName } = useSelector((state) => state.auth.user);
 
@@ -53,6 +66,10 @@ const Greeting = ({ type }) => {
       </Typography>
     </Box>
   );
+};
+
+Greeting.propTypes = {
+  type: PropTypes.string,
 };
 
 export default Greeting;
