@@ -52,7 +52,7 @@ const Configure = () => {
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
-
+  console.log(monitor);
   const idMap = {
     "monitor-url": "url",
     "monitor-name": "name",
@@ -144,6 +144,7 @@ const Configure = () => {
       if (pauseUptimeMonitor.fulfilled.match(action)) {
         const monitor = action.payload.data;
         setMonitor(monitor);
+        console.log(monitor.notifications);
       } else if (pauseUptimeMonitor.rejected.match(action)) {
         throw new Error(action.error.message);
       }

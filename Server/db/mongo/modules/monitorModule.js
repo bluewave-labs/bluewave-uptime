@@ -284,7 +284,9 @@ const getMonitorById = async (monitorId) => {
     const notifications = await Notification.find({
       monitorId: monitorId,
     });
-    return { ...monitor.toObject(), notifications };
+    monitor.notifications = notifications;
+    const monitorWithNotifications = await monitor.save();
+    return monitorWithNotifications;
   } catch (error) {
     throw error;
   }

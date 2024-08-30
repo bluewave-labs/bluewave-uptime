@@ -357,16 +357,13 @@ const pauseMonitor = async (req, res, next) => {
       await req.jobQueue.addJob(monitor._id, monitor);
     }
     monitor.isActive = !monitor.isActive;
-    const updatedMonitor = await req.db.editMonitor(
-      req.params.monitorId,
-      monitor
-    );
+    monitor.save();
     return res.status(200).json({
       success: true,
-      msg: updatedMonitor.isActive
+      msg: monitor.isActive
         ? successMessages.MONITOR_RESUME
         : successMessages.MONITOR_PAUSE,
-      data: updatedMonitor,
+      data: monitor,
     });
   } catch (error) {
     error.service = SERVICE_NAME;
