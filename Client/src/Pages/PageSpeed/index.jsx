@@ -13,6 +13,7 @@ import { useNavigate } from "react-router";
 import { getLastChecked } from "../../Utils/monitorUtils";
 import PropTypes from "prop-types";
 import Breadcrumbs from "../../Components/Breadcrumbs";
+import Greeting from "../../Utils/greeting";
 
 const Card = ({ data }) => {
   const theme = useTheme();
@@ -160,22 +161,6 @@ const PageSpeed = ({ isAdmin }) => {
   // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
   let isActuallyLoading = isLoading && monitors.length === 0;
 
-  const now = new Date();
-  const hour = now.getHours();
-
-  let greeting = "";
-  let emoji = "";
-  if (hour < 12) {
-    greeting = "morning";
-    emoji = "🌅";
-  } else if (hour < 18) {
-    greeting = "afternoon";
-    emoji = "🌞";
-  } else {
-    greeting = "evening";
-    emoji = "🌙";
-  }
-
   return (
     <Box
       className="page-speed"
@@ -209,38 +194,7 @@ const PageSpeed = ({ isAdmin }) => {
               alignItems="center"
               mt={theme.spacing(5)}
             >
-              <Box>
-                <Typography
-                  component="h1"
-                  lineHeight={1}
-                  fontWeight={500}
-                  color={theme.palette.text.primary}
-                >
-                  <Typography
-                    component="span"
-                    fontSize="inherit"
-                    color={theme.palette.text.secondary}
-                  >
-                    Good {greeting},{" "}
-                  </Typography>
-                  <Typography
-                    component="span"
-                    fontSize="inherit"
-                    fontWeight="inherit"
-                  >
-                    {user.firstName} {emoji}
-                  </Typography>
-                </Typography>
-                <Typography
-                  sx={{ opacity: 0.8 }}
-                  lineHeight={1}
-                  fontSize={14}
-                  fontWeight={300}
-                  color={theme.palette.text.secondary}
-                >
-                  Here’s an overview of your pagespeed monitors.
-                </Typography>
-              </Box>
+              <Greeting type="pagespeed" />
               <Button
                 level="primary"
                 label="Create new"

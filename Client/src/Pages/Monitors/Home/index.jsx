@@ -13,6 +13,7 @@ import Fallback from "./fallback";
 import StatusBox from "./StatusBox";
 import { buildData } from "./monitorData";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import Greeting from "../../../Utils/greeting";
 
 const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
@@ -73,36 +74,7 @@ const Monitors = ({ isAdmin }) => {
               alignItems="center"
               mt={theme.spacing(5)}
             >
-              <Box>
-                <Typography
-                  component="h1"
-                  lineHeight={1}
-                  color={theme.palette.text.primary}
-                >
-                  <Typography
-                    component="span"
-                    fontSize="inherit"
-                    color={theme.palette.text.secondary}
-                  >
-                    Good {greeting},{" "}
-                  </Typography>
-                  <Typography
-                    component="span"
-                    fontSize="inherit"
-                    fontWeight="inherit"
-                  >
-                    {authState.user.firstName} {emoji}
-                  </Typography>
-                </Typography>
-                <Typography
-                  sx={{ opacity: 0.8 }}
-                  lineHeight={1}
-                  fontWeight={300}
-                  color={theme.palette.text.secondary}
-                >
-                  Here’s an overview of your uptime monitors.
-                </Typography>
-              </Box>
+              <Greeting type="uptime" />
               {monitorState.monitors?.length !== 0 && (
                 <Button
                   level="primary"
