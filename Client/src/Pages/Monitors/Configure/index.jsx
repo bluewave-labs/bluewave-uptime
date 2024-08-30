@@ -252,16 +252,11 @@ const Configure = () => {
                   isLoading={isLoading}
                   level="tertiary"
                   label={monitor?.isActive ? "Pause" : "Resume"}
-                  animate="rotate180"
                   img={<PauseCircleOutlineIcon />}
                   sx={{
                     backgroundColor: theme.palette.background.main,
-                    pl: theme.spacing(4),
-                    pr: theme.spacing(6),
+                    px: theme.spacing(6),
                     mr: theme.spacing(6),
-                    "& svg": {
-                      mr: theme.spacing(2),
-                    },
                   }}
                   onClick={handlePause}
                 />
@@ -270,7 +265,6 @@ const Configure = () => {
                   level="error"
                   label="Remove"
                   sx={{
-                    boxShadow: "none",
                     px: theme.spacing(8),
                   }}
                   onClick={() => setIsOpen(true)}
