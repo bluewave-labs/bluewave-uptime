@@ -170,7 +170,7 @@ const getTeamChecks = async (req) => {
 };
 
 /**
- * Delete all checks for a user
+ * Delete all checks for a monitor
  * @async
  * @param {string} monitorId
  * @returns {number}
@@ -185,10 +185,33 @@ const deleteChecks = async (monitorId) => {
     throw error;
   }
 };
+
+/**
+ * Delete all checks for a team
+ * @async
+ * @param {string} monitorId
+ * @returns {number}
+ * @throws {Error}
+ */
+
+const deleteChecksByTeam = async (teamId) => {
+  try {
+    const teamMonitors = await Monitor.find({ teamId: teamId });
+    teamMonitors.forEach(async (monitor) => {
+      await Check.deleteMany({ monitorId: monitor._id });
+    });
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createCheck,
   getChecksCount,
   getChecks,
   getTeamChecks,
   deleteChecks,
+  deleteChecksByTeam,
 };
