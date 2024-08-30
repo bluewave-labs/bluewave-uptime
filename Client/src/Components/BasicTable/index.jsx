@@ -200,31 +200,12 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
 
   return (
     <>
-      <TableContainer
-        component={Paper}
-        sx={{
-          backgroundColor: theme.palette.background.main,
-          border: `solid 1px ${theme.palette.border.light}`,
-          borderRadius: theme.shape.borderRadius,
-        }}
-      >
+      <TableContainer component={Paper}>
         <Table>
-          <TableHead
-            sx={{
-              backgroundColor: theme.palette.background.accent,
-            }}
-          >
+          <TableHead>
             <TableRow>
               {data.cols.map((col) => (
-                <TableCell
-                  key={col.id}
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    borderBottomColor: theme.palette.border.light,
-                  }}
-                >
-                  {col.name}
-                </TableCell>
+                <TableCell key={col.id}>{col.name}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -242,17 +223,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                   onClick={row.handleClick ? row.handleClick : null}
                 >
                   {row.data.map((cell) => {
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        sx={{
-                          color: theme.palette.text.secondary,
-                          borderBottomColor: theme.palette.border.light,
-                        }}
-                      >
-                        {cell.data}
-                      </TableCell>
-                    );
+                    return <TableCell key={cell.id}>{cell.data}</TableCell>;
                   })}
                 </TableRow>
               );
