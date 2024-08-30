@@ -19,7 +19,7 @@ export const createToast = ({
   config = {},
 }) => {
   const toastConfig = {
-    position: "bottom-right",
+    position: "top-right",
     autoClose: 3000,
     hideProgressBar: true,
     closeButton: false,

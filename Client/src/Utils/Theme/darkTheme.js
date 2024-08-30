@@ -23,16 +23,17 @@ const shadow =
 const darkTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
+    mode: "dark",
     common: { main: "#1570ef" },
     text: text,
     background: background,
     border: border,
     info: {
-      text: "#475467",
-      main: "#475467",
-      bg: "#ffffff",
-      light: "#ffffff",
-      border: "#D0D5DD",
+      text: text.primary,
+      main: text.primary,
+      bg: background.main,
+      light: background.main,
+      border: border.light,
     },
     success: {
       text: "#079455",

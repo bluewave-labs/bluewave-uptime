@@ -8,7 +8,6 @@
 }
 .auth button:not(.MuiIconButton-root),
 .auth p,
-.auth .field input,
 .auth span {
   font-size: var(--env-var-font-size-medium-plus);
 }
