@@ -32,6 +32,7 @@ import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
 import { useSelector } from "react-redux";
+import ComponentTest from "./Pages/componentTest";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -135,6 +136,7 @@ function App() {
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
         />
+        <Route path="/test" element={<ComponentTest />} />
       </Routes>
       <ToastContainer />
     </ThemeProvider>
