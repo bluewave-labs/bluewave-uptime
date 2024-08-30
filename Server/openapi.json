@@ -55,6 +55,45 @@
       "post": {
         "tags": ["auth"],
         "description": "Register a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["firstName", "lastName", "email", "password", "role", "teamId"],
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "profileImage": {
+                    "type": "file",
+                    "format": "file"
+                  },
+                  "role": {
+                    "type": "array",
+                    "enum": [["user"], ["admin"], ["superadmin"]],
+                    "default": ["superadmin"]
+                  },
+                  "teamId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -93,6 +132,26 @@
       "post": {
         "tags": ["auth"],
         "description": "Login with credentials",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
