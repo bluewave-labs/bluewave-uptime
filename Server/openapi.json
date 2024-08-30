@@ -17,17 +17,6 @@
   },
   "servers": [
     {
-      "url": "https://bluewavelabs.ca/{API_PATH}",
-      "description": "Remote Development Server",
-      "variables": {
-        "API_PATH": {
-          "description": "API Base Path",
-          "enum": ["api/v1", "api/v1.1", "api/v2"],
-          "default": "api/v1"
-        }
-      }
-    },
-    {
       "url": "http://localhost:{PORT}/{API_PATH}",
       "description": "Local Development Server",
       "variables": {
