@@ -132,7 +132,8 @@ const Monitors = ({ isAdmin }) => {
               </Stack>
               <Box
                 flex={1}
-                p={theme.spacing(16)}
+                px={theme.spacing(16)}
+                py={theme.spacing(12)}
                 border={1}
                 borderColor={theme.palette.border.light}
                 borderRadius={theme.shape.borderRadius}
@@ -146,8 +147,9 @@ const Monitors = ({ isAdmin }) => {
                   <Typography
                     component="h2"
                     color={theme.palette.text.secondary}
+                    letterSpacing={-0.5}
                   >
-                    Current monitors
+                    Actively monitoring
                   </Typography>
                   <Box
                     className="current-monitors-counter"
