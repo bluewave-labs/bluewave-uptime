@@ -12,6 +12,7 @@ import Button from "../../Components/Button";
 import { useNavigate } from "react-router";
 import { getLastChecked } from "../../Utils/monitorUtils";
 import PropTypes from "prop-types";
+import Breadcrumbs from "../../Components/Breadcrumbs";
 
 const Card = ({ data }) => {
   const theme = useTheme();
@@ -24,7 +25,7 @@ const Card = ({ data }) => {
       flexGrow={1}
       sx={{
         "&:hover > .MuiStack-root": {
-          backgroundColor: "var(--primary-bg-accent)",
+          backgroundColor: theme.palette.background.accent,
         },
       }}
     >
@@ -37,7 +38,10 @@ const Card = ({ data }) => {
         borderColor={theme.palette.border.light}
         borderRadius={theme.shape.borderRadius}
         backgroundColor={theme.palette.background.main}
-        sx={{ cursor: "pointer" }}
+        sx={{
+          cursor: "pointer",
+          "& svg path": { stroke: theme.palette.other.icon, strokeWidth: 0.8 },
+        }}
       >
         <PageSpeedIcon
           style={{ width: theme.spacing(8), height: theme.spacing(8) }}
@@ -56,7 +60,9 @@ const Card = ({ data }) => {
               text={data.status ? "Live (collecting data)" : "Inactive"}
             />
           </Stack>
-          <Typography>{data.url.replace(/^https?:\/\//, "")}</Typography>
+          <Typography fontSize={13}>
+            {data.url.replace(/^https?:\/\//, "")}
+          </Typography>
           <Typography mt={theme.spacing(12)}>
             <Typography component="span" fontWeight={600}>
               Last checked:{" "}
@@ -142,7 +148,7 @@ const PageSpeed = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { authToken } = useSelector((state) => state.auth);
+  const { authToken, user } = useSelector((state) => state.auth);
   const { monitors, isLoading } = useSelector(
     (state) => state.pageSpeedMonitors
   );
@@ -154,10 +160,25 @@ const PageSpeed = ({ isAdmin }) => {
   // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
   let isActuallyLoading = isLoading && monitors.length === 0;
 
+  const now = new Date();
+  const hour = now.getHours();
+
+  let greeting = "";
+  let emoji = "";
+  if (hour < 12) {
+    greeting = "morning";
+    emoji = "🌅";
+  } else if (hour < 18) {
+    greeting = "afternoon";
+    emoji = "🌞";
+  } else {
+    greeting = "evening";
+    emoji = "🌙";
+  }
+
   return (
     <Box
       className="page-speed"
-      pt={theme.spacing(20)}
       sx={{
         ':has(> [class*="fallback__"])': {
           position: "relative",
@@ -173,37 +194,66 @@ const PageSpeed = ({ isAdmin }) => {
       {isActuallyLoading ? (
         <SkeletonLayout />
       ) : monitors?.length !== 0 ? (
-        <Stack
-          gap={theme.spacing(2)}
+        <Box
           sx={{
-            "& h1, & span.MuiTypography-root, & p": {
+            "& p": {
               color: theme.palette.text.secondary,
             },
           }}
         >
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={theme.spacing(12)}
-          >
-            <Box>
-              <Typography component="h1">All page speed monitors</Typography>
-              <Typography mt={theme.spacing(2)}>
-                Click on one of the monitors to get more site speed information.
-              </Typography>
-            </Box>
-            <Button
-              level="primary"
-              label="Create new"
-              onClick={() => navigate("/pagespeed/create")}
-            />
-          </Stack>
+          <Box mb={theme.spacing(12)}>
+            <Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              mt={theme.spacing(5)}
+            >
+              <Box>
+                <Typography
+                  component="h1"
+                  lineHeight={1}
+                  fontWeight={500}
+                  color={theme.palette.text.primary}
+                >
+                  <Typography
+                    component="span"
+                    fontSize="inherit"
+                    color={theme.palette.text.secondary}
+                  >
+                    Good {greeting},{" "}
+                  </Typography>
+                  <Typography
+                    component="span"
+                    fontSize="inherit"
+                    fontWeight="inherit"
+                  >
+                    {user.firstName} {emoji}
+                  </Typography>
+                </Typography>
+                <Typography
+                  sx={{ opacity: 0.8 }}
+                  lineHeight={1}
+                  fontSize={14}
+                  fontWeight={300}
+                  color={theme.palette.text.secondary}
+                >
+                  Here’s an overview of your pagespeed monitors.
+                </Typography>
+              </Box>
+              <Button
+                level="primary"
+                label="Create new"
+                onClick={() => navigate("/pagespeed/create")}
+              />
+            </Stack>
+          </Box>
           <Grid container spacing={theme.spacing(12)}>
             {monitors?.map((monitor) => (
               <Card data={monitor} key={`monitor-${monitor._id}`} />
             ))}
           </Grid>
-        </Stack>
+        </Box>
       ) : (
         <Fallback
           title="pagespeed monitor"
