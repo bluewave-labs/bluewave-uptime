@@ -197,11 +197,18 @@ const deleteChecks = async (monitorId) => {
 const deleteChecksByTeamId = async (teamId) => {
   try {
     const teamMonitors = await Monitor.find({ teamId: teamId });
-    teamMonitors.forEach(async (monitor) => {
-      await Check.deleteMany({ monitorId: monitor._id });
-    });
+    let totalDeletedCount = 0;
 
-    return true;
+    await Promise.all(
+      teamMonitors.map(async (monitor) => {
+        const result = await Check.deleteMany({ monitorId: monitor._id });
+        totalDeletedCount += result.deletedCount;
+        monitor.status = true;
+        await monitor.save();
+      })
+    );
+
+    return totalDeletedCount;
   } catch (error) {
     throw error;
   }
