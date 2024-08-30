@@ -51,7 +51,10 @@ const CreateMonitor = () => {
         navigate("/not-found", {replace: true});
       }
       const {name, ...rest} = data;   //data.name is read-only
-      if(rest.type === 'http')  rest.url = URL.parse(rest.url)?.host;
+      if(rest.type === 'http'){
+        const url = new URL(rest.url)
+        rest.url = url.host       
+      }
       rest.name = `${name} (Clone)`;
       rest.interval /= MS_PER_MINUTE;
       setMonitor({
