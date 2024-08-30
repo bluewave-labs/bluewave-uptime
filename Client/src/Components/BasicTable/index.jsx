@@ -200,12 +200,31 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
 
   return (
     <>
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: theme.palette.background.main,
+          border: `solid 1px ${theme.palette.border.light}`,
+          borderRadius: theme.shape.borderRadius,
+        }}
+      >
         <Table>
-          <TableHead>
+          <TableHead
+            sx={{
+              backgroundColor: theme.palette.background.accent,
+            }}
+          >
             <TableRow>
               {data.cols.map((col) => (
-                <TableCell key={col.id}>{col.name}</TableCell>
+                <TableCell
+                  key={col.id}
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    borderBottomColor: theme.palette.border.light,
+                  }}
+                >
+                  {col.name}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -215,12 +234,25 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                 <TableRow
                   sx={{
                     cursor: row.handleClick ? "pointer" : "default",
+                    "&:hover": {
+                      backgroundColor: theme.palette.background.accent,
+                    },
                   }}
                   key={row.id}
                   onClick={row.handleClick ? row.handleClick : null}
                 >
                   {row.data.map((cell) => {
-                    return <TableCell key={cell.id}>{cell.data}</TableCell>;
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          borderBottomColor: theme.palette.border.light,
+                        }}
+                      >
+                        {cell.data}
+                      </TableCell>
+                    );
                   })}
                 </TableRow>
               );
@@ -233,9 +265,14 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          px={theme.gap.small}
+          px={theme.spacing(4)}
+          sx={{
+            "& p": {
+              color: theme.palette.text.tertiary,
+            },
+          }}
         >
-          <Typography sx={{ opacity: 0.7 }}>
+          <Typography px={theme.spacing(2)} fontSize={12} sx={{ opacity: 0.7 }}>
             Showing {getRange()} of {data.rows.length} monitor(s)
           </Typography>
           <TablePagination
@@ -260,27 +297,44 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                   keepMounted: true,
                   PaperProps: {
                     className: "pagination-dropdown",
+                    sx: {
+                      mt: 0,
+                      mb: theme.spacing(2),
+                    },
                   },
                   transformOrigin: { vertical: "bottom", horizontal: "left" },
                   anchorOrigin: { vertical: "top", horizontal: "left" },
-                  sx: { mt: "-4px" },
+                  sx: { mt: theme.spacing(-2) },
                 },
                 inputProps: { id: "pagination-dropdown" },
                 IconComponent: SelectorVertical,
                 sx: {
-                  ml: theme.gap.small,
-                  mr: theme.gap.large,
-                  minWidth: theme.gap.xl,
+                  ml: theme.spacing(4),
+                  mr: theme.spacing(12),
+                  minWidth: theme.spacing(20),
                   textAlign: "left",
                   "&.Mui-focused > div": {
-                    backgroundColor: theme.palette.otherColors.white,
+                    backgroundColor: theme.palette.background.main,
                   },
                 },
               },
             }}
             sx={{
-              mt: theme.gap.medium,
-              color: theme.palette.otherColors.bluishGray,
+              mt: theme.spacing(6),
+              color: theme.palette.text.secondary,
+              "& button.MuiButtonBase-root, & .MuiSelect-select": {
+                border: 1,
+                borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
+              },
+              "& svg path": {
+                stroke: theme.palette.text.tertiary,
+                strokeWidth: 1.3,
+              },
+              "& button:not(.Mui-disabled):hover": {
+                backgroundColor: theme.palette.background.fill,
+                borderColor: theme.palette.background.fill,
+              },
             }}
           />
         </Stack>

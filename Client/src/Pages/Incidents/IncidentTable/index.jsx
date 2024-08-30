@@ -21,14 +21,16 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
+import { useTheme } from "@emotion/react";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
   const [paginationController, setPaginationController] = useState({
     page: 0,
-    rowsPerPage: 12,
+    rowsPerPage: 14,
   });
 
   useEffect(() => {
@@ -46,9 +48,9 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
       try {
         let res;
         if (selectedMonitor === "0") {
-          res = await networkService.getChecksByUser(
+          res = await networkService.getChecksByTeam(
             authToken,
-            user._id,
+            user.teamId,
             "desc",
             null,
             null,
@@ -107,26 +109,31 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               next: ArrowForwardRoundedIcon,
             }}
             {...item}
-            sx={{
-              "&:focus": {
-                outline: "none",
-              },
-            }}
           />
         )}
       />
     );
   }
 
+  let sharedStyles = {
+    border: 1,
+    borderColor: theme.palette.border.light,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.main,
+    p: theme.spacing(30),
+  };
+
   return (
     <>
       {checks?.length === 0 && selectedMonitor === "0" ? (
-        <Box>
-          <Typography textAlign="center">No incidents recorded yet.</Typography>
+        <Box sx={{ ...sharedStyles }}>
+          <Typography textAlign="center" color={theme.palette.text.secondary}>
+            No incidents recorded yet.
+          </Typography>
         </Box>
       ) : checks?.length === 0 ? (
-        <Box>
-          <Typography textAlign="center">
+        <Box sx={{ ...sharedStyles }}>
+          <Typography textAlign="center" color={theme.palette.text.secondary}>
             The monitor you have selected has no recorded incidents yet.
           </Typography>
         </Box>
@@ -139,6 +146,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                   <TableCell>Monitor Name</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Date & Time</TableCell>
+                  <TableCell>Status Code</TableCell>
                   <TableCell>Message</TableCell>
                 </TableRow>
               </TableHead>
@@ -159,7 +167,10 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                       <TableCell>
                         {new Date(check.createdAt).toLocaleString()}
                       </TableCell>
-                      <TableCell>{check.statusCode}</TableCell>
+                      <TableCell>
+                        {check.statusCode ? check.statusCode : "N/A"}
+                      </TableCell>
+                      <TableCell>{check.message}</TableCell>
                     </TableRow>
                   );
                 })}

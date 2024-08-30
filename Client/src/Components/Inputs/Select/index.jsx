@@ -55,34 +55,44 @@ const Select = ({
   const theme = useTheme();
   const itemStyles = {
     fontSize: "var(--env-var-font-size-medium)",
-    color: theme.palette.otherColors.bluishGray,
-    textTransform: "capitalize",
-    borderRadius: `${theme.shape.borderRadius}px`,
-    margin: theme.gap.xs,
+    color: theme.palette.text.tertiary,
+    borderRadius: theme.shape.borderRadius,
+    margin: theme.spacing(2),
   };
 
   return (
-    <Stack gap={theme.gap.xs} className="select-wrapper">
-      {label && <Typography component="h3">{label}</Typography>}
+    <Stack gap={theme.spacing(2)} className="select-wrapper">
+      {label && (
+        <Typography
+          component="h3"
+          color={theme.palette.text.secondary}
+          fontWeight={500}
+        >
+          {label}
+        </Typography>
+      )}
       <MuiSelect
         className="select-component"
         value={value}
         onChange={onChange}
         displayEmpty
         inputProps={{ id: id }}
-        MenuProps={{
-          PaperProps: {
-            className: "select-dropdown",
-            style: {
-              marginTop: theme.gap.xs,
-            },
-          },
-          MenuListProps: {
-            style: { padding: 0 },
-          },
-        }}
         IconComponent={KeyboardArrowDownIcon}
-        sx={{ ...sx }}
+        sx={{
+          fontSize: 13,
+          minWidth: "125px",
+          "& fieldset": {
+            borderRadius: theme.shape.borderRadius,
+            borderColor: theme.palette.border.dark,
+          },
+          "&:not(.Mui-focused):hover fieldset": {
+            borderColor: theme.palette.border.dark,
+          },
+          "& svg path": {
+            fill: theme.palette.other.icon,
+          },
+          ...sx,
+        }}
       >
         {placeholder && (
           <MenuItem

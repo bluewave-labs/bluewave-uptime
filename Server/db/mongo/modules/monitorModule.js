@@ -15,7 +15,7 @@ const { NormalizeData } = require("../../../utils/dataUtils");
  */
 const getAllMonitors = async (req, res) => {
   try {
-    const monitors = await Monitor.find({ isActive: true });
+    const monitors = await Monitor.find();
     return monitors;
   } catch (error) {
     throw error;
@@ -287,17 +287,17 @@ const getMonitorById = async (monitorId) => {
 };
 
 /**
- * Get monitors by UserID
+ * Get monitors by TeamID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @returns {Promise<Array<Monitor>>}
  * @throws {Error}
  */
-const getMonitorsByUserId = async (req, res) => {
+const getMonitorsByTeamId = async (req, res) => {
   try {
     let { limit, type, status, sortOrder, normalize } = req.query || {};
-    const monitorQuery = { userId: req.params.userId };
+    const monitorQuery = { teamId: req.params.teamId };
 
     if (type !== undefined) {
       const types = Array.isArray(type) ? type : [type];
@@ -367,7 +367,6 @@ const createMonitor = async (req, res) => {
     const monitor = new Monitor({ ...req.body });
     // Remove notifications fom monitor as they aren't needed here
     monitor.notifications = undefined;
-    monitor.userId = req.user._id;
     await monitor.save();
     return monitor;
   } catch (error) {
@@ -432,9 +431,7 @@ const deleteMonitorsByUserId = async (userId) => {
  * @returns {Promise<Monitor>}
  * @throws {Error}
  */
-const editMonitor = async (req, res) => {
-  const candidateId = req.params.monitorId;
-  const candidateMonitor = req.body;
+const editMonitor = async (candidateId, candidateMonitor) => {
   candidateMonitor.notifications = undefined;
 
   try {
@@ -453,7 +450,7 @@ module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
-  getMonitorsByUserId,
+  getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,

@@ -1,6 +1,5 @@
 .page-speed-details h1 {
   font-size: var(--env-var-font-size-large-plus);
-  color: var(--env-var-color-1);
 }
 .page-speed-details h2,
 .page-speed-details h6 {
@@ -15,13 +14,7 @@
 .page-speed-details h4 > span {
   font-size: var(--env-var-font-size-small-plus);
 }
-.page-speed-details h2,
-.page-speed-details h4,
-.page-speed-details p {
-  color: var(--env-var-color-5);
-}
 .page-speed-details h6 {
-  color: var(--env-var-color-3);
   line-height: 22px;
 }
 .page-speed-details h1,
@@ -33,14 +26,6 @@
   height: 34px;
 }
 
-.page-speed-details .stat-box,
-.page-speed-details > .MuiStack-root:last-child,
-.page-speed-details > .MuiBox-root:nth-last-child(3) {
-  border: solid 1px var(--env-var-color-6);
-  border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
-  min-width: 200px;
-}
 .page-speed-details .stat-box {
   flex: 1;
 }

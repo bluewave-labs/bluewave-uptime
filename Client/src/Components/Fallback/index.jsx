@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import Skeleton from "../../assets/Images/create-placeholder.svg?react";
-import background from "../../assets/Images/background_pattern_decorative.png";
+import Background from "../../assets/Images/background-grid.svg?react";
 import Button from "../Button";
 import Check from "../Check/Check";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ import "./index.css";
  * @returns {JSX.Element} The rendered fallback UI.
  */
 
-const Fallback = ({ title, checks, link = "/" }) => {
+const Fallback = ({ title, checks, link = "/", isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -27,15 +27,25 @@ const Fallback = ({ title, checks, link = "/" }) => {
     <Stack
       className={`fallback__${title.trim().split(" ")[0]}`}
       alignItems="center"
-      gap={theme.gap.xl}
+      gap={theme.spacing(20)}
     >
       <Skeleton style={{ zIndex: 1 }} />
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
-      <Stack gap={theme.gap.small} maxWidth={"275px"} zIndex={1}>
-        <Typography component="h1" marginY={theme.gap.medium}>
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
+      <Stack gap={theme.spacing(4)} maxWidth={"275px"} zIndex={1}>
+        <Typography
+          component="h1"
+          marginY={theme.spacing(4)}
+          color={theme.palette.text.secondary}
+        >
           A {title} is used to:
         </Typography>
         {checks.map((check, index) => (
@@ -46,12 +56,15 @@ const Fallback = ({ title, checks, link = "/" }) => {
           />
         ))}
       </Stack>
-      <Button
-        level="primary"
-        label={`Let's create your ${title}`}
-        sx={{ alignSelf: "center" }}
-        onClick={() => navigate(link)}
-      />
+      {/* TODO - display a different fallback if user is not an admin*/}
+      {isAdmin && (
+        <Button
+          level="primary"
+          label={`Let's create your ${title}`}
+          sx={{ alignSelf: "center" }}
+          onClick={() => navigate(link)}
+        />
+      )}
     </Stack>
   );
 };
@@ -60,6 +73,7 @@ Fallback.propTypes = {
   title: PropTypes.string.isRequired,
   checks: PropTypes.arrayOf(PropTypes.string).isRequired,
   link: PropTypes.string,
+  isAdmin: PropTypes.bool,
 };
 
 export default Fallback;

@@ -1,6 +1,8 @@
 const axios = require("axios");
 const ping = require("ping");
 const logger = require("../utils/logger");
+const http = require("http");
+const { errorMessages, successMessages } = require("../utils/messages");
 
 class NetworkService {
   constructor(db, emailService) {
@@ -84,11 +86,13 @@ class NetworkService {
       const { responseTime, response } =
         await this.measureResponseTime(operation);
       isAlive = response.alive;
-
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         responseTime,
+        message: isAlive
+          ? successMessages.PING_SUCCESS
+          : errorMessages.PING_CANNOT_RESOLVE,
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
@@ -96,6 +100,7 @@ class NetworkService {
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
+        message: errorMessages.PING_CANNOT_RESOLVE,
         responseTime: error.responseTime,
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
@@ -122,7 +127,6 @@ class NetworkService {
     try {
       const { responseTime, response } =
         await this.measureResponseTime(operation);
-
       // check if response is in the 200 range, if so, service is up
       isAlive = response.status >= 200 && response.status < 300;
 
@@ -132,21 +136,21 @@ class NetworkService {
         status: isAlive,
         responseTime,
         statusCode: response.status,
+        message: http.STATUS_CODES[response.status],
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
+      const statusCode = error.response?.status || this.NETWORK_ERROR;
+      let message = http.STATUS_CODES[statusCode] || "Network Error";
       isAlive = false;
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
+        statusCode,
         responseTime: error.responseTime,
+        message,
       };
-      // The server returned a response
-      if (error.response) {
-        checkData.statusCode = error.response.status;
-      } else {
-        checkData.statusCode = this.NETWORK_ERROR;
-      }
+
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
       this.handleNotification(job, isAlive);
@@ -197,6 +201,8 @@ class NetworkService {
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
+        statusCode: response.status,
+        message: http.STATUS_CODES[response.status],
         accessibility: (categories.accessibility?.score || 0) * 100,
         bestPractices: (categories["best-practices"]?.score || 0) * 100,
         seo: (categories.seo?.score || 0) * 100,
@@ -213,9 +219,13 @@ class NetworkService {
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } catch (error) {
       isAlive = false;
+      const statusCode = error.response?.status || this.NETWORK_ERROR;
+      const message = http.STATUS_CODES[statusCode] || "Network Error";
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
+        statusCode,
+        message,
         accessibility: 0,
         bestPractices: 0,
         seo: 0,

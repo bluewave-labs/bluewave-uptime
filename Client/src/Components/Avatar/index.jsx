@@ -57,6 +57,7 @@ const Avatar = ({ src, small, sx }) => {
       }
       sx={{
         fontSize: small ? "16px" : "22px",
+        color: "white",
         fontWeight: 400,
         backgroundColor: stringToColor(`${user?.firstName} ${user?.lastName}`),
         display: "inline-flex",

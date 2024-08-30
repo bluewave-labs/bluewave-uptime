@@ -25,6 +25,27 @@ class NetworkService {
    *
    * @async
    * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The monitor ID to be sent in the param.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   */
+
+  async getMonitorByid(authToken, monitorId) {
+    return this.axiosInstance.get(`/monitors/${monitorId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  /**
+   *
+   * ************************************
+   * Create a new monitor
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
    * @param {Object} monitor - The monitor object to be sent in the request body.
    * @returns {Promise<AxiosResponse>} The response from the axios POST request.
    */
@@ -52,9 +73,9 @@ class NetworkService {
    * @param {boolean} [normalize] - Whether to normalize the retrieved monitors.
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    */
-  async getMonitorsByUserId(
+  async getMonitorsByTeamId(
     authToken,
-    userId,
+    teamId,
     limit,
     types,
     status,
@@ -74,7 +95,7 @@ class NetworkService {
     if (normalize) params.append("normalize", normalize);
 
     return this.axiosInstance.get(
-      `/monitors/user/${userId}?${params.toString()}`,
+      `/monitors/team/${teamId}?${params.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -163,6 +184,28 @@ class NetworkService {
       },
     });
   }
+  /**
+   * ************************************
+   * Pauses a single monitor by its ID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor to be paused.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
+  async pauseMonitorById(authToken, monitorId) {
+    return this.axiosInstance.post(
+      `/monitors/pause/${monitorId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 
   /**
    * ************************************
@@ -226,7 +269,6 @@ class NetworkService {
     return this.axiosInstance.put(`/auth/user/${userId}`, form, {
       headers: {
         Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
       },
     });
   }
@@ -293,8 +335,8 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async doesAdminExist() {
-    return this.axiosInstance.get("/auth/users/admin");
+  async doesSuperAdminExist() {
+    return this.axiosInstance.get("/auth/users/superadmin");
   }
 
   /**
@@ -327,7 +369,7 @@ class NetworkService {
    */
   async requestInvitationToken(authToken, email, role) {
     return this.axiosInstance.post(
-      `/auth/invite`,
+      `/invite`,
       { email, role },
       {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -346,7 +388,7 @@ class NetworkService {
    *
    */
   async verifyInvitationToken(token) {
-    return this.axiosInstance.post(`/auth/invite/verify`, {
+    return this.axiosInstance.post(`/invite/verify`, {
       token,
     });
   }
@@ -409,9 +451,9 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    *
    */
-  async getChecksByUser(
+  async getChecksByTeam(
     authToken,
-    userId,
+    teamId,
     sortOrder,
     limit,
     dateRange,
@@ -427,7 +469,7 @@ class NetworkService {
     if (page) params.append("page", page);
     if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
     return this.axiosInstance.get(
-      `/checks/user/${userId}?${params.toString()}`,
+      `/checks/team/${teamId}?${params.toString()}`,
       {
         headers: { Authorization: `Bearer ${authToken}` },
       }

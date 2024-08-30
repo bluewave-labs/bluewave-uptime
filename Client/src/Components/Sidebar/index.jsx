@@ -19,7 +19,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { toggleSidebar } from "../../Features/UI/uiSlice";
+import { setMode, toggleSidebar } from "../../Features/UI/uiSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
@@ -40,6 +40,7 @@ import ArrowDown from "../../assets/icons/down-arrow.svg?react";
 import ArrowUp from "../../assets/icons/up-arrow.svg?react";
 import ArrowRight from "../../assets/icons/right-arrow.svg?react";
 import ArrowLeft from "../../assets/icons/left-arrow.svg?react";
+import DotsVertical from "../../assets/icons/dots-vertical.svg?react";
 
 import "./index.css";
 
@@ -85,8 +86,7 @@ function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
-  const { sidebar } = useSelector((state) => state.ui);
-  let collapsed = sidebar.collapsed;
+  const collapsed = useSelector((state) => state.ui.sidebar.collapsed);
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
   const [anchorEl, setAnchorEl] = useState(null);
   const [popup, setPopup] = useState();
@@ -124,21 +124,38 @@ function Sidebar() {
     <Stack
       component="aside"
       className={collapsed ? "collapsed" : "expanded"}
-      gap={theme.gap.medium}
+      py={theme.spacing(6)}
+      gap={theme.spacing(6)}
+      sx={{
+        border: 1,
+        borderColor: theme.palette.border.light,
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: theme.palette.background.main,
+        "& .selected-path, & .MuiListItemButton-root:hover": {
+          backgroundColor: theme.palette.background.accent,
+        },
+        "& .MuiList-root svg path": {
+          stroke: theme.palette.text.tertiary,
+        },
+        "& p, & span, & .MuiListSubheader-root": {
+          color: theme.palette.text.secondary,
+        },
+      }}
     >
-      <Stack pt={theme.gap.medium} pb={theme.gap.large} pl={theme.gap.ml}>
-        <Stack direction="row" alignItems="center" gap={theme.gap.small}>
+      <Stack pt={theme.spacing(6)} pb={theme.spacing(12)} pl={theme.spacing(8)}>
+        <Stack direction="row" alignItems="center" gap={theme.spacing(4)}>
           <Stack
             justifyContent="center"
             alignItems="center"
-            minWidth={theme.gap.lgplus}
-            minHeight={theme.gap.lgplus}
-            fontSize="18px"
+            minWidth={theme.spacing(16)}
+            minHeight={theme.spacing(16)}
+            pl="1px"
+            fontSize={18}
             color="white"
             sx={{
               position: "relative",
-              backgroundColor: theme.palette.primary.main,
-              borderRadius: "4px",
+              backgroundColor: theme.palette.common.main,
+              borderRadius: theme.shape.borderRadius,
               userSelect: "none",
             }}
           >
@@ -146,7 +163,7 @@ function Sidebar() {
           </Stack>
           <Typography
             component="span"
-            mt={theme.gap.xs}
+            mt={theme.spacing(2)}
             sx={{ opacity: 0.8, fontWeight: 500 }}
           >
             BlueWave Uptime
@@ -158,20 +175,21 @@ function Sidebar() {
             top: 60,
             right: 0,
             transform: `translate(50%, 0)`,
-            backgroundColor: theme.palette.otherColors.fillGray,
-            border: `solid 1px ${theme.palette.otherColors.graishWhite}`,
-            p: "5px",
+            backgroundColor: theme.palette.background.fill,
+            border: 1,
+            borderColor: theme.palette.border.light,
+            p: theme.spacing(2.5),
             "& svg": {
-              width: theme.gap.ml,
-              height: theme.gap.ml,
+              width: theme.spacing(8),
+              height: theme.spacing(8),
               "& path": {
-                stroke: theme.palette.otherColors.bluishGray,
+                stroke: theme.palette.text.secondary,
               },
             },
             "&:focus": { outline: "none" },
             "&:hover": {
-              backgroundColor: "#e3e3e3",
-              borderColor: theme.palette.otherColors.graishWhite,
+              backgroundColor: theme.palette.border.light,
+              borderColor: theme.palette.border.light,
             },
           }}
           onClick={() => {
@@ -192,15 +210,15 @@ function Sidebar() {
             component="div"
             id="nested-menu-subheader"
             sx={{
-              pt: theme.gap.small,
-              px: collapsed ? theme.gap.xs : theme.gap.small,
-              backgroundColor: "transparent"
+              pt: theme.spacing(4),
+              px: collapsed ? theme.spacing(2) : theme.spacing(4),
+              backgroundColor: "transparent",
             }}
           >
             Menu
           </ListSubheader>
         }
-        sx={{ px: theme.gap.medium }}
+        sx={{ px: theme.spacing(6) }}
       >
         {menu.map((item) =>
           item.path ? (
@@ -229,9 +247,9 @@ function Sidebar() {
                 onClick={() => navigate(`/${item.path}`)}
                 sx={{
                   height: "37px",
-                  gap: theme.gap.small,
-                  borderRadius: `${theme.shape.borderRadius}px`,
-                  px: theme.gap.small,
+                  gap: theme.spacing(4),
+                  borderRadius: theme.shape.borderRadius,
+                  px: theme.spacing(4),
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -266,9 +284,9 @@ function Sidebar() {
                   onClick={(event) => openPopup(event, item.name)}
                   sx={{
                     position: "relative",
-                    gap: theme.gap.small,
-                    borderRadius: `${theme.shape.borderRadius}px`,
-                    px: theme.gap.small,
+                    gap: theme.spacing(4),
+                    borderRadius: theme.shape.borderRadius,
+                    px: theme.spacing(4),
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -284,13 +302,27 @@ function Sidebar() {
                   vertical: "top",
                   horizontal: "right",
                 }}
-                sx={{ ml: theme.gap.ml }}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      mt: theme.spacing(-2),
+                      ml: theme.spacing(1),
+                    },
+                  },
+                }}
+                MenuListProps={{ sx: { px: 1, py: 2 } }}
+                sx={{
+                  ml: theme.spacing(8),
+                  "& .selected-path": {
+                    backgroundColor: theme.palette.background.accent,
+                  },
+                }}
               >
                 {item.nested.map((child) => {
                   if (
                     child.name === "Team" &&
                     authState.user?.role &&
-                    !authState.user.role.includes("admin")
+                    !authState.user.role.includes("superadmin")
                   ) {
                     return null;
                   }
@@ -308,10 +340,14 @@ function Sidebar() {
                         closePopup();
                       }}
                       sx={{
-                        gap: theme.gap.small,
-                        borderRadius: `${theme.shape.borderRadius}px`,
-                        pl: theme.gap.small,
-                        mb: "1px",
+                        gap: theme.spacing(4),
+                        opacity: 0.9,
+                        "& svg": {
+                          "& path": {
+                            stroke: theme.palette.other.icon,
+                            strokeWidth: 1.1,
+                          },
+                        },
                       }}
                     >
                       {child.icon}
@@ -331,9 +367,9 @@ function Sidebar() {
                   }))
                 }
                 sx={{
-                  gap: theme.gap.small,
-                  borderRadius: `${theme.shape.borderRadius}px`,
-                  px: theme.gap.small,
+                  gap: theme.spacing(4),
+                  borderRadius: theme.shape.borderRadius,
+                  px: theme.spacing(4),
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -344,13 +380,13 @@ function Sidebar() {
                 <List
                   component="div"
                   disablePadding
-                  sx={{ pl: theme.gap.large }}
+                  sx={{ pl: theme.spacing(12) }}
                 >
                   {item.nested.map((child) => {
                     if (
                       child.name === "Team" &&
                       authState.user?.role &&
-                      !authState.user.role.includes("admin")
+                      !authState.user.role.includes("superadmin")
                     ) {
                       return null;
                     }
@@ -365,9 +401,35 @@ function Sidebar() {
                         key={child.path}
                         onClick={() => navigate(`/${child.path}`)}
                         sx={{
-                          gap: theme.gap.small,
-                          borderRadius: `${theme.shape.borderRadius}px`,
-                          pl: theme.gap.small,
+                          gap: theme.spacing(4),
+                          borderRadius: theme.shape.borderRadius,
+                          pl: theme.spacing(4),
+                          "&::before": {
+                            content: `""`,
+                            position: "absolute",
+                            top: 0,
+                            left: "-7px",
+                            height: "100%",
+                            borderLeft: 1,
+                            borderLeftColor: theme.palette.other.line,
+                          },
+                          "&:last-child::before": {
+                            height: "50%",
+                          },
+                          "&::after": {
+                            content: `""`,
+                            position: "absolute",
+                            top: "45%",
+                            left: "-8px",
+                            height: "3px",
+                            width: "3px",
+                            borderRadius: "50%",
+                            backgroundColor: theme.palette.other.line,
+                          },
+                          "&.selected-path::after": {
+                            backgroundColor: theme.palette.text.tertiary,
+                            transform: "scale(1.2)",
+                          },
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: 0 }}>
@@ -383,7 +445,7 @@ function Sidebar() {
           )
         )}
       </List>
-      <Divider sx={{ my: theme.gap.small }} />
+      <Divider sx={{ my: theme.spacing(4) }} />
       {/* other */}
       <List
         component="nav"
@@ -393,15 +455,15 @@ function Sidebar() {
             component="div"
             id="nested-other-subheader"
             sx={{
-              pt: theme.gap.small,
-              px: collapsed ? 0 : theme.gap.small,
-              backgroundColor: "transparent"
+              pt: theme.spacing(4),
+              px: collapsed ? 0 : theme.spacing(4),
+              backgroundColor: "transparent",
             }}
           >
             Other
           </ListSubheader>
         }
-        sx={{ px: theme.gap.medium }}
+        sx={{ px: theme.spacing(6) }}
       >
         {other.map((item) => (
           <Tooltip
@@ -436,9 +498,9 @@ function Sidebar() {
                   : navigate(`/${item.path}`)
               }
               sx={{
-                gap: theme.gap.small,
-                borderRadius: `${theme.shape.borderRadius}px`,
-                px: theme.gap.small,
+                gap: theme.spacing(4),
+                borderRadius: theme.shape.borderRadius,
+                px: theme.spacing(4),
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
@@ -453,10 +515,10 @@ function Sidebar() {
         direction="row"
         height="50px"
         alignItems="center"
-        py={theme.gap.small}
-        px={theme.gap.ml}
-        gap={theme.gap.xs}
-        borderRadius={`${theme.shape.borderRadius}px`}
+        py={theme.spacing(4)}
+        px={theme.spacing(8)}
+        gap={theme.spacing(2)}
+        borderRadius={theme.shape.borderRadius}
       >
         {collapsed ? (
           <>
@@ -483,47 +545,11 @@ function Sidebar() {
                 <Avatar small={true} />
               </IconButton>
             </Tooltip>
-            <Menu
-              className="sidebar-popup"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl) && popup === "logout"}
-              onClose={closePopup}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              sx={{ ml: theme.gap.ml }}
-            >
-              <MenuItem sx={{ cursor: "default", minWidth: "150px" }}>
-                <Box>
-                  <Typography component="span" fontWeight={500} fontSize="13px">
-                    {authState.user?.firstName} {authState.user?.lastName}
-                  </Typography>
-                  <Typography
-                    sx={{ textTransform: "capitalize", fontSize: "12px" }}
-                  >
-                    {authState.user?.role}
-                  </Typography>
-                </Box>
-              </MenuItem>
-              <Divider />
-              <MenuItem
-                onClick={logout}
-                sx={{
-                  gap: theme.gap.small,
-                  borderRadius: `${theme.shape.borderRadius}px`,
-                  pl: theme.gap.small,
-                }}
-              >
-                <LogoutSvg />
-                Log out
-              </MenuItem>
-            </Menu>
           </>
         ) : (
           <>
             <Avatar small={true} />
-            <Box ml={theme.gap.xs}>
+            <Box ml={theme.spacing(2)}>
               <Typography component="span" fontWeight={500}>
                 {authState.user?.firstName} {authState.user?.lastName}
               </Typography>
@@ -531,16 +557,84 @@ function Sidebar() {
                 {authState.user?.role}
               </Typography>
             </Box>
-            <Tooltip title="Log Out">
+            <Tooltip title="Controls" disableInteractive>
               <IconButton
-                sx={{ ml: "auto", "&:focus": { outline: "none" } }}
-                onClick={logout}
+                sx={{
+                  ml: "auto",
+                  mr: "-8px",
+                  "&:focus": { outline: "none" },
+                  "& svg": {
+                    width: "20px",
+                    height: "20px",
+                  },
+                  "& svg path": {
+                    stroke: theme.palette.other.icon,
+                  },
+                }}
+                onClick={(event) => openPopup(event, "logout")}
               >
-                <LogoutSvg style={{ width: "20px", height: "20px" }} />
+                <DotsVertical />
               </IconButton>
             </Tooltip>
           </>
         )}
+        <Menu
+          className="sidebar-popup"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl) && popup === "logout"}
+          onClose={closePopup}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                marginTop: theme.spacing(-4),
+                marginLeft: collapsed ? theme.spacing(2) : 0,
+              },
+            },
+          }}
+          MenuListProps={{
+            sx: {
+              p: 2,
+              "& li:has(.MuiBox-root):hover": {
+                backgroundColor: theme.palette.background.main,
+              },
+            },
+          }}
+          sx={{
+            ml: theme.spacing(8),
+          }}
+        >
+          {collapsed && (
+            <MenuItem sx={{ cursor: "default", minWidth: "150px" }}>
+              <Box mb={theme.spacing(2)}>
+                <Typography component="span" fontWeight={500} fontSize={13}>
+                  {authState.user?.firstName} {authState.user?.lastName}
+                </Typography>
+                <Typography sx={{ textTransform: "capitalize", fontSize: 12 }}>
+                  {authState.user?.role}
+                </Typography>
+              </Box>
+            </MenuItem>
+          )}
+          {collapsed && <Divider />}
+          <MenuItem onClick={() => dispatch(setMode("light"))}>Light</MenuItem>
+          <MenuItem onClick={() => dispatch(setMode("dark"))}>Dark</MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={logout}
+            sx={{
+              gap: theme.spacing(4),
+              borderRadius: theme.shape.borderRadius,
+              pl: theme.spacing(4),
+            }}
+          >
+            <LogoutSvg />
+            Log out
+          </MenuItem>
+        </Menu>
       </Stack>
     </Stack>
   );

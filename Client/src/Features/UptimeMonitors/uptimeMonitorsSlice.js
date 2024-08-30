@@ -28,14 +28,34 @@ export const createUptimeMonitor = createAsyncThunk(
   }
 );
 
-export const getUptimeMonitorsByUserId = createAsyncThunk(
-  "montiors/getMonitorsByUserId",
+export const getUptimeMonitorById = createAsyncThunk(
+  "monitors/getMonitorById",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitorId } = data;
+      const res = await networkService.getMonitorByid(authToken, monitorId);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
+
+export const getUptimeMonitorsByTeamId = createAsyncThunk(
+  "montiors/getMonitorsByTeamId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByTeamId(
         token,
-        user._id,
+        user.teamId,
         25,
         ["http", "ping"],
         null,
@@ -109,6 +129,26 @@ export const deleteUptimeMonitor = createAsyncThunk(
   }
 );
 
+export const pauseUptimeMonitor = createAsyncThunk(
+  "monitors/pauseMonitor",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitorId } = data;
+      const res = await networkService.pauseMonitorById(authToken, monitorId);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
+
 const uptimeMonitorsSlice = createSlice({
   name: "uptimeMonitors",
   initialState,
@@ -126,15 +166,15 @@ const uptimeMonitorsSlice = createSlice({
       // Monitors by userId
       // *****************************************************
 
-      .addCase(getUptimeMonitorsByUserId.pending, (state) => {
+      .addCase(getUptimeMonitorsByTeamId.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getUptimeMonitorsByUserId.fulfilled, (state, action) => {
+      .addCase(getUptimeMonitorsByTeamId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
         state.monitors = action.payload.data;
       })
-      .addCase(getUptimeMonitorsByUserId.rejected, (state, action) => {
+      .addCase(getUptimeMonitorsByTeamId.rejected, (state, action) => {
         state.isLoading = false;
         state.success = false;
         state.msg = action.payload
@@ -160,7 +200,24 @@ const uptimeMonitorsSlice = createSlice({
           ? action.payload.msg
           : "Failed to create uptime monitor";
       })
-
+      // *****************************************************
+      // Get Monitor By Id
+      // *****************************************************
+      .addCase(getUptimeMonitorById.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUptimeMonitorById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(getUptimeMonitorById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to pause uptime monitor";
+      })
       // *****************************************************
       // update Monitor
       // *****************************************************
@@ -197,6 +254,24 @@ const uptimeMonitorsSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to delete uptime monitor";
+      })
+      // *****************************************************
+      // Pause Monitor
+      // *****************************************************
+      .addCase(pauseUptimeMonitor.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(pauseUptimeMonitor.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(pauseUptimeMonitor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to pause uptime monitor";
       });
   },
 });

@@ -1,10 +1,11 @@
 const {
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
-  getMonitorsByUserIdValidation,
+  getMonitorsByTeamIdValidation,
   createMonitorBodyValidation,
   editMonitorBodyValidation,
-  getMonitorsByUserIdQueryValidation,
+  getMonitorsByTeamIdQueryValidation,
+  pauseMonitorParamValidation,
 } = require("../validation/joi");
 
 const sslChecker = require("ssl-checker");
@@ -123,7 +124,7 @@ const getMonitorById = async (req, res, next) => {
   }
 
   try {
-    const monitor = await req.db.getMonitorById(req, res);
+    const monitor = await req.db.getMonitorById(req.params.monitorId);
     if (!monitor) {
       const error = new Error(errorMessages.MONITOR_GET_BY_ID);
       error.status = 404;
@@ -149,10 +150,10 @@ const getMonitorById = async (req, res, next) => {
  * @returns {Promise<Express.Response>}
  * @throws {Error}
  */
-const getMonitorsByUserId = async (req, res, next) => {
+const getMonitorsByTeamId = async (req, res, next) => {
   try {
-    await getMonitorsByUserIdValidation.validateAsync(req.params);
-    await getMonitorsByUserIdQueryValidation.validateAsync(req.query);
+    await getMonitorsByTeamIdValidation.validateAsync(req.params);
+    await getMonitorsByTeamIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -163,12 +164,12 @@ const getMonitorsByUserId = async (req, res, next) => {
   }
 
   try {
-    const userId = req.params.userId;
-    const monitors = await req.db.getMonitorsByUserId(req, res);
+    const teamId = req.params.teamId;
+    const monitors = await req.db.getMonitorsByTeamId(req, res);
 
     return res.json({
       success: true,
-      msg: successMessages.MONITOR_GET_BY_USER_ID(userId),
+      msg: successMessages.MONITOR_GET_BY_USER_ID(teamId),
       data: monitors,
     });
   } catch (error) {
@@ -309,7 +310,7 @@ const editMonitor = async (req, res, next) => {
     // Get notifications from the request body
     const notifications = req.body.notifications;
 
-    const editedMonitor = await req.db.editMonitor(req, res);
+    const editedMonitor = await req.db.editMonitor(monitorId, req.body);
 
     await req.db.deleteNotificationsByMonitorId(editedMonitor._id);
 
@@ -337,14 +338,52 @@ const editMonitor = async (req, res, next) => {
   }
 };
 
+const pauseMonitor = async (req, res, next) => {
+  try {
+    await pauseMonitorParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+  }
+
+  try {
+    const monitor = await req.db.getMonitorById(req.params.monitorId);
+    if (monitor.isActive) {
+      await req.jobQueue.deleteJob(monitor);
+    } else {
+      await req.jobQueue.addJob(monitor._id, monitor);
+    }
+    monitor.isActive = !monitor.isActive;
+    const updatedMonitor = await req.db.editMonitor(
+      req.params.monitorId,
+      monitor
+    );
+    return res.status(200).json({
+      success: true,
+      msg: updatedMonitor.isActive
+        ? successMessages.MONITOR_RESUME
+        : successMessages.MONITOR_PAUSE,
+      data: updatedMonitor,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "pauseMonitor";
+    next(error);
+  }
+};
+
 module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorCertificate,
   getMonitorById,
-  getMonitorsByUserId,
+  getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
   deleteAllMonitors,
   editMonitor,
+  pauseMonitor,
 };
