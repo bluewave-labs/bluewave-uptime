@@ -6,9 +6,6 @@
   font-size: var(--env-var-font-size-large);
   font-weight: 500;
 }
-.monitors p.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
-}
 .monitors h1.MuiTypography-root + p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium-plus);
 }

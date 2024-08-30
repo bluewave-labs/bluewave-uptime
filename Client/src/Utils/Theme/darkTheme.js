@@ -5,6 +5,7 @@ const text = {
   secondary: "#e6e6e6",
   tertiary: "#a1a1aa",
   accent: "#e6e6e6",
+  disabled: "rgba(172, 172, 172, 0.3)",
 };
 const background = {
   main: "#151518",
@@ -54,10 +55,13 @@ const darkTheme = createTheme({
       border: "#fec84b",
     },
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
+    divider: border.light,
     other: {
       icon: "#e6e6e6",
       line: "#27272a",
+      fill: "#18181a",
     },
+    // TO BE REMOVED //
     primary: {
       main: "#1570ef",
     },
@@ -67,6 +71,7 @@ const darkTheme = createTheme({
     tertiary: {
       main: "#e6e6e6",
     },
+    // ----------------- //
   },
   spacing: 2,
   components: {
@@ -79,12 +84,37 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           marginTop: 4,
+          padding: 0,
           border: 1,
           borderStyle: "solid",
           borderColor: border.light,
           borderRadius: 4,
           boxShadow: shadow,
           backgroundColor: background.main,
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: 4,
+          backgroundColor: "inherit",
+          padding: "4px 6px",
+          color: text.secondary,
+          fontSize: 13,
+          margin: 2,
+          minWidth: 100,
+          "&:hover, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible":
+            {
+              backgroundColor: background.fill,
+            },
         },
       },
     },

@@ -305,31 +305,12 @@ function Sidebar() {
                 slotProps={{
                   paper: {
                     sx: {
-                      border: 1,
-                      borderColor: theme.palette.border.light,
-                      borderRadius: theme.shape.borderRadius,
-                      boxShadow: theme.shape.boxShadow,
-                      backgroundColor: theme.palette.background.main,
+                      mt: theme.spacing(-2),
                       ml: theme.spacing(1),
                     },
                   },
                 }}
-                MenuListProps={{
-                  sx: {
-                    p: 3,
-                    minWidth: "100px",
-                    "& li": {
-                      color: theme.palette.text.secondary,
-                      fontSize: 13,
-                      px: theme.spacing(4),
-                      py: theme.spacing(2.5),
-                      borderRadius: theme.shape.borderRadius,
-                    },
-                    "& li:hover": {
-                      backgroundColor: theme.palette.background.accent,
-                    },
-                  },
-                }}
+                MenuListProps={{ sx: { px: 1, py: 2 } }}
                 sx={{
                   ml: theme.spacing(8),
                   "& .selected-path": {
@@ -360,9 +341,13 @@ function Sidebar() {
                       }}
                       sx={{
                         gap: theme.spacing(4),
-                        borderRadius: theme.shape.borderRadius,
-                        pl: theme.spacing(4),
-                        mb: "1px",
+                        opacity: 0.9,
+                        "& svg": {
+                          "& path": {
+                            stroke: theme.palette.other.icon,
+                            strokeWidth: 1.1,
+                          },
+                        },
                       }}
                     >
                       {child.icon}
@@ -460,9 +445,7 @@ function Sidebar() {
           )
         )}
       </List>
-      <Divider
-        sx={{ my: theme.spacing(4), borderColor: theme.palette.border.light }}
-      />
+      <Divider sx={{ my: theme.spacing(4) }} />
       {/* other */}
       <List
         component="nav"
@@ -526,7 +509,7 @@ function Sidebar() {
           </Tooltip>
         ))}
       </List>
-      <Divider sx={{ mt: "auto", borderColor: theme.palette.border.light }} />
+      <Divider sx={{ mt: "auto" }} />
 
       <Stack
         direction="row"
@@ -607,11 +590,6 @@ function Sidebar() {
           slotProps={{
             paper: {
               sx: {
-                border: 1,
-                borderColor: theme.palette.border.light,
-                borderRadius: theme.shape.borderRadius,
-                boxShadow: theme.shape.boxShadow,
-                backgroundColor: theme.palette.background.main,
                 marginTop: theme.spacing(-4),
                 marginLeft: collapsed ? theme.spacing(2) : 0,
               },
@@ -619,18 +597,7 @@ function Sidebar() {
           }}
           MenuListProps={{
             sx: {
-              p: 3,
-              minWidth: "100px",
-              "& li": {
-                color: theme.palette.text.secondary,
-                fontSize: 13,
-                px: theme.spacing(4),
-                py: theme.spacing(2.5),
-                borderRadius: theme.shape.borderRadius,
-              },
-              "& li:hover": {
-                backgroundColor: theme.palette.background.accent,
-              },
+              p: 2,
               "& li:has(.MuiBox-root):hover": {
                 backgroundColor: theme.palette.background.main,
               },
@@ -652,11 +619,10 @@ function Sidebar() {
               </Box>
             </MenuItem>
           )}
-          {collapsed && (
-            <Divider sx={{ borderColor: theme.palette.border.light }} />
-          )}
+          {collapsed && <Divider />}
           <MenuItem onClick={() => dispatch(setMode("light"))}>Light</MenuItem>
           <MenuItem onClick={() => dispatch(setMode("dark"))}>Dark</MenuItem>
+          <Divider />
           <MenuItem
             onClick={logout}
             sx={{

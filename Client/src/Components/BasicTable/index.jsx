@@ -272,7 +272,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
             },
           }}
         >
-          <Typography px={theme.spacing(2)} sx={{ opacity: 0.7 }}>
+          <Typography px={theme.spacing(2)} fontSize={12} sx={{ opacity: 0.7 }}>
             Showing {getRange()} of {data.rows.length} monitor(s)
           </Typography>
           <TablePagination
@@ -300,19 +300,11 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                     sx: {
                       mt: 0,
                       mb: theme.spacing(2),
-                      "& li": {
-                        p: theme.spacing(2),
-                        color: theme.palette.text.tertiary,
-                      },
-                      "& li.Mui-selected, & li.Mui-selected.Mui-focusVisible, & li.Mui-selected:hover":
-                        {
-                          backgroundColor: theme.palette.background.fill,
-                        },
                     },
                   },
                   transformOrigin: { vertical: "bottom", horizontal: "left" },
                   anchorOrigin: { vertical: "top", horizontal: "left" },
-                  sx: { mt: "-4px" },
+                  sx: { mt: theme.spacing(-2) },
                 },
                 inputProps: { id: "pagination-dropdown" },
                 IconComponent: SelectorVertical,

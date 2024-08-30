@@ -120,17 +120,6 @@
   opacity: 0.4;
 }
 
-.pagination-dropdown ul {
-  padding: 4px;
-  min-width: 100px;
-}
-.pagination-dropdown li {
-  font-size: var(--env-var-font-size-medium);
-}
-body:has(.pagination-dropdown) p:has(+ .MuiTablePagination-root) {
-  font-size: var(--env-var-font-size-small-plus);
-}
-
 .monitors .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
   text-transform: uppercase;
   opacity: 0.8;

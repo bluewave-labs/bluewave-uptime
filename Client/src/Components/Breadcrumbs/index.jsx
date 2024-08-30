@@ -33,7 +33,7 @@ const Breadcrumbs = ({ list }) => {
       lineHeight="18px"
       sx={{
         "& .MuiBreadcrumbs-li:not(:last-of-type):hover a": {
-          backgroundColor: "#e3e3e3",
+          backgroundColor: theme.palette.other.fill,
           opacity: 1,
         },
       }}

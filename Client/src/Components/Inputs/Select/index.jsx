@@ -77,26 +77,9 @@ const Select = ({
         onChange={onChange}
         displayEmpty
         inputProps={{ id: id }}
-        MenuProps={{
-          MenuListProps: {
-            sx: {
-              p: 0,
-              "& li": {
-                color: theme.palette.text.secondary,
-                fontSize: 13,
-                px: theme.spacing(4),
-                py: theme.spacing(2.5),
-                borderRadius: theme.shape.borderRadius,
-              },
-              "& li.Mui-selected, & li.Mui-selected.Mui-focusVisible, & li.Mui-selected:hover":
-                {
-                  backgroundColor: theme.palette.background.fill,
-                },
-            },
-          },
-        }}
         IconComponent={KeyboardArrowDownIcon}
         sx={{
+          fontSize: 13,
           minWidth: "125px",
           "& fieldset": {
             borderRadius: theme.shape.borderRadius,

@@ -22,6 +22,7 @@ const shadow =
 const lightTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
+    mode: "dark",
     common: { main: "#1570ef" },
     text: text,
     background: background,
@@ -54,10 +55,13 @@ const lightTheme = createTheme({
       border: "#fec84b",
     },
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
+    divider: border.light,
     other: {
       icon: "#667085",
       line: "#d6d9dd",
+      fill: "#e3e3e3",
     },
+    // TO BE REMOVED //
     primary: {
       main: "#1570EF",
     },
@@ -67,6 +71,7 @@ const lightTheme = createTheme({
     tertiary: {
       main: "#475467",
     },
+    // ----------------- //
   },
   spacing: 2,
   components: {
@@ -85,6 +90,31 @@ const lightTheme = createTheme({
           borderRadius: 4,
           boxShadow: shadow,
           backgroundColor: background.main,
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: 4,
+          backgroundColor: "inherit",
+          padding: "4px 6px",
+          color: text.secondary,
+          fontSize: 13,
+          margin: 2,
+          marginBottom: 0,
+          minWidth: 100,
+          "&:hover, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible":
+            {
+              backgroundColor: background.fill,
+            },
         },
       },
     },

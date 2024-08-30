@@ -5,8 +5,3 @@
   align-items: center;
   line-height: 1;
 }
-.select-wrapper .MuiInputBase-root:has(> .MuiSelect-select),
-.MuiMenu-List .MuiMenuItem-root,
-.select-wrapper h3.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
-}
