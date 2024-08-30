@@ -194,7 +194,7 @@ const deleteChecks = async (monitorId) => {
  * @throws {Error}
  */
 
-const deleteChecksByTeam = async (teamId) => {
+const deleteChecksByTeamId = async (teamId) => {
   try {
     const teamMonitors = await Monitor.find({ teamId: teamId });
     teamMonitors.forEach(async (monitor) => {
@@ -213,5 +213,5 @@ module.exports = {
   getChecks,
   getTeamChecks,
   deleteChecks,
-  deleteChecksByTeam,
+  deleteChecksByTeamId,
 };

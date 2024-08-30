@@ -23,7 +23,7 @@ router.delete(
 router.delete(
   "/team/:teamId",
   isAllowed(["admin", "superadmin"]),
-  checkController.deleteChecks
+  checkController.deleteChecksByTeamId
 );
 
 module.exports = router;

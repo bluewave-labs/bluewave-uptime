@@ -1,14 +1,37 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, styled, Typography } from "@mui/material";
 import Button from "../../Components/Button";
+import ButtonSpinner from "../../Components/ButtonSpinner";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
 import { logger } from "../../Utils/Logger";
 import "./index.css";
-
+import { useDispatch, useSelector } from "react-redux";
+import { createToast } from "../../Utils/toastUtils";
+import { deleteMonitorChecksByTeamId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 const Settings = () => {
   const theme = useTheme();
+  const { user, authToken } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.uptimeMonitors);
+
+  const dispatch = useDispatch();
+  const handleClearStats = async () => {
+    try {
+      const action = await dispatch(
+        deleteMonitorChecksByTeamId({ teamId: user.teamId, authToken })
+      );
+
+      if (deleteMonitorChecksByTeamId.fulfilled.match(action)) {
+        createToast({ body: "Stats cleared successfully" });
+      } else {
+        createToast({ body: "Failed to clear stats" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ body: "Failed to clear stats" });
+    }
+  };
 
   const ConfigBox = styled("div")({
     display: "flex",
@@ -100,9 +123,11 @@ const Settings = () => {
             />
             <Box>
               <Typography>Clear all stats. This is irreversible.</Typography>
-              <Button
+              <ButtonSpinner
+                isLoading={isLoading}
                 level="error"
                 label="Clear all stats"
+                onClick={handleClearStats}
                 sx={{ mt: theme.spacing(4) }}
               />
             </Box>
