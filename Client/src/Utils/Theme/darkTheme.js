@@ -80,6 +80,16 @@ const darkTheme = createTheme({
         disableRipple: true,
       },
     },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          padding: 4,
+          "&:hover": {
+            backgroundColor: background.fill,
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
