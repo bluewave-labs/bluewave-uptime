@@ -149,6 +149,26 @@ export const pauseUptimeMonitor = createAsyncThunk(
   }
 );
 
+export const deleteMonitorChecksByTeamId = createAsyncThunk(
+  "monitors/deleteChecksByTeamId",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, teamId } = data;
+      const res = await networkService.deleteChecksByTeamId(authToken, teamId);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
+
 const uptimeMonitorsSlice = createSlice({
   name: "uptimeMonitors",
   initialState,
@@ -254,6 +274,24 @@ const uptimeMonitorsSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to delete uptime monitor";
+      })
+      // *****************************************************
+      // Delete Monitor checks by Team ID
+      // *****************************************************
+      .addCase(deleteMonitorChecksByTeamId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteMonitorChecksByTeamId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(deleteMonitorChecksByTeamId.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to delete monitor checks";
       })
       // *****************************************************
       // Pause Monitor
