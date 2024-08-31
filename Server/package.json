@@ -33,6 +33,7 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "nodemon": "3.1.0"
   }
 }
