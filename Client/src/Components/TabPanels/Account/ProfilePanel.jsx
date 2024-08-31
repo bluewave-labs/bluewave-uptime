@@ -302,7 +302,7 @@ const ProfilePanel = () => {
               label="Update"
               onClick={openPictureModal}
               sx={{
-                color: theme.palette.common.main,
+                color: theme.palette.primary.main,
               }}
             />
           </Stack>

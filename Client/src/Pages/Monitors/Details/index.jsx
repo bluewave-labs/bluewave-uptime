@@ -37,7 +37,7 @@ const StatBox = ({ title, value }) => {
         mb={theme.spacing(2)}
         fontSize={14}
         fontWeight={500}
-        color={theme.palette.common.main}
+        color={theme.palette.primary.main}
         sx={{
           "& span": {
             color: theme.palette.text.accent,

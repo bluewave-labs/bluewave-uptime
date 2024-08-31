@@ -52,7 +52,7 @@ const Card = ({ data }) => {
             <Typography
               component="h2"
               mb={theme.spacing(2)}
-              color={theme.palette.common.main}
+              color={theme.palette.primary.main}
             >
               {data.name}
             </Typography>

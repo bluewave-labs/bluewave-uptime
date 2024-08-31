@@ -109,7 +109,7 @@ const SetNewPassword = () => {
       overflow="hidden"
       sx={{
         "& h1": {
-          color: theme.palette.common.main,
+          color: theme.palette.primary.main,
           fontWeight: 600,
           fontSize: 24,
         },
@@ -280,7 +280,7 @@ const SetNewPassword = () => {
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
           component="span"
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           ml={theme.spacing(2)}
           onClick={() => navigate("/login")}
           sx={{ userSelect: "none" }}

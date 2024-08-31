@@ -43,7 +43,7 @@ const StatBox = ({ icon, title, value }) => {
       <Box>
         <Typography
           variant="h6"
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           mb={theme.spacing(6)}
         >
           {title}
@@ -592,7 +592,7 @@ const PageSpeedDetails = () => {
                 <Typography
                   component="span"
                   sx={{
-                    color: theme.palette.common.main,
+                    color: theme.palette.primary.main,
                     fontWeight: 500,
                     textDecoration: "underline",
                     cursor: "pointer",
@@ -627,7 +627,7 @@ const PageSpeedDetails = () => {
                 <Typography
                   component="span"
                   sx={{
-                    color: theme.palette.common.main,
+                    color: theme.palette.primary.main,
                     fontWeight: 500,
                     textDecoration: "underline",
                     cursor: "pointer",

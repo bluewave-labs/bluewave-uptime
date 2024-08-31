@@ -215,7 +215,7 @@ const CreateNewMaintenanceWindow = () => {
             sx={{
               width: "fit-content",
               fontSize: "var(--env-var-font-size-small)",
-              borderBottom: `1px dashed ${theme.palette.common.main}`,
+              borderBottom: `1px dashed ${theme.palette.primary.main}`,
               paddingBottom: "4px",
             }}
           >

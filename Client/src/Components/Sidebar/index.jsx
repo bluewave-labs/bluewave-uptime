@@ -154,7 +154,7 @@ function Sidebar() {
             color="white"
             sx={{
               position: "relative",
-              backgroundColor: theme.palette.common.main,
+              backgroundColor: theme.palette.primary.main,
               borderRadius: theme.shape.borderRadius,
               userSelect: "none",
             }}

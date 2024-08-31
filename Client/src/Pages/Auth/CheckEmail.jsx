@@ -90,7 +90,7 @@ const CheckEmail = () => {
       overflow="hidden"
       sx={{
         "& h1": {
-          color: theme.palette.common.main,
+          color: theme.palette.primary.main,
           fontWeight: 600,
           fontSize: 26,
         },
@@ -164,7 +164,7 @@ const CheckEmail = () => {
               component="span"
               onClick={resendToken}
               sx={{
-                color: theme.palette.common.main,
+                color: theme.palette.primary.main,
                 userSelect: "none",
                 pointerEvents: disabled ? "none" : "auto",
                 cursor: disabled ? "default" : "pointer",
@@ -181,7 +181,7 @@ const CheckEmail = () => {
         <Typography
           component="span"
           ml={theme.spacing(2)}
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           onClick={handleNavigate}
           sx={{ userSelect: "none" }}
         >

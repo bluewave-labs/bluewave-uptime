@@ -269,13 +269,13 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
           <Typography
             className="forgot-p"
             display="inline-block"
-            color={theme.palette.common.main}
+            color={theme.palette.primary.main}
           >
             Forgot password?
           </Typography>
           <Typography
             component="span"
-            color={theme.palette.common.main}
+            color={theme.palette.primary.main}
             ml={theme.spacing(2)}
             sx={{ userSelect: "none" }}
             onClick={handleNavigate}
@@ -419,7 +419,7 @@ const Login = () => {
       overflow="hidden"
       sx={{
         "& h1": {
-          color: theme.palette.common.main,
+          color: theme.palette.primary.main,
           fontWeight: 600,
           fontSize: 30,
         },
@@ -491,7 +491,7 @@ const Login = () => {
         </Typography>
         <Typography
           component="span"
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           ml={theme.spacing(2)}
           onClick={() => {
             navigate("/register");

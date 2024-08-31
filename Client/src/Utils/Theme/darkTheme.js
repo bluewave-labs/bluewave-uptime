@@ -14,7 +14,6 @@ const background = {
   accent: "#18181a",
 };
 const border = { light: "#27272a", dark: "#2c2c2c" };
-const common = { main: "#1570ef", dark: "#0e4ea7", contrastText: "#FFFFFF" };
 
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
@@ -25,7 +24,7 @@ const darkTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     mode: "dark",
-    common: common,
+    primary: { main: "#1570ef" },
     text: text,
     background: background,
     border: border,
@@ -66,9 +65,6 @@ const darkTheme = createTheme({
       grid: "#454546",
     },
     // TO BE REMOVED //
-    primary: {
-      main: "#1570ef",
-    },
     secondary: {
       main: "#e6e6e6",
     },
@@ -103,6 +99,7 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 4,
+          transition: "none",
           "&:hover": {
             backgroundColor: background.fill,
           },
@@ -128,6 +125,13 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 0,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          transition: "none",
         },
       },
     },

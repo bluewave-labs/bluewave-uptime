@@ -13,7 +13,6 @@ const background = {
   accent: "#f9fafb",
 };
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
-const common = { main: "#1570ef", dark: "#0e4ea7", contrastText: "#FFFFFF" };
 
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
@@ -23,7 +22,7 @@ const shadow =
 const lightTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
-    common: common,
+    primary: { main: "#1570EF" },
     text: text,
     background: background,
     border: border,
@@ -63,9 +62,6 @@ const lightTheme = createTheme({
       grid: "#a2a3a3",
     },
     // TO BE REMOVED //
-    primary: {
-      main: "#1570EF",
-    },
     secondary: {
       main: "#475467",
     },
@@ -100,6 +96,7 @@ const lightTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 4,
+          transition: "none",
           "&:hover": {
             backgroundColor: background.fill,
           },
@@ -123,6 +120,13 @@ const lightTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 0,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          transition: "none",
         },
       },
     },

@@ -77,7 +77,7 @@ const Monitors = ({ isAdmin }) => {
               {monitorState.monitors?.length !== 0 && (
                 <Button
                   variant="contained"
-                  color="common"
+                  color="primary"
                   onClick={() => {
                     navigate("/monitors/create");
                   }}

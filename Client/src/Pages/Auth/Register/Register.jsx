@@ -644,7 +644,7 @@ const Register = ({ isSuperAdmin }) => {
       overflow="hidden"
       sx={{
         "& h1": {
-          color: theme.palette.common.main,
+          color: theme.palette.primary.main,
           fontWeight: 600,
           fontSize: 30,
         },
@@ -731,7 +731,7 @@ const Register = ({ isSuperAdmin }) => {
           onClick={() => {
             navigate("/login");
           }}
-          sx={{ userSelect: "none", color: theme.palette.common.main }}
+          sx={{ userSelect: "none", color: theme.palette.primary.main }}
         >
           Log In
         </Typography>

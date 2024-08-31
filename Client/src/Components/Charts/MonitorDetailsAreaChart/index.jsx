@@ -22,7 +22,7 @@ const CustomToolTip = ({ active, payload, label }) => {
       >
         <Typography
           sx={{
-            color: theme.palette.common.main,
+            color: theme.palette.primary.main,
             fontSize: 13,
           }}
         >
