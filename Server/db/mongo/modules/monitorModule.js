@@ -280,6 +280,9 @@ const getMonitorStatsById = async (req) => {
 const getMonitorById = async (monitorId) => {
   try {
     const monitor = await Monitor.findById(monitorId);
+    if (monitor === null || monitor === undefined) {
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+    }
     // Get notifications
     const notifications = await Notification.find({
       monitorId: monitorId,

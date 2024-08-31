@@ -140,9 +140,9 @@ const startApp = async () => {
     }
     process.exit(0);
   };
-  process.on("SIGUSR2", cleanup);
-  process.on("SIGINT", cleanup);
-  process.on("SIGTERM", cleanup);
+  // process.on("SIGUSR2", cleanup);
+  // process.on("SIGINT", cleanup);
+  // process.on("SIGTERM", cleanup);
 };
 
 startApp().catch((error) => {
