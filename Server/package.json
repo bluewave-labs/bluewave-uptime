@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "lint": "biome lint .",
+    "format": "biome format --write ."
   },
   "keywords": [],
   "author": "",
