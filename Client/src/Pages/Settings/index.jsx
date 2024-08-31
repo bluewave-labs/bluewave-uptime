@@ -1,6 +1,5 @@
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, styled, Typography } from "@mui/material";
-import ButtonSpinner from "../../Components/ButtonSpinner";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
@@ -10,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import { deleteMonitorChecksByTeamId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import PropTypes from "prop-types";
+import LoadingButton from "@mui/lab/LoadingButton";
 const Settings = ({ isAdmin }) => {
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
@@ -124,13 +124,15 @@ const Settings = ({ isAdmin }) => {
               />
               <Box>
                 <Typography>Clear all stats. This is irreversible.</Typography>
-                <ButtonSpinner
-                  isLoading={isLoading}
-                  level="error"
-                  label="Clear all stats"
+                <LoadingButton
+                  variant="contained"
+                  color="error"
+                  loading={isLoading}
                   onClick={handleClearStats}
                   sx={{ mt: theme.spacing(4) }}
-                />
+                >
+                  Clear all stats
+                </LoadingButton>
               </Box>
             </Stack>
           </ConfigBox>

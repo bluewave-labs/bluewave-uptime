@@ -11,7 +11,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ButtonSpinner from "../../ButtonSpinner";
 import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
@@ -22,6 +21,7 @@ import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
 import Remove from "../../../assets/icons/trash-bin.svg?react";
 import Select from "../../Inputs/Select";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -392,13 +392,15 @@ const TeamPanel = () => {
             <Button variant="text" color="info" onClick={closeInviteModal}>
               Cancel
             </Button>
-            <ButtonSpinner
-              level="primary"
-              label="Send invite"
+            <LoadingButton
+              variant="contained"
+              color="primary"
               onClick={handleInviteMember}
-              isLoading={false}
+              loading={false}
               disabled={Object.keys(errors).length !== 0}
-            />
+            >
+              Send invite
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

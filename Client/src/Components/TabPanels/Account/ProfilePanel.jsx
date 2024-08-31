@@ -2,7 +2,6 @@ import { useTheme } from "@emotion/react";
 import { useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material";
-import ButtonSpinner from "../../ButtonSpinner";
 import Avatar from "../../Avatar";
 import Field from "../../Inputs/Field";
 import ImageField from "../../Inputs/Image";
@@ -19,6 +18,7 @@ import { formatBytes } from "../../../Utils/fileUtils";
 import { clearUptimeMonitorState } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -308,19 +308,19 @@ const ProfilePanel = () => {
         />
         <Stack direction="row" justifyContent="flex-end">
           <Box width="fit-content">
-            <ButtonSpinner
-              level="primary"
-              label="Save"
+            <LoadingButton
+              variant="contained"
+              color="primary"
               onClick={handleSaveProfile}
-              isLoading={isLoading}
-              loadingText="Saving..."
+              loading={isLoading}
+              loadingIndicator="Saving..."
               disabled={
                 Object.keys(errors).length !== 0 && !errors?.picture && true
               }
-              sx={{
-                paddingX: theme.spacing(12),
-              }}
-            />
+              sx={{ px: theme.spacing(12) }}
+            >
+              Save
+            </LoadingButton>
           </Box>
         </Stack>
       </Stack>
@@ -391,12 +391,14 @@ const ProfilePanel = () => {
             <Button variant="text" color="info" onClick={() => setIsOpen("")}>
               Cancel
             </Button>
-            <ButtonSpinner
-              level="error"
-              label="Delete account"
+            <LoadingButton
+              variant="contained"
+              color="error"
               onClick={handleDeleteAccount}
-              isLoading={isLoading}
-            />
+              loading={isLoading}
+            >
+              Delete account
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

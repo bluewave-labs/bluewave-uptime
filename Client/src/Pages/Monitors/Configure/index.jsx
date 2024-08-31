@@ -16,13 +16,15 @@ import {
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Field from "../../../Components/Inputs/Field";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
-import "./index.css";
 import SkeletonLayout from "./skeleton";
-import ButtonSpinner from "../../../Components/ButtonSpinner";
+import LoadingButton from "@mui/lab/LoadingButton";
+import "./index.css";
+
 /**
  * Parses a URL string and returns a URL object.
  *
@@ -247,27 +249,40 @@ const Configure = () => {
                   ml: "auto",
                 }}
               >
-                <ButtonSpinner
-                  isLoading={isLoading}
-                  level="tertiary"
-                  label={monitor?.isActive ? "Pause" : "Resume"}
-                  img={<PauseCircleOutlineIcon />}
+                <LoadingButton
+                  variant="contained"
+                  color="secondary"
+                  loading={isLoading}
                   sx={{
                     backgroundColor: theme.palette.background.main,
-                    px: theme.spacing(6),
+                    px: theme.spacing(5),
                     mr: theme.spacing(6),
+                    "& svg": {
+                      mr: theme.spacing(2),
+                    },
                   }}
                   onClick={handlePause}
-                />
-                <ButtonSpinner
-                  isLoading={isLoading}
-                  level="error"
-                  label="Remove"
-                  sx={{
-                    px: theme.spacing(8),
-                  }}
+                >
+                  {monitor?.isActive ? (
+                    <>
+                      <PauseCircleOutlineIcon />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircleOutlineRoundedIcon />
+                      Resume
+                    </>
+                  )}
+                </LoadingButton>
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{ px: theme.spacing(8) }}
                   onClick={() => setIsOpen(true)}
-                />
+                >
+                  Remove
+                </Button>
               </Box>
             </Stack>
             <ConfigBox>
@@ -374,13 +389,15 @@ const Configure = () => {
               </Stack>
             </ConfigBox>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
-              <ButtonSpinner
-                isLoading={isLoading}
-                level="primary"
-                label="Save"
+              <LoadingButton
+                variant="contained"
+                color="primary"
+                loading={isLoading}
                 sx={{ px: theme.spacing(12) }}
                 onClick={handleSubmit}
-              />
+              >
+                Save
+              </LoadingButton>
             </Stack>
           </Stack>
         </>
@@ -439,9 +456,14 @@ const Configure = () => {
             >
               Cancel
             </Button>
-            <Button variant="contained" color="error" onClick={handleRemove}>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              loading={isLoading}
+              onClick={handleRemove}
+            >
               Delete
-            </Button>
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

@@ -8,11 +8,11 @@ import { useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Check from "../../Components/Check/Check";
-import ButtonSpinner from "../../Components/ButtonSpinner";
 import Field from "../../Components/Inputs/Field";
 import LockIcon from "../../assets/icons/lock-button-icon.svg?react";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
+import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
 
 const SetNewPassword = () => {
@@ -266,14 +266,16 @@ const SetNewPassword = () => {
               />
             </Stack>
           </Box>
-          <ButtonSpinner
-            disabled={Object.keys(errors).length !== 0}
-            isLoading={isLoading}
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            loading={isLoading}
             onClick={handleSubmit}
-            level="primary"
-            label="Reset password"
+            disabled={Object.keys(errors).length !== 0}
             sx={{ width: "100%", maxWidth: 400 }}
-          />
+          >
+            Reset password
+          </LoadingButton>
         </Stack>
       </Stack>
       <Box textAlign="center" p={theme.spacing(12)}>
