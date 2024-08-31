@@ -1,6 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Stack, styled, Typography } from "@mui/material";
-import Button from "../../Components/Button";
+import { Box, Button, Stack, styled, Typography } from "@mui/material";
 import ButtonSpinner from "../../Components/ButtonSpinner";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
@@ -156,10 +155,12 @@ const Settings = ({ isAdmin }) => {
         </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
           <Button
-            level="primary"
-            label="Save"
+            variant="contained"
+            color="primary"
             sx={{ px: theme.spacing(12), mt: theme.spacing(20) }}
-          />
+          >
+            Save
+          </Button>
         </Stack>
       </Stack>
     </Box>

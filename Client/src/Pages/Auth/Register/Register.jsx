@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
@@ -13,11 +13,9 @@ import Logo from "../../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import { networkService } from "../../../main";
 import "../index.css";
-import { logger } from "../../../Utils/Logger";
 
 /**
  * Displays the initial landing page.
@@ -46,17 +44,22 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
         </Box>
         <Box width="100%">
           <Button
-            level="secondary"
-            label="Sign up with Email"
-            img={<Mail />}
+            variant="outlined"
+            color="info"
             onClick={onSignup}
             sx={{
               width: "100%",
               "& svg": {
                 mr: theme.spacing(4),
+                "& path": {
+                  stroke: theme.palette.other.icon,
+                },
               },
             }}
-          />
+          >
+            <Mail />
+            Sign up with Email
+          </Button>
         </Box>
         <Box maxWidth={400}>
           <Typography className="tos-p">
@@ -180,26 +183,29 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              px: theme.spacing(8),
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.spacing(2),
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={(errors.firstName || errors.lastName) && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -270,26 +276,29 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              px: theme.spacing(8),
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.spacing(2),
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.email && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -443,26 +452,29 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              px: theme.spacing(8),
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.spacing(2),
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.email && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>

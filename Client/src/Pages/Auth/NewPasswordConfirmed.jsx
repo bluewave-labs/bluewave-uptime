@@ -1,10 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import Button from "../../Components/Button";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import ConfirmIcon from "../../assets/icons/confirm-icon.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
@@ -85,14 +84,16 @@ const NewPasswordConfirmed = () => {
             </Typography>
           </Box>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={() => navigate("/monitors")}
             sx={{
               width: "100%",
               maxWidth: 400,
             }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
       <Box textAlign="center" p={theme.spacing(12)}>

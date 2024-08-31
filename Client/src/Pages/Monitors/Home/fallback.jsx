@@ -1,6 +1,5 @@
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import Button from "../../../Components/Button";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -25,13 +24,15 @@ const Fallback = ({ isAdmin }) => {
       </Typography>
       {isAdmin && (
         <Button
-          level="primary"
-          label="Create your first monitor"
+          variant="primary"
+          color="primary"
           onClick={() => {
             navigate("/monitors/create");
           }}
           sx={{ mt: theme.spacing(12) }}
-        />
+        >
+          Create your first monitor
+        </Button>
       )}
     </Stack>
   );

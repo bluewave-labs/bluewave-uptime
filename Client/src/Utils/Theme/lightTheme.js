@@ -29,7 +29,7 @@ const lightTheme = createTheme({
     border: border,
     info: {
       text: text.primary,
-      main: text.secondary,
+      main: text.tertiary,
       bg: background.main,
       light: background.main,
       border: border.dark,

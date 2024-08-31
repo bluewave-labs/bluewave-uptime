@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Skeleton, Stack, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -11,7 +11,6 @@ import {
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
@@ -197,29 +196,33 @@ const PageSpeedConfigure = () => {
               </Box>
               <Box alignSelf="flex-end" ml="auto">
                 <Button
-                  level="tertiary"
-                  label="Pause"
-                  animate="rotate180"
-                  img={<PauseCircleOutlineIcon />}
+                  variant="contained"
+                  color="secondary"
                   sx={{
-                    backgroundColor: theme.palette.background.fill,
                     pl: theme.spacing(4),
                     pr: theme.spacing(6),
                     "& svg": {
                       mr: theme.spacing(2),
+                      "& path": {
+                        stroke: theme.palette.other.icon,
+                        strokeWidth: 0.1,
+                      },
                     },
                   }}
-                />
+                >
+                  <PauseCircleOutlineIcon />
+                  Pause
+                </Button>
                 <Button
-                  level="error"
-                  label="Remove"
+                  variant="contained"
+                  color="error"
+                  onClick={() => setIsOpen(true)}
                   sx={{
-                    boxShadow: "none",
-                    px: theme.spacing(8),
                     ml: theme.spacing(6),
                   }}
-                  onClick={() => setIsOpen(true)}
-                />
+                >
+                  Remove
+                </Button>
               </Box>
             </Stack>
             <Stack
@@ -321,11 +324,13 @@ const PageSpeedConfigure = () => {
             <Stack direction="row" justifyContent="flex-end" mt="auto">
               <Button
                 type="submit"
-                level="primary"
-                label="Save"
+                variant="contained"
+                color="primary"
                 onClick={handleSave}
-                sx={{ px: theme.spacing(12), mt: theme.spacing(12) }}
-              />
+                sx={{ px: theme.spacing(12) }}
+              >
+                Save
+              </Button>
             </Stack>
           </Stack>
         </>
@@ -376,11 +381,15 @@ const PageSpeedConfigure = () => {
             justifyContent="flex-end"
           >
             <Button
-              level="tertiary"
-              label="Cancel"
+              variant="text"
+              color="info"
               onClick={() => setIsOpen(false)}
-            />
-            <Button level="error" label="Delete" onClick={handleRemove} />
+            >
+              Cancel
+            </Button>
+            <Button variant="contained" color="error" onClick={handleRemove}>
+              Delete
+            </Button>
           </Stack>
         </Stack>
       </Modal>

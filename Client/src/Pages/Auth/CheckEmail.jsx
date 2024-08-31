@@ -1,11 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { createToast } from "../../Utils/toastUtils";
 import { forgotPassword } from "../../Features/Auth/authSlice";
-import Button from "../../Components/Button";
 import background from "../../assets/Images/background_pattern_decorative.png";
 import EmailIcon from "../../assets/icons/email.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
@@ -92,7 +91,7 @@ const CheckEmail = () => {
         "& h1": {
           color: theme.palette.primary.main,
           fontWeight: 600,
-          fontSize: 26,
+          fontSize: 22,
         },
         "& p": {
           fontSize: 14,
@@ -150,14 +149,16 @@ const CheckEmail = () => {
             </Typography>
           </Box>
           <Button
-            level="primary"
-            label="Open email app"
+            variant="contained"
+            color="primary"
             onClick={openMail}
             sx={{
               width: "100%",
               maxWidth: 400,
             }}
-          />
+          >
+            Open email app
+          </Button>
           <Typography sx={{ alignSelf: "center", mb: theme.spacing(6) }}>
             Didn&apos;t receive the email?{" "}
             <Typography

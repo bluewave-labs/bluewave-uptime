@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonGroup, Stack, Skeleton, Typography } from "@mui/material";
-import Button from "../../Components/Button";
+import {
+  ButtonGroup,
+  Stack,
+  Skeleton,
+  Typography,
+  Button,
+} from "@mui/material";
 import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
@@ -78,11 +83,7 @@ const Incidents = () => {
   };
 
   return (
-    <Stack
-      className="incidents"
-      pt={theme.spacing(21)}
-      gap={theme.spacing(12)}
-    >
+    <Stack className="incidents" pt={theme.spacing(21)} gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -114,38 +115,26 @@ const Incidents = () => {
               }}
             >
               <Button
-                level="secondary"
-                label="All"
+                variant="group"
+                filled={(filter === "all").toString()}
                 onClick={() => setFilter("all")}
-                sx={{
-                  backgroundColor:
-                    filter === "all"
-                      ? theme.palette.background.fill
-                      : theme.palette.background.main,
-                }}
-              />
+              >
+                All
+              </Button>
               <Button
-                level="secondary"
-                label="Down"
+                variant="group"
+                filled={(filter === "down").toString()}
                 onClick={() => setFilter("down")}
-                sx={{
-                  backgroundColor:
-                    filter === "down"
-                      ? theme.palette.background.fill
-                      : theme.palette.background.main,
-                }}
-              />
+              >
+                Down
+              </Button>
               <Button
-                level="secondary"
-                label="Cannot Resolve"
+                variant="group"
+                filled={(filter === "resolve").toString()}
                 onClick={() => setFilter("resolve")}
-                sx={{
-                  backgroundColor:
-                    filter === "resolve"
-                      ? theme.palette.background.fill
-                      : theme.palette.background.main,
-                }}
-              />
+              >
+                Cannot Resolve
+              </Button>
             </ButtonGroup>
           </Stack>
           <IncidentTable
