@@ -62,11 +62,6 @@ const lightTheme = createTheme({
       fill: "#e3e3e3",
       grid: "#a2a3a3",
     },
-    // TO BE REMOVED //
-    tertiary: {
-      main: "#475467",
-    },
-    // ----------------- //
   },
   spacing: 2,
   components: {

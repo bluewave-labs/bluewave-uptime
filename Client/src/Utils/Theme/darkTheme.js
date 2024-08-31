@@ -65,11 +65,6 @@ const darkTheme = createTheme({
       fill: "#18181a",
       grid: "#454546",
     },
-    // TO BE REMOVED //
-    tertiary: {
-      main: "#e6e6e6",
-    },
-    // ----------------- //
   },
   spacing: 2,
   components: {
