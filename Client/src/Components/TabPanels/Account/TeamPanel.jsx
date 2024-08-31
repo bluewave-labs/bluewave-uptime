@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
 import {
   Box,
+  Button,
   ButtonGroup,
   Divider,
   IconButton,
@@ -11,7 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import ButtonSpinner from "../../ButtonSpinner";
-import Button from "../../Button";
 import { useEffect, useState } from "react";
 import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
@@ -283,48 +283,37 @@ const TeamPanel = () => {
             gap={theme.spacing(6)}
             sx={{ fontSize: 14 }}
           >
-            <ButtonGroup
-              sx={{
-                "& button, & button:hover": {
-                  borderColor: theme.palette.border.light,
-                },
-              }}
-            >
+            <ButtonGroup>
               <Button
-                level="secondary"
-                label="All"
+                variant="group"
+                filled={(filter === "all").toString()}
                 onClick={() => setFilter("all")}
-                sx={{
-                  backgroundColor:
-                    filter === "all" && theme.palette.background.fill,
-                }}
-              />
+              >
+                All
+              </Button>
               <Button
-                level="secondary"
-                label="Administrator"
+                variant="group"
+                filled={(filter === "admin").toString()}
                 onClick={() => setFilter("admin")}
-                sx={{
-                  backgroundColor:
-                    filter === "admin" && theme.palette.background.fill,
-                }}
-              />
+              >
+                Administrator
+              </Button>
               <Button
-                level="secondary"
-                label="Member"
+                variant="group"
+                filled={(filter === "user").toString()}
                 onClick={() => setFilter("user")}
-                sx={{
-                  backgroundColor:
-                    filter === "user" && theme.palette.background.fill,
-                }}
-              />
+              >
+                Member
+              </Button>
             </ButtonGroup>
           </Stack>
           <Button
-            level="primary"
-            label="Invite a team member"
-            sx={{ paddingX: theme.spacing(15) }}
+            variant="contained"
+            color="primary"
             onClick={() => setIsOpen(true)}
-          />
+          >
+            Invite a team member
+          </Button>
         </Stack>
         <BasicTable
           data={tableData}
@@ -400,11 +389,9 @@ const TeamPanel = () => {
             mt={theme.spacing(8)}
             justifyContent="flex-end"
           >
-            <Button
-              level="tertiary"
-              label="Cancel"
-              onClick={closeInviteModal}
-            />
+            <Button variant="text" color="info" onClick={closeInviteModal}>
+              Cancel
+            </Button>
             <ButtonSpinner
               level="primary"
               label="Send invite"

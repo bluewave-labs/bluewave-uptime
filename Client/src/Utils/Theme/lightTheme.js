@@ -23,12 +23,13 @@ const lightTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     primary: { main: "#1570EF" },
+    secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
     text: text,
     background: background,
     border: border,
     info: {
       text: text.primary,
-      main: text.primary,
+      main: text.secondary,
       bg: background.main,
       light: background.main,
       border: border.dark,
@@ -62,9 +63,6 @@ const lightTheme = createTheme({
       grid: "#a2a3a3",
     },
     // TO BE REMOVED //
-    secondary: {
-      main: "#475467",
-    },
     tertiary: {
       main: "#475467",
     },
@@ -77,8 +75,26 @@ const lightTheme = createTheme({
         disableRipple: true,
       },
       styleOverrides: {
-        root: {
-          variants: [],
+        root: ({ theme }) => ({
+          variants: [
+            {
+              props: (props) => props.variant === "group",
+              style: {
+                color: theme.palette.secondary.contrastText,
+                backgroundColor: theme.palette.background.main,
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.light,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "group" && props.filled === "true",
+              style: {
+                backgroundColor: theme.palette.secondary.main,
+              },
+            },
+          ],
           fontWeight: 400,
           borderRadius: 4,
           boxShadow: "none",
@@ -89,7 +105,7 @@ const lightTheme = createTheme({
           "&:hover": {
             boxShadow: "none",
           },
-        },
+        }),
       },
     },
     MuiIconButton: {

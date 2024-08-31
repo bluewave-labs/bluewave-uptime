@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
@@ -14,7 +14,6 @@ import {
   getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import Select from "../../../Components/Inputs/Select";
@@ -434,11 +433,15 @@ const Configure = () => {
             justifyContent="flex-end"
           >
             <Button
-              level="tertiary"
-              label="Cancel"
+              variant="text"
+              color="info"
               onClick={() => setIsOpen(false)}
-            />
-            <Button level="error" label="Delete" onClick={handleRemove} />
+            >
+              Cancel
+            </Button>
+            <Button variant="contained" color="error" onClick={handleRemove}>
+              Delete
+            </Button>
           </Stack>
         </Stack>
       </Modal>
