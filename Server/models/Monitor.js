@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Notification = require("./Notification");
 
 const MonitorSchema = mongoose.Schema(
   {
@@ -43,6 +44,12 @@ const MonitorSchema = mongoose.Schema(
       type: Number,
       default: 60000,
     },
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -6,6 +6,7 @@ const {
   getTeamChecksParamValidation,
   getTeamChecksQueryValidation,
   deleteChecksParamValidation,
+  deleteChecksByTeamIdParamValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "check";
@@ -112,9 +113,34 @@ const deleteChecks = async (req, res, next) => {
   }
 };
 
+const deleteChecksByTeamId = async (req, res, next) => {
+  try {
+    await deleteChecksByTeamIdParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteChecksByTeam";
+    error.status = 422;
+    next(error);
+  }
+
+  try {
+    const deletedCount = await req.db.deleteChecksByTeamId(req.params.teamId);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_DELETE,
+      data: { deletedCount },
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteChecksByTeamId";
+    next(error);
+  }
+};
+
 module.exports = {
   createCheck,
   getChecks,
   getTeamChecks,
   deleteChecks,
+  deleteChecksByTeamId,
 };

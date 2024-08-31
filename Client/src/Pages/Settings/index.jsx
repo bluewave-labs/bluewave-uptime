@@ -1,14 +1,38 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, styled, Typography } from "@mui/material";
 import Button from "../../Components/Button";
+import ButtonSpinner from "../../Components/ButtonSpinner";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
 import { logger } from "../../Utils/Logger";
 import "./index.css";
-
-const Settings = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { createToast } from "../../Utils/toastUtils";
+import { deleteMonitorChecksByTeamId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import PropTypes from "prop-types";
+const Settings = ({ isAdmin }) => {
   const theme = useTheme();
+  const { user, authToken } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.uptimeMonitors);
+
+  const dispatch = useDispatch();
+  const handleClearStats = async () => {
+    try {
+      const action = await dispatch(
+        deleteMonitorChecksByTeamId({ teamId: user.teamId, authToken })
+      );
+
+      if (deleteMonitorChecksByTeamId.fulfilled.match(action)) {
+        createToast({ body: "Stats cleared successfully" });
+      } else {
+        createToast({ body: "Failed to clear stats" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ body: "Failed to clear stats" });
+    }
+  };
 
   const ConfigBox = styled("div")({
     display: "flex",
@@ -79,35 +103,39 @@ const Settings = () => {
             />
           </Stack>
         </ConfigBox>
-        <ConfigBox>
-          <Box>
-            <Typography component="h1">History and monitoring</Typography>
-            <Typography sx={{ mt: theme.spacing(2) }}>
-              Define here for how long you want to keep the data. You can also
-              remove all past data.
-            </Typography>
-          </Box>
-          <Stack gap={theme.spacing(20)}>
-            <Field
-              type="text"
-              id="history-monitoring"
-              label="The days you want to keep monitoring history."
-              isOptional={true}
-              optionalLabel="0 for infinite"
-              placeholder="90"
-              value=""
-              onChange={() => logger.warn("Disabled")}
-            />
+        {isAdmin && (
+          <ConfigBox>
             <Box>
-              <Typography>Clear all stats. This is irreversible.</Typography>
-              <Button
-                level="error"
-                label="Clear all stats"
-                sx={{ mt: theme.spacing(4) }}
-              />
+              <Typography component="h1">History and monitoring</Typography>
+              <Typography sx={{ mt: theme.spacing(2) }}>
+                Define here for how long you want to keep the data. You can also
+                remove all past data.
+              </Typography>
             </Box>
-          </Stack>
-        </ConfigBox>
+            <Stack gap={theme.spacing(20)}>
+              <Field
+                type="text"
+                id="history-monitoring"
+                label="The days you want to keep monitoring history."
+                isOptional={true}
+                optionalLabel="0 for infinite"
+                placeholder="90"
+                value=""
+                onChange={() => logger.warn("Disabled")}
+              />
+              <Box>
+                <Typography>Clear all stats. This is irreversible.</Typography>
+                <ButtonSpinner
+                  isLoading={isLoading}
+                  level="error"
+                  label="Clear all stats"
+                  onClick={handleClearStats}
+                  sx={{ mt: theme.spacing(4) }}
+                />
+              </Box>
+            </Stack>
+          </ConfigBox>
+        )}
         <ConfigBox>
           <Box>
             <Typography component="h1">About</Typography>
@@ -138,4 +166,7 @@ const Settings = () => {
   );
 };
 
+Settings.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default Settings;

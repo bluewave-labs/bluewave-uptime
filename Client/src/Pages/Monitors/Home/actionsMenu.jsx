@@ -93,17 +93,8 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
         slotProps={{
           paper: {
             sx: {
-              "& ul": {
-                p: theme.spacing(2.5),
-                minWidth: "100px",
-              },
-              "& li": {
-                color: theme.palette.text.secondary,
-                fontSize: 13,
-                px: theme.spacing(4),
-                py: theme.spacing(2.5),
-                borderRadius: theme.shape.borderRadius,
-              },
+              "& ul": { p: theme.spacing(2.5) },
+              "& li": { m: 0 },
               "& li:last-of-type": {
                 color: theme.palette.error.text,
               },

@@ -59,6 +59,7 @@ const lightTheme = createTheme({
       icon: "#667085",
       line: "#d6d9dd",
       fill: "#e3e3e3",
+      grid: "#a2a3a3",
     },
     // TO BE REMOVED //
     primary: {

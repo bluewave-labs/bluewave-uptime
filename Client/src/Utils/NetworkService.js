@@ -184,6 +184,25 @@ class NetworkService {
       },
     });
   }
+
+  /**
+   * ************************************
+   * Deletes all checks for all monitor by teamID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor to be deleted.
+   * @returns {Promise<AxiosResponse>} The response from the axios DELETE request.
+   */
+  async deleteChecksByTeamId(authToken, teamId) {
+    return this.axiosInstance.delete(`/checks/team/${teamId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
   /**
    * ************************************
    * Pauses a single monitor by its ID

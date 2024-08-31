@@ -2,10 +2,12 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import Skeleton from "../../assets/Images/create-placeholder.svg?react";
+import SkeletonDark from "../../assets/Images/create-placeholder-dark.svg?react";
 import Background from "../../assets/Images/background-grid.svg?react";
 import Button from "../Button";
 import Check from "../Check/Check";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./index.css";
 
 /**
@@ -22,6 +24,7 @@ import "./index.css";
 const Fallback = ({ title, checks, link = "/", isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const mode = useSelector((state) => state.ui.mode);
 
   return (
     <Stack
@@ -29,7 +32,11 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
       alignItems="center"
       gap={theme.spacing(20)}
     >
-      <Skeleton style={{ zIndex: 1 }} />
+      {mode === "light" ? (
+        <Skeleton style={{ zIndex: 1 }} />
+      ) : (
+        <SkeletonDark style={{ zIndex: 1 }} />
+      )}
       <Box
         className="background-pattern-svg"
         sx={{
@@ -44,7 +51,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
         <Typography
           component="h1"
           marginY={theme.spacing(4)}
-          color={theme.palette.text.secondary}
+          color={theme.palette.text.tertiary}
         >
           A {title} is used to:
         </Typography>
