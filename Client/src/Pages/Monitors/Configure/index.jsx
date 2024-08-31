@@ -144,7 +144,6 @@ const Configure = () => {
       if (pauseUptimeMonitor.fulfilled.match(action)) {
         const monitor = action.payload.data;
         setMonitor(monitor);
-        console.log(monitor.notifications);
       } else if (pauseUptimeMonitor.rejected.match(action)) {
         throw new Error(action.error.message);
       }
