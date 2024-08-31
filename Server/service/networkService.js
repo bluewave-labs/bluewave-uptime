@@ -16,37 +16,45 @@ class NetworkService {
   }
 
   async handleNotification(job, isAlive) {
-    const { _id } = job.data;
-    const monitor = await this.db.getMonitorById(_id);
-    if (monitor === null || monitor === undefined) {
-      logger.error(`Null Monitor: ${_id}`, {
+    try {
+      const { _id } = job.data;
+      const monitor = await this.db.getMonitorById(_id);
+      if (monitor === null || monitor === undefined) {
+        logger.error(`Null Monitor: ${_id}`, {
+          method: "handleNotification",
+          service: this.SERVICE_NAME,
+          jobId: job.id,
+        });
+        return;
+      }
+
+      // If monitor status changes, update monitor status and send notification
+      if (monitor.status !== isAlive) {
+        monitor.status = !monitor.status;
+        await monitor.save();
+
+        let template =
+          isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
+        let status = isAlive === true ? "up" : "down";
+
+        const notifications = await this.db.getNotificationsByMonitorId(_id);
+        for (const notification of notifications) {
+          if (notification.type === "email") {
+            await this.emailService.buildAndSendEmail(
+              template,
+              { monitorName: monitor.name, monitorUrl: monitor.url },
+              notification.address,
+              `Monitor ${monitor.name} is ${status}`
+            );
+          }
+        }
+      }
+    } catch (error) {
+      logger.error(error.message, {
         method: "handleNotification",
         service: this.SERVICE_NAME,
         jobId: job.id,
       });
-      return;
-    }
-
-    // If monitor status changes, update monitor status and send notification
-    if (monitor.status !== isAlive) {
-      monitor.status = !monitor.status;
-      await monitor.save();
-
-      let template =
-        isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
-      let status = isAlive === true ? "up" : "down";
-
-      const notifications = await this.db.getNotificationsByMonitorId(_id);
-      for (const notification of notifications) {
-        if (notification.type === "email") {
-          await this.emailService.buildAndSendEmail(
-            template,
-            { monitorName: monitor.name, monitorUrl: monitor.url },
-            notification.address,
-            `Monitor ${monitor.name} is ${status}`
-          );
-        }
-      }
     }
   }
 
