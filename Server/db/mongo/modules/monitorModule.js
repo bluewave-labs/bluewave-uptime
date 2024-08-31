@@ -346,12 +346,7 @@ const getMonitorsByTeamId = async (req, res) => {
         if (normalize !== undefined) {
           checks = NormalizeData(checks, 10, 100);
         }
-
-        // Get notifications
-        const notifications = await Notification.find({
-          monitorId: monitor._id,
-        });
-        return { ...monitor.toObject(), checks, notifications };
+        return { ...monitor.toObject(), checks };
       })
     );
     return monitorsWithChecks;
