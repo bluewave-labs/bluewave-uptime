@@ -3,10 +3,9 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
-import Button from "../../../Components/Button";
 import { useTheme } from "@emotion/react";
 import BasicTable from "../../../Components/BasicTable";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import SkeletonLayout from "./skeleton";
 import Fallback from "./fallback";
@@ -77,13 +76,15 @@ const Monitors = ({ isAdmin }) => {
               <Greeting type="uptime" />
               {monitorState.monitors?.length !== 0 && (
                 <Button
-                  level="primary"
-                  label="Create monitor"
+                  variant="contained"
+                  color="common"
                   onClick={() => {
                     navigate("/monitors/create");
                   }}
                   sx={{ fontWeight: 500 }}
-                />
+                >
+                  Create monitor
+                </Button>
               )}
             </Stack>
           </Box>

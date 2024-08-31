@@ -14,6 +14,7 @@ const background = {
   accent: "#18181a",
 };
 const border = { light: "#27272a", dark: "#2c2c2c" };
+const common = { main: "#1570ef", dark: "#0e4ea7", contrastText: "#FFFFFF" };
 
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
@@ -24,7 +25,7 @@ const darkTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     mode: "dark",
-    common: { main: "#1570ef" },
+    common: common,
     text: text,
     background: background,
     border: border,
@@ -46,6 +47,7 @@ const darkTheme = createTheme({
       main: "#d32f2f",
       light: "#1e1e1e",
       bg: "#27272a",
+      dark: "#932020",
       border: "#f04438",
     },
     warning: {
@@ -77,9 +79,24 @@ const darkTheme = createTheme({
   },
   spacing: 2,
   components: {
-    MuiButtonBase: {
+    MuiButton: {
       defaultProps: {
         disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          variants: [],
+          fontWeight: 400,
+          borderRadius: 4,
+          boxShadow: "none",
+          textTransform: "none",
+          "&:focus": {
+            outline: "none",
+          },
+          "&:hover": {
+            boxShadow: "none",
+          },
+        },
       },
     },
     MuiIconButton: {

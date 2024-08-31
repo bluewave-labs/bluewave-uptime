@@ -75,7 +75,7 @@ aside.collapsed .MuiAvatar-root + .MuiBox-root + .MuiIconButton-root {
 }
 
 aside .MuiListSubheader-root {
-  transition: all 200ms ease;
+  transition: padding 200ms ease;
 }
 
 @keyframes fadeIn {
