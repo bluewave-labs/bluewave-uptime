@@ -24,7 +24,7 @@ const Fallback = ({ isAdmin }) => {
       </Typography>
       {isAdmin && (
         <Button
-          variant="primary"
+          variant="contained"
           color="primary"
           onClick={() => {
             navigate("/monitors/create");
