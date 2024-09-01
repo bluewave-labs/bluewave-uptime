@@ -44,6 +44,10 @@ const MonitorSchema = mongoose.Schema(
       type: Number,
       default: 60000,
     },
+    uptimePercentage: {
+      type: Number,
+      default: undefined, 
+    },
     notifications: [
       {
         type: mongoose.Schema.Types.ObjectId,
