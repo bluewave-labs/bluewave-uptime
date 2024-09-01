@@ -35,10 +35,10 @@ const createCheck = async (checkData) => {
     }
 
     if (monitor.uptimePercentage === undefined) {
-      monitor.uptimePercentage = status ? 100 : 0;
+      monitor.uptimePercentage = status ? 1 : 0;
     } else {
       monitor.uptimePercentage =
-        (monitor.uptimePercentage * (n - 1) + (status ? 100 : 0)) / n;
+        (monitor.uptimePercentage * (n - 1) + (status ? 1: 0)) / n;
     }
 
     await monitor.save();
