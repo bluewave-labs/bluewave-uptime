@@ -49,7 +49,7 @@ export const getUptimeMonitorById = createAsyncThunk(
 );
 
 export const getUptimeMonitorsByTeamId = createAsyncThunk(
-  "montiors/getMonitorsByTeamId",
+  "monitors/getMonitorsByTeamId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
