@@ -36,7 +36,7 @@ const lightTheme = createTheme({
     },
     success: {
       text: "#079455",
-      main: "#17b26a",
+      main: "#45bb7a",
       light: "#d4f4e1",
       bg: "#ecfdf3",
     },
@@ -49,8 +49,8 @@ const lightTheme = createTheme({
     },
     warning: {
       text: "#DC6803",
-      main: "#fdb022",
-      light: "#fffcf5",
+      main: "#ff7a00",
+      light: "#ffb400",
       bg: "#ffecbc",
       border: "#fec84b",
     },
