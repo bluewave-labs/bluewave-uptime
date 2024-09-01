@@ -7,10 +7,10 @@ import { useEffect, useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Field from "../../Components/Inputs/Field";
-import ButtonSpinner from "../../Components/ButtonSpinner";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Key from "../../assets/icons/key.svg?react";
 import background from "../../assets/Images/background_pattern_decorative.png";
+import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
 
 const ForgotPassword = () => {
@@ -92,7 +92,7 @@ const ForgotPassword = () => {
       overflow="hidden"
       sx={{
         "& h1": {
-          color: theme.palette.common.main,
+          color: theme.palette.primary.main,
           fontWeight: 600,
           fontSize: 24,
         },
@@ -166,18 +166,19 @@ const ForgotPassword = () => {
               onChange={handleChange}
               error={errors.email}
             />
-            <ButtonSpinner
+            <LoadingButton
+              variant="contained"
+              color="primary"
+              loading={isLoading}
               disabled={errors.email !== undefined}
               onClick={handleSubmit}
-              isLoading={isLoading}
-              level="primary"
-              label="Send instructions"
               sx={{
                 width: "100%",
-                fontWeight: 400,
                 mt: theme.spacing(15),
               }}
-            />
+            >
+              Send instructions
+            </LoadingButton>
           </Box>
         </Stack>
       </Stack>
@@ -185,7 +186,7 @@ const ForgotPassword = () => {
         <Typography display="inline-block">Go back to —</Typography>
         <Typography
           component="span"
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           ml={theme.spacing(2)}
           onClick={handleNavigate}
           sx={{ userSelect: "none" }}

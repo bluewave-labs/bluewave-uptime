@@ -1,10 +1,9 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import Skeleton from "../../assets/Images/create-placeholder.svg?react";
 import SkeletonDark from "../../assets/Images/create-placeholder-dark.svg?react";
 import Background from "../../assets/Images/background-grid.svg?react";
-import Button from "../Button";
 import Check from "../Check/Check";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -66,11 +65,13 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
       {/* TODO - display a different fallback if user is not an admin*/}
       {isAdmin && (
         <Button
-          level="primary"
-          label={`Let's create your ${title}`}
+          variant="contained"
+          color="primary"
           sx={{ alignSelf: "center" }}
           onClick={() => navigate(link)}
-        />
+        >
+          Let's create your {title}
+        </Button>
       )}
     </Stack>
   );

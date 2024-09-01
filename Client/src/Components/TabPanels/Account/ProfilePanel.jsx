@@ -1,9 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box, Divider, Modal, Stack, Typography } from "@mui/material";
-import ButtonSpinner from "../../ButtonSpinner";
-import Button from "../../Button";
+import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material";
 import Avatar from "../../Avatar";
 import Field from "../../Inputs/Field";
 import ImageField from "../../Inputs/Image";
@@ -20,6 +18,7 @@ import { formatBytes } from "../../../Utils/fileUtils";
 import { clearUptimeMonitorState } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -292,19 +291,12 @@ const ProfilePanel = () => {
               }
               sx={{ mr: "8px" }}
             />
-            <Button
-              level="tertiary"
-              label="Delete"
-              onClick={handleDeletePicture}
-            />
-            <Button
-              level="tertiary"
-              label="Update"
-              onClick={openPictureModal}
-              sx={{
-                color: theme.palette.common.main,
-              }}
-            />
+            <Button variant="text" color="info" onClick={handleDeletePicture}>
+              Delete
+            </Button>
+            <Button variant="text" color="primary" onClick={openPictureModal}>
+              Update
+            </Button>
           </Stack>
         </Stack>
         <Divider
@@ -316,19 +308,19 @@ const ProfilePanel = () => {
         />
         <Stack direction="row" justifyContent="flex-end">
           <Box width="fit-content">
-            <ButtonSpinner
-              level="primary"
-              label="Save"
+            <LoadingButton
+              variant="contained"
+              color="primary"
               onClick={handleSaveProfile}
-              isLoading={isLoading}
-              loadingText="Saving..."
+              loading={isLoading}
+              loadingIndicator="Saving..."
               disabled={
                 Object.keys(errors).length !== 0 && !errors?.picture && true
               }
-              sx={{
-                paddingX: theme.spacing(12),
-              }}
-            />
+              sx={{ px: theme.spacing(12) }}
+            >
+              Save
+            </LoadingButton>
           </Box>
         </Stack>
       </Stack>
@@ -339,13 +331,8 @@ const ProfilePanel = () => {
           borderColor: theme.palette.border.light,
         }}
       />
-      <Stack
-        component="form"
-        noValidate
-        spellCheck="false"
-        gap={theme.spacing(4)}
-      >
-        <Box>
+      <Box component="form" noValidate spellCheck="false">
+        <Box mb={theme.spacing(6)}>
           <Typography component="h1">Delete account</Typography>
           <Typography component="p" sx={{ opacity: 0.6 }}>
             Note that deleting your account will remove all data from our
@@ -353,12 +340,13 @@ const ProfilePanel = () => {
           </Typography>
         </Box>
         <Button
-          level="error"
-          label="Delete account"
+          variant="contained"
+          color="error"
           onClick={() => setIsOpen("delete")}
-          sx={{ width: "fit-content", mt: theme.spacing(4) }}
-        />
-      </Stack>
+        >
+          Delete account
+        </Button>
+      </Box>
       {/* TODO - Update ModalPopup Component with @mui for reusability */}
       <Modal
         aria-labelledby="modal-delete-account"
@@ -400,17 +388,17 @@ const ProfilePanel = () => {
             mt={theme.spacing(5)}
             justifyContent="flex-end"
           >
-            <Button
-              level="tertiary"
-              label="Cancel"
-              onClick={() => setIsOpen("")}
-            />
-            <ButtonSpinner
-              level="error"
-              label="Delete account"
+            <Button variant="text" color="info" onClick={() => setIsOpen("")}>
+              Cancel
+            </Button>
+            <LoadingButton
+              variant="contained"
+              color="error"
               onClick={handleDeleteAccount}
-              isLoading={isLoading}
-            />
+              loading={isLoading}
+            >
+              Delete account
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>
@@ -480,15 +468,19 @@ const ProfilePanel = () => {
             justifyContent="flex-end"
           >
             <Button
-              level="secondary"
-              label="Edit"
+              variant="outlined"
+              color="secondary"
               disabled
               sx={{ mr: "auto" }}
-            />
-            <Button level="tertiary" label="Remove" onClick={removePicture} />
+            >
+              Edit
+            </Button>
+            <Button variant="text" color="info" onClick={removePicture}>
+              Remove
+            </Button>
             <Button
-              level="primary"
-              label="Update"
+              variant="contained"
+              color="primary"
               onClick={handleUpdatePicture}
               disabled={
                 (Object.keys(errors).length !== 0 && errors?.picture) ||
@@ -496,7 +488,9 @@ const ProfilePanel = () => {
                   ? true
                   : false
               }
-            />
+            >
+              Update
+            </Button>
           </Stack>
         </Stack>
       </Modal>

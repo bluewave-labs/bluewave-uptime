@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { createToast } from "../../../Utils/toastUtils";
 import {
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -16,7 +17,6 @@ import {
   getUptimeMonitorsByTeamId,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Settings from "../../../assets/icons/settings-bold.svg?react";
-import Button from "../../../Components/Button";
 import PropTypes from "prop-types";
 
 const ActionsMenu = ({ monitor, isAdmin }) => {
@@ -189,21 +189,25 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
             justifyContent="flex-end"
           >
             <Button
-              level="tertiary"
-              label="Cancel"
+              variant="text"
+              color="info"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsOpen(false);
               }}
-            />
+            >
+              Cancel
+            </Button>
             <Button
-              level="error"
-              label="Delete"
+              variant="contained"
+              color="error"
               onClick={(e) => {
                 e.stopPropagation(e);
                 handleRemove(e);
               }}
-            />
+            >
+              Delete
+            </Button>
           </Stack>
         </Stack>
       </Modal>

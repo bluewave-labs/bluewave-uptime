@@ -22,16 +22,17 @@ const shadow =
 const lightTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
-    common: { main: "#1570ef" },
+    primary: { main: "#1570EF" },
+    secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
     text: text,
     background: background,
     border: border,
     info: {
-      text: "#475467",
-      main: "#475467",
-      bg: "#ffffff",
-      light: "#ffffff",
-      border: "#D0D5DD",
+      text: text.primary,
+      main: text.tertiary,
+      bg: background.main,
+      light: background.main,
+      border: border.dark,
     },
     success: {
       text: "#079455",
@@ -61,29 +62,52 @@ const lightTheme = createTheme({
       fill: "#e3e3e3",
       grid: "#a2a3a3",
     },
-    // TO BE REMOVED //
-    primary: {
-      main: "#1570EF",
-    },
-    secondary: {
-      main: "#475467",
-    },
-    tertiary: {
-      main: "#475467",
-    },
-    // ----------------- //
   },
   spacing: 2,
   components: {
-    MuiButtonBase: {
+    MuiButton: {
       defaultProps: {
         disableRipple: true,
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          variants: [
+            {
+              props: (props) => props.variant === "group",
+              style: {
+                color: theme.palette.secondary.contrastText,
+                backgroundColor: theme.palette.background.main,
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.light,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "group" && props.filled === "true",
+              style: {
+                backgroundColor: theme.palette.secondary.main,
+              },
+            },
+          ],
+          fontWeight: 400,
+          borderRadius: 4,
+          boxShadow: "none",
+          textTransform: "none",
+          "&:focus": {
+            outline: "none",
+          },
+          "&:hover": {
+            boxShadow: "none",
+          },
+        }),
       },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
           padding: 4,
+          transition: "none",
           "&:hover": {
             backgroundColor: background.fill,
           },
@@ -107,6 +131,13 @@ const lightTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 0,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          transition: "none",
         },
       },
     },

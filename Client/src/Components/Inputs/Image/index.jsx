@@ -38,12 +38,12 @@ const ImageField = ({ id, src, loading, onChange }) => {
               border: "dashed",
               borderRadius: theme.shape.borderRadius,
               borderColor: isDragging
-                ? theme.palette.common.main
+                ? theme.palette.primary.main
                 : theme.palette.border.light,
               borderWidth: "2px",
               transition: "0.2s",
               "&:hover": {
-                borderColor: theme.palette.common.main,
+                borderColor: theme.palette.primary.main,
                 backgroundColor: "hsl(215, 87%, 51%, 0.05)",
               },
             }}
@@ -96,7 +96,7 @@ const ImageField = ({ id, src, loading, onChange }) => {
                 <Typography
                   component="span"
                   fontSize="inherit"
-                  color={theme.palette.common.main}
+                  color={theme.palette.primary.main}
                   fontWeight={500}
                 >
                   Click to upload

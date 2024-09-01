@@ -24,13 +24,14 @@ const darkTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     mode: "dark",
-    common: { main: "#1570ef" },
+    primary: { main: "#1570ef" },
+    secondary: { main: "#2e2e2e" },
     text: text,
     background: background,
     border: border,
     info: {
       text: text.primary,
-      main: text.primary,
+      main: text.secondary,
       bg: background.main,
       light: background.main,
       border: border.light,
@@ -46,6 +47,7 @@ const darkTheme = createTheme({
       main: "#d32f2f",
       light: "#1e1e1e",
       bg: "#27272a",
+      dark: "#932020",
       border: "#f04438",
     },
     warning: {
@@ -63,29 +65,52 @@ const darkTheme = createTheme({
       fill: "#18181a",
       grid: "#454546",
     },
-    // TO BE REMOVED //
-    primary: {
-      main: "#1570ef",
-    },
-    secondary: {
-      main: "#e6e6e6",
-    },
-    tertiary: {
-      main: "#e6e6e6",
-    },
-    // ----------------- //
   },
   spacing: 2,
   components: {
-    MuiButtonBase: {
+    MuiButton: {
       defaultProps: {
         disableRipple: true,
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          variants: [
+            {
+              props: (props) => props.variant === "group",
+              style: {
+                color: theme.palette.secondary.contrastText,
+                backgroundColor: theme.palette.background.main,
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.light,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "group" && props.filled === "true",
+              style: {
+                backgroundColor: theme.palette.secondary.main,
+              },
+            },
+          ],
+          fontWeight: 400,
+          borderRadius: 4,
+          boxShadow: "none",
+          textTransform: "none",
+          "&:focus": {
+            outline: "none",
+          },
+          "&:hover": {
+            boxShadow: "none",
+          },
+        }),
       },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
           padding: 4,
+          transition: "none",
           "&:hover": {
             backgroundColor: background.fill,
           },
@@ -111,6 +136,13 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 0,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          transition: "none",
         },
       },
     },
