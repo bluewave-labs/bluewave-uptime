@@ -36,7 +36,7 @@ export const buildData = (monitors, isAdmin, navigate) => {
       uptimePercentage =
         monitor.uptimePercentage === 0
           ? "0" 
-          : monitor.uptimePercentage.toFixed(2); 
+          : (monitor.uptimePercentage * 100).toFixed(2); 
     }
 
     const params = {
