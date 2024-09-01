@@ -31,10 +31,18 @@ export const buildData = (monitors, isAdmin, navigate) => {
   const theme = useTheme();
 
   data.rows = monitors.map((monitor, idx) => {
+    let uptimePercentage = "";
+    if (monitor.uptimePercentage !== undefined) {
+      uptimePercentage =
+        monitor.uptimePercentage === 0
+          ? "0" 
+          : monitor.uptimePercentage.toFixed(2); 
+    }
+
     const params = {
       url: monitor.url,
       title: monitor.name,
-      percentage: 100,
+      percentage: uptimePercentage,
       percentageColor:
         monitor.status === true
           ? theme.palette.success.main
@@ -78,3 +86,6 @@ export const buildData = (monitors, isAdmin, navigate) => {
   });
   return data;
 };
+
+
+
