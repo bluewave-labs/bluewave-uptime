@@ -32,7 +32,7 @@ export const buildData = (monitors, isAdmin, navigate) => {
 
   data.rows = monitors.map((monitor, idx) => {
     let uptimePercentage = "";
-    let percentageColor = theme.palette.success.main; 
+    let percentageColor = theme.palette.percentage.green; 
 
     if (monitor.uptimePercentage !== undefined) {
       uptimePercentage =
@@ -41,13 +41,13 @@ export const buildData = (monitors, isAdmin, navigate) => {
           : (monitor.uptimePercentage * 100).toFixed(2);
 
           if (monitor.uptimePercentage < 0.25) {
-            percentageColor = theme.palette.error.text;
+            percentageColor = theme.palette.percentage.red;
           } else if (monitor.uptimePercentage >= 0.25 && monitor.uptimePercentage < 0.5) {
-            percentageColor = theme.palette.warning.main;
+            percentageColor = theme.palette.percentage.orange;
           } else if (monitor.uptimePercentage >= 0.5 && monitor.uptimePercentage < 0.75) {
-            percentageColor = theme.palette.warning.light;
+            percentageColor = theme.palette.percentage.yellow;
           } else if (monitor.uptimePercentage >= 0.75 && monitor.uptimePercentage <= 1) {
-            percentageColor = theme.palette.success.main;
+            percentageColor = theme.palette.percentage.green;
           }
         }
 

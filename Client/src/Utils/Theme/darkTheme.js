@@ -57,6 +57,12 @@ const darkTheme = createTheme({
       bg: "#1E1E1E",
       border: "#e88c30",
     },
+    percentage: {
+      red: "#d32f2f",
+      orange: "#e88c30",
+      yellow: "#ffd600",
+      green: "#079455",
+    },
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
     divider: border.light,
     other: {
