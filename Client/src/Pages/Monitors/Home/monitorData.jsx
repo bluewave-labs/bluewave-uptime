@@ -40,16 +40,15 @@ export const buildData = (monitors, isAdmin, navigate) => {
           ? "0"
           : (monitor.uptimePercentage * 100).toFixed(2);
 
-          if (monitor.uptimePercentage < 0.25) {
-            percentageColor = theme.palette.percentage.red;
-          } else if (monitor.uptimePercentage >= 0.25 && monitor.uptimePercentage < 0.5) {
-            percentageColor = theme.palette.percentage.orange;
-          } else if (monitor.uptimePercentage >= 0.5 && monitor.uptimePercentage < 0.75) {
-            percentageColor = theme.palette.percentage.yellow;
-          } else if (monitor.uptimePercentage >= 0.75 && monitor.uptimePercentage <= 1) {
-            percentageColor = theme.palette.percentage.green;
-          }
-        }
+          percentageColor =
+        monitor.uptimePercentage < 0.25
+          ? theme.palette.percentage.red
+          : monitor.uptimePercentage < 0.5
+          ? theme.palette.percentage.orange
+          : monitor.uptimePercentage < 0.75
+          ? theme.palette.percentage.yellow
+          : theme.palette.percentage.green;
+    }
 
     const params = {
       url: monitor.url,
