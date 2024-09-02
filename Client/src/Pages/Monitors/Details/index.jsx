@@ -23,10 +23,15 @@ import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAr
 import ButtonGroup from "@mui/material/ButtonGroup";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import CertificateIcon from "../../../assets/icons/certificate.svg?react";
+import UptimeIcon from "../../../assets/icons/uptime-icon.svg?react";
+import ResponseTimeIcon from "../../../assets/icons/response-time-icon.svg?react";
+import AverageResponseIcon from "../../../assets/icons/average-response-icon.svg?react";
+import IncidentsIcon from "../../../assets/icons/incidents.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
+import { ChartBox, IconBox } from "./styled";
 
 const StatBox = ({ title, value }) => {
   const theme = useTheme();
@@ -228,7 +233,7 @@ const DetailsPage = ({ isAdmin }) => {
               { name: "details", path: `/monitors/${monitorId}` },
             ]}
           />
-          <Stack gap={theme.spacing(12)} mt={theme.spacing(10)}>
+          <Stack gap={theme.spacing(16)} mt={theme.spacing(10)}>
             <Stack direction="row" gap={theme.spacing(2)}>
               <Box>
                 <Typography
@@ -307,33 +312,15 @@ const DetailsPage = ({ isAdmin }) => {
                   alignSelf: "flex-end",
                 }}
               >
-                <Box
-                  height="100%"
-                  position="relative"
-                  minWidth={34}
-                  border={1}
-                  borderColor={theme.palette.border.dark}
-                  borderRadius={theme.shape.borderRadius}
-                  backgroundColor={theme.palette.background.accent}
+                <IconBox
                   mr={theme.spacing(4)}
                   onClick={openCertificate}
                   sx={{
                     cursor: "pointer",
-                    "& svg": {
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      width: 20,
-                      height: 20,
-                      "& path": {
-                        stroke: theme.palette.text.tertiary,
-                      },
-                    },
                   }}
                 >
                   <CertificateIcon />
-                </Box>
+                </IconBox>
                 <Popover
                   id="certificate-dropdown"
                   anchorEl={anchorEl}
@@ -389,6 +376,99 @@ const DetailsPage = ({ isAdmin }) => {
                 )}
               </Stack>
             </Stack>
+            <Box>
+              <Stack
+                direction="row"
+                alignItems="center"
+                gap={theme.spacing(4)}
+                mb={theme.spacing(10)}
+              >
+                <ButtonGroup sx={{ height: 30 }}>
+                  <Button
+                    variant="group"
+                    filled={(dateRange === "day").toString()}
+                    onClick={() => setDateRange("day")}
+                  >
+                    Day
+                  </Button>
+                  <Button
+                    variant="group"
+                    filled={(dateRange === "week").toString()}
+                    onClick={() => setDateRange("week")}
+                  >
+                    Week
+                  </Button>
+                  <Button
+                    variant="group"
+                    filled={(dateRange === "month").toString()}
+                    onClick={() => setDateRange("month")}
+                  >
+                    Month
+                  </Button>
+                </ButtonGroup>
+                <Typography color={theme.palette.text.tertiary}>
+                  Showing statistics for past{" "}
+                  {dateRange === "day"
+                    ? "24 hours"
+                    : dateRange === "week"
+                    ? "7 days"
+                    : "30 days"}
+                  .
+                </Typography>
+              </Stack>
+              <Stack direction="row" flexWrap="wrap" gap={theme.spacing(8)}>
+                <ChartBox>
+                  <Stack>
+                    <IconBox>
+                      <UptimeIcon />
+                    </IconBox>
+                    <Typography component="h2">Uptime</Typography>
+                  </Stack>
+                  <Stack justifyContent="space-between" mt={theme.spacing(8)}>
+                    <Box>
+                      <Typography>Total Checks</Typography>
+                      <Typography component="span">87</Typography>
+                    </Box>
+                    <Box>
+                      <Typography>Uptime Percentage</Typography>
+                      <Typography component="span">
+                        98.3<Typography component="span">%</Typography>
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </ChartBox>
+                <ChartBox>
+                  <Stack>
+                    <IconBox>
+                      <IncidentsIcon />
+                    </IconBox>
+                    <Typography component="h2">Incidents</Typography>
+                  </Stack>
+                  <Box>
+                    <Typography>Total Incidents</Typography>
+                    <Typography component="span">0</Typography>
+                  </Box>
+                </ChartBox>
+                <ChartBox>
+                  <Stack>
+                    <IconBox>
+                      <AverageResponseIcon />
+                    </IconBox>
+                    <Typography component="h2">
+                      Average response time
+                    </Typography>
+                  </Stack>
+                </ChartBox>
+                <ChartBox>
+                  <Stack>
+                    <IconBox>
+                      <ResponseTimeIcon />
+                    </IconBox>
+                    <Typography component="h2">Response Times</Typography>
+                  </Stack>
+                </ChartBox>
+              </Stack>
+            </Box>
             <Stack
               direction="row"
               justifyContent="space-between"
