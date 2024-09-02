@@ -56,22 +56,12 @@ class NetworkService {
         });
         return;
       }
-
-      // Two general cases:
-      // 1. Monitor status is undefined
-      // 2. Monitor status is defined
-
-      // If the monitor status is undefined, set it's status to isAlive.  if isAlive is false, send notification
-      if (monitor.status === undefined) {
+      if (monitor.status === undefined || monitor.status !== isAlive) {
+        const oldStatus = monitor.status;
         monitor.status = isAlive;
         await monitor.save();
-        if (isAlive === false) {
-          this.handleNotification(monitor, isAlive);
-        }
-      } else {
-        if (monitor.status !== isAlive) {
-          monitor.status = !monitor.status;
-          await monitor.save();
+
+        if (oldStatus !== undefined && oldStatus !== isAlive) {
           this.handleNotification(monitor, isAlive);
         }
       }
