@@ -27,58 +27,12 @@ import UptimeIcon from "../../../assets/icons/uptime-icon.svg?react";
 import ResponseTimeIcon from "../../../assets/icons/response-time-icon.svg?react";
 import AverageResponseIcon from "../../../assets/icons/average-response-icon.svg?react";
 import IncidentsIcon from "../../../assets/icons/incidents.svg?react";
+import HistoryIcon from "../../../assets/icons/history-icon.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
-import { ChartBox, IconBox } from "./styled";
-
-const StatBox = ({ title, value }) => {
-  const theme = useTheme();
-  return (
-    <Box
-      className="stat-box"
-      flex="20%"
-      minWidth="100px"
-      px={theme.spacing(8)}
-      py={theme.spacing(4)}
-      border={1}
-      borderColor={theme.palette.border.light}
-      borderRadius={theme.shape.borderRadius}
-      backgroundColor={theme.palette.background.main}
-    >
-      <Typography
-        variant="h6"
-        mb={theme.spacing(2)}
-        fontSize={14}
-        fontWeight={500}
-        color={theme.palette.primary.main}
-        sx={{
-          "& span": {
-            color: theme.palette.text.accent,
-            fontSize: 13,
-            fontStyle: "italic",
-          },
-        }}
-      >
-        {title}
-      </Typography>
-      <Typography
-        variant="h4"
-        fontWeight={500}
-        fontSize={13}
-        color={theme.palette.text.secondary}
-      >
-        {value}
-      </Typography>
-    </Box>
-  );
-};
-
-StatBox.propTypes = {
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
+import { AlertBox, ChartBox, IconBox } from "./styled";
 
 /**
  * Renders a skeleton layout.
@@ -233,7 +187,7 @@ const DetailsPage = ({ isAdmin }) => {
               { name: "details", path: `/monitors/${monitorId}` },
             ]}
           />
-          <Stack gap={theme.spacing(16)} mt={theme.spacing(10)}>
+          <Stack gap={theme.spacing(12)} mt={theme.spacing(10)}>
             <Stack direction="row" gap={theme.spacing(2)}>
               <Box>
                 <Typography
@@ -284,6 +238,7 @@ const DetailsPage = ({ isAdmin }) => {
                   <Typography
                     ml={theme.spacing(6)}
                     lineHeight="20px"
+                    fontSize={12}
                     position="relative"
                     color={theme.palette.text.tertiary}
                     sx={{
@@ -337,8 +292,9 @@ const DetailsPage = ({ isAdmin }) => {
                   slotProps={{
                     paper: {
                       sx: {
-                        py: 4,
-                        px: 6,
+                        mt: theme.spacing(4),
+                        py: theme.spacing(2),
+                        px: theme.spacing(4),
                         width: 140,
                         backgroundColor: theme.palette.background.accent,
                       },
@@ -376,14 +332,46 @@ const DetailsPage = ({ isAdmin }) => {
                 )}
               </Stack>
             </Stack>
+            <Stack direction="row" gap={theme.spacing(8)}>
+              <AlertBox>
+                <Typography component="h2">up for</Typography>
+                <Typography>
+                  {formatDurationRounded(monitor?.uptimeDuration)}
+                </Typography>
+              </AlertBox>
+              <AlertBox>
+                <Typography component="h2">last check</Typography>
+                <Typography>
+                  {formatDurationRounded(monitor?.lastChecked)}
+                  <Typography component="span">ago</Typography>
+                </Typography>
+              </AlertBox>
+              <AlertBox>
+                <Typography component="h2">last response time</Typography>
+                <Typography>
+                  {monitor?.latestResponseTime}
+                  <Typography component="span">ms</Typography>
+                </Typography>
+              </AlertBox>
+            </Stack>
             <Box>
               <Stack
                 direction="row"
-                alignItems="center"
+                justifyContent="space-between"
+                alignItems="flex-end"
                 gap={theme.spacing(4)}
-                mb={theme.spacing(10)}
+                mb={theme.spacing(8)}
               >
-                <ButtonGroup sx={{ height: 30 }}>
+                <Typography fontSize={12} color={theme.palette.text.tertiary}>
+                  Showing statistics for past{" "}
+                  {dateRange === "day"
+                    ? "24 hours"
+                    : dateRange === "week"
+                    ? "7 days"
+                    : "30 days"}
+                  .
+                </Typography>
+                <ButtonGroup sx={{ height: 32 }}>
                   <Button
                     variant="group"
                     filled={(dateRange === "day").toString()}
@@ -406,15 +394,6 @@ const DetailsPage = ({ isAdmin }) => {
                     Month
                   </Button>
                 </ButtonGroup>
-                <Typography color={theme.palette.text.tertiary}>
-                  Showing statistics for past{" "}
-                  {dateRange === "day"
-                    ? "24 hours"
-                    : dateRange === "week"
-                    ? "7 days"
-                    : "30 days"}
-                  .
-                </Typography>
               </Stack>
               <Stack direction="row" flexWrap="wrap" gap={theme.spacing(8)}>
                 <ChartBox>
@@ -466,117 +445,38 @@ const DetailsPage = ({ isAdmin }) => {
                     </IconBox>
                     <Typography component="h2">Response Times</Typography>
                   </Stack>
+                  <Box>
+                    {/* <MonitorDetailsAreaChart
+                  checks={[...monitor.checks].reverse()}
+                /> */}
+                  </Box>
+                </ChartBox>
+                <ChartBox
+                  gap={theme.spacing(8)}
+                  sx={{
+                    flex: "100%",
+                    height: "fit-content",
+                    "& nav": { mt: theme.spacing(12) },
+                  }}
+                >
+                  <Stack mb={theme.spacing(8)}>
+                    <IconBox>
+                      <HistoryIcon />
+                    </IconBox>
+                    <Typography
+                      component="h2"
+                      color={theme.palette.text.secondary}
+                    >
+                      History
+                    </Typography>
+                  </Stack>
+                  <PaginationTable
+                    monitorId={monitorId}
+                    dateRange={dateRange}
+                  />
                 </ChartBox>
               </Stack>
             </Box>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              gap={theme.spacing(6)}
-              flexWrap="wrap"
-            >
-              <StatBox
-                title="Currently up for"
-                value={formatDuration(monitor?.uptimeDuration)}
-              />
-              <StatBox
-                title="Last check"
-                value={`${formatDurationRounded(monitor?.lastChecked)} ago`}
-              />
-              <StatBox title="Incidents" value={monitor?.incidents} />
-              <StatBox
-                title="Latest response time"
-                value={monitor?.latestResponseTime}
-              />
-              <StatBox
-                title={
-                  <>
-                    Avg. Response Time{" "}
-                    <Typography component="span">(24-hr)</Typography>
-                  </>
-                }
-                value={parseFloat(monitor?.avgResponseTime24hours)
-                  .toFixed(2)
-                  .replace(/\.?0+$/, "")}
-              />
-              <StatBox
-                title={
-                  <>
-                    Uptime <Typography component="span">(24-hr)</Typography>
-                  </>
-                }
-                value={`${parseFloat(monitor?.uptime24Hours)
-                  .toFixed(2)
-                  .replace(/\.?0+$/, "")}%`}
-              />
-              <StatBox
-                title={
-                  <>
-                    Uptime <Typography component="span">(30-day)</Typography>
-                  </>
-                }
-                value={`${parseFloat(monitor?.uptime30Days)
-                  .toFixed(2)
-                  .replace(/\.?0+$/, "")}%`}
-              />
-            </Stack>
-            <Box>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                mb={theme.spacing(8)}
-              >
-                <Typography
-                  component="h2"
-                  alignSelf="flex-end"
-                  color={theme.palette.text.secondary}
-                >
-                  Response Times
-                </Typography>
-                <ButtonGroup>
-                  <Button
-                    variant="group"
-                    filled={(dateRange === "day").toString()}
-                    onClick={() => setDateRange("day")}
-                  >
-                    Day
-                  </Button>
-                  <Button
-                    variant="group"
-                    filled={(dateRange === "week").toString()}
-                    onClick={() => setDateRange("week")}
-                  >
-                    Week
-                  </Button>
-                  <Button
-                    variant="group"
-                    filled={(dateRange === "month").toString()}
-                    onClick={() => setDateRange("month")}
-                  >
-                    Month
-                  </Button>
-                </ButtonGroup>
-              </Stack>
-              <Box
-                p={theme.spacing(10)}
-                pb={theme.spacing(2)}
-                backgroundColor={theme.palette.background.main}
-                border={1}
-                borderColor={theme.palette.border.light}
-                borderRadius={theme.shape.borderRadius}
-                sx={{ height: "250px" }}
-              >
-                {/* <MonitorDetailsAreaChart
-                  checks={[...monitor.checks].reverse()}
-                /> */}
-              </Box>
-            </Box>
-            <Stack gap={theme.spacing(8)}>
-              <Typography component="h2" color={theme.palette.text.secondary}>
-                History
-              </Typography>
-              {/* <PaginationTable monitorId={monitorId} dateRange={dateRange} /> */}
-            </Stack>
           </Stack>
         </>
       )}

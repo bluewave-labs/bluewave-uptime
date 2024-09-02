@@ -13,6 +13,7 @@ export const ChartBox = styled(Box)(({ theme }) => ({
   "& h2": {
     color: theme.palette.text.secondary,
     fontSize: 15,
+    fontWeight: 500,
   },
   "& p": {
     color: theme.palette.text.tertiary,
@@ -56,6 +57,33 @@ export const IconBox = styled(Box)(({ theme }) => ({
     height: 20,
     "& path": {
       stroke: theme.palette.text.tertiary,
+    },
+  },
+}));
+
+export const AlertBox = styled(Box)(({ theme }) => ({
+  padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
+  minWidth: 200,
+  width: 225,
+  border: 1,
+  borderStyle: "solid",
+  borderColor: theme.palette.border.light,
+  borderRadius: 4,
+  backgroundColor: theme.palette.background.main,
+  "& h2": {
+    fontSize: 13,
+    fontWeight: 500,
+    color: theme.palette.text.secondary,
+    textTransform: "uppercase",
+  },
+  "& p": {
+    fontSize: 18,
+    color: theme.palette.text.primary,
+    marginTop: theme.spacing(2),
+    "& span": {
+      opacity: 0.8,
+      marginLeft: theme.spacing(3),
+      fontSize: 15,
     },
   },
 }));
