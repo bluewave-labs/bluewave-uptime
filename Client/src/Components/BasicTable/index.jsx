@@ -297,6 +297,11 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                 stroke: theme.palette.text.tertiary,
                 strokeWidth: 1.3,
               },
+              "& .MuiSelect-select": {
+                border: 1,
+                borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
+              },
             }}
           />
         </Stack>
