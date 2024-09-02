@@ -13,6 +13,7 @@ import {
   Box,
   Typography,
   Stack,
+  Button,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setRowsPerPage } from "../../Features/UI/uiSlice";
@@ -21,7 +22,6 @@ import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
 import LeftArrow from "../../assets/icons/left-arrow.svg?react";
 import RightArrow from "../../assets/icons/right-arrow.svg?react";
 import SelectorVertical from "../../assets/icons/selector-vertical.svg?react";
-import Button from "../Button";
 import "./index.css";
 /**
  * Component for pagination actions (first, previous, next, last).
@@ -54,37 +54,37 @@ const TablePaginationActions = (props) => {
   return (
     <Box sx={{ flexShrink: 0, ml: "24px" }}>
       <Button
-        level="secondary"
-        label=""
-        img={<LeftArrowDouble />}
+        variant="group"
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
         aria-label="first page"
-      />
+      >
+        <LeftArrowDouble />
+      </Button>
       <Button
-        level="secondary"
-        label=""
-        img={<LeftArrow />}
+        variant="group"
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
-      />
+      >
+        <LeftArrow />
+      </Button>
       <Button
-        level="secondary"
-        label=""
-        img={<RightArrow />}
+        variant="group"
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
-      />
+      >
+        <RightArrow />
+      </Button>
       <Button
-        level="secondary"
-        label=""
-        img={<RightArrowDouble />}
+        variant="group"
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
-      />
+      >
+        <RightArrowDouble />
+      </Button>
     </Box>
   );
 };
@@ -215,6 +215,9 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                 <TableRow
                   sx={{
                     cursor: row.handleClick ? "pointer" : "default",
+                    "&:hover": {
+                      backgroundColor: theme.palette.background.accent,
+                    },
                   }}
                   key={row.id}
                   onClick={row.handleClick ? row.handleClick : null}
@@ -233,9 +236,14 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          px={theme.gap.small}
+          px={theme.spacing(4)}
+          sx={{
+            "& p": {
+              color: theme.palette.text.tertiary,
+            },
+          }}
         >
-          <Typography sx={{ opacity: 0.7 }}>
+          <Typography px={theme.spacing(2)} fontSize={12} sx={{ opacity: 0.7 }}>
             Showing {getRange()} of {data.rows.length} monitor(s)
           </Typography>
           <TablePagination
@@ -260,27 +268,40 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                   keepMounted: true,
                   PaperProps: {
                     className: "pagination-dropdown",
+                    sx: {
+                      mt: 0,
+                      mb: theme.spacing(2),
+                    },
                   },
                   transformOrigin: { vertical: "bottom", horizontal: "left" },
                   anchorOrigin: { vertical: "top", horizontal: "left" },
-                  sx: { mt: "-4px" },
+                  sx: { mt: theme.spacing(-2) },
                 },
                 inputProps: { id: "pagination-dropdown" },
                 IconComponent: SelectorVertical,
                 sx: {
-                  ml: theme.gap.small,
-                  mr: theme.gap.large,
-                  minWidth: theme.gap.xl,
+                  ml: theme.spacing(4),
+                  mr: theme.spacing(12),
+                  minWidth: theme.spacing(20),
                   textAlign: "left",
                   "&.Mui-focused > div": {
-                    backgroundColor: theme.palette.otherColors.white,
+                    backgroundColor: theme.palette.background.main,
                   },
                 },
               },
             }}
             sx={{
-              mt: theme.gap.medium,
-              color: theme.palette.otherColors.bluishGray,
+              mt: theme.spacing(6),
+              color: theme.palette.text.secondary,
+              "& svg path": {
+                stroke: theme.palette.text.tertiary,
+                strokeWidth: 1.3,
+              },
+              "& .MuiSelect-select": {
+                border: 1,
+                borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
+              },
             }}
           />
         </Stack>

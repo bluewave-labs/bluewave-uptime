@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Notification = require("./Notification");
 
 const MonitorSchema = mongoose.Schema(
   {
@@ -6,6 +7,13 @@ const MonitorSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       immutable: true,
+      required: true,
+    },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      immutable: true,
+      required: true,
     },
     name: {
       type: String,
@@ -36,6 +44,16 @@ const MonitorSchema = mongoose.Schema(
       type: Number,
       default: 60000,
     },
+    uptimePercentage: {
+      type: Number,
+      default: undefined, 
+    },
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
   },
   {
     timestamps: true,

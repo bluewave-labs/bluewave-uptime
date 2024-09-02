@@ -30,9 +30,9 @@ const BaseLabel = ({ label, styles, children }) => {
     <Box
       className="label"
       sx={{
-        borderRadius: `${borderRadius}px`,
-        borderColor: theme.palette.tertiary.main,
-        color: theme.palette.tertiary.main,
+        borderRadius: borderRadius,
+        borderColor: theme.palette.text.tertiary,
+        color: theme.palette.text.tertiary,
         padding: padding,
         ...styles,
       }}
@@ -90,7 +90,7 @@ const ColoredLabel = ({ label, color }) => {
     typeof color !== "string" ||
     !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(color)
   ) {
-    color = theme.palette.labelGray.color;
+    color = theme.palette.border.light;
   }
 
   // Calculate lighter shades for border and bg
@@ -127,8 +127,26 @@ ColoredLabel.propTypes = {
 
 const StatusLabel = ({ status, text, customStyles }) => {
   const theme = useTheme();
+  const colors = {
+    up: {
+      dotColor: theme.palette.success.main,
+      bgColor: theme.palette.success.bg,
+      borderColor: theme.palette.success.light,
+    },
+    down: {
+      dotColor: theme.palette.error.text,
+      bgColor: theme.palette.error.bg,
+      borderColor: theme.palette.error.light,
+    },
+    "cannot resolve": {
+      dotColor: theme.palette.unresolved.main,
+      bgColor: theme.palette.unresolved.bg,
+      borderColor: theme.palette.unresolved.light,
+    },
+  };
+
   // Look up the color for the status
-  const { borderColor, bgColor, dotColor } = theme.label[status];
+  const { borderColor, bgColor, dotColor } = colors[status];
 
   return (
     <BaseLabel

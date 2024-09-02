@@ -1,9 +1,26 @@
+import { Box } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
 
-const Maintenance = () => {
+const Maintenance = ({ isAdmin }) => {
+  const theme = useTheme();
+
   return (
-    <div className="maintenance">
+    <Box
+      className="maintenance"
+      sx={{
+        ':has(> [class*="fallback__"])': {
+          position: "relative",
+          border: 1,
+          borderColor: theme.palette.border.light,
+          borderRadius: theme.shape.borderRadius,
+          borderStyle: "dashed",
+          backgroundColor: theme.palette.background.main,
+          overflow: "hidden",
+        },
+      }}
+    >
       <Fallback
         title="maintenance window"
         checks={[
@@ -12,8 +29,9 @@ const Maintenance = () => {
           "Stop sending alerts in maintenance windows",
         ]}
         link="/maintenance/create"
+        isAdmin={isAdmin}
       />
-    </div>
+    </Box>
   );
 };
 

@@ -1,17 +1,3 @@
-.create-page-speed form > .MuiStack-root:not(:last-of-type) {
-  background-color: var(--env-var-color-8);
-  border: solid 1px var(--env-var-color-6);
-  border-radius: var(--env-var-radius-1);
-  padding: var(--env-var-font-size-large-plus) var(--env-var-font-size-xlarge);
-}
-.create-page-speed h1.MuiTypography-root {
-  font-size: 22px;
-  color: var(--env-var-color-1);
-}
-.create-page-speed p.MuiTypography-root,
-.create-page-speed h3.MuiTypography-root {
-  color: var(--env-var-color-5);
-}
 .create-page-speed h1.MuiTypography-root,
 .create-page-speed h3.MuiTypography-root {
   font-weight: 600;
@@ -31,11 +17,12 @@
 .create-page-speed .checkbox-wrapper {
   margin-bottom: 1px;
 }
+
 /* to be removed */
 .create-page-speed .section-disabled {
   opacity: 0.4;
-  background-color: #f1f1f2;
   padding: 10px;
+  margin-right: -5px;
   border-radius: 8px;
   user-select: none;
   pointer-events: none;
@@ -43,11 +30,6 @@
 
 .create-page-speed button {
   height: var(--env-var-height-2);
-}
-
-body:has(.create-page-speed) .select-dropdown .MuiMenuItem-root,
-.create-page-speed .select-wrapper .select-component > .MuiSelect-select {
-  text-transform: lowercase;
 }
 
 .create-page-speed h3.MuiTypography-root {

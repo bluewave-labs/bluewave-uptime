@@ -31,15 +31,15 @@ const ImageField = ({ id, src, loading, onChange }) => {
         <>
           <Box
             className="image-field-wrapper"
-            mt="20px"
+            mt={theme.spacing(8)}
             sx={{
               position: "relative",
               height: "fit-content",
               border: "dashed",
-              borderRadius: `${theme.shape.borderRadius}px`,
+              borderRadius: theme.shape.borderRadius,
               borderColor: isDragging
                 ? theme.palette.primary.main
-                : theme.palette.otherColors.graishWhite,
+                : theme.palette.border.light,
               borderWidth: "2px",
               transition: "0.2s",
               "&:hover": {
@@ -85,20 +85,40 @@ const ImageField = ({ id, src, loading, onChange }) => {
               <IconButton
                 sx={{
                   pointerEvents: "none",
-                  borderRadius: `${theme.shape.borderRadius}px`,
-                  border: `solid ${theme.shape.borderThick}px ${theme.palette.otherColors.graishWhite}`,
+                  borderRadius: theme.shape.borderRadius,
+                  border: `solid ${theme.shape.borderThick}px ${theme.palette.border.light}`,
                   boxShadow: theme.shape.boxShadow,
                 }}
               >
                 <CloudUploadIcon />
               </IconButton>
-              <Typography component="h2">
-                <span>Click to upload</span> or drag and drop
+              <Typography component="h2" color={theme.palette.text.tertiary}>
+                <Typography
+                  component="span"
+                  fontSize="inherit"
+                  color={theme.palette.primary.main}
+                  fontWeight={500}
+                >
+                  Click to upload
+                </Typography>{" "}
+                or drag and drop
               </Typography>
-              <Typography component="p">(maximum size: 3MB)</Typography>
+              <Typography
+                component="p"
+                color={theme.palette.text.tertiary}
+                sx={{ opacity: 0.6 }}
+              >
+                (maximum size: 3MB)
+              </Typography>
             </Stack>
           </Box>
-          <Typography component="p">Supported formats: JPG, PNG</Typography>
+          <Typography
+            component="p"
+            color={theme.palette.text.tertiary}
+            sx={{ opacity: 0.6 }}
+          >
+            Supported formats: JPG, PNG
+          </Typography>
         </>
       ) : (
         <Stack direction="row" justifyContent="center">

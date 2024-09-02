@@ -5,11 +5,6 @@
 .settings p.MuiTypography-root {
   font-size: var(--env-var-font-size-medium);
 }
-.settings h1.MuiTypography-root,
-.settings h2.MuiTypography-root,
-.settings p.MuiTypography-root {
-  color: var(--env-var-color-5);
-}
 .settings h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
 }
@@ -23,21 +18,4 @@
 .settings span.MuiTypography-root {
   opacity: 0.6;
   margin-right: 4px;
-}
-.settings .config-box {
-  padding: var(--env-var-spacing-4) 50px;
-  padding-bottom: 60px;
-  border: 1px solid var(--env-var-color-16);
-  border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
-}
-.settings .config-box .MuiBox-root,
-.settings .config-box .MuiStack-root {
-  flex: 1;
-}
-
-.settings-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--env-var-spacing-4);
 }

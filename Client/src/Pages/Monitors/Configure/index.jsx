@@ -2,22 +2,27 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Modal, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
+import { ConfigBox } from "../styled";
 import {
   updateUptimeMonitor,
-  getUptimeMonitorsByUserId,
+  pauseUptimeMonitor,
+  getUptimeMonitorById,
+  getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
+import SkeletonLayout from "./skeleton";
+import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
 
 /**
@@ -35,54 +40,6 @@ const parseUrl = (url) => {
 };
 
 /**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
-          <Skeleton
-            variant="circular"
-            style={{ minWidth: 24, minHeight: 24 }}
-          />
-          <Box width="80%">
-            <Skeleton
-              variant="rounded"
-              width="50%"
-              height={24}
-              sx={{ mb: theme.gap.small }}
-            />
-            <Skeleton variant="rounded" width="50%" height={18} />
-          </Box>
-          <Stack
-            direction="row"
-            gap={theme.gap.medium}
-            sx={{
-              ml: "auto",
-              alignSelf: "flex-end",
-            }}
-          >
-            <Skeleton variant="rounded" width={150} height={34} />
-          </Stack>
-        </Stack>
-        <Skeleton variant="rounded" width="100%" height={200} />
-        <Skeleton variant="rounded" width="100%" height={200} />
-        <Skeleton variant="rounded" width="100%" height={200} />
-        <Stack direction="row" justifyContent="flex-end">
-          <Skeleton variant="rounded" width="15%" height={34} />
-        </Stack>
-      </Stack>
-    </>
-  );
-};
-
-/**
  * Configure page displays monitor configurations and allows for editing actions.
  * @component
  */
@@ -92,11 +49,11 @@ const Configure = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.uptimeMonitors);
+  const { isLoading } = useSelector((state) => state.uptimeMonitors);
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
-
+  console.log(monitor);
   const idMap = {
     "monitor-url": "url",
     "monitor-name": "name",
@@ -106,15 +63,25 @@ const Configure = () => {
   };
 
   useEffect(() => {
-    const data = monitors.find((monitor) => monitor._id === monitorId);
-    if (!data) {
-      logger.error("Error fetching monitor of id: " + monitorId);
-      navigate("/not-found", { replace: true });
-    }
-    setMonitor({
-      ...data,
-    });
-  }, [monitorId, authToken, monitors, navigate]);
+    const fetchMonitor = async () => {
+      try {
+        const action = await dispatch(
+          getUptimeMonitorById({ authToken, monitorId })
+        );
+
+        if (getUptimeMonitorById.fulfilled.match(action)) {
+          const monitor = action.payload.data;
+          setMonitor(monitor);
+        } else if (getUptimeMonitorById.rejected.match(action)) {
+          throw new Error(action.error.message);
+        }
+      } catch (error) {
+        logger.error("Error fetching monitor of id: " + monitorId);
+        navigate("/not-found", { replace: true });
+      }
+    };
+    fetchMonitor();
+  }, [monitorId, authToken, navigate]);
 
   const handleChange = (event, name) => {
     let { value, id } = event.target;
@@ -170,6 +137,23 @@ const Configure = () => {
     }
   };
 
+  const handlePause = async () => {
+    try {
+      const action = await dispatch(
+        pauseUptimeMonitor({ authToken, monitorId })
+      );
+      if (pauseUptimeMonitor.fulfilled.match(action)) {
+        const monitor = action.payload.data;
+        setMonitor(monitor);
+      } else if (pauseUptimeMonitor.rejected.match(action)) {
+        throw new Error(action.error.message);
+      }
+    } catch (error) {
+      logger.error("Error pausing monitor: " + monitorId);
+      createToast({ body: "Failed to pause monitor" });
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const action = await dispatch(
@@ -177,7 +161,7 @@ const Configure = () => {
     );
     if (action.meta.requestStatus === "fulfilled") {
       createToast({ body: "Monitor updated successfully!" });
-      dispatch(getUptimeMonitorsByUserId(authToken));
+      dispatch(getUptimeMonitorsByTeamId(authToken));
     } else {
       createToast({ body: "Failed to update monitor." });
     }
@@ -206,11 +190,9 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
-  let loading = Object.keys(monitor).length === 0;
-
   return (
-    <Stack className="configure-monitor" gap={theme.gap.large}>
-      {loading ? (
+    <Stack className="configure-monitor" gap={theme.spacing(12)}>
+      {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
         <>
@@ -225,20 +207,25 @@ const Configure = () => {
             component="form"
             noValidate
             spellCheck="false"
-            gap={theme.gap.large}
+            gap={theme.spacing(12)}
             flex={1}
           >
-            <Stack direction="row" gap={theme.gap.xs}>
+            <Stack direction="row" gap={theme.spacing(2)}>
               <PulseDot
                 color={
                   monitor?.status
-                    ? theme.label.up.dotColor
-                    : theme.label.down.dotColor
+                    ? theme.palette.success.main
+                    : theme.palette.error.main
                 }
               />
               <Box>
                 {parsedUrl?.host ? (
-                  <Typography component="h1" mb={theme.gap.xs} lineHeight={1}>
+                  <Typography
+                    component="h1"
+                    mb={theme.spacing(2)}
+                    lineHeight={1}
+                    color={theme.palette.text.primary}
+                  >
                     {parsedUrl.host || "..."}
                   </Typography>
                 ) : (
@@ -246,11 +233,11 @@ const Configure = () => {
                 )}
                 <Typography
                   component="span"
-                  lineHeight={theme.gap.large}
+                  lineHeight={theme.spacing(12)}
                   sx={{
                     color: monitor?.status
-                      ? "var(--env-var-color-17)"
-                      : "var(--env-var-color-24)",
+                      ? theme.palette.success.main
+                      : theme.palette.error.text,
                   }}
                 >
                   Your site is {monitor?.status ? "up" : "down"}.
@@ -262,45 +249,51 @@ const Configure = () => {
                   ml: "auto",
                 }}
               >
-                <Button
-                  level="tertiary"
-                  label="Pause"
-                  animate="rotate180"
-                  img={<PauseCircleOutlineIcon />}
+                <LoadingButton
+                  variant="contained"
+                  color="secondary"
+                  loading={isLoading}
                   sx={{
-                    backgroundColor: theme.palette.otherColors.fillGray,
-                    pl: theme.gap.small,
-                    pr: theme.gap.medium,
-                    mr: theme.gap.medium,
+                    backgroundColor: theme.palette.background.main,
+                    px: theme.spacing(5),
+                    mr: theme.spacing(6),
                     "& svg": {
-                      mr: theme.gap.xs,
+                      mr: theme.spacing(2),
                     },
                   }}
-                />
+                  onClick={handlePause}
+                >
+                  {monitor?.isActive ? (
+                    <>
+                      <PauseCircleOutlineIcon />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircleOutlineRoundedIcon />
+                      Resume
+                    </>
+                  )}
+                </LoadingButton>
                 <Button
-                  level="error"
-                  label="Remove"
-                  sx={{
-                    boxShadow: "none",
-                    px: theme.gap.ml,
-                  }}
+                  variant="contained"
+                  color="error"
+                  sx={{ px: theme.spacing(8) }}
                   onClick={() => setIsOpen(true)}
-                />
+                >
+                  Remove
+                </Button>
               </Box>
             </Stack>
-            <Stack
-              className="config-box"
-              direction="row"
-              justifyContent="space-between"
-            >
+            <ConfigBox>
               <Box>
                 <Typography component="h2">General settings</Typography>
-                <Typography component="p" sx={{ mt: theme.gap.xs }}>
+                <Typography component="p">
                   Here you can select the URL of the host, together with the
                   type of monitor.
                 </Typography>
               </Box>
-              <Stack gap={theme.gap.xl}>
+              <Stack gap={theme.spacing(20)}>
                 <Field
                   type={monitor?.type === "http" ? "url" : "text"}
                   https={protocol === "https"}
@@ -314,7 +307,7 @@ const Configure = () => {
                 <Field
                   type="text"
                   id="monitor-name"
-                  label="Friendly name"
+                  label="Display name"
                   isOptional={true}
                   placeholder="Google"
                   value={monitor?.name || ""}
@@ -322,20 +315,16 @@ const Configure = () => {
                   error={errors["name"]}
                 />
               </Stack>
-            </Stack>
-            <Stack
-              className="config-box"
-              direction="row"
-              justifyContent="space-between"
-            >
+            </ConfigBox>
+            <ConfigBox>
               <Box>
                 <Typography component="h2">Incident notifications</Typography>
-                <Typography component="p" mt={theme.gap.xs}>
+                <Typography component="p">
                   When there is an incident, notify users.
                 </Typography>
               </Box>
-              <Stack gap={theme.gap.medium}>
-                <Typography component="p" mt={theme.gap.small}>
+              <Stack gap={theme.spacing(6)}>
+                <Typography component="p">
                   When there is a new incident,
                 </Typography>
                 <Checkbox
@@ -368,7 +357,7 @@ const Configure = () => {
                 {monitor?.notifications?.some(
                   (notification) => notification.type === "emails"
                 ) ? (
-                  <Box mx={`calc(${theme.gap.ml} * 2)`}>
+                  <Box mx={theme.spacing(16)}>
                     <Field
                       id="notify-email-list"
                       type="text"
@@ -376,7 +365,7 @@ const Configure = () => {
                       value=""
                       onChange={() => logger.warn("disabled")}
                     />
-                    <Typography mt={theme.gap.small}>
+                    <Typography mt={theme.spacing(4)}>
                       You can separate multiple emails with a comma
                     </Typography>
                   </Box>
@@ -384,16 +373,12 @@ const Configure = () => {
                   ""
                 )}
               </Stack>
-            </Stack>
-            <Stack
-              className="config-box"
-              direction="row"
-              justifyContent="space-between"
-            >
+            </ConfigBox>
+            <ConfigBox>
               <Box>
                 <Typography component="h2">Advanced settings</Typography>
               </Box>
-              <Stack gap={theme.gap.xl}>
+              <Stack gap={theme.spacing(20)}>
                 <Select
                   id="monitor-interval-configure"
                   label="Check frequency"
@@ -402,14 +387,17 @@ const Configure = () => {
                   items={frequencies}
                 />
               </Stack>
-            </Stack>
+            </ConfigBox>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
-              <Button
-                level="primary"
-                label="Save"
-                sx={{ px: theme.gap.large }}
+              <LoadingButton
+                variant="contained"
+                color="primary"
+                loading={isLoading}
+                sx={{ px: theme.spacing(12) }}
                 onClick={handleSubmit}
-              />
+              >
+                Save
+              </LoadingButton>
             </Stack>
           </Stack>
         </>
@@ -422,41 +410,60 @@ const Configure = () => {
         disablePortal
       >
         <Stack
-          gap={theme.gap.xs}
+          gap={theme.spacing(2)}
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "white",
-            border: "solid 1px #f2f2f2",
-            borderRadius: `${theme.shape.borderRadius}px`,
+            bgcolor: theme.palette.background.main,
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
             boxShadow: 24,
-            p: "30px",
+            p: theme.spacing(15),
             "&:focus": {
               outline: "none",
             },
           }}
         >
-          <Typography id="modal-delete-monitor" component="h2">
+          <Typography
+            id="modal-delete-monitor"
+            component="h2"
+            fontSize={16}
+            color={theme.palette.text.primary}
+            fontWeight={600}
+          >
             Do you really want to delete this monitor?
           </Typography>
-          <Typography id="delete-monitor-confirmation">
+          <Typography
+            id="delete-monitor-confirmation"
+            color={theme.palette.text.tertiary}
+          >
             Once deleted, this monitor cannot be retrieved.
           </Typography>
           <Stack
             direction="row"
-            gap={theme.gap.small}
-            mt={theme.gap.large}
+            gap={theme.spacing(4)}
+            mt={theme.spacing(12)}
             justifyContent="flex-end"
           >
             <Button
-              level="tertiary"
-              label="Cancel"
+              variant="text"
+              color="info"
               onClick={() => setIsOpen(false)}
-            />
-            <Button level="error" label="Delete" onClick={handleRemove} />
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              loading={isLoading}
+              onClick={handleRemove}
+            >
+              Delete
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

@@ -1,12 +1,11 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import "./index.css";
-import Button from "../Button";
 
 /**
  * Icons mapping for different alert variants.
@@ -32,7 +31,7 @@ const icons = {
 
 const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
   const theme = useTheme();
-  const { bg, border, color } = theme.alert[variant];
+  const { text, light, border } = theme.palette[variant];
   const icon = icons[variant];
 
   return (
@@ -41,46 +40,43 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
       justifyContent="flex-start"
       alignItems={hasIcon ? "" : "center"}
       className="alert row-stack"
-      gap={theme.gap.ml}
+      gap={theme.spacing(8)}
       sx={{
-        padding: hasIcon ? theme.gap.ml : `${theme.gap.small} ${theme.gap.ml}`,
-        backgroundColor: bg,
+        padding: hasIcon
+          ? theme.spacing(8)
+          : `${theme.spacing(4)} ${theme.spacing(8)}`,
+        backgroundColor: light,
         border: `solid 1px ${border}`,
-        borderRadius: `${theme.shape.borderRadius}px`,
+        borderRadius: theme.shape.borderRadius,
       }}
     >
-      {hasIcon && <Box sx={{ color: color }}>{icon}</Box>}
+      {hasIcon && <Box sx={{ color: text }}>{icon}</Box>}
       <Stack direction="column" gap="2px" sx={{ flex: 1 }}>
         {title && (
-          <Typography sx={{ fontWeight: "700", color: `${color} !important` }}>
+          <Typography sx={{ fontWeight: "700", color: `${text}` }}>
             {title}
           </Typography>
         )}
         {body && (
-          <Typography sx={{ fontWeight: "400", color: `${color} !important` }}>
+          <Typography sx={{ fontWeight: "400", color: `${text}` }}>
             {body}
           </Typography>
         )}
         {hasIcon && isToast && (
           <Button
-            level="tertiary"
-            label="Dismiss"
+            variant="text"
+            color="info"
             onClick={onClick}
             sx={{
               fontWeight: "600",
               width: "fit-content",
-              mt: theme.gap.small,
+              mt: theme.spacing(4),
               padding: 0,
               minWidth: 0,
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
             }}
-          ></Button>
+          >
+            Dismiss
+          </Button>
         )}
       </Stack>
       {isToast && (
@@ -94,10 +90,6 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
             padding: "5px",
             "&:focus": {
               outline: "none",
-            },
-            "& .MuiTouchRipple-root": {
-              pointerEvents: "none",
-              display: "none",
             },
           }}
         >

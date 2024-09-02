@@ -1,17 +1,20 @@
 import { BarChart, Bar, Cell, ReferenceLine, Label } from "recharts";
 
 import PropTypes from "prop-types";
+import { useTheme } from "@emotion/react";
 
 const MonitorDetails60MinChart = ({ data }) => {
+  const theme = useTheme();
+
   const labelStyle = {
     fontSize: "10px",
-    fill: "#475467",
+    fill: theme.palette.text.tertiary,
   };
 
   const color = {
-    true: "var(--env-var-color-23)",
-    false: "var(--env-var-color-24)",
-    undefined: "var(--env-var-color-33)",
+    true: theme.palette.success.main,
+    false: theme.palette.error.text,
+    undefined: theme.palette.unresolved.main,
   };
   return (
     <BarChart

@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonGroup, Stack, Skeleton, Typography } from "@mui/material";
-import Button from "../../Components/Button";
+import {
+  ButtonGroup,
+  Stack,
+  Skeleton,
+  Typography,
+  Button,
+} from "@mui/material";
 import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
@@ -18,7 +23,7 @@ const SkeletonLayout = () => {
 
   return (
     <>
-      <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
+      <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
         <Skeleton variant="rounded" width={150} height={34} />
         <Skeleton variant="rounded" width="15%" height={34} />
         <Skeleton
@@ -48,16 +53,15 @@ const Incidents = () => {
   useEffect(() => {
     const fetchMonitors = async () => {
       setLoading(true);
-      const res = await networkService.getMonitorsByUserId(
+      const res = await networkService.getMonitorsByTeamId(
         authState.authToken,
-        authState.user._id,
+        authState.user.teamId,
         1,
         null,
         null,
         null,
         null
       );
-
       // Reduce to a lookup object for 0(1) lookup
       if (res.data && res.data.data.length > 0) {
         const monitorLookup = res.data.data.reduce((acc, monitor) => {
@@ -79,13 +83,17 @@ const Incidents = () => {
   };
 
   return (
-    <Stack className="incidents" pt={theme.gap.xl} gap={theme.gap.large}>
+    <Stack className="incidents" pt={theme.spacing(21)} gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
         <>
-          <Stack direction="row" alignItems="center" gap={theme.gap.medium}>
-            <Typography display="inline-block" component="h1">
+          <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
+            <Typography
+              display="inline-block"
+              component="h1"
+              color={theme.palette.text.secondary}
+            >
               Incidents for
             </Typography>
             <Select
@@ -94,35 +102,39 @@ const Incidents = () => {
               value={selectedMonitor}
               onChange={handleSelect}
               items={Object.values(monitors)}
+              sx={{
+                backgroundColor: theme.palette.background.main,
+              }}
             />
-            <ButtonGroup sx={{ ml: "auto" }}>
+            <ButtonGroup
+              sx={{
+                ml: "auto",
+                "& .MuiButtonBase-root, & .MuiButtonBase-root:hover": {
+                  borderColor: theme.palette.border.light,
+                },
+              }}
+            >
               <Button
-                level="secondary"
-                label="All"
+                variant="group"
+                filled={(filter === "all").toString()}
                 onClick={() => setFilter("all")}
-                sx={{
-                  backgroundColor:
-                    filter === "all" && theme.palette.otherColors.fillGray,
-                }}
-              />
+              >
+                All
+              </Button>
               <Button
-                level="secondary"
-                label="Down"
+                variant="group"
+                filled={(filter === "down").toString()}
                 onClick={() => setFilter("down")}
-                sx={{
-                  backgroundColor:
-                    filter === "down" && theme.palette.otherColors.fillGray,
-                }}
-              />
+              >
+                Down
+              </Button>
               <Button
-                level="secondary"
-                label="Cannot Resolve"
+                variant="group"
+                filled={(filter === "resolve").toString()}
                 onClick={() => setFilter("resolve")}
-                sx={{
-                  backgroundColor:
-                    filter === "resolve" && theme.palette.otherColors.fillGray,
-                }}
-              />
+              >
+                Cannot Resolve
+              </Button>
             </ButtonGroup>
           </Stack>
           <IncidentTable

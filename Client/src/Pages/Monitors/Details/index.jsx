@@ -1,6 +1,13 @@
-import { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
+import {
+  Box,
+  Button,
+  Skeleton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
@@ -11,7 +18,6 @@ import {
 } from "../../../Utils/timeUtils";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "../../../Components/Button";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -19,12 +25,41 @@ import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
 
 const StatBox = ({ title, value }) => {
+  const theme = useTheme();
   return (
-    <Box className="stat-box">
-      <Typography variant="h6" mb={1} fontWeight={500}>
+    <Box
+      className="stat-box"
+      flex="20%"
+      minWidth="100px"
+      px={theme.spacing(8)}
+      py={theme.spacing(4)}
+      border={1}
+      borderColor={theme.palette.border.light}
+      borderRadius={theme.shape.borderRadius}
+      backgroundColor={theme.palette.background.main}
+    >
+      <Typography
+        variant="h6"
+        mb={theme.spacing(2)}
+        fontSize={14}
+        fontWeight={500}
+        color={theme.palette.primary.main}
+        sx={{
+          "& span": {
+            color: theme.palette.text.accent,
+            fontSize: 13,
+            fontStyle: "italic",
+          },
+        }}
+      >
         {title}
       </Typography>
-      <Typography variant="h4" fontWeight={500}>
+      <Typography
+        variant="h4"
+        fontWeight={500}
+        fontSize={13}
+        color={theme.palette.text.secondary}
+      >
         {value}
       </Typography>
     </Box>
@@ -47,8 +82,8 @@ const SkeletonLayout = () => {
   return (
     <>
       <Skeleton variant="rounded" width="20%" height={34} />
-      <Stack gap={theme.gap.xl} mt={theme.gap.medium}>
-        <Stack direction="row" gap={theme.gap.small} mt={theme.gap.small}>
+      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)}>
+        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
           <Skeleton
             variant="circular"
             style={{ minWidth: 24, minHeight: 24 }}
@@ -59,7 +94,7 @@ const SkeletonLayout = () => {
               variant="rounded"
               width="50%"
               height={18}
-              sx={{ mt: theme.gap.small }}
+              sx={{ mt: theme.spacing(4) }}
             />
           </Box>
           <Skeleton
@@ -72,7 +107,7 @@ const SkeletonLayout = () => {
         <Stack
           direction="row"
           justifyContent="space-between"
-          gap={theme.gap.large}
+          gap={theme.spacing(12)}
         >
           <Skeleton variant="rounded" width="100%" height={80} />
           <Skeleton variant="rounded" width="100%" height={80} />
@@ -82,7 +117,7 @@ const SkeletonLayout = () => {
           <Stack
             direction="row"
             justifyContent="space-between"
-            mb={theme.gap.ml}
+            mb={theme.spacing(8)}
           >
             <Skeleton
               variant="rounded"
@@ -96,7 +131,7 @@ const SkeletonLayout = () => {
             <Skeleton variant="rounded" width="100%" height="100%" />
           </Box>
         </Box>
-        <Stack gap={theme.gap.ml}>
+        <Stack gap={theme.spacing(8)}>
           <Skeleton variant="rounded" width="20%" height={24} />
           <Skeleton variant="rounded" width="100%" height={200} />
           <Skeleton variant="rounded" width="100%" height={50} />
@@ -110,7 +145,8 @@ const SkeletonLayout = () => {
  * Details page component displaying monitor details and related information.
  * @component
  */
-const DetailsPage = () => {
+const DetailsPage = ({ isAdmin }) => {
+  const theme = useTheme();
   const [monitor, setMonitor] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
@@ -142,6 +178,9 @@ const DetailsPage = () => {
 
   useEffect(() => {
     const fetchCertificate = async () => {
+      if (monitor?.type !== "http") {
+        return;
+      }
       try {
         const res = await networkService.getCertificateExpiry(
           authToken,
@@ -153,9 +192,8 @@ const DetailsPage = () => {
       }
     };
     fetchCertificate();
-  }, [authToken, monitorId]);
+  }, [authToken, monitorId, monitor]);
 
-  const theme = useTheme();
   let loading = Object.keys(monitor).length === 0;
   return (
     <Box className="monitor-details">
@@ -169,26 +207,33 @@ const DetailsPage = () => {
               { name: "details", path: `/monitors/${monitorId}` },
             ]}
           />
-          <Stack gap={theme.gap.large} mt={theme.gap.large}>
-            <Stack direction="row" gap={theme.gap.xs}>
+          <Stack gap={theme.spacing(12)} mt={theme.spacing(12)}>
+            <Stack direction="row" gap={theme.spacing(2)}>
               <PulseDot
                 color={
                   monitor?.status
-                    ? theme.label.up.dotColor
-                    : theme.label.down.dotColor
+                    ? theme.palette.success.main
+                    : theme.palette.error.main
                 }
               />
               <Box>
-                <Typography component="h1" sx={{ lineHeight: 1 }}>
+                <Typography
+                  component="h1"
+                  color={theme.palette.text.primary}
+                  lineHeight={1}
+                >
                   {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                 </Typography>
-                <Typography mt={theme.gap.small}>
+                <Typography
+                  mt={theme.spacing(4)}
+                  color={theme.palette.text.tertiary}
+                >
                   <Typography
                     component="span"
                     sx={{
                       color: monitor?.status
-                        ? "var(--env-var-color-17)"
-                        : "var(--env-var-color-24)",
+                        ? theme.palette.success.main
+                        : theme.palette.success.text,
                     }}
                   >
                     Your site is {monitor?.status ? "up" : "down"}.
@@ -196,34 +241,31 @@ const DetailsPage = () => {
                   Checking every {formatDurationRounded(monitor?.interval)}.
                 </Typography>
               </Box>
-              <Button
-                level="tertiary"
-                label="Configure"
-                animate="rotate90"
-                img={
-                  <SettingsIcon
-                    style={{
-                      minWidth: theme.gap.mlplus,
-                      minHeight: theme.gap.mlplus,
-                    }}
-                  />
-                }
-                onClick={() => navigate(`/monitors/configure/${monitorId}`)}
-                sx={{
-                  ml: "auto",
-                  alignSelf: "flex-end",
-                  backgroundColor: "#f4f4f4",
-                  px: theme.gap.medium,
-                  "& svg": {
-                    mr: "6px",
-                  },
-                }}
-              />
+              {isAdmin && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+                  sx={{
+                    ml: "auto",
+                    alignSelf: "flex-end",
+                    px: theme.spacing(5),
+                    "& svg": {
+                      mr: theme.spacing(3),
+                      "& path": {
+                        stroke: theme.palette.other.icon,
+                      },
+                    },
+                  }}
+                >
+                  <SettingsIcon /> Configure
+                </Button>
+              )}
             </Stack>
             <Stack
               direction="row"
               justifyContent="space-between"
-              gap={theme.gap.large}
+              gap={theme.spacing(12)}
               flexWrap="wrap"
             >
               <StatBox
@@ -276,51 +318,46 @@ const DetailsPage = () => {
               <Stack
                 direction="row"
                 justifyContent="space-between"
-                mb={theme.gap.ml}
+                mb={theme.spacing(8)}
               >
-                <Typography component="h2" alignSelf="flex-end">
+                <Typography
+                  component="h2"
+                  alignSelf="flex-end"
+                  color={theme.palette.text.secondary}
+                >
                   Response Times
                 </Typography>
                 <ButtonGroup>
                   <Button
-                    level="secondary"
-                    label="Day"
+                    variant="group"
+                    filled={(dateRange === "day").toString()}
                     onClick={() => setDateRange("day")}
-                    sx={{
-                      backgroundColor:
-                        dateRange === "day" &&
-                        theme.palette.otherColors.fillGray,
-                    }}
-                  />
+                  >
+                    Day
+                  </Button>
                   <Button
-                    level="secondary"
-                    label="Week"
+                    variant="group"
+                    filled={(dateRange === "week").toString()}
                     onClick={() => setDateRange("week")}
-                    sx={{
-                      backgroundColor:
-                        dateRange === "week" &&
-                        theme.palette.otherColors.fillGray,
-                    }}
-                  />
+                  >
+                    Week
+                  </Button>
                   <Button
-                    level="secondary"
-                    label="Month"
+                    variant="group"
+                    filled={(dateRange === "month").toString()}
                     onClick={() => setDateRange("month")}
-                    sx={{
-                      backgroundColor:
-                        dateRange === "month" &&
-                        theme.palette.otherColors.fillGray,
-                    }}
-                  />
+                  >
+                    Month
+                  </Button>
                 </ButtonGroup>
               </Stack>
               <Box
-                p={theme.gap.mlplus}
-                pb={theme.gap.xs}
-                backgroundColor={theme.palette.otherColors.white}
+                p={theme.spacing(10)}
+                pb={theme.spacing(2)}
+                backgroundColor={theme.palette.background.main}
                 border={1}
-                borderColor={theme.palette.otherColors.graishWhite}
-                borderRadius={`${theme.shape.borderRadius}px`}
+                borderColor={theme.palette.border.light}
+                borderRadius={theme.shape.borderRadius}
                 sx={{ height: "250px" }}
               >
                 <MonitorDetailsAreaChart
@@ -328,8 +365,10 @@ const DetailsPage = () => {
                 />
               </Box>
             </Box>
-            <Stack gap={theme.gap.ml}>
-              <Typography component="h2">History</Typography>
+            <Stack gap={theme.spacing(8)}>
+              <Typography component="h2" color={theme.palette.text.secondary}>
+                History
+              </Typography>
               <PaginationTable monitorId={monitorId} dateRange={dateRange} />
             </Stack>
           </Stack>
@@ -339,4 +378,7 @@ const DetailsPage = () => {
   );
 };
 
+DetailsPage.propTypes = {
+  isAdmin: PropTypes.bool,
+};
 export default DetailsPage;

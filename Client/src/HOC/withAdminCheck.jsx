@@ -10,7 +10,7 @@ const withAdminCheck = (WrappedComponent) => {
 
     useEffect(() => {
       networkService
-        .doesAdminExist()
+        .doesSuperAdminExist()
         .then((response) => {
           if (response.data.data === true) {
             navigate("/login");
@@ -20,7 +20,7 @@ const withAdminCheck = (WrappedComponent) => {
           logger.error(error);
         });
     }, [navigate]);
-    return <WrappedComponent {...props} isAdmin={true} />;
+    return <WrappedComponent {...props} isSuperAdmin={true} />;
   };
   const wrappedComponentName =
     WrappedComponent.displayName || WrappedComponent.name || "Component";

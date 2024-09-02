@@ -1,7 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import "./index.css";
 import { useState } from "react";
-import Button from "../../../Components/Button";
 import Back from "../../../assets/icons/left-arrow-long.svg?react";
 import Select from "../../../Components/Inputs/Select";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -13,6 +12,7 @@ import Field from "../../../Components/Inputs/Field";
 import { maintenanceWindowValidation } from "../../../Validation/validation";
 import { logger } from "../../../Utils/Logger";
 import { createToast } from "../../../Utils/toastUtils";
+import { useTheme } from "@emotion/react";
 
 const directory = {
   title: "Create a maintenance window",
@@ -56,13 +56,15 @@ const durationOptions = [
 ];
 
 const CreateNewMaintenanceWindow = () => {
+  const theme = useTheme();
+
   const [values, setValues] = useState({
     repeat: 1,
     date: dayjs(),
     startTime: dayjs(),
     duration: "60",
     unit: "minutes",
-    friendlyName: "",
+    displayName: "",
     AddMonitors: "",
   });
   const [errors, setErrors] = useState({});
@@ -82,7 +84,7 @@ const CreateNewMaintenanceWindow = () => {
       startTime: values.startTime.format("HH:mm"),
       duration: values.duration,
       unit: values.unit,
-      friendlyName: values.friendlyName,
+      displayName: values.displayName,
       addMonitors: values.AddMonitors,
     };
 
@@ -159,7 +161,11 @@ const CreateNewMaintenanceWindow = () => {
     {
       title: "Duration",
       component: (
-        <Stack className="duration-config" gap={2} direction="row">
+        <Stack
+          className="duration-config"
+          gap={theme.spacing(5)}
+          direction="row"
+        >
           <Field
             id="duration-value"
             placeholder="60"
@@ -178,14 +184,14 @@ const CreateNewMaintenanceWindow = () => {
       ),
     },
     {
-      title: "Friendly name",
+      title: "Display name",
       component: (
         <Field
-          id="friendly-name"
+          id="display-name"
           placeholder="Maintanence at __ : __ for ___ minutes"
-          value={values.friendlyName}
-          onChange={(e) => handleChange(e, "friendlyName")}
-          error={errors.friendlyName}
+          value={values.displayName}
+          onChange={(e) => handleChange(e, "displayName")}
+          error={errors.displayName}
         />
       ),
     },
@@ -195,7 +201,7 @@ const CreateNewMaintenanceWindow = () => {
         <Stack
           className="add-monitors-fields"
           sx={{ width: "60%", maxWidth: "380px" }}
-          gap={2}
+          gap={theme.spacing(5)}
         >
           <Field
             id="add-monitors"
@@ -208,7 +214,7 @@ const CreateNewMaintenanceWindow = () => {
             sx={{
               width: "fit-content",
               fontSize: "var(--env-var-font-size-small)",
-              borderBottom: "1px dashed var(--env-var-color-3)",
+              borderBottom: `1px dashed ${theme.palette.primary.main}`,
               paddingBottom: "4px",
             }}
           >
@@ -221,26 +227,25 @@ const CreateNewMaintenanceWindow = () => {
 
   return (
     <div className="create-maintenance-window">
-      <Stack gap={3}>
+      <Stack gap={theme.spacing(10)}>
         <Button
-          id="btn-back"
+          variant="contained"
+          color="secondary"
           sx={{
             width: "100px",
             height: "30px",
             gap: "10px",
-            backgroundColor: "var(--env-var-color-32)",
-            color: "var(--env-var-color-5)",
           }}
-          label="Back"
-          level="tertiary"
-          img={<Back />}
-        />
+        >
+          <Back />
+          Back
+        </Button>
         <Box>
           <Typography
             sx={{
               fontSize: "var(--env-var-font-size-large)",
-              fontWeight: "600",
-              color: "var(--env-var-color-5)",
+              fontWeight: 600,
+              color: theme.palette.text.secondary,
             }}
           >
             {directory.title}
@@ -252,14 +257,14 @@ const CreateNewMaintenanceWindow = () => {
         </Box>
         <Stack
           className="maintenance-options"
-          gap={5}
-          paddingY={4}
-          paddingX={8}
-          paddingBottom={10}
+          gap={theme.spacing(20)}
+          paddingY={theme.spacing(15)}
+          paddingX={theme.spacing(20)}
           sx={{
-            border: "1px solid var(--env-var-color-16)",
-            borderRadius: "var(--env-var-radius-1)",
-            backgroundColor: "var(--env-var-color-0)",
+            border: 1,
+            borderColor: theme.palette.border.light,
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: theme.palette.background.main,
           }}
         >
           {configOptions.map((item, index) => (
@@ -271,26 +276,19 @@ const CreateNewMaintenanceWindow = () => {
         </Stack>
         <Stack justifyContent="end" direction="row" marginTop={3}>
           <Button
+            variant="text"
+            color="info"
             sx={{
               "&:hover": {
                 backgroundColor: "transparent",
-                boxShadow: "none",
               },
             }}
-            level="tertiary"
-            label="Cancel"
-          />
-          <Button
-            sx={{
-              "&:hover": {
-                backgroundColor: "#1570EF",
-                boxShadow: "none",
-              },
-            }}
-            level="primary"
-            label="Create"
-            onClick={handleSubmit}
-          />
+          >
+            Cancel
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            Create
+          </Button>
         </Stack>
       </Stack>
     </div>

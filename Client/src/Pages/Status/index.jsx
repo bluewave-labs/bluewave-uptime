@@ -1,8 +1,25 @@
+import { Box } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import Fallback from "../../Components/Fallback";
 
 const Status = () => {
+  const theme = useTheme();
+
   return (
-    <div className="status">
+    <Box
+      className="status"
+      sx={{
+        ':has(> [class*="fallback__"])': {
+          position: "relative",
+          border: 1,
+          borderColor: theme.palette.border.light,
+          borderRadius: theme.shape.borderRadius,
+          borderStyle: "dashed",
+          backgroundColor: theme.palette.background.main,
+          overflow: "hidden",
+        },
+      }}
+    >
       <Fallback
         title="status page"
         checks={[
@@ -11,7 +28,7 @@ const Status = () => {
           "Build trust with your customers",
         ]}
       />
-    </div>
+    </Box>
   );
 };
 

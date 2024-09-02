@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
-import Button from "../../Components/Button";
 import { networkService } from "../../main";
 import Field from "../../Components/Inputs/Field";
 import background from "../../assets/Images/background_pattern_decorative.png";
@@ -30,7 +29,7 @@ const LandingPage = ({ onContinue }) => {
   return (
     <>
       <Stack
-        gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
         alignItems="center"
         textAlign="center"
       >
@@ -40,17 +39,22 @@ const LandingPage = ({ onContinue }) => {
         </Box>
         <Box width="100%">
           <Button
-            level="secondary"
-            label="Continue with Email"
-            img={<Mail />}
+            variant="outlined"
+            color="info"
             onClick={onContinue}
             sx={{
               width: "100%",
               "& svg": {
-                mr: theme.gap.small,
+                mr: theme.spacing(4),
+                "& path": {
+                  stroke: theme.palette.other.icon,
+                },
               },
             }}
-          />
+          >
+            <Mail />
+            Continue with Email
+          </Button>
         </Box>
         <Box maxWidth={400}>
           <Typography className="tos-p">
@@ -64,6 +68,11 @@ const LandingPage = ({ onContinue }) => {
                   "noreferrer"
                 );
               }}
+              sx={{
+                "&:hover": {
+                  color: theme.palette.text.tertiary,
+                },
+              }}
             >
               Terms of Service
             </Typography>{" "}
@@ -76,6 +85,11 @@ const LandingPage = ({ onContinue }) => {
                   "_blank",
                   "noreferrer"
                 );
+              }}
+              sx={{
+                "&:hover": {
+                  color: theme.palette.text.tertiary,
+                },
               }}
             >
               Privacy Policy.
@@ -114,12 +128,15 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Log In</Typography>
           <Typography>Enter your email address</Typography>
         </Box>
-        <Box textAlign="left">
+        <Box textAlign="left" mb={theme.spacing(5)}>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
             <Field
               type="email"
@@ -138,27 +155,29 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              mb: theme.gap.medium,
-              px: theme.gap.ml,
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.email && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -204,12 +223,16 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        position="relative"
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Log In</Typography>
           <Typography>Enter your password</Typography>
         </Box>
-        <Box textAlign="left">
+        <Box textAlign="left" mb={theme.spacing(5)}>
           <form noValidate spellCheck={false} onSubmit={onSubmit}>
             <Field
               type="password"
@@ -227,35 +250,50 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              mb: theme.gap.medium,
-              px: theme.gap.ml,
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.password && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
-        <Box textAlign="center">
-          <Typography className="forgot-p" display="inline-block">
+        <Box
+          textAlign="center"
+          sx={{
+            position: "absolute",
+            top: "103%",
+            left: "50%",
+            transform: "translateX(-50%)"
+          }}
+        >
+          <Typography
+            className="forgot-p"
+            display="inline-block"
+            color={theme.palette.primary.main}
+          >
             Forgot password?
           </Typography>
           <Typography
             component="span"
-            ml={theme.gap.xs}
+            color={theme.palette.primary.main}
+            ml={theme.spacing(2)}
             sx={{ userSelect: "none" }}
             onClick={handleNavigate}
           >
@@ -301,7 +339,7 @@ const Login = () => {
       return;
     }
     networkService
-      .doesAdminExist()
+      .doesSuperAdminExist()
       .then((response) => {
         if (response.data.data === false) {
           navigate("/register");
@@ -393,7 +431,21 @@ const Login = () => {
   };
 
   return (
-    <Stack className="login-page auth" overflow="hidden">
+    <Stack
+      className="login-page auth"
+      overflow="hidden"
+      sx={{
+        "& h1": {
+          color: theme.palette.primary.main,
+          fontWeight: 600,
+          fontSize: 30,
+        },
+        "& p": {
+          fontSize: 14,
+          color: theme.palette.text.accent,
+        },
+      }}
+    >
       <Box
         className="background-pattern-svg"
         sx={{ backgroundImage: `url(${background})` }}
@@ -401,8 +453,8 @@ const Login = () => {
       <Stack
         direction="row"
         alignItems="center"
-        px={theme.gap.large}
-        gap={theme.gap.small}
+        px={theme.spacing(12)}
+        gap={theme.spacing(4)}
       >
         <Logo style={{ borderRadius: theme.shape.borderRadius }} />
         <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
@@ -412,18 +464,18 @@ const Login = () => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
-        pb={theme.gap.xl}
+        px={{ xs: theme.spacing(12), lg: theme.spacing(20) }}
+        pb={theme.spacing(20)}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
             border: 1,
-            borderRadius: theme.shape.borderRadius,
-            borderColor: theme.palette.otherColors.graishWhite,
-            backgroundColor: theme.palette.otherColors.white,
+            borderRadius: theme.spacing(5),
+            borderColor: theme.palette.border.light,
+            backgroundColor: theme.palette.background.main,
             padding: {
-              xs: theme.gap.large,
-              sm: theme.gap.xl,
+              xs: theme.spacing(12),
+              sm: theme.spacing(20),
             },
           },
         }}
@@ -450,13 +502,14 @@ const Login = () => {
           )
         )}
       </Stack>
-      <Box textAlign="center" p={theme.gap.large}>
+      <Box textAlign="center" p={theme.spacing(12)}>
         <Typography display="inline-block">
           Don&apos;t have an account? —
         </Typography>
         <Typography
           component="span"
-          ml={theme.gap.xs}
+          color={theme.palette.primary.main}
+          ml={theme.spacing(2)}
           onClick={() => {
             navigate("/register");
           }}

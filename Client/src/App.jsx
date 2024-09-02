@@ -7,7 +7,7 @@ import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register/Register";
 import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
-import Monitors from "./Pages/Monitors";
+import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
@@ -21,27 +21,40 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
+import withAdminProp from "./HOC/withAdminProp";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
+import { ThemeProvider } from "@emotion/react";
+import lightTheme from "./Utils/Theme/lightTheme";
+import darkTheme from "./Utils/Theme/darkTheme";
+import { useSelector } from "react-redux";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
+  const MonitorsWithAdminProp = withAdminProp(Monitors);
+  const DetailsWithAdminProp = withAdminProp(Details);
+  const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
+  const MaintenanceWithAdminProp = withAdminProp(Maintenance);
+  const SettingsWithAdminProp = withAdminProp(Settings);
+
+  const mode = useSelector((state) => state.ui.mode);
+
   return (
-    <>
+    <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
       <Routes>
         <Route exact path="/" element={<HomeLayout />}>
           <Route
             exact
             path="/"
-            element={<ProtectedRoute Component={Monitors} />}
+            element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
           />
           <Route
             path="/monitors"
-            element={<ProtectedRoute Component={Monitors} />}
+            element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
           />
           <Route
             path="/monitors/create"
@@ -49,7 +62,7 @@ function App() {
           />
           <Route
             path="/monitors/:monitorId/"
-            element={<ProtectedRoute Component={Details} />}
+            element={<ProtectedRoute Component={DetailsWithAdminProp} />}
           />
           <Route
             path="/monitors/configure/:monitorId/"
@@ -70,7 +83,7 @@ function App() {
           />
           <Route
             path="maintenance"
-            element={<ProtectedRoute Component={Maintenance} />}
+            element={<ProtectedRoute Component={MaintenanceWithAdminProp} />}
           />
           <Route
             path="/maintenance/create"
@@ -78,7 +91,7 @@ function App() {
           />
           <Route
             path="settings"
-            element={<ProtectedRoute Component={Settings} />}
+            element={<ProtectedRoute Component={SettingsWithAdminProp} />}
           />
           <Route
             path="account/profile"
@@ -94,7 +107,7 @@ function App() {
           />
           <Route
             path="pagespeed"
-            element={<ProtectedRoute Component={PageSpeed} />}
+            element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
           />
           <Route
             path="pagespeed/create"
@@ -125,7 +138,7 @@ function App() {
         />
       </Routes>
       <ToastContainer />
-    </>
+    </ThemeProvider>
   );
 }
 

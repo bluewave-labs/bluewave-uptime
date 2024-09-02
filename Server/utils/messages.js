@@ -17,6 +17,9 @@ const errorMessages = {
   VERIFY_OWNER_NOT_FOUND: "Document not found",
   VERIFY_OWNER_UNAUTHORIZED: "Unauthorized access",
 
+  //Permissions Middleware
+  INSUFFICIENT_PERMISSIONS: "Insufficient permissions",
+
   //DB Errors
   DB_USER_EXISTS: "User already exists",
   DB_USER_NOT_FOUND: "User not found",
@@ -41,6 +44,9 @@ const errorMessages = {
   JOB_QUEUE_WORKER_CLOSE: "Error closing worker",
   JOB_QUEUE_DELETE_JOB: "Job not found in queue",
   JOB_QUEUE_OBLITERATE: "Error obliterating queue",
+
+  // PING Operations
+  PING_CANNOT_RESOLVE: "No response",
 };
 
 const successMessages = {
@@ -81,10 +87,15 @@ const successMessages = {
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",
   JOB_QUEUE_OBLITERATE: "Queue OBLITERATED!!!",
+  JOB_QUEUE_PAUSE_JOB: "Job paused successfully",
+  JOB_QUEUE_RESUME_JOB: "Job resumed successfully",
 
   //Maintenance Window Controller
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
   MAINTEANCE_WINDOW_GET_BY_USER: "Got Maintenance Windows by User successfully",
+
+  //Ping Operations
+  PING_SUCCESS: "Success",
 };
 
 module.exports = {

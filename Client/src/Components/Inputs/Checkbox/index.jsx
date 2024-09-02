@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { FormControlLabel, Checkbox as MuiCheckbox } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import CheckboxOutline from "../../../assets/icons/checkbox-outline.svg?react";
 import CheckboxFilled from "../../../assets/icons/checkbox-filled.svg?react";
 
@@ -16,7 +17,7 @@ import "./index.css";
  * @param {boolean} [props.isDisabled] - Whether the checkbox is disabled or not.
  *
  * @returns {JSX.Element}
- * 
+ *
  * @example
  * <Checkbox
  *  id="checkbox-id"
@@ -37,6 +38,7 @@ const Checkbox = ({
   isDisabled,
 }) => {
   const sizes = { small: "14px", medium: "16px", large: "18px" };
+  const theme = useTheme();
 
   return (
     <FormControlLabel
@@ -61,10 +63,20 @@ const Checkbox = ({
       label={label}
       disabled={isDisabled}
       sx={{
-        p: "5px",
-        m: "-5px",
+        borderRadius: theme.shape.borderRadius,
+        p: theme.spacing(2.5),
+        m: theme.spacing(-2.5),
         "& .MuiButtonBase-root": {
-          width: "20px",
+          width: theme.spacing(10),
+          p: 0,
+          mr: theme.spacing(6),
+        },
+        "&:not(:has(.Mui-disabled)):hover": {
+          backgroundColor: theme.palette.background.accent,
+        },
+        "& span.MuiTypography-root": {
+          fontSize: 13,
+          color: theme.palette.text.tertiary,
         },
       }}
     />

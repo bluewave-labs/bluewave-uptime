@@ -22,7 +22,27 @@ const dateRangeLookup = {
 
 const createCheck = async (checkData) => {
   try {
+    const { monitorId, status } = checkData;
+
+    const n = await Check.countDocuments({ monitorId }) + 1;
+
     const check = await new Check({ ...checkData }).save();
+
+    const monitor = await Monitor.findById(monitorId);
+
+    if (!monitor) {
+      throw new Error("Monitor not found");
+    }
+
+    if (monitor.uptimePercentage === undefined) {
+      monitor.uptimePercentage = (status === true) ? 1 : 0;
+    } else {
+      monitor.uptimePercentage =
+        (monitor.uptimePercentage * (n - 1) + (status === true ? 1: 0)) / n;
+    }
+
+    await monitor.save();
+
     return check;
   } catch (error) {
     throw error;
@@ -116,12 +136,12 @@ const getChecks = async (req) => {
   }
 };
 
-const getUserChecks = async (req) => {
-  const { userId } = req.params;
+const getTeamChecks = async (req) => {
+  const { teamId } = req.params;
   let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 
   // Get monitorIDs
-  const userMonitors = await Monitor.find({ userId: userId });
+  const userMonitors = await Monitor.find({ teamId: teamId });
   const monitorIds = userMonitors.map((monitor) => monitor._id);
 
   //Build check query
@@ -170,7 +190,7 @@ const getUserChecks = async (req) => {
 };
 
 /**
- * Delete all checks for a user
+ * Delete all checks for a monitor
  * @async
  * @param {string} monitorId
  * @returns {number}
@@ -185,10 +205,40 @@ const deleteChecks = async (monitorId) => {
     throw error;
   }
 };
+
+/**
+ * Delete all checks for a team
+ * @async
+ * @param {string} monitorId
+ * @returns {number}
+ * @throws {Error}
+ */
+
+const deleteChecksByTeamId = async (teamId) => {
+  try {
+    const teamMonitors = await Monitor.find({ teamId: teamId });
+    let totalDeletedCount = 0;
+
+    await Promise.all(
+      teamMonitors.map(async (monitor) => {
+        const result = await Check.deleteMany({ monitorId: monitor._id });
+        totalDeletedCount += result.deletedCount;
+        monitor.status = true;
+        await monitor.save();
+      })
+    );
+
+    return totalDeletedCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createCheck,
   getChecksCount,
   getChecks,
-  getUserChecks,
+  getTeamChecks,
   deleteChecks,
+  deleteChecksByTeamId,
 };

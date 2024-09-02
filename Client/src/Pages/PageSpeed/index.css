@@ -1,28 +1,16 @@
-.page-speed h1.MuiTypography-root,
-.page-speed span.MuiTypography-root,
-.page-speed p.MuiTypography-root {
-  color: var(--env-var-color-5);
-}
 .page-speed h2.MuiTypography-root {
-  color: var(--env-var-color-3);
   line-height: 1.1;
 }
-.page-speed h1.MuiTypography-root,
+.page-speed:not(:has([class*="fallback__"])) h1.MuiTypography-root {
+  font-size: var(--env-var-font-size-large-plus);
+}
 .page-speed h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
   font-weight: 600;
 }
-.page-speed p.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
-}
 .page-speed p:has(> span.MuiTypography-root),
 .page-speed p.MuiTypography-root > span.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
-}
-.page-speed .MuiGrid-item > .MuiStack-root {
-  border: solid 1px var(--env-var-color-6);
-  border-radius: var(--env-var-radius-1);
-  background-color: var(--env-var-color-8);
 }
 .page-speed .label {
   padding: 7px;
@@ -31,8 +19,4 @@
 }
 .page-speed:not(:has([class*="fallback__"])) button {
   height: 34px;
-  align-self: flex-end;
-}
-.page-speed [class*="fallback__"] h1 {
-  margin-left: var(--env-var-spacing-3);
 }

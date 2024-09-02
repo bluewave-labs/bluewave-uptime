@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
@@ -13,49 +13,53 @@ import Logo from "../../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Check from "../../../Components/Check/Check";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import { networkService } from "../../../main";
 import "../index.css";
-import { logger } from "../../../Utils/Logger";
 
 /**
  * Displays the initial landing page.
  *
  * @param {Object} props
- * @param {boolean} props.isAdmin - Whether the user is creating and admin account
+ * @param {boolean} props.isSuperAdmin - Whether the user is creating and admin account
  * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
  * @returns {JSX.Element}
  */
-const LandingPage = ({ isAdmin, onSignup }) => {
+const LandingPage = ({ isSuperAdmin, onSignup }) => {
   const theme = useTheme();
 
   return (
     <>
       <Stack
-        gap={{ xs: theme.gap.ml, sm: theme.gap.large }}
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
         alignItems="center"
         textAlign="center"
       >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>
-            Create your {isAdmin ? "admin " : ""}account to get started.
+            Create your {isSuperAdmin ? "Super admin " : ""}account to get
+            started.
           </Typography>
         </Box>
         <Box width="100%">
           <Button
-            level="secondary"
-            label="Sign up with Email"
-            img={<Mail />}
+            variant="outlined"
+            color="info"
             onClick={onSignup}
             sx={{
               width: "100%",
               "& svg": {
-                mr: theme.gap.small,
+                mr: theme.spacing(4),
+                "& path": {
+                  stroke: theme.palette.other.icon,
+                },
               },
             }}
-          />
+          >
+            <Mail />
+            Sign up with Email
+          </Button>
         </Box>
         <Box maxWidth={400}>
           <Typography className="tos-p">
@@ -68,6 +72,11 @@ const LandingPage = ({ isAdmin, onSignup }) => {
                   "_blank",
                   "noreferrer"
                 );
+              }}
+              sx={{
+                "&:hover": {
+                  color: theme.palette.text.tertiary,
+                },
               }}
             >
               Terms of Service
@@ -82,6 +91,11 @@ const LandingPage = ({ isAdmin, onSignup }) => {
                   "noreferrer"
                 );
               }}
+              sx={{
+                "&:hover": {
+                  color: theme.palette.text.tertiary,
+                },
+              }}
             >
               Privacy Policy.
             </Typography>
@@ -93,7 +107,7 @@ const LandingPage = ({ isAdmin, onSignup }) => {
 };
 
 LandingPage.propTypes = {
-  isAdmin: PropTypes.bool,
+  isSuperAdmin: PropTypes.bool,
   onSignup: PropTypes.func,
 };
 
@@ -120,13 +134,22 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Enter your personal details</Typography>
         </Box>
         <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(10)}
+          >
             <Field
               id="register-firstname-input"
               label="Name"
@@ -138,8 +161,14 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.firstName}
               ref={inputRef}
             />
-          </form>
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          </Box>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(5)}
+          >
             <Field
               id="register-lastname-input"
               label="Surname"
@@ -150,30 +179,33 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.lastName}
             />
-          </form>
+          </Box>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              px: theme.gap.ml,
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={(errors.firstName || errors.lastName) && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -211,13 +243,22 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Enter your email address</Typography>
         </Box>
         <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+            mb={theme.spacing(5)}
+          >
             <Field
               type="email"
               id="register-email-input"
@@ -231,30 +272,33 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.email}
               ref={inputRef}
             />
-          </form>
+          </Box>
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              px: theme.gap.ml,
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.email && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -292,13 +336,28 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
 
   return (
     <>
-      <Stack gap={{ xs: theme.gap.ml, sm: theme.gap.large }} textAlign="center">
+      <Stack
+        gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        textAlign="center"
+      >
         <Box>
           <Typography component="h1">Sign Up</Typography>
           <Typography>Create your password</Typography>
         </Box>
-        <Box textAlign="left">
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+        <Box
+          textAlign="left"
+          sx={{
+            "& .input-error": {
+              display: "none",
+            },
+          }}
+        >
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+          >
             <Field
               type="password"
               id="register-password-input"
@@ -311,8 +370,13 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               error={errors.password}
               ref={inputRef}
             />
-          </form>
-          <form noValidate spellCheck={false} onSubmit={onSubmit}>
+          </Box>
+          <Box
+            component="form"
+            noValidate
+            spellCheck={false}
+            onSubmit={onSubmit}
+          >
             <Field
               type="password"
               id="register-confirm-input"
@@ -324,10 +388,10 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
               onChange={onChange}
               error={errors.confirm}
             />
-          </form>
+          </Box>
           <Stack
-            gap={theme.gap.small}
-            mb={{ xs: theme.gap.ml, sm: theme.gap.large }}
+            gap={theme.spacing(4)}
+            mb={{ xs: theme.spacing(6), sm: theme.spacing(8) }}
           >
             <Check
               text={
@@ -388,26 +452,29 @@ const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              px: theme.gap.ml,
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.gap.xs,
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.email && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -422,7 +489,7 @@ StepThree.propTypes = {
   onBack: PropTypes.func,
 };
 
-const Register = ({ isAdmin }) => {
+const Register = ({ isSuperAdmin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
@@ -443,6 +510,7 @@ const Register = ({ isAdmin }) => {
     password: "",
     confirm: "",
     role: [],
+    teamId: "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
@@ -452,15 +520,16 @@ const Register = ({ isAdmin }) => {
       if (token !== undefined) {
         try {
           const res = await networkService.verifyInvitationToken(token);
-          const { role, email } = res.data.data;
-          setForm({ ...form, email, role });
+          const invite = res.data.data;
+          const { role, email, teamId } = invite;
+          setForm({ ...form, email, role, teamId });
         } catch (error) {
-          logger.error(error);
+          navigate("/register", { replace: true });
         }
       }
     };
     fetchInvite();
-  }, [token, form]);
+  }, []);
 
   /**
    * Validates the form data against the validation schema.
@@ -493,7 +562,6 @@ const Register = ({ isAdmin }) => {
 
   const handleStepOne = async (e) => {
     e.preventDefault();
-
     let error = validateForm({
       firstName: form.firstName,
       lastName: form.lastName,
@@ -525,7 +593,10 @@ const Register = ({ isAdmin }) => {
   const handleStepThree = async (e) => {
     e.preventDefault();
 
-    let registerForm = { ...form, role: isAdmin ? ["admin"] : form.role };
+    let registerForm = {
+      ...form,
+      role: isSuperAdmin ? ["superadmin"] : form.role,
+    };
     let error = validateForm(registerForm, {
       context: { password: form.password },
     });
@@ -580,7 +651,21 @@ const Register = ({ isAdmin }) => {
   };
 
   return (
-    <Stack className="register-page auth" overflow="hidden">
+    <Stack
+      className="register-page auth"
+      overflow="hidden"
+      sx={{
+        "& h1": {
+          color: theme.palette.primary.main,
+          fontWeight: 600,
+          fontSize: 30,
+        },
+        "& p": {
+          fontSize: 14,
+          color: theme.palette.text.accent,
+        },
+      }}
+    >
       <Box
         className="background-pattern-svg"
         sx={{ backgroundImage: `url(${background})` }}
@@ -588,8 +673,8 @@ const Register = ({ isAdmin }) => {
       <Stack
         direction="row"
         alignItems="center"
-        px={theme.gap.large}
-        gap={theme.gap.small}
+        px={theme.spacing(12)}
+        gap={theme.spacing(4)}
       >
         <Logo style={{ borderRadius: theme.shape.borderRadius }} />
         <Typography sx={{ userSelect: "none" }}>BlueWave Uptime</Typography>
@@ -599,24 +684,27 @@ const Register = ({ isAdmin }) => {
         maxWidth={600}
         flex={1}
         justifyContent="center"
-        px={{ xs: theme.gap.large, lg: theme.gap.xl }}
-        pb={theme.gap.xl}
+        px={{ xs: theme.spacing(12), lg: theme.spacing(20) }}
+        pb={theme.spacing(20)}
         mx="auto"
         sx={{
           "& > .MuiStack-root": {
             border: 1,
-            borderRadius: theme.shape.borderRadius,
-            borderColor: theme.palette.otherColors.graishWhite,
-            backgroundColor: theme.palette.otherColors.white,
+            borderRadius: theme.spacing(5),
+            borderColor: theme.palette.border.light,
+            backgroundColor: theme.palette.background.main,
             padding: {
-              xs: theme.gap.large,
-              sm: theme.gap.xl,
+              xs: theme.spacing(12),
+              sm: theme.spacing(20),
             },
           },
         }}
       >
         {step === 0 ? (
-          <LandingPage isAdmin={isAdmin} onSignup={() => setStep(1)} />
+          <LandingPage
+            isSuperAdmin={isSuperAdmin}
+            onSignup={() => setStep(1)}
+          />
         ) : step === 1 ? (
           <StepOne
             form={form}
@@ -645,17 +733,17 @@ const Register = ({ isAdmin }) => {
           ""
         )}
       </Stack>
-      <Box textAlign="center" p={theme.gap.large}>
+      <Box textAlign="center" p={theme.spacing(12)}>
         <Typography display="inline-block">
           Already have an account? —
         </Typography>
         <Typography
           component="span"
-          ml={theme.gap.xs}
+          ml={theme.spacing(2)}
           onClick={() => {
             navigate("/login");
           }}
-          sx={{ userSelect: "none" }}
+          sx={{ userSelect: "none", color: theme.palette.primary.main }}
         >
           Log In
         </Typography>
@@ -664,6 +752,6 @@ const Register = ({ isAdmin }) => {
   );
 };
 Register.propTypes = {
-  isAdmin: PropTypes.bool,
+  isSuperAdmin: PropTypes.bool,
 };
 export default Register;

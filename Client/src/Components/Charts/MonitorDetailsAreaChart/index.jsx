@@ -1,12 +1,31 @@
 import PropTypes from "prop-types";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Box, Typography } from "@mui/material";
+import { useTheme } from "@emotion/react";
 import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
+  const theme = useTheme();
+
   if (active && payload && payload.length) {
     return (
-      <div className="area-tooltip">
-        <p>
+      <Box
+        className="area-tooltip"
+        sx={{
+          backgroundColor: theme.palette.background.main,
+          border: 1,
+          borderColor: theme.palette.border.dark,
+          borderRadius: theme.shape.borderRadius,
+          py: theme.spacing(6),
+          px: theme.spacing(8),
+        }}
+      >
+        <Typography
+          sx={{
+            color: theme.palette.primary.main,
+            fontSize: 13,
+          }}
+        >
           {new Date(label).toLocaleDateString("en-US", {
             weekday: "short", // Mon
             month: "long", // July
@@ -18,10 +37,18 @@ const CustomToolTip = ({ active, payload, label }) => {
               minute: "2-digit", // 15
               hour12: true, // AM/PM format
             })}
-        </p>
-        <p>Response Time (ms): {payload[0].payload.originalResponseTime}</p>{" "}
+        </Typography>
+        <Typography
+          mt={theme.spacing(2.5)}
+          sx={{
+            color: theme.palette.text.secondary,
+            fontSize: 13,
+          }}
+        >
+          Response Time (ms): {payload[0].payload.originalResponseTime}
+        </Typography>{" "}
         {/* Display original value */}
-      </div>
+      </Box>
     );
   }
   return null;

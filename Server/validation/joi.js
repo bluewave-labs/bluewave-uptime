@@ -5,8 +5,11 @@ const joi = require("joi");
 //****************************************
 
 const roleValidatior = (role) => (value, helpers) => {
-  if (!value.includes(role)) {
-    throw new joi.ValidationError(`You do not have ${role} authorization`);
+  const hasRole = role.some((role) => value.includes(role));
+  if (!hasRole) {
+    throw new Joi.ValidationError(
+      `You do not have the required authorization. Required roles: ${roles.join(", ")}`
+    );
   }
   return value;
 };
@@ -36,7 +39,7 @@ const loginValidation = joi.object({
     ),
 });
 
-const registerValidation = joi.object({
+const registrationBodyValidation = joi.object({
   firstName: joi
     .string()
     .required()
@@ -66,9 +69,10 @@ const registerValidation = joi.object({
   profileImage: joi.any(),
   role: joi
     .array()
-    .items(joi.string().valid("admin", "user"))
+    .items(joi.string().valid("superadmin", "admin", "user"))
     .min(1)
     .required(),
+  teamId: joi.string().allow("").required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -123,7 +127,7 @@ const deleteUserParamValidation = joi.object({
 });
 
 const inviteRoleValidation = joi.object({
-  roles: joi.custom(roleValidatior("admin")).required(),
+  roles: joi.custom(roleValidatior(["admin", "superadmin"])).required(),
 });
 
 const inviteBodyValidation = joi.object({
@@ -132,6 +136,7 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
+  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
@@ -155,11 +160,11 @@ const getMonitorByIdQueryValidation = joi.object({
   normalize: joi.boolean(),
 });
 
-const getMonitorsByUserIdValidation = joi.object({
-  userId: joi.string().required(),
+const getMonitorsByTeamIdValidation = joi.object({
+  teamId: joi.string().required(),
 });
 
-const getMonitorsByUserIdQueryValidation = joi.object({
+const getMonitorsByTeamIdQueryValidation = joi.object({
   status: joi.boolean(),
   sortOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
@@ -175,6 +180,7 @@ const getMonitorsByUserIdQueryValidation = joi.object({
 const createMonitorBodyValidation = joi.object({
   _id: joi.string(),
   userId: joi.string().required(),
+  teamId: joi.string().required(),
   name: joi.string().required(),
   description: joi.string().required(),
   type: joi.string().required(),
@@ -189,6 +195,10 @@ const editMonitorBodyValidation = joi.object({
   description: joi.string(),
   interval: joi.number(),
   notifications: joi.array().items(joi.object()),
+});
+
+const pauseMonitorParamValidation = joi.object({
+  monitorId: joi.string().required(),
 });
 
 //****************************************
@@ -265,11 +275,11 @@ const getChecksQueryValidation = joi.object({
   rowsPerPage: joi.number(),
 });
 
-const getUserChecksParamValidation = joi.object({
-  userId: joi.string().required(),
+const getTeamChecksParamValidation = joi.object({
+  teamId: joi.string().required(),
 });
 
-const getUserChecksQueryValidation = joi.object({
+const getTeamChecksQueryValidation = joi.object({
   sortOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
   dateRange: joi.string().valid("day", "week", "month"),
@@ -280,6 +290,10 @@ const getUserChecksQueryValidation = joi.object({
 
 const deleteChecksParamValidation = joi.object({
   monitorId: joi.string().required(),
+});
+
+const deleteChecksByTeamIdParamValidation = joi.object({
+  teamId: joi.string().required(),
 });
 
 //****************************************
@@ -331,7 +345,7 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
 module.exports = {
   roleValidatior,
   loginValidation,
-  registerValidation,
+  registrationBodyValidation,
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
@@ -341,9 +355,10 @@ module.exports = {
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
-  getMonitorsByUserIdValidation,
-  getMonitorsByUserIdQueryValidation,
+  getMonitorsByTeamIdValidation,
+  getMonitorsByTeamIdQueryValidation,
   editMonitorBodyValidation,
+  pauseMonitorParamValidation,
   editUserParamValidation,
   editUserBodyValidation,
   createAlertParamValidation,
@@ -358,9 +373,10 @@ module.exports = {
   createCheckBodyValidation,
   getChecksParamValidation,
   getChecksQueryValidation,
-  getUserChecksParamValidation,
-  getUserChecksQueryValidation,
+  getTeamChecksParamValidation,
+  getTeamChecksQueryValidation,
   deleteChecksParamValidation,
+  deleteChecksByTeamIdParamValidation,
   deleteUserParamValidation,
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,

@@ -1,8 +1,8 @@
 import TabPanel from "@mui/lab/TabPanel";
 import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Divider, Stack, Typography } from "@mui/material";
-import ButtonSpinner from "../../ButtonSpinner";
+import { Box, Stack, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
 import Alert from "../../Alert";
@@ -97,13 +97,20 @@ const PasswordPanel = () => {
   };
 
   return (
-    <TabPanel value="password">
+    <TabPanel
+      value="password"
+      sx={{
+        "& h1, & input": {
+          color: theme.palette.text.tertiary,
+        },
+      }}
+    >
       <Stack
         component="form"
         onSubmit={handleSubmit}
         noValidate
         spellCheck="false"
-        gap={theme.gap.xl}
+        gap={theme.spacing(20)}
       >
         <Stack direction="row">
           <Box flex={0.9}>
@@ -157,19 +164,20 @@ const PasswordPanel = () => {
           </Box>
         </Stack>
         <Stack direction="row" justifyContent="flex-end">
-          <ButtonSpinner
-            level="primary"
-            label="Save"
+          <LoadingButton
+            variant="contained"
+            color="primary"
             onClick={handleSubmit}
-            isLoading={isLoading}
-            loadingText="Saving..."
+            loading={isLoading}
+            loadingIndicator="Saving..."
             disabled={Object.keys(errors).length !== 0 && true}
             sx={{
-              paddingX: theme.gap.large,
-              width: "fit-content",
-              mt: theme.gap.xl,
+              px: theme.spacing(12),
+              mt: theme.spacing(20),
             }}
-          />
+          >
+            Save
+          </LoadingButton>
         </Stack>
       </Stack>
     </TabPanel>

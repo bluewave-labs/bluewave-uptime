@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // Add more settings as needed (e.g., theme preferences, user settings)
 const initialState = {
   monitors: {
-    rowsPerPage: 5,
+    rowsPerPage: 10,
   },
   team: {
     rowsPerPage: 5,
@@ -12,6 +12,8 @@ const initialState = {
   sidebar: {
     collapsed: false,
   },
+  mode: "light",
+  greeting: { index: 0, lastUpdate: null },
 };
 
 const uiSlice = createSlice({
@@ -19,13 +21,24 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     setRowsPerPage: (state, action) => {
-      state[action.payload.table].rowsPerPage = action.payload.value;
+      const { table, value } = action.payload;
+      if (state[table]) {
+        state[table].rowsPerPage = value;
+      }
     },
     toggleSidebar: (state) => {
       state.sidebar.collapsed = !state.sidebar.collapsed;
+    },
+    setMode: (state, action) => {
+      state.mode = action.payload;
+    },
+    setGreeting(state, action) {
+      state.greeting.index = action.payload.index;
+      state.greeting.lastUpdate = action.payload.lastUpdate;
     },
   },
 });
 
 export default uiSlice.reducer;
-export const { setRowsPerPage, toggleSidebar } = uiSlice.actions;
+export const { setRowsPerPage, toggleSidebar, setMode, setGreeting } =
+  uiSlice.actions;

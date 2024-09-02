@@ -25,23 +25,27 @@ const Account = ({ open = "profile" }) => {
 
   let tabList = ["Profile", "Password", "Team"];
   const { user } = useSelector((state) => state.auth);
-  if (!user.role.includes("admin")) tabList = ["Profile", "Password"];
+  const requiredRoles = ["superadmin", "admin"];
+  const hideTeams = !requiredRoles.some((role) => user.role.includes(role));
+  if (hideTeams) {
+    tabList = ["Profile", "Password"];
+  }
 
   return (
     <Box
       className="account"
-      px={theme.gap.xl}
-      py={theme.gap.large}
+      px={theme.spacing(20)}
+      py={theme.spacing(12)}
       border={1}
-      borderColor={theme.palette.otherColors.graishWhite}
-      borderRadius={`${theme.shape.borderRadius}px`}
-      backgroundColor={theme.palette.otherColors.white}
+      borderColor={theme.palette.border.light}
+      borderRadius={theme.shape.borderRadius}
+      backgroundColor={theme.palette.background.main}
     >
       <TabContext value={tab}>
         <Box
           sx={{
             borderBottom: 1,
-            borderColor: "var(--env-var-color-16)",
+            borderColor: theme.palette.border.light,
             "& .MuiTabs-root": { height: "fit-content", minHeight: "0" },
           }}
         >
@@ -52,15 +56,15 @@ const Account = ({ open = "profile" }) => {
                 key={index}
                 value={label.toLowerCase()}
                 sx={{
-                  fontSize: "13px",
-                  color: theme.palette.secondary.main,
+                  fontSize: 13,
+                  color: theme.palette.text.tertiary,
                   textTransform: "none",
                   minWidth: "fit-content",
                   minHeight: 0,
-                  paddingLeft: "0",
-                  paddingY: theme.gap.small,
+                  paddingLeft: 0,
+                  paddingY: theme.spacing(4),
                   fontWeight: 400,
-                  marginRight: theme.gap.ml,
+                  marginRight: theme.spacing(8),
                   "&:focus": {
                     outline: "none",
                   },
@@ -71,7 +75,7 @@ const Account = ({ open = "profile" }) => {
         </Box>
         <ProfilePanel />
         <PasswordPanel />
-        {user.role.includes("admin") && <TeamPanel />}
+        {!hideTeams && <TeamPanel />}
       </TabContext>
     </Box>
   );

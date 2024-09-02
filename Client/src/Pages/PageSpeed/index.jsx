@@ -1,17 +1,18 @@
-import { Box, Grid, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Grid, Skeleton, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
 import { StatusLabel } from "../../Components/Label";
 import { useDispatch, useSelector } from "react-redux";
-import { getPageSpeedByUserId } from "../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { getPageSpeedByTeamId } from "../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
-import Button from "../../Components/Button";
 import { useNavigate } from "react-router";
 import { getLastChecked } from "../../Utils/monitorUtils";
 import PropTypes from "prop-types";
+import Breadcrumbs from "../../Components/Breadcrumbs";
+import Greeting from "../../Utils/greeting";
 
 const Card = ({ data }) => {
   const theme = useTheme();
@@ -22,19 +23,36 @@ const Card = ({ data }) => {
       item
       lg={6}
       flexGrow={1}
-      sx={{ "&:hover > .MuiStack-root": { backgroundColor: "#f9fafb" } }}
+      sx={{
+        "&:hover > .MuiStack-root": {
+          backgroundColor: theme.palette.background.accent,
+        },
+      }}
     >
       <Stack
         direction="row"
-        gap={theme.gap.medium}
-        p={theme.gap.ml}
+        gap={theme.spacing(6)}
+        p={theme.spacing(8)}
         onClick={() => navigate(`/pagespeed/${data._id}`)}
-        sx={{ cursor: "pointer" }}
+        border={1}
+        borderColor={theme.palette.border.light}
+        borderRadius={theme.shape.borderRadius}
+        backgroundColor={theme.palette.background.main}
+        sx={{
+          cursor: "pointer",
+          "& svg path": { stroke: theme.palette.other.icon, strokeWidth: 0.8 },
+        }}
       >
-        <PageSpeedIcon style={{ width: theme.gap.ml, height: theme.gap.ml }} />
+        <PageSpeedIcon
+          style={{ width: theme.spacing(8), height: theme.spacing(8) }}
+        />
         <Box flex={1}>
           <Stack direction="row" justifyContent="space-between">
-            <Typography component="h2" mb={theme.gap.xs}>
+            <Typography
+              component="h2"
+              mb={theme.spacing(2)}
+              color={theme.palette.primary.main}
+            >
               {data.name}
             </Typography>
             <StatusLabel
@@ -42,8 +60,10 @@ const Card = ({ data }) => {
               text={data.status ? "Live (collecting data)" : "Inactive"}
             />
           </Stack>
-          <Typography>{data.url.replace(/^https?:\/\//, "")}</Typography>
-          <Typography mt={theme.gap.large}>
+          <Typography fontSize={13}>
+            {data.url.replace(/^https?:\/\//, "")}
+          </Typography>
+          <Typography mt={theme.spacing(12)}>
             <Typography component="span" fontWeight={600}>
               Last checked:{" "}
             </Typography>
@@ -71,11 +91,11 @@ const SkeletonLayout = () => {
   const theme = useTheme();
 
   return (
-    <Stack gap={theme.gap.xs}>
+    <Stack gap={theme.spacing(2)}>
       <Stack
         direction="row"
         justifyContent="space-between"
-        mb={theme.gap.large}
+        mb={theme.spacing(12)}
       >
         <Box width="80%">
           <Skeleton variant="rounded" width="25%" height={24} />
@@ -83,7 +103,7 @@ const SkeletonLayout = () => {
             variant="rounded"
             width="50%"
             height={19.5}
-            sx={{ mt: theme.gap.xs }}
+            sx={{ mt: theme.spacing(2) }}
           />
         </Box>
         <Skeleton
@@ -93,7 +113,7 @@ const SkeletonLayout = () => {
           sx={{ alignSelf: "flex-end" }}
         />
       </Stack>
-      <Stack direction="row" flexWrap="wrap" gap={theme.gap.large}>
+      <Stack direction="row" flexWrap="wrap" gap={theme.spacing(12)}>
         <Skeleton
           variant="rounded"
           width="100%"
@@ -123,17 +143,17 @@ const SkeletonLayout = () => {
   );
 };
 
-const PageSpeed = () => {
+const PageSpeed = ({ isAdmin }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { authToken } = useSelector((state) => state.auth);
+  const { authToken, user } = useSelector((state) => state.auth);
   const { monitors, isLoading } = useSelector(
     (state) => state.pageSpeedMonitors
   );
   useEffect(() => {
-    dispatch(getPageSpeedByUserId(authToken));
+    dispatch(getPageSpeedByTeamId(authToken));
   }, [authToken, dispatch]);
 
   // will show skeletons only on initial load
@@ -141,47 +161,71 @@ const PageSpeed = () => {
   let isActuallyLoading = isLoading && monitors.length === 0;
 
   return (
-    <Box className="page-speed" pt={theme.gap.xl}>
+    <Box
+      className="page-speed"
+      sx={{
+        ':has(> [class*="fallback__"])': {
+          position: "relative",
+          border: 1,
+          borderColor: theme.palette.border.light,
+          borderRadius: theme.shape.borderRadius,
+          borderStyle: "dashed",
+          backgroundColor: theme.palette.background.main,
+          overflow: "hidden",
+        },
+      }}
+    >
       {isActuallyLoading ? (
         <SkeletonLayout />
       ) : monitors?.length !== 0 ? (
-        <Stack gap={theme.gap.xs}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={theme.gap.large}
-          >
-            <Box>
-              <Typography component="h1">All page speed monitors</Typography>
-              <Typography mt={theme.gap.xs}>
-                Click on one of the monitors to get more site speed information.
-              </Typography>
-            </Box>
-            <Button
-              level="primary"
-              label="Create new"
-              onClick={() => navigate("/pagespeed/create")}
-            />
-          </Stack>
-          <Grid container spacing={theme.gap.large}>
+        <Box
+          sx={{
+            "& p": {
+              color: theme.palette.text.secondary,
+            },
+          }}
+        >
+          <Box mb={theme.spacing(12)}>
+            <Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              mt={theme.spacing(5)}
+            >
+              <Greeting type="pagespeed" />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/pagespeed/create")}
+              >
+                Create new
+              </Button>
+            </Stack>
+          </Box>
+          <Grid container spacing={theme.spacing(12)}>
             {monitors?.map((monitor) => (
               <Card data={monitor} key={`monitor-${monitor._id}`} />
             ))}
           </Grid>
-        </Stack>
+        </Box>
       ) : (
         <Fallback
-          title="page speed"
+          title="pagespeed monitor"
           checks={[
             "Report on the user experience of a page",
             "Help analyze webpage speed",
             "Give suggestions on how the page can be improved",
           ]}
           link="/pagespeed/create"
+          isAdmin={isAdmin}
         />
       )}
     </Box>
   );
+};
+PageSpeed.propTypes = {
+  isAdmin: PropTypes.bool,
 };
 
 export default PageSpeed;
