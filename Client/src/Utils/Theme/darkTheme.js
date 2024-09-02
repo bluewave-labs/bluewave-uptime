@@ -53,7 +53,7 @@ const darkTheme = createTheme({
     warning: {
       text: "#e88c30",
       main: "#FF9F00",
-      light: "#ffd600",
+      light: "#27272a",
       bg: "#1E1E1E",
       border: "#e88c30",
     },
