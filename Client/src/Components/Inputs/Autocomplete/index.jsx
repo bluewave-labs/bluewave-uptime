@@ -16,7 +16,6 @@ import { useTheme } from "@emotion/react";
  * @param {Array} props.options - The options for the autocomplete field.
  * @param {string} props.placeholder - The placeholder text for the input field.
  * @param {boolean} props.disabled - Indicates if the field is disabled.
- * @param {string} props.setWidth - The width of the input field.
  * @returns {JSX.Element} The AutoCompleteField component.
  */
 
