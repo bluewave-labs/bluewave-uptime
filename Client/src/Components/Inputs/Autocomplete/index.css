@@ -1,17 +1,9 @@
-.auto-complete-field svg {
-  width: var(--env-var-img-width-2);
-  height: var(--env-var-img-width-2);
+.auto-complete-field div {
+  width: var(--env-var-width-2);
+  height: 34px;
+  border-radius: 4px;
 }
 
-.auto-complete-field div input,
-.auto-complete-field div input:focus,
-.auto-complete-field div input:active {
-  height: var(--env-var-default-1);
-  outline: none;
-  border: none;
-  color: var(--env-var-color-5);
-}
-.auto-complete-field div input::placeholder {
-  font-size: var(--env-var-font-size-large);
-  color: var(--env-var-color-14);
+.auto-complete-field div div .MuiOutlinedInput-root {
+  padding-left: 0;
 }
