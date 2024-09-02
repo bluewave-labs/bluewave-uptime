@@ -254,6 +254,7 @@ const Configure = () => {
                   color="secondary"
                   loading={isLoading}
                   sx={{
+                    border: "none",
                     backgroundColor: theme.palette.background.main,
                     px: theme.spacing(5),
                     mr: theme.spacing(6),

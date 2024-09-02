@@ -1,12 +1,5 @@
-.monitor-details h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large-plus);
-  font-weight: 600;
-}
 .monitor-details h2.MuiTypography-root {
   font-size: var(--env-var-font-size-large);
-}
-.monitor-details h2.MuiTypography-root {
-  font-weight: 600;
 }
 .monitor-details button.MuiButtonBase-root {
   height: var(--env-var-height-2);

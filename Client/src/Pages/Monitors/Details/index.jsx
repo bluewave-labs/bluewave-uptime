@@ -3,8 +3,10 @@ import { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
+  Popover,
   Skeleton,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -13,12 +15,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
 import { logger } from "../../../Utils/Logger";
 import {
+  formatDate,
   formatDuration,
   formatDurationRounded,
 } from "../../../Utils/timeUtils";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
+import CertificateIcon from "../../../assets/icons/certificate.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
@@ -154,6 +158,14 @@ const DetailsPage = ({ isAdmin }) => {
   const [certificateExpiry, setCertificateExpiry] = useState("N/A");
   const navigate = useNavigate();
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openCertificate = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const closeCertificate = () => {
+    setAnchorEl(null);
+  };
+
   const fetchMonitor = useCallback(async () => {
     try {
       const res = await networkService.getStatsByMonitorId(
@@ -186,7 +198,16 @@ const DetailsPage = ({ isAdmin }) => {
           authToken,
           monitorId
         );
-        setCertificateExpiry(res?.data?.data?.certificateDate ?? "N/A");
+
+        let [month, day, year] = res?.data?.data?.certificateDate.split("/");
+        const date = new Date(year, month - 1, day);
+
+        setCertificateExpiry(
+          formatDate(date, {
+            hour: undefined,
+            minute: undefined,
+          }) ?? "N/A"
+        );
       } catch (error) {
         console.error(error);
       }
@@ -207,65 +228,171 @@ const DetailsPage = ({ isAdmin }) => {
               { name: "details", path: `/monitors/${monitorId}` },
             ]}
           />
-          <Stack gap={theme.spacing(12)} mt={theme.spacing(12)}>
+          <Stack gap={theme.spacing(12)} mt={theme.spacing(10)}>
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              />
               <Box>
                 <Typography
                   component="h1"
+                  fontSize={22}
+                  fontWeight={500}
                   color={theme.palette.text.primary}
-                  lineHeight={1}
                 >
-                  {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  {monitor.name}
                 </Typography>
-                <Typography
-                  mt={theme.spacing(4)}
-                  color={theme.palette.text.tertiary}
+                <Stack
+                  direction="row"
+                  alignItems="flex-end"
+                  gap={theme.spacing(2)}
                 >
-                  <Typography
-                    component="span"
-                    sx={{
-                      color: monitor?.status
-                        ? theme.palette.success.main
-                        : theme.palette.success.text,
+                  <Tooltip
+                    title={`Your site is ${monitor?.status ? "up" : "down"}.`}
+                    disableInteractive
+                    slotProps={{
+                      popper: {
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [0, -8],
+                            },
+                          },
+                        ],
+                      },
                     }}
                   >
-                    Your site is {monitor?.status ? "up" : "down"}.
-                  </Typography>{" "}
-                  Checking every {formatDurationRounded(monitor?.interval)}.
-                </Typography>
+                    <Box>
+                      <PulseDot
+                        color={
+                          monitor?.status
+                            ? theme.palette.success.main
+                            : theme.palette.error.main
+                        }
+                      />
+                    </Box>
+                  </Tooltip>
+                  <Typography
+                    component="h2"
+                    color={theme.palette.text.secondary}
+                  >
+                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  </Typography>
+                  <Typography
+                    ml={theme.spacing(6)}
+                    lineHeight="20px"
+                    position="relative"
+                    color={theme.palette.text.tertiary}
+                    sx={{
+                      "&:before": {
+                        position: "absolute",
+                        content: `""`,
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        backgroundColor: theme.palette.text.tertiary,
+                        opacity: 0.8,
+                        left: -9,
+                        top: "42%",
+                      },
+                    }}
+                  >
+                    Checking every {formatDurationRounded(monitor?.interval)}.
+                  </Typography>
+                </Stack>
               </Box>
-              {isAdmin && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+              <Stack
+                direction="row"
+                height={34}
+                sx={{
+                  ml: "auto",
+                  alignSelf: "flex-end",
+                }}
+              >
+                <Box
+                  height="100%"
+                  position="relative"
+                  minWidth={34}
+                  border={1}
+                  borderColor={theme.palette.border.dark}
+                  borderRadius={theme.shape.borderRadius}
+                  backgroundColor={theme.palette.background.accent}
+                  mr={theme.spacing(4)}
+                  onClick={openCertificate}
                   sx={{
-                    ml: "auto",
-                    alignSelf: "flex-end",
-                    px: theme.spacing(5),
+                    cursor: "pointer",
                     "& svg": {
-                      mr: theme.spacing(3),
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: 20,
+                      height: 20,
                       "& path": {
-                        stroke: theme.palette.other.icon,
+                        stroke: theme.palette.text.tertiary,
                       },
                     },
                   }}
                 >
-                  <SettingsIcon /> Configure
-                </Button>
-              )}
+                  <CertificateIcon />
+                </Box>
+                <Popover
+                  id="certificate-dropdown"
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={closeCertificate}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        py: 4,
+                        px: 6,
+                        width: 140,
+                        backgroundColor: theme.palette.background.accent,
+                      },
+                    },
+                  }}
+                >
+                  <Typography fontSize={12} color={theme.palette.text.tertiary}>
+                    Certificate Expiry
+                  </Typography>
+                  <Typography
+                    component="span"
+                    fontSize={13}
+                    color={theme.palette.text.primary}
+                  >
+                    {certificateExpiry}
+                  </Typography>
+                </Popover>
+                {isAdmin && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+                    sx={{
+                      px: theme.spacing(5),
+                      "& svg": {
+                        mr: theme.spacing(3),
+                        "& path": {
+                          stroke: theme.palette.text.tertiary,
+                        },
+                      },
+                    }}
+                  >
+                    <SettingsIcon /> Configure
+                  </Button>
+                )}
+              </Stack>
             </Stack>
             <Stack
               direction="row"
               justifyContent="space-between"
-              gap={theme.spacing(12)}
+              gap={theme.spacing(6)}
               flexWrap="wrap"
             >
               <StatBox
@@ -277,7 +404,6 @@ const DetailsPage = ({ isAdmin }) => {
                 value={`${formatDurationRounded(monitor?.lastChecked)} ago`}
               />
               <StatBox title="Incidents" value={monitor?.incidents} />
-              <StatBox title="Certificate Expiry" value={certificateExpiry} />
               <StatBox
                 title="Latest response time"
                 value={monitor?.latestResponseTime}
@@ -360,16 +486,16 @@ const DetailsPage = ({ isAdmin }) => {
                 borderRadius={theme.shape.borderRadius}
                 sx={{ height: "250px" }}
               >
-                <MonitorDetailsAreaChart
+                {/* <MonitorDetailsAreaChart
                   checks={[...monitor.checks].reverse()}
-                />
+                /> */}
               </Box>
             </Box>
             <Stack gap={theme.spacing(8)}>
               <Typography component="h2" color={theme.palette.text.secondary}>
                 History
               </Typography>
-              <PaginationTable monitorId={monitorId} dateRange={dateRange} />
+              {/* <PaginationTable monitorId={monitorId} dateRange={dateRange} /> */}
             </Stack>
           </Stack>
         </>

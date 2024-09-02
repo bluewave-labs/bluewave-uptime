@@ -43,22 +43,6 @@ const Monitors = ({ isAdmin }) => {
 
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
-  const now = new Date();
-  const hour = now.getHours();
-
-  let greeting = "";
-  let emoji = "";
-  if (hour < 12) {
-    greeting = "morning";
-    emoji = "🌅";
-  } else if (hour < 18) {
-    greeting = "afternoon";
-    emoji = "🌞";
-  } else {
-    greeting = "evening";
-    emoji = "🌙";
-  }
-
   return (
     <Stack className="monitors" gap={theme.spacing(12)}>
       {loading ? (

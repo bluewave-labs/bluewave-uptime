@@ -89,6 +89,15 @@ const lightTheme = createTheme({
                 backgroundColor: theme.palette.secondary.main,
               },
             },
+            {
+              props: (props) =>
+                props.variant === "contained" && props.color === "secondary",
+              style: {
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.light,
+              },
+            },
           ],
           fontWeight: 400,
           borderRadius: 4,

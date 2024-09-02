@@ -10,10 +10,10 @@ const text = {
 const background = {
   main: "#151518",
   alt: "#09090b",
-  fill: "#2e2e2e",
+  fill: "#2D2D33",
   accent: "#18181a",
 };
-const border = { light: "#27272a", dark: "#2c2c2c" };
+const border = { light: "#27272a", dark: "#36363e" };
 
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
@@ -25,7 +25,7 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: { main: "#1570ef" },
-    secondary: { main: "#2e2e2e" },
+    secondary: { main: "#2D2D33" },
     text: text,
     background: background,
     border: border,
@@ -90,6 +90,15 @@ const darkTheme = createTheme({
                 props.variant === "group" && props.filled === "true",
               style: {
                 backgroundColor: theme.palette.secondary.main,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "contained" && props.color === "secondary",
+              style: {
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.dark,
               },
             },
           ],
