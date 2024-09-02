@@ -15,10 +15,31 @@ class NetworkService {
     this.NETWORK_ERROR = 5000;
   }
 
-  async handleNotification(job, isAlive) {
+  async handleNotification(monitor, isAlive) {
+    let template =
+      isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
+    let status = isAlive === true ? "up" : "down";
+
+    const notifications = await this.db.getNotificationsByMonitorId(
+      monitor._id
+    );
+    for (const notification of notifications) {
+      if (notification.type === "email") {
+        await this.emailService.buildAndSendEmail(
+          template,
+          { monitorName: monitor.name, monitorUrl: monitor.url },
+          notification.address,
+          `Monitor ${monitor.name} is ${status}`
+        );
+      }
+    }
+  }
+
+  async handleStatusUpdate(job, isAlive) {
     try {
       const { _id } = job.data;
       const monitor = await this.db.getMonitorById(_id);
+
       if (monitor === null || monitor === undefined) {
         logger.error(`Null Monitor: ${_id}`, {
           method: "handleNotification",
@@ -28,25 +49,22 @@ class NetworkService {
         return;
       }
 
-      // If monitor status changes, update monitor status and send notification
-      if (monitor.status !== isAlive) {
-        monitor.status = !monitor.status;
+      // Two general cases:
+      // 1. Monitor status is undefined
+      // 2. Monitor status is defined
+
+      // If the monitor status is undefined, set it's status to isAlive.  if isAlive is false, send notification
+      if (monitor.status === undefined) {
+        monitor.status = isAlive;
         await monitor.save();
-
-        let template =
-          isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
-        let status = isAlive === true ? "up" : "down";
-
-        const notifications = await this.db.getNotificationsByMonitorId(_id);
-        for (const notification of notifications) {
-          if (notification.type === "email") {
-            await this.emailService.buildAndSendEmail(
-              template,
-              { monitorName: monitor.name, monitorUrl: monitor.url },
-              notification.address,
-              `Monitor ${monitor.name} is ${status}`
-            );
-          }
+        if (isAlive === false) {
+          this.handleNotification(monitor, isAlive);
+        }
+      } else {
+        if (monitor.status !== isAlive) {
+          monitor.status = !monitor.status;
+          await monitor.save();
+          this.handleNotification(monitor, isAlive);
         }
       }
     } catch (error) {
@@ -113,7 +131,7 @@ class NetworkService {
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
-      this.handleNotification(job, isAlive);
+      this.handleStatusUpdate(job, isAlive);
     }
   }
 
@@ -161,7 +179,7 @@ class NetworkService {
 
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
-      this.handleNotification(job, isAlive);
+      this.handleStatusUpdate(job, isAlive);
     }
   }
 
@@ -241,7 +259,7 @@ class NetworkService {
       };
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } finally {
-      this.handleNotification(job, isAlive);
+      this.handleStatusUpdate(job, isAlive);
     }
   }
 

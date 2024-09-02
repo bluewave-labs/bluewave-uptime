@@ -35,8 +35,8 @@ export const buildData = (monitors, isAdmin, navigate) => {
     if (monitor.uptimePercentage !== undefined) {
       uptimePercentage =
         monitor.uptimePercentage === 0
-          ? "0" 
-          : (monitor.uptimePercentage * 100).toFixed(2); 
+          ? "0"
+          : (monitor.uptimePercentage * 100).toFixed(2);
     }
 
     const params = {
@@ -47,7 +47,12 @@ export const buildData = (monitors, isAdmin, navigate) => {
         monitor.status === true
           ? theme.palette.success.main
           : theme.palette.error.text,
-      status: monitor.status === true ? "up" : "down",
+      status:
+        monitor.status === undefined
+          ? "unknown"
+          : monitor.status === true
+          ? "up"
+          : "down",
     };
 
     // Reverse checks so latest check is on the right
@@ -86,6 +91,3 @@ export const buildData = (monitors, isAdmin, navigate) => {
   });
   return data;
 };
-
-
-
