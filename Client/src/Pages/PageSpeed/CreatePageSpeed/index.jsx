@@ -1,11 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
-import Button from "../../../Components/Button";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
@@ -229,11 +228,13 @@ const CreatePageSpeed = () => {
         <Stack direction="row" justifyContent="flex-end" mt="auto">
           <Button
             type="submit"
-            level="primary"
-            label="Create"
+            variant="contained"
+            color="primary"
             onClick={handleCreate}
             sx={{ px: theme.spacing(12), mt: theme.spacing(12) }}
-          />
+          >
+            Create
+          </Button>
         </Stack>
       </Stack>
     </Stack>

@@ -2,7 +2,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
-import ButtonSpinner from "../../ButtonSpinner";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
 import Alert from "../../Alert";
@@ -164,19 +164,20 @@ const PasswordPanel = () => {
           </Box>
         </Stack>
         <Stack direction="row" justifyContent="flex-end">
-          <ButtonSpinner
-            level="primary"
-            label="Save"
+          <LoadingButton
+            variant="contained"
+            color="primary"
             onClick={handleSubmit}
-            isLoading={isLoading}
-            loadingText="Saving..."
+            loading={isLoading}
+            loadingIndicator="Saving..."
             disabled={Object.keys(errors).length !== 0 && true}
             sx={{
-              paddingX: theme.spacing(12),
-              width: "fit-content",
+              px: theme.spacing(12),
               mt: theme.spacing(20),
             }}
-          />
+          >
+            Save
+          </LoadingButton>
         </Stack>
       </Stack>
     </TabPanel>

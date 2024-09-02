@@ -1,7 +1,7 @@
 .page-speed h2.MuiTypography-root {
   line-height: 1.1;
 }
-.page-speed h1.MuiTypography-root {
+.page-speed:not(:has([class*="fallback__"])) h1.MuiTypography-root {
   font-size: var(--env-var-font-size-large-plus);
 }
 .page-speed h2.MuiTypography-root {

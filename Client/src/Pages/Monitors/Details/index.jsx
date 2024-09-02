@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
 import { useEffect, useState, useCallback } from "react";
-import { Box, Skeleton, Stack, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Skeleton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
@@ -11,7 +18,6 @@ import {
 } from "../../../Utils/timeUtils";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "../../../Components/Button";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -37,7 +43,7 @@ const StatBox = ({ title, value }) => {
         mb={theme.spacing(2)}
         fontSize={14}
         fontWeight={500}
-        color={theme.palette.common.main}
+        color={theme.palette.primary.main}
         sx={{
           "& span": {
             color: theme.palette.text.accent,
@@ -237,28 +243,23 @@ const DetailsPage = ({ isAdmin }) => {
               </Box>
               {isAdmin && (
                 <Button
-                  level="tertiary"
-                  label="Configure"
-                  animate="rotate90"
-                  img={
-                    <SettingsIcon
-                      style={{
-                        minWidth: theme.spacing(10),
-                        minHeight: theme.spacing(10),
-                      }}
-                    />
-                  }
+                  variant="contained"
+                  color="secondary"
                   onClick={() => navigate(`/monitors/configure/${monitorId}`)}
                   sx={{
                     ml: "auto",
                     alignSelf: "flex-end",
-                    backgroundColor: theme.palette.background.fill,
-                    px: theme.spacing(6),
+                    px: theme.spacing(5),
                     "& svg": {
                       mr: theme.spacing(3),
+                      "& path": {
+                        stroke: theme.palette.other.icon,
+                      },
                     },
                   }}
-                />
+                >
+                  <SettingsIcon /> Configure
+                </Button>
               )}
             </Stack>
             <Stack
@@ -326,40 +327,28 @@ const DetailsPage = ({ isAdmin }) => {
                 >
                   Response Times
                 </Typography>
-                <ButtonGroup
-                  sx={{
-                    "& .MuiButtonBase-root": {
-                      borderColor: theme.palette.border.light,
-                    },
-                  }}
-                >
+                <ButtonGroup>
                   <Button
-                    level="secondary"
-                    label="Day"
+                    variant="group"
+                    filled={(dateRange === "day").toString()}
                     onClick={() => setDateRange("day")}
-                    sx={{
-                      backgroundColor:
-                        dateRange === "day" && theme.palette.background.fill,
-                    }}
-                  />
+                  >
+                    Day
+                  </Button>
                   <Button
-                    level="secondary"
-                    label="Week"
+                    variant="group"
+                    filled={(dateRange === "week").toString()}
                     onClick={() => setDateRange("week")}
-                    sx={{
-                      backgroundColor:
-                        dateRange === "week" && theme.palette.background.fill,
-                    }}
-                  />
+                  >
+                    Week
+                  </Button>
                   <Button
-                    level="secondary"
-                    label="Month"
+                    variant="group"
+                    filled={(dateRange === "month").toString()}
                     onClick={() => setDateRange("month")}
-                    sx={{
-                      backgroundColor:
-                        dateRange === "month" && theme.palette.background.fill,
-                    }}
-                  />
+                  >
+                    Month
+                  </Button>
                 </ButtonGroup>
               </Stack>
               <Box

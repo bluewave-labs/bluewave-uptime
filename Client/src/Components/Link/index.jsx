@@ -28,11 +28,11 @@ const Link = ({ level, label, url }) => {
       sx: {
         textDecoration: "underline",
         textDecorationStyle: "dashed",
-        textDecorationColor: theme.palette.common.main,
+        textDecorationColor: theme.palette.primary.main,
         textUnderlineOffset: "1px",
         ":hover": {
           color: theme.palette.text.tertiary,
-          textDecorationColor: theme.palette.common.main,
+          textDecorationColor: theme.palette.primary.main,
           backgroundColor: theme.palette.background.fill,
         },
       },

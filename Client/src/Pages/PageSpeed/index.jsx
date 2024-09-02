@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Grid, Skeleton, Stack, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
@@ -8,7 +8,6 @@ import { getPageSpeedByTeamId } from "../../Features/PageSpeedMonitor/pageSpeedM
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
-import Button from "../../Components/Button";
 import { useNavigate } from "react-router";
 import { getLastChecked } from "../../Utils/monitorUtils";
 import PropTypes from "prop-types";
@@ -52,7 +51,7 @@ const Card = ({ data }) => {
             <Typography
               component="h2"
               mb={theme.spacing(2)}
-              color={theme.palette.common.main}
+              color={theme.palette.primary.main}
             >
               {data.name}
             </Typography>
@@ -196,10 +195,12 @@ const PageSpeed = ({ isAdmin }) => {
             >
               <Greeting type="pagespeed" />
               <Button
-                level="primary"
-                label="Create new"
+                variant="contained"
+                color="primary"
                 onClick={() => navigate("/pagespeed/create")}
-              />
+              >
+                Create new
+              </Button>
             </Stack>
           </Box>
           <Grid container spacing={theme.spacing(12)}>
