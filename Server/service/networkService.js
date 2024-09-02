@@ -16,22 +16,30 @@ class NetworkService {
   }
 
   async handleNotification(monitor, isAlive) {
-    let template =
-      isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
-    let status = isAlive === true ? "up" : "down";
+    try {
+      let template =
+        isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
+      let status = isAlive === true ? "up" : "down";
 
-    const notifications = await this.db.getNotificationsByMonitorId(
-      monitor._id
-    );
-    for (const notification of notifications) {
-      if (notification.type === "email") {
-        await this.emailService.buildAndSendEmail(
-          template,
-          { monitorName: monitor.name, monitorUrl: monitor.url },
-          notification.address,
-          `Monitor ${monitor.name} is ${status}`
-        );
+      const notifications = await this.db.getNotificationsByMonitorId(
+        monitor._id
+      );
+      for (const notification of notifications) {
+        if (notification.type === "email") {
+          await this.emailService.buildAndSendEmail(
+            template,
+            { monitorName: monitor.name, monitorUrl: monitor.url },
+            notification.address,
+            `Monitor ${monitor.name} is ${status}`
+          );
+        }
       }
+    } catch (error) {
+      logger.error(error.message, {
+        method: "handleNotification",
+        service: this.SERVICE_NAME,
+        monitorId: monitor._id,
+      });
     }
   }
 
@@ -42,7 +50,7 @@ class NetworkService {
 
       if (monitor === null || monitor === undefined) {
         logger.error(`Null Monitor: ${_id}`, {
-          method: "handleNotification",
+          method: "handleStatusUpdate",
           service: this.SERVICE_NAME,
           jobId: job.id,
         });
@@ -69,7 +77,7 @@ class NetworkService {
       }
     } catch (error) {
       logger.error(error.message, {
-        method: "handleNotification",
+        method: "handleStatusUpdate",
         service: this.SERVICE_NAME,
         jobId: job.id,
       });
