@@ -281,6 +281,10 @@ const getMonitorStatsById = async (req) => {
         ...checksQuery,
         createdAt: { $gte: filterLookup.day },
       };
+      const checksQuery7Days = {
+        ...checksQuery,
+        createdAt: { $gte: filterLookup.week },
+      };
       const checksQuery30Days = {
         ...checksQuery,
         createdAt: { $gte: filterLookup.month },
@@ -290,15 +294,18 @@ const getMonitorStatsById = async (req) => {
         createdAt: { $gte: filterLookup.hour },
       };
 
-      const [checks24Hours, checks30Days, checks60Mins] = await Promise.all([
-        model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
-        model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
-        model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
-      ]);
+      const [checks24Hours, checks7Days, checks30Days, checks60Mins] =
+        await Promise.all([
+          model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
+          model.find(checksQuery7Days).sort({ createdAt: sortOrder }),
+          model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
+          model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
+        ]);
 
       // HTTP/PING Specific stats
       monitorStats.avgResponseTime24hours =
         getAverageResponseTime24Hours(checks24Hours);
+      monitorStats.uptime7Days = getUptimePercentage(checks7Days);
       monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
       monitorStats.uptime30Days = getUptimePercentage(checks30Days);
       monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
