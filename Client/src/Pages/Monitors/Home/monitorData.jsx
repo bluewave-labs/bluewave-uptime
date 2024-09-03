@@ -40,7 +40,7 @@ export const buildData = (monitors, isAdmin, navigate) => {
 
   data.rows = monitors.map((monitor, idx) => {
     let uptimePercentage = "";
-    let percentageColor = theme.palette.percentage.green; 
+    let percentageColor = theme.palette.percentage.q4; 
 
     // Determine uptime percentage and color based on the monitor's uptimePercentage value
     if (monitor.uptimePercentage !== undefined) {
@@ -51,12 +51,12 @@ export const buildData = (monitors, isAdmin, navigate) => {
 
       percentageColor =
         monitor.uptimePercentage < 0.25
-          ? theme.palette.percentage.red
+          ? theme.palette.percentage.q1
           : monitor.uptimePercentage < 0.5
-          ? theme.palette.percentage.orange
+          ? theme.palette.percentage.q2
           : monitor.uptimePercentage < 0.75
-          ? theme.palette.percentage.yellow
-          : theme.palette.percentage.green;
+          ? theme.palette.percentage.q3
+          : theme.palette.percentage.q4;
     }
 
     const params = {
