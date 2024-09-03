@@ -48,15 +48,6 @@ export const buildData = (monitors, isAdmin, navigate) => {
         monitor.uptimePercentage === 0
           ? "0"
           : (monitor.uptimePercentage * 100).toFixed(2);
-
-      percentageColor =
-        monitor.uptimePercentage < 0.25
-          ? theme.palette.percentage.uptimePoor
-          : monitor.uptimePercentage < 0.5
-          ? theme.palette.percentage.uptimeFair
-          : monitor.uptimePercentage < 0.75
-          ? theme.palette.percentage.uptimeGood
-          : theme.palette.percentage.uptimeExcellent;
     }
 
     const params = {

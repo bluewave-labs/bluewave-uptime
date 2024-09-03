@@ -238,7 +238,6 @@ class JobQueue {
       console.log("Adding job", payload.url);
       // Execute job immediately
       await this.queue.add(jobName, payload);
-
       await this.queue.add(jobName, payload, {
         repeat: {
           every: payload.interval,
