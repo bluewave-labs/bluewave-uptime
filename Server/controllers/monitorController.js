@@ -6,6 +6,8 @@ const {
   editMonitorBodyValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
+  getMonitorStatsByIdParamValidation,
+  getMonitorStatsByIdQueryValidation,
 } = require("../validation/joi");
 
 const sslChecker = require("ssl-checker");
@@ -46,6 +48,8 @@ const getAllMonitors = async (req, res, next) => {
 const getMonitorStatsById = async (req, res, next) => {
   try {
     //Validation
+    await getMonitorStatsByIdParamValidation.validateAsync(req.params);
+    await getMonitorStatsByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.message =

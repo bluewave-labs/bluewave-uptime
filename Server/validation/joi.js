@@ -370,6 +370,8 @@ module.exports = {
   getMonitorByIdQueryValidation,
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,
+  getMonitorStatsByIdParamValidation,
+  getMonitorStatsByIdQueryValidation,
   editMonitorBodyValidation,
   pauseMonitorParamValidation,
   editUserParamValidation,
