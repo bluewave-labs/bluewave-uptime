@@ -5,6 +5,19 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 
 /**
+ * @example
+ *
+ * const options = [
+ * { _id: "66d6119ef959cbc681e034f0", name: "Googler" },
+ * { _id: "66d6119ef959cbc681e034f0", name: "CNN" },
+ * { _id: "66d61a1bf959cbc681e0353f", name: "X Corp." },
+ * ];
+ *
+ * <AutoCompleteField options={options} />
+ *
+ */
+
+/**
  * AutoCompleteField component.
  *
  * @component
