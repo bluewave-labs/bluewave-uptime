@@ -116,7 +116,7 @@ class NetworkService {
    * @param {string} [sortOrder] - The order in which to sort the retrieved statistics.
    * @param {number} [limit] - The maximum number of statistics to retrieve.
    * @param {string} [dateRange] - The date range for which to retrieve statistics.
-   * @param {number} [numToDisplay] - The number of statistics to display.
+   * @param {number} [numToDisplay] - The number of checks to display.
    * @param {boolean} [normalize] - Whether to normalize the retrieved statistics.
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    */
