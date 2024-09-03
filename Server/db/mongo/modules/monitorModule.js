@@ -214,7 +214,7 @@ const getMonitorAggregateStats = async (monitorId, dateRange) => {
         day: group.day,
         totalChecks,
         totalIncidents,
-        avgResponseTime: `${avgResponseTime.toFixed(2)}ms`,
+        avgResponseTime,
       };
     });
 
