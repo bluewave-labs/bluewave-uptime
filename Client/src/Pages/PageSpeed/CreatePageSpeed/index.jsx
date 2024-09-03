@@ -1,4 +1,6 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,11 +14,11 @@ import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMon
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import "./index.css";
 import { logger } from "../../../Utils/Logger";
-
 const CreatePageSpeed = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.pageSpeedMonitors);
 
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
@@ -226,7 +228,8 @@ const CreatePageSpeed = () => {
           </Stack>
         </Stack>
         <Stack direction="row" justifyContent="flex-end" mt="auto">
-          <Button
+          <LoadingButton
+            loading={isLoading}
             type="submit"
             variant="contained"
             color="primary"
@@ -234,7 +237,7 @@ const CreatePageSpeed = () => {
             sx={{ px: theme.spacing(12), mt: theme.spacing(12) }}
           >
             Create
-          </Button>
+          </LoadingButton>
         </Stack>
       </Stack>
     </Stack>

@@ -16,6 +16,9 @@ const Settings = ({ isAdmin }) => {
   const { isLoading } = useSelector((state) => state.uptimeMonitors);
 
   const dispatch = useDispatch();
+
+  // TODO Handle saving
+
   const handleClearStats = async () => {
     try {
       const action = await dispatch(
@@ -156,13 +159,14 @@ const Settings = ({ isAdmin }) => {
           </Box>
         </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
-          <Button
+          <LoadingButton
+            loading={false}
             variant="contained"
             color="primary"
             sx={{ px: theme.spacing(12), mt: theme.spacing(20) }}
           >
             Save
-          </Button>
+          </LoadingButton>
         </Stack>
       </Stack>
     </Box>
