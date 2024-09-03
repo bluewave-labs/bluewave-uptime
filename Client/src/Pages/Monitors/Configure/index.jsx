@@ -275,14 +275,15 @@ const Configure = () => {
                     </>
                   )}
                 </LoadingButton>
-                <Button
+                <LoadingButton
+                  loading={isLoading}
                   variant="contained"
                   color="error"
                   sx={{ px: theme.spacing(8) }}
                   onClick={() => setIsOpen(true)}
                 >
                   Remove
-                </Button>
+                </LoadingButton>
               </Box>
             </Stack>
             <ConfigBox>
