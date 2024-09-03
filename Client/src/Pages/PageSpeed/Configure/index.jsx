@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Modal, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
   deletePageSpeed,
+  getPagespeedMonitorById,
   getPageSpeedByTeamId,
   updatePageSpeed,
+  pausePageSpeed,
 } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
@@ -17,55 +19,10 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
-
+import LoadingButton from "@mui/lab/LoadingButton";
+import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
+import SkeletonLayout from "./skeleton";
 import "./index.css";
-
-/**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)} maxWidth="1000px">
-        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
-          <Skeleton
-            variant="circular"
-            style={{ minWidth: 24, minHeight: 24 }}
-          />
-          <Box width="80%">
-            <Skeleton
-              variant="rounded"
-              width="50%"
-              height={24}
-              sx={{ mb: theme.spacing(4) }}
-            />
-            <Skeleton variant="rounded" width="50%" height={18} />
-          </Box>
-          <Stack
-            direction="row"
-            gap={theme.spacing(6)}
-            sx={{
-              ml: "auto",
-              alignSelf: "flex-end",
-            }}
-          >
-            <Skeleton variant="rounded" width={100} height={34} />
-            <Skeleton variant="rounded" width={100} height={34} />
-          </Stack>
-        </Stack>
-        <Skeleton variant="rounded" width="100%" height={500} />
-        <Stack direction="row" justifyContent="flex-end">
-          <Skeleton variant="rounded" width="15%" height={34} />
-        </Stack>
-      </Stack>
-    </>
-  );
-};
 
 const PageSpeedConfigure = () => {
   const theme = useTheme();
@@ -73,7 +30,7 @@ const PageSpeedConfigure = () => {
   const dispatch = useDispatch();
   const MS_PER_MINUTE = 60000;
   const { authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.pageSpeedMonitors);
+  const { isLoading } = useSelector((state) => state.pageSpeedMonitors);
   const { monitorId } = useParams();
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
@@ -89,15 +46,25 @@ const PageSpeedConfigure = () => {
   ];
 
   useEffect(() => {
-    const data = monitors.find((monitor) => monitor._id === monitorId);
-    if (!data) {
-      logger.error("Error fetching pagespeed monitor of id: " + monitorId);
-      navigate("/not-found", { replace: true });
-    }
-    setMonitor({
-      ...data,
-    });
-  }, [monitorId, monitors, navigate]);
+    const fetchMonitor = async () => {
+      try {
+        const action = await dispatch(
+          getPagespeedMonitorById({ authToken, monitorId })
+        );
+
+        if (getPagespeedMonitorById.fulfilled.match(action)) {
+          const monitor = action.payload.data;
+          setMonitor(monitor);
+        } else if (getPagespeedMonitorById.rejected.match(action)) {
+          throw new Error(action.error.message);
+        }
+      } catch (error) {
+        logger.error("Error fetching monitor of id: " + monitorId);
+        navigate("/not-found", { replace: true });
+      }
+    };
+    fetchMonitor();
+  }, [dispatch, authToken, monitorId, navigate]);
 
   const handleChange = (event, id) => {
     let { value } = event.target;
@@ -117,6 +84,21 @@ const PageSpeedConfigure = () => {
       else delete newErrors[id];
       return newErrors;
     });
+  };
+
+  const handlePause = async () => {
+    try {
+      const action = await dispatch(pausePageSpeed({ authToken, monitorId }));
+      if (pausePageSpeed.fulfilled.match(action)) {
+        const monitor = action.payload.data;
+        setMonitor(monitor);
+      } else if (pausePageSpeed.rejected.match(action)) {
+        throw new Error(action.error.message);
+      }
+    } catch (error) {
+      logger.error("Error pausing monitor: " + monitorId);
+      createToast({ body: "Failed to pause monitor" });
+    }
   };
 
   const handleSave = async (event) => {
@@ -143,11 +125,9 @@ const PageSpeedConfigure = () => {
     }
   };
 
-  let loading = Object.keys(monitor).length === 0;
-
   return (
     <Stack className="configure-pagespeed" gap={theme.spacing(12)}>
-      {loading ? (
+      {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
         <>
@@ -195,7 +175,9 @@ const PageSpeedConfigure = () => {
                 </Typography>
               </Box>
               <Box alignSelf="flex-end" ml="auto">
-                <Button
+                <LoadingButton
+                  onClick={handlePause}
+                  loading={isLoading}
                   variant="contained"
                   color="secondary"
                   sx={{
@@ -210,10 +192,20 @@ const PageSpeedConfigure = () => {
                     },
                   }}
                 >
-                  <PauseCircleOutlineIcon />
-                  Pause
-                </Button>
-                <Button
+                  {monitor?.isActive ? (
+                    <>
+                      <PauseCircleOutlineIcon />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircleOutlineRoundedIcon />
+                      Resume
+                    </>
+                  )}
+                </LoadingButton>
+                <LoadingButton
+                  loading={isLoading}
                   variant="contained"
                   color="error"
                   onClick={() => setIsOpen(true)}
@@ -222,7 +214,7 @@ const PageSpeedConfigure = () => {
                   }}
                 >
                   Remove
-                </Button>
+                </LoadingButton>
               </Box>
             </Stack>
             <Stack
@@ -322,7 +314,8 @@ const PageSpeedConfigure = () => {
               </Stack>
             </Stack>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
-              <Button
+              <LoadingButton
+                loading={isLoading}
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -330,7 +323,7 @@ const PageSpeedConfigure = () => {
                 sx={{ px: theme.spacing(12) }}
               >
                 Save
-              </Button>
+              </LoadingButton>
             </Stack>
           </Stack>
         </>
