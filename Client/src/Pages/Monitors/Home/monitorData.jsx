@@ -40,7 +40,7 @@ export const buildData = (monitors, isAdmin, navigate) => {
 
   data.rows = monitors.map((monitor, idx) => {
     let uptimePercentage = "";
-    let percentageColor = theme.palette.percentage.uptimeExcellent; 
+    let percentageColor = theme.palette.percentage.uptimeExcellent;
 
     // Determine uptime percentage and color based on the monitor's uptimePercentage value
     if (monitor.uptimePercentage !== undefined) {
@@ -63,8 +63,13 @@ export const buildData = (monitors, isAdmin, navigate) => {
       url: monitor.url,
       title: monitor.name,
       percentage: uptimePercentage,
-      percentageColor, 
-      status: monitor.status === true ? "up" : "down",
+      percentageColor,
+      status:
+        monitor.status === undefined
+          ? "unknown"
+          : monitor.status === true
+          ? "up"
+          : "down",
     };
 
     // Reverse checks so the latest check is on the right
