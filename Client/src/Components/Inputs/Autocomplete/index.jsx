@@ -23,7 +23,7 @@ const AutoCompleteField = ({
   id,
   type,
   options,
-  placeholder = "Search",
+  placeholder = "Type to search",
   disabled,
 }) => {
   const [value, setValue] = React.useState();
@@ -45,12 +45,23 @@ const AutoCompleteField = ({
       options={options}
       getOptionLabel={(option) => option.name}
       renderInput={(params) => (
-        <div ref={params.InputProps.ref}>
+        <div
+          ref={params.InputProps.ref}
+          style={{
+            borderRadius:
+              theme.components.MuiAutocomplete.styleOverrides.root.borderRadius,
+            fontSize:
+              theme.components.MuiAutocomplete.styleOverrides.root.fontSize,
+          }}
+        >
           <TextField
             type={type}
             {...params.inputProps}
             placeholder={placeholder}
             disabled={disabled}
+            style={{
+              width: theme.components.MuiAutocomplete.styleOverrides.root.width,
+            }}
           />
         </div>
       )}
@@ -60,12 +71,11 @@ const AutoCompleteField = ({
           insideWords: true,
         });
         const parts = parse(option.name, matches);
-
         return (
-          <li key={key} {...optionProps}>
+          <li key={option._id} {...optionProps}>
             <div>
               {parts.map((part, index) => (
-                <span key={index}>{part.text}</span>
+                <span key={option._id}>{part.text}</span>
               ))}
             </div>
           </li>
@@ -82,7 +92,8 @@ const AutoCompleteField = ({
             backgroundColor: theme.palette.background.main,
             paddingY: 0,
             paddingX: 2,
-            fontSize: "var(--env-var-font-size-medium)",
+            fontSize:
+              theme.components.MuiAutocomplete.styleOverrides.root.fontSize,
           },
         },
       }}

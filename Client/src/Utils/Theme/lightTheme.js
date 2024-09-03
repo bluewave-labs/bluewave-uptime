@@ -201,6 +201,16 @@ const lightTheme = createTheme({
         },
       },
     },
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: {
+          width: 360,
+          height: 34,
+          borderRadius: 4,
+          fontSize: 13,
+        },
+      },
+    },
   },
   shape: {
     borderRadius: 2,

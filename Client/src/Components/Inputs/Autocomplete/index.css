@@ -1,7 +1,5 @@
 .auto-complete-field div {
-  width: var(--env-var-width-2);
-  height: 34px;
-  border-radius: 4px;
+  height: var(--env-var-height-2);
 }
 
 .auto-complete-field div div .MuiOutlinedInput-root {
