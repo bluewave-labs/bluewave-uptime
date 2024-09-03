@@ -6,12 +6,13 @@ const {
   editMonitorBodyValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
+  getMonitorAggregateStatsParamValidation,
+  getMonitorAggregateStatsQueryValidation,
 } = require("../validation/joi");
 
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-const { runInNewContext } = require("vm");
 
 /**
  * Returns all monitors
@@ -31,6 +32,44 @@ const getAllMonitors = async (req, res, next) => {
     });
   } catch (error) {
     error.service = SERVICE_NAME;
+    next(error);
+  }
+};
+
+/**
+ * Returns agregate stats for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const getMonitorAggregateStats = async (req, res, next) => {
+  try {
+    await getMonitorAggregateStatsParamValidation.validateAsync(req.params);
+    await getMonitorAggregateStatsQueryValidation.validateAsync(req.query);
+  } catch (error) {
+    error.status = 422;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const { monitorId } = req.params;
+    const dateRange = req.query.dateRange;
+    const aggregateStats = await req.db.getMonitorAggregateStats(
+      monitorId,
+      dateRange
+    );
+    return res.json({
+      success: true,
+      msg: successMessages.MONTIOR_STATS_BY_ID,
+      data: aggregateStats,
+    });
+  } catch (error) {
     next(error);
   }
 };
@@ -376,6 +415,7 @@ const pauseMonitor = async (req, res, next) => {
 
 module.exports = {
   getAllMonitors,
+  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorCertificate,
   getMonitorById,

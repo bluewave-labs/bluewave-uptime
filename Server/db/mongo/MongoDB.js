@@ -64,6 +64,7 @@ const {
 
 const {
   getAllMonitors,
+  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorById,
   getMonitorsByTeamId,
@@ -144,6 +145,7 @@ module.exports = {
   resetPassword,
   checkSuperadmin,
   getAllMonitors,
+  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorById,
   getMonitorsByTeamId,
