@@ -56,25 +56,25 @@ const AutoCompleteField = ({
       options={options}
       getOptionLabel={(option) => option.name}
       renderInput={(params) => (
-        <div
-          ref={params.InputProps.ref}
-          style={{
-            borderRadius:
-              theme.components.MuiAutocomplete.styleOverrides.root.borderRadius,
-            fontSize:
-              theme.components.MuiAutocomplete.styleOverrides.root.fontSize,
+        <TextField
+          {...params}
+          type={type}
+          placeholder={placeholder}
+          disabled={disabled}
+          InputProps={{
+            ...params.InputProps,
+            sx: {
+              width: 360,
+              height: 34,
+              fontSize: 13,
+              p: 0,
+              borderRadius: theme.shape.borderRadius,
+              "& input": {
+                p: 0,
+              },
+            },
           }}
-        >
-          <TextField
-            type={type}
-            {...params.inputProps}
-            placeholder={placeholder}
-            disabled={disabled}
-            style={{
-              width: theme.components.MuiAutocomplete.styleOverrides.root.width,
-            }}
-          />
-        </div>
+        />
       )}
       renderOption={(props, option) => {
         const { key, ...optionProps } = props;
@@ -85,18 +85,16 @@ const AutoCompleteField = ({
         );
       }}
       slotProps={{
+        popper: {
+          sx: {
+            "& ul": { p: 0 },
+            "& li": { borderRadius: theme.shape.borderRadius },
+          },
+        },
         paper: {
           sx: {
-            marginTop: theme.spacing(2),
-            border: 1,
-            borderColor: theme.palette.border.light,
-            borderRadius: theme.shape.borderRadius,
-            boxShadow: theme.shape.boxShadow,
-            backgroundColor: theme.palette.background.main,
-            paddingY: 0,
-            paddingX: 2,
-            fontSize:
-              theme.components.MuiAutocomplete.styleOverrides.root.fontSize,
+            p: 2,
+            fontSize: 13,
           },
         },
       }}
