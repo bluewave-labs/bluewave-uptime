@@ -2,8 +2,6 @@ import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
 import "./index.css";
 import React from "react";
 import PropTypes from "prop-types";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
 import { useTheme } from "@emotion/react";
 
 /**
@@ -65,19 +63,11 @@ const AutoCompleteField = ({
           />
         </div>
       )}
-      renderOption={(props, option, { inputValue }) => {
+      renderOption={(props, option) => {
         const { key, ...optionProps } = props;
-        const matches = match(option.name, inputValue, {
-          insideWords: true,
-        });
-        const parts = parse(option.name, matches);
         return (
           <li key={option._id} {...optionProps}>
-            <div>
-              {parts.map((part, index) => (
-                <span key={option._id}>{part.text}</span>
-              ))}
-            </div>
+            <div>{<span>{option.name}</span>}</div>
           </li>
         );
       }}

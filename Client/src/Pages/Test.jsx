@@ -11,8 +11,6 @@ const Test = () => {
     setMonitorState(monitors);
   }, [monitors]);
 
-  console.log(monitorState);
-
   return (
     <Stack justifyContent={"center"} alignItems={"center"} height={"100vh"}>
       <AutoCompleteField options={monitorState} />
