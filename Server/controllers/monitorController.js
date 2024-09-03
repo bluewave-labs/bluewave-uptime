@@ -359,7 +359,6 @@ const pauseMonitor = async (req, res, next) => {
       await req.jobQueue.addJob(monitor._id, monitor);
     }
     monitor.isActive = !monitor.isActive;
-    monitor.status = undefined;
     monitor.save();
     return res.status(200).json({
       success: true,
