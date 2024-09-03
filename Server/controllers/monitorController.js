@@ -8,12 +8,12 @@ const {
   pauseMonitorParamValidation,
   getMonitorStatsByIdParamValidation,
   getMonitorStatsByIdQueryValidation,
+  getCertificateParamValidation,
 } = require("../validation/joi");
 
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-const { runInNewContext } = require("vm");
 
 /**
  * Returns all monitors
@@ -47,7 +47,6 @@ const getAllMonitors = async (req, res, next) => {
  */
 const getMonitorStatsById = async (req, res, next) => {
   try {
-    //Validation
     await getMonitorStatsByIdParamValidation.validateAsync(req.params);
     await getMonitorStatsByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
@@ -73,7 +72,7 @@ const getMonitorStatsById = async (req, res, next) => {
 
 const getMonitorCertificate = async (req, res, next) => {
   try {
-    //validation
+    await getCertificateParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
     error.message =
