@@ -42,6 +42,7 @@ const AutoCompleteField = ({
 
   return (
     <Autocomplete
+      freeSolo
       className="auto-complete-field"
       id={id}
       value={value}
