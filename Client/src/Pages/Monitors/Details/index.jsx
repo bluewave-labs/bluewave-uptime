@@ -346,9 +346,23 @@ const DetailsPage = ({ isAdmin }) => {
                 )}
               </Stack>
             </Stack>
-            <Stack direction="row" gap={theme.spacing(8)} maxWidth={712}>
-              <StatBox>
-                <Typography component="h2">up for</Typography>
+            <Stack direction="row" gap={theme.spacing(8)}>
+              <StatBox
+                sx={
+                  monitor?.status
+                    ? {
+                        backgroundColor: theme.palette.success.bg,
+                        borderColor: theme.palette.success.light,
+                        "& h2": { color: theme.palette.success.main },
+                      }
+                    : {
+                        backgroundColor: theme.palette.error.bg,
+                        borderColor: theme.palette.error.light,
+                        "& h2": { color: theme.palette.error.main },
+                      }
+                }
+              >
+                <Typography component="h2">active for</Typography>
                 <Typography>
                   {splitDuration(monitor?.uptimeDuration)}
                 </Typography>
@@ -448,7 +462,7 @@ const DetailsPage = ({ isAdmin }) => {
                       <AverageResponseIcon />
                     </IconBox>
                     <Typography component="h2">
-                      Average response time
+                      Average Response Time
                     </Typography>
                   </Stack>
                 </ChartBox>

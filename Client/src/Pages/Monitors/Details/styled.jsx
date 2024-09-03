@@ -64,7 +64,7 @@ export const IconBox = styled(Box)(({ theme }) => ({
 export const StatBox = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
   minWidth: 200,
-  flex: 1,
+  width: 225,
   border: 1,
   borderStyle: "solid",
   borderColor: theme.palette.border.light,
