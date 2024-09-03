@@ -155,7 +155,6 @@ const getStatusBarValues = (monitor, checks) => {
 const getMonitorAggregateStats = async (monitorId, dateRange) => {
   const startDates = {
     day: new Date(new Date().setDate(new Date().getDate() - 1)),
-
     week: new Date(new Date().setDate(new Date().getDate() - 7)),
     month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
   };
