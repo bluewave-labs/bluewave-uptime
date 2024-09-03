@@ -1,5 +1,4 @@
 import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
-import "./index.css";
 import React from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
