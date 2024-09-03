@@ -18,6 +18,7 @@ import {
   formatDate,
   formatDuration,
   formatDurationRounded,
+  formatDurationSplit,
 } from "../../../Utils/timeUtils";
 import MonitorDetailsAreaChart from "../../../Components/Charts/MonitorDetailsAreaChart";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -31,8 +32,8 @@ import HistoryIcon from "../../../assets/icons/history-icon.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
+import { StatBox, ChartBox, IconBox } from "./styled";
 import "./index.css";
-import { AlertBox, ChartBox, IconBox } from "./styled";
 
 /**
  * Renders a skeleton layout.
@@ -174,6 +175,16 @@ const DetailsPage = ({ isAdmin }) => {
     fetchCertificate();
   }, [authToken, monitorId, monitor]);
 
+  const splitDuration = (duration) => {
+    const { time, format } = formatDurationSplit(duration);
+    return (
+      <>
+        {time}
+        <Typography component="span">{format}</Typography>
+      </>
+    );
+  };
+
   let loading = Object.keys(monitor).length === 0;
   return (
     <Box className="monitor-details">
@@ -187,7 +198,7 @@ const DetailsPage = ({ isAdmin }) => {
               { name: "details", path: `/monitors/${monitorId}` },
             ]}
           />
-          <Stack gap={theme.spacing(12)} mt={theme.spacing(10)}>
+          <Stack gap={theme.spacing(10)} mt={theme.spacing(10)}>
             <Stack direction="row" gap={theme.spacing(2)}>
               <Box>
                 <Typography
@@ -281,6 +292,9 @@ const DetailsPage = ({ isAdmin }) => {
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
                   onClose={closeCertificate}
+                  disableScrollLock
+                  marginThreshold={null}
+                  anchorReference={anchorEl}
                   anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "center",
@@ -332,27 +346,27 @@ const DetailsPage = ({ isAdmin }) => {
                 )}
               </Stack>
             </Stack>
-            <Stack direction="row" gap={theme.spacing(8)}>
-              <AlertBox>
+            <Stack direction="row" gap={theme.spacing(8)} maxWidth={712}>
+              <StatBox>
                 <Typography component="h2">up for</Typography>
                 <Typography>
-                  {formatDurationRounded(monitor?.uptimeDuration)}
+                  {splitDuration(monitor?.uptimeDuration)}
                 </Typography>
-              </AlertBox>
-              <AlertBox>
+              </StatBox>
+              <StatBox>
                 <Typography component="h2">last check</Typography>
                 <Typography>
-                  {formatDurationRounded(monitor?.lastChecked)}
+                  {splitDuration(monitor?.lastChecked)}
                   <Typography component="span">ago</Typography>
                 </Typography>
-              </AlertBox>
-              <AlertBox>
+              </StatBox>
+              <StatBox>
                 <Typography component="h2">last response time</Typography>
                 <Typography>
                   {monitor?.latestResponseTime}
                   <Typography component="span">ms</Typography>
                 </Typography>
-              </AlertBox>
+              </StatBox>
             </Stack>
             <Box>
               <Stack

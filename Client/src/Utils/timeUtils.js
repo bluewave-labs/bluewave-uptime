@@ -43,6 +43,23 @@ export const formatDurationRounded = (ms) => {
   return time;
 };
 
+export const formatDurationSplit = (ms) => {
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  return days > 0
+    ? { time: days, format: days === 1 ? "day" : "days" }
+    : hours > 0
+    ? { time: hours, format: hours === 1 ? "hour" : "hours" }
+    : minutes > 0
+    ? { time: minutes, format: minutes === 1 ? "minute" : "minutes" }
+    : seconds > 0
+    ? { time: seconds, format: seconds === 1 ? "second" : "seconds" }
+    : { time: 0, format: "seconds" };
+};
+
 export const formatDate = (date, customOptions) => {
   const options = {
     year: "numeric",
@@ -51,7 +68,7 @@ export const formatDate = (date, customOptions) => {
     hour: "numeric",
     minute: "numeric",
     hour12: true,
-    ...customOptions
+    ...customOptions,
   };
 
   // Return the date using the specified options

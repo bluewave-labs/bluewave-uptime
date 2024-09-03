@@ -61,10 +61,10 @@ export const IconBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const AlertBox = styled(Box)(({ theme }) => ({
+export const StatBox = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
   minWidth: 200,
-  width: 225,
+  flex: 1,
   border: 1,
   borderStyle: "solid",
   borderColor: theme.palette.border.light,
@@ -81,8 +81,8 @@ export const AlertBox = styled(Box)(({ theme }) => ({
     color: theme.palette.text.primary,
     marginTop: theme.spacing(2),
     "& span": {
-      opacity: 0.8,
-      marginLeft: theme.spacing(3),
+      color: theme.palette.text.tertiary,
+      marginLeft: theme.spacing(2),
       fontSize: 15,
     },
   },
