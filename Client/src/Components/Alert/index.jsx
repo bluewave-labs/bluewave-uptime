@@ -31,7 +31,7 @@ const icons = {
 
 const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
   const theme = useTheme();
-  const { text, light, border } = theme.palette[variant];
+  const { text, bg, border } = theme.palette[variant];
   const icon = icons[variant];
 
   return (
@@ -45,7 +45,7 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
         padding: hasIcon
           ? theme.spacing(8)
           : `${theme.spacing(4)} ${theme.spacing(8)}`,
-        backgroundColor: light,
+        backgroundColor: bg,
         border: `solid 1px ${border}`,
         borderRadius: theme.shape.borderRadius,
       }}

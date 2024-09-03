@@ -27,11 +27,22 @@ const data = {
   rows: [],
 };
 
+/**
+ * Builds table data for a list of monitors.
+ *
+ * @param {Array} monitors - An array of monitor objects containing information about each monitor.
+ * @param {boolean} isAdmin - Flag indicating if the current user is an admin.
+ * @param {Function} navigate - A function to navigate to the monitor detail page.
+ * @returns {Object} The data structure containing columns and rows for the table.
+ */
 export const buildData = (monitors, isAdmin, navigate) => {
   const theme = useTheme();
 
   data.rows = monitors.map((monitor, idx) => {
     let uptimePercentage = "";
+    let percentageColor = theme.palette.percentage.uptimeExcellent; 
+
+    // Determine uptime percentage and color based on the monitor's uptimePercentage value
     if (monitor.uptimePercentage !== undefined) {
       uptimePercentage =
         monitor.uptimePercentage === 0
@@ -43,19 +54,11 @@ export const buildData = (monitors, isAdmin, navigate) => {
       url: monitor.url,
       title: monitor.name,
       percentage: uptimePercentage,
-      percentageColor:
-        monitor.status === true
-          ? theme.palette.success.main
-          : theme.palette.error.text,
-      status:
-        monitor.status === undefined
-          ? "unknown"
-          : monitor.status === true
-          ? "up"
-          : "down",
+      percentageColor, 
+      status: monitor.status === true ? "up" : "down",
     };
 
-    // Reverse checks so latest check is on the right
+    // Reverse checks so the latest check is on the right
     const reversedChecks = monitor.checks.slice().reverse();
 
     return {
