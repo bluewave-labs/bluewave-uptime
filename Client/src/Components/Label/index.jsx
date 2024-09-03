@@ -126,7 +126,6 @@ ColoredLabel.propTypes = {
  */
 
 const StatusLabel = ({ status, text, customStyles }) => {
-  console.log(status);
   const theme = useTheme();
   const colors = {
     up: {
@@ -138,11 +137,6 @@ const StatusLabel = ({ status, text, customStyles }) => {
       dotColor: theme.palette.error.text,
       bgColor: theme.palette.error.bg,
       borderColor: theme.palette.error.light,
-    },
-    unknown: {
-      dotColor: theme.palette.unresolved.main,
-      bgColor: theme.palette.unresolved.bg,
-      borderColor: theme.palette.unresolved.light,
     },
     "cannot resolve": {
       dotColor: theme.palette.unresolved.main,
@@ -176,7 +170,7 @@ const StatusLabel = ({ status, text, customStyles }) => {
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf(["up", "down", "unknown", "cannot resolve"]),
+  status: PropTypes.oneOf(["up", "down", "cannot resolve"]),
   text: PropTypes.string,
   customStyles: PropTypes.object,
 };
