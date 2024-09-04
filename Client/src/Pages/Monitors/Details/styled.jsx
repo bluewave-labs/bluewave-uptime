@@ -33,6 +33,9 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     flexDirection: "row",
     gap: theme.spacing(6),
   },
+  "& .MuiStack-root:first-of-type": {
+    alignItems: "center",
+  },
   "& tspan, & text": {
     fontSize: 11,
     fill: theme.palette.text.tertiary,

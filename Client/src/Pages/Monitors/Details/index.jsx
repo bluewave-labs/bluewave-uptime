@@ -118,56 +118,8 @@ const DetailsPage = ({ isAdmin }) => {
 
   let loading = Object.keys(monitor).length === 0;
 
-  const [aggregateStats, setAggregateStats] = useState({});
-  useEffect(() => {
-    const fetchAggregateStats = async () => {
-      try {
-        const res = await networkService.getAggregateStatsById(
-          authToken,
-          monitorId,
-          dateRange
-        );
-
-        setAggregateStats(res?.data?.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchAggregateStats();
-  }, [monitorId, dateRange]);
-
-  const calculateStats = () => {
-    let totalChecks = 0;
-    let totalIncidents = 0;
-    let totalResponseTime = 0;
-
-    Object.keys(aggregateStats).forEach((entry) => {
-      totalChecks += aggregateStats[entry].totalChecks;
-      totalIncidents += aggregateStats[entry].totalIncidents;
-      totalResponseTime += aggregateStats[entry].avgResponseTime;
-    });
-
-    let uptime =
-      dateRange === "day"
-        ? monitor.uptime24Hours
-        : dateRange === "week"
-        ? monitor.uptime7Days
-        : dateRange === "month" && monitor.uptime30Days;
-
-    return {
-      totalChecks: totalChecks,
-      totalIncidents: totalIncidents,
-      averageResponseTime:
-        Math.floor((totalResponseTime / aggregateStats.length) * 100) / 100,
-      uptime: Math.floor(uptime),
-    };
-  };
-
-  const monitorStats = calculateStats();
-
   const [hoveredUptimeData, setHoveredUptimeData] = useState(null);
   const [hoveredIncidentsData, setHoveredIncidentsData] = useState(null);
-
 
   const statusColor = {
     true: theme.palette.success.main,
@@ -180,6 +132,8 @@ const DetailsPage = ({ isAdmin }) => {
     false: "Your site is down.",
     undefined: "Pending...",
   };
+
+  console.log(monitor);
 
   return (
     <Box className="monitor-details">
@@ -339,7 +293,13 @@ const DetailsPage = ({ isAdmin }) => {
             <Stack direction="row" gap={theme.spacing(8)}>
               <StatBox
                 sx={
-                  monitor?.status
+                  monitor?.status === undefined
+                    ? {
+                        backgroundColor: theme.palette.warning.light,
+                        borderColor: theme.palette.warning.border,
+                        "& h2": { color: theme.palette.warning.main },
+                      }
+                    : monitor?.status
                     ? {
                         backgroundColor: theme.palette.success.bg,
                         borderColor: theme.palette.success.light,
@@ -426,8 +386,8 @@ const DetailsPage = ({ isAdmin }) => {
                       <Typography>Total Checks</Typography>
                       <Typography component="span">
                         {hoveredUptimeData !== null
-                          ? hoveredUptimeData.totalChecks || 0
-                          : monitorStats.totalChecks}
+                          ? hoveredUptimeData.totalChecks
+                          : monitor?.periodTotalChecks}
                       </Typography>
                       {hoveredUptimeData !== null &&
                         hoveredUptimeData.time !== null && (
@@ -450,13 +410,17 @@ const DetailsPage = ({ isAdmin }) => {
                     <Box>
                       <Typography>Uptime Percentage</Typography>
                       <Typography component="span">
-                        {monitorStats.uptime}
+                        {hoveredUptimeData !== null
+                          ? Math.floor(
+                              hoveredUptimeData.uptimePercentage * 10
+                            ) / 10
+                          : Math.floor(monitor?.periodUptime * 10) / 10}
                         <Typography component="span">%</Typography>
                       </Typography>
                     </Box>
                   </Stack>
                   <UpBarChart
-                    data={aggregateStats}
+                    data={monitor?.aggregateData}
                     type={dateRange}
                     onBarHover={setHoveredUptimeData}
                   />
@@ -472,8 +436,8 @@ const DetailsPage = ({ isAdmin }) => {
                     <Typography>Total Incidents</Typography>
                     <Typography component="span">
                       {hoveredIncidentsData !== null
-                        ? hoveredIncidentsData.totalIncidents || 0
-                        : monitorStats.totalIncidents}
+                        ? hoveredIncidentsData.totalIncidents
+                        : monitor?.periodIncidents}
                     </Typography>
                     {hoveredIncidentsData !== null &&
                       hoveredIncidentsData.time !== null && (
@@ -494,7 +458,7 @@ const DetailsPage = ({ isAdmin }) => {
                       )}
                   </Box>
                   <DownBarChart
-                    data={aggregateStats}
+                    data={monitor?.aggregateData}
                     type={dateRange}
                     onBarHover={setHoveredIncidentsData}
                   />

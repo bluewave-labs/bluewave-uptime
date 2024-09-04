@@ -44,6 +44,14 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
   const [chartHovered, setChartHovered] = useState(false);
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
 
+  const getColorRange = (uptime) => {
+    return uptime > 80
+      ? { main: theme.palette.success.main, light: theme.palette.success.light }
+      : uptime > 50
+      ? { main: theme.palette.warning.main, light: theme.palette.warning.light }
+      : { main: theme.palette.error.text, light: theme.palette.error.light };
+  };
+
   return (
     <ResponsiveContainer width="100%" height={155}>
       <BarChart
@@ -52,7 +60,7 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
         data={data}
         onMouseEnter={() => {
           setChartHovered(true);
-          onBarHover({ time: null, totalChecks: null });
+          onBarHover({ time: null, totalChecks: 0, uptimePercentage: 0 });
         }}
         onMouseLeave={() => {
           setChartHovered(false);
@@ -78,29 +86,32 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
         />
         <Bar
           dataKey="totalChecks"
-          barSize={5}
+          maxBarSize={7}
           background={{ fill: "transparent" }}
         >
-          {data.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={
-                hoveredBarIndex === index
-                  ? theme.palette.success.main
-                  : chartHovered
-                  ? theme.palette.success.light
-                  : theme.palette.success.main
-              }
-              onMouseEnter={() => {
-                setHoveredBarIndex(index);
-                onBarHover(entry);
-              }}
-              onMouseLeave={() => {
-                setHoveredBarIndex(null);
-                onBarHover({ time: null, totalChecks: null });
-              }}
-            />
-          ))}
+          {data.map((entry, index) => {
+            let { main, light } = getColorRange(entry.uptimePercentage);
+            return (
+              <Cell
+                key={`cell-${index}`}
+                fill={
+                  hoveredBarIndex === index ? main : chartHovered ? light : main
+                }
+                onMouseEnter={() => {
+                  setHoveredBarIndex(index);
+                  onBarHover(entry);
+                }}
+                onMouseLeave={() => {
+                  setHoveredBarIndex(null);
+                  onBarHover({
+                    time: null,
+                    totalChecks: 0,
+                    uptimePercentage: 0,
+                  });
+                }}
+              />
+            );
+          })}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -121,7 +132,7 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
         data={data}
         onMouseEnter={() => {
           setChartHovered(true);
-          onBarHover({ time: null, totalIncidents: null });
+          onBarHover({ time: null, totalIncidents: 0 });
         }}
         onMouseLeave={() => {
           setChartHovered(false);
@@ -147,7 +158,7 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
         />
         <Bar
           dataKey="totalIncidents"
-          barSize={5}
+          maxBarSize={7}
           background={{ fill: "transparent" }}
         >
           {data.map((entry, index) => (
@@ -166,7 +177,7 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
               }}
               onMouseLeave={() => {
                 setHoveredBarIndex(null);
-                onBarHover({ time: null, totalIncidents: null });
+                onBarHover({ time: null, totalIncidents: 0 });
               }}
             />
           ))}
