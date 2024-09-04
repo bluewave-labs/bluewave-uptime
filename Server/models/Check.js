@@ -60,13 +60,24 @@ const CheckSchema = mongoose.Schema(
 
     expiry: {
       type: Date,
-      default: Date.now,
-      expires: 60 * 60 * 24 * 30, // 30 days
+      default: async function () {
+        // Fetch the associated monitor to get its TTL setting
+        const monitor = await monitor.findById(this.monitorId).exec();
+
+        // Default to 30 days if no user-defined TTL is available
+        const ttlInDays = monitor?.ttlInDays || 30; 
+        const ttlInMilliseconds = ttlInDays * 24 * 60 * 60 * 1000;
+
+        return new Date(Date.now() + ttlInMilliseconds);
+      },
     },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt timestamps
   }
 );
+
+// Create a TTL index on the 'createdAt' field if 'ttl' is set
+CheckSchema.index({ createdAt: 1 }, { expireAfterSeconds: 'ttl' });
 
 module.exports = mongoose.model("Check", CheckSchema);
