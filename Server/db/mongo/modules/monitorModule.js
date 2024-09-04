@@ -145,39 +145,103 @@ const getStatusBarValues = (monitor, checks) => {
 };
 
 /**
- * Get aggregate monitor stats for charts
+ * Get stats by monitor ID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @returns {Promise<Monitor>}
  * @throws {Error}
  */
-const getMonitorAggregateStats = async (monitorId, dateRange) => {
+const getMonitorStatsById = async (req) => {
   const startDates = {
     day: new Date(new Date().setDate(new Date().getDate() - 1)),
     week: new Date(new Date().setDate(new Date().getDate() - 7)),
     month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
   };
-
+  const endDate = new Date();
   try {
-    const startDate = startDates[dateRange];
-    if (!startDate) {
-      throw new Error("Invalid date range specified");
+    // Get monitor
+    const { monitorId } = req.params;
+    let { limit, sortOrder, dateRange, numToDisplay, normalize } = req.query;
+    const monitor = await Monitor.findById(monitorId);
+    if (monitor === null || monitor === undefined) {
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
     }
-    const endDate = new Date();
 
-    const checks = await Check.find({
-      monitorId: monitorId,
+    // This effectively removes limit, returning all checks
+    if (limit === undefined) limit = 0;
+
+    // Default sort order is newest -> oldest
+    sortOrder = sortOrder === "asc" ? 1 : -1;
+
+    let model =
+      monitor.type === "http" || monitor.type === "ping"
+        ? Check
+        : PageSpeedCheck;
+
+    const monitorStats = {
+      ...monitor.toObject(),
+    };
+
+    // Build checks query
+    const checksQuery = { monitorId: monitor._id };
+
+    // Get all checks
+    const checksAll = await model.find(checksQuery).sort({
+      createdAt: sortOrder,
+    });
+
+    const checksQueryForDateRange = {
+      ...checksQuery,
       createdAt: {
-        $gte: startDate,
+        $gte: startDates[dateRange],
         $lte: endDate,
       },
-    });
+    };
+
+    const checksForDateRange = await model
+      .find(checksQueryForDateRange)
+      .sort({ createdAt: sortOrder });
+
+    if (monitor.type === "http" || monitor.type === "ping") {
+      // HTTP/PING Specific stats
+      monitorStats.avgResponseTime = getAverageResponseTime(checksForDateRange);
+      monitorStats.uptime = getUptimePercentage(checksForDateRange);
+    }
+
+    monitorStats.incidents = getIncidents(checksForDateRange);
+
+    // If more than numToDisplay checks, pick every nth check
+
+    let nthChecks = checksForDateRange;
+
+    if (
+      numToDisplay !== undefined &&
+      checksForDateRange &&
+      checksForDateRange.length > numToDisplay
+    ) {
+      const n = Math.ceil(checksForDateRange.length / numToDisplay);
+      nthChecks = checksForDateRange.filter((_, index) => index % n === 0);
+    }
+
+    // Normalize checks if requested
+    if (normalize !== undefined) {
+      const normailzedChecks = NormalizeData(checksForDateRange, 1, 100);
+      monitorStats.checks = normailzedChecks;
+    } else {
+      monitorStats.checks = nthChecks;
+    }
+
+    monitorStats.uptimeDuration = calculateUptimeDuration(checksAll);
+    monitorStats.lastChecked = getLastChecked(checksAll);
+    monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
+
+    // Aggregate data
 
     let groupedChecks;
     // Group checks by hour if range is day
     if (dateRange === "day") {
-      groupedChecks = checks.reduce((acc, check) => {
+      groupedChecks = checksForDateRange.reduce((acc, check) => {
         const time = new Date(check.createdAt);
         time.setMinutes(0, 0, 0);
         if (!acc[time]) {
@@ -188,20 +252,8 @@ const getMonitorAggregateStats = async (monitorId, dateRange) => {
       }, {});
     }
 
-    // Group checks by day if range is week or month
-    else {
-      groupedChecks = checks.reduce((acc, check) => {
-        const time = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
-        if (!acc[time]) {
-          acc[time] = { time, checks: [] };
-        }
-        acc[time].checks.push(check);
-        return acc;
-      }, {});
-    }
-
     // Map grouped checks to stats
-    stats = Object.values(groupedChecks).map((group) => {
+    const aggregateData = Object.values(groupedChecks).map((group) => {
       const totalChecks = group.checks.length;
       const totalIncidents = group.checks.filter(
         (check) => check.status === false
@@ -217,148 +269,7 @@ const getMonitorAggregateStats = async (monitorId, dateRange) => {
         avgResponseTime,
       };
     });
-
-    return stats;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * Get stats by monitor ID
- * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Monitor>}
- * @throws {Error}
- */
-const getMonitorStatsById = async (req) => {
-  const filterLookup = {
-    hour: new Date(new Date().getTime() - 60 * 60 * 1000),
-    day: new Date(new Date().setDate(new Date().getDate() - 1)),
-    week: new Date(new Date().setDate(new Date().getDate() - 7)),
-    month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-  };
-
-  try {
-    const { monitorId } = req.params;
-    let { status, limit, sortOrder, dateRange, numToDisplay, normalize } =
-      req.query;
-
-    // This effectively removes limit, returning all checks
-    if (limit === undefined) limit = 0;
-
-    // Default sort order is newest -> oldest
-    sortOrder = sortOrder === "asc" ? 1 : -1;
-
-    // Get monitor
-    const monitor = await Monitor.findById(monitorId);
-    if (monitor === null || monitor === undefined) {
-      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
-    }
-
-    // Determine if this is a pagespeed monitor or an http/ping monitor
-    let model =
-      monitor.type === "http" || monitor.type === "ping"
-        ? Check
-        : PageSpeedCheck;
-
-    // Build monitor stats object
-    const monitorStats = {
-      ...monitor.toObject(),
-    };
-
-    // Start building query
-    const checksQuery = { monitorId: monitor._id };
-
-    // Get all checks
-    const checksAll = await model.find(checksQuery).sort({
-      createdAt: sortOrder,
-    });
-
-    if (monitor.type === "http" || monitor.type === "ping") {
-      const checksQuery24Hours = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.day },
-      };
-      const checksQuery7Days = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.week },
-      };
-      const checksQuery30Days = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.month },
-      };
-      const checksQuery60Mins = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.hour },
-      };
-
-      const [checks24Hours, checks7Days, checks30Days, checks60Mins] =
-        await Promise.all([
-          model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
-          model.find(checksQuery7Days).sort({ createdAt: sortOrder }),
-          model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
-          model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
-        ]);
-
-      // HTTP/PING Specific stats
-
-      //24 hour data
-      monitorStats.avgResponseTime24hours =
-        getAverageResponseTime(checks24Hours);
-      monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
-
-      //7 day data
-      monitorStats.uptime7Days = getUptimePercentage(checks7Days);
-      monitorStats.avgResponseTime7days = getAverageResponseTime(checks7Days);
-      // 30 day data
-      monitorStats.uptime30Days = getUptimePercentage(checks30Days);
-      monitorStats.avgResponseTime30days = getAverageResponseTime(checks30Days);
-
-      monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
-    }
-
-    //Get checks for dateRange
-    if (status !== undefined) {
-      checksQuery.status = status;
-    }
-
-    // Filter checks by "day", "week", or "month"
-    if (dateRange !== undefined) {
-      checksQuery.createdAt = { $gte: filterLookup[dateRange] };
-    }
-
-    let dateRangeChecks = await model
-      .find(checksQuery)
-      .sort({
-        createdAt: sortOrder,
-      })
-      .limit(limit);
-
-    const incidents = getIncidents(dateRangeChecks);
-
-    // If more than numToDisplay checks, pick every nth check
-    if (
-      numToDisplay !== undefined &&
-      dateRangeChecks &&
-      dateRangeChecks.length > numToDisplay
-    ) {
-      const n = Math.ceil(dateRangeChecks.length / numToDisplay);
-      dateRangeChecks = dateRangeChecks.filter((_, index) => index % n === 0);
-    }
-
-    // Normalize checks if requested
-    if (normalize !== undefined) {
-      dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
-    }
-
-    // Add common stats and stats that depend on the dateRange
-    monitorStats.uptimeDuration = calculateUptimeDuration(checksAll);
-    monitorStats.lastChecked = getLastChecked(checksAll);
-    monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
-    monitorStats.incidents = incidents;
-    monitorStats.checks = dateRangeChecks;
+    monitorStats.aggregateData = aggregateData;
     return monitorStats;
   } catch (error) {
     throw error;
@@ -548,7 +459,6 @@ const editMonitor = async (candidateId, candidateMonitor) => {
 
 module.exports = {
   getAllMonitors,
-  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorById,
   getMonitorsByTeamId,

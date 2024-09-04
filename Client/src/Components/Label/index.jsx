@@ -126,7 +126,6 @@ ColoredLabel.propTypes = {
  */
 
 const StatusLabel = ({ status, text, customStyles }) => {
-  console.log(status);
   const theme = useTheme();
   const colors = {
     up: {
