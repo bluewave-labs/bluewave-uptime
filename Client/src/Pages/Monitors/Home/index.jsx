@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import BasicTable from "../../../Components/BasicTable";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import SkeletonLayout from "./skeleton";
@@ -13,6 +12,7 @@ import StatusBox from "./StatusBox";
 import { buildData } from "./monitorData";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Greeting from "../../../Utils/greeting";
+import MonitorTable from "./MonitorTable";
 
 const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
@@ -119,7 +119,8 @@ const Monitors = ({ isAdmin }) => {
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>
-                <BasicTable data={data} paginated={true} table={"monitors"} />
+                <MonitorTable teamId="test" />
+                {/* <BasicTable data={data} paginated={true} table={"monitors"} /> */}
               </Box>
             </>
           )}
