@@ -36,6 +36,10 @@ export const ChartBox = styled(Box)(({ theme }) => ({
   "& > .MuiBox-root:not(:first-of-type)": {
     marginTop: theme.spacing(8),
   },
+  "& tspan, & text": {
+    fontSize: 11,
+    fill: theme.palette.text.tertiary,
+  },
 }));
 
 export const IconBox = styled(Box)(({ theme }) => ({

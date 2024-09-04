@@ -33,6 +33,7 @@ import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import { StatBox, ChartBox, IconBox } from "./styled";
+import { DownBarChart, UpBarChart } from "./Charts";
 import "./index.css";
 
 /**
@@ -186,6 +187,55 @@ const DetailsPage = ({ isAdmin }) => {
   };
 
   let loading = Object.keys(monitor).length === 0;
+
+  const [aggregateStats, setAggregateStats] = useState({});
+  useEffect(() => {
+    const fetchAggregateStats = async () => {
+      try {
+        const res = await networkService.getAggregateStatsById(
+          authToken,
+          monitorId,
+          dateRange
+        );
+
+        setAggregateStats(res?.data?.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAggregateStats();
+  }, [monitorId, dateRange]);
+
+  const calculateStats = () => {
+    let totalChecks = 0;
+    let totalIncidents = 0;
+    let totalResponseTime = 0;
+    let count = 0;
+
+    Object.keys(aggregateStats).forEach((entry) => {
+      totalChecks += aggregateStats[entry].totalChecks;
+      totalIncidents += aggregateStats[entry].totalIncidents;
+      totalResponseTime += aggregateStats[entry].totalIncidents;
+      count++;
+    });
+
+    let uptime =
+      dateRange === "day"
+        ? monitor.uptime24Hours
+        : dateRange === "week"
+        ? monitor.uptime7Days
+        : dateRange === "month" && monitor.uptime30Days;
+
+    return {
+      totalChecks: totalChecks,
+      totalIncidents: totalIncidents,
+      averageResponseTime: totalResponseTime / count,
+      uptime: uptime,
+    };
+  };
+
+  const monitorStats = calculateStats();
+  console.log(aggregateStats);
   return (
     <Box className="monitor-details">
       {loading ? (
@@ -431,18 +481,22 @@ const DetailsPage = ({ isAdmin }) => {
                     </IconBox>
                     <Typography component="h2">Uptime</Typography>
                   </Stack>
-                  <Stack justifyContent="space-between" mt={theme.spacing(8)}>
+                  <Stack justifyContent="space-between" my={theme.spacing(8)}>
                     <Box>
                       <Typography>Total Checks</Typography>
-                      <Typography component="span">87</Typography>
+                      <Typography component="span">
+                        {monitorStats.totalChecks}
+                      </Typography>
                     </Box>
                     <Box>
                       <Typography>Uptime Percentage</Typography>
                       <Typography component="span">
-                        98.3<Typography component="span">%</Typography>
+                        {monitorStats.uptime}
+                        <Typography component="span">%</Typography>
                       </Typography>
                     </Box>
                   </Stack>
+                  <UpBarChart data={aggregateStats} type={dateRange} />
                 </ChartBox>
                 <ChartBox>
                   <Stack>
@@ -451,10 +505,13 @@ const DetailsPage = ({ isAdmin }) => {
                     </IconBox>
                     <Typography component="h2">Incidents</Typography>
                   </Stack>
-                  <Box>
+                  <Box mb={theme.spacing(8)}>
                     <Typography>Total Incidents</Typography>
-                    <Typography component="span">0</Typography>
+                    <Typography component="span">
+                      {monitorStats.totalIncidents}
+                    </Typography>
                   </Box>
+                  <DownBarChart data={aggregateStats} />
                 </ChartBox>
                 <ChartBox>
                   <Stack>
