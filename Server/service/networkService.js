@@ -15,43 +15,59 @@ class NetworkService {
     this.NETWORK_ERROR = 5000;
   }
 
-  async handleNotification(job, isAlive) {
+  async handleNotification(monitor, isAlive) {
     try {
-      const { _id } = job.data;
-      const monitor = await this.db.getMonitorById(_id);
-      if (monitor === null || monitor === undefined) {
-        logger.error(`Null Monitor: ${_id}`, {
-          method: "handleNotification",
-          service: this.SERVICE_NAME,
-          jobId: job.id,
-        });
-        return;
-      }
+      let template =
+        isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
+      let status = isAlive === true ? "up" : "down";
 
-      // If monitor status changes, update monitor status and send notification
-      if (monitor.status !== isAlive) {
-        monitor.status = !monitor.status;
-        await monitor.save();
-
-        let template =
-          isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
-        let status = isAlive === true ? "up" : "down";
-
-        const notifications = await this.db.getNotificationsByMonitorId(_id);
-        for (const notification of notifications) {
-          if (notification.type === "email") {
-            await this.emailService.buildAndSendEmail(
-              template,
-              { monitorName: monitor.name, monitorUrl: monitor.url },
-              notification.address,
-              `Monitor ${monitor.name} is ${status}`
-            );
-          }
+      const notifications = await this.db.getNotificationsByMonitorId(
+        monitor._id
+      );
+      for (const notification of notifications) {
+        if (notification.type === "email") {
+          await this.emailService.buildAndSendEmail(
+            template,
+            { monitorName: monitor.name, monitorUrl: monitor.url },
+            notification.address,
+            `Monitor ${monitor.name} is ${status}`
+          );
         }
       }
     } catch (error) {
       logger.error(error.message, {
         method: "handleNotification",
+        service: this.SERVICE_NAME,
+        monitorId: monitor._id,
+      });
+    }
+  }
+
+  async handleStatusUpdate(job, isAlive) {
+    try {
+      const { _id } = job.data;
+      const monitor = await this.db.getMonitorById(_id);
+
+      if (monitor === null || monitor === undefined) {
+        logger.error(`Null Monitor: ${_id}`, {
+          method: "handleStatusUpdate",
+          service: this.SERVICE_NAME,
+          jobId: job.id,
+        });
+        return;
+      }
+      if (monitor.status === undefined || monitor.status !== isAlive) {
+        const oldStatus = monitor.status;
+        monitor.status = isAlive;
+        await monitor.save();
+
+        if (oldStatus !== undefined && oldStatus !== isAlive) {
+          this.handleNotification(monitor, isAlive);
+        }
+      }
+    } catch (error) {
+      logger.error(error.message, {
+        method: "handleStatusUpdate",
         service: this.SERVICE_NAME,
         jobId: job.id,
       });
@@ -113,7 +129,7 @@ class NetworkService {
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
-      this.handleNotification(job, isAlive);
+      this.handleStatusUpdate(job, isAlive);
     }
   }
 
@@ -161,7 +177,7 @@ class NetworkService {
 
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
-      this.handleNotification(job, isAlive);
+      this.handleStatusUpdate(job, isAlive);
     }
   }
 
@@ -241,7 +257,7 @@ class NetworkService {
       };
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } finally {
-      this.handleNotification(job, isAlive);
+      this.handleStatusUpdate(job, isAlive);
     }
   }
 

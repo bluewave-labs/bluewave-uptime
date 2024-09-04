@@ -143,6 +143,87 @@ const getStatusBarValues = (monitor, checks) => {
   }
   return statusBarValues.reverse();
 };
+
+/**
+ * Get aggregate monitor stats for charts
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Monitor>}
+ * @throws {Error}
+ */
+const getMonitorAggregateStats = async (monitorId, dateRange) => {
+  const startDates = {
+    day: new Date(new Date().setDate(new Date().getDate() - 1)),
+    week: new Date(new Date().setDate(new Date().getDate() - 7)),
+    month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+  };
+
+  try {
+    const startDate = startDates[dateRange];
+    if (!startDate) {
+      throw new Error("Invalid date range specified");
+    }
+    const endDate = new Date();
+
+    const checks = await Check.find({
+      monitorId: monitorId,
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+
+    let groupedChecks;
+    // Group checks by hour if range is day
+    if (dateRange === "day") {
+      groupedChecks = checks.reduce((acc, check) => {
+        const hour = new Date(check.createdAt).getHours();
+        if (!acc[hour]) {
+          acc[hour] = { hour, checks: [] };
+        }
+        acc[hour].checks.push(check);
+        return acc;
+      }, {});
+    }
+
+    // Group checks by day if range is week or month
+    else {
+      groupedChecks = checks.reduce((acc, check) => {
+        const day = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
+        if (!acc[day]) {
+          acc[day] = { day, checks: [] };
+        }
+        acc[day].checks.push(check);
+        return acc;
+      }, {});
+    }
+
+    // Map grouped checks to stats
+    stats = Object.values(groupedChecks).map((group) => {
+      const totalChecks = group.checks.length;
+      const totalIncidents = group.checks.filter(
+        (check) => check.status === false
+      ).length;
+      const avgResponseTime =
+        group.checks.reduce((sum, check) => sum + check.responseTime, 0) /
+        totalChecks;
+
+      return {
+        hour: group.hour,
+        day: group.day,
+        totalChecks,
+        totalIncidents,
+        avgResponseTime,
+      };
+    });
+
+    return stats;
+  } catch (error) {
+    throw error;
+  }
+};
+
 /**
  * Get stats by monitor ID
  * @async
@@ -200,6 +281,10 @@ const getMonitorStatsById = async (req) => {
         ...checksQuery,
         createdAt: { $gte: filterLookup.day },
       };
+      const checksQuery7Days = {
+        ...checksQuery,
+        createdAt: { $gte: filterLookup.week },
+      };
       const checksQuery30Days = {
         ...checksQuery,
         createdAt: { $gte: filterLookup.month },
@@ -209,15 +294,18 @@ const getMonitorStatsById = async (req) => {
         createdAt: { $gte: filterLookup.hour },
       };
 
-      const [checks24Hours, checks30Days, checks60Mins] = await Promise.all([
-        model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
-        model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
-        model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
-      ]);
+      const [checks24Hours, checks7Days, checks30Days, checks60Mins] =
+        await Promise.all([
+          model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
+          model.find(checksQuery7Days).sort({ createdAt: sortOrder }),
+          model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
+          model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
+        ]);
 
       // HTTP/PING Specific stats
       monitorStats.avgResponseTime24hours =
         getAverageResponseTime24Hours(checks24Hours);
+      monitorStats.uptime7Days = getUptimePercentage(checks7Days);
       monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
       monitorStats.uptime30Days = getUptimePercentage(checks30Days);
       monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
@@ -452,6 +540,7 @@ const editMonitor = async (candidateId, candidateMonitor) => {
 
 module.exports = {
   getAllMonitors,
+  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorById,
   getMonitorsByTeamId,
