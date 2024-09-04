@@ -5,35 +5,61 @@ import {
   XAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { formatDate } from "../../../../Utils/timeUtils";
+import { useState } from "react";
 
-const CustomLabels = ({ x, width, height, firstDataPoint, lastDataPoint }) => {
+const CustomLabels = ({
+  x,
+  width,
+  height,
+  firstDataPoint,
+  lastDataPoint,
+  type,
+}) => {
   let options = {
     month: "short",
     year: undefined,
     hour: undefined,
     minute: undefined,
   };
+  if (type === "day") delete options.hour;
 
   return (
     <>
-      <text x={x} y={height} dy={-5} textAnchor="start" fill="#666">
-        {formatDate(new Date(firstDataPoint.day), options)}
+      <text x={x} y={height} dy={-3} textAnchor="start">
+        {formatDate(new Date(firstDataPoint.time), options)}
       </text>
-      <text x={width} y={height} dy={-5} textAnchor="end" fill="#666">
-        {formatDate(new Date(lastDataPoint.day), options)}
+      <text x={width} y={height} dy={-3} textAnchor="end">
+        {formatDate(new Date(lastDataPoint.time), options)}
       </text>
     </>
   );
 };
 
-export const UpBarChart = ({ data, dateRange }) => {
+export const UpBarChart = ({ data, type, onBarHover }) => {
   const theme = useTheme();
 
+  const [chartHovered, setChartHovered] = useState(false);
+  const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
+
   return (
-    <ResponsiveContainer width="100%" height={160}>
-      <BarChart width="100%" height="100%" data={data}>
+    <ResponsiveContainer width="100%" height={155}>
+      <BarChart
+        width="100%"
+        height="100%"
+        data={data}
+        onMouseEnter={() => {
+          setChartHovered(true);
+          onBarHover({ time: null, totalChecks: null });
+        }}
+        onMouseLeave={() => {
+          setChartHovered(false);
+          setHoveredBarIndex(null);
+          onBarHover(null);
+        }}
+      >
         <XAxis
           stroke={theme.palette.border.dark}
           height={15}
@@ -46,26 +72,63 @@ export const UpBarChart = ({ data, dateRange }) => {
               height="100%"
               firstDataPoint={data[0]}
               lastDataPoint={data[data.length - 1]}
-              dateRange={dateRange}
+              type={type}
             />
           }
         />
         <Bar
           dataKey="totalChecks"
-          fill={theme.palette.success.main}
           barSize={5}
-        />
+          background={{ fill: "transparent" }}
+        >
+          {data.map((entry, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={
+                hoveredBarIndex === index
+                  ? theme.palette.success.main
+                  : chartHovered
+                  ? theme.palette.success.light
+                  : theme.palette.success.main
+              }
+              onMouseEnter={() => {
+                setHoveredBarIndex(index);
+                onBarHover(entry);
+              }}
+              onMouseLeave={() => {
+                setHoveredBarIndex(null);
+                onBarHover({ time: null, totalChecks: null });
+              }}
+            />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
 };
 
-export const DownBarChart = ({ data }) => {
+export const DownBarChart = ({ data, type, onBarHover }) => {
   const theme = useTheme();
 
+  const [chartHovered, setChartHovered] = useState(false);
+  const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
+
   return (
-    <ResponsiveContainer width="100%" height={160}>
-      <BarChart width="100%" height="100%" data={data}>
+    <ResponsiveContainer width="100%" height={155}>
+      <BarChart
+        width="100%"
+        height="100%"
+        data={data}
+        onMouseEnter={() => {
+          setChartHovered(true);
+          onBarHover({ time: null, totalIncidents: null });
+        }}
+        onMouseLeave={() => {
+          setChartHovered(false);
+          setHoveredBarIndex(null);
+          onBarHover(null);
+        }}
+      >
         <XAxis
           stroke={theme.palette.border.dark}
           height={15}
@@ -78,14 +141,36 @@ export const DownBarChart = ({ data }) => {
               height="100%"
               firstDataPoint={data[0]}
               lastDataPoint={data[data.length - 1]}
+              type={type}
             />
           }
         />
         <Bar
           dataKey="totalIncidents"
-          fill={theme.palette.error.text}
           barSize={5}
-        />
+          background={{ fill: "transparent" }}
+        >
+          {data.map((entry, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={
+                hoveredBarIndex === index
+                  ? theme.palette.error.text
+                  : chartHovered
+                  ? theme.palette.error.light
+                  : theme.palette.error.text
+              }
+              onMouseEnter={() => {
+                setHoveredBarIndex(index);
+                onBarHover(entry);
+              }}
+              onMouseLeave={() => {
+                setHoveredBarIndex(null);
+                onBarHover({ time: null, totalIncidents: null });
+              }}
+            />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );

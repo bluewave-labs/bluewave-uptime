@@ -53,7 +53,6 @@ const Configure = () => {
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
-  console.log(monitor);
   const idMap = {
     "monitor-url": "url",
     "monitor-name": "name",

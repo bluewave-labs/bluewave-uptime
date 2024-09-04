@@ -1,7 +1,8 @@
-import { Box, styled } from "@mui/material";
+import { Box, Stack, styled } from "@mui/material";
 
-export const ChartBox = styled(Box)(({ theme }) => ({
+export const ChartBox = styled(Stack)(({ theme }) => ({
   flex: "1 30%",
+  gap: theme.spacing(8),
   height: 300,
   minWidth: 250,
   padding: theme.spacing(8),
@@ -30,15 +31,14 @@ export const ChartBox = styled(Box)(({ theme }) => ({
   },
   "& .MuiStack-root": {
     flexDirection: "row",
-    alignItems: "center",
     gap: theme.spacing(6),
-  },
-  "& > .MuiBox-root:not(:first-of-type)": {
-    marginTop: theme.spacing(8),
   },
   "& tspan, & text": {
     fontSize: 11,
     fill: theme.palette.text.tertiary,
+  },
+  "& path": {
+    transition: "fill 300ms ease",
   },
 }));
 

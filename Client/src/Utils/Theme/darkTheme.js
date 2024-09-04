@@ -4,7 +4,7 @@ const text = {
   primary: "#fafafa",
   secondary: "#e6e6e6",
   tertiary: "#a1a1aa",
-  accent: "#e6e6e6",
+  accent: "#8e8e8f",
   disabled: "rgba(172, 172, 172, 0.3)",
 };
 const background = {

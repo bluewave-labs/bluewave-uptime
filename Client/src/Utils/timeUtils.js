@@ -72,5 +72,7 @@ export const formatDate = (date, customOptions) => {
   };
 
   // Return the date using the specified options
-  return date.toLocaleString("en-US", options);
+  return date
+    .toLocaleString("en-US", options)
+    .replace(/\b(AM|PM)\b/g, (match) => match.toLowerCase());
 };

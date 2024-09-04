@@ -210,13 +210,11 @@ const DetailsPage = ({ isAdmin }) => {
     let totalChecks = 0;
     let totalIncidents = 0;
     let totalResponseTime = 0;
-    let count = 0;
 
     Object.keys(aggregateStats).forEach((entry) => {
       totalChecks += aggregateStats[entry].totalChecks;
       totalIncidents += aggregateStats[entry].totalIncidents;
-      totalResponseTime += aggregateStats[entry].totalIncidents;
-      count++;
+      totalResponseTime += aggregateStats[entry].avgResponseTime;
     });
 
     let uptime =
@@ -229,13 +227,17 @@ const DetailsPage = ({ isAdmin }) => {
     return {
       totalChecks: totalChecks,
       totalIncidents: totalIncidents,
-      averageResponseTime: totalResponseTime / count,
-      uptime: uptime,
+      averageResponseTime:
+        Math.floor((totalResponseTime / aggregateStats.length) * 100) / 100,
+      uptime: Math.floor(uptime),
     };
   };
 
   const monitorStats = calculateStats();
-  console.log(aggregateStats);
+
+  const [hoveredUptimeData, setHoveredUptimeData] = useState(null);
+  const [hoveredIncidentsData, setHoveredIncidentsData] = useState(null);
+
   return (
     <Box className="monitor-details">
       {loading ? (
@@ -344,7 +346,6 @@ const DetailsPage = ({ isAdmin }) => {
                   onClose={closeCertificate}
                   disableScrollLock
                   marginThreshold={null}
-                  anchorReference={anchorEl}
                   anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "center",
@@ -481,12 +482,31 @@ const DetailsPage = ({ isAdmin }) => {
                     </IconBox>
                     <Typography component="h2">Uptime</Typography>
                   </Stack>
-                  <Stack justifyContent="space-between" my={theme.spacing(8)}>
-                    <Box>
+                  <Stack justifyContent="space-between">
+                    <Box position="relative">
                       <Typography>Total Checks</Typography>
                       <Typography component="span">
-                        {monitorStats.totalChecks}
+                        {hoveredUptimeData !== null
+                          ? hoveredUptimeData.totalChecks || 0
+                          : monitorStats.totalChecks}
                       </Typography>
+                      {hoveredUptimeData !== null &&
+                        hoveredUptimeData.time !== null && (
+                          <Typography
+                            component="h5"
+                            position="absolute"
+                            top="100%"
+                            fontSize={11}
+                            color={theme.palette.text.tertiary}
+                          >
+                            {formatDate(new Date(hoveredUptimeData.time), {
+                              month: "short",
+                              year: undefined,
+                              minute: undefined,
+                              hour: dateRange === "day" ? "numeric" : undefined,
+                            })}
+                          </Typography>
+                        )}
                     </Box>
                     <Box>
                       <Typography>Uptime Percentage</Typography>
@@ -496,7 +516,11 @@ const DetailsPage = ({ isAdmin }) => {
                       </Typography>
                     </Box>
                   </Stack>
-                  <UpBarChart data={aggregateStats} type={dateRange} />
+                  <UpBarChart
+                    data={aggregateStats}
+                    type={dateRange}
+                    onBarHover={setHoveredUptimeData}
+                  />
                 </ChartBox>
                 <ChartBox>
                   <Stack>
@@ -505,13 +529,36 @@ const DetailsPage = ({ isAdmin }) => {
                     </IconBox>
                     <Typography component="h2">Incidents</Typography>
                   </Stack>
-                  <Box mb={theme.spacing(8)}>
+                  <Box position="relative">
                     <Typography>Total Incidents</Typography>
                     <Typography component="span">
-                      {monitorStats.totalIncidents}
+                      {hoveredIncidentsData !== null
+                        ? hoveredIncidentsData.totalIncidents || 0
+                        : monitorStats.totalIncidents}
                     </Typography>
+                    {hoveredIncidentsData !== null &&
+                      hoveredIncidentsData.time !== null && (
+                        <Typography
+                          component="h5"
+                          position="absolute"
+                          top="100%"
+                          fontSize={11}
+                          color={theme.palette.text.tertiary}
+                        >
+                          {formatDate(new Date(hoveredIncidentsData.time), {
+                            month: "short",
+                            year: undefined,
+                            minute: undefined,
+                            hour: dateRange === "day" ? "numeric" : undefined,
+                          })}
+                        </Typography>
+                      )}
                   </Box>
-                  <DownBarChart data={aggregateStats} />
+                  <DownBarChart
+                    data={aggregateStats}
+                    type={dateRange}
+                    onBarHover={setHoveredIncidentsData}
+                  />
                 </ChartBox>
                 <ChartBox>
                   <Stack>
