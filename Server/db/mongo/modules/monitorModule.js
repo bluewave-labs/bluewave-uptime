@@ -230,7 +230,7 @@ const getMonitorStatsById = async (req) => {
     }
 
     monitorStats.periodIncidents = getIncidents(checksForDateRange);
-    monitor.periodTotalChecks = checksForDateRange.length;
+    monitorStats.periodTotalChecks = checksForDateRange.length;
 
     // If more than numToDisplay checks, pick every nth check
 
