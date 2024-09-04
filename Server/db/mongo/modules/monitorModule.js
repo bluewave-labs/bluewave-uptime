@@ -212,6 +212,7 @@ const getMonitorStatsById = async (req) => {
       // Map grouped checks to stats
       const aggregateData = Object.values(groupedChecks).map((group) => {
         const totalChecks = group.checks.length;
+        const uptimePercentage = getUptimePercentage(group.checks);
         const totalIncidents = group.checks.filter(
           (check) => check.status === false
         ).length;
@@ -221,6 +222,7 @@ const getMonitorStatsById = async (req) => {
 
         return {
           time: group.time,
+          uptimePercentage,
           totalChecks,
           totalIncidents,
           avgResponseTime,
