@@ -37,7 +37,6 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     alignItems: "center",
   },
   "& tspan, & text": {
-    fontSize: 11,
     fill: theme.palette.text.tertiary,
   },
   "& path": {

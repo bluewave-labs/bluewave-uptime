@@ -32,7 +32,7 @@ import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import { StatBox, ChartBox, IconBox } from "./styled";
-import { DownBarChart, UpBarChart } from "./Charts";
+import { DownBarChart, ResponseGaugeChart, UpBarChart } from "./Charts";
 import SkeletonLayout from "./skeleton";
 import "./index.css";
 
@@ -132,8 +132,6 @@ const DetailsPage = ({ isAdmin }) => {
     false: "Your site is down.",
     undefined: "Pending...",
   };
-
-  console.log(monitor);
 
   return (
     <Box className="monitor-details">
@@ -463,7 +461,7 @@ const DetailsPage = ({ isAdmin }) => {
                     onBarHover={setHoveredIncidentsData}
                   />
                 </ChartBox>
-                <ChartBox>
+                <ChartBox justifyContent="space-between">
                   <Stack>
                     <IconBox>
                       <AverageResponseIcon />
@@ -472,6 +470,9 @@ const DetailsPage = ({ isAdmin }) => {
                       Average Response Time
                     </Typography>
                   </Stack>
+                  <ResponseGaugeChart
+                    data={[{ response: monitor?.periodAvgResponseTime }]}
+                  />
                 </ChartBox>
                 <ChartBox>
                   <Stack>

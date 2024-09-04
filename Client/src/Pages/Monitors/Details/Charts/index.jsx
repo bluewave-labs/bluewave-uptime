@@ -6,6 +6,8 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Cell,
+  RadialBarChart,
+  RadialBar,
 } from "recharts";
 import { formatDate } from "../../../../Utils/timeUtils";
 import { useState } from "react";
@@ -28,10 +30,10 @@ const CustomLabels = ({
 
   return (
     <>
-      <text x={x} y={height} dy={-3} textAnchor="start">
+      <text x={x} y={height} dy={-3} textAnchor="start" fontSize={11}>
         {formatDate(new Date(firstDataPoint.time), options)}
       </text>
-      <text x={width} y={height} dy={-3} textAnchor="end">
+      <text x={width} y={height} dy={-3} textAnchor="end" fontSize={11}>
         {formatDate(new Date(lastDataPoint.time), options)}
       </text>
     </>
@@ -183,6 +185,90 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
           ))}
         </Bar>
       </BarChart>
+    </ResponsiveContainer>
+  );
+};
+
+export const ResponseGaugeChart = ({ data }) => {
+  const theme = useTheme();
+
+  let max = 1000; // max ms
+  data = [{ response: max, fill: "transparent", background: false }, ...data];
+
+  let responseTime = Math.floor(data[1].response);
+  let responseProps =
+    responseTime <= 200
+      ? {
+          category: "Excellent",
+          main: theme.palette.success.main,
+          bg: theme.palette.success.bg,
+        }
+      : responseTime <= 500
+      ? {
+          category: "Fair",
+          main: theme.palette.success.main,
+          bg: theme.palette.success.bg,
+        }
+      : responseTime <= 600
+      ? {
+          category: "Acceptable",
+          main: theme.palette.warning.main,
+          bg: theme.palette.warning.bg,
+        }
+      : {
+          category: "Poor",
+          main: theme.palette.error.text,
+          bg: theme.palette.error.bg,
+        };
+
+  return (
+    <ResponsiveContainer width="100%" height={155}>
+      <RadialBarChart
+        width="100%"
+        height="100%"
+        cy="89%"
+        data={data}
+        startAngle={180}
+        endAngle={0}
+        innerRadius={100}
+        outerRadius={150}
+      >
+        <text x={0} y="100%" dx="5%" dy={-2} textAnchor="start" fontSize={11}>
+          low
+        </text>
+        <text x="100%" y="100%" dx="-3%" dy={-2} textAnchor="end" fontSize={11}>
+          high
+        </text>
+        <text
+          x="50%"
+          y="45%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={18}
+          fontWeight={400}
+        >
+          {responseProps.category}
+        </text>
+        <text
+          x="50%"
+          y="55%"
+          textAnchor="middle"
+          dominantBaseline="hanging"
+          fontSize={25}
+        >
+          <tspan fontWeight={600}>{responseTime}</tspan>{" "}
+          <tspan opacity={0.8}>ms</tspan>
+        </text>
+        <RadialBar
+          background={{ fill: responseProps.bg }}
+          clockWise
+          dataKey="response"
+          stroke="none"
+        >
+          <Cell fill="transparent" background={false} barSize={0} />
+          <Cell fill={responseProps.main} />
+        </RadialBar>
+      </RadialBarChart>
     </ResponsiveContainer>
   );
 };
