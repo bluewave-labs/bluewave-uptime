@@ -35,7 +35,7 @@ const calculateUptimeDuration = (checks) => {
   const latestCheck = new Date(checks[0].createdAt);
   let latestDownCheck = 0;
 
-  for (let i = 0; i < checks.length; i++) {
+  for (let i = checks.length; i <= 0; i--) {
     if (checks[i].status === false) {
       latestDownCheck = new Date(checks[i].createdAt);
       break;
@@ -120,28 +120,6 @@ const getIncidents = (checks) => {
   return checks.reduce((acc, check) => {
     return check.status === false ? (acc += 1) : acc;
   }, 0);
-};
-/**
- * Helper function to get all incidents
- * @param {Array} checks Array of check objects.
- * @returns {Array<Boolean>}  Array of booleans representing up/down.
- */
-const getStatusBarValues = (monitor, checks) => {
-  const checksIn60Mins = Math.floor((60 * 60 * 1000) / monitor.interval);
-  const noBlankChecks = checksIn60Mins - checks.length;
-
-  const statusBarValues = checks.map((check) => {
-    return {
-      status: check.status,
-      responseTime: check.responseTime,
-      value: 75,
-    };
-  });
-
-  for (let i = 0; i < noBlankChecks; i++) {
-    statusBarValues.push({ status: undefined, responseTime: 0, value: 75 });
-  }
-  return statusBarValues.reverse();
 };
 
 /**
