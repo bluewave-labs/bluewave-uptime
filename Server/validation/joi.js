@@ -1,4 +1,5 @@
 const joi = require("joi");
+const { normalize } = require("path");
 
 //****************************************
 // Custom Validators
@@ -175,6 +176,22 @@ const getMonitorsByTeamIdQueryValidation = joi.object({
       joi.string().valid("http", "ping", "pagespeed"),
       joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
     ),
+});
+
+const getMonitorStatsByIdParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+const getMonitorStatsByIdQueryValidation = joi.object({
+  status: joi.string(),
+  limit: joi.number(),
+  sortOrder: joi.string().valid("asc", "desc"),
+  dateRange: joi.string().valid("day", "week", "month"),
+  numToDisplay: joi.number(),
+  normalize: joi.boolean(),
+});
+
+const getCertificateParamValidation = joi.object({
+  monitorId: joi.string().required(),
 });
 
 const createMonitorBodyValidation = joi.object({
@@ -364,6 +381,9 @@ module.exports = {
   getMonitorByIdQueryValidation,
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,
+  getMonitorStatsByIdParamValidation,
+  getMonitorStatsByIdQueryValidation,
+  getCertificateParamValidation,
   getMonitorAggregateStatsParamValidation,
   getMonitorAggregateStatsQueryValidation,
   editMonitorBodyValidation,

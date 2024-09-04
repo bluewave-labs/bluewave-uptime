@@ -1,13 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState, useCallback } from "react";
-import {
-  Box,
-  Button,
-  Skeleton,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Button, Stack, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
@@ -22,6 +15,7 @@ import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
+import SkeletonLayout from "./skeleton";
 import "./index.css";
 
 const StatBox = ({ title, value }) => {
@@ -69,76 +63,6 @@ const StatBox = ({ title, value }) => {
 StatBox.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
-/**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Skeleton variant="rounded" width="20%" height={34} />
-      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)}>
-        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
-          <Skeleton
-            variant="circular"
-            style={{ minWidth: 24, minHeight: 24 }}
-          />
-          <Box width="80%">
-            <Skeleton variant="rounded" width="50%" height={24} />
-            <Skeleton
-              variant="rounded"
-              width="50%"
-              height={18}
-              sx={{ mt: theme.spacing(4) }}
-            />
-          </Box>
-          <Skeleton
-            variant="rounded"
-            width="20%"
-            height={34}
-            sx={{ alignSelf: "flex-end" }}
-          />
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.spacing(12)}
-        >
-          <Skeleton variant="rounded" width="100%" height={80} />
-          <Skeleton variant="rounded" width="100%" height={80} />
-          <Skeleton variant="rounded" width="100%" height={80} />
-        </Stack>
-        <Box>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={theme.spacing(8)}
-          >
-            <Skeleton
-              variant="rounded"
-              width="20%"
-              height={24}
-              sx={{ alignSelf: "flex-end" }}
-            />
-            <Skeleton variant="rounded" width="20%" height={34} />
-          </Stack>
-          <Box sx={{ height: "200px" }}>
-            <Skeleton variant="rounded" width="100%" height="100%" />
-          </Box>
-        </Box>
-        <Stack gap={theme.spacing(8)}>
-          <Skeleton variant="rounded" width="20%" height={24} />
-          <Skeleton variant="rounded" width="100%" height={200} />
-          <Skeleton variant="rounded" width="100%" height={50} />
-        </Stack>
-      </Stack>
-    </>
-  );
 };
 
 /**
@@ -195,6 +119,19 @@ const DetailsPage = ({ isAdmin }) => {
   }, [authToken, monitorId, monitor]);
 
   let loading = Object.keys(monitor).length === 0;
+
+  const statusColor = {
+    true: theme.palette.success.main,
+    false: theme.palette.error.main,
+    undefined: theme.palette.warning.main,
+  };
+
+  const statusMsg = {
+    true: "Your site is up.",
+    false: "Your site is down.",
+    undefined: "Pending...",
+  };
+
   return (
     <Box className="monitor-details">
       {loading ? (
@@ -209,13 +146,7 @@ const DetailsPage = ({ isAdmin }) => {
           />
           <Stack gap={theme.spacing(12)} mt={theme.spacing(12)}>
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              />
+              <PulseDot color={statusColor[monitor?.status ?? undefined]} />
               <Box>
                 <Typography
                   component="h1"
@@ -231,12 +162,10 @@ const DetailsPage = ({ isAdmin }) => {
                   <Typography
                     component="span"
                     sx={{
-                      color: monitor?.status
-                        ? theme.palette.success.main
-                        : theme.palette.success.text,
+                      color: statusColor[monitor?.status ?? undefined],
                     }}
                   >
-                    Your site is {monitor?.status ? "up" : "down"}.
+                    {statusMsg[monitor?.status ?? undefined]}
                   </Typography>{" "}
                   Checking every {formatDurationRounded(monitor?.interval)}.
                 </Typography>
