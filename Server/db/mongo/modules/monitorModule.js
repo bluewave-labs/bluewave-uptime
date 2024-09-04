@@ -200,11 +200,11 @@ const getMonitorStatsById = async (req) => {
         }, {});
       } else {
         groupedChecks = checksForDateRange.reduce((acc, check) => {
-          const day = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
-          if (!acc[day]) {
-            acc[day] = { day, checks: [] };
+          const time = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
+          if (!acc[time]) {
+            acc[time] = { time, checks: [] };
           }
-          acc[day].checks.push(check);
+          acc[time].checks.push(check);
           return acc;
         }, {});
       }
