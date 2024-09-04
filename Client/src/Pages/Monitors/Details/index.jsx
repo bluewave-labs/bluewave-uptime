@@ -89,7 +89,6 @@ const DetailsPage = ({ isAdmin }) => {
         50,
         true
       );
-      console.log(res.data.data);
       setMonitor(res?.data?.data ?? {});
     } catch (error) {
       logger.error(error);
