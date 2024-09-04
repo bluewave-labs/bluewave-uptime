@@ -147,7 +147,6 @@ const getMonitorStatsById = async (req) => {
     }
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
-
     // Default sort order is newest -> oldest
     sortOrder = sortOrder === "asc" ? 1 : -1;
 
@@ -182,8 +181,9 @@ const getMonitorStatsById = async (req) => {
 
     if (monitor.type === "http" || monitor.type === "ping") {
       // HTTP/PING Specific stats
-      monitorStats.avgResponseTime = getAverageResponseTime(checksForDateRange);
-      monitorStats.uptime = getUptimePercentage(checksForDateRange);
+      monitorStats.periodAvgResponseTime =
+        getAverageResponseTime(checksForDateRange);
+      monitorStats.periodUptime = getUptimePercentage(checksForDateRange);
 
       // Aggregate data
       let groupedChecks;
@@ -196,6 +196,15 @@ const getMonitorStatsById = async (req) => {
             acc[time] = { time, checks: [] };
           }
           acc[time].checks.push(check);
+          return acc;
+        }, {});
+      } else {
+        groupedChecks = checksForDateRange.reduce((acc, check) => {
+          const day = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
+          if (!acc[day]) {
+            acc[day] = { day, checks: [] };
+          }
+          acc[day].checks.push(check);
           return acc;
         }, {});
       }
@@ -220,7 +229,7 @@ const getMonitorStatsById = async (req) => {
       monitorStats.aggregateData = aggregateData;
     }
 
-    monitorStats.incidents = getIncidents(checksForDateRange);
+    monitorStats.periodIncidents = getIncidents(checksForDateRange);
 
     // If more than numToDisplay checks, pick every nth check
 

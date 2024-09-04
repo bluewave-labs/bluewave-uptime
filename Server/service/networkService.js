@@ -197,7 +197,6 @@ class NetworkService {
    */
   async handlePagespeed(job) {
     let isAlive;
-
     try {
       const url = job.data.url;
       const response = await axios.get(
@@ -297,6 +296,7 @@ class NetworkService {
   async logAndStoreCheck(data, writeToDB) {
     try {
       const insertedCheck = await writeToDB(data);
+      console.log(insertedCheck);
       return insertedCheck.status;
     } catch (error) {
       console.log(error);
