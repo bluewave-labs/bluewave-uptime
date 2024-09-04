@@ -6,6 +6,9 @@ const {
   editMonitorBodyValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
+  getMonitorStatsByIdParamValidation,
+  getMonitorStatsByIdQueryValidation,
+  getCertificateParamValidation,
   getMonitorAggregateStatsParamValidation,
   getMonitorAggregateStatsQueryValidation,
 } = require("../validation/joi");
@@ -84,7 +87,8 @@ const getMonitorAggregateStats = async (req, res, next) => {
  */
 const getMonitorStatsById = async (req, res, next) => {
   try {
-    //Validation
+    await getMonitorStatsByIdParamValidation.validateAsync(req.params);
+    await getMonitorStatsByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.message =
@@ -108,7 +112,7 @@ const getMonitorStatsById = async (req, res, next) => {
 
 const getMonitorCertificate = async (req, res, next) => {
   try {
-    //validation
+    await getCertificateParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
     error.message =
