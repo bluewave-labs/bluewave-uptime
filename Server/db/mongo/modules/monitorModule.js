@@ -77,11 +77,11 @@ const getLatestResponseTime = (checks) => {
 };
 
 /**
- * Helper function to get average 24h response time
+ * Helper function to get average response time
  * @param {Array} checks Array of check objects.
  * @returns {number} Timestamp of the most recent check.
  */
-const getAverageResponseTime24Hours = (checks) => {
+const getAverageResponseTime = (checks) => {
   if (!checks || checks.length === 0) {
     return 0;
   }
@@ -178,11 +178,12 @@ const getMonitorAggregateStats = async (monitorId, dateRange) => {
     // Group checks by hour if range is day
     if (dateRange === "day") {
       groupedChecks = checks.reduce((acc, check) => {
-        const hour = new Date(check.createdAt).getHours();
-        if (!acc[hour]) {
-          acc[hour] = { hour, checks: [] };
+        const time = new Date(check.createdAt);
+        time.setMinutes(0, 0, 0);
+        if (!acc[time]) {
+          acc[time] = { time, checks: [] };
         }
-        acc[hour].checks.push(check);
+        acc[time].checks.push(check);
         return acc;
       }, {});
     }
@@ -190,11 +191,11 @@ const getMonitorAggregateStats = async (monitorId, dateRange) => {
     // Group checks by day if range is week or month
     else {
       groupedChecks = checks.reduce((acc, check) => {
-        const day = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
-        if (!acc[day]) {
-          acc[day] = { day, checks: [] };
+        const time = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
+        if (!acc[time]) {
+          acc[time] = { time, checks: [] };
         }
-        acc[day].checks.push(check);
+        acc[time].checks.push(check);
         return acc;
       }, {});
     }
@@ -210,8 +211,7 @@ const getMonitorAggregateStats = async (monitorId, dateRange) => {
         totalChecks;
 
       return {
-        hour: group.hour,
-        day: group.day,
+        time: group.time,
         totalChecks,
         totalIncidents,
         avgResponseTime,
@@ -303,11 +303,19 @@ const getMonitorStatsById = async (req) => {
         ]);
 
       // HTTP/PING Specific stats
+
+      //24 hour data
       monitorStats.avgResponseTime24hours =
-        getAverageResponseTime24Hours(checks24Hours);
-      monitorStats.uptime7Days = getUptimePercentage(checks7Days);
+        getAverageResponseTime(checks24Hours);
       monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
+
+      //7 day data
+      monitorStats.uptime7Days = getUptimePercentage(checks7Days);
+      monitorStats.avgResponseTime7days = getAverageResponseTime(checks7Days);
+      // 30 day data
       monitorStats.uptime30Days = getUptimePercentage(checks30Days);
+      monitorStats.avgResponseTime30days = getAverageResponseTime(checks30Days);
+
       monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
     }
 
