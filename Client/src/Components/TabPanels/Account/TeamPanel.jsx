@@ -1,25 +1,13 @@
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Divider,
-  IconButton,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, ButtonGroup, Modal, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
 import { networkService } from "../../../main";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
-import Remove from "../../../assets/icons/trash-bin.svg?react";
 import Select from "../../Inputs/Select";
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -54,6 +42,7 @@ const TeamPanel = () => {
   const [members, setMembers] = useState([]);
   const [filter, setFilter] = useState("all");
   const [errors, setErrors] = useState({});
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -173,6 +162,7 @@ const TeamPanel = () => {
   };
 
   const handleInviteMember = async () => {
+    setIsSendingInvite(true);
     if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
       setToInvite((prev) => ({ ...prev, role: ["user"] }));
 
@@ -185,24 +175,28 @@ const TeamPanel = () => {
 
     if (error) {
       setErrors((prev) => ({ ...prev, email: error.details[0].message }));
-    } else
-      try {
-        await networkService.requestInvitationToken(
-          authToken,
-          toInvite.email,
-          toInvite.role
-        );
+      return;
+    }
 
-        closeInviteModal();
-        createToast({
-          body: "Member invited. They will receive an email with details on how to create their account.",
-        });
-      } catch (error) {
-        createToast({
-          body: error.message || "Unknown error.",
-        });
-      }
+    try {
+      await networkService.requestInvitationToken(
+        authToken,
+        toInvite.email,
+        toInvite.role
+      );
+      closeInviteModal();
+      createToast({
+        body: "Member invited. They will receive an email with details on how to create their account.",
+      });
+    } catch (error) {
+      createToast({
+        body: error.message || "Unknown error.",
+      });
+    } finally {
+      setIsSendingInvite(false);
+    }
   };
+
   const closeInviteModal = () => {
     setIsOpen(false);
     setToInvite({ email: "", role: ["0"] });
@@ -307,13 +301,14 @@ const TeamPanel = () => {
               </Button>
             </ButtonGroup>
           </Stack>
-          <Button
+          <LoadingButton
+            loading={isSendingInvite}
             variant="contained"
             color="primary"
             onClick={() => setIsOpen(true)}
           >
             Invite a team member
-          </Button>
+          </LoadingButton>
         </Stack>
         <BasicTable
           data={tableData}
@@ -389,14 +384,19 @@ const TeamPanel = () => {
             mt={theme.spacing(8)}
             justifyContent="flex-end"
           >
-            <Button variant="text" color="info" onClick={closeInviteModal}>
+            <LoadingButton
+              loading={isSendingInvite}
+              variant="text"
+              color="info"
+              onClick={closeInviteModal}
+            >
               Cancel
-            </Button>
+            </LoadingButton>
             <LoadingButton
               variant="contained"
               color="primary"
               onClick={handleInviteMember}
-              loading={false}
+              loading={isSendingInvite}
               disabled={Object.keys(errors).length !== 0}
             >
               Send invite

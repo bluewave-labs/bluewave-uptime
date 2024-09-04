@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Popover,
-  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -34,77 +33,8 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import { StatBox, ChartBox, IconBox } from "./styled";
 import { DownBarChart, UpBarChart } from "./Charts";
+import SkeletonLayout from "./skeleton";
 import "./index.css";
-
-/**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Skeleton variant="rounded" width="20%" height={34} />
-      <Stack gap={theme.spacing(20)} mt={theme.spacing(6)}>
-        <Stack direction="row" gap={theme.spacing(4)} mt={theme.spacing(4)}>
-          <Skeleton
-            variant="circular"
-            style={{ minWidth: 24, minHeight: 24 }}
-          />
-          <Box width="80%">
-            <Skeleton variant="rounded" width="50%" height={24} />
-            <Skeleton
-              variant="rounded"
-              width="50%"
-              height={18}
-              sx={{ mt: theme.spacing(4) }}
-            />
-          </Box>
-          <Skeleton
-            variant="rounded"
-            width="20%"
-            height={34}
-            sx={{ alignSelf: "flex-end" }}
-          />
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          gap={theme.spacing(12)}
-        >
-          <Skeleton variant="rounded" width="100%" height={80} />
-          <Skeleton variant="rounded" width="100%" height={80} />
-          <Skeleton variant="rounded" width="100%" height={80} />
-        </Stack>
-        <Box>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={theme.spacing(8)}
-          >
-            <Skeleton
-              variant="rounded"
-              width="20%"
-              height={24}
-              sx={{ alignSelf: "flex-end" }}
-            />
-            <Skeleton variant="rounded" width="20%" height={34} />
-          </Stack>
-          <Box sx={{ height: "200px" }}>
-            <Skeleton variant="rounded" width="100%" height="100%" />
-          </Box>
-        </Box>
-        <Stack gap={theme.spacing(8)}>
-          <Skeleton variant="rounded" width="20%" height={24} />
-          <Skeleton variant="rounded" width="100%" height={200} />
-          <Skeleton variant="rounded" width="100%" height={50} />
-        </Stack>
-      </Stack>
-    </>
-  );
-};
 
 /**
  * Details page component displaying monitor details and related information.
@@ -238,6 +168,19 @@ const DetailsPage = ({ isAdmin }) => {
   const [hoveredUptimeData, setHoveredUptimeData] = useState(null);
   const [hoveredIncidentsData, setHoveredIncidentsData] = useState(null);
 
+
+  const statusColor = {
+    true: theme.palette.success.main,
+    false: theme.palette.error.main,
+    undefined: theme.palette.warning.main,
+  };
+
+  const statusMsg = {
+    true: "Your site is up.",
+    false: "Your site is down.",
+    undefined: "Pending...",
+  };
+
   return (
     <Box className="monitor-details">
       {loading ? (
@@ -267,7 +210,7 @@ const DetailsPage = ({ isAdmin }) => {
                   gap={theme.spacing(2)}
                 >
                   <Tooltip
-                    title={`Your site is ${monitor?.status ? "up" : "down"}.`}
+                    title={statusMsg[monitor?.status ?? undefined]}
                     disableInteractive
                     slotProps={{
                       popper: {
@@ -284,11 +227,7 @@ const DetailsPage = ({ isAdmin }) => {
                   >
                     <Box>
                       <PulseDot
-                        color={
-                          monitor?.status
-                            ? theme.palette.success.main
-                            : theme.palette.error.main
-                        }
+                        color={statusColor[monitor?.status ?? undefined]}
                       />
                     </Box>
                   </Tooltip>

@@ -189,6 +189,18 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
+  const statusColor = {
+    true: theme.palette.success.main,
+    false: theme.palette.error.main,
+    undefined: theme.palette.warning.main,
+  };
+
+  const statusMsg = {
+    true: "Your site is up.",
+    false: "Your site is down.",
+    undefined: "Pending...",
+  };
+
   return (
     <Stack className="configure-monitor" gap={theme.spacing(12)}>
       {Object.keys(monitor).length === 0 ? (
@@ -210,13 +222,7 @@ const Configure = () => {
             flex={1}
           >
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              />
+              <PulseDot color={statusColor[monitor?.status ?? undefined]} />
               <Box>
                 {parsedUrl?.host ? (
                   <Typography
@@ -233,13 +239,9 @@ const Configure = () => {
                 <Typography
                   component="span"
                   lineHeight={theme.spacing(12)}
-                  sx={{
-                    color: monitor?.status
-                      ? theme.palette.success.main
-                      : theme.palette.error.text,
-                  }}
+                  sx={{ color: statusColor[monitor?.status ?? undefined] }}
                 >
-                  Your site is {monitor?.status ? "up" : "down"}.
+                  {statusMsg[monitor?.status ?? undefined]}
                 </Typography>
               </Box>
               <Box
@@ -275,14 +277,15 @@ const Configure = () => {
                     </>
                   )}
                 </LoadingButton>
-                <Button
+                <LoadingButton
+                  loading={isLoading}
                   variant="contained"
                   color="error"
                   sx={{ px: theme.spacing(8) }}
                   onClick={() => setIsOpen(true)}
                 >
                   Remove
-                </Button>
+                </LoadingButton>
               </Box>
             </Stack>
             <ConfigBox>

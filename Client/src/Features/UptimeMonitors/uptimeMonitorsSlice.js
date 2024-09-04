@@ -236,7 +236,7 @@ const uptimeMonitorsSlice = createSlice({
         state.success = false;
         state.msg = action.payload
           ? action.payload.msg
-          : "Failed to pause uptime monitor";
+          : "Failed to get uptime monitor";
       })
       // *****************************************************
       // update Monitor
