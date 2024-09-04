@@ -145,7 +145,6 @@ const getMonitorStatsById = async (req) => {
     if (monitor === null || monitor === undefined) {
       throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
     }
-
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
 
@@ -185,6 +184,40 @@ const getMonitorStatsById = async (req) => {
       // HTTP/PING Specific stats
       monitorStats.avgResponseTime = getAverageResponseTime(checksForDateRange);
       monitorStats.uptime = getUptimePercentage(checksForDateRange);
+
+      // Aggregate data
+      let groupedChecks;
+      // Group checks by hour if range is day
+      if (dateRange === "day") {
+        groupedChecks = checksForDateRange.reduce((acc, check) => {
+          const time = new Date(check.createdAt);
+          time.setMinutes(0, 0, 0);
+          if (!acc[time]) {
+            acc[time] = { time, checks: [] };
+          }
+          acc[time].checks.push(check);
+          return acc;
+        }, {});
+      }
+
+      // Map grouped checks to stats
+      const aggregateData = Object.values(groupedChecks).map((group) => {
+        const totalChecks = group.checks.length;
+        const totalIncidents = group.checks.filter(
+          (check) => check.status === false
+        ).length;
+        const avgResponseTime =
+          group.checks.reduce((sum, check) => sum + check.responseTime, 0) /
+          totalChecks;
+
+        return {
+          time: group.time,
+          totalChecks,
+          totalIncidents,
+          avgResponseTime,
+        };
+      });
+      monitorStats.aggregateData = aggregateData;
     }
 
     monitorStats.incidents = getIncidents(checksForDateRange);
@@ -214,42 +247,9 @@ const getMonitorStatsById = async (req) => {
     monitorStats.lastChecked = getLastChecked(checksAll);
     monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
 
-    // Aggregate data
-
-    let groupedChecks;
-    // Group checks by hour if range is day
-    if (dateRange === "day") {
-      groupedChecks = checksForDateRange.reduce((acc, check) => {
-        const time = new Date(check.createdAt);
-        time.setMinutes(0, 0, 0);
-        if (!acc[time]) {
-          acc[time] = { time, checks: [] };
-        }
-        acc[time].checks.push(check);
-        return acc;
-      }, {});
-    }
-
-    // Map grouped checks to stats
-    const aggregateData = Object.values(groupedChecks).map((group) => {
-      const totalChecks = group.checks.length;
-      const totalIncidents = group.checks.filter(
-        (check) => check.status === false
-      ).length;
-      const avgResponseTime =
-        group.checks.reduce((sum, check) => sum + check.responseTime, 0) /
-        totalChecks;
-
-      return {
-        time: group.time,
-        totalChecks,
-        totalIncidents,
-        avgResponseTime,
-      };
-    });
-    monitorStats.aggregateData = aggregateData;
     return monitorStats;
   } catch (error) {
+    error.methodName = "getMonitorStatsById";
     throw error;
   }
 };
