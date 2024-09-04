@@ -296,7 +296,6 @@ class NetworkService {
   async logAndStoreCheck(data, writeToDB) {
     try {
       const insertedCheck = await writeToDB(data);
-      console.log(insertedCheck);
       return insertedCheck.status;
     } catch (error) {
       console.log(error);
