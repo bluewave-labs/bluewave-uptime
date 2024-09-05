@@ -110,8 +110,8 @@ const Monitors = ({ isAdmin }) => {
                     borderColor={theme.palette.border.light}
                     backgroundColor={theme.palette.background.accent}
                   >
-                    {monitorState?.monitorsSummary.monitors?.monitors?.length ||
-                      0}
+                    {monitorState?.monitorsSummary?.monitors?.monitors
+                      ?.length || 0}
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>
