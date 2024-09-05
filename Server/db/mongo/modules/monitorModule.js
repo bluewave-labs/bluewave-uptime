@@ -396,6 +396,7 @@ const getMonitorsByTeamId = async (req, res) => {
     let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
       req.query || {};
     const monitorQuery = { teamId: req.params.teamId };
+    const monitorsCount = await Monitor.countDocuments(monitorQuery);
 
     // Pagination
     let skip = 0;
@@ -449,7 +450,7 @@ const getMonitorsByTeamId = async (req, res) => {
         return { ...monitor.toObject(), checks };
       })
     );
-    return monitorsWithChecks;
+    return { monitors: monitorsWithChecks, monitorCount: monitorsCount };
   } catch (error) {
     throw error;
   }

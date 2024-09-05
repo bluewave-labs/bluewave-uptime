@@ -36,6 +36,11 @@ const MonitorTable = ({ isAdmin }) => {
   const [monitors, setMonitors] = useState([]);
   const [monitorCount, setMonitorCount] = useState(0);
   const authState = useSelector((state) => state.auth);
+  const [updateTrigger, setUpdateTrigger] = useState(false);
+
+  const handleActionMenuDelete = () => {
+    setUpdateTrigger((prev) => !prev);
+  };
 
   const handlePageChange = (_, newPage) => {
     setPaginationController({
@@ -60,15 +65,19 @@ const MonitorTable = ({ isAdmin }) => {
           paginationController.page,
           paginationController.rowsPerPage
         );
-        console.log(res.data.data);
-        setMonitors(res?.data?.data ?? []);
-        setMonitorCount(0);
+        setMonitors(res?.data?.data?.monitors ?? []);
+        setMonitorCount(res?.data?.data?.monitorCount ?? 0);
       } catch (error) {
         logger.error(error);
       }
     };
     fetchPage();
-  }, []);
+  }, [
+    updateTrigger,
+    authState,
+    paginationController.page,
+    paginationController.rowsPerPage,
+  ]);
 
   let paginationComponent = <></>;
   if (monitorCount > paginationController.rowsPerPage) {
@@ -168,7 +177,11 @@ const MonitorTable = ({ isAdmin }) => {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <ActionsMenu monitor={monitor} isAdmin={isAdmin} />
+                    <ActionsMenu
+                      monitor={monitor}
+                      isAdmin={isAdmin}
+                      updateCallback={handleActionMenuDelete}
+                    />
                   </TableCell>
                 </TableRow>
               );
@@ -179,6 +192,10 @@ const MonitorTable = ({ isAdmin }) => {
       {paginationComponent}
     </>
   );
+};
+
+MonitorTable.propTypes = {
+  isAdmin: PropTypes.bool,
 };
 
 export default MonitorTable;

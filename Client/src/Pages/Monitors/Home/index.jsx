@@ -9,7 +9,6 @@ import PropTypes from "prop-types";
 import SkeletonLayout from "./skeleton";
 import Fallback from "./fallback";
 import StatusBox from "./StatusBox";
-import { buildData } from "./monitorData";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Greeting from "../../../Utils/greeting";
 import MonitorTable from "./MonitorTable";
@@ -25,7 +24,7 @@ const Monitors = ({ isAdmin }) => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
 
-  const monitorStats = monitorState.monitors.reduce(
+  const monitorStats = monitorState.monitors.monitors.reduce(
     (acc, monitor) => {
       if (monitor.isActive === false) {
         acc["paused"] += 1;
@@ -38,8 +37,6 @@ const Monitors = ({ isAdmin }) => {
     },
     { paused: 0, up: 0, down: 0 }
   );
-
-  const data = buildData(monitorState.monitors, isAdmin, navigate);
 
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
@@ -119,8 +116,7 @@ const Monitors = ({ isAdmin }) => {
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>
-                <MonitorTable teamId="test" />
-                {/* <BasicTable data={data} paginated={true} table={"monitors"} /> */}
+                <MonitorTable isAdmin={isAdmin} />
               </Box>
             </>
           )}
