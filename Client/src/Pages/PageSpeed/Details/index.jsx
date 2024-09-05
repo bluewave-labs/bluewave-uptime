@@ -217,7 +217,6 @@ const PageSpeedDetails = () => {
           null,
           null
         );
-        console.log(res.data.data);
         setMonitor(res?.data?.data ?? {});
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {

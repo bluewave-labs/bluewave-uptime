@@ -18,7 +18,7 @@ const PageSpeed = ({ isAdmin }) => {
   const navigate = useNavigate();
 
   const { authToken } = useSelector((state) => state.auth);
-  const { monitors, isLoading } = useSelector(
+  const { monitorsSummary, isLoading } = useSelector(
     (state) => state.pageSpeedMonitors
   );
   useEffect(() => {
@@ -27,7 +27,7 @@ const PageSpeed = ({ isAdmin }) => {
 
   // will show skeletons only on initial load
   // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
-  let isActuallyLoading = isLoading && monitors?.monitors.length === 0;
+  let isActuallyLoading = isLoading && monitorsSummary?.monitors?.length === 0;
 
   return (
     <Box
@@ -46,7 +46,7 @@ const PageSpeed = ({ isAdmin }) => {
     >
       {isActuallyLoading ? (
         <SkeletonLayout />
-      ) : monitors?.monitors?.length !== 0 ? (
+      ) : monitorsSummary?.monitors?.length !== 0 ? (
         <Box
           sx={{
             "& p": {
@@ -73,8 +73,8 @@ const PageSpeed = ({ isAdmin }) => {
             </Stack>
           </Box>
           <Grid container spacing={theme.spacing(12)}>
-            {monitors?.monitors?.map((monitor) => (
-              <Card data={monitor} key={`monitor-${monitor._id}`} />
+            {monitorsSummary?.monitors?.map((monitor) => (
+              <Card data={monitor} key={monitor._id} />
             ))}
           </Grid>
         </Box>

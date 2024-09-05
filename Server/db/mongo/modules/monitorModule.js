@@ -321,7 +321,6 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
       },
       { up: 0, down: 0, paused: 0 }
     );
-    console.log(monitorCounts);
     monitorCounts.total = monitors.length;
     return { monitors, monitorCounts };
   } catch (error) {
