@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import "./index.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Back from "../../../assets/icons/left-arrow-long.svg?react";
 import Select from "../../../Components/Inputs/Select";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -13,6 +13,8 @@ import { maintenanceWindowValidation } from "../../../Validation/validation";
 import { logger } from "../../../Utils/Logger";
 import { createToast } from "../../../Utils/toastUtils";
 import { useTheme } from "@emotion/react";
+import AutoCompleteField from "../../../Components/Inputs/Autocomplete";
+import { useSelector } from "react-redux";
 
 const directory = {
   title: "Create a maintenance window",
@@ -57,6 +59,16 @@ const durationOptions = [
 
 const CreateNewMaintenanceWindow = () => {
   const theme = useTheme();
+  const monitorState = useSelector((state) => state.uptimeMonitors);
+  const [monitorOptions, setMonitorOptions] = useState([]);
+
+  const [autoCompleteValue, setAutoCompleteValue] = useState("");
+  const [autoCompleteInputValue, setAutoCompleteInputValue] = useState("");
+
+  useEffect(() => {
+    setMonitorOptions(monitorState.monitors);
+    console.log("monitorState.monitors -->", monitorState.monitors);
+  }, []);
 
   const [values, setValues] = useState({
     repeat: 1,
@@ -85,7 +97,8 @@ const CreateNewMaintenanceWindow = () => {
       duration: values.duration,
       unit: values.unit,
       displayName: values.displayName,
-      addMonitors: values.AddMonitors,
+      addMonitors: autoCompleteValue.name,
+      monitorId: autoCompleteValue._id,
     };
 
     const { error } = maintenanceWindowValidation.validate(data, {
@@ -203,11 +216,14 @@ const CreateNewMaintenanceWindow = () => {
           sx={{ width: "60%", maxWidth: "380px" }}
           gap={theme.spacing(5)}
         >
-          <Field
-            id="add-monitors"
-            placeholder="Start typing to search for current monitors"
-            value={values.AddMonitors}
-            onChange={(e) => handleChange(e, "AddMonitors")}
+          <AutoCompleteField
+            sx={{ marginLeft: "auto" }}
+            options={monitorOptions}
+            width={380}
+            autoCompleteValue={autoCompleteValue}
+            setAutoCompleteValue={setAutoCompleteValue}
+            autoCompleteInputValue={autoCompleteInputValue}
+            setAutoCompleteInputValue={setAutoCompleteInputValue}
             error={errors.addMonitors}
           />
           <Typography

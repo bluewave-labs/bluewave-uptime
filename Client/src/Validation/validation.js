@@ -142,7 +142,11 @@ const maintenanceWindowValidation = joi.object({
   }),
   addMonitors: joi.string().max(50).required().messages({
     "string.empty": "Add monitors is required.",
-    "string.max": "Add monitors must be less than 50 characters long",
+    "any.required": "Add monitors is required.",
+  }),
+  monitorId: joi.string().max(100).required().messages({
+    "string.empty": "monitorId is required.",
+    "any.required": "monitorId is required.",
   }),
 });
 
