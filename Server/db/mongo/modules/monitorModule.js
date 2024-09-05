@@ -293,6 +293,42 @@ const getMonitorById = async (monitorId) => {
 };
 
 /**
+ * Get monitors and Summary by TeamID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Array<Monitor>>}
+ * @throws {Error}
+ */
+
+const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
+  try {
+    const monitors = await Monitor.find({ teamId, type });
+    const monitorCounts = monitors.reduce(
+      (acc, monitor) => {
+        if (monitor.status === true) {
+          acc.up += 1;
+        }
+
+        if (monitor.status === false) {
+          acc.up += 1;
+        }
+
+        if (monitor.isActive === false) {
+          acc.paused += 1;
+        }
+      },
+      { up: 0, down: 0, paused: 0 }
+    );
+    monitorCounts.total = monitors.length;
+    return { monitors, monitorCounts };
+  } catch (error) {
+    error.methodName = "getMonitorsAndSummaryByTeamId";
+    throw error;
+  }
+};
+
+/**
  * Get monitors by TeamID
  * @async
  * @param {Express.Request} req
@@ -464,6 +500,7 @@ module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,

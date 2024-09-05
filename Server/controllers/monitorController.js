@@ -16,6 +16,9 @@ const {
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
+const {
+  getMonitorsAndSummaryByTeamId,
+} = require("../db/mongo/modules/monitorModule");
 
 /**
  * Returns all monitors
@@ -186,7 +189,41 @@ const getMonitorById = async (req, res, next) => {
 };
 
 /**
- * Returns all monitors belong to User with UserID
+ * Returns all monitors and a sumamry for a team with TeamID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const getMonitorsAndSumamryByTeamId = async (req, res, next) => {
+  try {
+    //validation
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.method === undefined &&
+      error.method === "getMonitorsAndSummaryByTeamId";
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const { teamId, type } = req.params;
+    await req.db.getMonitorsAndSummaryByTeamId(req, res);
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method === undefined &&
+      error.method === "getMonitorsAndSummaryByTeamId";
+    next(error);
+  }
+};
+
+/**
+ * Returns all monitors belong to team with TeamID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
@@ -424,6 +461,7 @@ module.exports = {
   getMonitorStatsById,
   getMonitorCertificate,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
