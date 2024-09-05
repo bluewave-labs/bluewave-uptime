@@ -161,7 +161,7 @@ const getMonitorByIdQueryValidation = joi.object({
   normalize: joi.boolean(),
 });
 
-const getMonitorsAndSumamryByTeamIdParamValidation = joi.object({
+const getMonitorsAndSummaryByTeamIdParamValidation = joi.object({
   teamId: joi.string().required(),
 });
 
@@ -394,7 +394,7 @@ module.exports = {
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
-  getMonitorsAndSumamryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
   getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,

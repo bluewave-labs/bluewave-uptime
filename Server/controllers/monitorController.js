@@ -4,7 +4,7 @@ const {
   getMonitorsByTeamIdValidation,
   createMonitorBodyValidation,
   editMonitorBodyValidation,
-  getMonitorsAndSumamryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
   getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
@@ -197,7 +197,7 @@ const getMonitorById = async (req, res, next) => {
 
 const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
   try {
-    await getMonitorsAndSumamryByTeamIdParamValidation.validateAsync(
+    await getMonitorsAndSummaryByTeamIdParamValidation.validateAsync(
       req.params
     );
     await getMonitorsAndSummaryByTeamIdQueryValidation.validateAsync(req.query);
