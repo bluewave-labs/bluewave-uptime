@@ -144,7 +144,7 @@ class NetworkService {
 
   /**
    * Handles the http operation for a given job, measures its response time, and logs the result.
-   * @param {Object} job - The job object containing data for the ping operation.
+   * @param {Object} job - The job object containing data for the http operation.
    * @returns {Promise<{boolean}} The result of logging and storing the check
    */
   async handleHttp(job) {
