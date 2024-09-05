@@ -6,35 +6,113 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Pagination,
-  PaginationItem,
   Paper,
   Box,
+  TablePagination,
+  Stack,
+  Typography,
+  Button,
 } from "@mui/material";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 
+import { setRowsPerPage } from "../../../../Features/UI/uiSlice";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { logger } from "../../../../Utils/Logger";
 import Host from "../host";
 import { StatusLabel } from "../../../../Components/Label";
 import { jwtDecode } from "jwt-decode";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { networkService } from "../../../../main";
 import { useTheme } from "@emotion/react";
 import BarChart from "../../../../Components/Charts/BarChart";
+import LeftArrowDouble from "../../../../assets/icons/left-arrow-double.svg?react";
+import RightArrowDouble from "../../../../assets/icons/right-arrow-double.svg?react";
+import LeftArrow from "../../../../assets/icons/left-arrow.svg?react";
+import RightArrow from "../../../../assets/icons/right-arrow.svg?react";
+import SelectorVertical from "../../../../assets/icons/selector-vertical.svg?react";
 import ActionsMenu from "../actionsMenu";
+
+/**
+ * Component for pagination actions (first, previous, next, last).
+ *
+ * @component
+ * @param {Object} props
+ * @param {number} props.count - Total number of items.
+ * @param {number} props.page - Current page number.
+ * @param {number} props.rowsPerPage - Number of rows per page.
+ * @param {function} props.onPageChange - Callback function to handle page change.
+ *
+ * @returns {JSX.Element} Pagination actions component.
+ */
+const TablePaginationActions = (props) => {
+  const { count, page, rowsPerPage, onPageChange } = props;
+
+  const handleFirstPageButtonClick = (event) => {
+    onPageChange(event, 0);
+  };
+  const handleBackButtonClick = (event) => {
+    onPageChange(event, page - 1);
+  };
+  const handleNextButtonClick = (event) => {
+    onPageChange(event, page + 1);
+  };
+  const handleLastPageButtonClick = (event) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <Box sx={{ flexShrink: 0, ml: "24px" }}>
+      <Button
+        variant="group"
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        <LeftArrowDouble />
+      </Button>
+      <Button
+        variant="group"
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        <LeftArrow />
+      </Button>
+      <Button
+        variant="group"
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        <RightArrow />
+      </Button>
+      <Button
+        variant="group"
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        <RightArrowDouble />
+      </Button>
+    </Box>
+  );
+};
+
+TablePaginationActions.propTypes = {
+  count: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+};
 
 const MonitorTable = ({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [paginationController, setPaginationController] = useState({
-    page: 0,
-    rowsPerPage: 14,
-  });
+  const { rowsPerPage } = useSelector((state) => state.ui.monitors);
+  const [page, setPage] = useState(0);
   const [monitors, setMonitors] = useState([]);
   const [monitorCount, setMonitorCount] = useState(0);
   const authState = useSelector((state) => state.auth);
@@ -44,11 +122,18 @@ const MonitorTable = ({ isAdmin }) => {
     setUpdateTrigger((prev) => !prev);
   };
 
-  const handlePageChange = (_, newPage) => {
-    setPaginationController({
-      ...paginationController,
-      page: newPage - 1, // 0-indexed
-    });
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    dispatch(
+      setRowsPerPage({
+        value: parseInt(event.target.value, 10),
+        table: "monitors",
+      })
+    );
+    setPage(0);
   };
 
   useEffect(() => {
@@ -64,8 +149,8 @@ const MonitorTable = ({ isAdmin }) => {
           null,
           "desc",
           true,
-          paginationController.page,
-          paginationController.rowsPerPage
+          page,
+          rowsPerPage
         );
         setMonitors(res?.data?.data?.monitors ?? []);
         setMonitorCount(res?.data?.data?.monitorCount ?? 0);
@@ -74,33 +159,17 @@ const MonitorTable = ({ isAdmin }) => {
       }
     };
     fetchPage();
-  }, [
-    updateTrigger,
-    authState,
-    paginationController.page,
-    paginationController.rowsPerPage,
-  ]);
+  }, [updateTrigger, authState, page, rowsPerPage]);
 
-  let paginationComponent = <></>;
-  if (monitorCount > paginationController.rowsPerPage) {
-    paginationComponent = (
-      <Pagination
-        count={Math.ceil(monitorCount / paginationController.rowsPerPage)}
-        page={paginationController.page + 1} //0-indexed
-        onChange={handlePageChange}
-        shape="rounded"
-        renderItem={(item) => (
-          <PaginationItem
-            slots={{
-              previous: ArrowBackRoundedIcon,
-              next: ArrowForwardRoundedIcon,
-            }}
-            {...item}
-          />
-        )}
-      />
-    );
-  }
+  /**
+   * Helper function to calculate the range of displayed rows.
+   * @returns {string}
+   */
+  const getRange = () => {
+    let start = page * rowsPerPage + 1;
+    let end = Math.min(page * rowsPerPage + rowsPerPage, monitorCount);
+    return `${start} - ${end}`;
+  };
 
   return (
     <>
@@ -202,7 +271,76 @@ const MonitorTable = ({ isAdmin }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {paginationComponent}
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        px={theme.spacing(4)}
+        sx={{
+          "& p": {
+            color: theme.palette.text.tertiary,
+          },
+        }}
+      >
+        <Typography px={theme.spacing(2)} fontSize={12} sx={{ opacity: 0.7 }}>
+          Showing {getRange()} of {monitorCount} monitor(s)
+        </Typography>
+        <TablePagination
+          component="div"
+          count={monitorCount}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+          labelRowsPerPage="Rows per page"
+          labelDisplayedRows={({ page, count }) =>
+            `Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
+          }
+          slotProps={{
+            select: {
+              MenuProps: {
+                keepMounted: true,
+                PaperProps: {
+                  className: "pagination-dropdown",
+                  sx: {
+                    mt: 0,
+                    mb: theme.spacing(2),
+                  },
+                },
+                transformOrigin: { vertical: "bottom", horizontal: "left" },
+                anchorOrigin: { vertical: "top", horizontal: "left" },
+                sx: { mt: theme.spacing(-2) },
+              },
+              inputProps: { id: "pagination-dropdown" },
+              IconComponent: SelectorVertical,
+              sx: {
+                ml: theme.spacing(4),
+                mr: theme.spacing(12),
+                minWidth: theme.spacing(20),
+                textAlign: "left",
+                "&.Mui-focused > div": {
+                  backgroundColor: theme.palette.background.main,
+                },
+              },
+            },
+          }}
+          sx={{
+            mt: theme.spacing(6),
+            color: theme.palette.text.secondary,
+            "& svg path": {
+              stroke: theme.palette.text.tertiary,
+              strokeWidth: 1.3,
+            },
+            "& .MuiSelect-select": {
+              border: 1,
+              borderColor: theme.palette.border.light,
+              borderRadius: theme.shape.borderRadius,
+            },
+          }}
+        />
+      </Stack>
     </>
   );
 };
