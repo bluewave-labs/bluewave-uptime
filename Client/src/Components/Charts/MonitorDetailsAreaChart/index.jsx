@@ -10,6 +10,7 @@ import {
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import "./index.css";
+import React, { useMemo } from "react";
 
 const CustomToolTip = ({ active, payload, label }) => {
   const theme = useTheme();
@@ -96,14 +97,16 @@ const MonitorDetailsAreaChart = ({ checks }) => {
     });
   };
 
+  const memoizedChecks = useMemo(() => checks, []);
+
   const theme = useTheme();
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" minWidth={25} height={220}>
       <AreaChart
         width="100%"
         height="100%"
-        data={checks}
+        data={memoizedChecks}
         margin={{
           top: 10,
           right: 0,

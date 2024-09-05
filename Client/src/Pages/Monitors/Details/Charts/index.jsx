@@ -9,7 +9,7 @@ import {
   RadialBar,
 } from "recharts";
 import { formatDate } from "../../../../Utils/timeUtils";
-import { useState } from "react";
+import { memo, useMemo, useState } from "react";
 
 const CustomLabels = ({
   x,
@@ -39,7 +39,7 @@ const CustomLabels = ({
   );
 };
 
-export const UpBarChart = ({ data, type, onBarHover }) => {
+export const UpBarChart = memo(({ data, type, onBarHover }) => {
   const theme = useTheme();
 
   const [chartHovered, setChartHovered] = useState(false);
@@ -54,10 +54,10 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
   };
 
   // TODO - REMOVE THIS LATER
-  let reversedData = [...data].reverse();
+  const reversedData = useMemo(() => [...data].reverse(), [data]);
 
   return (
-    <ResponsiveContainer width="100%" height={155}>
+    <ResponsiveContainer width="100%" minWidth={210} height={155}>
       <BarChart
         width="100%"
         height="100%"
@@ -120,19 +120,19 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});
 
-export const DownBarChart = ({ data, type, onBarHover }) => {
+export const DownBarChart = memo(({ data, type, onBarHover }) => {
   const theme = useTheme();
 
   const [chartHovered, setChartHovered] = useState(false);
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
 
   // TODO - REMOVE THIS LATER
-  let reversedData = [...data].reverse();
+  const reversedData = useMemo(() => [...data].reverse(), [data]);
 
   return (
-    <ResponsiveContainer width="100%" height={155}>
+    <ResponsiveContainer width="100%" minWidth={250} height={155}>
       <BarChart
         width="100%"
         height="100%"
@@ -192,15 +192,19 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});
 
 export const ResponseGaugeChart = ({ data }) => {
   const theme = useTheme();
 
   let max = 1000; // max ms
-  data = [{ response: max, fill: "transparent", background: false }, ...data];
 
-  let responseTime = Math.floor(data[1].response);
+  const memoizedData = useMemo(
+    () => [{ response: max, fill: "transparent", background: false }, ...data],
+    [data[0].response]
+  );
+
+  let responseTime = Math.floor(memoizedData[1].response);
   let responseProps =
     responseTime <= 200
       ? {
@@ -227,12 +231,12 @@ export const ResponseGaugeChart = ({ data }) => {
         };
 
   return (
-    <ResponsiveContainer width="100%" height={155}>
+    <ResponsiveContainer width="100%" minWidth={210} height={155}>
       <RadialBarChart
         width="100%"
         height="100%"
         cy="89%"
-        data={data}
+        data={memoizedData}
         startAngle={180}
         endAngle={0}
         innerRadius={100}
