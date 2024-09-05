@@ -80,7 +80,9 @@ class NetworkService {
     types,
     status,
     sortOrder,
-    normalize
+    normalize,
+    page,
+    rowsPerPage
   ) {
     const params = new URLSearchParams();
 
@@ -93,6 +95,8 @@ class NetworkService {
     if (status) params.append("status", status);
     if (sortOrder) params.append("sortOrder", sortOrder);
     if (normalize) params.append("normalize", normalize);
+    if (page) params.append("page", page);
+    if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
 
     return this.axiosInstance.get(
       `/monitors/team/${teamId}?${params.toString()}`,

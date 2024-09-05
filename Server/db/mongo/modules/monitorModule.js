@@ -302,8 +302,16 @@ const getMonitorById = async (monitorId) => {
  */
 const getMonitorsByTeamId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize } = req.query || {};
+    let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
+      req.query || {};
     const monitorQuery = { teamId: req.params.teamId };
+    const monitorsCount = await Monitor.countDocuments(monitorQuery);
+
+    // Pagination
+    let skip = 0;
+    if (page && rowsPerPage) {
+      skip = page * rowsPerPage;
+    }
 
     if (type !== undefined) {
       const types = Array.isArray(type) ? type : [type];
@@ -320,7 +328,9 @@ const getMonitorsByTeamId = async (req, res) => {
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
 
-    const monitors = await Monitor.find(monitorQuery);
+    const monitors = await Monitor.find(monitorQuery)
+      .skip(skip)
+      .limit(rowsPerPage);
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
@@ -349,7 +359,7 @@ const getMonitorsByTeamId = async (req, res) => {
         return { ...monitor.toObject(), checks };
       })
     );
-    return monitorsWithChecks;
+    return { monitors: monitorsWithChecks, monitorCount: monitorsCount };
   } catch (error) {
     throw error;
   }

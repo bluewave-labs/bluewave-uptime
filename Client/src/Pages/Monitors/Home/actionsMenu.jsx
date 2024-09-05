@@ -19,7 +19,7 @@ import {
 import Settings from "../../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
 
-const ActionsMenu = ({ monitor, isAdmin }) => {
+const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [actions, setActions] = useState({});
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +37,7 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
     if (action.meta.requestStatus === "fulfilled") {
       setIsOpen(false); // close modal
       dispatch(getUptimeMonitorsByTeamId(authState.authToken));
+      updateCallback();
       createToast({ body: "Monitor deleted successfully." });
     } else {
       createToast({ body: "Failed to delete monitor." });
@@ -222,6 +223,7 @@ ActionsMenu.propTypes = {
     type: PropTypes.string,
   }).isRequired,
   isAdmin: PropTypes.bool,
+  updateCallback: PropTypes.func,
 };
 
 export default ActionsMenu;
