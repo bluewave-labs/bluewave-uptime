@@ -59,7 +59,7 @@ const Monitors = ({ isAdmin }) => {
             <Fallback isAdmin={isAdmin} />
           )}
 
-          {monitorState?.monitorsSumarry?.monitors?.length !== 0 && (
+          {monitorState?.monitorsSummary?.monitors?.length !== 0 && (
             <>
               <Stack
                 gap={theme.spacing(8)}
