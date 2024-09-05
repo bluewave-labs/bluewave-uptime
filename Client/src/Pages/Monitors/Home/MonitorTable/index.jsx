@@ -19,6 +19,10 @@ import { useState, useEffect } from "react";
 import { logger } from "../../../../Utils/Logger";
 import Host from "../host";
 import { StatusLabel } from "../../../../Components/Label";
+import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
+import { networkService } from "../../../../main";
+
 const MonitorTable = ({ teamId }) => {
   const [paginationController, setPaginationController] = useState({
     page: 0,
@@ -26,6 +30,7 @@ const MonitorTable = ({ teamId }) => {
   });
   const [monitors, setMonitors] = useState([]);
   const [monitorCount, setMonitorCount] = useState(0);
+  const authState = useSelector((state) => state.auth);
 
   const handlePageChange = (_, newPage) => {
     setPaginationController({
@@ -36,22 +41,21 @@ const MonitorTable = ({ teamId }) => {
 
   useEffect(() => {
     const fetchPage = async () => {
-      if (!monitors || Object.keys(monitors).length === 0) {
-        return;
-      }
       try {
-        console.log("DO NETWORK");
-
+        const { authToken } = authState;
+        const user = jwtDecode(authToken);
         const res = await networkService.getMonitorsByTeamId(
-          token,
+          authToken,
           user.teamId,
           25,
           ["http", "ping"],
           null,
           "desc",
-          true
+          true,
+          paginationController.page,
+          paginationController.rowsPerPage
         );
-
+        console.log(res.data.data);
         setMonitors([]);
         setMonitorCount(0);
       } catch (error) {
@@ -59,7 +63,7 @@ const MonitorTable = ({ teamId }) => {
       }
     };
     fetchPage();
-  }, [monitors]);
+  }, []);
 
   let paginationComponent = <></>;
   if (monitorCount > paginationController.rowsPerPage) {
