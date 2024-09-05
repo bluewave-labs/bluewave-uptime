@@ -29,11 +29,13 @@ const Incidents = () => {
         null,
         null,
         null,
+        null,
+        null,
         null
       );
       // Reduce to a lookup object for 0(1) lookup
-      if (res.data && res.data.data.length > 0) {
-        const monitorLookup = res.data.data.reduce((acc, monitor) => {
+      if (res?.data?.data?.monitors?.length > 0) {
+        const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
           acc[monitor._id] = monitor;
           return acc;
         }, {});
