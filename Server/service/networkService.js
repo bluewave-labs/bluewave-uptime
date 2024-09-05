@@ -362,7 +362,7 @@ class NetworkService {
       return insertedCheck.status;
     } catch (error) {
       console.log(error);
-      logger.error(`Error wrtiting check for ${data.monitorId}`, {
+      logger.error(`Error writing check for ${data.monitorId}`, {
         service: this.SERVICE_NAME,
         monitorId: data.monitorId,
         error: error,
