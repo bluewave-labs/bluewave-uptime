@@ -305,7 +305,10 @@ const getMonitorsByTeamId = async (req, res) => {
     let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
       req.query || {};
     const monitorQuery = { teamId: req.params.teamId };
-    const monitorsCount = await Monitor.countDocuments(monitorQuery);
+    const monitorsCount = await Monitor.countDocuments({
+      teamId: req.params.teamId,
+      type,
+    });
 
     // Pagination
     let skip = 0;
