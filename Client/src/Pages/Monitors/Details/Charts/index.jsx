@@ -98,7 +98,7 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
             let { main, light } = getColorRange(entry.uptimePercentage);
             return (
               <Cell
-                key={`cell-${index}`}
+                key={`cell-${entry.time}`}
                 fill={
                   hoveredBarIndex === index ? main : chartHovered ? light : main
                 }
@@ -171,7 +171,7 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
         >
           {reversedData.map((entry, index) => (
             <Cell
-              key={`cell-${index}`}
+              key={`cell-${entry.time}`}
               fill={
                 hoveredBarIndex === index
                   ? theme.palette.error.text
