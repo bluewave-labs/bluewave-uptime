@@ -110,9 +110,7 @@ class NetworkService {
       const { responseTime, response } = await this.measureResponseTime(operation);
       isAlive = response.alive;
   
-      // Fetch TTL setting from the monitor
-      const monitor = await this.db.getMonitorById(job.data._id);
-      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+      const checkTTL = job.data.checkTTL || 30; // Default to 30 days if not set
   
       const checkData = {
         monitorId: job.data._id,
@@ -121,7 +119,9 @@ class NetworkService {
         message: isAlive
           ? successMessages.PING_SUCCESS
           : errorMessages.PING_CANNOT_RESOLVE,
-        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
+          expiry: job.data.checkTTL !== undefined 
+          ? new Date(Date.now() + checkTTL * 24 * 60 * 60 * 1000) // Set TTL
+          : undefined
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
@@ -131,7 +131,9 @@ class NetworkService {
         status: isAlive,
         message: errorMessages.PING_CANNOT_RESOLVE,
         responseTime: error.responseTime,
-        expiry: new Date(Date.now() + (monitor.ttlDays || 30) * 24 * 60 * 60 * 1000) // Set TTL
+        expiry: job.data.checkTTL !== undefined 
+        ? new Date(Date.now() + checkTTL * 24 * 60 * 60 * 1000) // Set TTL
+        : undefined
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
@@ -171,7 +173,7 @@ class NetworkService {
         throw new Error(`Monitor not found: ${job.data._id}`);
       }
   
-      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+      const checkTTL = job.data.checkTTL || 30; // Default to 30 days if not set
   
       // Prepare check data
       const checkData = {
@@ -180,7 +182,9 @@ class NetworkService {
         responseTime,
         statusCode: response.status,
         message: http.STATUS_CODES[response.status],
-        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
+        expiry: job.data.checkTTL !== undefined 
+        ? new Date(Date.now() + checkTTL * 24 * 60 * 60 * 1000) // Set TTL
+        : undefined
       };
   
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
@@ -191,12 +195,12 @@ class NetworkService {
       isAlive = false;
   
       // Fetch monitor TTL
-      let ttlDays = 30; // Default value
+      let checkTTL = 30; // Default value
   
       try {
         const monitor = await this.db.getMonitorById(job.data._id);
         if (monitor) {
-          ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+          checkTTL = job.data.checkTTL || 30; // Default to 30 days if not set
         }
       } catch (err) {
         logger.error(`Failed to fetch monitor TTL: ${err.message}`, {
@@ -213,7 +217,9 @@ class NetworkService {
         statusCode,
         responseTime: error.responseTime,
         message,
-        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
+        expiry: job.data.checkTTL !== undefined 
+        ? new Date(Date.now() + checkTTL * 24 * 60 * 60 * 1000) // Set TTL
+        : undefined
       };
   
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
@@ -266,7 +272,7 @@ class NetworkService {
       
       isAlive = true;
       const monitor = await this.db.getMonitorById(job.data._id);
-      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+      const checkTTL = job.data.checkTTL || 30; // Default to 30 days if not set
   
       const checkData = {
         monitorId: job.data._id,
@@ -284,7 +290,9 @@ class NetworkService {
           lcp,
           tbt,
         },
-        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
+        expiry: job.data.checkTTL !== undefined 
+        ? new Date(Date.now() + checkTTL * 24 * 60 * 60 * 1000) // Set TTL
+        : undefined
       };
   
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
@@ -293,7 +301,7 @@ class NetworkService {
       const statusCode = error.response?.status || this.NETWORK_ERROR;
       const message = http.STATUS_CODES[statusCode] || "Network Error";
       const monitor = await this.db.getMonitorById(job.data._id);
-      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+      const checkTTL = job.data.checkTTL || 30; // Default to 30 days if not set
   
       const checkData = {
         monitorId: job.data._id,
@@ -304,7 +312,9 @@ class NetworkService {
         bestPractices: 0,
         seo: 0,
         performance: 0,
-        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
+        expiry: job.data.checkTTL !== undefined 
+        ? new Date(Date.now() + checkTTL * 24 * 60 * 60 * 1000) // Set TTL
+        : undefined
       };
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } finally {
