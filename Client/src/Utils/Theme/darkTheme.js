@@ -4,16 +4,16 @@ const text = {
   primary: "#fafafa",
   secondary: "#e6e6e6",
   tertiary: "#a1a1aa",
-  accent: "#e6e6e6",
+  accent: "#8e8e8f",
   disabled: "rgba(172, 172, 172, 0.3)",
 };
 const background = {
   main: "#151518",
   alt: "#09090b",
-  fill: "#2e2e2e",
+  fill: "#2D2D33",
   accent: "#18181a",
 };
-const border = { light: "#27272a", dark: "#2c2c2c" };
+const border = { light: "#27272a", dark: "#36363e" };
 
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
@@ -25,7 +25,7 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: { main: "#1570ef" },
-    secondary: { main: "#2e2e2e" },
+    secondary: { main: "#2D2D33" },
     text: text,
     background: background,
     border: border,
@@ -39,22 +39,22 @@ const darkTheme = createTheme({
     success: {
       text: "#079455",
       main: "#45bb7a",
-      light: "#1e1e1e",
-      bg: "#27272a",
+      light: "#1c4428",
+      bg: "#12261e",
     },
     error: {
       text: "#f04438",
       main: "#d32f2f",
-      light: "#1e1e1e",
-      bg: "#27272a",
+      light: "#542426",
+      bg: "#301a1f",
       dark: "#932020",
       border: "#f04438",
     },
     warning: {
       text: "#e88c30",
       main: "#FF9F00",
-      light: "#27272a",
-      bg: "#1E1E1E",
+      light: "#272115",
+      bg: "#624711",
       border: "#e88c30",
     },
     percentage: {
@@ -96,6 +96,15 @@ const darkTheme = createTheme({
                 props.variant === "group" && props.filled === "true",
               style: {
                 backgroundColor: theme.palette.secondary.main,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "contained" && props.color === "secondary",
+              style: {
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.dark,
               },
             },
           ],

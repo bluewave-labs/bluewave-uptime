@@ -148,6 +148,31 @@ class NetworkService {
 
   /**
    * ************************************
+   * Gets aggregate stats by monitor ID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor whose certificate expiry is to be retrieved.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
+  async getAggregateStatsById(authToken, monitorId, dateRange) {
+    const params = new URLSearchParams();
+    if (dateRange) params.append("dateRange", dateRange);
+
+    return this.axiosInstance.get(
+      `/monitors/aggregate/${monitorId}?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
    * Updates a single monitor
    * ************************************
    *

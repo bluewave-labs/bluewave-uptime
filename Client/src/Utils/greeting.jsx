@@ -160,6 +160,7 @@ const Greeting = ({ type = "" }) => {
         lineHeight={1}
         fontWeight={500}
         color={theme.palette.text.primary}
+        mb={theme.spacing(1)}
       >
         <Typography
           component="span"
@@ -173,11 +174,10 @@ const Greeting = ({ type = "" }) => {
         </Typography>
       </Typography>
       <Typography
-        sx={{ opacity: 0.8 }}
         lineHeight={1}
         fontSize={14}
-        fontWeight={300}
-        color={theme.palette.text.secondary}
+        fontWeight={400}
+        color={theme.palette.text.accent}
       >
         {append} — Here’s an overview of your {type} monitors.
       </Typography>

@@ -43,24 +43,8 @@ const Monitors = ({ isAdmin }) => {
 
   let loading = monitorState.isLoading && monitorState.monitors.length === 0;
 
-  const now = new Date();
-  const hour = now.getHours();
-
-  let greeting = "";
-  let emoji = "";
-  if (hour < 12) {
-    greeting = "morning";
-    emoji = "🌅";
-  } else if (hour < 18) {
-    greeting = "afternoon";
-    emoji = "🌞";
-  } else {
-    greeting = "evening";
-    emoji = "🌙";
-  }
-
   return (
-    <Stack className="monitors" gap={theme.spacing(12)}>
+    <Stack className="monitors" gap={theme.spacing(8)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -95,7 +79,7 @@ const Monitors = ({ isAdmin }) => {
           {monitorState.monitors?.length !== 0 && (
             <>
               <Stack
-                gap={theme.spacing(12)}
+                gap={theme.spacing(8)}
                 direction="row"
                 justifyContent="space-between"
               >
@@ -105,8 +89,7 @@ const Monitors = ({ isAdmin }) => {
               </Stack>
               <Box
                 flex={1}
-                px={theme.spacing(16)}
-                py={theme.spacing(12)}
+                p={theme.spacing(10)}
                 border={1}
                 borderColor={theme.palette.border.light}
                 borderRadius={theme.shape.borderRadius}
@@ -115,7 +98,7 @@ const Monitors = ({ isAdmin }) => {
                 <Stack
                   direction="row"
                   alignItems="center"
-                  mb={theme.spacing(12)}
+                  mb={theme.spacing(8)}
                 >
                   <Typography
                     component="h2"

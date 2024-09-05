@@ -41,8 +41,8 @@ const PulseDot = ({ color }) => {
           "&::after": {
             content: `""`,
             position: "absolute",
-            width: "6px",
-            height: "6px",
+            width: "7px",
+            height: "7px",
             borderRadius: "50%",
             backgroundColor: "white",
             top: "50%",
