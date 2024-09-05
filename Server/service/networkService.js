@@ -103,13 +103,17 @@ class NetworkService {
       const response = await ping.promise.probe(job.data.url);
       return response;
     };
-
+  
     let isAlive;
-
+  
     try {
-      const { responseTime, response } =
-        await this.measureResponseTime(operation);
+      const { responseTime, response } = await this.measureResponseTime(operation);
       isAlive = response.alive;
+  
+      // Fetch TTL setting from the monitor
+      const monitor = await this.db.getMonitorById(job.data._id);
+      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+  
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
@@ -117,6 +121,7 @@ class NetworkService {
         message: isAlive
           ? successMessages.PING_SUCCESS
           : errorMessages.PING_CANNOT_RESOLVE,
+        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
@@ -126,12 +131,14 @@ class NetworkService {
         status: isAlive,
         message: errorMessages.PING_CANNOT_RESOLVE,
         responseTime: error.responseTime,
+        expiry: new Date(Date.now() + (monitor.ttlDays || 30) * 24 * 60 * 60 * 1000) // Set TTL
       };
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
       this.handleStatusUpdate(job, isAlive);
     }
   }
+  
 
   /**
    * Handles the http operation for a given job, measures its response time, and logs the result.
@@ -144,42 +151,78 @@ class NetworkService {
       const response = await axios.get(job.data.url);
       return response;
     };
-
+  
     let isAlive;
-
-    // attempt connection
+  
     try {
-      const { responseTime, response } =
-        await this.measureResponseTime(operation);
-      // check if response is in the 200 range, if so, service is up
+      // Measure response time and get the response
+      const { responseTime, response } = await this.measureResponseTime(operation);
       isAlive = response.status >= 200 && response.status < 300;
-
-      //Create a check with relevant data
+  
+      // Fetch monitor TTL
+      const monitor = await this.db.getMonitorById(job.data._id);
+  
+      if (!monitor) {
+        logger.error(`Monitor not found: ${job.data._id}`, {
+          method: "handleHttp",
+          service: this.SERVICE_NAME,
+          jobId: job.id,
+        });
+        throw new Error(`Monitor not found: ${job.data._id}`);
+      }
+  
+      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+  
+      // Prepare check data
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         responseTime,
         statusCode: response.status,
         message: http.STATUS_CODES[response.status],
+        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
       };
+  
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } catch (error) {
+      // Handle errors
       const statusCode = error.response?.status || this.NETWORK_ERROR;
-      let message = http.STATUS_CODES[statusCode] || "Network Error";
+      const message = http.STATUS_CODES[statusCode] || "Network Error";
       isAlive = false;
+  
+      // Fetch monitor TTL
+      let ttlDays = 30; // Default value
+  
+      try {
+        const monitor = await this.db.getMonitorById(job.data._id);
+        if (monitor) {
+          ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+        }
+      } catch (err) {
+        logger.error(`Failed to fetch monitor TTL: ${err.message}`, {
+          method: "handleHttp",
+          service: this.SERVICE_NAME,
+          jobId: job.id,
+        });
+      }
+  
+      // Prepare check data
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
         statusCode,
         responseTime: error.responseTime,
         message,
+        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
       };
-
+  
       return await this.logAndStoreCheck(checkData, this.db.createCheck);
     } finally {
       this.handleStatusUpdate(job, isAlive);
     }
   }
+  
+  
 
   /**
    * Handles PageSpeed job types by fetching and processing PageSpeed insights.
@@ -197,7 +240,7 @@ class NetworkService {
    */
   async handlePagespeed(job) {
     let isAlive;
-
+  
     try {
       const url = job.data.url;
       const response = await axios.get(
@@ -213,15 +256,18 @@ class NetworkService {
         "largest-contentful-paint": lcp,
         "total-blocking-time": tbt,
       } = audits;
-
+  
       // Weights
       // First Contentful Paint	10%
       // Speed Index	10%
       // Largest Contentful Paint	25%
       // Total Blocking Time	30%
       // Cumulative Layout Shift	25%
-
+      
       isAlive = true;
+      const monitor = await this.db.getMonitorById(job.data._id);
+      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+  
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
@@ -238,13 +284,17 @@ class NetworkService {
           lcp,
           tbt,
         },
+        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
       };
-
+  
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } catch (error) {
       isAlive = false;
       const statusCode = error.response?.status || this.NETWORK_ERROR;
       const message = http.STATUS_CODES[statusCode] || "Network Error";
+      const monitor = await this.db.getMonitorById(job.data._id);
+      const ttlDays = monitor.ttlDays || 30; // Default to 30 days if not set
+  
       const checkData = {
         monitorId: job.data._id,
         status: isAlive,
@@ -254,12 +304,14 @@ class NetworkService {
         bestPractices: 0,
         seo: 0,
         performance: 0,
+        expiry: new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000) // Set TTL
       };
       this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
     } finally {
       this.handleStatusUpdate(job, isAlive);
     }
   }
+  
 
   /**
    * Retrieves the status of a given job based on its type.
