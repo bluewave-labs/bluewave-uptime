@@ -151,8 +151,8 @@ const CreatePageSpeed = () => {
     >
       <Breadcrumbs
         list={[
-          { name: "monitors", path: "/monitors" },
-          { name: "create", path: `/monitors/create` },
+          { name: "pagespeed", path: "/pagespeed" },
+          { name: "create", path: `/pagespeed/create` },
         ]}
       />
       <Stack
