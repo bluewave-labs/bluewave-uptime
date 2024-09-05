@@ -41,7 +41,7 @@ const Monitors = ({ isAdmin }) => {
               mt={theme.spacing(5)}
             >
               <Greeting type="uptime" />
-              {monitorState?.montiorsSummary?.monitors?.length !== 0 && (
+              {monitorState?.monitorsSummary?.monitors?.length !== 0 && (
                 <Button
                   variant="contained"
                   color="primary"
