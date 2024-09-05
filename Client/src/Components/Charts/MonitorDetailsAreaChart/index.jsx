@@ -1,5 +1,12 @@
 import PropTypes from "prop-types";
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import "./index.css";
@@ -104,6 +111,13 @@ const MonitorDetailsAreaChart = ({ checks }) => {
           bottom: 0,
         }}
       >
+        <CartesianGrid
+          stroke={theme.palette.border.light}
+          strokeWidth={1}
+          strokeOpacity={1}
+          fill="transparent"
+          vertical={false}
+        />
         <defs>
           <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
             <stop
