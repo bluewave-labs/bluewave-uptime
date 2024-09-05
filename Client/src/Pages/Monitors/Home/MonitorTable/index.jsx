@@ -22,8 +22,13 @@ import { StatusLabel } from "../../../../Components/Label";
 import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
 import { networkService } from "../../../../main";
+import { useTheme } from "@emotion/react";
+import BarChart from "../../../../Components/Charts/BarChart";
+import ActionsMenu from "../actionsMenu";
 
-const MonitorTable = ({ teamId }) => {
+const MonitorTable = ({ isAdmin }) => {
+  const theme = useTheme();
+
   const [paginationController, setPaginationController] = useState({
     page: 0,
     rowsPerPage: 14,
@@ -56,7 +61,7 @@ const MonitorTable = ({ teamId }) => {
           paginationController.rowsPerPage
         );
         console.log(res.data.data);
-        setMonitors([]);
+        setMonitors(res?.data?.data ?? []);
         setMonitorCount(0);
       } catch (error) {
         logger.error(error);
@@ -107,7 +112,68 @@ const MonitorTable = ({ teamId }) => {
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody></TableBody>
+          <TableBody>
+            {monitors.map((monitor) => {
+              let uptimePercentage = "";
+              let percentageColor = theme.palette.percentage.uptimeExcellent;
+
+              // Determine uptime percentage and color based on the monitor's uptimePercentage value
+              if (monitor.uptimePercentage !== undefined) {
+                uptimePercentage =
+                  monitor.uptimePercentage === 0
+                    ? "0"
+                    : (monitor.uptimePercentage * 100).toFixed(2);
+
+                percentageColor =
+                  monitor.uptimePercentage < 0.25
+                    ? theme.palette.percentage.uptimePoor
+                    : monitor.uptimePercentage < 0.5
+                    ? theme.palette.percentage.uptimeFair
+                    : monitor.uptimePercentage < 0.75
+                    ? theme.palette.percentage.uptimeGood
+                    : theme.palette.percentage.uptimeExcellent;
+              }
+
+              const params = {
+                url: monitor.url,
+                title: monitor.name,
+                percentage: uptimePercentage,
+                percentageColor,
+                status:
+                  monitor.status === undefined
+                    ? "pending"
+                    : monitor.status === true
+                    ? "up"
+                    : "down",
+              };
+
+              return (
+                <TableRow key={monitor._id}>
+                  <TableCell>
+                    <Host key={monitor._id} params={params} />
+                  </TableCell>
+                  <TableCell>
+                    <StatusLabel
+                      status={params.status}
+                      text={params.status}
+                      customStyles={{ textTransform: "capitalize" }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <BarChart checks={monitor.checks.slice().reverse()} />
+                  </TableCell>
+                  <TableCell>
+                    <span style={{ textTransform: "uppercase" }}>
+                      {monitor.type}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <ActionsMenu monitor={monitor} isAdmin={isAdmin} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
         </Table>
       </TableContainer>
       {paginationComponent}
@@ -115,7 +181,4 @@ const MonitorTable = ({ teamId }) => {
   );
 };
 
-MonitorTable.propTypes = {
-  teamId: PropTypes.string,
-};
 export default MonitorTable;
