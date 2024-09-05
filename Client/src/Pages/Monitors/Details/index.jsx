@@ -481,11 +481,9 @@ const DetailsPage = ({ isAdmin }) => {
                     </IconBox>
                     <Typography component="h2">Response Times</Typography>
                   </Stack>
-                  <Box>
-                    {/* <MonitorDetailsAreaChart
-                  checks={[...monitor.checks].reverse()}
-                /> */}
-                  </Box>
+                  <MonitorDetailsAreaChart
+                    checks={[...monitor.checks].reverse()}
+                  />
                 </ChartBox>
                 <ChartBox
                   gap={theme.spacing(8)}

@@ -54,12 +54,15 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
       : { main: theme.palette.error.text, light: theme.palette.error.light };
   };
 
+  // TODO - REMOVE THIS LATER
+  let reversedData = [...data].reverse();
+
   return (
     <ResponsiveContainer width="100%" height={155}>
       <BarChart
         width="100%"
         height="100%"
-        data={data}
+        data={reversedData}
         onMouseEnter={() => {
           setChartHovered(true);
           onBarHover({ time: null, totalChecks: 0, uptimePercentage: 0 });
@@ -80,8 +83,8 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
               y={0}
               width="100%"
               height="100%"
-              firstDataPoint={data[0]}
-              lastDataPoint={data[data.length - 1]}
+              firstDataPoint={reversedData[0]}
+              lastDataPoint={reversedData[reversedData.length - 1]}
               type={type}
             />
           }
@@ -91,7 +94,7 @@ export const UpBarChart = ({ data, type, onBarHover }) => {
           maxBarSize={7}
           background={{ fill: "transparent" }}
         >
-          {data.map((entry, index) => {
+          {reversedData.map((entry, index) => {
             let { main, light } = getColorRange(entry.uptimePercentage);
             return (
               <Cell
@@ -126,12 +129,15 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
   const [chartHovered, setChartHovered] = useState(false);
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
 
+  // TODO - REMOVE THIS LATER
+  let reversedData = [...data].reverse();
+
   return (
     <ResponsiveContainer width="100%" height={155}>
       <BarChart
         width="100%"
         height="100%"
-        data={data}
+        data={reversedData}
         onMouseEnter={() => {
           setChartHovered(true);
           onBarHover({ time: null, totalIncidents: 0 });
@@ -152,8 +158,8 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
               y={0}
               width="100%"
               height="100%"
-              firstDataPoint={data[0]}
-              lastDataPoint={data[data.length - 1]}
+              firstDataPoint={reversedData[0]}
+              lastDataPoint={reversedData[reversedData.length - 1]}
               type={type}
             />
           }
@@ -163,7 +169,7 @@ export const DownBarChart = ({ data, type, onBarHover }) => {
           maxBarSize={7}
           background={{ fill: "transparent" }}
         >
-          {data.map((entry, index) => (
+          {reversedData.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
               fill={
