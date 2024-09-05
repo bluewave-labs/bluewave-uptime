@@ -249,7 +249,7 @@ const getMonitorStatsById = async (req) => {
 
     // Normalize checks if requested
     if (normalize !== undefined) {
-      const normailzedChecks = NormalizeData(checksForDateRange, 1, 100);
+      const normailzedChecks = NormalizeData(nthChecks, 1, 100);
       monitorStats.checks = normailzedChecks;
     } else {
       monitorStats.checks = nthChecks;
