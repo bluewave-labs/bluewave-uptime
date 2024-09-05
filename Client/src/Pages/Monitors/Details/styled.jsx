@@ -16,11 +16,11 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     fontSize: 15,
     fontWeight: 500,
   },
-  "& p": {
+  "& .MuiBox-root:not(.area-tooltip) p": {
     color: theme.palette.text.tertiary,
     fontSize: 13,
   },
-  "& span": {
+  "& .MuiBox-root > span": {
     color: theme.palette.text.primary,
     fontSize: 20,
     "& span": {

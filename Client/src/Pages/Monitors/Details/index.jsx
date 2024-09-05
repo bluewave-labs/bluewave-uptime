@@ -474,7 +474,13 @@ const DetailsPage = ({ isAdmin }) => {
                     data={[{ response: monitor?.periodAvgResponseTime }]}
                   />
                 </ChartBox>
-                <ChartBox>
+                <ChartBox
+                  sx={{
+                    "& tspan": {
+                      fontSize: 11,
+                    },
+                  }}
+                >
                   <Stack>
                     <IconBox>
                       <ResponseTimeIcon />
