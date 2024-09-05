@@ -213,10 +213,11 @@ const PageSpeedDetails = () => {
           monitorId,
           "desc",
           50,
-          null,
+          "day",
           null,
           null
         );
+        console.log(res.data.data);
         setMonitor(res?.data?.data ?? {});
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
