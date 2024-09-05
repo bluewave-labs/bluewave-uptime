@@ -311,19 +311,21 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
         }
 
         if (monitor.status === false) {
-          acc.up += 1;
+          acc.down += 1;
         }
 
         if (monitor.isActive === false) {
           acc.paused += 1;
         }
+        return acc;
       },
       { up: 0, down: 0, paused: 0 }
     );
+    console.log(monitorCounts);
     monitorCounts.total = monitors.length;
     return { monitors, monitorCounts };
   } catch (error) {
-    error.methodName = "getMonitorsAndSummaryByTeamId";
+    error.method = "getMonitorsAndSummaryByTeamId";
     throw error;
   }
 };

@@ -58,9 +58,28 @@ class NetworkService {
     });
   }
 
+  async getMonitorsAndSummaryByTeamId(authToken, teamId, types) {
+    const params = new URLSearchParams();
+
+    if (types) {
+      types.forEach((type) => {
+        params.append("type", type);
+      });
+    }
+    return this.axiosInstance.get(
+      `/monitors/team/summary/${teamId}?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
   /**
    * ************************************
-   * Get all uptime monitors for a user
+   * Get all uptime monitors for a Team
    * ************************************
    *
    * @async

@@ -4,6 +4,8 @@ const {
   getMonitorsByTeamIdValidation,
   createMonitorBodyValidation,
   editMonitorBodyValidation,
+  getMonitorsAndSumamryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
   getMonitorStatsByIdParamValidation,
@@ -16,10 +18,6 @@ const {
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-const {
-  getMonitorsAndSummaryByTeamId,
-} = require("../db/mongo/modules/monitorModule");
-
 /**
  * Returns all monitors
  * @async
@@ -197,8 +195,12 @@ const getMonitorById = async (req, res, next) => {
  * @throws {Error}
  */
 
-const getMonitorsAndSumamryByTeamId = async (req, res, next) => {
+const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
   try {
+    await getMonitorsAndSumamryByTeamIdParamValidation.validateAsync(
+      req.params
+    );
+    await getMonitorsAndSummaryByTeamIdQueryValidation.validateAsync(req.query);
     //validation
   } catch (error) {
     error.status = 422;
@@ -212,8 +214,17 @@ const getMonitorsAndSumamryByTeamId = async (req, res, next) => {
   }
 
   try {
-    const { teamId, type } = req.params;
-    await req.db.getMonitorsAndSummaryByTeamId(req, res);
+    const { teamId } = req.params;
+    const { type } = req.query;
+    const monitorsSummary = await req.db.getMonitorsAndSummaryByTeamId(
+      teamId,
+      type
+    );
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MONITOR_GET_BY_USER_ID(teamId),
+      data: monitorsSummary,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
     error.method === undefined &&
