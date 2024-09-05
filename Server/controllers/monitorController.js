@@ -4,15 +4,20 @@ const {
   getMonitorsByTeamIdValidation,
   createMonitorBodyValidation,
   editMonitorBodyValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
+  getMonitorStatsByIdParamValidation,
+  getMonitorStatsByIdQueryValidation,
+  getCertificateParamValidation,
+  getMonitorAggregateStatsParamValidation,
+  getMonitorAggregateStatsQueryValidation,
 } = require("../validation/joi");
 
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-const { runInNewContext } = require("vm");
-
 /**
  * Returns all monitors
  * @async
@@ -36,6 +41,44 @@ const getAllMonitors = async (req, res, next) => {
 };
 
 /**
+ * Returns agregate stats for a monitor
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const getMonitorAggregateStats = async (req, res, next) => {
+  try {
+    await getMonitorAggregateStatsParamValidation.validateAsync(req.params);
+    await getMonitorAggregateStatsQueryValidation.validateAsync(req.query);
+  } catch (error) {
+    error.status = 422;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const { monitorId } = req.params;
+    const dateRange = req.query.dateRange;
+    const aggregateStats = await req.db.getMonitorAggregateStats(
+      monitorId,
+      dateRange
+    );
+    return res.json({
+      success: true,
+      msg: successMessages.MONTIOR_STATS_BY_ID,
+      data: aggregateStats,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Returns monitor stats for monitor with matching ID
  * @async
  * @param {Express.Request} req
@@ -45,7 +88,8 @@ const getAllMonitors = async (req, res, next) => {
  */
 const getMonitorStatsById = async (req, res, next) => {
   try {
-    //Validation
+    await getMonitorStatsByIdParamValidation.validateAsync(req.params);
+    await getMonitorStatsByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.message =
@@ -69,7 +113,7 @@ const getMonitorStatsById = async (req, res, next) => {
 
 const getMonitorCertificate = async (req, res, next) => {
   try {
-    //validation
+    await getCertificateParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
     error.message =
@@ -143,7 +187,54 @@ const getMonitorById = async (req, res, next) => {
 };
 
 /**
- * Returns all monitors belong to User with UserID
+ * Returns all monitors and a sumamry for a team with TeamID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
+  try {
+    await getMonitorsAndSummaryByTeamIdParamValidation.validateAsync(
+      req.params
+    );
+    await getMonitorsAndSummaryByTeamIdQueryValidation.validateAsync(req.query);
+    //validation
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.method === undefined &&
+      error.method === "getMonitorsAndSummaryByTeamId";
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const { teamId } = req.params;
+    const { type } = req.query;
+    const monitorsSummary = await req.db.getMonitorsAndSummaryByTeamId(
+      teamId,
+      type
+    );
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MONITOR_GET_BY_USER_ID(teamId),
+      data: monitorsSummary,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method === undefined &&
+      error.method === "getMonitorsAndSummaryByTeamId";
+    next(error);
+  }
+};
+
+/**
+ * Returns all monitors belong to team with TeamID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
@@ -359,6 +450,7 @@ const pauseMonitor = async (req, res, next) => {
       await req.jobQueue.addJob(monitor._id, monitor);
     }
     monitor.isActive = !monitor.isActive;
+    monitor.status = undefined;
     monitor.save();
     return res.status(200).json({
       success: true,
@@ -376,9 +468,11 @@ const pauseMonitor = async (req, res, next) => {
 
 module.exports = {
   getAllMonitors,
+  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorCertificate,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,

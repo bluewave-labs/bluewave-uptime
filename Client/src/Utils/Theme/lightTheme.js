@@ -54,6 +54,12 @@ const lightTheme = createTheme({
       bg: "#ffecbc",
       border: "#fec84b",
     },
+    percentage: {
+      uptimePoor: "#d32f2f",
+      uptimeFair: "#ec8013",
+      uptimeGood: "#ffb800",
+      uptimeExcellent: "#079455",
+    },
     unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
     divider: border.light,
     other: {
@@ -87,6 +93,15 @@ const lightTheme = createTheme({
                 props.variant === "group" && props.filled === "true",
               style: {
                 backgroundColor: theme.palette.secondary.main,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "contained" && props.color === "secondary",
+              style: {
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.light,
               },
             },
           ],
@@ -198,6 +213,13 @@ const lightTheme = createTheme({
           "&:not(.MuiPaginationItem-ellipsis):hover, &.Mui-selected": {
             backgroundColor: background.fill,
           },
+        },
+      },
+    },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f2f4f7",
         },
       },
     },

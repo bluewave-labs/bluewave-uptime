@@ -1,43 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  ButtonGroup,
-  Stack,
-  Skeleton,
-  Typography,
-  Button,
-} from "@mui/material";
+import { ButtonGroup, Stack, Typography, Button } from "@mui/material";
 import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";
 import "./index.css";
-
-/**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
-        <Skeleton variant="rounded" width={150} height={34} />
-        <Skeleton variant="rounded" width="15%" height={34} />
-        <Skeleton
-          variant="rounded"
-          width="20%"
-          height={34}
-          sx={{ ml: "auto" }}
-        />
-      </Stack>
-      <Skeleton variant="rounded" width="100%" height={300} />
-      <Skeleton variant="rounded" width="100%" height={100} />
-    </>
-  );
-};
+import SkeletonLayout from "./skeleton";
 
 const Incidents = () => {
   const theme = useTheme();
@@ -60,11 +29,13 @@ const Incidents = () => {
         null,
         null,
         null,
+        null,
+        null,
         null
       );
       // Reduce to a lookup object for 0(1) lookup
-      if (res.data && res.data.data.length > 0) {
-        const monitorLookup = res.data.data.reduce((acc, monitor) => {
+      if (res?.data?.data?.monitors?.length > 0) {
+        const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
           acc[monitor._id] = monitor;
           return acc;
         }, {});
@@ -83,7 +54,7 @@ const Incidents = () => {
   };
 
   return (
-    <Stack className="incidents" pt={theme.spacing(21)} gap={theme.spacing(12)}>
+    <Stack className="incidents" pt={theme.spacing(20)} gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
