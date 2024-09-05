@@ -16,6 +16,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { logger } from "../../../../Utils/Logger";
 import Host from "../host";
 import { StatusLabel } from "../../../../Components/Label";
@@ -28,6 +29,7 @@ import ActionsMenu from "../actionsMenu";
 
 const MonitorTable = ({ isAdmin }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [paginationController, setPaginationController] = useState({
     page: 0,
@@ -157,7 +159,18 @@ const MonitorTable = ({ isAdmin }) => {
               };
 
               return (
-                <TableRow key={monitor._id}>
+                <TableRow
+                  key={monitor._id}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: theme.palette.background.accent,
+                    },
+                  }}
+                  onClick={() => {
+                    navigate(`/monitors/${monitor._id}`);
+                  }}
+                >
                   <TableCell>
                     <Host key={monitor._id} params={params} />
                   </TableCell>

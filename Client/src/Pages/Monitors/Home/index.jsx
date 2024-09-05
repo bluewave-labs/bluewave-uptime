@@ -24,7 +24,7 @@ const Monitors = ({ isAdmin }) => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
 
-  const monitorStats = monitorState.monitors.monitors.reduce(
+  const monitorStats = monitorState?.monitors?.monitors?.reduce(
     (acc, monitor) => {
       if (monitor.isActive === false) {
         acc["paused"] += 1;
@@ -111,7 +111,7 @@ const Monitors = ({ isAdmin }) => {
                     borderColor={theme.palette.border.light}
                     backgroundColor={theme.palette.background.accent}
                   >
-                    {monitorState.monitors.length}
+                    {monitorState.monitors.monitors.length}
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>
