@@ -27,7 +27,6 @@ import { useTheme } from "@emotion/react";
  * @param {string} props.placeholder - The placeholder text for the input field.
  * @param {boolean} props.disabled - Indicates if the field is disabled.
  * @param {Object} props.sx - The style object for the component container.
- * @param {Object} props.style - The style object for the component.
  * @param {number} props.width - The width of the component.
  * @param {string} props.autoCompleteValue - The value of the autocomplete field.
  * @param {Function} props.setAutoCompleteValue - The function to set the value of the autocomplete field.
@@ -43,7 +42,6 @@ const AutoCompleteField = ({
   placeholder = "Type to search",
   disabled,
   sx,
-  style,
   width,
   autoCompleteValue,
   setAutoCompleteValue,
@@ -56,7 +54,6 @@ const AutoCompleteField = ({
   return (
     <>
       <Autocomplete
-        style={style}
         sx={sx}
         freeSolo
         className="auto-complete-field"
@@ -144,7 +141,6 @@ AutoCompleteField.propTypes = {
   disabled: PropTypes.bool,
   width: PropTypes.number,
   sx: PropTypes.object,
-  style: PropTypes.object,
 };
 
 export default AutoCompleteField;
