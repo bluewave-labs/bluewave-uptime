@@ -3,7 +3,6 @@ import {
   BarChart,
   Bar,
   XAxis,
-  CartesianGrid,
   ResponsiveContainer,
   Cell,
   RadialBarChart,

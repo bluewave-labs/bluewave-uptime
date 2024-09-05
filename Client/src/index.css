@@ -90,10 +90,6 @@ body {
   display: none;
 }
 
-body .MuiSkeleton-root {
-  background-color: #f2f4f7;
-}
-
 @keyframes ripple {
   from {
     opacity: 1;

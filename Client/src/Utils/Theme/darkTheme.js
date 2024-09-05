@@ -220,6 +220,13 @@ const darkTheme = createTheme({
         },
       },
     },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#151518",
+        },
+      },
+    },
   },
   shape: {
     borderRadius: 2,

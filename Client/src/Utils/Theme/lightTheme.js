@@ -216,6 +216,13 @@ const lightTheme = createTheme({
         },
       },
     },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f2f4f7",
+        },
+      },
+    },
   },
   shape: {
     borderRadius: 2,
