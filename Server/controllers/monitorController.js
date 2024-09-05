@@ -4,6 +4,8 @@ const {
   getMonitorsByTeamIdValidation,
   createMonitorBodyValidation,
   editMonitorBodyValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdQueryValidation,
   pauseMonitorParamValidation,
   getMonitorStatsByIdParamValidation,
@@ -16,7 +18,6 @@ const {
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
-
 /**
  * Returns all monitors
  * @async
@@ -186,7 +187,54 @@ const getMonitorById = async (req, res, next) => {
 };
 
 /**
- * Returns all monitors belong to User with UserID
+ * Returns all monitors and a sumamry for a team with TeamID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+
+const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
+  try {
+    await getMonitorsAndSummaryByTeamIdParamValidation.validateAsync(
+      req.params
+    );
+    await getMonitorsAndSummaryByTeamIdQueryValidation.validateAsync(req.query);
+    //validation
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.method === undefined &&
+      error.method === "getMonitorsAndSummaryByTeamId";
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const { teamId } = req.params;
+    const { type } = req.query;
+    const monitorsSummary = await req.db.getMonitorsAndSummaryByTeamId(
+      teamId,
+      type
+    );
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MONITOR_GET_BY_USER_ID(teamId),
+      data: monitorsSummary,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method === undefined &&
+      error.method === "getMonitorsAndSummaryByTeamId";
+    next(error);
+  }
+};
+
+/**
+ * Returns all monitors belong to team with TeamID
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
@@ -424,6 +472,7 @@ module.exports = {
   getMonitorStatsById,
   getMonitorCertificate,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,

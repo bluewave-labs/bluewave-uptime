@@ -64,10 +64,9 @@ const {
 
 const {
   getAllMonitors,
-  getMonitorAggregateStats,
-  testMethod,
   getMonitorStatsById,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
@@ -148,6 +147,7 @@ module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,

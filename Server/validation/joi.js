@@ -161,6 +161,19 @@ const getMonitorByIdQueryValidation = joi.object({
   normalize: joi.boolean(),
 });
 
+const getMonitorsAndSummaryByTeamIdParamValidation = joi.object({
+  teamId: joi.string().required(),
+});
+
+const getMonitorsAndSummaryByTeamIdQueryValidation = joi.object({
+  type: joi
+    .alternatives()
+    .try(
+      joi.string().valid("http", "ping", "pagespeed"),
+      joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+    ),
+});
+
 const getMonitorsByTeamIdValidation = joi.object({
   teamId: joi.string().required(),
 });
@@ -381,6 +394,8 @@ module.exports = {
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,
   getMonitorStatsByIdParamValidation,

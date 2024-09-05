@@ -23,23 +23,9 @@ const Monitors = ({ isAdmin }) => {
   useEffect(() => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
-
-  const monitorStats = monitorState?.monitors?.monitors?.reduce(
-    (acc, monitor) => {
-      if (monitor.isActive === false) {
-        acc["paused"] += 1;
-      } else if (monitor.status === true) {
-        acc["up"] += 1;
-      } else {
-        acc["down"] += 1;
-      }
-      return acc;
-    },
-    { paused: 0, up: 0, down: 0 }
-  );
-
-  let loading = monitorState.isLoading && monitorState.monitors.length === 0;
-
+  let loading =
+    monitorState?.isLoading &&
+    monitorState?.monitorsSummary?.monitors?.length === 0;
   return (
     <Stack className="monitors" gap={theme.spacing(8)}>
       {loading ? (
@@ -55,7 +41,7 @@ const Monitors = ({ isAdmin }) => {
               mt={theme.spacing(5)}
             >
               <Greeting type="uptime" />
-              {monitorState.monitors?.length !== 0 && (
+              {monitorState?.monitorsSummary?.monitors?.length !== 0 && (
                 <Button
                   variant="contained"
                   color="primary"
@@ -69,20 +55,33 @@ const Monitors = ({ isAdmin }) => {
               )}
             </Stack>
           </Box>
-          {isAdmin && monitorState.monitors?.length === 0 && (
+          {isAdmin && monitorState?.monitorsSummary?.monitors?.length === 0 && (
             <Fallback isAdmin={isAdmin} />
           )}
 
-          {monitorState.monitors?.length !== 0 && (
+          {monitorState?.monitorsSummary?.monitors?.length !== 0 && (
             <>
               <Stack
                 gap={theme.spacing(8)}
                 direction="row"
                 justifyContent="space-between"
               >
-                <StatusBox title="up" value={monitorStats.up} />
-                <StatusBox title="down" value={monitorStats.down} />
-                <StatusBox title="paused" value={monitorStats.paused} />
+                <StatusBox
+                  title="up"
+                  value={monitorState?.monitorsSummary?.monitorCounts?.up ?? 0}
+                />
+                <StatusBox
+                  title="down"
+                  value={
+                    monitorState?.monitorsSummary?.monitorCounts?.down ?? 0
+                  }
+                />
+                <StatusBox
+                  title="paused"
+                  value={
+                    monitorState?.monitorsSummary?.monitorCounts?.paused ?? 0
+                  }
+                />
               </Stack>
               <Box
                 flex={1}
@@ -111,7 +110,8 @@ const Monitors = ({ isAdmin }) => {
                     borderColor={theme.palette.border.light}
                     backgroundColor={theme.palette.background.accent}
                   >
-                    {monitorState.monitors.monitors.length}
+                    {monitorState?.monitorsSummary.monitors?.monitors?.length ||
+                      0}
                   </Box>
                   {/* TODO - add search bar */}
                 </Stack>

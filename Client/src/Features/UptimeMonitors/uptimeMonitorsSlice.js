@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { networkService } from "../../main";
 const initialState = {
   isLoading: false,
-  monitors: [],
+  monitorsSummary: [],
   success: null,
   msg: null,
 };
@@ -53,14 +53,10 @@ export const getUptimeMonitorsByTeamId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsByTeamId(
+      const res = await networkService.getMonitorsAndSummaryByTeamId(
         token,
         user.teamId,
-        25,
-        ["http", "ping"],
-        null,
-        "desc",
-        true
+        ["http", "ping"]
       );
       return res.data;
     } catch (error) {
@@ -175,7 +171,7 @@ const uptimeMonitorsSlice = createSlice({
   reducers: {
     clearUptimeMonitorState: (state) => {
       state.isLoading = false;
-      state.monitors = [];
+      state.monitorsSummary = [];
       state.success = null;
       state.msg = null;
     },
@@ -192,7 +188,7 @@ const uptimeMonitorsSlice = createSlice({
       .addCase(getUptimeMonitorsByTeamId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
-        state.monitors = action.payload.data;
+        state.monitorsSummary = action.payload.data;
       })
       .addCase(getUptimeMonitorsByTeamId.rejected, (state, action) => {
         state.isLoading = false;

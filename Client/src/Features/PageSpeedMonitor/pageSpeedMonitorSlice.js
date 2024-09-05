@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { networkService } from "../../main";
 const initialState = {
   isLoading: false,
-  monitors: [],
+  monitorsSummary: [],
   success: null,
   msg: null,
 };
@@ -53,14 +53,10 @@ export const getPageSpeedByTeamId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsByTeamId(
+      const res = await networkService.getMonitorsAndSummaryByTeamId(
         token,
         user.teamId,
-        25,
-        ["pagespeed"],
-        null,
-        "desc",
-        false
+        ["pagespeed"]
       );
 
       return res.data;
@@ -155,7 +151,7 @@ const pageSpeedMonitorSlice = createSlice({
   reducers: {
     clearMonitorState: (state) => {
       state.isLoading = false;
-      state.monitors = [];
+      state.monitorsSummary = [];
       state.success = null;
       state.msg = null;
     },
@@ -172,7 +168,7 @@ const pageSpeedMonitorSlice = createSlice({
       .addCase(getPageSpeedByTeamId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
-        state.monitors = action.payload.data;
+        state.monitorsSummary = action.payload.data;
       })
       .addCase(getPageSpeedByTeamId.rejected, (state, action) => {
         state.isLoading = false;
