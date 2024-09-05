@@ -183,7 +183,7 @@ const uptimeMonitorsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // *****************************************************
-      // Monitors by userId
+      // Monitors by teamId
       // *****************************************************
 
       .addCase(getUptimeMonitorsByTeamId.pending, (state) => {
