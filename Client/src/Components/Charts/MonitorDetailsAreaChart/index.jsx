@@ -97,7 +97,7 @@ const MonitorDetailsAreaChart = ({ checks }) => {
     });
   };
 
-  const memoizedChecks = useMemo(() => checks, []);
+  const memoizedChecks = useMemo(() => checks, [checks[0]]);
 
   const theme = useTheme();
 
@@ -149,6 +149,7 @@ const MonitorDetailsAreaChart = ({ checks }) => {
           dataKey="responseTime"
           stroke={theme.palette.primary.main}
           fill="url(#colorUv)"
+          strokeWidth={1.5}
         />
       </AreaChart>
     </ResponsiveContainer>

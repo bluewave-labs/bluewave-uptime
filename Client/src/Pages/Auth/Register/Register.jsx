@@ -8,7 +8,7 @@ import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { register } from "../../../Features/Auth/authSlice";
 import { useParams } from "react-router-dom";
-import background from "../../../assets/Images/background_pattern_decorative.png";
+import Background from "../../../assets/Images/background-grid.svg?react";
 import Logo from "../../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -658,18 +658,22 @@ const Register = ({ isSuperAdmin }) => {
         "& h1": {
           color: theme.palette.primary.main,
           fontWeight: 600,
-          fontSize: 30,
+          fontSize: 28,
         },
-        "& p": {
-          fontSize: 14,
-          color: theme.palette.text.accent,
-        },
+        "& p": { fontSize: 14, color: theme.palette.text.accent },
+        "& span": { fontSize: "inherit" },
       }}
     >
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
       <Stack
         direction="row"
         alignItems="center"

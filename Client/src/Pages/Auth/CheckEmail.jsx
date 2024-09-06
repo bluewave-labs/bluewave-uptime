@@ -5,7 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { createToast } from "../../Utils/toastUtils";
 import { forgotPassword } from "../../Features/Auth/authSlice";
-import background from "../../assets/Images/background_pattern_decorative.png";
+import { IconBox } from "./styled";
+import Background from "../../assets/Images/background-grid.svg?react";
 import EmailIcon from "../../assets/icons/email.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import "./index.css";
@@ -93,16 +94,20 @@ const CheckEmail = () => {
           fontWeight: 600,
           fontSize: 22,
         },
-        "& p": {
-          fontSize: 14,
-          color: theme.palette.text.accent,
-        },
+        "& p": { color: theme.palette.text.accent, fontSize: 13.5 },
+        "& span": { fontSize: "inherit" },
       }}
     >
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
       <Stack
         direction="row"
         alignItems="center"
@@ -134,14 +139,16 @@ const CheckEmail = () => {
         }}
       >
         <Stack
-          gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+          gap={{ xs: theme.spacing(8), sm: theme.spacing(10) }}
           alignItems="center"
           textAlign="center"
         >
           <Box>
-            <EmailIcon alt="email icon" />
+            <IconBox>
+              <EmailIcon alt="email icon" />
+            </IconBox>
             <Typography component="h1">Check your email</Typography>
-            <Typography mt={theme.spacing(2)}>
+            <Typography>
               We sent a password reset link to{" "}
               <Typography className="email-sent-to" component="span">
                 {email || "username@email.com"}
@@ -159,7 +166,7 @@ const CheckEmail = () => {
           >
             Open email app
           </Button>
-          <Typography sx={{ alignSelf: "center", mb: theme.spacing(6) }}>
+          <Typography sx={{ alignSelf: "center", mt: theme.spacing(6) }}>
             Didn&apos;t receive the email?{" "}
             <Typography
               component="span"

@@ -4,8 +4,9 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import background from "../../assets/Images/background_pattern_decorative.png";
-import ConfirmIcon from "../../assets/icons/confirm-icon.svg?react";
+import { IconBox } from "./styled";
+import Background from "../../assets/Images/background-grid.svg?react";
+import ConfirmIcon from "../../assets/icons/check-outlined.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import "./index.css";
 
@@ -28,18 +29,21 @@ const NewPasswordConfirmed = () => {
         "& h1": {
           color: theme.palette.primary.main,
           fontWeight: 600,
-          fontSize: 22,
+          fontSize: 21,
         },
-        "& p": {
-          fontSize: 14,
-          color: theme.palette.text.accent,
-        },
+        "& p": { fontSize: 13.5, color: theme.palette.text.accent },
       }}
     >
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
       <Stack
         direction="row"
         alignItems="center"
@@ -76,9 +80,11 @@ const NewPasswordConfirmed = () => {
           textAlign="center"
         >
           <Box>
-            <ConfirmIcon alt="password confirm icon" />
+            <IconBox>
+              <ConfirmIcon alt="password confirm icon" />
+            </IconBox>
             <Typography component="h1">Password reset</Typography>
-            <Typography mt={theme.spacing(2)}>
+            <Typography mb={theme.spacing(2)}>
               Your password has been successfully reset. Click below to log in
               magically.
             </Typography>

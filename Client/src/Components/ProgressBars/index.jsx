@@ -44,7 +44,7 @@ const ProgressUpload = ({
         borderRadius: theme.shape.borderRadius,
         border: 1,
         borderColor: theme.palette.border.light,
-        backgroundColor: "#fafafa",
+        backgroundColor: theme.palette.background.fill,
         "&:has(.input-error)": {
           borderColor: theme.palette.error.main,
           backgroundColor: theme.palette.error.bg,
@@ -62,23 +62,35 @@ const ProgressUpload = ({
         direction="row"
         mb={error ? 0 : theme.spacing(5)}
         gap={theme.spacing(5)}
-        alignItems={error ? "center" : "flex-end"}
+        alignItems={error ? "center" : "flex-start"}
       >
         {error ? (
           <ErrorOutlineOutlinedIcon />
         ) : icon ? (
-          <IconButton
+          <Box
             sx={{
+              position: "relative",
+              height: 30,
+              minWidth: 30,
+              border: 1,
+              borderColor: theme.palette.border.dark,
+              borderRadius: 2,
               backgroundColor: theme.palette.background.main,
-              pointerEvents: "none",
-              borderRadius: theme.shape.borderRadius,
-              border: 2,
-              borderColor: theme.palette.border.light,
-              boxShadow: theme.shape.boxShadow,
+              "& svg": {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 23,
+                height: 23,
+                "& path": {
+                  fill: theme.palette.other.icon,
+                },
+              },
             }}
           >
             {icon}
-          </IconButton>
+          </Box>
         ) : (
           ""
         )}
