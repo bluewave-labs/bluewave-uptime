@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
@@ -9,7 +9,6 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../styled";
 import Radio from "../../../Components/Inputs/Radio";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
@@ -44,16 +43,16 @@ const CreateMonitor = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if(monitorId){
+    if (monitorId) {
       const data = monitors.find((monitor) => monitor._id === monitorId);
       if (!data) {
         console.error("Error fetching monitor of id: " + monitorId);
-        navigate("/not-found", {replace: true});
+        navigate("/not-found", { replace: true });
       }
-      const {name, ...rest} = data;   //data.name is read-only
-      if(rest.type === 'http'){
-        const url = new URL(rest.url)
-        rest.url = url.host       
+      const { name, ...rest } = data; //data.name is read-only
+      if (rest.type === "http") {
+        const url = new URL(rest.url);
+        rest.url = url.host;
       }
       rest.name = `${name} (Clone)`;
       rest.interval /= MS_PER_MINUTE;
@@ -254,29 +253,19 @@ const CreateMonitor = () => {
               {monitor.type === "http" ? (
                 <ButtonGroup sx={{ ml: "32px" }}>
                   <Button
-                    level="secondary"
-                    label="HTTPS"
+                    variant="group"
+                    filled={https.toString()}
                     onClick={() => setHttps(true)}
-                    sx={{
-                      backgroundColor: https && theme.palette.background.fill,
-                      borderColor: theme.palette.border.dark,
-                      "&:hover": {
-                        borderColor: theme.palette.border.dark,
-                      },
-                    }}
-                  />
+                  >
+                    HTTPS
+                  </Button>
                   <Button
-                    level="secondary"
-                    label="HTTP"
+                    variant="group"
+                    filled={(!https).toString()}
                     onClick={() => setHttps(false)}
-                    sx={{
-                      backgroundColor: !https && theme.palette.background.fill,
-                      borderColor: theme.palette.border.dark,
-                      "&:hover": {
-                        borderColor: theme.palette.border.dark,
-                      },
-                    }}
-                  />
+                  >
+                    HTTP
+                  </Button>
                 </ButtonGroup>
               ) : (
                 ""
@@ -376,12 +365,13 @@ const CreateMonitor = () => {
         </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
           <Button
-            id="create-monitor-btn"
-            level="primary"
-            label="Create monitor"
+            variant="contained"
+            color="primary"
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
-          />
+          >
+            Create monitor
+          </Button>
         </Stack>
       </Stack>
     </Box>

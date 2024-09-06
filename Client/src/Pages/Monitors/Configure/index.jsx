@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
@@ -14,16 +14,17 @@ import {
   getUptimeMonitorsByTeamId,
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import Button from "../../../Components/Button";
 import Field from "../../../Components/Inputs/Field";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
-import "./index.css";
 import SkeletonLayout from "./skeleton";
-import ButtonSpinner from "../../../Components/ButtonSpinner";
+import LoadingButton from "@mui/lab/LoadingButton";
+import "./index.css";
+
 /**
  * Parses a URL string and returns a URL object.
  *
@@ -52,7 +53,6 @@ const Configure = () => {
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
-
   const idMap = {
     "monitor-url": "url",
     "monitor-name": "name",
@@ -189,6 +189,18 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
+  const statusColor = {
+    true: theme.palette.success.main,
+    false: theme.palette.error.main,
+    undefined: theme.palette.warning.main,
+  };
+
+  const statusMsg = {
+    true: "Your site is up.",
+    false: "Your site is down.",
+    undefined: "Pending...",
+  };
+
   return (
     <Stack className="configure-monitor" gap={theme.spacing(12)}>
       {Object.keys(monitor).length === 0 ? (
@@ -210,13 +222,7 @@ const Configure = () => {
             flex={1}
           >
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              />
+              <PulseDot color={statusColor[monitor?.status ?? undefined]} />
               <Box>
                 {parsedUrl?.host ? (
                   <Typography
@@ -233,13 +239,9 @@ const Configure = () => {
                 <Typography
                   component="span"
                   lineHeight={theme.spacing(12)}
-                  sx={{
-                    color: monitor?.status
-                      ? theme.palette.success.main
-                      : theme.palette.error.text,
-                  }}
+                  sx={{ color: statusColor[monitor?.status ?? undefined] }}
                 >
-                  Your site is {monitor?.status ? "up" : "down"}.
+                  {statusMsg[monitor?.status ?? undefined]}
                 </Typography>
               </Box>
               <Box
@@ -248,33 +250,42 @@ const Configure = () => {
                   ml: "auto",
                 }}
               >
-                <ButtonSpinner
-                  isLoading={isLoading}
-                  level="tertiary"
-                  label={monitor?.isActive ? "Pause" : "Resume"}
-                  animate="rotate180"
-                  img={<PauseCircleOutlineIcon />}
+                <LoadingButton
+                  variant="contained"
+                  color="secondary"
+                  loading={isLoading}
                   sx={{
+                    border: "none",
                     backgroundColor: theme.palette.background.main,
-                    pl: theme.spacing(4),
-                    pr: theme.spacing(6),
+                    px: theme.spacing(5),
                     mr: theme.spacing(6),
                     "& svg": {
                       mr: theme.spacing(2),
                     },
                   }}
                   onClick={handlePause}
-                />
-                <ButtonSpinner
-                  isLoading={isLoading}
-                  level="error"
-                  label="Remove"
-                  sx={{
-                    boxShadow: "none",
-                    px: theme.spacing(8),
-                  }}
+                >
+                  {monitor?.isActive ? (
+                    <>
+                      <PauseCircleOutlineIcon />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircleOutlineRoundedIcon />
+                      Resume
+                    </>
+                  )}
+                </LoadingButton>
+                <LoadingButton
+                  loading={isLoading}
+                  variant="contained"
+                  color="error"
+                  sx={{ px: theme.spacing(8) }}
                   onClick={() => setIsOpen(true)}
-                />
+                >
+                  Remove
+                </LoadingButton>
               </Box>
             </Stack>
             <ConfigBox>
@@ -381,13 +392,15 @@ const Configure = () => {
               </Stack>
             </ConfigBox>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
-              <ButtonSpinner
-                isLoading={isLoading}
-                level="primary"
-                label="Save"
+              <LoadingButton
+                variant="contained"
+                color="primary"
+                loading={isLoading}
                 sx={{ px: theme.spacing(12) }}
                 onClick={handleSubmit}
-              />
+              >
+                Save
+              </LoadingButton>
             </Stack>
           </Stack>
         </>
@@ -440,11 +453,20 @@ const Configure = () => {
             justifyContent="flex-end"
           >
             <Button
-              level="tertiary"
-              label="Cancel"
+              variant="text"
+              color="info"
               onClick={() => setIsOpen(false)}
-            />
-            <Button level="error" label="Delete" onClick={handleRemove} />
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              variant="contained"
+              color="error"
+              loading={isLoading}
+              onClick={handleRemove}
+            >
+              Delete
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Skeleton, Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
@@ -12,7 +12,6 @@ import {
 } from "../../../Utils/timeUtils";
 import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
-import Button from "../../../Components/Button";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
 import ClockIcon from "../../../assets/icons/maintenance.svg?react";
@@ -43,7 +42,7 @@ const StatBox = ({ icon, title, value }) => {
       <Box>
         <Typography
           variant="h6"
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           mb={theme.spacing(6)}
         >
           {title}
@@ -214,7 +213,7 @@ const PageSpeedDetails = () => {
           monitorId,
           "desc",
           50,
-          null,
+          "day",
           null,
           null
         );
@@ -398,28 +397,24 @@ const PageSpeedDetails = () => {
               </Typography>
             </Box>
             <Button
-              level="tertiary"
-              label="Configure"
-              animate="rotate90"
-              img={
-                <SettingsIcon
-                  style={{
-                    width: theme.spacing(10),
-                    height: theme.spacing(10),
-                  }}
-                />
-              }
+              variant="contained"
+              color="secondary"
               onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
               sx={{
                 ml: "auto",
                 alignSelf: "flex-end",
-                backgroundColor: theme.palette.background.fill,
-                px: theme.spacing(6),
+                px: theme.spacing(5),
                 "& svg": {
-                  mr: "6px",
+                  mr: theme.spacing(3),
+                  "& path": {
+                    stroke: theme.palette.other.icon,
+                  },
                 },
               }}
-            />
+            >
+              <SettingsIcon />
+              Configure
+            </Button>
           </Stack>
           <Stack
             direction="row"
@@ -592,7 +587,7 @@ const PageSpeedDetails = () => {
                 <Typography
                   component="span"
                   sx={{
-                    color: theme.palette.common.main,
+                    color: theme.palette.primary.main,
                     fontWeight: 500,
                     textDecoration: "underline",
                     cursor: "pointer",
@@ -627,7 +622,7 @@ const PageSpeedDetails = () => {
                 <Typography
                   component="span"
                   sx={{
-                    color: theme.palette.common.main,
+                    color: theme.palette.primary.main,
                     fontWeight: 500,
                     textDecoration: "underline",
                     cursor: "pointer",

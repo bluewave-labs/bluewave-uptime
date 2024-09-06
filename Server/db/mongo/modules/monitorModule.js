@@ -35,7 +35,7 @@ const calculateUptimeDuration = (checks) => {
   const latestCheck = new Date(checks[0].createdAt);
   let latestDownCheck = 0;
 
-  for (let i = 0; i < checks.length; i++) {
+  for (let i = checks.length; i <= 0; i--) {
     if (checks[i].status === false) {
       latestDownCheck = new Date(checks[i].createdAt);
       break;
@@ -77,11 +77,11 @@ const getLatestResponseTime = (checks) => {
 };
 
 /**
- * Helper function to get average 24h response time
+ * Helper function to get average response time
  * @param {Array} checks Array of check objects.
  * @returns {number} Timestamp of the most recent check.
  */
-const getAverageResponseTime24Hours = (checks) => {
+const getAverageResponseTime = (checks) => {
   if (!checks || checks.length === 0) {
     return 0;
   }
@@ -121,28 +121,7 @@ const getIncidents = (checks) => {
     return check.status === false ? (acc += 1) : acc;
   }, 0);
 };
-/**
- * Helper function to get all incidents
- * @param {Array} checks Array of check objects.
- * @returns {Array<Boolean>}  Array of booleans representing up/down.
- */
-const getStatusBarValues = (monitor, checks) => {
-  const checksIn60Mins = Math.floor((60 * 60 * 1000) / monitor.interval);
-  const noBlankChecks = checksIn60Mins - checks.length;
 
-  const statusBarValues = checks.map((check) => {
-    return {
-      status: check.status,
-      responseTime: check.responseTime,
-      value: 75,
-    };
-  });
-
-  for (let i = 0; i < noBlankChecks; i++) {
-    statusBarValues.push({ status: undefined, responseTime: 0, value: 75 });
-  }
-  return statusBarValues.reverse();
-};
 /**
  * Get stats by monitor ID
  * @async
@@ -152,42 +131,35 @@ const getStatusBarValues = (monitor, checks) => {
  * @throws {Error}
  */
 const getMonitorStatsById = async (req) => {
-  const filterLookup = {
-    hour: new Date(new Date().getTime() - 60 * 60 * 1000),
+  const startDates = {
     day: new Date(new Date().setDate(new Date().getDate() - 1)),
     week: new Date(new Date().setDate(new Date().getDate() - 7)),
     month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
   };
-
+  const endDate = new Date();
   try {
-    const { monitorId } = req.params;
-    let { status, limit, sortOrder, dateRange, numToDisplay, normalize } =
-      req.query;
-
-    // This effectively removes limit, returning all checks
-    if (limit === undefined) limit = 0;
-
-    // Default sort order is newest -> oldest
-    sortOrder = sortOrder === "asc" ? 1 : -1;
-
     // Get monitor
+    const { monitorId } = req.params;
+    let { limit, sortOrder, dateRange, numToDisplay, normalize } = req.query;
     const monitor = await Monitor.findById(monitorId);
     if (monitor === null || monitor === undefined) {
       throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
     }
+    // This effectively removes limit, returning all checks
+    if (limit === undefined) limit = 0;
+    // Default sort order is newest -> oldest
+    sortOrder = sortOrder === "asc" ? 1 : -1;
 
-    // Determine if this is a pagespeed monitor or an http/ping monitor
     let model =
       monitor.type === "http" || monitor.type === "ping"
         ? Check
         : PageSpeedCheck;
 
-    // Build monitor stats object
     const monitorStats = {
       ...monitor.toObject(),
     };
 
-    // Start building query
+    // Build checks query
     const checksQuery = { monitorId: monitor._id };
 
     // Get all checks
@@ -195,76 +167,101 @@ const getMonitorStatsById = async (req) => {
       createdAt: sortOrder,
     });
 
+    const checksQueryForDateRange = {
+      ...checksQuery,
+      createdAt: {
+        $gte: startDates[dateRange],
+        $lte: endDate,
+      },
+    };
+
+    const checksForDateRange = await model
+      .find(checksQueryForDateRange)
+      .sort({ createdAt: sortOrder });
+
     if (monitor.type === "http" || monitor.type === "ping") {
-      const checksQuery24Hours = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.day },
-      };
-      const checksQuery30Days = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.month },
-      };
-      const checksQuery60Mins = {
-        ...checksQuery,
-        createdAt: { $gte: filterLookup.hour },
-      };
-
-      const [checks24Hours, checks30Days, checks60Mins] = await Promise.all([
-        model.find(checksQuery24Hours).sort({ createdAt: sortOrder }),
-        model.find(checksQuery30Days).sort({ createdAt: sortOrder }),
-        model.find(checksQuery60Mins).sort({ createdAt: sortOrder }),
-      ]);
-
       // HTTP/PING Specific stats
-      monitorStats.avgResponseTime24hours =
-        getAverageResponseTime24Hours(checks24Hours);
-      monitorStats.uptime24Hours = getUptimePercentage(checks24Hours);
-      monitorStats.uptime30Days = getUptimePercentage(checks30Days);
-      monitorStats.statusBar = getStatusBarValues(monitor, checks60Mins);
+      monitorStats.periodAvgResponseTime =
+        getAverageResponseTime(checksForDateRange);
+      monitorStats.periodUptime = getUptimePercentage(checksForDateRange);
+
+      // Aggregate data
+      let groupedChecks;
+      // Group checks by hour if range is day
+      if (dateRange === "day") {
+        groupedChecks = checksForDateRange.reduce((acc, check) => {
+          const time = new Date(check.createdAt);
+          time.setMinutes(0, 0, 0);
+          if (!acc[time]) {
+            acc[time] = { time, checks: [] };
+          }
+          acc[time].checks.push(check);
+          return acc;
+        }, {});
+      } else {
+        groupedChecks = checksForDateRange.reduce((acc, check) => {
+          const time = new Date(check.createdAt).toISOString().split("T")[0]; // Extract the date part
+          if (!acc[time]) {
+            acc[time] = { time, checks: [] };
+          }
+          acc[time].checks.push(check);
+          return acc;
+        }, {});
+      }
+
+      // Map grouped checks to stats
+      const aggregateData = Object.values(groupedChecks).map((group) => {
+        const totalChecks = group.checks.length;
+        const uptimePercentage = getUptimePercentage(group.checks);
+        const totalIncidents = group.checks.filter(
+          (check) => check.status === false
+        ).length;
+        const avgResponseTime =
+          group.checks.reduce((sum, check) => sum + check.responseTime, 0) /
+          totalChecks;
+
+        return {
+          time: group.time,
+          uptimePercentage,
+          totalChecks,
+          totalIncidents,
+          avgResponseTime,
+        };
+      });
+      monitorStats.aggregateData = aggregateData;
     }
 
-    //Get checks for dateRange
-    if (status !== undefined) {
-      checksQuery.status = status;
-    }
-
-    // Filter checks by "day", "week", or "month"
-    if (dateRange !== undefined) {
-      checksQuery.createdAt = { $gte: filterLookup[dateRange] };
-    }
-
-    let dateRangeChecks = await model
-      .find(checksQuery)
-      .sort({
-        createdAt: sortOrder,
-      })
-      .limit(limit);
-
-    const incidents = getIncidents(dateRangeChecks);
+    monitorStats.periodIncidents = getIncidents(checksForDateRange);
+    monitorStats.periodTotalChecks = checksForDateRange.length;
 
     // If more than numToDisplay checks, pick every nth check
+
+    let nthChecks = checksForDateRange;
+
     if (
       numToDisplay !== undefined &&
-      dateRangeChecks &&
-      dateRangeChecks.length > numToDisplay
+      checksForDateRange &&
+      checksForDateRange.length > numToDisplay
     ) {
-      const n = Math.ceil(dateRangeChecks.length / numToDisplay);
-      dateRangeChecks = dateRangeChecks.filter((_, index) => index % n === 0);
+      const n = Math.ceil(checksForDateRange.length / numToDisplay);
+      nthChecks = checksForDateRange.filter((_, index) => index % n === 0);
     }
 
     // Normalize checks if requested
     if (normalize !== undefined) {
-      dateRangeChecks = NormalizeData(dateRangeChecks, 1, 100);
+      const normailzedChecks = NormalizeData(nthChecks, 1, 100);
+      monitorStats.checks = normailzedChecks;
+    } else {
+      monitorStats.checks = nthChecks;
     }
 
-    // Add common stats and stats that depend on the dateRange
     monitorStats.uptimeDuration = calculateUptimeDuration(checksAll);
     monitorStats.lastChecked = getLastChecked(checksAll);
     monitorStats.latestResponseTime = getLatestResponseTime(checksAll);
-    monitorStats.incidents = incidents;
-    monitorStats.checks = dateRangeChecks;
+
     return monitorStats;
   } catch (error) {
+    error.methodName = "getMonitorStatsById";
     throw error;
   }
 };
@@ -280,8 +277,54 @@ const getMonitorStatsById = async (req) => {
 const getMonitorById = async (monitorId) => {
   try {
     const monitor = await Monitor.findById(monitorId);
-    return monitor;
+    if (monitor === null || monitor === undefined) {
+      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+    }
+    // Get notifications
+    const notifications = await Notification.find({
+      monitorId: monitorId,
+    });
+    monitor.notifications = notifications;
+    const monitorWithNotifications = await monitor.save();
+    return monitorWithNotifications;
   } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Get monitors and Summary by TeamID
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns {Promise<Array<Monitor>>}
+ * @throws {Error}
+ */
+
+const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
+  try {
+    const monitors = await Monitor.find({ teamId, type });
+    const monitorCounts = monitors.reduce(
+      (acc, monitor) => {
+        if (monitor.status === true) {
+          acc.up += 1;
+        }
+
+        if (monitor.status === false) {
+          acc.down += 1;
+        }
+
+        if (monitor.isActive === false) {
+          acc.paused += 1;
+        }
+        return acc;
+      },
+      { up: 0, down: 0, paused: 0 }
+    );
+    monitorCounts.total = monitors.length;
+    return { monitors, monitorCounts };
+  } catch (error) {
+    error.method = "getMonitorsAndSummaryByTeamId";
     throw error;
   }
 };
@@ -296,8 +339,19 @@ const getMonitorById = async (monitorId) => {
  */
 const getMonitorsByTeamId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize } = req.query || {};
+    let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
+      req.query || {};
     const monitorQuery = { teamId: req.params.teamId };
+    const monitorsCount = await Monitor.countDocuments({
+      teamId: req.params.teamId,
+      type,
+    });
+
+    // Pagination
+    let skip = 0;
+    if (page && rowsPerPage) {
+      skip = page * rowsPerPage;
+    }
 
     if (type !== undefined) {
       const types = Array.isArray(type) ? type : [type];
@@ -314,7 +368,9 @@ const getMonitorsByTeamId = async (req, res) => {
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
 
-    const monitors = await Monitor.find(monitorQuery);
+    const monitors = await Monitor.find(monitorQuery)
+      .skip(skip)
+      .limit(rowsPerPage);
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
@@ -340,15 +396,10 @@ const getMonitorsByTeamId = async (req, res) => {
         if (normalize !== undefined) {
           checks = NormalizeData(checks, 10, 100);
         }
-
-        // Get notifications
-        const notifications = await Notification.find({
-          monitorId: monitor._id,
-        });
-        return { ...monitor.toObject(), checks, notifications };
+        return { ...monitor.toObject(), checks };
       })
     );
-    return monitorsWithChecks;
+    return { monitors: monitorsWithChecks, monitorCount: monitorsCount };
   } catch (error) {
     throw error;
   }
@@ -450,6 +501,7 @@ module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,

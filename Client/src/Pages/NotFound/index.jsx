@@ -1,8 +1,7 @@
-import Button from "../../Components/Button";
 import React from "react";
 import PropTypes from "prop-types";
 import NotFoundSvg from "../../../src/assets/Images/sushi_404.svg";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 
@@ -48,11 +47,13 @@ const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
         </Typography>
         <Typography fontSize={13}>{desc}</Typography>
         <Button
-          label="Go to the main dashboard"
-          level="primary"
+          variant="contained"
+          color="primary"
           sx={{ mt: theme.spacing(10) }}
           onClick={() => navigate("/")}
-        />
+        >
+          Go to the main dashboard
+        </Button>
       </Stack>
     </Stack>
   );

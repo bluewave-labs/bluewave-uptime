@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { networkService } from "../../main";
 const initialState = {
   isLoading: false,
-  monitors: [],
+  monitorsSummary: [],
   success: null,
   msg: null,
 };
@@ -28,19 +28,35 @@ export const createPageSpeed = createAsyncThunk(
   }
 );
 
+export const getPagespeedMonitorById = createAsyncThunk(
+  "monitors/getMonitorById",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitorId } = data;
+      const res = await networkService.getMonitorByid(authToken, monitorId);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
+
 export const getPageSpeedByTeamId = createAsyncThunk(
   "pageSpeedMonitors/getPageSpeedByTeamId",
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsByTeamId(
+      const res = await networkService.getMonitorsAndSummaryByTeamId(
         token,
         user.teamId,
-        25,
-        ["pagespeed"],
-        null,
-        "desc",
-        false
+        ["pagespeed"]
       );
 
       return res.data;
@@ -109,6 +125,25 @@ export const deletePageSpeed = createAsyncThunk(
     }
   }
 );
+export const pausePageSpeed = createAsyncThunk(
+  "pageSpeedMonitors/pausePageSpeed",
+  async (data, thunkApi) => {
+    try {
+      const { authToken, monitorId } = data;
+      const res = await networkService.pauseMonitorById(authToken, monitorId);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
 
 const pageSpeedMonitorSlice = createSlice({
   name: "pageSpeedMonitor",
@@ -116,7 +151,7 @@ const pageSpeedMonitorSlice = createSlice({
   reducers: {
     clearMonitorState: (state) => {
       state.isLoading = false;
-      state.monitors = [];
+      state.monitorsSummary = [];
       state.success = null;
       state.msg = null;
     },
@@ -124,7 +159,7 @@ const pageSpeedMonitorSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // *****************************************************
-      // Monitors by userId
+      // Monitors by teamId
       // *****************************************************
 
       .addCase(getPageSpeedByTeamId.pending, (state) => {
@@ -133,7 +168,7 @@ const pageSpeedMonitorSlice = createSlice({
       .addCase(getPageSpeedByTeamId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = action.payload.msg;
-        state.monitors = action.payload.data;
+        state.monitorsSummary = action.payload.data;
       })
       .addCase(getPageSpeedByTeamId.rejected, (state, action) => {
         state.isLoading = false;
@@ -141,6 +176,23 @@ const pageSpeedMonitorSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Getting page speed monitors failed";
+      })
+
+      // *****************************************************
+      .addCase(getPagespeedMonitorById.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getPagespeedMonitorById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(getPagespeedMonitorById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to get pagespeed monitor";
       })
 
       // *****************************************************
@@ -163,7 +215,7 @@ const pageSpeedMonitorSlice = createSlice({
       })
 
       // *****************************************************
-      // Create Monitor
+      // Update Monitor
       // *****************************************************
       .addCase(updatePageSpeed.pending, (state) => {
         state.isLoading = true;
@@ -198,6 +250,24 @@ const pageSpeedMonitorSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to delete page speed monitor";
+      })
+      // *****************************************************
+      // Pause Monitor
+      // *****************************************************
+      .addCase(pausePageSpeed.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(pausePageSpeed.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(pausePageSpeed.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to pause page speed monitor";
       });
   },
 });

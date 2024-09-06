@@ -1,27 +1,15 @@
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  Box,
-  ButtonGroup,
-  Divider,
-  IconButton,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import ButtonSpinner from "../../ButtonSpinner";
-import Button from "../../Button";
+import { Button, ButtonGroup, Modal, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import EditSvg from "../../../assets/icons/edit.svg?react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
 import { networkService } from "../../../main";
 import { createToast } from "../../../Utils/toastUtils";
 import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
-import Remove from "../../../assets/icons/trash-bin.svg?react";
 import Select from "../../Inputs/Select";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -54,6 +42,7 @@ const TeamPanel = () => {
   const [members, setMembers] = useState([]);
   const [filter, setFilter] = useState("all");
   const [errors, setErrors] = useState({});
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -173,6 +162,7 @@ const TeamPanel = () => {
   };
 
   const handleInviteMember = async () => {
+    setIsSendingInvite(true);
     if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
       setToInvite((prev) => ({ ...prev, role: ["user"] }));
 
@@ -185,24 +175,28 @@ const TeamPanel = () => {
 
     if (error) {
       setErrors((prev) => ({ ...prev, email: error.details[0].message }));
-    } else
-      try {
-        await networkService.requestInvitationToken(
-          authToken,
-          toInvite.email,
-          toInvite.role
-        );
+      return;
+    }
 
-        closeInviteModal();
-        createToast({
-          body: "Member invited. They will receive an email with details on how to create their account.",
-        });
-      } catch (error) {
-        createToast({
-          body: error.message || "Unknown error.",
-        });
-      }
+    try {
+      await networkService.requestInvitationToken(
+        authToken,
+        toInvite.email,
+        toInvite.role
+      );
+      closeInviteModal();
+      createToast({
+        body: "Member invited. They will receive an email with details on how to create their account.",
+      });
+    } catch (error) {
+      createToast({
+        body: error.message || "Unknown error.",
+      });
+    } finally {
+      setIsSendingInvite(false);
+    }
   };
+
   const closeInviteModal = () => {
     setIsOpen(false);
     setToInvite({ email: "", role: ["0"] });
@@ -283,48 +277,38 @@ const TeamPanel = () => {
             gap={theme.spacing(6)}
             sx={{ fontSize: 14 }}
           >
-            <ButtonGroup
-              sx={{
-                "& button, & button:hover": {
-                  borderColor: theme.palette.border.light,
-                },
-              }}
-            >
+            <ButtonGroup>
               <Button
-                level="secondary"
-                label="All"
+                variant="group"
+                filled={(filter === "all").toString()}
                 onClick={() => setFilter("all")}
-                sx={{
-                  backgroundColor:
-                    filter === "all" && theme.palette.background.fill,
-                }}
-              />
+              >
+                All
+              </Button>
               <Button
-                level="secondary"
-                label="Administrator"
+                variant="group"
+                filled={(filter === "admin").toString()}
                 onClick={() => setFilter("admin")}
-                sx={{
-                  backgroundColor:
-                    filter === "admin" && theme.palette.background.fill,
-                }}
-              />
+              >
+                Administrator
+              </Button>
               <Button
-                level="secondary"
-                label="Member"
+                variant="group"
+                filled={(filter === "user").toString()}
                 onClick={() => setFilter("user")}
-                sx={{
-                  backgroundColor:
-                    filter === "user" && theme.palette.background.fill,
-                }}
-              />
+              >
+                Member
+              </Button>
             </ButtonGroup>
           </Stack>
-          <Button
-            level="primary"
-            label="Invite a team member"
-            sx={{ paddingX: theme.spacing(15) }}
+          <LoadingButton
+            loading={isSendingInvite}
+            variant="contained"
+            color="primary"
             onClick={() => setIsOpen(true)}
-          />
+          >
+            Invite a team member
+          </LoadingButton>
         </Stack>
         <BasicTable
           data={tableData}
@@ -400,18 +384,23 @@ const TeamPanel = () => {
             mt={theme.spacing(8)}
             justifyContent="flex-end"
           >
-            <Button
-              level="tertiary"
-              label="Cancel"
+            <LoadingButton
+              loading={isSendingInvite}
+              variant="text"
+              color="info"
               onClick={closeInviteModal}
-            />
-            <ButtonSpinner
-              level="primary"
-              label="Send invite"
+            >
+              Cancel
+            </LoadingButton>
+            <LoadingButton
+              variant="contained"
+              color="primary"
               onClick={handleInviteMember}
-              isLoading={false}
+              loading={isSendingInvite}
               disabled={Object.keys(errors).length !== 0}
-            />
+            >
+              Send invite
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

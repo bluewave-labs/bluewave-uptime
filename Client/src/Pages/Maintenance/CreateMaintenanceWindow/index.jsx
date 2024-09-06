@@ -1,7 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import "./index.css";
 import { useState } from "react";
-import Button from "../../../Components/Button";
 import Back from "../../../assets/icons/left-arrow-long.svg?react";
 import Select from "../../../Components/Inputs/Select";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -215,7 +214,7 @@ const CreateNewMaintenanceWindow = () => {
             sx={{
               width: "fit-content",
               fontSize: "var(--env-var-font-size-small)",
-              borderBottom: `1px dashed ${theme.palette.common.main}`,
+              borderBottom: `1px dashed ${theme.palette.primary.main}`,
               paddingBottom: "4px",
             }}
           >
@@ -230,18 +229,17 @@ const CreateNewMaintenanceWindow = () => {
     <div className="create-maintenance-window">
       <Stack gap={theme.spacing(10)}>
         <Button
-          id="btn-back"
+          variant="contained"
+          color="secondary"
           sx={{
             width: "100px",
             height: "30px",
             gap: "10px",
-            backgroundColor: theme.palette.background.fill,
-            color: theme.palette.text.secondary,
           }}
-          label="Back"
-          level="tertiary"
-          img={<Back />}
-        />
+        >
+          <Back />
+          Back
+        </Button>
         <Box>
           <Typography
             sx={{
@@ -278,26 +276,19 @@ const CreateNewMaintenanceWindow = () => {
         </Stack>
         <Stack justifyContent="end" direction="row" marginTop={3}>
           <Button
+            variant="text"
+            color="info"
             sx={{
               "&:hover": {
                 backgroundColor: "transparent",
-                boxShadow: "none",
               },
             }}
-            level="tertiary"
-            label="Cancel"
-          />
-          <Button
-            sx={{
-              "&:hover": {
-                backgroundColor: "#1570EF",
-                boxShadow: "none",
-              },
-            }}
-            level="primary"
-            label="Create"
-            onClick={handleSubmit}
-          />
+          >
+            Cancel
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            Create
+          </Button>
         </Stack>
       </Stack>
     </div>

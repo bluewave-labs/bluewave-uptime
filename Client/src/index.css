@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -84,10 +88,6 @@ body {
 
 .MuiTouchRipple-root {
   display: none;
-}
-
-body .MuiSkeleton-root {
-  background-color: #f2f4f7;
 }
 
 @keyframes ripple {

@@ -39,6 +39,7 @@ function App() {
   const DetailsWithAdminProp = withAdminProp(Details);
   const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   const MaintenanceWithAdminProp = withAdminProp(Maintenance);
+  const SettingsWithAdminProp = withAdminProp(Settings);
 
   const mode = useSelector((state) => state.ui.mode);
 
@@ -90,7 +91,7 @@ function App() {
           />
           <Route
             path="settings"
-            element={<ProtectedRoute Component={Settings} />}
+            element={<ProtectedRoute Component={SettingsWithAdminProp} />}
           />
           <Route
             path="account/profile"

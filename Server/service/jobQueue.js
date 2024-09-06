@@ -39,7 +39,9 @@ class JobQueue {
       queue.networkService = networkService;
       const monitors = await db.getAllMonitors();
       for (const monitor of monitors) {
-        await queue.addJob(monitor.id, monitor);
+        if (monitor.active) {
+          await queue.addJob(monitor.id, monitor);
+        }
       }
       const workerStats = await queue.getWorkerStats();
       await queue.scaleWorkers(workerStats);
@@ -238,7 +240,6 @@ class JobQueue {
       console.log("Adding job", payload.url);
       // Execute job immediately
       await this.queue.add(jobName, payload);
-
       await this.queue.add(jobName, payload, {
         repeat: {
           every: payload.interval,

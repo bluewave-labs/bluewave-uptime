@@ -13,6 +13,7 @@ import {
   Box,
   Typography,
   Stack,
+  Button,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setRowsPerPage } from "../../Features/UI/uiSlice";
@@ -21,7 +22,6 @@ import RightArrowDouble from "../../assets/icons/right-arrow-double.svg?react";
 import LeftArrow from "../../assets/icons/left-arrow.svg?react";
 import RightArrow from "../../assets/icons/right-arrow.svg?react";
 import SelectorVertical from "../../assets/icons/selector-vertical.svg?react";
-import Button from "../Button";
 import "./index.css";
 /**
  * Component for pagination actions (first, previous, next, last).
@@ -54,37 +54,37 @@ const TablePaginationActions = (props) => {
   return (
     <Box sx={{ flexShrink: 0, ml: "24px" }}>
       <Button
-        level="secondary"
-        label=""
-        img={<LeftArrowDouble />}
+        variant="group"
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
         aria-label="first page"
-      />
+      >
+        <LeftArrowDouble />
+      </Button>
       <Button
-        level="secondary"
-        label=""
-        img={<LeftArrow />}
+        variant="group"
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label="previous page"
-      />
+      >
+        <LeftArrow />
+      </Button>
       <Button
-        level="secondary"
-        label=""
-        img={<RightArrow />}
+        variant="group"
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
-      />
+      >
+        <RightArrow />
+      </Button>
       <Button
-        level="secondary"
-        label=""
-        img={<RightArrowDouble />}
+        variant="group"
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="last page"
-      />
+      >
+        <RightArrowDouble />
+      </Button>
     </Box>
   );
 };
@@ -200,31 +200,12 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
 
   return (
     <>
-      <TableContainer
-        component={Paper}
-        sx={{
-          backgroundColor: theme.palette.background.main,
-          border: `solid 1px ${theme.palette.border.light}`,
-          borderRadius: theme.shape.borderRadius,
-        }}
-      >
+      <TableContainer component={Paper}>
         <Table>
-          <TableHead
-            sx={{
-              backgroundColor: theme.palette.background.accent,
-            }}
-          >
+          <TableHead>
             <TableRow>
               {data.cols.map((col) => (
-                <TableCell
-                  key={col.id}
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    borderBottomColor: theme.palette.border.light,
-                  }}
-                >
-                  {col.name}
-                </TableCell>
+                <TableCell key={col.id}>{col.name}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -242,17 +223,7 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
                   onClick={row.handleClick ? row.handleClick : null}
                 >
                   {row.data.map((cell) => {
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        sx={{
-                          color: theme.palette.text.secondary,
-                          borderBottomColor: theme.palette.border.light,
-                        }}
-                      >
-                        {cell.data}
-                      </TableCell>
-                    );
+                    return <TableCell key={cell.id}>{cell.data}</TableCell>;
                   })}
                 </TableRow>
               );
@@ -322,18 +293,14 @@ const BasicTable = ({ data, paginated, reversed, table }) => {
             sx={{
               mt: theme.spacing(6),
               color: theme.palette.text.secondary,
-              "& button.MuiButtonBase-root, & .MuiSelect-select": {
-                border: 1,
-                borderColor: theme.palette.border.light,
-                borderRadius: theme.shape.borderRadius,
-              },
               "& svg path": {
                 stroke: theme.palette.text.tertiary,
                 strokeWidth: 1.3,
               },
-              "& button:not(.Mui-disabled):hover": {
-                backgroundColor: theme.palette.background.fill,
-                borderColor: theme.palette.background.fill,
+              "& .MuiSelect-select": {
+                border: 1,
+                borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
               },
             }}
           />

@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { createToast } from "../../../Utils/toastUtils";
 import {
+  Button,
   IconButton,
   Menu,
   MenuItem,
@@ -16,10 +17,9 @@ import {
   getUptimeMonitorsByTeamId,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Settings from "../../../assets/icons/settings-bold.svg?react";
-import Button from "../../../Components/Button";
 import PropTypes from "prop-types";
 
-const ActionsMenu = ({ monitor, isAdmin }) => {
+const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [actions, setActions] = useState({});
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +37,7 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
     if (action.meta.requestStatus === "fulfilled") {
       setIsOpen(false); // close modal
       dispatch(getUptimeMonitorsByTeamId(authState.authToken));
+      updateCallback();
       createToast({ body: "Monitor deleted successfully." });
     } else {
       createToast({ body: "Failed to delete monitor." });
@@ -93,17 +94,8 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
         slotProps={{
           paper: {
             sx: {
-              "& ul": {
-                p: theme.spacing(2.5),
-                minWidth: "100px",
-              },
-              "& li": {
-                color: theme.palette.text.secondary,
-                fontSize: 13,
-                px: theme.spacing(4),
-                py: theme.spacing(2.5),
-                borderRadius: theme.shape.borderRadius,
-              },
+              "& ul": { p: theme.spacing(2.5) },
+              "& li": { m: 0 },
               "& li:last-of-type": {
                 color: theme.palette.error.text,
               },
@@ -206,21 +198,25 @@ const ActionsMenu = ({ monitor, isAdmin }) => {
             justifyContent="flex-end"
           >
             <Button
-              level="tertiary"
-              label="Cancel"
+              variant="text"
+              color="info"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsOpen(false);
               }}
-            />
+            >
+              Cancel
+            </Button>
             <Button
-              level="error"
-              label="Delete"
+              variant="contained"
+              color="error"
               onClick={(e) => {
                 e.stopPropagation(e);
                 handleRemove(e);
               }}
-            />
+            >
+              Delete
+            </Button>
           </Stack>
         </Stack>
       </Modal>
@@ -235,6 +231,7 @@ ActionsMenu.propTypes = {
     type: PropTypes.string,
   }).isRequired,
   isAdmin: PropTypes.bool,
+  updateCallback: PropTypes.func,
 };
 
 export default ActionsMenu;

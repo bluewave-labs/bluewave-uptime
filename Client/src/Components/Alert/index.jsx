@@ -1,12 +1,11 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import "./index.css";
-import Button from "../Button";
 
 /**
  * Icons mapping for different alert variants.
@@ -32,7 +31,7 @@ const icons = {
 
 const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
   const theme = useTheme();
-  const { text, light, border } = theme.palette[variant];
+  const { text, bg, border } = theme.palette[variant];
   const icon = icons[variant];
 
   return (
@@ -46,7 +45,7 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
         padding: hasIcon
           ? theme.spacing(8)
           : `${theme.spacing(4)} ${theme.spacing(8)}`,
-        backgroundColor: light,
+        backgroundColor: bg,
         border: `solid 1px ${border}`,
         borderRadius: theme.shape.borderRadius,
       }}
@@ -65,8 +64,8 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
         )}
         {hasIcon && isToast && (
           <Button
-            level="tertiary"
-            label="Dismiss"
+            variant="text"
+            color="info"
             onClick={onClick}
             sx={{
               fontWeight: "600",
@@ -74,15 +73,10 @@ const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
               mt: theme.spacing(4),
               padding: 0,
               minWidth: 0,
-              "&:hover": {
-                backgroundColor: "transparent",
-              },
-              "& .MuiTouchRipple-root": {
-                pointerEvents: "none",
-                display: "none",
-              },
             }}
-          ></Button>
+          >
+            Dismiss
+          </Button>
         )}
       </Stack>
       {isToast && (
