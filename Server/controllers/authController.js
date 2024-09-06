@@ -463,12 +463,12 @@ const deleteUserController = async (req, res, next) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
-    // 1. Find all the monitors associated with the user id
+    // 1. Find all the monitors associated with the team ID if superadmin
 
     const result = await req.db.getMonitorsByTeamId({
       params: { teamId: user.teamId },
     });
-    if (result?.monitors.length > 0) {
+    if (user.role.includes("superadmin") && result?.monitors.length > 0) {
       //2.  Remove all jobs, delete checks and alerts
       await Promise.all(
         monitors.map(async (monitor) => {
