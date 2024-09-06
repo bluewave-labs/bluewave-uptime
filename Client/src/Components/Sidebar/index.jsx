@@ -92,7 +92,8 @@ function Sidebar() {
   const [popup, setPopup] = useState();
   const { user } = useSelector((state) => state.auth);
 
-  if (!user.role.includes("superadmin")) {
+  // Remove demo password if demo
+  if (user.role.includes("demo")) {
     menu[3].nested = menu[3].nested.filter((item) => {
       return item.name !== "Password";
     });

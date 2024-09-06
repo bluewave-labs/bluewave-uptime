@@ -331,7 +331,7 @@ const ProfilePanel = () => {
           borderColor: theme.palette.border.light,
         }}
       />
-      {user.role.includes("superadmin") && (
+      {!user.role.includes("demo") && (
         <Box component="form" noValidate spellCheck="false">
           <Box mb={theme.spacing(6)}>
             <Typography component="h1">Delete account</Typography>

@@ -15,6 +15,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PropTypes from "prop-types";
 import { logger } from "../../Utils/Logger";
 import "./index.css";
+const DEMO = import.meta.env.VITE_APP_DEMO;
 
 /**
  * Displays the initial landing page.
@@ -327,8 +328,8 @@ const Login = () => {
   };
 
   const [form, setForm] = useState({
-    email: "uptimedemo@demo.com",
-    password: "Demouser1!",
+    email: DEMO !== undefined ? "uptimedemo@demo.com" : "",
+    password: DEMO !== undefined ? "Demouser1!" : "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);

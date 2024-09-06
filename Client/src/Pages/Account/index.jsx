@@ -24,9 +24,11 @@ const Account = ({ open = "profile" }) => {
   };
   const { user } = useSelector((state) => state.auth);
 
-  let tabList = ["Profile", "Team"];
-  if (user.role.includes("superadmin")) {
-    tabList.push("Password");
+  let tabList = ["Profile", "Team", "Password"];
+
+  // Remove passwrod for demo
+  if (user.role.includes("demo")) {
+    tabList = tabList.filter((tab) => tab !== "Password");
   }
   const requiredRoles = ["superadmin", "admin"];
   const hideTeams = !requiredRoles.some((role) => user.role.includes(role));
