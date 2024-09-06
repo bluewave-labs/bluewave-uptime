@@ -24,6 +24,7 @@ const TeamPanel = () => {
     superadmin: "Super admin",
     admin: "Admin",
     user: "Team member",
+    demo: "Demo User",
   };
 
   const theme = useTheme();
