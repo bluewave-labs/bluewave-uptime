@@ -90,6 +90,13 @@ function Sidebar() {
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
   const [anchorEl, setAnchorEl] = useState(null);
   const [popup, setPopup] = useState();
+  const { user } = useSelector((state) => state.auth);
+
+  if (!user.role.includes("superadmin")) {
+    menu[3].nested = menu[3].nested.filter((item) => {
+      return item.name !== "Password";
+    });
+  }
 
   const openPopup = (event, id) => {
     setAnchorEl(event.currentTarget);

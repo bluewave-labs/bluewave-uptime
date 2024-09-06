@@ -22,9 +22,12 @@ const Account = ({ open = "profile" }) => {
   const handleTabChange = (event, newTab) => {
     navigate(`/account/${newTab}`);
   };
-
-  let tabList = ["Profile", "Password", "Team"];
   const { user } = useSelector((state) => state.auth);
+
+  let tabList = ["Profile", "Team"];
+  if (user.role.includes("superadmin")) {
+    tabList.push("Password");
+  }
   const requiredRoles = ["superadmin", "admin"];
   const hideTeams = !requiredRoles.some((role) => user.role.includes(role));
   if (hideTeams) {
@@ -74,7 +77,7 @@ const Account = ({ open = "profile" }) => {
           </TabList>
         </Box>
         <ProfilePanel />
-        <PasswordPanel />
+        {user.role.includes("superadmin") && <PasswordPanel />}
         {!hideTeams && <TeamPanel />}
       </TabContext>
     </Box>

@@ -331,22 +331,24 @@ const ProfilePanel = () => {
           borderColor: theme.palette.border.light,
         }}
       />
-      <Box component="form" noValidate spellCheck="false">
-        <Box mb={theme.spacing(6)}>
-          <Typography component="h1">Delete account</Typography>
-          <Typography component="p" sx={{ opacity: 0.6 }}>
-            Note that deleting your account will remove all data from our
-            system. This is permanent and non-recoverable.
-          </Typography>
+      {user.role.includes("superadmin") && (
+        <Box component="form" noValidate spellCheck="false">
+          <Box mb={theme.spacing(6)}>
+            <Typography component="h1">Delete account</Typography>
+            <Typography component="p" sx={{ opacity: 0.6 }}>
+              Note that deleting your account will remove all data from our
+              system. This is permanent and non-recoverable.
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => setIsOpen("delete")}
+          >
+            Delete account
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => setIsOpen("delete")}
-        >
-          Delete account
-        </Button>
-      </Box>
+      )}
       {/* TODO - Update ModalPopup Component with @mui for reusability */}
       <Modal
         aria-labelledby="modal-delete-account"
