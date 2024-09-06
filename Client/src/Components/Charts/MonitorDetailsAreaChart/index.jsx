@@ -97,7 +97,7 @@ const MonitorDetailsAreaChart = ({ checks }) => {
     });
   };
 
-  const memoizedChecks = useMemo(() => checks, []);
+  const memoizedChecks = useMemo(() => checks, [checks[0]]);
 
   const theme = useTheme();
 
