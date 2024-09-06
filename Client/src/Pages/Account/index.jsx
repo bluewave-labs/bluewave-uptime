@@ -24,16 +24,16 @@ const Account = ({ open = "profile" }) => {
   };
   const { user } = useSelector((state) => state.auth);
 
-  let tabList = ["Profile", "Team", "Password"];
-
-  // Remove passwrod for demo
-  if (user.role.includes("demo")) {
-    tabList = tabList.filter((tab) => tab !== "Password");
-  }
   const requiredRoles = ["superadmin", "admin"];
+  let tabList = ["Profile", "Team", "Password"];
   const hideTeams = !requiredRoles.some((role) => user.role.includes(role));
   if (hideTeams) {
     tabList = ["Profile", "Password"];
+  }
+
+  // Remove passwrod for demo
+  if (user.role.includes("demo")) {
+    tabList = ["Profile"];
   }
 
   return (
