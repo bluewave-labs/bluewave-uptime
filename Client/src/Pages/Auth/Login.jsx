@@ -280,7 +280,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
             position: "absolute",
             top: "103%",
             left: "50%",
-            transform: "translateX(-50%)"
+            transform: "translateX(-50%)",
           }}
         >
           <Typography
@@ -327,8 +327,8 @@ const Login = () => {
   };
 
   const [form, setForm] = useState({
-    email: "",
-    password: "",
+    email: "uptimedemo@demo.com",
+    password: "Demouser1!",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
