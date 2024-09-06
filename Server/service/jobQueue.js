@@ -39,7 +39,7 @@ class JobQueue {
       queue.networkService = networkService;
       const monitors = await db.getAllMonitors();
       for (const monitor of monitors) {
-        if (monitor.active) {
+        if (monitor.isActive) {
           await queue.addJob(monitor.id, monitor);
         }
       }
