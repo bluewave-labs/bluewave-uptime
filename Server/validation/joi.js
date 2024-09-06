@@ -1,4 +1,5 @@
 const joi = require("joi");
+const { normalize } = require("path");
 
 //****************************************
 // Custom Validators
@@ -160,6 +161,19 @@ const getMonitorByIdQueryValidation = joi.object({
   normalize: joi.boolean(),
 });
 
+const getMonitorsAndSummaryByTeamIdParamValidation = joi.object({
+  teamId: joi.string().required(),
+});
+
+const getMonitorsAndSummaryByTeamIdQueryValidation = joi.object({
+  type: joi
+    .alternatives()
+    .try(
+      joi.string().valid("http", "ping", "pagespeed"),
+      joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+    ),
+});
+
 const getMonitorsByTeamIdValidation = joi.object({
   teamId: joi.string().required(),
 });
@@ -175,6 +189,24 @@ const getMonitorsByTeamIdQueryValidation = joi.object({
       joi.string().valid("http", "ping", "pagespeed"),
       joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
     ),
+  page: joi.number(),
+  rowsPerPage: joi.number(),
+});
+
+const getMonitorStatsByIdParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+const getMonitorStatsByIdQueryValidation = joi.object({
+  status: joi.string(),
+  limit: joi.number(),
+  sortOrder: joi.string().valid("asc", "desc"),
+  dateRange: joi.string().valid("day", "week", "month"),
+  numToDisplay: joi.number(),
+  normalize: joi.boolean(),
+});
+
+const getCertificateParamValidation = joi.object({
+  monitorId: joi.string().required(),
 });
 
 const createMonitorBodyValidation = joi.object({
@@ -199,6 +231,13 @@ const editMonitorBodyValidation = joi.object({
 
 const pauseMonitorParamValidation = joi.object({
   monitorId: joi.string().required(),
+});
+
+const getMonitorAggregateStatsParamValidation = joi.object({
+  monitorId: joi.string().required(),
+});
+const getMonitorAggregateStatsQueryValidation = joi.object({
+  dateRange: joi.string().valid("day", "week", "month"),
 });
 
 //****************************************
@@ -292,6 +331,10 @@ const deleteChecksParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+const deleteChecksByTeamIdParamValidation = joi.object({
+  teamId: joi.string().required(),
+});
+
 //****************************************
 // PageSpeedCheckValidation
 //****************************************
@@ -351,8 +394,15 @@ module.exports = {
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,
+  getMonitorStatsByIdParamValidation,
+  getMonitorStatsByIdQueryValidation,
+  getCertificateParamValidation,
+  getMonitorAggregateStatsParamValidation,
+  getMonitorAggregateStatsQueryValidation,
   editMonitorBodyValidation,
   pauseMonitorParamValidation,
   editUserParamValidation,
@@ -372,6 +422,7 @@ module.exports = {
   getTeamChecksParamValidation,
   getTeamChecksQueryValidation,
   deleteChecksParamValidation,
+  deleteChecksByTeamIdParamValidation,
   deleteUserParamValidation,
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,

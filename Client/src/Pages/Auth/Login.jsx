@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
-import Button from "../../Components/Button";
 import { networkService } from "../../main";
 import Field from "../../Components/Inputs/Field";
 import background from "../../assets/Images/background_pattern_decorative.png";
@@ -40,17 +39,22 @@ const LandingPage = ({ onContinue }) => {
         </Box>
         <Box width="100%">
           <Button
-            level="secondary"
-            label="Continue with Email"
-            img={<Mail />}
+            variant="outlined"
+            color="info"
             onClick={onContinue}
             sx={{
               width: "100%",
               "& svg": {
                 mr: theme.spacing(4),
+                "& path": {
+                  stroke: theme.palette.other.icon,
+                },
               },
             }}
-          />
+          >
+            <Mail />
+            Continue with Email
+          </Button>
         </Box>
         <Box maxWidth={400}>
           <Typography className="tos-p">
@@ -151,27 +155,29 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              mb: theme.spacing(6),
-              px: theme.spacing(8),
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.spacing(2),
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.email && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
       </Stack>
     </>
@@ -219,6 +225,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
     <>
       <Stack
         gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+        position="relative"
         textAlign="center"
       >
         <Box>
@@ -243,39 +250,49 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
         </Box>
         <Stack direction="row" justifyContent="space-between">
           <Button
-            level="secondary"
-            label="Back"
-            animate="slideLeft"
-            img={<ArrowBackRoundedIcon />}
+            variant="outlined"
+            color="info"
             onClick={onBack}
             sx={{
-              mb: theme.spacing(6),
-              px: theme.spacing(8),
+              px: theme.spacing(5),
               "& svg.MuiSvgIcon-root": {
-                mr: theme.spacing(2),
+                mr: theme.spacing(3),
               },
             }}
             props={{ tabIndex: -1 }}
-          />
+          >
+            <ArrowBackRoundedIcon />
+            Back
+          </Button>
           <Button
-            level="primary"
-            label="Continue"
+            variant="contained"
+            color="primary"
             onClick={onSubmit}
             disabled={errors.password && true}
             sx={{ width: "30%" }}
-          />
+          >
+            Continue
+          </Button>
         </Stack>
-        <Box textAlign="center">
+        <Box
+          textAlign="center"
+          sx={{
+            position: "absolute",
+            top: "103%",
+            left: "50%",
+            transform: "translateX(-50%)"
+          }}
+        >
           <Typography
             className="forgot-p"
             display="inline-block"
-            color={theme.palette.common.main}
+            color={theme.palette.primary.main}
           >
             Forgot password?
           </Typography>
           <Typography
             component="span"
-            color={theme.palette.common.main}
+            color={theme.palette.primary.main}
             ml={theme.spacing(2)}
             sx={{ userSelect: "none" }}
             onClick={handleNavigate}
@@ -419,7 +436,7 @@ const Login = () => {
       overflow="hidden"
       sx={{
         "& h1": {
-          color: theme.palette.common.main,
+          color: theme.palette.primary.main,
           fontWeight: 600,
           fontSize: 30,
         },
@@ -491,7 +508,7 @@ const Login = () => {
         </Typography>
         <Typography
           component="span"
-          color={theme.palette.common.main}
+          color={theme.palette.primary.main}
           ml={theme.spacing(2)}
           onClick={() => {
             navigate("/register");

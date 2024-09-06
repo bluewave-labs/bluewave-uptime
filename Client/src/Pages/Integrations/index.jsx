@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
-import { Stack, Typography, Grid } from "@mui/material";
-import Button from "../../Components/Button";
+import { Stack, Typography, Grid, Button } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import Discord from "../../assets/icons/discord-icon.svg?react";
 import Slack from "../../assets/icons/slack-icon.svg?react";
@@ -47,12 +46,14 @@ const IntegrationsComponent = ({ icon, header, info, onClick }) => {
           </Typography>
         </Stack>
         <Button
-          label="Add"
-          level="primary"
+          variant="contained"
+          color="primary"
           onClick={onClick}
           sx={{ alignSelf: "center" }}
           disabled={true}
-        />
+        >
+          Add
+        </Button>
       </Stack>
     </Grid>
   );

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import Arrow from "../../../assets/icons/top-right-arrow.svg?react";
-import background from "../../../assets/Images/background-grid.svg";
+import Background from "../../../assets/Images/background-grid.svg?react";
 import ClockSnooze from "../../../assets/icons/clock-snooze.svg?react";
 
 const StatusBox = ({ title, value }) => {
@@ -48,26 +48,27 @@ const StatusBox = ({ title, value }) => {
       borderColor={theme.palette.border.light}
       borderRadius={theme.shape.borderRadius}
       backgroundColor={theme.palette.background.main}
-      px={theme.spacing(12)}
-      py={theme.spacing(8)}
+      p={theme.spacing(8)}
       overflow="hidden"
       sx={{
         "&:hover": {
           backgroundColor: theme.palette.background.accent,
         },
-        "&:after": {
-          position: "absolute",
-          content: `""`,
-          backgroundImage: `url(${background})`,
-          width: "400px",
-          height: "200px",
-          top: "-10%",
-          left: "5%",
-          zIndex: 10000,
-          pointerEvents: "none",
-        },
       }}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "-10%",
+          left: "5%",
+          pointerEvents: "none",
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.other.grid,
+          },
+        }}
+      >
+        <Background />
+      </Box>
       <Box
         textTransform="uppercase"
         fontSize={15}

@@ -22,6 +22,7 @@
 .create-page-speed .section-disabled {
   opacity: 0.4;
   padding: 10px;
+  margin-right: -5px;
   border-radius: 8px;
   user-select: none;
   pointer-events: none;

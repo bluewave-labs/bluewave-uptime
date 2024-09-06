@@ -67,6 +67,7 @@ const Select = ({
           component="h3"
           color={theme.palette.text.secondary}
           fontWeight={500}
+          fontSize={13}
         >
           {label}
         </Typography>

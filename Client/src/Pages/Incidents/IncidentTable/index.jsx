@@ -15,14 +15,12 @@ import {
 
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
 import { useTheme } from "@emotion/react";
-
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
   const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);

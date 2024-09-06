@@ -53,7 +53,8 @@ Host.propTypes = {
   params: PropTypes.shape({
     title: PropTypes.string,
     percentageColor: PropTypes.string,
-    percentage: PropTypes.number,
+    percentage: PropTypes.string,
+    url: PropTypes.string,
   }).isRequired,
 };
 

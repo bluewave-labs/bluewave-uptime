@@ -1,8 +1,16 @@
 import PropTypes from "prop-types";
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Box, Typography } from "@mui/material";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
+import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import "./index.css";
+import React, { useMemo } from "react";
 
 const CustomToolTip = ({ active, payload, label }) => {
   const theme = useTheme();
@@ -16,14 +24,15 @@ const CustomToolTip = ({ active, payload, label }) => {
           border: 1,
           borderColor: theme.palette.border.dark,
           borderRadius: theme.shape.borderRadius,
-          py: theme.spacing(6),
-          px: theme.spacing(8),
+          py: theme.spacing(2),
+          px: theme.spacing(4),
         }}
       >
         <Typography
           sx={{
-            color: theme.palette.common.main,
-            fontSize: 13,
+            color: theme.palette.text.tertiary,
+            fontSize: 12,
+            fontWeight: 500,
           }}
         >
           {new Date(label).toLocaleDateString("en-US", {
@@ -38,15 +47,39 @@ const CustomToolTip = ({ active, payload, label }) => {
               hour12: true, // AM/PM format
             })}
         </Typography>
-        <Typography
-          mt={theme.spacing(2.5)}
-          sx={{
-            color: theme.palette.text.secondary,
-            fontSize: 13,
-          }}
-        >
-          Response Time (ms): {payload[0].payload.originalResponseTime}
-        </Typography>{" "}
+        <Box mt={theme.spacing(1)}>
+          <Box
+            display="inline-block"
+            width={theme.spacing(4)}
+            height={theme.spacing(4)}
+            backgroundColor={theme.palette.primary.main}
+            sx={{ borderRadius: "50%" }}
+          />
+          <Stack
+            display="inline-flex"
+            direction="row"
+            justifyContent="space-between"
+            ml={theme.spacing(3)}
+            sx={{
+              "& span": {
+                color: theme.palette.text.tertiary,
+                fontSize: 11,
+                fontWeight: 500,
+              },
+            }}
+          >
+            <Typography component="span" sx={{ opacity: 0.8 }}>
+              Response Time
+            </Typography>{" "}
+            <Typography component="span">
+              {payload[0].payload.originalResponseTime}
+              <Typography component="span" sx={{ opacity: 0.8 }}>
+                {" "}
+                ms
+              </Typography>
+            </Typography>
+          </Stack>
+        </Box>
         {/* Display original value */}
       </Box>
     );
@@ -64,12 +97,16 @@ const MonitorDetailsAreaChart = ({ checks }) => {
     });
   };
 
+  const memoizedChecks = useMemo(() => checks, []);
+
+  const theme = useTheme();
+
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" minWidth={25} height={220}>
       <AreaChart
-        width={500}
-        height={400}
-        data={checks}
+        width="100%"
+        height="100%"
+        data={memoizedChecks}
         margin={{
           top: 10,
           right: 0,
@@ -77,18 +114,41 @@ const MonitorDetailsAreaChart = ({ checks }) => {
           bottom: 0,
         }}
       >
+        <CartesianGrid
+          stroke={theme.palette.border.light}
+          strokeWidth={1}
+          strokeOpacity={1}
+          fill="transparent"
+          vertical={false}
+        />
+        <defs>
+          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="0%"
+              stopColor={theme.palette.primary.main}
+              stopOpacity={0.8}
+            />
+            <stop
+              offset="100%"
+              stopColor={theme.palette.primary.light}
+              stopOpacity={0}
+            />
+          </linearGradient>
+        </defs>
         <XAxis
+          stroke={theme.palette.border.dark}
           dataKey="createdAt"
           tickFormatter={formatDate}
           tick={{ fontSize: "13px" }}
           tickLine={false}
+          height={18}
         />
         <Tooltip content={<CustomToolTip />} />
         <Area
           type="monotone"
           dataKey="responseTime"
-          stroke="#29afee"
-          fill="#eaf2fd"
+          stroke={theme.palette.primary.main}
+          fill="url(#colorUv)"
         />
       </AreaChart>
     </ResponsiveContainer>

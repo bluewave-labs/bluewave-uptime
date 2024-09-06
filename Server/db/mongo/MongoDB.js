@@ -66,6 +66,7 @@ const {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
@@ -94,6 +95,7 @@ const {
   getChecks,
   getTeamChecks,
   deleteChecks,
+  deleteChecksByTeamId,
 } = require("./modules/checkModule");
 
 //****************************************
@@ -145,6 +147,7 @@ module.exports = {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
+  getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
   deleteMonitor,
@@ -155,6 +158,7 @@ module.exports = {
   getChecks,
   getTeamChecks,
   deleteChecks,
+  deleteChecksByTeamId,
   createAlert,
   getAlertsByUserId,
   getAlertsByMonitorId,
