@@ -18,7 +18,7 @@ const border = { light: "#27272a", dark: "#36363e" };
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
 const shadow =
-  "0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
+  "0px 4px 24px -4px rgba(255, 255, 255, 0.03), 0px 3px 3px -3px rgba(255, 255, 255, 0.01)";
 
 const darkTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
