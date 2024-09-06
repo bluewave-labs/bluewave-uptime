@@ -11,7 +11,6 @@ import Field from "../../Components/Inputs/Field";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Key from "../../assets/icons/key.svg?react";
 import Background from "../../assets/Images/background-grid.svg?react";
-import background from "../../assets/Images/background_pattern_decorative.png";
 import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
 

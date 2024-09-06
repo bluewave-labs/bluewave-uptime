@@ -76,6 +76,7 @@ const lightTheme = createTheme({
         body: {
           backgroundImage:
             "radial-gradient(circle, #fcfcfd, #fdfcfd, #fdfdfd, #fefdfe, #fefefe, #fefefe, #fefefe, #fefefe, #fefdfe, #fdfdfd, #fdfcfd, #fcfcfd)",
+          lineHeight: "inherit",
         },
       },
     },

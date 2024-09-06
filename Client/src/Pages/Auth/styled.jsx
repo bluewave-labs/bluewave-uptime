@@ -11,7 +11,7 @@ export const IconBox = styled(Box)(({ theme }) => ({
   borderRadius: 12,
   backgroundColor: theme.palette.background.accent,
   margin: "auto",
-  marginBottom: 4,
+  marginBottom: 8,
   "& svg": {
     position: "absolute",
     top: "50%",

@@ -136,7 +136,7 @@ const darkTheme = createTheme({
           padding: 4,
           transition: "none",
           "&:hover": {
-            backgroundColor: background.fill,
+            backgroundColor: border.light,
           },
         },
       },
