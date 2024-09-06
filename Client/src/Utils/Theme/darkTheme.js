@@ -53,8 +53,8 @@ const darkTheme = createTheme({
     warning: {
       text: "#e88c30",
       main: "#FF9F00",
-      light: "#272115",
-      bg: "#624711",
+      light: "#624711",
+      bg: "#262115",
       border: "#e88c30",
     },
     percentage: {
@@ -74,6 +74,15 @@ const darkTheme = createTheme({
   },
   spacing: 2,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundImage:
+            "radial-gradient(circle, #09090b, #0c0c0e, #0f0f11, #111113, #131315, #131315, #131315, #131315, #111113, #0f0f11, #0c0c0e, #09090b)",
+          lineHeight: "inherit",
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableRipple: true,
