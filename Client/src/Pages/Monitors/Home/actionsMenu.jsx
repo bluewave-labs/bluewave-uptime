@@ -140,7 +140,7 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
         <MenuItem
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/monitors/clone/${actions.id}`);
+            navigate(`/monitors/create/${actions.id}`);
           }}
         >
           Clone

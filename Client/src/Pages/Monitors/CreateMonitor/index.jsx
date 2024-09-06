@@ -13,6 +13,7 @@ import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { getUptimeMonitorById } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import "./index.css";
 
 const CreateMonitor = () => {
@@ -43,23 +44,33 @@ const CreateMonitor = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (monitorId) {
-      const data = monitors.find((monitor) => monitor._id === monitorId);
-      if (!data) {
-        console.error("Error fetching monitor of id: " + monitorId);
-        navigate("/not-found", { replace: true });
+    const fetchMonitor = async () => {
+      if (monitorId) {
+        const action = await dispatch(
+          getUptimeMonitorById({ authToken, monitorId })
+        );
+
+        if (action.payload.success) {
+          const data = action.payload.data;
+          const { name, ...rest } = data; //data.name is read-only
+          if (rest.type === "http") {
+            const url = new URL(rest.url);
+            rest.url = url.host;
+          }
+          rest.name = `${name} (Clone)`;
+          rest.interval /= MS_PER_MINUTE;
+          setMonitor({
+            ...rest,
+          });
+        } else {
+          navigate("/not-found", { replace: true });
+          createToast({
+            body: "There was an error cloning the monitor.",
+          });
+        }
       }
-      const { name, ...rest } = data; //data.name is read-only
-      if (rest.type === "http") {
-        const url = new URL(rest.url);
-        rest.url = url.host;
-      }
-      rest.name = `${name} (Clone)`;
-      rest.interval /= MS_PER_MINUTE;
-      setMonitor({
-        ...rest,
-      });
-    }
+    };
+    fetchMonitor();
   }, [monitorId, authToken, monitors]);
 
   const handleChange = (event, name) => {
