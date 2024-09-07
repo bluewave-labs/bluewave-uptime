@@ -15,7 +15,6 @@ import { networkService } from "../../../main";
 import { logger } from "../../../Utils/Logger";
 import {
   formatDate,
-  formatDuration,
   formatDurationRounded,
   formatDurationSplit,
 } from "../../../Utils/timeUtils";
@@ -158,7 +157,8 @@ const DetailsPage = ({ isAdmin }) => {
                 </Typography>
                 <Stack
                   direction="row"
-                  alignItems="flex-end"
+                  alignItems="center"
+                  height="fit-content"
                   gap={theme.spacing(2)}
                 >
                   <Tooltip
@@ -185,13 +185,14 @@ const DetailsPage = ({ isAdmin }) => {
                   </Tooltip>
                   <Typography
                     component="h2"
+                    fontSize={14.5}
                     color={theme.palette.text.secondary}
                   >
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
                   <Typography
+                    mt={theme.spacing(1)}
                     ml={theme.spacing(6)}
-                    lineHeight="20px"
                     fontSize={12}
                     position="relative"
                     color={theme.palette.text.tertiary}
@@ -205,7 +206,8 @@ const DetailsPage = ({ isAdmin }) => {
                         backgroundColor: theme.palette.text.tertiary,
                         opacity: 0.8,
                         left: -9,
-                        top: "42%",
+                        top: "50%",
+                        transform: "translateY(-50%)",
                       },
                     }}
                   >
