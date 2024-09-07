@@ -463,13 +463,12 @@ const deleteUserController = async (req, res, next) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
 
-    // 1. Find all the monitors associated with the user id
+    // 1. Find all the monitors associated with the team ID if superadmin
 
-    const monitors = await req.db.getMonitorsByUserId({
-      params: { userId: _id },
+    const result = await req.db.getMonitorsByTeamId({
+      params: { teamId: user.teamId },
     });
-
-    if (monitors) {
+    if (user.role.includes("superadmin") && result?.monitors.length > 0) {
       //2.  Remove all jobs, delete checks and alerts
       await Promise.all(
         monitors.map(async (monitor) => {
@@ -484,22 +483,17 @@ const deleteUserController = async (req, res, next) => {
 
       // 3. Delete each monitor
       await req.db.deleteMonitorsByUserId(user._id);
-
-      // 4. Delete the user by id
-      await req.db.deleteUser(user._id);
-
-      return res.status(200).json({
-        success: true,
-        msg: successMessages.AUTH_DELETE_USER,
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-        msg: errorMessages.MONITOR_GET_BY_USER_ID,
-      });
     }
+    // 4. Delete the user by id
+    await req.db.deleteUser(user._id);
+
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.AUTH_DELETE_USER,
+    });
   } catch (error) {
     error.service = SERVICE_NAME;
+    error.method === undefined && error.method === "deleteUserController";
     next(error);
   }
 };
