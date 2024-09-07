@@ -80,6 +80,7 @@ const darkTheme = createTheme({
           backgroundImage:
             "radial-gradient(circle, #09090b, #0c0c0e, #0f0f11, #111113, #131315, #131315, #131315, #131315, #111113, #0f0f11, #0c0c0e, #09090b)",
           lineHeight: "inherit",
+          paddingLeft: "calc(100vw - 100%)",
         },
       },
     },

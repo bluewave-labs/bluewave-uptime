@@ -306,6 +306,7 @@ function Sidebar() {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl) && popup === item.name}
                 onClose={closePopup}
+                disableScrollLock
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right",
@@ -591,6 +592,7 @@ function Sidebar() {
           anchorEl={anchorEl}
           open={Boolean(anchorEl) && popup === "logout"}
           onClose={closePopup}
+          disableScrollLock
           anchorOrigin={{
             vertical: "top",
             horizontal: "right",
