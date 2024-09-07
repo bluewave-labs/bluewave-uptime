@@ -31,7 +31,7 @@ const Account = ({ open = "profile" }) => {
     tabList = ["Profile", "Password"];
   }
 
-  // Remove passwrod for demo
+  // Remove password for demo
   if (user.role.includes("demo")) {
     tabList = ["Profile"];
   }
