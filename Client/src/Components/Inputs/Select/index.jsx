@@ -79,6 +79,7 @@ const Select = ({
         displayEmpty
         inputProps={{ id: id }}
         IconComponent={KeyboardArrowDownIcon}
+        MenuProps={{ disableScrollLock: true }}
         sx={{
           fontSize: 13,
           minWidth: "125px",
