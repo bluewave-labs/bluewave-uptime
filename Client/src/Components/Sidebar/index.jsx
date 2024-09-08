@@ -93,7 +93,7 @@ function Sidebar() {
   const { user } = useSelector((state) => state.auth);
 
   // Remove demo password if demo
-  if (user.role.includes("demo")) {
+  if (user.role?.includes("demo")) {
     menu[3].nested = menu[3].nested.filter((item) => {
       return item.name !== "Password";
     });
