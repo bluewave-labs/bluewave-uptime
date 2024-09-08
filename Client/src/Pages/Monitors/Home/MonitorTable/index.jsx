@@ -302,6 +302,7 @@ const MonitorTable = ({ isAdmin }) => {
             select: {
               MenuProps: {
                 keepMounted: true,
+                disableScrollLock: true,
                 PaperProps: {
                   className: "pagination-dropdown",
                   sx: {
