@@ -652,6 +652,9 @@ function Sidebar() {
               gap: theme.spacing(4),
               borderRadius: theme.shape.borderRadius,
               pl: theme.spacing(4),
+              "& svg path": {
+                stroke: theme.palette.other.icon,
+              },
             }}
           >
             <LogoutSvg />
