@@ -13,7 +13,6 @@ const Card = ({ monitor }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const monitorState = determineState(monitor);
-  console.log(monitorState);
   return (
     <Grid
       item
