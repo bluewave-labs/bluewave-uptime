@@ -6,10 +6,11 @@ import { forgotPassword } from "../../Features/Auth/authSlice";
 import { useEffect, useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
+import { IconBox } from "./styled";
 import Field from "../../Components/Inputs/Field";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Key from "../../assets/icons/key.svg?react";
-import background from "../../assets/Images/background_pattern_decorative.png";
+import Background from "../../assets/Images/background-grid.svg?react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
 
@@ -94,7 +95,7 @@ const ForgotPassword = () => {
         "& h1": {
           color: theme.palette.primary.main,
           fontWeight: 600,
-          fontSize: 24,
+          fontSize: 21,
         },
         "& p": {
           fontSize: 14,
@@ -104,8 +105,14 @@ const ForgotPassword = () => {
     >
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
       <Stack
         direction="row"
         alignItems="center"
@@ -142,7 +149,9 @@ const ForgotPassword = () => {
           textAlign="center"
         >
           <Box>
-            <Key alt="password key icon" />
+            <IconBox>
+              <Key alt="password key icon" />
+            </IconBox>
             <Typography component="h1">Forgot password?</Typography>
             <Typography>
               No worries, we&apos;ll send you reset instructions.

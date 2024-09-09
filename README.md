@@ -10,10 +10,8 @@
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
-
 ![Dashboard-dark](https://github.com/user-attachments/assets/db875138-164f-453c-a75e-889f88747578)
 (yes, we have a light theme as well, but this looks better on readme.md)
-
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
@@ -172,13 +170,21 @@ The fastest way to start the application is to use our Dockerfiles and [Docker C
 To get the application up and running you need to:
 
 1. In the `Docker` directory run the build script `build_images.sh` to build docker images for the client, server, Redis database, and MongoDB database.
-2. In the `Docker` directory, create a `server.env` file with the [requried environtmental variables](#env-vars-server) for the server. Sample file:
+
+2. In the `Dokcer` directory create a `mongo.env` file with a username and password:
+
+```
+USERNAME_ENV_VAR=user
+PASSWORD_ENV_VAR=password
+```
+
+3. In the `Docker` directory, create a `server.env` file with the [requried environtmental variables](#env-vars-server) for the server. Sample file:
 
 ```
 CLIENT_HOST="http://localhost:5173"
 JWT_SECRET=<jwt_secret>
 DB_TYPE="MongoDB"
-DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
+DB_CONNECTION_STRING="mongodb://<username>:<password>@mongodb:27017/uptime_db"
 REDIS_HOST="redis"
 REDIS_PORT=6379
 TOKEN_TTL="99d"
@@ -189,14 +195,14 @@ SYSTEM_EMAIL_ADDRESS=<system_email>
 SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
-3.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
+4.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
 VITE_APP_API_LOG_LEVEL="debug"
 ```
 
-4.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
+5.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
 
 That's it, the application is ready to use on port 80.
 <br/>
@@ -214,10 +220,11 @@ That's it, the application is ready to use on port 80.
 
 ##### Environmental Variables <a id="env-vars-client"></a>
 
-| ENV Variable Name     | Required/Optional | Type     | Description        | Accepted Values                    |
-| --------------------- | ----------------- | -------- | ------------------ | ---------------------------------- |
-| VITE_APP_API_BASE_URL | Required          | `string` | Base URL of server | {host}/api/v1                      |
-| VITE_APP_LOG_LEVEL    | Optional          | `string` | Log level          | `"none"`\|`"error"` \| `"warn"` \| |
+| ENV Variable Name     | Required/Optional | Type      | Description        | Accepted Values                    |
+| --------------------- | ----------------- | --------- | ------------------ | ---------------------------------- |
+| VITE_APP_API_BASE_URL | Required          | `string`  | Base URL of server | {host}/api/v1                      |
+| VITE_APP_LOG_LEVEL    | Optional          | `string`  | Log level          | `"none"`\|`"error"` \| `"warn"` \| |
+| VITE_APP_DEMO         | Optional          | `boolean` | Demo server or not | `true`\|`false` \|                 |
 
 <br/>
 

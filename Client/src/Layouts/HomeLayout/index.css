@@ -1,7 +1,3 @@
-#root:has(.home-layout) {
-  background-color: var(--secondary-bg);
-}
-
 .home-layout {
   position: relative;
   min-height: 100vh;

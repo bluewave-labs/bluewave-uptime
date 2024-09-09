@@ -138,6 +138,11 @@ const StatusLabel = ({ status, text, customStyles }) => {
       bgColor: theme.palette.error.bg,
       borderColor: theme.palette.error.light,
     },
+    paused: {
+      dotColor: theme.palette.warning.main,
+      bgColor: theme.palette.warning.bg,
+      borderColor: theme.palette.warning.light,
+    },
     pending: {
       dotColor: theme.palette.warning.main,
       bgColor: theme.palette.warning.bg,
@@ -175,7 +180,13 @@ const StatusLabel = ({ status, text, customStyles }) => {
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf(["up", "down", "pending", "cannot resolve"]),
+  status: PropTypes.oneOf([
+    "up",
+    "down",
+    "paused",
+    "pending",
+    "cannot resolve",
+  ]),
   text: PropTypes.string,
   customStyles: PropTypes.object,
 };

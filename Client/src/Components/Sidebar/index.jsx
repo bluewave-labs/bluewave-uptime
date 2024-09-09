@@ -90,6 +90,14 @@ function Sidebar() {
   const [open, setOpen] = useState({ Dashboard: false, Account: false });
   const [anchorEl, setAnchorEl] = useState(null);
   const [popup, setPopup] = useState();
+  const { user } = useSelector((state) => state.auth);
+
+  // Remove demo password if demo
+  if (user.role?.includes("demo")) {
+    menu[3].nested = menu[3].nested.filter((item) => {
+      return item.name !== "Password";
+    });
+  }
 
   const openPopup = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -298,6 +306,7 @@ function Sidebar() {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl) && popup === item.name}
                 onClose={closePopup}
+                disableScrollLock
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right",
@@ -583,6 +592,7 @@ function Sidebar() {
           anchorEl={anchorEl}
           open={Boolean(anchorEl) && popup === "logout"}
           onClose={closePopup}
+          disableScrollLock
           anchorOrigin={{
             vertical: "top",
             horizontal: "right",
@@ -644,6 +654,9 @@ function Sidebar() {
               gap: theme.spacing(4),
               borderRadius: theme.shape.borderRadius,
               pl: theme.spacing(4),
+              "& svg path": {
+                stroke: theme.palette.other.icon,
+              },
             }}
           >
             <LogoutSvg />

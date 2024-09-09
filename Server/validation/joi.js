@@ -70,7 +70,7 @@ const registrationBodyValidation = joi.object({
   profileImage: joi.any(),
   role: joi
     .array()
-    .items(joi.string().valid("superadmin", "admin", "user"))
+    .items(joi.string().valid("superadmin", "admin", "user", "demo"))
     .min(1)
     .required(),
   teamId: joi.string().allow("").required(),

@@ -32,4 +32,7 @@ export const ConfigBox = styled(Stack)(({ theme }) => ({
   "& h3, & p": {
     color: theme.palette.text.tertiary,
   },
+  "& p": {
+    fontSize: 13,
+  },
 }));

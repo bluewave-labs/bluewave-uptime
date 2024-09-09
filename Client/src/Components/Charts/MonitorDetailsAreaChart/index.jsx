@@ -9,8 +9,8 @@ import {
 } from "recharts";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
+import { useMemo } from "react";
 import "./index.css";
-import React, { useMemo } from "react";
 
 const CustomToolTip = ({ active, payload, label }) => {
   const theme = useTheme();
@@ -97,7 +97,7 @@ const MonitorDetailsAreaChart = ({ checks }) => {
     });
   };
 
-  const memoizedChecks = useMemo(() => checks, []);
+  const memoizedChecks = useMemo(() => checks, [checks[0]]);
 
   const theme = useTheme();
 
@@ -143,12 +143,17 @@ const MonitorDetailsAreaChart = ({ checks }) => {
           tickLine={false}
           height={18}
         />
-        <Tooltip content={<CustomToolTip />} />
+        <Tooltip
+          cursor={{ stroke: theme.palette.border.light }}
+          content={<CustomToolTip />}
+        />
         <Area
           type="monotone"
           dataKey="responseTime"
           stroke={theme.palette.primary.main}
           fill="url(#colorUv)"
+          strokeWidth={1.5}
+          activeDot={{ stroke: theme.palette.background.main, r: 5 }}
         />
       </AreaChart>
     </ResponsiveContainer>

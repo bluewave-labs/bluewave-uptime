@@ -1,6 +1,13 @@
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
-import { Button, ButtonGroup, Modal, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Modal,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
@@ -24,6 +31,7 @@ const TeamPanel = () => {
     superadmin: "Super admin",
     admin: "Admin",
     user: "Team member",
+    demo: "Demo User",
   };
 
   const theme = useTheme();
@@ -88,7 +96,7 @@ const TeamPanel = () => {
               id: idx,
               data: (
                 <Stack>
-                  <Typography style={{ color: theme.palette.text.secondary }}>
+                  <Typography color={theme.palette.text.secondary}>
                     {member.firstName + " " + member.lastName}
                   </Typography>
                   <Typography>
@@ -322,7 +330,6 @@ const TeamPanel = () => {
         aria-describedby="invite-member-to-team"
         open={isOpen}
         onClose={closeInviteModal}
-        disablePortal
       >
         <Stack
           gap={theme.spacing(5)}
@@ -331,29 +338,38 @@ const TeamPanel = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: 450,
             bgcolor: theme.palette.background.main,
             border: 1,
             borderColor: theme.palette.border.light,
             borderRadius: theme.shape.borderRadius,
-            boxShadow: 24,
+            boxShadow: theme.shape.boxShadow,
             p: theme.spacing(15),
             "&:focus": {
               outline: "none",
             },
           }}
         >
-          <Typography id="modal-invite-member" component="h1">
-            Invite new team member
-          </Typography>
-          <Typography
-            id="invite-member-to-team"
-            component="p"
-            sx={{ mb: theme.spacing(6) }}
-          >
-            When you add a new team member, they will get access to all
-            monitors.
-          </Typography>
+          <Box>
+            <Typography
+              id="modal-invite-member"
+              component="h1"
+              fontWeight={600}
+              fontColor={theme.palette.text.secondary}
+            >
+              Invite new team member
+            </Typography>
+            <Typography
+              id="invite-member-to-team"
+              component="p"
+              fontSize={13}
+              color={theme.palette.text.accent}
+              sx={{ mt: theme.spacing(1), mb: theme.spacing(4) }}
+            >
+              When you add a new team member, they will get access to all
+              monitors.
+            </Typography>
+          </Box>
           <Field
             type="email"
             id="input-team-member"
