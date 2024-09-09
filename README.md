@@ -170,13 +170,21 @@ The fastest way to start the application is to use our Dockerfiles and [Docker C
 To get the application up and running you need to:
 
 1. In the `Docker` directory run the build script `build_images.sh` to build docker images for the client, server, Redis database, and MongoDB database.
-2. In the `Docker` directory, create a `server.env` file with the [requried environtmental variables](#env-vars-server) for the server. Sample file:
+
+2. In the `Dokcer` directory create a `mongo.env` file with a username and password:
+
+```
+USERNAME_ENV_VAR=user
+PASSWORD_ENV_VAR=password
+```
+
+3. In the `Docker` directory, create a `server.env` file with the [requried environtmental variables](#env-vars-server) for the server. Sample file:
 
 ```
 CLIENT_HOST="http://localhost:5173"
 JWT_SECRET=<jwt_secret>
 DB_TYPE="MongoDB"
-DB_CONNECTION_STRING="mongodb://mongodb:27017/uptime_db"
+DB_CONNECTION_STRING="mongodb://<username>:<password>@mongodb:27017/uptime_db"
 REDIS_HOST="redis"
 REDIS_PORT=6379
 TOKEN_TTL="99d"
@@ -187,14 +195,14 @@ SYSTEM_EMAIL_ADDRESS=<system_email>
 SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
-3.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
+4.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
 VITE_APP_API_LOG_LEVEL="debug"
 ```
 
-4.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
+5.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
 
 That's it, the application is ready to use on port 80.
 <br/>

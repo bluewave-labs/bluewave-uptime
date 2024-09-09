@@ -33,8 +33,11 @@ services:
       - ./redis/data:/data
   mongodb:
     image: uptime_database_mongo:latest
-    command: ["mongod", "--quiet"]
+    command: ["mongod", "--quiet", "--auth"]
     ports:
       - "27017:27017"
     volumes:
       - ./mongo/data:/data/db
+      - ./mongo/init/create_users.js:/docker-entrypoint-initdb.d/create_users.js
+    env_file:
+      - mongo.env
