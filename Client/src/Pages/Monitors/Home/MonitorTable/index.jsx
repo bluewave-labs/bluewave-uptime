@@ -32,6 +32,7 @@ import LeftArrow from "../../../../assets/icons/left-arrow.svg?react";
 import RightArrow from "../../../../assets/icons/right-arrow.svg?react";
 import SelectorVertical from "../../../../assets/icons/selector-vertical.svg?react";
 import ActionsMenu from "../actionsMenu";
+import useUtils from "../../utils";
 
 /**
  * Component for pagination actions (first, previous, next, last).
@@ -47,7 +48,6 @@ import ActionsMenu from "../actionsMenu";
  */
 const TablePaginationActions = (props) => {
   const { count, page, rowsPerPage, onPageChange } = props;
-
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0);
   };
@@ -110,6 +110,7 @@ const MonitorTable = ({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { determineState } = useUtils();
 
   const { rowsPerPage } = useSelector((state) => state.ui.monitors);
   const [page, setPage] = useState(0);
@@ -219,13 +220,10 @@ const MonitorTable = ({ isAdmin }) => {
                 title: monitor.name,
                 percentage: uptimePercentage,
                 percentageColor,
-                status:
-                  monitor.status === undefined
-                    ? "pending"
-                    : monitor.status === true
-                    ? "up"
-                    : "down",
+                status: determineState(monitor),
               };
+
+              console.log(params);
 
               return (
                 <TableRow

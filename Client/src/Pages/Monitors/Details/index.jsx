@@ -34,13 +34,14 @@ import { StatBox, ChartBox, IconBox } from "./styled";
 import { DownBarChart, ResponseGaugeChart, UpBarChart } from "./Charts";
 import SkeletonLayout from "./skeleton";
 import "./index.css";
-
+import useUtils from "../utils";
 /**
  * Details page component displaying monitor details and related information.
  * @component
  */
 const DetailsPage = ({ isAdmin }) => {
   const theme = useTheme();
+  const { statusColor, statusStyles, statusMsg, determineState } = useUtils();
   const [monitor, setMonitor] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
@@ -89,15 +90,17 @@ const DetailsPage = ({ isAdmin }) => {
           monitorId
         );
 
-        let [month, day, year] = res?.data?.data?.certificateDate.split("/");
-        const date = new Date(year, month - 1, day);
+        if (res?.data?.data?.certificateDate) {
+          let [month, day, year] = res.data.data.certificateDate.split("/");
+          const date = new Date(year, month - 1, day);
 
-        setCertificateExpiry(
-          formatDate(date, {
-            hour: undefined,
-            minute: undefined,
-          }) ?? "N/A"
-        );
+          setCertificateExpiry(
+            formatDate(date, {
+              hour: undefined,
+              minute: undefined,
+            }) ?? "N/A"
+          );
+        }
       } catch (error) {
         console.error(error);
       }
@@ -119,18 +122,6 @@ const DetailsPage = ({ isAdmin }) => {
 
   const [hoveredUptimeData, setHoveredUptimeData] = useState(null);
   const [hoveredIncidentsData, setHoveredIncidentsData] = useState(null);
-
-  const statusColor = {
-    true: theme.palette.success.main,
-    false: theme.palette.error.main,
-    undefined: theme.palette.warning.main,
-  };
-
-  const statusMsg = {
-    true: "Your site is up.",
-    false: "Your site is down.",
-    undefined: "Pending...",
-  };
 
   return (
     <Box className="monitor-details">
@@ -162,7 +153,7 @@ const DetailsPage = ({ isAdmin }) => {
                   gap={theme.spacing(2)}
                 >
                   <Tooltip
-                    title={statusMsg[monitor?.status ?? undefined]}
+                    title={statusMsg[determineState(monitor)]}
                     disableInteractive
                     slotProps={{
                       popper: {
@@ -178,9 +169,7 @@ const DetailsPage = ({ isAdmin }) => {
                     }}
                   >
                     <Box>
-                      <PulseDot
-                        color={statusColor[monitor?.status ?? undefined]}
-                      />
+                      <PulseDot color={statusColor[determineState(monitor)]} />
                     </Box>
                   </Tooltip>
                   <Typography
@@ -291,27 +280,7 @@ const DetailsPage = ({ isAdmin }) => {
               </Stack>
             </Stack>
             <Stack direction="row" gap={theme.spacing(8)}>
-              <StatBox
-                sx={
-                  monitor?.status === undefined
-                    ? {
-                        backgroundColor: theme.palette.warning.light,
-                        borderColor: theme.palette.warning.border,
-                        "& h2": { color: theme.palette.warning.main },
-                      }
-                    : monitor?.status
-                    ? {
-                        backgroundColor: theme.palette.success.bg,
-                        borderColor: theme.palette.success.light,
-                        "& h2": { color: theme.palette.success.main },
-                      }
-                    : {
-                        backgroundColor: theme.palette.error.bg,
-                        borderColor: theme.palette.error.light,
-                        "& h2": { color: theme.palette.error.main },
-                      }
-                }
-              >
+              <StatBox sx={statusStyles[determineState(monitor)]}>
                 <Typography component="h2">active for</Typography>
                 <Typography>
                   {splitDuration(monitor?.uptimeDuration)}
