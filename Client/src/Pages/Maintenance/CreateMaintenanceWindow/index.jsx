@@ -104,25 +104,22 @@ const CreateNewMaintenanceWindow = () => {
     const { error } = maintenanceWindowValidation.validate(data, {
       abortEarly: false,
     });
-    logger.log("error: ", error);
-    if (!error || error.details.length === 0) {
-      setErrors({});
-    } else {
+
+    if (error && error.details.length > 0) {
       const newErrors = {};
       error.details.forEach((err) => {
         newErrors[err.path[0]] = err.message;
       });
       setErrors(newErrors);
       createToast({
-        body:
-          error.details && error.details.length > 0
-            ? error.details[0].message
-            : "Error validating data",
+        body: error.details[0].message,
       });
       logger.error("Validation errors:", error.details);
+    } else {
+      setErrors({});
+      logger.log("Submitting data: ", data);
+      // Add your data submission logic here
     }
-
-    logger.log("Submitting data: ", data);
   };
 
   const configOptions = [
