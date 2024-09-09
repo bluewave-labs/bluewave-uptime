@@ -137,14 +137,16 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
             Configure
           </MenuItem>
         )}
-        <MenuItem
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/monitors/create/${actions.id}`);
-          }}
-        >
-          Clone
-        </MenuItem>
+        {isAdmin && (
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/monitors/create/${actions.id}`);
+            }}
+          >
+            Clone
+          </MenuItem>
+        )}
         {isAdmin && (
           <MenuItem
             onClick={(e) => {
