@@ -20,6 +20,8 @@ import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
+import useUtils from "../../Monitors/utils";
+import SkeletonLayout from "./skeleton";
 
 const StatBox = ({ icon, title, value }) => {
   const theme = useTheme();
@@ -150,53 +152,6 @@ PieValueLabel.propTypes = {
   highlighted: PropTypes.bool,
 };
 
-/**
- * Renders a skeleton layout.
- *
- * @returns {JSX.Element}
- */
-const SkeletonLayout = () => {
-  const theme = useTheme();
-
-  return (
-    <>
-      <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack direction="row" gap={theme.spacing(4)}>
-        <Skeleton variant="circular" style={{ minWidth: 24, minHeight: 24 }} />
-        <Box width="85%">
-          <Skeleton variant="rounded" width="50%" height={24} />
-          <Skeleton
-            variant="rounded"
-            width="50%"
-            height={18}
-            sx={{ mt: theme.spacing(4) }}
-          />
-        </Box>
-        <Skeleton
-          variant="rounded"
-          width="15%"
-          height={34}
-          sx={{ alignSelf: "flex-end" }}
-        />
-      </Stack>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        gap={theme.spacing(20)}
-        flexWrap="wrap"
-      >
-        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
-        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
-        <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />
-      </Stack>
-      <Skeleton variant="rounded" width="25%" height={24} />
-      <Skeleton variant="rounded" width="100%" height={300} />
-      <Skeleton variant="rounded" width="25%" height={24} />
-      <Skeleton variant="rounded" width="100%" height={300} />
-    </>
-  );
-};
-
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -204,6 +159,7 @@ const PageSpeedDetails = () => {
   const [audits, setAudits] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
+  const { determineState, statusColor, pagespeedStatusMsg } = useUtils();
 
   useEffect(() => {
     const fetchMonitor = async () => {
@@ -356,6 +312,8 @@ const PageSpeedDetails = () => {
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.main,
   };
+
+  const monitorState = determineState(monitor);
   return (
     <Stack className="page-speed-details" gap={theme.spacing(12)}>
       {loading ? (
@@ -369,13 +327,7 @@ const PageSpeedDetails = () => {
             ]}
           />
           <Stack direction="row" gap={theme.spacing(2)}>
-            <PulseDot
-              color={
-                monitor?.status
-                  ? theme.palette.success.main
-                  : theme.palette.error.main
-              }
-            />
+            <PulseDot color={statusColor[monitorState]} />
             <Box>
               <Typography
                 component="h1"
@@ -385,15 +337,8 @@ const PageSpeedDetails = () => {
               >
                 {monitor?.url}
               </Typography>
-              <Typography
-                component="span"
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.text
-                }
-              >
-                Your pagespeed monitor is live.
+              <Typography component="span" color={statusColor[monitorState]}>
+                {pagespeedStatusMsg[monitorState] || "Pending..."}
               </Typography>
             </Box>
             <Button
