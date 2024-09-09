@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
@@ -13,11 +13,13 @@ import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { getUptimeMonitorById } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import "./index.css";
 
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
+  const { monitors } = useSelector((state) => state.uptimeMonitors);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -30,6 +32,7 @@ const CreateMonitor = () => {
     "notify-email-default": "notification-email",
   };
 
+  const { monitorId } = useParams();
   const [monitor, setMonitor] = useState({
     url: "",
     name: "",
@@ -39,6 +42,36 @@ const CreateMonitor = () => {
   });
   const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchMonitor = async () => {
+      if (monitorId) {
+        const action = await dispatch(
+          getUptimeMonitorById({ authToken, monitorId })
+        );
+
+        if (action.payload.success) {
+          const data = action.payload.data;
+          const { name, ...rest } = data; //data.name is read-only
+          if (rest.type === "http") {
+            const url = new URL(rest.url);
+            rest.url = url.host;
+          }
+          rest.name = `${name} (Clone)`;
+          rest.interval /= MS_PER_MINUTE;
+          setMonitor({
+            ...rest,
+          });
+        } else {
+          navigate("/not-found", { replace: true });
+          createToast({
+            body: "There was an error cloning the monitor.",
+          });
+        }
+      }
+    };
+    fetchMonitor();
+  }, [monitorId, authToken, monitors]);
 
   const handleChange = (event, name) => {
     const { value, id } = event.target;

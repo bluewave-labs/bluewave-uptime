@@ -213,7 +213,7 @@ const PageSpeedDetails = () => {
           monitorId,
           "desc",
           50,
-          null,
+          "day",
           null,
           null
         );

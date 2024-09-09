@@ -70,7 +70,7 @@ const registrationBodyValidation = joi.object({
   profileImage: joi.any(),
   role: joi
     .array()
-    .items(joi.string().valid("superadmin", "admin", "user"))
+    .items(joi.string().valid("superadmin", "admin", "user", "demo"))
     .min(1)
     .required(),
   teamId: joi.string().allow("").required(),
@@ -161,6 +161,19 @@ const getMonitorByIdQueryValidation = joi.object({
   normalize: joi.boolean(),
 });
 
+const getMonitorsAndSummaryByTeamIdParamValidation = joi.object({
+  teamId: joi.string().required(),
+});
+
+const getMonitorsAndSummaryByTeamIdQueryValidation = joi.object({
+  type: joi
+    .alternatives()
+    .try(
+      joi.string().valid("http", "ping", "pagespeed"),
+      joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+    ),
+});
+
 const getMonitorsByTeamIdValidation = joi.object({
   teamId: joi.string().required(),
 });
@@ -176,6 +189,8 @@ const getMonitorsByTeamIdQueryValidation = joi.object({
       joi.string().valid("http", "ping", "pagespeed"),
       joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
     ),
+  page: joi.number(),
+  rowsPerPage: joi.number(),
 });
 
 const getMonitorStatsByIdParamValidation = joi.object({
@@ -379,6 +394,8 @@ module.exports = {
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
+  getMonitorsAndSummaryByTeamIdParamValidation,
+  getMonitorsAndSummaryByTeamIdQueryValidation,
   getMonitorsByTeamIdValidation,
   getMonitorsByTeamIdQueryValidation,
   getMonitorStatsByIdParamValidation,

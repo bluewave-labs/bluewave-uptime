@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -52,12 +56,6 @@
     0px 3px 3px -3px rgba(16, 24, 40, 0.03);
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  height: 100%;
-}
-
 .MuiInputBase-root.Mui-disabled input {
   cursor: not-allowed;
 }
@@ -84,10 +82,6 @@ body {
 
 .MuiTouchRipple-root {
   display: none;
-}
-
-body .MuiSkeleton-root {
-  background-color: #f2f4f7;
 }
 
 @keyframes ripple {

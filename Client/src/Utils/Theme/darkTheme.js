@@ -4,28 +4,28 @@ const text = {
   primary: "#fafafa",
   secondary: "#e6e6e6",
   tertiary: "#a1a1aa",
-  accent: "#e6e6e6",
+  accent: "#8e8e8f",
   disabled: "rgba(172, 172, 172, 0.3)",
 };
 const background = {
   main: "#151518",
   alt: "#09090b",
-  fill: "#2e2e2e",
+  fill: "#2D2D33",
   accent: "#18181a",
 };
-const border = { light: "#27272a", dark: "#2c2c2c" };
+const border = { light: "#27272a", dark: "#36363e" };
 
 const fontFamilyDefault =
   '"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
 const shadow =
-  "0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
+  "0px 4px 24px -4px rgba(255, 255, 255, 0.03), 0px 3px 3px -3px rgba(255, 255, 255, 0.01)";
 
 const darkTheme = createTheme({
   typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
   palette: {
     mode: "dark",
     primary: { main: "#1570ef" },
-    secondary: { main: "#2e2e2e" },
+    secondary: { main: "#2D2D33" },
     text: text,
     background: background,
     border: border,
@@ -39,22 +39,22 @@ const darkTheme = createTheme({
     success: {
       text: "#079455",
       main: "#45bb7a",
-      light: "#1e1e1e",
-      bg: "#27272a",
+      light: "#1c4428",
+      bg: "#12261e",
     },
     error: {
       text: "#f04438",
       main: "#d32f2f",
-      light: "#1e1e1e",
-      bg: "#27272a",
+      light: "#542426",
+      bg: "#301a1f",
       dark: "#932020",
       border: "#f04438",
     },
     warning: {
       text: "#e88c30",
       main: "#FF9F00",
-      light: "#27272a",
-      bg: "#1E1E1E",
+      light: "#624711",
+      bg: "#262115",
       border: "#e88c30",
     },
     percentage: {
@@ -74,6 +74,16 @@ const darkTheme = createTheme({
   },
   spacing: 2,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundImage:
+            "radial-gradient(circle, #09090b, #0c0c0e, #0f0f11, #111113, #131315, #131315, #131315, #131315, #111113, #0f0f11, #0c0c0e, #09090b)",
+          lineHeight: "inherit",
+          paddingLeft: "calc(100vw - 100%)",
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableRipple: true,
@@ -98,6 +108,15 @@ const darkTheme = createTheme({
                 backgroundColor: theme.palette.secondary.main,
               },
             },
+            {
+              props: (props) =>
+                props.variant === "contained" && props.color === "secondary",
+              style: {
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.dark,
+              },
+            },
           ],
           fontWeight: 400,
           borderRadius: 4,
@@ -118,7 +137,7 @@ const darkTheme = createTheme({
           padding: 4,
           transition: "none",
           "&:hover": {
-            backgroundColor: background.fill,
+            backgroundColor: border.light,
           },
         },
       },
@@ -208,6 +227,13 @@ const darkTheme = createTheme({
           "&:not(.MuiPaginationItem-ellipsis):hover, &.Mui-selected": {
             backgroundColor: background.fill,
           },
+        },
+      },
+    },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#151518",
         },
       },
     },

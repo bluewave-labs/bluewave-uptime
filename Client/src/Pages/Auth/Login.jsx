@@ -8,13 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import { networkService } from "../../main";
 import Field from "../../Components/Inputs/Field";
-import background from "../../assets/Images/background_pattern_decorative.png";
+import Background from "../../assets/Images/background-grid.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PropTypes from "prop-types";
 import { logger } from "../../Utils/Logger";
 import "./index.css";
+const DEMO = import.meta.env.VITE_APP_DEMO;
 
 /**
  * Displays the initial landing page.
@@ -278,9 +279,9 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
           textAlign="center"
           sx={{
             position: "absolute",
-            top: "103%",
+            top: "104%",
             left: "50%",
-            transform: "translateX(-50%)"
+            transform: "translateX(-50%)",
           }}
         >
           <Typography
@@ -327,8 +328,8 @@ const Login = () => {
   };
 
   const [form, setForm] = useState({
-    email: "",
-    password: "",
+    email: DEMO !== undefined ? "uptimedemo@demo.com" : "",
+    password: DEMO !== undefined ? "Demouser1!" : "",
   });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(0);
@@ -438,18 +439,22 @@ const Login = () => {
         "& h1": {
           color: theme.palette.primary.main,
           fontWeight: 600,
-          fontSize: 30,
+          fontSize: 28,
         },
-        "& p": {
-          fontSize: 14,
-          color: theme.palette.text.accent,
-        },
+        "& p": { fontSize: 14, color: theme.palette.text.accent },
+        "& span": { fontSize: "inherit" },
       }}
     >
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
       <Stack
         direction="row"
         alignItems="center"

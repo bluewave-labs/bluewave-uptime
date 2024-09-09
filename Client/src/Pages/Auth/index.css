@@ -6,9 +6,7 @@
   font-size: var(--env-var-font-size-xlarge);
   font-weight: 600;
 }
-.auth button:not(.MuiIconButton-root),
-.auth p,
-.auth span {
+.auth button:not(.MuiIconButton-root) {
   font-size: var(--env-var-font-size-medium-plus);
 }
 

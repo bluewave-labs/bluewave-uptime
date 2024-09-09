@@ -48,8 +48,7 @@ const StatusBox = ({ title, value }) => {
       borderColor={theme.palette.border.light}
       borderRadius={theme.shape.borderRadius}
       backgroundColor={theme.palette.background.main}
-      px={theme.spacing(12)}
-      py={theme.spacing(8)}
+      p={theme.spacing(8)}
       overflow="hidden"
       sx={{
         "&:hover": {

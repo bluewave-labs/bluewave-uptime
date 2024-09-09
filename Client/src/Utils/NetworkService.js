@@ -58,9 +58,28 @@ class NetworkService {
     });
   }
 
+  async getMonitorsAndSummaryByTeamId(authToken, teamId, types) {
+    const params = new URLSearchParams();
+
+    if (types) {
+      types.forEach((type) => {
+        params.append("type", type);
+      });
+    }
+    return this.axiosInstance.get(
+      `/monitors/team/summary/${teamId}?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
   /**
    * ************************************
-   * Get all uptime monitors for a user
+   * Get all uptime monitors for a Team
    * ************************************
    *
    * @async
@@ -80,7 +99,9 @@ class NetworkService {
     types,
     status,
     sortOrder,
-    normalize
+    normalize,
+    page,
+    rowsPerPage
   ) {
     const params = new URLSearchParams();
 
@@ -93,6 +114,8 @@ class NetworkService {
     if (status) params.append("status", status);
     if (sortOrder) params.append("sortOrder", sortOrder);
     if (normalize) params.append("normalize", normalize);
+    if (page) params.append("page", page);
+    if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
 
     return this.axiosInstance.get(
       `/monitors/team/${teamId}?${params.toString()}`,
@@ -138,6 +161,31 @@ class NetworkService {
 
     return this.axiosInstance.get(
       `/monitors/stats/${monitorId}?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
+   * Gets aggregate stats by monitor ID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @param {string} monitorId - The ID of the monitor whose certificate expiry is to be retrieved.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
+  async getAggregateStatsById(authToken, monitorId, dateRange) {
+    const params = new URLSearchParams();
+    if (dateRange) params.append("dateRange", dateRange);
+
+    return this.axiosInstance.get(
+      `/monitors/aggregate/${monitorId}?${params.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,

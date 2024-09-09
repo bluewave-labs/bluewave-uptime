@@ -9,11 +9,12 @@ import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import Check from "../../Components/Check/Check";
 import Field from "../../Components/Inputs/Field";
-import LockIcon from "../../assets/icons/lock-button-icon.svg?react";
-import background from "../../assets/Images/background_pattern_decorative.png";
+import LockIcon from "../../assets/icons/lock.svg?react";
+import Background from "../../assets/Images/background-grid.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
+import { IconBox } from "./styled";
 
 const SetNewPassword = () => {
   const navigate = useNavigate();
@@ -121,8 +122,14 @@ const SetNewPassword = () => {
     >
       <Box
         className="background-pattern-svg"
-        sx={{ backgroundImage: `url(${background})` }}
-      />
+        sx={{
+          "& svg g g:last-of-type path": {
+            stroke: theme.palette.border.light,
+          },
+        }}
+      >
+        <Background style={{ width: "100%" }} />
+      </Box>
       <Stack
         direction="row"
         alignItems="center"
@@ -159,7 +166,9 @@ const SetNewPassword = () => {
           textAlign="center"
         >
           <Box>
-            <LockIcon alt="lock icon" />
+            <IconBox>
+              <LockIcon alt="lock icon" />
+            </IconBox>
             <Typography component="h1">Set new password</Typography>
             <Typography>
               Your new password must be different to previously used passwords.

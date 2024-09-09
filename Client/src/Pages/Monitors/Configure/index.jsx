@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Button, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
@@ -15,8 +15,8 @@ import {
   deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Field from "../../../Components/Inputs/Field";
-import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
+import PauseIcon from "../../../assets/icons/pause-icon.svg?react";
+import ResumeIcon from "../../../assets/icons/resume-icon.svg?react";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -53,7 +53,6 @@ const Configure = () => {
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
   const { monitorId } = useParams();
-  console.log(monitor);
   const idMap = {
     "monitor-url": "url",
     "monitor-name": "name",
@@ -190,8 +189,20 @@ const Configure = () => {
   const parsedUrl = parseUrl(monitor?.url);
   const protocol = parsedUrl?.protocol?.replace(":", "") || "";
 
+  const statusColor = {
+    true: theme.palette.success.main,
+    false: theme.palette.error.main,
+    undefined: theme.palette.warning.main,
+  };
+
+  const statusMsg = {
+    true: "Your site is up.",
+    false: "Your site is down.",
+    undefined: "Pending...",
+  };
+
   return (
-    <Stack className="configure-monitor" gap={theme.spacing(12)}>
+    <Stack className="configure-monitor" gap={theme.spacing(10)}>
       {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
@@ -211,37 +222,74 @@ const Configure = () => {
             flex={1}
           >
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              />
               <Box>
-                {parsedUrl?.host ? (
-                  <Typography
-                    component="h1"
-                    mb={theme.spacing(2)}
-                    lineHeight={1}
-                    color={theme.palette.text.primary}
-                  >
-                    {parsedUrl.host || "..."}
-                  </Typography>
-                ) : (
-                  ""
-                )}
                 <Typography
-                  component="span"
-                  lineHeight={theme.spacing(12)}
-                  sx={{
-                    color: monitor?.status
-                      ? theme.palette.success.main
-                      : theme.palette.error.text,
-                  }}
+                  component="h1"
+                  fontSize={22}
+                  fontWeight={500}
+                  color={theme.palette.text.primary}
                 >
-                  Your site is {monitor?.status ? "up" : "down"}.
+                  {monitor.name}
                 </Typography>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  height="fit-content"
+                  gap={theme.spacing(2)}
+                >
+                  <Tooltip
+                    title={statusMsg[monitor?.status ?? undefined]}
+                    disableInteractive
+                    slotProps={{
+                      popper: {
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [0, -8],
+                            },
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    <Box>
+                      <PulseDot
+                        color={statusColor[monitor?.status ?? undefined]}
+                      />
+                    </Box>
+                  </Tooltip>
+                  <Typography
+                    component="h2"
+                    fontSize={14.5}
+                    color={theme.palette.text.secondary}
+                  >
+                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  </Typography>
+                  <Typography
+                    position="relative"
+                    fontSize={12}
+                    color={theme.palette.text.tertiary}
+                    ml={theme.spacing(6)}
+                    mt={theme.spacing(1)}
+                    sx={{
+                      "&:before": {
+                        position: "absolute",
+                        content: `""`,
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        backgroundColor: theme.palette.text.tertiary,
+                        opacity: 0.8,
+                        left: -10,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                      },
+                    }}
+                  >
+                    Editting...
+                  </Typography>
+                </Stack>
               </Box>
               <Box
                 sx={{
@@ -254,23 +302,29 @@ const Configure = () => {
                   color="secondary"
                   loading={isLoading}
                   sx={{
-                    backgroundColor: theme.palette.background.main,
-                    px: theme.spacing(5),
+                    pl: theme.spacing(4),
+                    pr: theme.spacing(6),
                     mr: theme.spacing(6),
                     "& svg": {
                       mr: theme.spacing(2),
+                      width: 22,
+                      height: 22,
+                      "& path": {
+                        stroke: theme.palette.text.tertiary,
+                        strokeWidth: 1.7,
+                      },
                     },
                   }}
                   onClick={handlePause}
                 >
                   {monitor?.isActive ? (
                     <>
-                      <PauseCircleOutlineIcon />
+                      <PauseIcon />
                       Pause
                     </>
                   ) : (
                     <>
-                      <PlayCircleOutlineRoundedIcon />
+                      <ResumeIcon />
                       Resume
                     </>
                   )}

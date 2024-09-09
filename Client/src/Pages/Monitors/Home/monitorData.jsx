@@ -66,7 +66,7 @@ export const buildData = (monitors, isAdmin, navigate) => {
       percentageColor,
       status:
         monitor.status === undefined
-          ? "unknown"
+          ? "pending"
           : monitor.status === true
           ? "up"
           : "down",

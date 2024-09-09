@@ -50,8 +50,8 @@ const lightTheme = createTheme({
     warning: {
       text: "#DC6803",
       main: "#fdb022",
-      light: "#fffcf5",
-      bg: "#ffecbc",
+      light: "#ffecbc",
+      bg: "#fffcf5",
       border: "#fec84b",
     },
     percentage: {
@@ -71,6 +71,16 @@ const lightTheme = createTheme({
   },
   spacing: 2,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundImage:
+            "radial-gradient(circle, #fcfcfd, #fdfcfd, #fdfdfd, #fefdfe, #fefefe, #fefefe, #fefefe, #fefefe, #fefdfe, #fdfdfd, #fdfcfd, #fcfcfd)",
+          lineHeight: "inherit",
+          paddingLeft: "calc(100vw - 100%)",
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableRipple: true,
@@ -93,6 +103,15 @@ const lightTheme = createTheme({
                 props.variant === "group" && props.filled === "true",
               style: {
                 backgroundColor: theme.palette.secondary.main,
+              },
+            },
+            {
+              props: (props) =>
+                props.variant === "contained" && props.color === "secondary",
+              style: {
+                border: 1,
+                borderStyle: "solid",
+                borderColor: theme.palette.border.light,
               },
             },
           ],
@@ -204,6 +223,13 @@ const lightTheme = createTheme({
           "&:not(.MuiPaginationItem-ellipsis):hover, &.Mui-selected": {
             backgroundColor: background.fill,
           },
+        },
+      },
+    },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f2f4f7",
         },
       },
     },

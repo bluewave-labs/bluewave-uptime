@@ -1,20 +1,15 @@
 import Sidebar from "../../Components/Sidebar";
 import { Outlet } from "react-router";
-import { Box } from "@mui/material";
-import { useTheme } from "@emotion/react";
+import { Stack } from "@mui/material";
 
 import "./index.css";
 
 const HomeLayout = () => {
-  const theme = useTheme();
-
   return (
-    <Box backgroundColor={theme.palette.background.alt}>
-      <Box className="home-layout">
-        <Sidebar />
-        <Outlet />
-      </Box>
-    </Box>
+    <Stack className="home-layout" flexDirection="row" gap={14}>
+      <Sidebar />
+      <Outlet />
+    </Stack>
   );
 };
 

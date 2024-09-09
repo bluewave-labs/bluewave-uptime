@@ -32,6 +32,7 @@ import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
 import { useSelector } from "react-redux";
+import { CssBaseline } from "@mui/material";
 
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
+      <CssBaseline />
       <Routes>
         <Route exact path="/" element={<HomeLayout />}>
           <Route
@@ -57,7 +59,7 @@ function App() {
             element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
           />
           <Route
-            path="/monitors/create"
+            path="/monitors/create/:monitorId?"
             element={<ProtectedRoute Component={CreateMonitor} />}
           />
           <Route

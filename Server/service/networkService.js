@@ -197,7 +197,6 @@ class NetworkService {
    */
   async handlePagespeed(job) {
     let isAlive;
-
     try {
       const url = job.data.url;
       const response = await axios.get(
