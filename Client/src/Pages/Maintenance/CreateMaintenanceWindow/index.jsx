@@ -15,6 +15,9 @@ import { createToast } from "../../../Utils/toastUtils";
 import { useTheme } from "@emotion/react";
 import AutoCompleteField from "../../../Components/Inputs/Autocomplete";
 import { useSelector } from "react-redux";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const directory = {
   title: "Create a maintenance window",
@@ -33,7 +36,7 @@ const configOptionTitle = (title, description) => {
       <Typography
         style={{
           fontWeight: 600,
-          fontSize: "var(--env-var-font-size-medium)",
+          fontSize: 13,
         }}
       >
         {title}
@@ -41,7 +44,7 @@ const configOptionTitle = (title, description) => {
       {description && (
         <Typography
           style={{
-            fontSize: "var(--env-var-font-size-small)",
+            fontSize: 11,
           }}
         >
           {description}
@@ -92,8 +95,8 @@ const CreateNewMaintenanceWindow = () => {
   const handleSubmit = async () => {
     const data = {
       repeat: values.repeat,
-      date: values.date.format("YYYY-MM-DD"),
-      startTime: values.startTime.format("HH:mm"),
+      date: values.date.utc().format("YYYY-MM-DD"),
+      startTime: values.startTime.utc().format("HH:mm"),
       duration: values.duration,
       unit: values.unit,
       displayName: values.displayName,
@@ -210,7 +213,7 @@ const CreateNewMaintenanceWindow = () => {
       component: (
         <Stack
           className="add-monitors-fields"
-          sx={{ width: "60%", maxWidth: "380px" }}
+          sx={{ width: "60%", maxWidth: 380 }}
           gap={theme.spacing(5)}
         >
           <AutoCompleteField
@@ -226,7 +229,7 @@ const CreateNewMaintenanceWindow = () => {
           <Typography
             sx={{
               width: "fit-content",
-              fontSize: "var(--env-var-font-size-small)",
+              fontSize: 11,
               borderBottom: `1px dashed ${theme.palette.primary.main}`,
               paddingBottom: "4px",
             }}
@@ -245,8 +248,8 @@ const CreateNewMaintenanceWindow = () => {
           variant="contained"
           color="secondary"
           sx={{
-            width: "100px",
-            height: "30px",
+            width: 100,
+            height: 30,
             gap: "10px",
           }}
         >
@@ -256,7 +259,7 @@ const CreateNewMaintenanceWindow = () => {
         <Box>
           <Typography
             sx={{
-              fontSize: "var(--env-var-font-size-large)",
+              fontSize: 16,
               fontWeight: 600,
               color: theme.palette.text.secondary,
             }}
@@ -264,9 +267,7 @@ const CreateNewMaintenanceWindow = () => {
             {directory.title}
           </Typography>
 
-          <Typography sx={{ fontSize: "var(--env-var-font-size-medium)" }}>
-            {directory.description}
-          </Typography>
+          <Typography sx={{ fontSize: 13 }}>{directory.description}</Typography>
         </Box>
         <Stack
           className="maintenance-options"
@@ -278,6 +279,7 @@ const CreateNewMaintenanceWindow = () => {
             borderColor: theme.palette.border.light,
             borderRadius: theme.shape.borderRadius,
             backgroundColor: theme.palette.background.main,
+            color: theme.palette.info.text,
           }}
         >
           {configOptions.map((item, index) => (
