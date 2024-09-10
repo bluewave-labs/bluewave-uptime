@@ -1,12 +1,7 @@
-.page-speed-details h1 {
-  font-size: var(--env-var-font-size-large-plus);
-}
-.page-speed-details h2,
 .page-speed-details h6 {
   font-size: var(--env-var-font-size-large);
 }
 .page-speed-details h4,
-.page-speed-details p,
 .page-speed-details p > span {
   font-size: var(--env-var-font-size-medium);
 }
@@ -17,8 +12,6 @@
 .page-speed-details h6 {
   line-height: 22px;
 }
-.page-speed-details h1,
-.page-speed-details h2,
 .page-speed-details h6 {
   font-weight: 600;
 }

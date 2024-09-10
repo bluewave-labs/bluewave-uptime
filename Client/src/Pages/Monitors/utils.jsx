@@ -23,22 +23,26 @@ const useUtils = () => {
   const statusStyles = {
     up: {
       backgroundColor: theme.palette.success.bg,
+      background: `linear-gradient(340deg, ${theme.palette.success.light} -60%, ${theme.palette.success.bg} 35%)`,
       borderColor: theme.palette.success.light,
       "& h2": { color: theme.palette.success.main },
     },
     down: {
       backgroundColor: theme.palette.error.bg,
+      background: `linear-gradient(340deg, ${theme.palette.error.light} -60%, ${theme.palette.error.bg} 35%)`,
       borderColor: theme.palette.error.light,
       "& h2": { color: theme.palette.error.main },
     },
     paused: {
       backgroundColor: theme.palette.warning.light,
-      borderColor: theme.palette.warning.border,
+      background: `linear-gradient(340deg, ${theme.palette.warning.dark} -60%, ${theme.palette.warning.light} 35%)`,
+      borderColor: theme.palette.warning.dark,
       "& h2": { color: theme.palette.warning.main },
     },
     pending: {
       backgroundColor: theme.palette.warning.light,
-      borderColor: theme.palette.warning.border,
+      background: `linear-gradient(340deg, ${theme.palette.warning.dark} -60%, ${theme.palette.warning.light} 35%)`,
+      borderColor: theme.palette.warning.dark,
       "& h2": { color: theme.palette.warning.main },
     },
   };

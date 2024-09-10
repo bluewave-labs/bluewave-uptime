@@ -1,5 +1,13 @@
 import PropTypes from "prop-types";
-import { Box, Button, Skeleton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Skeleton,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
@@ -9,7 +17,9 @@ import { useSelector } from "react-redux";
 import {
   formatDuration,
   formatDurationRounded,
+  formatDurationSplit,
 } from "../../../Utils/timeUtils";
+import { StatBox } from "./styled";
 import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
@@ -20,46 +30,6 @@ import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import "./index.css";
-
-const StatBox = ({ icon, title, value }) => {
-  const theme = useTheme();
-
-  return (
-    <Stack
-      className="stat-box"
-      direction="row"
-      gap={theme.spacing(4)}
-      pt={theme.spacing(8)}
-      px={theme.spacing(8)}
-      pb={theme.spacing(10)}
-      border={1}
-      borderColor={theme.palette.border.light}
-      borderRadius={theme.shape.borderRadius}
-      backgroundColor={theme.palette.background.main}
-      minWidth="200px"
-    >
-      {icon}
-      <Box>
-        <Typography
-          variant="h6"
-          color={theme.palette.primary.main}
-          mb={theme.spacing(6)}
-        >
-          {title}
-        </Typography>
-        <Typography variant="h4" color={theme.palette.text.secondary}>
-          {value}
-        </Typography>
-      </Box>
-    </Stack>
-  );
-};
-
-StatBox.propTypes = {
-  icon: PropTypes.element,
-  title: PropTypes.string,
-  value: PropTypes.node,
-};
 
 /**
  * Renders a centered label within a pie chart.
@@ -356,8 +326,21 @@ const PageSpeedDetails = () => {
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.main,
   };
+
+  console.log(monitor);
+
+  const splitDuration = (duration) => {
+    const { time, format } = formatDurationSplit(duration);
+    return (
+      <>
+        {time}
+        <Typography component="span">{format}</Typography>
+      </>
+    );
+  };
+
   return (
-    <Stack className="page-speed-details" gap={theme.spacing(12)}>
+    <Stack className="page-speed-details" gap={theme.spacing(10)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
@@ -369,32 +352,82 @@ const PageSpeedDetails = () => {
             ]}
           />
           <Stack direction="row" gap={theme.spacing(2)}>
-            <PulseDot
-              color={
-                monitor?.status
-                  ? theme.palette.success.main
-                  : theme.palette.error.main
-              }
-            />
             <Box>
               <Typography
                 component="h1"
-                mb={theme.spacing(2)}
+                fontSize={22}
+                fontWeight={500}
                 color={theme.palette.text.primary}
-                sx={{ lineHeight: 1 }}
               >
-                {monitor?.url}
+                {monitor.name}
               </Typography>
-              <Typography
-                component="span"
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.text
-                }
+              <Stack
+                direction="row"
+                alignItems="center"
+                height="fit-content"
+                gap={theme.spacing(2)}
               >
-                Your pagespeed monitor is live.
-              </Typography>
+                <Tooltip
+                  title={
+                    monitor?.status
+                      ? "Your pagespeed monitor is live."
+                      : "Your pagespeed monitor is down."
+                  }
+                  disableInteractive
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: "offset",
+                          options: {
+                            offset: [0, -8],
+                          },
+                        },
+                      ],
+                    },
+                  }}
+                >
+                  <Box>
+                    <PulseDot
+                      color={
+                        monitor?.status
+                          ? theme.palette.success.main
+                          : theme.palette.error.main
+                      }
+                    />
+                  </Box>
+                </Tooltip>
+                <Typography
+                  component="h2"
+                  fontSize={14.5}
+                  color={theme.palette.text.secondary}
+                >
+                  {monitor?.url}
+                </Typography>
+                <Typography
+                  mt={theme.spacing(1)}
+                  ml={theme.spacing(6)}
+                  fontSize={12}
+                  position="relative"
+                  color={theme.palette.text.tertiary}
+                  sx={{
+                    "&:before": {
+                      position: "absolute",
+                      content: `""`,
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      backgroundColor: theme.palette.text.tertiary,
+                      opacity: 0.8,
+                      left: -9,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    },
+                  }}
+                >
+                  Checking every {formatDurationRounded(monitor?.interval)}.
+                </Typography>
+              </Stack>
             </Box>
             <Button
               variant="contained"
@@ -416,49 +449,21 @@ const PageSpeedDetails = () => {
               Configure
             </Button>
           </Stack>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            gap={theme.spacing(12)}
-            flexWrap="wrap"
-          >
-            <StatBox
-              icon={<LastCheckedIcon />}
-              title="Last checked"
-              value={
-                <>
-                  {formatDuration(monitor?.lastChecked)}{" "}
-                  <Typography
-                    component="span"
-                    fontStyle="italic"
-                    sx={{ opacity: 0.8 }}
-                  >
-                    ago
-                  </Typography>
-                </>
-              }
-            />
-            <StatBox
-              icon={<ClockIcon />}
-              title="Checks since"
-              value={
-                <>
-                  {formatDuration(monitor?.uptimeDuration)}{" "}
-                  <Typography
-                    component="span"
-                    fontStyle="italic"
-                    sx={{ opacity: 0.8 }}
-                  >
-                    ago
-                  </Typography>
-                </>
-              }
-            ></StatBox>
-            <StatBox
-              icon={<IntervalCheckIcon />}
-              title="Checks every"
-              value={formatDurationRounded(monitor?.interval)}
-            ></StatBox>
+          <Stack direction="row" gap={theme.spacing(8)}>
+            <StatBox>
+              <Typography component="h2">checks since</Typography>
+              <Typography>
+                {splitDuration(monitor?.uptimeDuration)}
+                <Typography component="span">ago</Typography>
+              </Typography>
+            </StatBox>
+            <StatBox>
+              <Typography component="h2">last check</Typography>
+              <Typography>
+                {splitDuration(monitor?.lastChecked)}
+                <Typography component="span">ago</Typography>
+              </Typography>
+            </StatBox>
           </Stack>
           <Typography component="h2" color={theme.palette.text.secondary}>
             Score history
