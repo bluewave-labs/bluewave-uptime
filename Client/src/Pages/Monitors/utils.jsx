@@ -20,6 +20,12 @@ const useUtils = () => {
     down: "Your site is down.",
     paused: "Pending...",
   };
+
+  const pagespeedStatusMsg = {
+    up: "Live (collecting data)",
+    down: "Inactive",
+    paused: "Paused",
+  };
   const statusStyles = {
     up: {
       backgroundColor: theme.palette.success.bg,
@@ -47,6 +53,7 @@ const useUtils = () => {
     determineState,
     statusColor,
     statusMsg,
+    pagespeedStatusMsg,
     statusStyles,
   };
 };
