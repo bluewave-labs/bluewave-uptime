@@ -148,6 +148,10 @@ const maintenanceWindowValidation = joi.object({
     "string.empty": "monitorId is required.",
     "any.required": "monitorId is required.",
   }),
+  timestamp: joi.date().required().messages({
+    "date.base": "Timestamp must be a valid date.",
+    "any.required": "Timestamp is required.",
+  }),
 });
 
 export {

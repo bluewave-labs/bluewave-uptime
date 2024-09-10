@@ -65,12 +65,8 @@ const CreateNewMaintenanceWindow = () => {
   const monitorState = useSelector((state) => state.uptimeMonitors);
   const [monitorOptions, setMonitorOptions] = useState([]);
 
-  const [autoCompleteValue, setAutoCompleteValue] = useState("");
-  const [autoCompleteInputValue, setAutoCompleteInputValue] = useState("");
-
   useEffect(() => {
     setMonitorOptions(monitorState.monitors);
-    console.log("monitorState.monitors -->", monitorState.monitors);
   }, []);
 
   const [values, setValues] = useState({
@@ -81,27 +77,60 @@ const CreateNewMaintenanceWindow = () => {
     unit: "minutes",
     displayName: "",
     AddMonitors: "",
+    autoCompleteValue: {},
   });
   const [errors, setErrors] = useState({});
 
   const handleChange = (event, name) => {
-    const { value } = event.target;
-    setValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (event.target === undefined) {
+      setValues((prev) => ({
+        ...prev,
+        autoCompleteValue: {
+          _id: event._id,
+          name: event.name,
+        },
+      }));
+    } else {
+      const { value } = event.target;
+      setValues((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const convertDurationToMilliseconds = (duration, unit) => {
+    let milliseconds = 0;
+    if (unit === "minutes") {
+      milliseconds = duration * 60 * 1000;
+    } else if (unit === "hours") {
+      milliseconds = duration * 60 * 60 * 1000;
+    } else if (unit === "days") {
+      milliseconds = duration * 24 * 60 * 60 * 1000;
+    }
+    return milliseconds;
   };
 
   const handleSubmit = async () => {
+    const combinedTimestamp = dayjs(
+      `${values.date.format("YYYY-MM-DD")}T${values.startTime.format("HH:mm")}`
+    ).format();
+
+    const durationInMilliseconds = convertDurationToMilliseconds(
+      values.duration,
+      values.unit
+    );
+
     const data = {
       repeat: values.repeat,
-      date: values.date.utc().format("YYYY-MM-DD"),
-      startTime: values.startTime.utc().format("HH:mm"),
-      duration: values.duration,
+      date: values.date.format(),
+      startTime: values.startTime.format(),
+      timestamp: combinedTimestamp,
+      duration: durationInMilliseconds,
       unit: values.unit,
       displayName: values.displayName,
-      addMonitors: autoCompleteValue.name,
-      monitorId: autoCompleteValue._id,
+      addMonitors: values.autoCompleteValue.name,
+      monitorId: values.autoCompleteValue._id,
     };
 
     const { error } = maintenanceWindowValidation.validate(data, {
@@ -121,7 +150,6 @@ const CreateNewMaintenanceWindow = () => {
     } else {
       setErrors({});
       logger.log("Submitting data: ", data);
-      // Add your data submission logic here
     }
   };
 
@@ -220,11 +248,10 @@ const CreateNewMaintenanceWindow = () => {
             sx={{ marginLeft: "auto" }}
             options={monitorOptions}
             width={380}
-            autoCompleteValue={autoCompleteValue}
-            setAutoCompleteValue={setAutoCompleteValue}
-            autoCompleteInputValue={autoCompleteInputValue}
-            setAutoCompleteInputValue={setAutoCompleteInputValue}
+            autoCompleteValue={values.autoCompleteValue}
+            setAutoCompleteValue={(e) => handleChange(e, "autoCompleteValue")}
             error={errors.addMonitors}
+            disabled={true}
           />
           <Typography
             sx={{

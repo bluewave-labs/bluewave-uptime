@@ -30,8 +30,6 @@ import { useTheme } from "@emotion/react";
  * @param {number} props.width - The width of the component.
  * @param {string} props.autoCompleteValue - The value of the autocomplete field.
  * @param {Function} props.setAutoCompleteValue - The function to set the value of the autocomplete field.
- * @param {string} props.autoCompleteInputValue - The input value of the autocomplete field.
- * @param {Function} props.setAutoCompleteInputValue - The function to set the input value of the autocomplete field.
  * @returns {JSX.Element} The AutoCompleteField component.
  */
 
@@ -45,8 +43,6 @@ const AutoCompleteField = ({
   width,
   autoCompleteValue,
   setAutoCompleteValue,
-  autoCompleteInputValue,
-  setAutoCompleteInputValue,
   error,
 }) => {
   const theme = useTheme();
@@ -62,12 +58,9 @@ const AutoCompleteField = ({
         onChange={(event, newValue) => {
           setAutoCompleteValue(newValue);
         }}
-        inputValue={autoCompleteInputValue}
-        onInputChange={(event, newInputValue) => {
-          setAutoCompleteInputValue(newInputValue);
-        }}
         options={options}
         getOptionLabel={(option) => (option && option.name ? option.name : "")}
+        disableClearable
         renderInput={(params) => (
           <TextField
             error={error ? true : false}
@@ -77,6 +70,7 @@ const AutoCompleteField = ({
             disabled={disabled}
             InputProps={{
               ...params.InputProps,
+              readOnly: true,
               sx: {
                 width: width,
                 height: 34,
@@ -85,6 +79,9 @@ const AutoCompleteField = ({
                 borderRadius: theme.shape.borderRadius,
                 "& input": {
                   p: 0,
+                },
+                "&.Mui-disabled input": {
+                  cursor: "default",
                 },
               },
             }}
