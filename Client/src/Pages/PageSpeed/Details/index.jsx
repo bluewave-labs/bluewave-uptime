@@ -265,8 +265,6 @@ const PageSpeedDetails = () => {
   let loading = Object.keys(monitor).length === 0;
   const data = monitor?.checks ? [...monitor.checks].reverse() : [];
 
-  console.log(data);
-
   const splitDuration = (duration) => {
     const { time, format } = formatDurationSplit(duration);
     return (
@@ -415,7 +413,10 @@ const PageSpeedDetails = () => {
               </IconBox>
               <Typography component="h2">Score history</Typography>
             </Stack>
-            <PagespeedDetailsAreaChart data={data} />
+            <PagespeedDetailsAreaChart
+              data={data}
+              interval={monitor?.interval}
+            />
           </ChartBox>
           <ChartBox flex={1}>
             <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
