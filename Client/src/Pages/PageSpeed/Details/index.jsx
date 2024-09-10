@@ -4,7 +4,6 @@ import {
   Button,
   Skeleton,
   Stack,
-  Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -19,13 +18,12 @@ import {
   formatDurationRounded,
   formatDurationSplit,
 } from "../../../Utils/timeUtils";
-import { StatBox } from "./styled";
+import { ChartBox, IconBox, StatBox } from "./styled";
 import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
-import LastCheckedIcon from "../../../assets/icons/calendar-check.svg?react";
-import ClockIcon from "../../../assets/icons/maintenance.svg?react";
-import IntervalCheckIcon from "../../../assets/icons/interval-check.svg?react";
+import ScoreIcon from "../../../assets/icons/monitor-graph-line.svg?react";
+import PerformanceIcon from "../../../assets/icons/performance-report.svg?react";
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
@@ -302,7 +300,7 @@ const PageSpeedDetails = () => {
           cx: pieSize.width / 2,
         });
 
-        performance += Math.round(value);
+        performance += Math.floor(value);
         startAngle = endAngle + padding;
       }
     });
@@ -319,13 +317,6 @@ const PageSpeedDetails = () => {
 
   let loading = Object.keys(monitor).length === 0;
   const data = monitor?.checks ? [...monitor.checks].reverse() : [];
-
-  let sharedStyles = {
-    border: 1,
-    borderColor: theme.palette.border.light,
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.main,
-  };
 
   console.log(monitor);
 
@@ -465,32 +456,27 @@ const PageSpeedDetails = () => {
               </Typography>
             </StatBox>
           </Stack>
-          <Typography component="h2" color={theme.palette.text.secondary}>
-            Score history
-          </Typography>
-          <Box
-            height="300px"
-            sx={{
-              ...sharedStyles,
-            }}
-          >
-            <PageSpeedLineChart pageSpeedChecks={data} />
+          <Box>
+            <Typography fontSize={12} color={theme.palette.text.tertiary}>
+              Showing statistics for past 24 hours.
+            </Typography>
           </Box>
-          <Typography component="h2" color={theme.palette.text.secondary}>
-            Performance report
-          </Typography>
-          <Stack
-            direction="row"
-            alignItems="center"
-            overflow="hidden"
-            flex={1}
-            sx={{
-              "& p": {
-                color: theme.palette.text.secondary,
-              },
-              ...sharedStyles,
-            }}
-          >
+          <ChartBox display="block">
+            <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
+              <IconBox>
+                <ScoreIcon />
+              </IconBox>
+              <Typography component="h2">Score history</Typography>
+            </Stack>
+            <PageSpeedLineChart pageSpeedChecks={data} />
+          </ChartBox>
+          <ChartBox>
+            <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
+              <IconBox>
+                <PerformanceIcon />
+              </IconBox>
+              <Typography component="h2">Performance report</Typography>
+            </Stack>
             <Stack
               alignItems="center"
               textAlign="center"
@@ -742,7 +728,7 @@ const PageSpeedDetails = () => {
                 })}
               </Stack>
             </Box>
-          </Stack>
+          </ChartBox>
         </>
       )}
     </Stack>
