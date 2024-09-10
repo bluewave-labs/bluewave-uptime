@@ -1,7 +1,6 @@
 import { Box, Stack, styled } from "@mui/material";
 
 export const ChartBox = styled(Stack)(({ theme }) => ({
-  flex: "1 30%",
   gap: theme.spacing(8),
   height: 300,
   minWidth: 250,

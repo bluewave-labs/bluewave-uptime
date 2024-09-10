@@ -20,6 +20,7 @@ import PerformanceIcon from "../../../assets/icons/performance-report.svg?react"
 import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
+import PagespeedDetailsAreaChart from "./Charts/AreaChart";
 import "./index.css";
 
 /**
@@ -264,7 +265,7 @@ const PageSpeedDetails = () => {
   let loading = Object.keys(monitor).length === 0;
   const data = monitor?.checks ? [...monitor.checks].reverse() : [];
 
-  console.log(monitor);
+  console.log(data);
 
   const splitDuration = (duration) => {
     const { time, format } = formatDurationSplit(duration);
@@ -407,16 +408,16 @@ const PageSpeedDetails = () => {
               Showing statistics for past 24 hours.
             </Typography>
           </Box>
-          <ChartBox display="block">
+          <ChartBox>
             <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
               <IconBox>
                 <ScoreIcon />
               </IconBox>
               <Typography component="h2">Score history</Typography>
             </Stack>
-            <PageSpeedLineChart pageSpeedChecks={data} />
+            <PagespeedDetailsAreaChart data={data} />
           </ChartBox>
-          <ChartBox>
+          <ChartBox flex={1}>
             <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
               <IconBox>
                 <PerformanceIcon />
