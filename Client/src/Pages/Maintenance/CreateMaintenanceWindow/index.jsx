@@ -67,10 +67,6 @@ const CreateNewMaintenanceWindow = () => {
 
   useEffect(() => {
     setMonitorOptions(monitorState.monitorsSummary.monitors);
-    console.log(
-      "monitorState.monitorsSummary.monitors ==> ",
-      monitorState.monitorsSummary.monitors
-    );
   }, [monitorState]);
 
   const [values, setValues] = useState({
