@@ -7,7 +7,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
@@ -30,6 +29,7 @@ import PulseDot from "../../../Components/Animated/PulseDot";
 import PagespeedDetailsAreaChart from "./Charts/AreaChart";
 import "./index.css";
 import Checkbox from "../../../Components/Inputs/Checkbox";
+import PieChart from "./Charts/PieChart";
 
 /**
  * Renders a centered label within a pie chart.
@@ -151,125 +151,6 @@ const PageSpeedDetails = () => {
     fetchMonitor();
   }, [monitorId, authToken, navigate]);
 
-  /**
-   * Weight constants for different performance metrics.
-   * @type {Object}
-   */
-  const weights = {
-    fcp: 10,
-    si: 10,
-    lcp: 25,
-    tbt: 30,
-    cls: 25,
-  };
-
-  /**
-   * Retrieves color properties based on the performance value.
-   *
-   * @param {number} value - The performance score used to determine the color properties.
-   * @returns {{stroke: string, text: string, bg: string}} The color properties for the given performance value.
-   */
-  const getColors = (value) => {
-    if (value >= 90 && value <= 100)
-      return {
-        stroke: theme.palette.success.main,
-        strokeBg: theme.palette.success.light,
-        text: theme.palette.success.text,
-        bg: theme.palette.success.bg,
-        shape: "circle",
-      };
-    else if (value >= 50 && value < 90)
-      return {
-        stroke: theme.palette.warning.main,
-        strokeBg: theme.palette.warning.bg,
-        text: theme.palette.warning.text,
-        bg: theme.palette.warning.light,
-        shape: "square",
-      };
-    else if (value >= 0 && value < 50)
-      return {
-        stroke: theme.palette.error.text,
-        strokeBg: theme.palette.error.light,
-        text: theme.palette.error.text,
-        bg: theme.palette.error.bg,
-        shape: "circle",
-      };
-    return {
-      stroke: theme.palette.unresolved.main,
-      strokeBg: theme.palette.unresolved.light,
-      text: theme.palette.unresolved.main,
-      bg: theme.palette.unresolved.bg,
-      shape: "",
-    };
-  };
-
-  /**
-   * Calculates and formats the data needed for rendering a pie chart based on audit scores and weights.
-   * This function generates properties for each pie slice, including angles, radii, and colors.
-   * It also calculates performance based on the weighted values.
-   *
-   * @returns {Array<Object>} An array of objects, each representing the properties for a slice of the pie chart.
-   * @returns {number} performance - A variable updated with the rounded sum of weighted values.
-   */
-  let performance = 0;
-  const getPieData = (audits) => {
-    let props = [];
-    let startAngle = 0;
-    const padding = 3; // padding between arcs
-    const max = 360 - padding * (Object.keys(audits).length - 1); // _id is a child of audits
-
-    Object.keys(audits).forEach((key) => {
-      if (audits[key].score) {
-        let value = audits[key].score * weights[key];
-        let endAngle = startAngle + (weights[key] * max) / 100;
-
-        let theme = getColors(audits[key].score * 100);
-        props.push({
-          id: key,
-          data: [
-            {
-              value: value,
-              color: theme.stroke,
-              label: key.toUpperCase(),
-            },
-            {
-              value: weights[key] - value,
-              color: theme.strokeBg,
-              label: "",
-            },
-          ],
-          arcLabel: (item) => `${item.label}`,
-          arcLabelRadius: 95,
-          startAngle: startAngle,
-          endAngle: endAngle,
-          innerRadius: 73,
-          outerRadius: 80,
-          cornerRadius: 2,
-          highlightScope: { faded: "global", highlighted: "series" },
-          faded: {
-            innerRadius: 63,
-            outerRadius: 70,
-            additionalRadius: -20,
-            arcLabelRadius: 5,
-          },
-          cx: pieSize.width / 2,
-        });
-
-        performance += Math.floor(value);
-        startAngle = endAngle + padding;
-      }
-    });
-
-    return props;
-  };
-
-  const pieSize = { width: 210, height: 200 };
-  const pieData = getPieData(audits);
-  const colorMap = getColors(performance);
-
-  const [highlightedItem, setHighLightedItem] = useState(null);
-  const [expand, setExpand] = useState(false);
-
   let loading = Object.keys(monitor).length === 0;
   const data = monitor?.checks ? [...monitor.checks].reverse() : [];
 
@@ -291,6 +172,38 @@ const PageSpeedDetails = () => {
   });
   const handleMetrics = (id) => {
     setMetrics((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  /**
+   * Retrieves color properties based on the performance value.
+   *
+   * @param {number} value - The performance score used to determine the color properties.
+   * @returns {{stroke: string, text: string, shape: string}} The color properties for the given performance value.
+   */
+  const getColors = (value) => {
+    if (value >= 90 && value <= 100)
+      return {
+        stroke: theme.palette.success.main,
+        text: theme.palette.success.text,
+        shape: "circle",
+      };
+    else if (value >= 50 && value < 90)
+      return {
+        stroke: theme.palette.warning.main,
+        text: theme.palette.warning.text,
+        shape: "square",
+      };
+    else if (value >= 0 && value < 50)
+      return {
+        stroke: theme.palette.error.text,
+        text: theme.palette.error.text,
+        shape: "circle",
+      };
+    return {
+      stroke: theme.palette.unresolved.main,
+      text: theme.palette.unresolved.main,
+      shape: "",
+    };
   };
 
   return (
@@ -499,7 +412,8 @@ const PageSpeedDetails = () => {
           </Box>
           <ChartBox
             flex={1}
-            sx={{ gridTemplateColumns: "40% 60%", gridTemplateRows: "15% 85%" }}
+            mt={theme.spacing(2)}
+            sx={{ gridTemplateColumns: "35% 65%", gridTemplateRows: "15% 85%" }}
           >
             <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
               <IconBox>
@@ -512,98 +426,10 @@ const PageSpeedDetails = () => {
               textAlign="center"
               minWidth="300px"
               flex={1}
-              px={theme.spacing(20)}
-              py={theme.spacing(8)}
+              p={theme.spacing(12)}
             >
-              <Box onMouseLeave={() => setExpand(false)}>
-                {expand ? (
-                  <PieChart
-                    series={[
-                      {
-                        data: [
-                          {
-                            value: 100,
-                            color: colorMap.bg,
-                          },
-                        ],
-                        outerRadius: 67,
-                        cx: pieSize.width / 2,
-                      },
-                      ...pieData,
-                    ]}
-                    width={pieSize.width}
-                    height={pieSize.height}
-                    margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
-                    onHighlightChange={setHighLightedItem}
-                    slotProps={{
-                      legend: { hidden: true },
-                    }}
-                    tooltip={{ trigger: "none" }}
-                    sx={{
-                      "&:has(.MuiPieArcLabel-faded) .pie-label": {
-                        fill: "rgba(0,0,0,0) !important",
-                      },
-                    }}
-                  >
-                    <PieCenterLabel
-                      value={performance}
-                      color={colorMap.text}
-                      setExpand={setExpand}
-                    />
-                    {pieData?.map((pie) => (
-                      <PieValueLabel
-                        key={pie.id}
-                        value={Math.round(pie.data[0].value * 10) / 10}
-                        startAngle={pie.startAngle}
-                        endAngle={pie.endAngle}
-                        color={pie.data[0].color}
-                        highlighted={highlightedItem?.seriesId === pie.id}
-                      />
-                    ))}
-                  </PieChart>
-                ) : (
-                  <PieChart
-                    series={[
-                      {
-                        data: [
-                          {
-                            value: 100,
-                            color: colorMap.bg,
-                          },
-                        ],
-                        outerRadius: 67,
-                        cx: pieSize.width / 2,
-                      },
-                      {
-                        data: [
-                          {
-                            value: performance,
-                            color: colorMap.stroke,
-                          },
-                        ],
-                        innerRadius: 63,
-                        outerRadius: 70,
-                        paddingAngle: 5,
-                        cornerRadius: 2,
-                        startAngle: 0,
-                        endAngle: (performance / 100) * 360,
-                        cx: pieSize.width / 2,
-                      },
-                    ]}
-                    width={pieSize.width}
-                    height={pieSize.height}
-                    margin={{ left: 0, top: 0, right: 0, bottom: 0 }}
-                    tooltip={{ trigger: "none" }}
-                  >
-                    <PieCenterLabel
-                      value={performance}
-                      color={colorMap.text}
-                      setExpand={setExpand}
-                    />
-                  </PieChart>
-                )}
-              </Box>
-              <Typography mt={theme.spacing(6)}>
+              <PieChart audits={audits} />
+              <Typography fontSize={13} mt="auto">
                 Values are estimated and may vary.{" "}
                 <Typography
                   component="span"

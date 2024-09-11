@@ -51,7 +51,7 @@ const lightTheme = createTheme({
       text: "#DC6803",
       main: "#fdb022",
       light: "#ffecbc",
-      bg: "#fffcf5",
+      bg: "#fef8ea",
       border: "#fec84b",
     },
     percentage: {

@@ -16,7 +16,7 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     fontSize: 15,
     fontWeight: 500,
   },
-  "& p": { color: theme.palette.text.secondary },
+  "& p": { color: theme.palette.text.tertiary },
   "& > :nth-of-type(1)": {
     gridColumn: 1,
     gridRow: 1,
