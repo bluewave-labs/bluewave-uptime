@@ -36,7 +36,7 @@ import { useTheme } from "@emotion/react";
 const AutoCompleteField = ({
   id,
   type,
-  options,
+  options = [],
   placeholder = "Type to search",
   disabled,
   sx,
@@ -51,7 +51,6 @@ const AutoCompleteField = ({
     <>
       <Autocomplete
         sx={sx}
-        freeSolo
         className="auto-complete-field"
         id={id}
         value={autoCompleteValue}
@@ -61,13 +60,14 @@ const AutoCompleteField = ({
         options={options}
         getOptionLabel={(option) => (option && option.name ? option.name : "")}
         disableClearable
+        disabled={disabled}
+        isOptionEqualToValue={(option, value) => option._id === value._id}
         renderInput={(params) => (
           <TextField
             error={error ? true : false}
             {...params}
             type={type}
             placeholder={placeholder}
-            disabled={disabled}
             InputProps={{
               ...params.InputProps,
               readOnly: true,

@@ -119,11 +119,9 @@ const maintenanceWindowValidation = joi.object({
     "any.required": "Repeat is required.",
   }),
   date: joi.date().required().messages({
-    "date.base": "Date must be a valid date.",
     "any.required": "Date is required.",
   }),
-  startTime: joi.string().required().messages({
-    "string.base": "Start time must be a valid time.",
+  startTime: joi.number().required().messages({
     "any.required": "Start time is required.",
   }),
   duration: joi.number().required().messages({

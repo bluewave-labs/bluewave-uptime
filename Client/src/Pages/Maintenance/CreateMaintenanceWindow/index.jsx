@@ -66,8 +66,12 @@ const CreateNewMaintenanceWindow = () => {
   const [monitorOptions, setMonitorOptions] = useState([]);
 
   useEffect(() => {
-    setMonitorOptions(monitorState.monitors);
-  }, []);
+    setMonitorOptions(monitorState.monitorsSummary.monitors);
+    console.log(
+      "monitorState.monitorsSummary.monitors ==> ",
+      monitorState.monitorsSummary.monitors
+    );
+  }, [monitorState]);
 
   const [values, setValues] = useState({
     repeat: 1,
@@ -77,7 +81,7 @@ const CreateNewMaintenanceWindow = () => {
     unit: "minutes",
     displayName: "",
     AddMonitors: "",
-    autoCompleteValue: {},
+    autoCompleteValue: { _id: "", name: "" },
   });
   const [errors, setErrors] = useState({});
 
@@ -102,11 +106,11 @@ const CreateNewMaintenanceWindow = () => {
   const convertDurationToMilliseconds = (duration, unit) => {
     let milliseconds = 0;
     if (unit === "minutes") {
-      milliseconds = duration * 60 * 1000;
+      milliseconds = duration * 60000;
     } else if (unit === "hours") {
-      milliseconds = duration * 60 * 60 * 1000;
+      milliseconds = duration * 360000;
     } else if (unit === "days") {
-      milliseconds = duration * 24 * 60 * 60 * 1000;
+      milliseconds = duration * 86400000;
     }
     return milliseconds;
   };
@@ -114,7 +118,7 @@ const CreateNewMaintenanceWindow = () => {
   const handleSubmit = async () => {
     const combinedTimestamp = dayjs(
       `${values.date.format("YYYY-MM-DD")}T${values.startTime.format("HH:mm")}`
-    ).format();
+    ).valueOf();
 
     const durationInMilliseconds = convertDurationToMilliseconds(
       values.duration,
@@ -123,8 +127,8 @@ const CreateNewMaintenanceWindow = () => {
 
     const data = {
       repeat: values.repeat,
-      date: values.date.format(),
-      startTime: values.startTime.format(),
+      date: values.date.valueOf(),
+      startTime: values.startTime.valueOf(),
       timestamp: combinedTimestamp,
       duration: durationInMilliseconds,
       unit: values.unit,
@@ -251,7 +255,7 @@ const CreateNewMaintenanceWindow = () => {
             autoCompleteValue={values.autoCompleteValue}
             setAutoCompleteValue={(e) => handleChange(e, "autoCompleteValue")}
             error={errors.addMonitors}
-            disabled={true}
+            disabled={false}
           />
           <Typography
             sx={{
