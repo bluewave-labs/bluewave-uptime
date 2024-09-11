@@ -368,10 +368,20 @@ const deleteMonitor = async (req, res, next) => {
 
 const deleteAllMonitors = async (req, res) => {
   try {
-    const deleteCount = await req.db.deleteAllMonitors();
+    const token = getTokenFromHeaders(req.headers);
+    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
+    await monitors.forEach(async (monitor) => {
+      await req.jobQueue.deleteJob(monitor);
+      await req.db.deleteChecks(monitor._id);
+      await req.db.deleteAlertByMonitorId(monitor._id);
+      await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+      await req.db.deleteNotificationsByMonitorId(monitor._id);
+    });
+
     return res
       .status(200)
-      .json({ success: true, msg: `Deleted ${deleteCount} monitors` });
+      .json({ success: true, msg: `Deleted ${deletedCount} monitors` });
   } catch (error) {
     error.service = SERVICE_NAME;
     next(error);
@@ -472,7 +482,6 @@ const pauseMonitor = async (req, res, next) => {
 const addDemoMonitors = async (req, res, next) => {
   try {
     const token = getTokenFromHeaders(req.headers);
-    // Get email from token
     const { _id, teamId } = jwt.verify(token, process.env.JWT_SECRET);
     const demoMonitors = await req.db.addDemoMonitors(_id, teamId);
     await demoMonitors.forEach(async (monitor) => {

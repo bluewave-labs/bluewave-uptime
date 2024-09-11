@@ -451,10 +451,12 @@ const deleteMonitor = async (req, res) => {
  * DELETE ALL MONITORS (TEMP)
  */
 
-const deleteAllMonitors = async (req, res) => {
+const deleteAllMonitors = async (teamId) => {
   try {
-    const deletedCount = await Monitor.deleteMany({});
-    return deletedCount.deletedCount;
+    const monitors = await Monitor.find({ teamId });
+    const { deletedCount } = await Monitor.deleteMany({ teamId });
+
+    return { monitors, deletedCount };
   } catch (error) {
     throw error;
   }

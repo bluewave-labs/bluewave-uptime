@@ -32,7 +32,7 @@ router.put(
 );
 
 router.delete(
-  "/all",
+  "/",
   isAllowed(["superadmin"]),
   monitorController.deleteAllMonitors
 );
