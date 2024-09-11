@@ -7,7 +7,11 @@ import { logger } from "../../Utils/Logger";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
-import { deleteMonitorChecksByTeamId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import {
+  deleteMonitorChecksByTeamId,
+  addDemoMonitors,
+  deleteAllMonitors,
+} from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 const Settings = ({ isAdmin }) => {
@@ -36,8 +40,32 @@ const Settings = ({ isAdmin }) => {
     }
   };
 
-  const addDemoMonitors = () => {
-    logger.warn("Click");
+  const handleInsertDemoMonitors = async () => {
+    try {
+      const action = await dispatch(addDemoMonitors({ authToken }));
+      if (addDemoMonitors.fulfilled.match(action)) {
+        createToast({ body: "Successfully added demo monitors" });
+      } else {
+        createToast({ body: "Failed to add demo monitors" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ Body: "Failed to add demo monitors" });
+    }
+  };
+
+  const handleDeleteAllMonitors = async () => {
+    try {
+      const action = await dispatch(deleteAllMonitors({ authToken }));
+      if (deleteAllMonitors.fulfilled.match(action)) {
+        createToast({ body: "Successfully deleted all monitors" });
+      } else {
+        createToast({ body: "Failed to add demo monitors" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ Body: "Failed to delete all monitors" });
+    }
   };
 
   const ConfigBox = styled("div")({
@@ -159,7 +187,7 @@ const Settings = ({ isAdmin }) => {
                   variant="contained"
                   color="primary"
                   loading={isLoading}
-                  onClick={addDemoMonitors}
+                  onClick={handleInsertDemoMonitors}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Add demo monitors
@@ -169,9 +197,9 @@ const Settings = ({ isAdmin }) => {
                 <Typography>Remove all monitors</Typography>
                 <LoadingButton
                   variant="contained"
-                  color="primary"
+                  color="error"
                   loading={isLoading}
-                  onClick={() => {}}
+                  onClick={handleDeleteAllMonitors}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Remove all monitors

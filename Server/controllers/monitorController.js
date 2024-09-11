@@ -368,6 +368,7 @@ const deleteMonitor = async (req, res, next) => {
 
 const deleteAllMonitors = async (req, res) => {
   try {
+    console.log("WTF");
     const token = getTokenFromHeaders(req.headers);
     const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
     const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
@@ -384,6 +385,7 @@ const deleteAllMonitors = async (req, res) => {
       .json({ success: true, msg: `Deleted ${deletedCount} monitors` });
   } catch (error) {
     error.service = SERVICE_NAME;
+    error.method === undefined && error.method === "deleteAllMonitors";
     next(error);
   }
 };

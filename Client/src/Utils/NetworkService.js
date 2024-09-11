@@ -276,6 +276,46 @@ class NetworkService {
 
   /**
    * ************************************
+   * Adds demo monitors
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
+  async addDemoMonitors(authToken) {
+    return this.axiosInstance.post(
+      `/monitors/demo`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
+   * Deletes all monitors for a team by team ID
+   * ************************************
+   *
+   * @async
+   * @param {string} authToken - The authorization token to be used in the request header.
+   * @returns {Promise<AxiosResponse>} The response from the axios DELETE request.
+   */
+  async deleteAllMonitors(authToken) {
+    return this.axiosInstance.delete(`/monitors/`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  /**
+   * ************************************
    * Gets the certificate expiry for a monitor
    * ************************************
    *
