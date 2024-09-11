@@ -121,7 +121,7 @@ const maintenanceWindowValidation = joi.object({
   date: joi.date().required().messages({
     "any.required": "Date is required.",
   }),
-  startTime: joi.number().required().messages({
+  startTime: joi.string().required().messages({
     "any.required": "Start time is required.",
   }),
   duration: joi.number().required().messages({

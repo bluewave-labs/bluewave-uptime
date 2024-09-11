@@ -30,6 +30,7 @@ import { useTheme } from "@emotion/react";
  * @param {number} props.width - The width of the component.
  * @param {string} props.autoCompleteValue - The value of the autocomplete field.
  * @param {Function} props.setAutoCompleteValue - The function to set the value of the autocomplete field.
+ * @param {string} props.error - The error message to display.
  * @returns {JSX.Element} The AutoCompleteField component.
  */
 
@@ -138,6 +139,9 @@ AutoCompleteField.propTypes = {
   disabled: PropTypes.bool,
   width: PropTypes.number,
   sx: PropTypes.object,
+  autoCompleteValue: PropTypes.object,
+  setAutoCompleteValue: PropTypes.func,
+  error: PropTypes.string,
 };
 
 export default AutoCompleteField;

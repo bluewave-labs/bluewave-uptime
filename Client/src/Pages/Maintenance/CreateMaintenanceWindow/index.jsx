@@ -19,6 +19,10 @@ import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 
+const MS_PER_MINUTE = 60000;
+const MS_PER_HOUR = 3600000;
+const MS_PER_DAY = 86400000;
+
 const directory = {
   title: "Create a maintenance window",
   description: "Your pings won’t be sent in this time frame.",
@@ -77,7 +81,7 @@ const CreateNewMaintenanceWindow = () => {
     unit: "minutes",
     displayName: "",
     AddMonitors: "",
-    autoCompleteValue: { _id: "", name: "" },
+    autoCompleteValue: null,
   });
   const [errors, setErrors] = useState({});
 
@@ -102,11 +106,11 @@ const CreateNewMaintenanceWindow = () => {
   const convertDurationToMilliseconds = (duration, unit) => {
     let milliseconds = 0;
     if (unit === "minutes") {
-      milliseconds = duration * 60000;
+      milliseconds = duration * MS_PER_MINUTE;
     } else if (unit === "hours") {
-      milliseconds = duration * 360000;
+      milliseconds = duration * MS_PER_HOUR;
     } else if (unit === "days") {
-      milliseconds = duration * 86400000;
+      milliseconds = duration * MS_PER_DAY;
     }
     return milliseconds;
   };
@@ -123,8 +127,8 @@ const CreateNewMaintenanceWindow = () => {
 
     const data = {
       repeat: values.repeat,
-      date: values.date.valueOf(),
-      startTime: values.startTime.valueOf(),
+      date: values.date.format("YYYY-MM-DD"),
+      startTime: values.startTime.format("HH:mm"),
       timestamp: combinedTimestamp,
       duration: durationInMilliseconds,
       unit: values.unit,
