@@ -278,6 +278,7 @@ class NetworkService {
       default:
         logger.error(`Unsupported type: ${job.data.type}`, {
           service: this.SERVICE_NAME,
+          method: "getStatus",
           jobId: job.id,
         });
         return false;
@@ -296,11 +297,13 @@ class NetworkService {
   async logAndStoreCheck(data, writeToDB) {
     try {
       const insertedCheck = await writeToDB(data);
-      return insertedCheck.status;
+      if (insertedCheck !== null && insertedCheck !== undefined) {
+        return insertedCheck.status;
+      }
     } catch (error) {
-      console.log(error);
       logger.error(`Error wrtiting check for ${data.monitorId}`, {
         service: this.SERVICE_NAME,
+        method: "logAndStoreCheck",
         monitorId: data.monitorId,
         error: error,
       });
