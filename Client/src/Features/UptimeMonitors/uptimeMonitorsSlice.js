@@ -164,6 +164,44 @@ export const deleteMonitorChecksByTeamId = createAsyncThunk(
     }
   }
 );
+export const addDemoMonitors = createAsyncThunk(
+  "monitors/addDemoMonitors",
+  async (data, thunkApi) => {
+    try {
+      const { authToken } = data;
+      const res = await networkService.addDemoMonitors(authToken);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
+export const deleteAllMonitors = createAsyncThunk(
+  "monitors/deleteAllMonitors",
+  async (data, thunkApi) => {
+    try {
+      const { authToken } = data;
+      const res = await networkService.deleteAllMonitors(authToken);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkApi.rejectWithValue(error.response.data);
+      }
+      const payload = {
+        status: false,
+        msg: error.message ? error.message : "Unknown error",
+      };
+      return thunkApi.rejectWithValue(payload);
+    }
+  }
+);
 
 const uptimeMonitorsSlice = createSlice({
   name: "uptimeMonitors",
@@ -306,6 +344,42 @@ const uptimeMonitorsSlice = createSlice({
         state.msg = action.payload
           ? action.payload.msg
           : "Failed to pause uptime monitor";
+      })
+      // *****************************************************
+      // Add Demo Monitors
+      // *****************************************************
+      .addCase(addDemoMonitors.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addDemoMonitors.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(addDemoMonitors.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to add demo uptime monitors";
+      })
+      // *****************************************************
+      // Delete all Monitors
+      // *****************************************************
+      .addCase(deleteAllMonitors.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteAllMonitors.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.success = action.payload.success;
+        state.msg = action.payload.msg;
+      })
+      .addCase(deleteAllMonitors.rejected, (state, action) => {
+        state.isLoading = false;
+        state.success = false;
+        state.msg = action.payload
+          ? action.payload.msg
+          : "Failed to delete all monitors";
       });
   },
 });

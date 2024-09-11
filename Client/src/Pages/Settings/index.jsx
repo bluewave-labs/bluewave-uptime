@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Button, Stack, styled, Typography } from "@mui/material";
+import { Box, Stack, styled, Typography } from "@mui/material";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
@@ -7,7 +7,11 @@ import { logger } from "../../Utils/Logger";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
-import { deleteMonitorChecksByTeamId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import {
+  deleteMonitorChecksByTeamId,
+  addDemoMonitors,
+  deleteAllMonitors,
+} from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 const Settings = ({ isAdmin }) => {
@@ -33,6 +37,34 @@ const Settings = ({ isAdmin }) => {
     } catch (error) {
       logger.error(error);
       createToast({ body: "Failed to clear stats" });
+    }
+  };
+
+  const handleInsertDemoMonitors = async () => {
+    try {
+      const action = await dispatch(addDemoMonitors({ authToken }));
+      if (addDemoMonitors.fulfilled.match(action)) {
+        createToast({ body: "Successfully added demo monitors" });
+      } else {
+        createToast({ body: "Failed to add demo monitors" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ Body: "Failed to add demo monitors" });
+    }
+  };
+
+  const handleDeleteAllMonitors = async () => {
+    try {
+      const action = await dispatch(deleteAllMonitors({ authToken }));
+      if (deleteAllMonitors.fulfilled.match(action)) {
+        createToast({ body: "Successfully deleted all monitors" });
+      } else {
+        createToast({ body: "Failed to add demo monitors" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ Body: "Failed to delete all monitors" });
     }
   };
 
@@ -135,6 +167,42 @@ const Settings = ({ isAdmin }) => {
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Clear all stats
+                </LoadingButton>
+              </Box>
+            </Stack>
+          </ConfigBox>
+        )}
+        {isAdmin && (
+          <ConfigBox>
+            <Box>
+              <Typography component="h1">Demo Monitors</Typography>
+              <Typography sx={{ mt: theme.spacing(2) }}>
+                Here you can add and remove demo monitors
+              </Typography>
+            </Box>
+            <Stack gap={theme.spacing(20)}>
+              <Box>
+                <Typography>Add demo monitors</Typography>
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading}
+                  onClick={handleInsertDemoMonitors}
+                  sx={{ mt: theme.spacing(4) }}
+                >
+                  Add demo monitors
+                </LoadingButton>
+              </Box>
+              <Box>
+                <Typography>Remove all monitors</Typography>
+                <LoadingButton
+                  variant="contained"
+                  color="error"
+                  loading={isLoading}
+                  onClick={handleDeleteAllMonitors}
+                  sx={{ mt: theme.spacing(4) }}
+                >
+                  Remove all monitors
                 </LoadingButton>
               </Box>
             </Stack>

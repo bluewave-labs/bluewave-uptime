@@ -1,6 +1,7 @@
 const Check = require("../../../models/Check");
 const Monitor = require("../../../models/Monitor");
-const mongoose = require("mongoose");
+const logger = require("../../../utils/logger");
+const SERVICE_NAME = "checkModule";
 const dateRangeLookup = {
   day: new Date(new Date().setDate(new Date().getDate() - 1)),
   week: new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -24,21 +25,25 @@ const createCheck = async (checkData) => {
   try {
     const { monitorId, status } = checkData;
 
-    const n = await Check.countDocuments({ monitorId }) + 1;
+    const n = (await Check.countDocuments({ monitorId })) + 1;
 
     const check = await new Check({ ...checkData }).save();
 
     const monitor = await Monitor.findById(monitorId);
 
     if (!monitor) {
-      throw new Error("Monitor not found");
+      logger.error("Monitor not found", {
+        service: SERVICE_NAME,
+        monitorId,
+      });
+      return;
     }
 
     if (monitor.uptimePercentage === undefined) {
-      monitor.uptimePercentage = (status === true) ? 1 : 0;
+      monitor.uptimePercentage = status === true ? 1 : 0;
     } else {
       monitor.uptimePercentage =
-        (monitor.uptimePercentage * (n - 1) + (status === true ? 1: 0)) / n;
+        (monitor.uptimePercentage * (n - 1) + (status === true ? 1 : 0)) / n;
     }
 
     await monitor.save();
