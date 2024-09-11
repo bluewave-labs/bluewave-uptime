@@ -45,7 +45,7 @@ const config = {
  * @returns {JSX.Element|null} The tooltip element or null if not active.
  */
 
-const CustomToolTip = ({ active, payload, label }) => {
+const CustomToolTip = ({ active, payload, label, config }) => {
   const theme = useTheme();
 
   if (active && payload && payload.length) {
@@ -213,12 +213,19 @@ CustomTick.propTypes = {
  * @returns {JSX.Element} The area chart component.
  */
 
-const PagespeedDetailsAreaChart = ({ data, interval }) => {
+const PagespeedDetailsAreaChart = ({ data, interval, metrics }) => {
   const theme = useTheme();
   const memoizedData = useMemo(
     () => processDataWithGaps(data, interval),
-    [data]
+    [data[0]]
   );
+
+  const filteredConfig = Object.keys(config).reduce((result, key) => {
+    if (metrics[key]) {
+      result[key] = config[key];
+    }
+    return result;
+  }, {});
 
   return (
     <ResponsiveContainer width="100%" minWidth={25} height={215}>
@@ -247,10 +254,10 @@ const PagespeedDetailsAreaChart = ({ data, interval }) => {
         />
         <Tooltip
           cursor={{ stroke: theme.palette.border.light }}
-          content={<CustomToolTip />}
+          content={<CustomToolTip config={filteredConfig} />}
         />
         <defs>
-          {Object.values(config).map(({ id, color }) => {
+          {Object.values(filteredConfig).map(({ id, color }) => {
             const startColor = theme.palette[color].main;
             const endColor = theme.palette[color].light;
 
@@ -262,8 +269,8 @@ const PagespeedDetailsAreaChart = ({ data, interval }) => {
             );
           })}
         </defs>
-        {Object.keys(config).map((key) => {
-          const { color } = config[key];
+        {Object.keys(filteredConfig).map((key) => {
+          const { color } = filteredConfig[key];
           const strokeColor = theme.palette[color].main;
           const bgColor = theme.palette.background.main;
 
@@ -275,7 +282,7 @@ const PagespeedDetailsAreaChart = ({ data, interval }) => {
               stackId={1}
               stroke={strokeColor}
               strokeWidth={1.5}
-              fill={`url(#${config[key].id})`}
+              fill={`url(#${filteredConfig[key].id})`}
               activeDot={{ stroke: bgColor, fill: strokeColor, r: 4.5 }}
             />
           );

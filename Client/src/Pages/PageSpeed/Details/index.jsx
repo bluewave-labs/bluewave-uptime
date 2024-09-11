@@ -1,5 +1,12 @@
 import PropTypes from "prop-types";
-import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
@@ -22,6 +29,7 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import PagespeedDetailsAreaChart from "./Charts/AreaChart";
 import "./index.css";
+import Checkbox from "../../../Components/Inputs/Checkbox";
 
 /**
  * Renders a centered label within a pie chart.
@@ -275,6 +283,16 @@ const PageSpeedDetails = () => {
     );
   };
 
+  const [metrics, setMetrics] = useState({
+    accessibility: true,
+    bestPractices: true,
+    performance: true,
+    seo: true,
+  });
+  const handleMetrics = (id) => {
+    setMetrics((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
     <Stack className="page-speed-details" gap={theme.spacing(10)}>
       {loading ? (
@@ -420,6 +438,7 @@ const PageSpeedDetails = () => {
                 <PagespeedDetailsAreaChart
                   data={data}
                   interval={monitor?.interval}
+                  metrics={metrics}
                 />
               </Box>
               <Box>
@@ -432,6 +451,48 @@ const PageSpeedDetails = () => {
                     <MetricsIcon />
                   </IconBox>
                   <Typography component="h2">Metrics</Typography>
+                </Stack>
+                <Stack
+                  gap={theme.spacing(4)}
+                  mt={theme.spacing(16)}
+                  sx={{
+                    "& label": { pl: theme.spacing(6) },
+                  }}
+                >
+                  <Box>
+                    <Typography fontSize={11} fontWeight={500}>
+                      Shown
+                    </Typography>
+                    <Divider sx={{ mt: theme.spacing(2) }} />
+                  </Box>
+                  <Checkbox
+                    id="accessibility-toggle"
+                    label="Accessibility"
+                    isChecked={metrics.accessibility}
+                    onChange={() => handleMetrics("accessibility")}
+                  />
+                  <Divider />
+                  <Checkbox
+                    id="best-practices-toggle"
+                    label="Best Practices"
+                    isChecked={metrics.bestPractices}
+                    onChange={() => handleMetrics("bestPractices")}
+                  />
+                  <Divider />
+                  <Checkbox
+                    id="performance-toggle"
+                    label="Performance"
+                    isChecked={metrics.performance}
+                    onChange={() => handleMetrics("performance")}
+                  />
+                  <Divider />
+                  <Checkbox
+                    id="seo-toggle"
+                    label="Search Engine Optimization"
+                    isChecked={metrics.seo}
+                    onChange={() => handleMetrics("seo")}
+                  />
+                  <Divider />
                 </Stack>
               </Box>
             </ChartBox>
