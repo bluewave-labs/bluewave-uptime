@@ -6,10 +6,12 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Text,
 } from "recharts";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
+import { formatDate } from "../../../Utils/timeUtils";
 import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
@@ -87,19 +89,33 @@ const CustomToolTip = ({ active, payload, label }) => {
   return null;
 };
 
-const MonitorDetailsAreaChart = ({ checks }) => {
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const memoizedChecks = useMemo(() => checks, [checks[0]]);
-
+const CustomTick = ({ x, y, payload, index }) => {
   const theme = useTheme();
+
+  // Render nothing for the first tick
+  if (index === 0) return null;
+
+  return (
+    <Text
+      x={x}
+      y={y + 10}
+      textAnchor="middle"
+      fill={theme.palette.text.tertiary}
+      fontSize={11}
+      fontWeight={400}
+    >
+      {formatDate(new Date(payload.value), {
+        year: undefined,
+        month: undefined,
+        day: undefined,
+      })}
+    </Text>
+  );
+};
+
+const MonitorDetailsAreaChart = ({ checks }) => {
+  const theme = useTheme();
+  const memoizedChecks = useMemo(() => checks, [checks[0]]);
 
   return (
     <ResponsiveContainer width="100%" minWidth={25} height={220}>
@@ -138,10 +154,12 @@ const MonitorDetailsAreaChart = ({ checks }) => {
         <XAxis
           stroke={theme.palette.border.dark}
           dataKey="createdAt"
-          tickFormatter={formatDate}
-          tick={{ fontSize: "13px" }}
+          tick={<CustomTick />}
+          minTickGap={0}
+          axisLine={false}
           tickLine={false}
-          height={18}
+          height={20}
+          interval="equidistantPreserveStart"
         />
         <Tooltip
           cursor={{ stroke: theme.palette.border.light }}

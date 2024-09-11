@@ -63,7 +63,7 @@ const darkTheme = createTheme({
       uptimeGood: "#ffd600",
       uptimeExcellent: "#079455",
     },
-    unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
+    unresolved: { main: "#664eff", light: "#3a1bff", bg: "#f2f4f7" },
     divider: border.light,
     other: {
       icon: "#e6e6e6",

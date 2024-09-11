@@ -15,9 +15,9 @@ import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
 import SkeletonLayout from "./skeleton";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
+import MetricsIcon from "../../../assets/icons/ruler-icon.svg?react";
 import ScoreIcon from "../../../assets/icons/monitor-graph-line.svg?react";
 import PerformanceIcon from "../../../assets/icons/performance-report.svg?react";
-import PageSpeedLineChart from "../../../Components/Charts/PagespeedLineChart";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import PagespeedDetailsAreaChart from "./Charts/AreaChart";
@@ -402,23 +402,44 @@ const PageSpeedDetails = () => {
             </StatBox>
           </Stack>
           <Box>
-            <Typography fontSize={12} color={theme.palette.text.tertiary}>
+            <Typography
+              fontSize={12}
+              color={theme.palette.text.tertiary}
+              my={theme.spacing(8)}
+            >
               Showing statistics for past 24 hours.
             </Typography>
+            <ChartBox sx={{ gridTemplateColumns: "75% 25%" }}>
+              <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
+                <IconBox>
+                  <ScoreIcon />
+                </IconBox>
+                <Typography component="h2">Score history</Typography>
+              </Stack>
+              <Box>
+                <PagespeedDetailsAreaChart
+                  data={data}
+                  interval={monitor?.interval}
+                />
+              </Box>
+              <Box>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  gap={theme.spacing(6)}
+                >
+                  <IconBox>
+                    <MetricsIcon />
+                  </IconBox>
+                  <Typography component="h2">Metrics</Typography>
+                </Stack>
+              </Box>
+            </ChartBox>
           </Box>
-          <ChartBox>
-            <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
-              <IconBox>
-                <ScoreIcon />
-              </IconBox>
-              <Typography component="h2">Score history</Typography>
-            </Stack>
-            <PagespeedDetailsAreaChart
-              data={data}
-              interval={monitor?.interval}
-            />
-          </ChartBox>
-          <ChartBox flex={1}>
+          <ChartBox
+            flex={1}
+            sx={{ gridTemplateColumns: "40% 60%", gridTemplateRows: "15% 85%" }}
+          >
             <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
               <IconBox>
                 <PerformanceIcon />
@@ -536,16 +557,7 @@ const PageSpeedDetails = () => {
                 </Typography>
               </Typography>
             </Stack>
-            <Box
-              px={theme.spacing(20)}
-              py={theme.spacing(8)}
-              height="100%"
-              flex={1}
-              sx={{
-                borderLeft: 1,
-                borderLeftColor: theme.palette.border.light,
-              }}
-            >
+            <Box px={theme.spacing(20)} py={theme.spacing(8)} height="100%">
               <Typography
                 mb={theme.spacing(6)}
                 pb={theme.spacing(8)}

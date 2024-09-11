@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   AreaChart,
   Area,
@@ -5,6 +6,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Text,
 } from "recharts";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
@@ -12,27 +14,36 @@ import { Box, Stack, Typography } from "@mui/material";
 import { formatDate } from "../../../../Utils/timeUtils";
 
 const config = {
-  accessibility: {
-    id: "accessibility",
-    text: "accessibility",
-    color: "primary",
-  },
-  bestPractices: {
-    id: "bestPractices",
-    text: "best practices",
-    color: "warning",
+  seo: {
+    id: "seo",
+    text: "SEO",
+    color: "unresolved",
   },
   performance: {
     id: "performance",
     text: "performance",
     color: "success",
   },
-  seo: {
-    id: "seo",
-    text: "SEO",
-    color: "unresolved",
+  bestPractices: {
+    id: "bestPractices",
+    text: "best practices",
+    color: "warning",
+  },
+  accessibility: {
+    id: "accessibility",
+    text: "accessibility",
+    color: "primary",
   },
 };
+
+/**
+ * Custom tooltip for the area chart.
+ * @param {Object} props
+ * @param {boolean} props.active - Whether the tooltip is active.
+ * @param {Array} props.payload - The payload data for the tooltip.
+ * @param {string} props.label - The label for the tooltip.
+ * @returns {JSX.Element|null} The tooltip element or null if not active.
+ */
 
 const CustomToolTip = ({ active, payload, label }) => {
   const theme = useTheme();
@@ -58,50 +69,64 @@ const CustomToolTip = ({ active, payload, label }) => {
         >
           {formatDate(new Date(label))}
         </Typography>
-        {Object.keys(config).map((key) => {
-          const { color } = config[key];
-          const dotColor = theme.palette[color].main;
+        {Object.keys(config)
+          .reverse()
+          .map((key) => {
+            const { color } = config[key];
+            const dotColor = theme.palette[color].main;
 
-          return (
-            <Stack
-              key={`${key}-tooltip`}
-              direction="row"
-              alignItems="center"
-              gap={theme.spacing(3)}
-              mt={theme.spacing(1)}
-              sx={{
-                "& span": {
-                  color: theme.palette.text.tertiary,
-                  fontSize: 11,
-                  fontWeight: 500,
-                },
-              }}
-            >
-              <Box
-                width={theme.spacing(4)}
-                height={theme.spacing(4)}
-                backgroundColor={dotColor}
-                sx={{ borderRadius: "50%" }}
-              />
-              <Typography
-                component="span"
-                textTransform="capitalize"
-                sx={{ opacity: 0.8 }}
+            return (
+              <Stack
+                key={`${key}-tooltip`}
+                direction="row"
+                alignItems="center"
+                gap={theme.spacing(3)}
+                mt={theme.spacing(1)}
+                sx={{
+                  "& span": {
+                    color: theme.palette.text.tertiary,
+                    fontSize: 11,
+                    fontWeight: 500,
+                  },
+                }}
               >
-                {config[key].text}
-              </Typography>{" "}
-              <Typography component="span">
-                {payload[0].payload[key]}
-              </Typography>
-            </Stack>
-          );
-        })}
+                <Box
+                  width={theme.spacing(4)}
+                  height={theme.spacing(4)}
+                  backgroundColor={dotColor}
+                  sx={{ borderRadius: "50%" }}
+                />
+                <Typography
+                  component="span"
+                  textTransform="capitalize"
+                  sx={{ opacity: 0.8 }}
+                >
+                  {config[key].text}
+                </Typography>{" "}
+                <Typography component="span">
+                  {payload[0].payload[key]}
+                </Typography>
+              </Stack>
+            );
+          })}
       </Box>
     );
   }
   return null;
 };
 
+CustomToolTip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.array,
+  label: PropTypes.string,
+};
+
+/**
+ * Processes data to insert gaps with null values based on the interval.
+ * @param {Array} data
+ * @param {number} interval - The interval in milliseconds for gaps.
+ * @returns {Array} The formatted data with gaps.
+ */
 const processDataWithGaps = (data, interval) => {
   if (data.length === 0) return [];
   let formattedData = [];
@@ -137,6 +162,57 @@ const processDataWithGaps = (data, interval) => {
   return formattedData;
 };
 
+/**
+ * Custom tick component to render ticks on the XAxis.
+ *
+ * @param {Object} props
+ * @param {number} props.x - The x coordinate for the tick.
+ * @param {number} props.y - The y coordinate for the tick.
+ * @param {Object} props.payload - The data object containing the tick value.
+ * @param {number} props.index - The index of the tick in the array of ticks.
+ *
+ * @returns {JSX.Element|null} The tick element or null if the tick should be hidden.
+ */
+const CustomTick = ({ x, y, payload, index }) => {
+  const theme = useTheme();
+
+  // Render nothing for the first tick
+  if (index === 0) return null;
+
+  return (
+    <Text
+      x={x}
+      y={y + 8}
+      textAnchor="middle"
+      fill={theme.palette.text.tertiary}
+      fontSize={11}
+      fontWeight={400}
+    >
+      {formatDate(new Date(payload.value), {
+        year: undefined,
+        month: undefined,
+        day: undefined,
+      })}
+    </Text>
+  );
+};
+CustomTick.propTypes = {
+  x: PropTypes.number,
+  y: PropTypes.number,
+  payload: PropTypes.shape({
+    value: PropTypes.string.isRequired,
+  }),
+  index: PropTypes.number,
+};
+
+/**
+ * A chart displaying pagespeed details over time.
+ * @param {Object} props
+ * @param {Array} props.data - The data to display in the chart.
+ * @param {number} props.interval - The interval in milliseconds for processing gaps.
+ * @returns {JSX.Element} The area chart component.
+ */
+
 const PagespeedDetailsAreaChart = ({ data, interval }) => {
   const theme = useTheme();
   const memoizedData = useMemo(
@@ -162,23 +238,12 @@ const PagespeedDetailsAreaChart = ({ data, interval }) => {
         <XAxis
           stroke={theme.palette.border.dark}
           dataKey="createdAt"
-          tickFormatter={(timestamp) =>
-            formatDate(new Date(timestamp), {
-              year: undefined,
-              month: undefined,
-              day: undefined,
-            })
-          }
-          tick={{
-            fontSize: 11,
-            fontWeight: 100,
-            opacity: 0.8,
-            stroke: theme.palette.text.tertiary,
-          }}
+          tick={<CustomTick />}
+          axisLine={false}
           tickLine={false}
-          minTickGap={20}
           height={18}
-          interval="preserveEnd"
+          minTickGap={0}
+          interval="equidistantPreserveStart"
         />
         <Tooltip
           cursor={{ stroke: theme.palette.border.light }}
@@ -218,6 +283,22 @@ const PagespeedDetailsAreaChart = ({ data, interval }) => {
       </AreaChart>
     </ResponsiveContainer>
   );
+};
+
+PagespeedDetailsAreaChart.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      createdAt: PropTypes.string.isRequired,
+      accessibility: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+      bestPractices: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+      performance: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+      seo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    })
+  ).isRequired,
+  interval: PropTypes.number.isRequired,
 };
 
 export default PagespeedDetailsAreaChart;
