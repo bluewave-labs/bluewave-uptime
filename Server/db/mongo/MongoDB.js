@@ -73,6 +73,7 @@ const {
   deleteAllMonitors,
   deleteMonitorsByUserId,
   editMonitor,
+  addDemoMonitors,
 } = require("./modules/monitorModule");
 
 //****************************************
@@ -153,6 +154,7 @@ module.exports = {
   deleteMonitor,
   deleteAllMonitors,
   editMonitor,
+  addDemoMonitors,
   createCheck,
   getChecksCount,
   getChecks,

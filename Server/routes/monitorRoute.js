@@ -43,4 +43,10 @@ router.post(
   monitorController.pauseMonitor
 );
 
+router.post(
+  "/demo",
+  isAllowed(["admin", "superadmin"]),
+  monitorController.addDemoMonitors
+);
+
 module.exports = router;

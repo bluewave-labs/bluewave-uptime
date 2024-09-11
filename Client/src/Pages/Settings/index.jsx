@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Button, Stack, styled, Typography } from "@mui/material";
+import { Box, Stack, styled, Typography } from "@mui/material";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
@@ -34,6 +34,10 @@ const Settings = ({ isAdmin }) => {
       logger.error(error);
       createToast({ body: "Failed to clear stats" });
     }
+  };
+
+  const addDemoMonitors = () => {
+    logger.warn("Click");
   };
 
   const ConfigBox = styled("div")({
@@ -135,6 +139,42 @@ const Settings = ({ isAdmin }) => {
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Clear all stats
+                </LoadingButton>
+              </Box>
+            </Stack>
+          </ConfigBox>
+        )}
+        {isAdmin && (
+          <ConfigBox>
+            <Box>
+              <Typography component="h1">Demo Monitors</Typography>
+              <Typography sx={{ mt: theme.spacing(2) }}>
+                Here you can add and remove demo monitors
+              </Typography>
+            </Box>
+            <Stack gap={theme.spacing(20)}>
+              <Box>
+                <Typography>Add demo monitors</Typography>
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading}
+                  onClick={addDemoMonitors}
+                  sx={{ mt: theme.spacing(4) }}
+                >
+                  Add demo monitors
+                </LoadingButton>
+              </Box>
+              <Box>
+                <Typography>Remove all monitors</Typography>
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading}
+                  onClick={() => {}}
+                  sx={{ mt: theme.spacing(4) }}
+                >
+                  Remove all monitors
                 </LoadingButton>
               </Box>
             </Stack>
