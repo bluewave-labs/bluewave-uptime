@@ -108,35 +108,37 @@ const Settings = ({ isAdmin }) => {
         noValidate
         spellCheck="false"
       >
-        <ConfigBox>
-          <Box>
-            <Typography component="h1">General Settings</Typography>
-            <Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(2) }}>
-              <Typography component="span">Display timezone</Typography>- The
-              timezone of the dashboard you publicly display.
-            </Typography>
-            <Typography>
-              <Typography component="span">Server timezone</Typography>- The
-              timezone of your server.
-            </Typography>
-          </Box>
-          <Stack gap={theme.spacing(20)}>
-            <Select
-              id="display-timezone"
-              label="Display timezone"
-              value="est"
-              onChange={() => logger.warn("disabled")}
-              items={[{ _id: "est", name: "America / Toronto" }]}
-            />
-            <Select
-              id="server-timezone"
-              label="Server timezone"
-              value="est"
-              onChange={() => logger.warn("disabled")}
-              items={[{ _id: "est", name: "America / Toronto" }]}
-            />
-          </Stack>
-        </ConfigBox>
+        {false && (
+          <ConfigBox>
+            <Box>
+              <Typography component="h1">General Settings</Typography>
+              <Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(2) }}>
+                <Typography component="span">Display timezone</Typography>- The
+                timezone of the dashboard you publicly display.
+              </Typography>
+              <Typography>
+                <Typography component="span">Server timezone</Typography>- The
+                timezone of your server.
+              </Typography>
+            </Box>
+            <Stack gap={theme.spacing(20)}>
+              <Select
+                id="display-timezone"
+                label="Display timezone"
+                value="est"
+                onChange={() => logger.warn("disabled")}
+                items={[{ _id: "est", name: "America / Toronto" }]}
+              />
+              <Select
+                id="server-timezone"
+                label="Server timezone"
+                value="est"
+                onChange={() => logger.warn("disabled")}
+                items={[{ _id: "est", name: "America / Toronto" }]}
+              />
+            </Stack>
+          </ConfigBox>
+        )}
         {isAdmin && (
           <ConfigBox>
             <Box>

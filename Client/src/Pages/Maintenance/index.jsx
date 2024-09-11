@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import Fallback from "../../Components/Fallback";
 import "./index.css";
@@ -27,9 +27,11 @@ const Maintenance = ({ isAdmin }) => {
           "Mark your maintenance periods",
           "Eliminate any misunderstandings",
           "Stop sending alerts in maintenance windows",
+          "Coming soon!",
         ]}
         link="/maintenance/create"
         isAdmin={isAdmin}
+        isEnabled={false}
       />
     </Box>
   );

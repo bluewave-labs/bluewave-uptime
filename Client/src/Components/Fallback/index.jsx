@@ -20,7 +20,7 @@ import "./index.css";
  * @returns {JSX.Element} The rendered fallback UI.
  */
 
-const Fallback = ({ title, checks, link = "/", isAdmin }) => {
+const Fallback = ({ title, checks, link = "/", isAdmin, isEnabled = true }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const mode = useSelector((state) => state.ui.mode);
@@ -63,7 +63,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
         ))}
       </Stack>
       {/* TODO - display a different fallback if user is not an admin*/}
-      {isAdmin && (
+      {isAdmin && isEnabled && (
         <Button
           variant="contained"
           color="primary"
@@ -82,6 +82,7 @@ Fallback.propTypes = {
   checks: PropTypes.arrayOf(PropTypes.string).isRequired,
   link: PropTypes.string,
   isAdmin: PropTypes.bool,
+  isEnabled: PropTypes.bool,
 };
 
 export default Fallback;
