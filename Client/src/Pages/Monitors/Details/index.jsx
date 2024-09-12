@@ -14,7 +14,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
 import { logger } from "../../../Utils/Logger";
 import {
-  formatDate,
   formatDurationRounded,
   formatDurationSplit,
 } from "../../../Utils/timeUtils";
@@ -35,6 +34,8 @@ import { DownBarChart, ResponseGaugeChart, UpBarChart } from "./Charts";
 import SkeletonLayout from "./skeleton";
 import "./index.css";
 import useUtils from "../utils";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
+
 /**
  * Details page component displaying monitor details and related information.
  * @component
@@ -56,6 +57,9 @@ const DetailsPage = ({ isAdmin }) => {
   const closeCertificate = () => {
     setAnchorEl(null);
   };
+
+  const dateFormat = dateRange === "day" ? "MMM D, h A" : "MMM D";
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
   const fetchMonitor = useCallback(async () => {
     try {
@@ -95,10 +99,7 @@ const DetailsPage = ({ isAdmin }) => {
           const date = new Date(year, month - 1, day);
 
           setCertificateExpiry(
-            formatDate(date, {
-              hour: undefined,
-              minute: undefined,
-            }) ?? "N/A"
+            formatDateWithTz(date, dateFormat, uiTimezone) ?? "N/A"
           );
         }
       } catch (error) {
@@ -367,12 +368,11 @@ const DetailsPage = ({ isAdmin }) => {
                             fontSize={11}
                             color={theme.palette.text.tertiary}
                           >
-                            {formatDate(new Date(hoveredUptimeData.time), {
-                              month: "short",
-                              year: undefined,
-                              minute: undefined,
-                              hour: dateRange === "day" ? "numeric" : undefined,
-                            })}
+                            {formatDateWithTz(
+                              hoveredUptimeData.time,
+                              dateFormat,
+                              uiTimezone
+                            )}
                           </Typography>
                         )}
                     </Box>
@@ -417,12 +417,11 @@ const DetailsPage = ({ isAdmin }) => {
                           fontSize={11}
                           color={theme.palette.text.tertiary}
                         >
-                          {formatDate(new Date(hoveredIncidentsData.time), {
-                            month: "short",
-                            year: undefined,
-                            minute: undefined,
-                            hour: dateRange === "day" ? "numeric" : undefined,
-                          })}
+                          {formatDateWithTz(
+                            hoveredIncidentsData.time,
+                            dateFormat,
+                            uiTimezone
+                          )}
                         </Typography>
                       )}
                   </Box>

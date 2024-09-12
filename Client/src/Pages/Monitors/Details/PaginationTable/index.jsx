@@ -18,11 +18,7 @@ import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { logger } from "../../../../Utils/Logger";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import { formatDateWithTz } from "../../../../Utils/timeUtils";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
   const { authToken } = useSelector((state) => state.auth);
@@ -123,9 +119,11 @@ const PaginationTable = ({ monitorId, dateRange }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    {dayjs(check.createdAt)
-                      .tz(uiTimezone)
-                      .format("ddd, MMMM D, YYYY, HH:mm A")}
+                    {formatDateWithTz(
+                      check.createdAt,
+                      "ddd, MMMM D, YYYY, HH:mm A",
+                      uiTimezone
+                    )}
                   </TableCell>
                   <TableCell>
                     {check.statusCode ? check.statusCode : "N/A"}

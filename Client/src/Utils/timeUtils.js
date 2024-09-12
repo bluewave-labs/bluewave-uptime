@@ -1,3 +1,9 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export const formatDuration = (ms) => {
   const seconds = Math.floor(ms / 1000);
   const minutes = Math.floor(seconds / 60);
@@ -75,4 +81,9 @@ export const formatDate = (date, customOptions) => {
   return date
     .toLocaleString("en-US", options)
     .replace(/\b(AM|PM)\b/g, (match) => match.toLowerCase());
+};
+
+export const formatDateWithTz = (timestamp, format, timezone) => {
+  const formattedDate = dayjs(timestamp, timezone).tz(timezone).format(format);
+  return formattedDate;
 };
