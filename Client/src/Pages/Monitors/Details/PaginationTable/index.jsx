@@ -18,10 +18,13 @@ import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { logger } from "../../../../Utils/Logger";
-import { useTheme } from "@emotion/react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const PaginationTable = ({ monitorId, dateRange }) => {
-  const theme = useTheme();
   const { authToken } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
@@ -29,6 +32,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
     page: 0,
     rowsPerPage: 5,
   });
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
   useEffect(() => {
     setPaginationController((prevPaginationController) => ({
@@ -119,7 +123,9 @@ const PaginationTable = ({ monitorId, dateRange }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    {new Date(check.createdAt).toLocaleString()}
+                    {dayjs(check.createdAt)
+                      .tz(uiTimezone)
+                      .format("ddd, MMMM D, YYYY, HH:mm A")}
                   </TableCell>
                   <TableCell>
                     {check.statusCode ? check.statusCode : "N/A"}

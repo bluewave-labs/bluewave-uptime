@@ -14,14 +14,18 @@ import {
 } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { setTimezone } from "../../Features/UI/uiSlice";
+import timezones from "../../Utils/timezones.json";
+
 const Settings = ({ isAdmin }) => {
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.uptimeMonitors);
+  const { timezone } = useSelector((state) => state.ui);
 
   const dispatch = useDispatch();
-
   // TODO Handle saving
+  const handleSave = async () => {};
 
   const handleClearStats = async () => {
     try {
@@ -115,25 +119,16 @@ const Settings = ({ isAdmin }) => {
               <Typography component="span">Display timezone</Typography>- The
               timezone of the dashboard you publicly display.
             </Typography>
-            <Typography>
-              <Typography component="span">Server timezone</Typography>- The
-              timezone of your server.
-            </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
             <Select
               id="display-timezone"
               label="Display timezone"
-              value="est"
-              onChange={() => logger.warn("disabled")}
-              items={[{ _id: "est", name: "America / Toronto" }]}
-            />
-            <Select
-              id="server-timezone"
-              label="Server timezone"
-              value="est"
-              onChange={() => logger.warn("disabled")}
-              items={[{ _id: "est", name: "America / Toronto" }]}
+              value={timezone}
+              onChange={(e) => {
+                dispatch(setTimezone({ timezone: e.target.value }));
+              }}
+              items={timezones}
             />
           </Stack>
         </ConfigBox>
@@ -232,6 +227,7 @@ const Settings = ({ isAdmin }) => {
             variant="contained"
             color="primary"
             sx={{ px: theme.spacing(12), mt: theme.spacing(20) }}
+            onClick={handleSave}
           >
             Save
           </LoadingButton>
