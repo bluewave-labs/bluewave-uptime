@@ -21,7 +21,15 @@ import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
 import { useTheme } from "@emotion/react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
   const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
@@ -151,6 +159,9 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               <TableBody>
                 {checks.map((check) => {
                   const status = check.status === true ? "up" : "down";
+                  const formattedDate = dayjs(check.createdAt)
+                    .tz(uiTimezone)
+                    .format("YYYY-MM-DD HH:mm:ss");
 
                   return (
                     <TableRow key={check._id}>
@@ -162,9 +173,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                           customStyles={{ textTransform: "capitalize" }}
                         />
                       </TableCell>
-                      <TableCell>
-                        {new Date(check.createdAt).toLocaleString()}
-                      </TableCell>
+                      <TableCell>{formattedDate}</TableCell>
                       <TableCell>
                         {check.statusCode ? check.statusCode : "N/A"}
                       </TableCell>
