@@ -133,8 +133,10 @@ const CreateNewMaintenanceWindow = () => {
       duration: durationInMilliseconds,
       unit: values.unit,
       displayName: values.displayName,
-      addMonitors: values.autoCompleteValue.name,
-      monitorId: values.autoCompleteValue._id,
+      addMonitors: values.autoCompleteValue
+        ? values.autoCompleteValue.name
+        : "",
+      monitorId: values.autoCompleteValue ? values.autoCompleteValue._id : "",
     };
 
     const { error } = maintenanceWindowValidation.validate(data, {
