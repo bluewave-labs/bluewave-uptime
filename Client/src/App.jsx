@@ -71,7 +71,7 @@ function App() {
             element={<ProtectedRoute Component={Configure} />}
           />
           <Route
-            path="incidents"
+            path="incidents/:monitorId?"
             element={<ProtectedRoute Component={Incidents} />}
           />
 
