@@ -21,104 +21,16 @@ import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
 import SkeletonLayout from "./skeleton";
 import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
+import SpedometerIcon from "../../../assets/icons/spedometer-icon.svg?react";
 import MetricsIcon from "../../../assets/icons/ruler-icon.svg?react";
 import ScoreIcon from "../../../assets/icons/monitor-graph-line.svg?react";
 import PerformanceIcon from "../../../assets/icons/performance-report.svg?react";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import PagespeedDetailsAreaChart from "./Charts/AreaChart";
-import "./index.css";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import PieChart from "./Charts/PieChart";
-
-/**
- * Renders a centered label within a pie chart.
- *
- * @param {Object} props
- * @param {string | number} props.value - The value to display in the label.
- * @param {string} props.color - The color of the text.
- * @returns {JSX.Element}
- */
-const PieCenterLabel = ({ value, color, setExpand }) => {
-  const { width, height } = useDrawingArea();
-  return (
-    <g
-      transform={`translate(${width / 2}, ${height / 2})`}
-      onMouseEnter={() => setExpand(true)}
-    >
-      <circle cx={0} cy={0} r={width / 3} fill="transparent" />
-      <text
-        className="pie-label"
-        style={{
-          fill: color,
-          fontSize: "45px",
-          textAnchor: "middle",
-          dominantBaseline: "central",
-          userSelect: "none",
-        }}
-      >
-        {value}
-      </text>
-    </g>
-  );
-};
-
-PieCenterLabel.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  color: PropTypes.string,
-  setExpand: PropTypes.func,
-};
-
-/**
- * A component that renders a label on a pie chart slice.
- * The label is positioned relative to the center of the pie chart and is optionally highlighted.
- *
- * @param {Object} props
- * @param {number} props.value - The value to display inside the pie slice.
- * @param {number} props.startAngle - The starting angle of the pie slice in degrees.
- * @param {number} props.endAngle - The ending angle of the pie slice in degrees.
- * @param {string} props.color - The color of the label text when highlighted.
- * @param {boolean} props.highlighted - Determines if the label should be highlighted or not.
- * @returns {JSX.Element}
- */
-const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
-  const { width, height } = useDrawingArea();
-
-  // Compute the midpoint angle in radians
-  const angle = (((startAngle + endAngle) / 2) * Math.PI) / 180;
-  const radius = height / 3.5; // length from center of the circle to where the text is positioned
-
-  // Calculate x and y positions
-  const x = Math.sin(angle) * radius;
-  const y = -Math.cos(angle) * radius;
-
-  return (
-    <g transform={`translate(${width / 2}, ${height / 2})`}>
-      <text
-        className="pie-value-label"
-        x={x}
-        y={y}
-        style={{
-          fill: highlighted ? color : "rgba(0,0,0,0)",
-          fontSize: "12px",
-          textAnchor: "middle",
-          dominantBaseline: "central",
-          userSelect: "none",
-        }}
-      >
-        +{value}
-      </text>
-    </g>
-  );
-};
-
-PieValueLabel.propTypes = {
-  value: PropTypes.number,
-  startAngle: PropTypes.number,
-  endAngle: PropTypes.number,
-  color: PropTypes.string,
-  highlighted: PropTypes.bool,
-};
+import "./index.css";
 
 const PageSpeedDetails = () => {
   const theme = useTheme();
@@ -172,38 +84,6 @@ const PageSpeedDetails = () => {
   });
   const handleMetrics = (id) => {
     setMetrics((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  /**
-   * Retrieves color properties based on the performance value.
-   *
-   * @param {number} value - The performance score used to determine the color properties.
-   * @returns {{stroke: string, text: string, shape: string}} The color properties for the given performance value.
-   */
-  const getColors = (value) => {
-    if (value >= 90 && value <= 100)
-      return {
-        stroke: theme.palette.success.main,
-        text: theme.palette.success.text,
-        shape: "circle",
-      };
-    else if (value >= 50 && value < 90)
-      return {
-        stroke: theme.palette.warning.main,
-        text: theme.palette.warning.text,
-        shape: "square",
-      };
-    else if (value >= 0 && value < 50)
-      return {
-        stroke: theme.palette.error.text,
-        text: theme.palette.error.text,
-        shape: "circle",
-      };
-    return {
-      stroke: theme.palette.unresolved.main,
-      text: theme.palette.unresolved.main,
-      shape: "",
-    };
   };
 
   return (
@@ -412,8 +292,7 @@ const PageSpeedDetails = () => {
           </Box>
           <ChartBox
             flex={1}
-            mt={theme.spacing(2)}
-            sx={{ gridTemplateColumns: "35% 65%", gridTemplateRows: "15% 85%" }}
+            sx={{ gridTemplateColumns: "50% 50%", gridTemplateRows: "15% 85%" }}
           >
             <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
               <IconBox>
@@ -433,11 +312,17 @@ const PageSpeedDetails = () => {
                 Values are estimated and may vary.{" "}
                 <Typography
                   component="span"
+                  fontSize="inherit"
                   sx={{
                     color: theme.palette.primary.main,
                     fontWeight: 500,
                     textDecoration: "underline",
+                    textUnderlineOffset: 2,
+                    transition: "all 200ms",
                     cursor: "pointer",
+                    "&:hover": {
+                      textUnderlineOffset: 4,
+                    },
                   }}
                 >
                   See calculator
@@ -445,84 +330,30 @@ const PageSpeedDetails = () => {
               </Typography>
             </Stack>
             <Box px={theme.spacing(20)} py={theme.spacing(8)} height="100%">
-              <Typography
-                mb={theme.spacing(6)}
-                pb={theme.spacing(8)}
-                color={theme.palette.text.secondary}
-                textAlign="center"
-                sx={{
-                  borderBottom: 1,
-                  borderBottomColor: theme.palette.border.light,
-                  borderBottomStyle: "dashed",
-                }}
-              >
-                The{" "}
-                <Typography
-                  component="span"
-                  sx={{
-                    color: theme.palette.primary.main,
-                    fontWeight: 500,
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  }}
-                >
-                  performance score is calculated
-                </Typography>{" "}
-                directly from these{" "}
-                <Typography component="span" fontWeight={600}>
-                  metrics
-                </Typography>
-                .
-              </Typography>
+              <Stack direction="row" alignItems="center" gap={theme.spacing(6)}>
+                <IconBox>
+                  <SpedometerIcon />
+                </IconBox>
+                <Typography component="h2">Performance Metrics</Typography>
+              </Stack>
               <Stack
-                direction="row"
                 flexWrap="wrap"
-                pt={theme.spacing(8)}
-                gap={theme.spacing(8)}
+                mt={theme.spacing(8)}
+                gap={theme.spacing(3)}
               >
                 {Object.keys(audits).map((key) => {
                   if (key === "_id") return;
 
                   let audit = audits[key];
-                  let metricParams = getColors(audit.score * 100);
-
-                  let shape = (
-                    <Box
-                      sx={{
-                        width: theme.spacing(6),
-                        height: theme.spacing(6),
-                        borderRadius: "50%",
-                        backgroundColor: metricParams.stroke,
-                      }}
-                    ></Box>
-                  );
-                  if (metricParams.shape === "square")
-                    shape = (
-                      <Box
-                        sx={{
-                          width: theme.spacing(6),
-                          height: theme.spacing(6),
-                          backgroundColor: metricParams.stroke,
-                        }}
-                      ></Box>
-                    );
-                  else if (metricParams.shape === "triangle")
-                    shape = (
-                      <Box
-                        sx={{
-                          width: 0,
-                          height: 0,
-                          ml: `calc((${theme.spacing(6)} - ${theme.spacing(
-                            4
-                          )}) / -2)`,
-                          borderLeft: `${theme.spacing(4)} solid transparent`,
-                          borderRight: `${theme.spacing(4)} solid transparent`,
-                          borderBottom: `${theme.spacing(6)} solid ${
-                            metricParams.stroke
-                          }`,
-                        }}
-                      ></Box>
-                    );
+                  let score = audit.score * 100;
+                  let bg =
+                    score >= 90
+                      ? theme.palette.success.main
+                      : score >= 50
+                      ? theme.palette.warning.main
+                      : score >= 0
+                      ? theme.palette.error.text
+                      : theme.palette.unresolved.main;
 
                   // Find the position where the number ends and the unit begins
                   const match = audit.displayValue.match(
@@ -532,44 +363,49 @@ const PageSpeedDetails = () => {
                   let unit;
                   if (match) {
                     value = match[1];
-                    unit = match[2];
+                    match[2] === "s" ? (unit = "seconds") : (unit = match[2]);
                   } else {
                     value = audit.displayValue;
                   }
 
                   return (
                     <Stack
-                      className="metric"
                       key={`${key}-box`}
+                      justifyContent="space-between"
                       direction="row"
-                      gap={theme.spacing(4)}
+                      gap={theme.spacing(3)}
+                      p={theme.spacing(3)}
+                      border={1}
+                      borderColor={theme.palette.border.light}
+                      borderRadius={4}
                     >
-                      {shape}
                       <Box>
-                        <Typography sx={{ lineHeight: 1 }}>
+                        <Typography
+                          fontSize={12}
+                          fontWeight={500}
+                          lineHeight={1}
+                          mb={1}
+                          textTransform="uppercase"
+                        >
                           {audit.title}
                         </Typography>
                         <Typography
                           component="span"
-                          sx={{
-                            color: metricParams.text,
-                            fontSize: "16px",
-                            fontWeight: 600,
-                          }}
+                          fontSize={14}
+                          fontWeight={500}
                         >
                           {value}
                           <Typography
                             component="span"
-                            ml="2px"
-                            sx={{
-                              color: theme.palette.text.secondary,
-                              fontSize: 13,
-                            }}
+                            fontSize={12}
+                            color={theme.palette.text.tertiary}
+                            ml={2}
                           >
                             {unit}
                           </Typography>
                         </Typography>
                       </Box>
+                      <Box width={4} backgroundColor={bg} borderRadius={4} />
                     </Stack>
                   );
                 })}

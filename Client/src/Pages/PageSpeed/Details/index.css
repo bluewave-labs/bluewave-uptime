@@ -1,14 +1,3 @@
-.page-speed-details h6 {
-  font-size: var(--env-var-font-size-large);
-}
-.page-speed-details h4,
-.page-speed-details p > span {
-  font-size: var(--env-var-font-size-medium);
-}
-.page-speed-details h1 + span,
-.page-speed-details h4 > span {
-  font-size: var(--env-var-font-size-small-plus);
-}
 .page-speed-details button.MuiButtonBase-root {
   height: 34px;
 }
@@ -26,9 +15,4 @@
 }
 .page-speed-details .MuiPieArc-root {
   stroke: inherit;
-}
-
-.page-speed-details .metric {
-  min-width: 200px;
-  flex: 1;
 }
