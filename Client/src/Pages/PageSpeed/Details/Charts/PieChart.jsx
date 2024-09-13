@@ -20,13 +20,7 @@ const PieCenterLabel = ({ value, color, setExpand }) => {
       transform={`translate(${width / 2}, ${height / 2})`}
       onMouseEnter={() => setExpand(true)}
     >
-      <circle
-        cx={0}
-        cy={0}
-        r={width / 3}
-        fill="transparent"
-        pointerEvents="none"
-      />
+      <circle cx={0} cy={0} r={width / 4} fill="transparent" />
       <text
         className="pie-label"
         style={{
