@@ -305,7 +305,8 @@ const PageSpeedDetails = () => {
               textAlign="center"
               minWidth="300px"
               flex={1}
-              p={theme.spacing(12)}
+              pt={theme.spacing(6)}
+              pb={theme.spacing(12)}
             >
               <PieChart audits={audits} />
               <Typography fontSize={13} mt="auto">

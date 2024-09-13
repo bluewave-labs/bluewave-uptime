@@ -20,12 +20,18 @@ const PieCenterLabel = ({ value, color, setExpand }) => {
       transform={`translate(${width / 2}, ${height / 2})`}
       onMouseEnter={() => setExpand(true)}
     >
-      <circle cx={0} cy={0} r={width / 3} fill="transparent" />
+      <circle
+        cx={0}
+        cy={0}
+        r={width / 3}
+        fill="transparent"
+        pointerEvents="none"
+      />
       <text
         className="pie-label"
         style={{
           fill: color,
-          fontSize: "45px",
+          fontSize: 48,
           textAnchor: "middle",
           dominantBaseline: "central",
           userSelect: "none",
@@ -60,7 +66,7 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
 
   // Compute the midpoint angle in radians
   const angle = (((startAngle + endAngle) / 2) * Math.PI) / 180;
-  const radius = height / 3.5; // length from center of the circle to where the text is positioned
+  const radius = height / 4; // length from center of the circle to where the text is positioned
 
   // Calculate x and y positions
   const x = Math.sin(angle) * radius;
@@ -74,10 +80,11 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
         y={y}
         style={{
           fill: highlighted ? color : "rgba(0,0,0,0)",
-          fontSize: "12px",
+          fontSize: 12,
           textAnchor: "middle",
           dominantBaseline: "central",
           userSelect: "none",
+          pointerEvents: "none",
         }}
       >
         +{value}
@@ -181,8 +188,8 @@ const PieChart = ({ audits }) => {
           cornerRadius: 2,
           highlightScope: { faded: "global", highlighted: "series" },
           faded: {
-            innerRadius: 63,
-            outerRadius: 70,
+            innerRadius: 73,
+            outerRadius: 80,
             additionalRadius: -20,
             arcLabelRadius: 5,
           },
@@ -197,7 +204,7 @@ const PieChart = ({ audits }) => {
     return props;
   };
 
-  const pieSize = { width: 210, height: 200 };
+  const pieSize = { width: 230, height: 230 };
   const pieData = getPieData(audits);
   const colorMap = getColors(performance);
 
@@ -215,7 +222,7 @@ const PieChart = ({ audits }) => {
                   color: colorMap.bg,
                 },
               ],
-              outerRadius: 67,
+              outerRadius: 77,
               cx: pieSize.width / 2,
             },
             ...pieData,
@@ -260,7 +267,7 @@ const PieChart = ({ audits }) => {
                   color: colorMap.bg,
                 },
               ],
-              outerRadius: 67,
+              outerRadius: 77,
               cx: pieSize.width / 2,
             },
             {
@@ -270,8 +277,8 @@ const PieChart = ({ audits }) => {
                   color: colorMap.stroke,
                 },
               ],
-              innerRadius: 63,
-              outerRadius: 70,
+              innerRadius: 73,
+              outerRadius: 80,
               paddingAngle: 5,
               cornerRadius: 2,
               startAngle: 0,
