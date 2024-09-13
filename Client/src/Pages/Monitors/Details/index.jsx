@@ -217,6 +217,11 @@ const DetailsPage = ({ isAdmin }) => {
                   onClick={openCertificate}
                   sx={{
                     cursor: "pointer",
+                    "& svg": {
+                      width: 23,
+                      height: 23,
+                      top: "52%",
+                    },
                   }}
                 >
                   <CertificateIcon />

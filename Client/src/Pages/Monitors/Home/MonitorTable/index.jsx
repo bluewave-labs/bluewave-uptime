@@ -223,8 +223,6 @@ const MonitorTable = ({ isAdmin }) => {
                 status: determineState(monitor),
               };
 
-              console.log(params);
-
               return (
                 <TableRow
                   key={monitor._id}

@@ -109,6 +109,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
             {...item}
           />
         )}
+        sx={{ mt: "auto" }}
       />
     );
   }

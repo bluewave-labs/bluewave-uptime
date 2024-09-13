@@ -339,8 +339,8 @@ const PageSpeedDetails = () => {
               </Stack>
               <Stack
                 flexWrap="wrap"
-                mt={theme.spacing(8)}
-                gap={theme.spacing(3)}
+                mt={theme.spacing(4)}
+                gap={theme.spacing(4)}
               >
                 {Object.keys(audits).map((key) => {
                   if (key === "_id") return;
@@ -374,7 +374,7 @@ const PageSpeedDetails = () => {
                       key={`${key}-box`}
                       justifyContent="space-between"
                       direction="row"
-                      gap={theme.spacing(3)}
+                      gap={theme.spacing(4)}
                       p={theme.spacing(3)}
                       border={1}
                       borderColor={theme.palette.border.light}
