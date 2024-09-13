@@ -125,7 +125,14 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
           Details
         </MenuItem>
         {/* TODO - pass monitor id to Incidents page */}
-        <MenuItem disabled>Incidents</MenuItem>
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/incidents/${actions.id}`);
+          }}
+        >
+          Incidents
+        </MenuItem>
         {isAdmin && (
           <MenuItem
             onClick={(e) => {
