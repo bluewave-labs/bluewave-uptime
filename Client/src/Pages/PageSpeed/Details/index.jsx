@@ -38,7 +38,6 @@ const PageSpeedDetails = () => {
   const [audits, setAudits] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
-  const { determineState, statusColor, pagespeedStatusMsg } = useUtils();
 
   useEffect(() => {
     const fetchMonitor = async () => {
