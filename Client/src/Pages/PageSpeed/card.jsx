@@ -5,12 +5,14 @@ import { StatusLabel } from "../../Components/Label";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
+import useUtils from "../Monitors/utils";
 import PropTypes from "prop-types";
 
-const Card = ({ data }) => {
+const Card = ({ monitor }) => {
+  const { determineState, pagespeedStatusMsg } = useUtils();
   const theme = useTheme();
   const navigate = useNavigate();
-
+  const monitorState = determineState(monitor);
   return (
     <Grid
       item
@@ -26,7 +28,7 @@ const Card = ({ data }) => {
         direction="row"
         gap={theme.spacing(6)}
         p={theme.spacing(8)}
-        onClick={() => navigate(`/pagespeed/${data._id}`)}
+        onClick={() => navigate(`/pagespeed/${monitor._id}`)}
         border={1}
         borderColor={theme.palette.border.light}
         borderRadius={theme.shape.borderRadius}
@@ -46,23 +48,24 @@ const Card = ({ data }) => {
               mb={theme.spacing(2)}
               color={theme.palette.primary.main}
             >
-              {data.name}
+              {monitor.name}
             </Typography>
             <StatusLabel
-              status={data.status ? "up" : "cannot resolve"}
-              text={data.status ? "Live (collecting data)" : "Inactive"}
+              status={monitorState}
+              text={pagespeedStatusMsg[monitorState] || "Pending..."}
+              customStyles={{ textTransform: "capitalize" }}
             />
           </Stack>
           <Typography fontSize={13}>
-            {data.url.replace(/^https?:\/\//, "")}
+            {monitor.url.replace(/^https?:\/\//, "")}
           </Typography>
           <Typography mt={theme.spacing(12)}>
             <Typography component="span" fontWeight={600}>
               Last checked:{" "}
             </Typography>
-            {formatDate(getLastChecked(data.checks, false))}{" "}
+            {formatDate(getLastChecked(monitor.checks, false))}{" "}
             <Typography component="span" fontStyle="italic">
-              ({formatDurationRounded(getLastChecked(data.checks))} ago)
+              ({formatDurationRounded(getLastChecked(monitor.checks))} ago)
             </Typography>
           </Typography>
         </Box>
@@ -72,7 +75,7 @@ const Card = ({ data }) => {
 };
 
 Card.propTypes = {
-  data: PropTypes.object.isRequired,
+  monitor: PropTypes.object.isRequired,
 };
 
 export default Card;

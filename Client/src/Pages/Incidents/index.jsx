@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ButtonGroup, Stack, Typography, Button } from "@mui/material";
+import { useParams } from "react-router-dom";
+
 import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
@@ -11,6 +13,7 @@ import SkeletonLayout from "./skeleton";
 const Incidents = () => {
   const theme = useTheme();
   const authState = useSelector((state) => state.auth);
+  const { monitorId } = useParams();
 
   const [monitors, setMonitors] = useState({});
   const [selectedMonitor, setSelectedMonitor] = useState("0");
@@ -40,6 +43,7 @@ const Incidents = () => {
           return acc;
         }, {});
         setMonitors(monitorLookup);
+        monitorId !== undefined && setSelectedMonitor(monitorId);
       }
       setLoading(false);
     };

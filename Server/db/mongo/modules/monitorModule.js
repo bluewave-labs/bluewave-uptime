@@ -4,6 +4,7 @@ const PageSpeedCheck = require("../../../models/PageSpeedCheck");
 const { errorMessages } = require("../../../utils/messages");
 const Notification = require("../../../models/Notification");
 const { NormalizeData } = require("../../../utils/dataUtils");
+const demoMonitors = require("../../../utils/demoMonitors.json");
 
 /**
  * Get all monitors
@@ -450,10 +451,12 @@ const deleteMonitor = async (req, res) => {
  * DELETE ALL MONITORS (TEMP)
  */
 
-const deleteAllMonitors = async (req, res) => {
+const deleteAllMonitors = async (teamId) => {
   try {
-    const deletedCount = await Monitor.deleteMany({});
-    return deletedCount.deletedCount;
+    const monitors = await Monitor.find({ teamId });
+    const { deletedCount } = await Monitor.deleteMany({ teamId });
+
+    return { monitors, deletedCount };
   } catch (error) {
     throw error;
   }
@@ -493,6 +496,28 @@ const editMonitor = async (candidateId, candidateMonitor) => {
     );
     return editedMonitor;
   } catch (error) {
+    error.method = "editMonitor";
+    throw error;
+  }
+};
+
+const addDemoMonitors = async (userId, teamId) => {
+  try {
+    const demoMonitorsToInsert = demoMonitors.map((monitor) => {
+      return {
+        userId,
+        teamId,
+        name: monitor.name,
+        description: monitor.name,
+        type: "http",
+        url: monitor.url,
+        interval: 60000,
+      };
+    });
+    const insertedMonitors = await Monitor.insertMany(demoMonitorsToInsert);
+    return insertedMonitors;
+  } catch (error) {
+    error.method = "addDemoMonitors";
     throw error;
   }
 };
@@ -508,4 +533,5 @@ module.exports = {
   deleteAllMonitors,
   deleteMonitorsByUserId,
   editMonitor,
+  addDemoMonitors,
 };

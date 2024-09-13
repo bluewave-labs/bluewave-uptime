@@ -74,7 +74,7 @@ const PageSpeed = ({ isAdmin }) => {
           </Box>
           <Grid container spacing={theme.spacing(12)}>
             {monitorsSummary?.monitors?.map((monitor) => (
-              <Card data={monitor} key={monitor._id} />
+              <Card monitor={monitor} key={monitor._id} />
             ))}
           </Grid>
         </Box>

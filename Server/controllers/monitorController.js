@@ -18,6 +18,9 @@ const {
 const sslChecker = require("ssl-checker");
 const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
+const jwt = require("jsonwebtoken");
+const { getTokenFromHeaders } = require("../utils/utils");
+
 /**
  * Returns all monitors
  * @async
@@ -365,12 +368,24 @@ const deleteMonitor = async (req, res, next) => {
 
 const deleteAllMonitors = async (req, res) => {
   try {
-    const deleteCount = await req.db.deleteAllMonitors();
+    console.log("WTF");
+    const token = getTokenFromHeaders(req.headers);
+    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
+    await monitors.forEach(async (monitor) => {
+      await req.jobQueue.deleteJob(monitor);
+      await req.db.deleteChecks(monitor._id);
+      await req.db.deleteAlertByMonitorId(monitor._id);
+      await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+      await req.db.deleteNotificationsByMonitorId(monitor._id);
+    });
+
     return res
       .status(200)
-      .json({ success: true, msg: `Deleted ${deleteCount} monitors` });
+      .json({ success: true, msg: `Deleted ${deletedCount} monitors` });
   } catch (error) {
     error.service = SERVICE_NAME;
+    error.method === undefined && error.method === "deleteAllMonitors";
     next(error);
   }
 };
@@ -466,6 +481,26 @@ const pauseMonitor = async (req, res, next) => {
   }
 };
 
+const addDemoMonitors = async (req, res, next) => {
+  try {
+    const token = getTokenFromHeaders(req.headers);
+    const { _id, teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const demoMonitors = await req.db.addDemoMonitors(_id, teamId);
+    await demoMonitors.forEach(async (monitor) => {
+      await req.jobQueue.addJob(monitor._id, monitor);
+    });
+    return res.status(200).json({
+      success: true,
+      message: successMessages.MONITOR_DEMO_ADDED,
+      data: demoMonitors.length,
+    });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method === undefined && error.method === "addDemoMonitors";
+    next(error);
+  }
+};
+
 module.exports = {
   getAllMonitors,
   getMonitorAggregateStats,
@@ -479,4 +514,5 @@ module.exports = {
   deleteAllMonitors,
   editMonitor,
   pauseMonitor,
+  addDemoMonitors,
 };

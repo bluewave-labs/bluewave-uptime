@@ -7,7 +7,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useDrawingArea } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -39,6 +38,7 @@ const PageSpeedDetails = () => {
   const [audits, setAudits] = useState({});
   const { monitorId } = useParams();
   const { authToken } = useSelector((state) => state.auth);
+  const { determineState, statusColor, pagespeedStatusMsg } = useUtils();
 
   useEffect(() => {
     const fetchMonitor = async () => {

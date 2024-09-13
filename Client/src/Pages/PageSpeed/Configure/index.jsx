@@ -23,6 +23,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
 import SkeletonLayout from "./skeleton";
 import "./index.css";
+import useUtils from "../../Monitors/utils";
 
 const PageSpeedConfigure = () => {
   const theme = useTheme();
@@ -34,6 +35,7 @@ const PageSpeedConfigure = () => {
   const { monitorId } = useParams();
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
+  const { determineState, statusColor } = useUtils();
 
   const frequencies = [
     { _id: 3, name: "3 minutes" },
@@ -147,13 +149,7 @@ const PageSpeedConfigure = () => {
             gap={theme.spacing(12)}
           >
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot
-                color={
-                  monitor?.status
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
-                }
-              />
+              <PulseDot color={statusColor[determineState(monitor)]} />
               <Box>
                 <Typography
                   component="h1"
@@ -166,12 +162,10 @@ const PageSpeedConfigure = () => {
                 <Typography
                   component="span"
                   sx={{
-                    color: monitor?.status
-                      ? theme.palette.success.main
-                      : theme.palette.error.text,
+                    color: statusColor[determineState(monitor)],
                   }}
                 >
-                  Your pagespeed monitor is {monitor?.status ? "live" : "down"}.
+                  Your pagespeed monitor is {determineState(monitor)}.
                 </Typography>
               </Box>
               <Box alignSelf="flex-end" ml="auto">
