@@ -21,7 +21,11 @@ import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
 import { useTheme } from "@emotion/react";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
+
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
   const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
@@ -151,6 +155,11 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               <TableBody>
                 {checks.map((check) => {
                   const status = check.status === true ? "up" : "down";
+                  const formattedDate = formatDateWithTz(
+                    check.createdAt,
+                    "YYYY-MM-DD HH:mm:ss A",
+                    uiTimezone
+                  );
 
                   return (
                     <TableRow key={check._id}>
@@ -162,9 +171,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                           customStyles={{ textTransform: "capitalize" }}
                         />
                       </TableCell>
-                      <TableCell>
-                        {new Date(check.createdAt).toLocaleString()}
-                      </TableCell>
+                      <TableCell>{formattedDate}</TableCell>
                       <TableCell>
                         {check.statusCode ? check.statusCode : "N/A"}
                       </TableCell>

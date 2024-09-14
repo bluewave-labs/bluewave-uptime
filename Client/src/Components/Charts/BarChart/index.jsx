@@ -1,12 +1,14 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Tooltip, Typography } from "@mui/material";
-import { formatDate } from "../../../Utils/timeUtils";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
 import { useEffect, useState } from "react";
 import "./index.css";
+import { useSelector } from "react-redux";
 
 const BarChart = ({ checks = [] }) => {
   const theme = useTheme();
   const [animate, setAnimate] = useState(false);
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
   useEffect(() => {
     setAnimate(true);
@@ -51,7 +53,11 @@ const BarChart = ({ checks = [] }) => {
             title={
               <>
                 <Typography>
-                  {formatDate(new Date(check.createdAt), { year: undefined })}
+                  {formatDateWithTz(
+                    check.createdAt,
+                    "ddd, MMMM D, YYYY, HH:mm A",
+                    uiTimezone
+                  )}
                 </Typography>
                 <Box mt={theme.spacing(2)}>
                   <Box

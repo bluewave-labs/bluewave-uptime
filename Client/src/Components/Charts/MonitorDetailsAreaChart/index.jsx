@@ -11,10 +11,13 @@ import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import "./index.css";
+import { useSelector } from "react-redux";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
 
 const CustomToolTip = ({ active, payload, label }) => {
-  const theme = useTheme();
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
+  const theme = useTheme();
   if (active && payload && payload.length) {
     return (
       <Box
@@ -35,17 +38,7 @@ const CustomToolTip = ({ active, payload, label }) => {
             fontWeight: 500,
           }}
         >
-          {new Date(label).toLocaleDateString("en-US", {
-            weekday: "short", // Mon
-            month: "long", // July
-            day: "numeric", // 17
-          }) +
-            ", " +
-            new Date(label).toLocaleTimeString("en-US", {
-              hour: "numeric", // 12
-              minute: "2-digit", // 15
-              hour12: true, // AM/PM format
-            })}
+          {formatDateWithTz(label, "ddd, MMMM D, YYYY, h:mm A", uiTimezone)}
         </Typography>
         <Box mt={theme.spacing(1)}>
           <Box
@@ -88,13 +81,10 @@ const CustomToolTip = ({ active, payload, label }) => {
 };
 
 const MonitorDetailsAreaChart = ({ checks }) => {
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
   const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    return formatDateWithTz(timestamp, "HH:mm:ss", uiTimezone);
   };
 
   const memoizedChecks = useMemo(() => checks, [checks[0]]);

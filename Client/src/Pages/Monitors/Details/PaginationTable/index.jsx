@@ -18,10 +18,9 @@ import { StatusLabel } from "../../../../Components/Label";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { logger } from "../../../../Utils/Logger";
-import { useTheme } from "@emotion/react";
+import { formatDateWithTz } from "../../../../Utils/timeUtils";
 
 const PaginationTable = ({ monitorId, dateRange }) => {
-  const theme = useTheme();
   const { authToken } = useSelector((state) => state.auth);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
@@ -29,6 +28,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
     page: 0,
     rowsPerPage: 5,
   });
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
   useEffect(() => {
     setPaginationController((prevPaginationController) => ({
@@ -119,7 +119,11 @@ const PaginationTable = ({ monitorId, dateRange }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    {new Date(check.createdAt).toLocaleString()}
+                    {formatDateWithTz(
+                      check.createdAt,
+                      "ddd, MMMM D, YYYY, HH:mm A",
+                      uiTimezone
+                    )}
                   </TableCell>
                   <TableCell>
                     {check.statusCode ? check.statusCode : "N/A"}
