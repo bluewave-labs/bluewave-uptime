@@ -85,9 +85,10 @@ const CustomToolTip = ({ active, payload, label }) => {
 const CustomTick = ({ x, y, payload, index }) => {
   const theme = useTheme();
 
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
   // Render nothing for the first tick
   if (index === 0) return null;
-
   return (
     <Text
       x={x}
@@ -97,11 +98,7 @@ const CustomTick = ({ x, y, payload, index }) => {
       fontSize={11}
       fontWeight={400}
     >
-      {formatDate(new Date(payload.value), {
-        year: undefined,
-        month: undefined,
-        day: undefined,
-      })}
+      {formatDateWithTz(payload?.value, "HH:mm:ss", uiTimezone)}
     </Text>
   );
 };
