@@ -13,10 +13,13 @@ import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import { formatDate } from "../../../Utils/timeUtils";
 import "./index.css";
+import { useSelector } from "react-redux";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
 
 const CustomToolTip = ({ active, payload, label }) => {
-  const theme = useTheme();
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
+  const theme = useTheme();
   if (active && payload && payload.length) {
     return (
       <Box
@@ -37,17 +40,7 @@ const CustomToolTip = ({ active, payload, label }) => {
             fontWeight: 500,
           }}
         >
-          {new Date(label).toLocaleDateString("en-US", {
-            weekday: "short", // Mon
-            month: "long", // July
-            day: "numeric", // 17
-          }) +
-            ", " +
-            new Date(label).toLocaleTimeString("en-US", {
-              hour: "numeric", // 12
-              minute: "2-digit", // 15
-              hour12: true, // AM/PM format
-            })}
+          {formatDateWithTz(label, "ddd, MMMM D, YYYY, h:mm A", uiTimezone)}
         </Typography>
         <Box mt={theme.spacing(1)}>
           <Box

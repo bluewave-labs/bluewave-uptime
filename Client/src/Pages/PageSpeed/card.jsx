@@ -1,5 +1,3 @@
-import { getLastChecked } from "../../Utils/monitorUtils";
-import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import { StatusLabel } from "../../Components/Label";
 import { Box, Grid, Stack, Typography } from "@mui/material";
@@ -58,15 +56,6 @@ const Card = ({ monitor }) => {
           </Stack>
           <Typography fontSize={13}>
             {monitor.url.replace(/^https?:\/\//, "")}
-          </Typography>
-          <Typography mt={theme.spacing(12)}>
-            <Typography component="span" fontWeight={600}>
-              Last checked:{" "}
-            </Typography>
-            {formatDate(getLastChecked(monitor.checks, false))}{" "}
-            <Typography component="span" fontStyle="italic">
-              ({formatDurationRounded(getLastChecked(monitor.checks))} ago)
-            </Typography>
           </Typography>
         </Box>
       </Stack>

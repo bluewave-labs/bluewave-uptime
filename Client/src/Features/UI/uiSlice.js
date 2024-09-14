@@ -14,6 +14,7 @@ const initialState = {
   },
   mode: "light",
   greeting: { index: 0, lastUpdate: null },
+  timezone: "America/Toronto",
 };
 
 const uiSlice = createSlice({
@@ -36,9 +37,17 @@ const uiSlice = createSlice({
       state.greeting.index = action.payload.index;
       state.greeting.lastUpdate = action.payload.lastUpdate;
     },
+    setTimezone(state, action) {
+      state.timezone = action.payload.timezone;
+    },
   },
 });
 
 export default uiSlice.reducer;
-export const { setRowsPerPage, toggleSidebar, setMode, setGreeting } =
-  uiSlice.actions;
+export const {
+  setRowsPerPage,
+  toggleSidebar,
+  setMode,
+  setGreeting,
+  setTimezone,
+} = uiSlice.actions;
