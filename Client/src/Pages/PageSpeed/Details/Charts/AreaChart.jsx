@@ -47,7 +47,7 @@ const config = {
 
 const CustomToolTip = ({ active, payload, label, config }) => {
   const theme = useTheme();
-
+  console.log(payload);
   if (active && payload && payload.length) {
     return (
       <Box
@@ -119,6 +119,7 @@ CustomToolTip.propTypes = {
   active: PropTypes.bool,
   payload: PropTypes.array,
   label: PropTypes.string,
+  config: PropTypes.object,
 };
 
 /**
@@ -306,6 +307,7 @@ PagespeedDetailsAreaChart.propTypes = {
     })
   ).isRequired,
   interval: PropTypes.number.isRequired,
+  metrics: PropTypes.object,
 };
 
 export default PagespeedDetailsAreaChart;
