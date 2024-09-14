@@ -262,7 +262,7 @@ const getMonitorStatsById = async (req) => {
 
     return monitorStats;
   } catch (error) {
-    error.methodName = "getMonitorStatsById";
+    error.method = "getMonitorStatsById";
     throw error;
   }
 };

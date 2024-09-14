@@ -7,9 +7,10 @@ const {
   getTeamChecksQueryValidation,
   deleteChecksParamValidation,
   deleteChecksByTeamIdParamValidation,
+  updateChecksTTLBodyValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
-const SERVICE_NAME = "check";
+const SERVICE_NAME = "checkController";
 
 const createCheck = async (req, res, next) => {
   try {
@@ -125,6 +126,7 @@ const deleteChecksByTeamId = async (req, res, next) => {
     error.method === undefined ? (error.method = "deleteChecksByTeam") : null;
     error.status = 422;
     next(error);
+    return;
   }
 
   try {
@@ -143,7 +145,20 @@ const deleteChecksByTeamId = async (req, res, next) => {
 
 const updateChecksTTL = async (req, res, next) => {
   try {
-    await req.db.updateChecksTTL(1);
+    await updateChecksTTLBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "updateChecksTTL") : null;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const ttl = req.body.ttl;
+    await req.db.updateChecksTTL(1, ttl);
     return res.status(200).json({
       success: true,
       msg: successMessages.CHECK_UPDATE_TTL,

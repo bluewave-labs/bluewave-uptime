@@ -239,16 +239,16 @@ const deleteChecksByTeamId = async (teamId) => {
   }
 };
 
-const updateChecksTTL = async (teamId) => {
+const updateChecksTTL = async (teamId, ttl) => {
   try {
     await Check.collection.dropIndex("expiry_1");
     await Check.collection.createIndex(
-      { expiry: 1 }, // Field to index
-      { expireAfterSeconds: 60 } // TTL in seconds, adjust as necessary
+      { expiry: 1 },
+      { expireAfterSeconds: ttl } // TTL in seconds, adjust as necessary
     );
   } catch (error) {
     error.service = SERVICE_NAME;
-    error.method = updateTTL;
+    error.method = "upddateChecksTTL";
     throw error;
   }
 };
