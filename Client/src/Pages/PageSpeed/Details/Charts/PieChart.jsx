@@ -87,6 +87,15 @@ const PieValueLabel = ({ value, startAngle, endAngle, color, highlighted }) => {
   );
 };
 
+// Validate props using PropTypes
+PieValueLabel.propTypes = {
+  value: PropTypes.number.isRequired,
+  startAngle: PropTypes.number.isRequired,
+  endAngle: PropTypes.number.isRequired,
+  color: PropTypes.string.isRequired,
+  highlighted: PropTypes.bool.isRequired,
+};
+
 const PieChart = ({ audits }) => {
   const theme = useTheme();
 
@@ -148,7 +157,7 @@ const PieChart = ({ audits }) => {
    */
   let performance = 0;
   const getPieData = (audits) => {
-    let props = [];
+    let data = [];
     let startAngle = 0;
     const padding = 3; // padding between arcs
     const max = 360 - padding * (Object.keys(audits).length - 1); // _id is a child of audits
@@ -159,7 +168,7 @@ const PieChart = ({ audits }) => {
         let endAngle = startAngle + (weights[key] * max) / 100;
 
         let theme = getColors(audits[key].score * 100);
-        props.push({
+        data.push({
           id: key,
           data: [
             {
@@ -195,7 +204,7 @@ const PieChart = ({ audits }) => {
       }
     });
 
-    return props;
+    return data;
   };
 
   const pieSize = { width: 230, height: 230 };
@@ -294,6 +303,10 @@ const PieChart = ({ audits }) => {
       )}
     </Box>
   );
+};
+
+PieChart.propTypes = {
+  audits: PropTypes.object,
 };
 
 export default PieChart;
