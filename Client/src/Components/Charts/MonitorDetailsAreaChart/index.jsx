@@ -11,7 +11,6 @@ import {
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
-import { formatDate } from "../../../Utils/timeUtils";
 import "./index.css";
 import { useSelector } from "react-redux";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
@@ -101,6 +100,13 @@ const CustomTick = ({ x, y, payload, index }) => {
       {formatDateWithTz(payload?.value, "HH:mm:ss", uiTimezone)}
     </Text>
   );
+};
+
+CustomTick.propTypes = {
+  x: PropTypes.number,
+  y: PropTypes.number,
+  payload: PropTypes.object,
+  index: PropTypes.number,
 };
 
 const MonitorDetailsAreaChart = ({ checks }) => {
