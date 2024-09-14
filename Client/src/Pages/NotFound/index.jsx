@@ -36,16 +36,12 @@ const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
 
   return (
     <Stack height="100vh" justifyContent="center">
-      <Stack
-        gap={theme.spacing(2)}
-        alignItems="center"
-        color={theme.palette.text.secondary}
-      >
+      <Stack gap={theme.spacing(2)} alignItems="center">
         <img src={NotFoundSvg} alt="404" style={{ maxHeight: "25rem" }} />
-        <Typography component="h1" fontSize={16} fontWeight={600}>
+        <Typography component="h1" variant="h1" fontSize={16}>
           {title}
         </Typography>
-        <Typography fontSize={13}>{desc}</Typography>
+        <Typography variant="body1">{desc}</Typography>
         <Button
           variant="contained"
           color="primary"

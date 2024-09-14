@@ -1,18 +1,8 @@
-.configure-pagespeed h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large-plus);
-}
 .configure-pagespeed span.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);
 }
-.configure-pagespeed h1.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root,
-.configure-pagespeed h2.MuiTypography-root {
-  font-weight: 600;
-}
-.configure-pagespeed p.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root > span.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
+.configure-pagespeed h3.MuiTypography-root {
+  font-weight: 500;
 }
 .configure-pagespeed .MuiBox-root > .field + p.MuiTypography-root {
   font-size: var(--env-var-font-size-small-plus);

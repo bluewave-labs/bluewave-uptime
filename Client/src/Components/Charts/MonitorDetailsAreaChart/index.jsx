@@ -97,7 +97,7 @@ const CustomTick = ({ x, y, payload, index }) => {
       fontSize={11}
       fontWeight={400}
     >
-      {formatDateWithTz(payload?.value, "HH:mm:ss", uiTimezone)}
+      {formatDateWithTz(payload?.value, "h:mm a", uiTimezone)}
     </Text>
   );
 };

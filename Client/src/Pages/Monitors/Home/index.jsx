@@ -96,11 +96,7 @@ const Monitors = ({ isAdmin }) => {
                   alignItems="center"
                   mb={theme.spacing(8)}
                 >
-                  <Typography
-                    component="h2"
-                    color={theme.palette.text.secondary}
-                    letterSpacing={-0.5}
-                  >
+                  <Typography component="h2" variant="h2" letterSpacing={-0.5}>
                     Actively monitoring
                   </Typography>
                   <Box

@@ -155,30 +155,20 @@ const Greeting = ({ type = "" }) => {
 
   return (
     <Box>
-      <Typography
-        component="h1"
-        lineHeight={1}
-        fontWeight={500}
-        color={theme.palette.text.primary}
-        mb={theme.spacing(1)}
-      >
+      <Typography component="h1" variant="h1" mb={theme.spacing(1)}>
+        <Typography component="span" fontSize="inherit">
+          {prepend},{" "}
+        </Typography>
         <Typography
           component="span"
           fontSize="inherit"
+          fontWeight="inherit"
           color={theme.palette.text.secondary}
         >
-          {prepend},{" "}
-        </Typography>
-        <Typography component="span" fontSize="inherit" fontWeight="inherit">
           {firstName} {emoji}
         </Typography>
       </Typography>
-      <Typography
-        lineHeight={1}
-        fontSize={14}
-        fontWeight={400}
-        color={theme.palette.text.accent}
-      >
+      <Typography variant="h2" lineHeight={1} color={theme.palette.text.accent}>
         {append} — Here’s an overview of your {type} monitors.
       </Typography>
     </Box>

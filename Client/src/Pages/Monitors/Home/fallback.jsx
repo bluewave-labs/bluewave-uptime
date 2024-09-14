@@ -18,8 +18,10 @@ const Fallback = ({ isAdmin }) => {
       borderColor={theme.palette.border.light}
       color={theme.palette.text.secondary}
     >
-      <Typography component="h2">No monitors found</Typography>
-      <Typography>
+      <Typography component="h2" variant="h2" fontWeight={500}>
+        No monitors found
+      </Typography>
+      <Typography variant="body1">
         It looks like you don’t have any monitors set up yet.
       </Typography>
       {isAdmin && (

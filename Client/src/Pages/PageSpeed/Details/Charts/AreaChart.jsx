@@ -47,7 +47,6 @@ const config = {
 
 const CustomToolTip = ({ active, payload, label, config }) => {
   const theme = useTheme();
-  console.log(payload);
   if (active && payload && payload.length) {
     return (
       <Box
