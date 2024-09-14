@@ -1,5 +1,4 @@
 import { Box, Skeleton, Stack } from "@mui/material";
-import { useTheme } from "@emotion/react";
 
 /**
  * Renders a skeleton layout.
@@ -7,21 +6,14 @@ import { useTheme } from "@emotion/react";
  * @returns {JSX.Element}
  */
 const SkeletonLayout = () => {
-  const theme = useTheme();
-
   return (
     <>
       <Skeleton variant="rounded" width="15%" height={34} />
-      <Stack direction="row" gap={theme.spacing(4)}>
+      <Stack direction="row" gap={4}>
         <Skeleton variant="circular" style={{ minWidth: 24, minHeight: 24 }} />
         <Box width="85%">
           <Skeleton variant="rounded" width="50%" height={24} />
-          <Skeleton
-            variant="rounded"
-            width="50%"
-            height={18}
-            sx={{ mt: theme.spacing(4) }}
-          />
+          <Skeleton variant="rounded" width="50%" height={18} sx={{ mt: 4 }} />
         </Box>
         <Skeleton
           variant="rounded"
@@ -33,7 +25,7 @@ const SkeletonLayout = () => {
       <Stack
         direction="row"
         justifyContent="space-between"
-        gap={theme.spacing(20)}
+        gap={20}
         flexWrap="wrap"
       >
         <Skeleton variant="rounded" width="30%" height={90} sx={{ flex: 1 }} />

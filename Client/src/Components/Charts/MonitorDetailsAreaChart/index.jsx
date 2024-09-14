@@ -6,6 +6,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Text,
 } from "recharts";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
@@ -80,16 +81,37 @@ const CustomToolTip = ({ active, payload, label }) => {
   return null;
 };
 
-const MonitorDetailsAreaChart = ({ checks }) => {
+const CustomTick = ({ x, y, payload, index }) => {
+  const theme = useTheme();
+
   const uiTimezone = useSelector((state) => state.ui.timezone);
 
-  const formatDate = (timestamp) => {
-    return formatDateWithTz(timestamp, "HH:mm:ss", uiTimezone);
-  };
+  // Render nothing for the first tick
+  if (index === 0) return null;
+  return (
+    <Text
+      x={x}
+      y={y + 10}
+      textAnchor="middle"
+      fill={theme.palette.text.tertiary}
+      fontSize={11}
+      fontWeight={400}
+    >
+      {formatDateWithTz(payload?.value, "HH:mm:ss", uiTimezone)}
+    </Text>
+  );
+};
 
-  const memoizedChecks = useMemo(() => checks, [checks[0]]);
+CustomTick.propTypes = {
+  x: PropTypes.number,
+  y: PropTypes.number,
+  payload: PropTypes.object,
+  index: PropTypes.number,
+};
 
+const MonitorDetailsAreaChart = ({ checks }) => {
   const theme = useTheme();
+  const memoizedChecks = useMemo(() => checks, [checks[0]]);
 
   return (
     <ResponsiveContainer width="100%" minWidth={25} height={220}>
@@ -128,10 +150,12 @@ const MonitorDetailsAreaChart = ({ checks }) => {
         <XAxis
           stroke={theme.palette.border.dark}
           dataKey="createdAt"
-          tickFormatter={formatDate}
-          tick={{ fontSize: "13px" }}
+          tick={<CustomTick />}
+          minTickGap={0}
+          axisLine={false}
           tickLine={false}
-          height={18}
+          height={20}
+          interval="equidistantPreserveStart"
         />
         <Tooltip
           cursor={{ stroke: theme.palette.border.light }}

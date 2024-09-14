@@ -218,6 +218,11 @@ const DetailsPage = ({ isAdmin }) => {
                   onClick={openCertificate}
                   sx={{
                     cursor: "pointer",
+                    "& svg": {
+                      width: 23,
+                      height: 23,
+                      top: "52%",
+                    },
                   }}
                 >
                   <CertificateIcon />
@@ -444,14 +449,8 @@ const DetailsPage = ({ isAdmin }) => {
                     data={[{ response: monitor?.periodAvgResponseTime }]}
                   />
                 </ChartBox>
-                <ChartBox
-                  sx={{
-                    "& tspan": {
-                      fontSize: 11,
-                    },
-                  }}
-                >
-                  <Stack>
+                <ChartBox sx={{ padding: 0 }}>
+                  <Stack pt={theme.spacing(8)} pl={theme.spacing(8)}>
                     <IconBox>
                       <ResponseTimeIcon />
                     </IconBox>
