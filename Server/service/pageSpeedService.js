@@ -24,7 +24,9 @@ class PageSpeedService {
         service: this.SERVICE_NAME,
         error: error.message,
       });
-      throw new Error("Failed to run PageSpeed check");
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "runPageSpeedCheck") : null;
+      throw error;
     }
   }
 
@@ -34,8 +36,16 @@ class PageSpeedService {
    * @returns {Promise<PageSpeedCheck>} The created PageSpeedCheck document.
    */
   async createPageSpeedCheck(data) {
-    const newPageSpeedCheck = new PageSpeedCheck(data);
-    return await newPageSpeedCheck.save();
+    try {
+      const newPageSpeedCheck = new PageSpeedCheck(data);
+      return await newPageSpeedCheck.save();
+    } catch (error) {
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined
+        ? (error.method = "createPageSpeedCheck")
+        : null;
+      throw error;
+    }
   }
 }
 
