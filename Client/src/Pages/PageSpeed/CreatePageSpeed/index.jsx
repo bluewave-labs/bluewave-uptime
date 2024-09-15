@@ -164,16 +164,17 @@ const CreatePageSpeed = () => {
         gap={theme.spacing(12)}
         mt={theme.spacing(6)}
       >
-        <Typography component="h1">
+        <Typography component="h1" variant="h1">
+          <Typography component="span" fontSize="inherit">
+            Create your{" "}
+          </Typography>
           <Typography
             component="span"
             fontSize="inherit"
+            fontWeight="inherit"
             color={theme.palette.text.secondary}
           >
-            Create your{" "}
-          </Typography>
-          <Typography component="span" fontSize="inherit" fontWeight="inherit">
-            Pagespeed monitor
+            pagespeed monitor
           </Typography>
         </Typography>
         <ConfigBox>

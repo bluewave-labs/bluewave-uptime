@@ -151,12 +151,7 @@ const PageSpeedConfigure = () => {
             <Stack direction="row" gap={theme.spacing(2)}>
               <PulseDot color={statusColor[determineState(monitor)]} />
               <Box>
-                <Typography
-                  component="h1"
-                  mb={theme.spacing(2)}
-                  sx={{ lineHeight: 1 }}
-                  color={theme.palette.text.primary}
-                >
+                <Typography component="h1" variant="h1" mb={theme.spacing(2)}>
                   {monitor?.url}
                 </Typography>
                 <Typography
@@ -351,13 +346,13 @@ const PageSpeedConfigure = () => {
           <Typography
             id="modal-delete-pagespeed-monitor"
             component="h2"
-            color={theme.palette.text.secondary}
+            variant="h2"
           >
             Do you really want to delete this monitor?
           </Typography>
           <Typography
             id="delete-pagespeed-monitor-confirmation"
-            color={theme.palette.text.tertiary}
+            variant="body1"
           >
             Once deleted, this monitor cannot be retrieved.
           </Typography>

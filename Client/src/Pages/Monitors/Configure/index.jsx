@@ -223,12 +223,7 @@ const Configure = () => {
           >
             <Stack direction="row" gap={theme.spacing(2)}>
               <Box>
-                <Typography
-                  component="h1"
-                  fontSize={22}
-                  fontWeight={500}
-                  color={theme.palette.text.primary}
-                >
+                <Typography component="h1" variant="h1">
                   {monitor.name}
                 </Typography>
                 <Stack
@@ -259,17 +254,12 @@ const Configure = () => {
                       />
                     </Box>
                   </Tooltip>
-                  <Typography
-                    component="h2"
-                    fontSize={14.5}
-                    color={theme.palette.text.secondary}
-                  >
+                  <Typography component="h2" variant="h2">
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
                   <Typography
                     position="relative"
-                    fontSize={12}
-                    color={theme.palette.text.tertiary}
+                    variant="body2"
                     ml={theme.spacing(6)}
                     mt={theme.spacing(1)}
                     sx={{

@@ -177,14 +177,7 @@ const CreateMonitor = () => {
   ];
 
   return (
-    <Box
-      className="create-monitor"
-      sx={{
-        "& h1": {
-          color: theme.palette.text.primary,
-        },
-      }}
-    >
+    <Box className="create-monitor">
       <Breadcrumbs
         list={[
           { name: "monitors", path: "/monitors" },
@@ -200,15 +193,16 @@ const CreateMonitor = () => {
         gap={theme.spacing(12)}
         mt={theme.spacing(6)}
       >
-        <Typography component="h1">
-          <Typography
-            component="span"
-            fontSize="inherit"
-            color={theme.palette.text.secondary}
-          >
+        <Typography component="h1" variant="h1">
+          <Typography component="span" fontSize="inherit">
             Create your{" "}
           </Typography>
-          <Typography component="span" fontSize="inherit" fontWeight="inherit">
+          <Typography
+            component="span"
+            variant="h2"
+            fontSize="inherit"
+            fontWeight="inherit"
+          >
             monitor
           </Typography>
         </Typography>
@@ -262,7 +256,7 @@ const CreateMonitor = () => {
                 onChange={(event) => handleChange(event)}
               />
               {monitor.type === "http" ? (
-                <ButtonGroup sx={{ ml: "32px" }}>
+                <ButtonGroup sx={{ ml: theme.spacing(16) }}>
                   <Button
                     variant="group"
                     filled={https.toString()}

@@ -1,17 +1,6 @@
 .page-speed h2.MuiTypography-root {
   line-height: 1.1;
 }
-.page-speed:not(:has([class*="fallback__"])) h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large-plus);
-}
-.page-speed h2.MuiTypography-root {
-  font-size: var(--env-var-font-size-large);
-  font-weight: 600;
-}
-.page-speed p:has(> span.MuiTypography-root),
-.page-speed p.MuiTypography-root > span.MuiTypography-root {
-  font-size: var(--env-var-font-size-small-plus);
-}
 .page-speed .label {
   padding: 7px;
   height: 22px;

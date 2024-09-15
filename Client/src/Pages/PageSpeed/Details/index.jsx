@@ -99,12 +99,7 @@ const PageSpeedDetails = () => {
           />
           <Stack direction="row" gap={theme.spacing(2)}>
             <Box>
-              <Typography
-                component="h1"
-                fontSize={22}
-                fontWeight={500}
-                color={theme.palette.text.primary}
-              >
+              <Typography component="h1" variant="h1">
                 {monitor.name}
               </Typography>
               <Stack
@@ -143,19 +138,14 @@ const PageSpeedDetails = () => {
                     />
                   </Box>
                 </Tooltip>
-                <Typography
-                  component="h2"
-                  fontSize={14.5}
-                  color={theme.palette.text.secondary}
-                >
+                <Typography component="h2" variant="h2">
                   {monitor?.url}
                 </Typography>
                 <Typography
+                  position="relative"
+                  variant="body2"
                   mt={theme.spacing(1)}
                   ml={theme.spacing(6)}
-                  fontSize={12}
-                  position="relative"
-                  color={theme.palette.text.tertiary}
                   sx={{
                     "&:before": {
                       position: "absolute",
@@ -212,11 +202,7 @@ const PageSpeedDetails = () => {
             </StatBox>
           </Stack>
           <Box>
-            <Typography
-              fontSize={12}
-              color={theme.palette.text.tertiary}
-              my={theme.spacing(8)}
-            >
+            <Typography variant="body2" my={theme.spacing(8)}>
               Showing statistics for past 24 hours.
             </Typography>
             <ChartBox sx={{ gridTemplateColumns: "75% 25%" }}>
@@ -308,7 +294,7 @@ const PageSpeedDetails = () => {
               pb={theme.spacing(12)}
             >
               <PieChart audits={audits} />
-              <Typography fontSize={13} mt="auto">
+              <Typography variant="body1" mt="auto">
                 Values are estimated and may vary.{" "}
                 <Typography
                   component="span"
@@ -393,14 +379,10 @@ const PageSpeedDetails = () => {
                           component="span"
                           fontSize={14}
                           fontWeight={500}
+                          color={theme.palette.text.primary}
                         >
                           {value}
-                          <Typography
-                            component="span"
-                            fontSize={12}
-                            color={theme.palette.text.tertiary}
-                            ml={2}
-                          >
+                          <Typography component="span" variant="body2" ml={2}>
                             {unit}
                           </Typography>
                         </Typography>

@@ -11,7 +11,8 @@ import {
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { formatDate } from "../../../../Utils/timeUtils";
+import { formatDateWithTz } from "../../../../Utils/timeUtils";
+import { useSelector } from "react-redux";
 
 const config = {
   seo: {
@@ -47,7 +48,8 @@ const config = {
 
 const CustomToolTip = ({ active, payload, label, config }) => {
   const theme = useTheme();
-  console.log(payload);
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
   if (active && payload && payload.length) {
     return (
       <Box
@@ -67,7 +69,7 @@ const CustomToolTip = ({ active, payload, label, config }) => {
             fontWeight: 500,
           }}
         >
-          {formatDate(new Date(label))}
+          {formatDateWithTz(label, "ddd, MMMM D, YYYY, h:mm A", uiTimezone)}
         </Typography>
         {Object.keys(config)
           .reverse()
@@ -176,6 +178,7 @@ const processDataWithGaps = (data, interval) => {
  */
 const CustomTick = ({ x, y, payload, index }) => {
   const theme = useTheme();
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
   // Render nothing for the first tick
   if (index === 0) return null;
@@ -189,11 +192,7 @@ const CustomTick = ({ x, y, payload, index }) => {
       fontSize={11}
       fontWeight={400}
     >
-      {formatDate(new Date(payload.value), {
-        year: undefined,
-        month: undefined,
-        day: undefined,
-      })}
+      {formatDateWithTz(payload?.value, "h:mm a", uiTimezone)}
     </Text>
   );
 };

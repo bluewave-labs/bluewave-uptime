@@ -272,13 +272,8 @@ const MonitorTable = ({ isAdmin }) => {
         alignItems="center"
         justifyContent="space-between"
         px={theme.spacing(4)}
-        sx={{
-          "& p": {
-            color: theme.palette.text.tertiary,
-          },
-        }}
       >
-        <Typography px={theme.spacing(2)} fontSize={12} sx={{ opacity: 0.7 }}>
+        <Typography px={theme.spacing(2)} variant="body2" sx={{ opacity: 0.7 }}>
           Showing {getRange()} of {monitorCount} monitor(s)
         </Typography>
         <TablePagination

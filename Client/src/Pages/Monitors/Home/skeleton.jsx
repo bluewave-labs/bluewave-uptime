@@ -24,15 +24,7 @@ const SkeletonLayout = () => {
         <Skeleton variant="rounded" width="100%" height={100} />
         <Skeleton variant="rounded" width="100%" height={100} />
       </Stack>
-      <Stack
-        gap={theme.spacing(12)}
-        p={theme.spacing(20)}
-        backgroundColor="#f9fafb"
-      >
-        <Skeleton variant="rounded" width="50%" height={25} />
-        <Skeleton variant="rounded" width="100%" height={300} />
-        <Skeleton variant="rounded" width="100%" height={100} />
-      </Stack>
+      <Skeleton variant="rounded" width="100%" height="100%" flex={1} />
     </>
   );
 };

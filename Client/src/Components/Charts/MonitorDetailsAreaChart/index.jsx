@@ -11,9 +11,9 @@ import {
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useMemo } from "react";
-import "./index.css";
 import { useSelector } from "react-redux";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
+import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
   const uiTimezone = useSelector((state) => state.ui.timezone);
@@ -97,7 +97,7 @@ const CustomTick = ({ x, y, payload, index }) => {
       fontSize={11}
       fontWeight={400}
     >
-      {formatDateWithTz(payload?.value, "HH:mm:ss", uiTimezone)}
+      {formatDateWithTz(payload?.value, "h:mm a", uiTimezone)}
     </Text>
   );
 };

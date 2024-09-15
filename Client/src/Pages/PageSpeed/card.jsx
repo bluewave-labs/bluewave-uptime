@@ -3,6 +3,8 @@ import { StatusLabel } from "../../Components/Label";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
+import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
+import { getLastChecked } from "../../Utils/monitorUtils";
 import useUtils from "../Monitors/utils";
 import PropTypes from "prop-types";
 
@@ -44,6 +46,7 @@ const Card = ({ monitor }) => {
             <Typography
               component="h2"
               mb={theme.spacing(2)}
+              fontSize={16}
               color={theme.palette.primary.main}
             >
               {monitor.name}
@@ -54,8 +57,15 @@ const Card = ({ monitor }) => {
               customStyles={{ textTransform: "capitalize" }}
             />
           </Stack>
-          <Typography fontSize={13}>
-            {monitor.url.replace(/^https?:\/\//, "")}
+          <Typography>{monitor.url.replace(/^https?:\/\//, "")}</Typography>
+          <Typography mt={theme.spacing(12)}>
+            <Typography component="span" variant="body2" fontWeight={600}>
+              Last checked:{" "}
+            </Typography>
+            {formatDate(getLastChecked(monitor.checks, false))}{" "}
+            <Typography component="span" variant="body2" fontStyle="italic">
+              ({formatDurationRounded(getLastChecked(monitor.checks))} ago)
+            </Typography>
           </Typography>
         </Box>
       </Stack>

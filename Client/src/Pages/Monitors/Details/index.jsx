@@ -139,12 +139,7 @@ const DetailsPage = ({ isAdmin }) => {
           <Stack gap={theme.spacing(10)} mt={theme.spacing(10)}>
             <Stack direction="row" gap={theme.spacing(2)}>
               <Box>
-                <Typography
-                  component="h1"
-                  fontSize={22}
-                  fontWeight={500}
-                  color={theme.palette.text.primary}
-                >
+                <Typography component="h1" variant="h1">
                   {monitor.name}
                 </Typography>
                 <Stack
@@ -173,19 +168,14 @@ const DetailsPage = ({ isAdmin }) => {
                       <PulseDot color={statusColor[determineState(monitor)]} />
                     </Box>
                   </Tooltip>
-                  <Typography
-                    component="h2"
-                    fontSize={14.5}
-                    color={theme.palette.text.secondary}
-                  >
+                  <Typography component="h2" variant="h2">
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
                   <Typography
+                    position="relative"
+                    variant="body2"
                     mt={theme.spacing(1)}
                     ml={theme.spacing(6)}
-                    fontSize={12}
-                    position="relative"
-                    color={theme.palette.text.tertiary}
                     sx={{
                       "&:before": {
                         position: "absolute",
@@ -254,9 +244,7 @@ const DetailsPage = ({ isAdmin }) => {
                     },
                   }}
                 >
-                  <Typography fontSize={12} color={theme.palette.text.tertiary}>
-                    Certificate Expiry
-                  </Typography>
+                  <Typography variant="body2">Certificate Expiry</Typography>
                   <Typography
                     component="span"
                     fontSize={13}
@@ -315,7 +303,7 @@ const DetailsPage = ({ isAdmin }) => {
                 gap={theme.spacing(4)}
                 mb={theme.spacing(8)}
               >
-                <Typography fontSize={12} color={theme.palette.text.tertiary}>
+                <Typography variant="body2">
                   Showing statistics for past{" "}
                   {dateRange === "day"
                     ? "24 hours"
