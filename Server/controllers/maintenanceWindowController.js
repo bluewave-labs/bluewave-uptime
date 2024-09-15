@@ -39,7 +39,10 @@ const createMaintenanceWindow = async (req, res, next) => {
       data: maintenanceWindow,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "createMaintenanceWindow")
+      : null;
     next(error);
   }
 };
@@ -68,7 +71,10 @@ const getMaintenanceWindowsByUserId = async (req, res, next) => {
       data: maintenanceWindows,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMaintenanceWindowsByUserId")
+      : null;
     next(error);
   }
 };
@@ -98,7 +104,10 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
       data: maintenanceWindows,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMaintenanceWindowsByMonitorId")
+      : null;
     next(error);
   }
 };
