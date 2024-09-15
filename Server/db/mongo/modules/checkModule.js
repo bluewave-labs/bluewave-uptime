@@ -248,7 +248,7 @@ const updateChecksTTL = async (teamId, ttl) => {
     );
   } catch (error) {
     error.service = SERVICE_NAME;
-    error.method = "upddateChecksTTL";
+    error.method = "updateChecksTTL";
     throw error;
   }
 };
