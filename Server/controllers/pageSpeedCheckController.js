@@ -1,7 +1,7 @@
 const PageSpeedService = require("../service/pageSpeedService");
 const { successMessages } = require("../utils/messages");
 const pageSpeedService = new PageSpeedService();
-const SERVICE_NAME = "pagespeed";
+const SERVICE_NAME = "pagespeedCheckController";
 const {
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
@@ -33,7 +33,8 @@ const getPageSpeedChecks = async (req, res, next) => {
   try {
     return res.status(200).json({ msg: "Hit getPageSpeedChecks" });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getPageSpeedChecks") : null;
     next(error);
   }
 };
@@ -86,7 +87,8 @@ const createPageSpeedCheck = async (req, res, next) => {
       data: newPageSpeedCheck,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "createPageSpeedCheck") : null;
     next(error);
   }
 };
@@ -114,7 +116,8 @@ const deletePageSpeedCheck = async (req, res, next) => {
   try {
     return res.status(200).json({ msg: "Hit deletePageSpeedCheck" });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deletePageSpeedCheck") : null;
     next(error);
   }
 };
