@@ -26,4 +26,10 @@ router.delete(
   checkController.deleteChecksByTeamId
 );
 
+router.put(
+  "/ttl",
+  isAllowed(["admin", "superadmin"]),
+  checkController.updateChecksTTL
+);
+
 module.exports = router;

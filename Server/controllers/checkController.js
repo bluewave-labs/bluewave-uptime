@@ -7,9 +7,10 @@ const {
   getTeamChecksQueryValidation,
   deleteChecksParamValidation,
   deleteChecksByTeamIdParamValidation,
+  updateChecksTTLBodyValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
-const SERVICE_NAME = "check";
+const SERVICE_NAME = "checkController";
 
 const createCheck = async (req, res, next) => {
   try {
@@ -31,7 +32,8 @@ const createCheck = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: successMessages.CHECK_CREATE, data: check });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "createCheck") : null;
     next(error);
   }
 };
@@ -58,7 +60,8 @@ const getChecks = async (req, res, next) => {
       data: { checksCount, checks },
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getChecks") : null;
     next(error);
   }
 };
@@ -83,7 +86,8 @@ const getTeamChecks = async (req, res, next) => {
       data: checkData,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getTeamChecks") : null;
     next(error);
   }
 };
@@ -108,7 +112,8 @@ const deleteChecks = async (req, res, next) => {
       data: { deletedCount },
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deleteChecks") : null;
     next(error);
   }
 };
@@ -117,10 +122,11 @@ const deleteChecksByTeamId = async (req, res, next) => {
   try {
     await deleteChecksByTeamIdParamValidation.validateAsync(req.params);
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deleteChecksByTeam";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deleteChecksByTeam") : null;
     error.status = 422;
     next(error);
+    return;
   }
 
   try {
@@ -131,8 +137,35 @@ const deleteChecksByTeamId = async (req, res, next) => {
       data: { deletedCount },
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deleteChecksByTeamId";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deleteChecksByTeamId") : null;
+    next(error);
+  }
+};
+
+const updateChecksTTL = async (req, res, next) => {
+  try {
+    await updateChecksTTLBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "updateChecksTTL") : null;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const ttl = req.body.ttl;
+    await req.db.updateChecksTTL(1, ttl);
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.CHECK_UPDATE_TTL,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "updateTTL") : null;
     next(error);
   }
 };
@@ -143,4 +176,5 @@ module.exports = {
   getTeamChecks,
   deleteChecks,
   deleteChecksByTeamId,
+  updateChecksTTL,
 };

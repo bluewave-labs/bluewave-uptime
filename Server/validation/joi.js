@@ -335,6 +335,10 @@ const deleteChecksByTeamIdParamValidation = joi.object({
   teamId: joi.string().required(),
 });
 
+const updateChecksTTLBodyValidation = joi.object({
+  ttl: joi.number().required(),
+});
+
 //****************************************
 // PageSpeedCheckValidation
 //****************************************
@@ -423,6 +427,7 @@ module.exports = {
   getTeamChecksQueryValidation,
   deleteChecksParamValidation,
   deleteChecksByTeamIdParamValidation,
+  updateChecksTTLBodyValidation,
   deleteUserParamValidation,
   getPageSpeedCheckParamValidation,
   createPageSpeedCheckParamValidation,
