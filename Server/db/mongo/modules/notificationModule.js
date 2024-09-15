@@ -1,5 +1,5 @@
 const Notification = require("../../../models/Notification");
-
+const SERVICE_NAME = "notificationModule";
 /**
  * Creates a new notification.
  * @param {Object} notificationData - The data for the new notification.
