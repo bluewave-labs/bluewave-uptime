@@ -15,6 +15,8 @@ const createNotification = async (notificationData) => {
     const notification = await new Notification({ ...notificationData }).save();
     return notification;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createNotification";
     throw error;
   }
 };
@@ -30,6 +32,8 @@ const getNotificationsByMonitorId = async (monitorId) => {
     const notifications = await Notification.find({ monitorId });
     return notifications;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getNotificationsByMonitorId";
     throw error;
   }
 };
@@ -39,6 +43,8 @@ const deleteNotificationsByMonitorId = async (monitorId) => {
     const result = await Notification.deleteMany({ monitorId });
     return result.deletedCount;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteNotificationsByMonitorId";
     throw error;
   }
 };
