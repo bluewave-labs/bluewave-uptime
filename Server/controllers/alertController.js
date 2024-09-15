@@ -11,7 +11,7 @@ const {
   deleteAlertParamValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
-const SERVICE_NAME = "alerts";
+const SERVICE_NAME = "alertController";
 
 /**
  * Creates an alert for a monitor
@@ -41,7 +41,8 @@ const createAlert = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: successMessages.ALERT_CREATE, data: alert });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "createAlert") : null;
     next(error);
   }
 };
