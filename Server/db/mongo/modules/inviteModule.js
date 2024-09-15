@@ -1,6 +1,7 @@
 const InviteToken = require("../../../models/InviteToken");
 const crypto = require("crypto");
 const { errorMessages } = require("../../../utils/messages");
+const SERVICE_NAME = "inviteModule";
 
 /**
  * Request an invite token for a user.
@@ -24,6 +25,8 @@ const requestInviteToken = async (userData) => {
     await inviteToken.save();
     return inviteToken;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "requestInviteToken";
     throw error;
   }
 };
@@ -48,6 +51,8 @@ const getInviteToken = async (token) => {
     }
     return invite;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getInviteToken";
     throw error;
   }
 };
