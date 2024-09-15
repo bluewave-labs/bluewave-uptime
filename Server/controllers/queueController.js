@@ -1,4 +1,4 @@
-const SERVICE_NAME = "JobQueue";
+const SERVICE_NAME = "JobQueueController";
 
 const getMetrics = async (req, res, next) => {
   try {
@@ -7,7 +7,8 @@ const getMetrics = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: "Metrics retrieved", data: metrics });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getMetrics") : null;
     next(error);
     return;
   }
@@ -18,7 +19,8 @@ const getJobs = async (req, res, next) => {
     const jobs = await req.jobQueue.getJobStats();
     return res.status(200).json({ jobs });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getJobs") : null;
     next(error);
     return;
   }
@@ -29,7 +31,8 @@ const addJob = async (req, res, next) => {
     await req.jobQueue.addJob(Math.random().toString(36).substring(7));
     return res.send("Added job");
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "addJob") : null;
     next(error);
     return;
   }
@@ -40,7 +43,8 @@ const obliterateQueue = async (req, res, next) => {
     const obliterated = await req.jobQueue.obliterate();
     return res.status(200).send("Obliterated jobs");
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "obliterateQueue") : null;
     next(error);
     return;
   }
