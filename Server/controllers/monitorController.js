@@ -38,7 +38,8 @@ const getAllMonitors = async (req, res, next) => {
       data: monitors,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getAllMonitors") : null;
     next(error);
   }
 };
@@ -77,6 +78,10 @@ const getMonitorAggregateStats = async (req, res, next) => {
       data: aggregateStats,
     });
   } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMonitorAggregateStats")
+      : null;
     next(error);
   }
 };
@@ -109,7 +114,8 @@ const getMonitorStatsById = async (req, res, next) => {
       data: monitorStats,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getMonitorStatsById") : null;
     next(error);
   }
 };
@@ -145,7 +151,10 @@ const getMonitorCertificate = async (req, res, next) => {
       });
     }
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMonitorCertificate")
+      : null;
     next(error);
   }
 };
@@ -184,7 +193,8 @@ const getMonitorById = async (req, res, next) => {
       data: monitor,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getMonitorById") : null;
     next(error);
   }
 };
@@ -229,9 +239,10 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
       data: monitorsSummary,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method === undefined &&
-      error.method === "getMonitorsAndSummaryByTeamId";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMonitorsAndSummaryByTeamId")
+      : null;
     next(error);
   }
 };
@@ -267,7 +278,8 @@ const getMonitorsByTeamId = async (req, res, next) => {
       data: monitors,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "getMonitorsByTeamId") : null;
     next(error);
   }
 };
@@ -316,7 +328,8 @@ const createMonitor = async (req, res, next) => {
       data: monitor,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "createMonitor") : null;
     next(error);
   }
 };
@@ -361,14 +374,14 @@ const deleteMonitor = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: successMessages.MONITOR_DELETE });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deleteMonitor") : null;
     next(error);
   }
 };
 
 const deleteAllMonitors = async (req, res) => {
   try {
-    console.log("WTF");
     const token = getTokenFromHeaders(req.headers);
     const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
     const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
@@ -384,8 +397,8 @@ const deleteAllMonitors = async (req, res) => {
       .status(200)
       .json({ success: true, msg: `Deleted ${deletedCount} monitors` });
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method === undefined && error.method === "deleteAllMonitors";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deleteAllMonitors") : null;
     next(error);
   }
 };
@@ -441,7 +454,8 @@ const editMonitor = async (req, res, next) => {
       data: editedMonitor,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "editMonitor") : null;
     next(error);
   }
 };
@@ -475,8 +489,8 @@ const pauseMonitor = async (req, res, next) => {
       data: monitor,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "pauseMonitor";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "pauseMonitor") : null;
     next(error);
   }
 };
@@ -495,8 +509,8 @@ const addDemoMonitors = async (req, res, next) => {
       data: demoMonitors.length,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method === undefined && error.method === "addDemoMonitors";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "addDemoMonitors") : null;
     next(error);
   }
 };
