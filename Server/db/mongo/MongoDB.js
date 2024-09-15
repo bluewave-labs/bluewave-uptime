@@ -97,6 +97,7 @@ const {
   getTeamChecks,
   deleteChecks,
   deleteChecksByTeamId,
+  updateChecksTTL,
 } = require("./modules/checkModule");
 
 //****************************************
@@ -161,6 +162,7 @@ module.exports = {
   getTeamChecks,
   deleteChecks,
   deleteChecksByTeamId,
+  updateChecksTTL,
   createAlert,
   getAlertsByUserId,
   getAlertsByMonitorId,
