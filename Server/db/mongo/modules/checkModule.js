@@ -259,6 +259,20 @@ const updateChecksTTL = async (teamId, ttl) => {
   }
 };
 
+const updateChecksTTL = async (teamId, ttl) => {
+  try {
+    await Check.collection.dropIndex("expiry_1");
+    await Check.collection.createIndex(
+      { expiry: 1 },
+      { expireAfterSeconds: ttl } // TTL in seconds, adjust as necessary
+    );
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "updateChecksTTL";
+    throw error;
+  }
+};
+
 module.exports = {
   createCheck,
   getChecksCount,
