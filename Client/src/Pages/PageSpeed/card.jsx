@@ -1,13 +1,18 @@
+import PropTypes from "prop-types";
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import { StatusLabel } from "../../Components/Label";
 import { Box, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { IconBox } from "./Details/styled";
-import useUtils from "../Monitors/utils";
-import PropTypes from "prop-types";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer } from "recharts";
+import useUtils from "../Monitors/utils";
 
+/**
+ * Processes the raw data to include a score for each entry.
+ * @param {Array<Object>} data - The raw data array.
+ * @returns {Array<Object>} - The formatted data array with scores.
+ */
 const processData = (data) => {
   if (data.length === 0) return [];
   let formattedData = [];
@@ -30,6 +35,13 @@ const processData = (data) => {
   return formattedData;
 };
 
+/**
+ * Renders an area chart displaying page speed scores.
+ * @param {Object} props
+ * @param {Array<Object>} props.data - The raw data to be displayed in the chart.
+ * @param {string} props.status - The status of the page speed which determines the chart's color scheme.
+ * @returns {JSX.Element} - The rendered area chart.
+ */
 const PagespeedAreaChart = ({ data, status }) => {
   const theme = useTheme();
   const { pagespeedStyles } = useUtils();
@@ -92,6 +104,24 @@ const PagespeedAreaChart = ({ data, status }) => {
   );
 };
 
+PagespeedAreaChart.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      accessibility: PropTypes.number.isRequired,
+      bestPractices: PropTypes.number.isRequired,
+      performance: PropTypes.number.isRequired,
+      seo: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  status: PropTypes.string.isRequired,
+};
+
+/**
+ * Renders a card displaying monitor details and an area chart.
+ * @param {Object} props 
+ * @param {Object} props.monitor - The monitor data to be displayed in the card.
+ * @returns {JSX.Element} - The rendered card.
+ */
 const Card = ({ monitor }) => {
   const { determineState, pagespeedStatusMsg } = useUtils();
   const theme = useTheme();
