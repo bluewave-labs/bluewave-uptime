@@ -1,19 +1,103 @@
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import { StatusLabel } from "../../Components/Label";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
-import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
-import { getLastChecked } from "../../Utils/monitorUtils";
+import { IconBox } from "./Details/styled";
 import useUtils from "../Monitors/utils";
 import PropTypes from "prop-types";
-import { IconBox } from "./Details/styled";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer } from "recharts";
+
+const processData = (data) => {
+  if (data.length === 0) return [];
+  let formattedData = [];
+
+  const calculateScore = (entry) => {
+    return (
+      (entry.accessibility +
+        entry.bestPractices +
+        entry.performance +
+        entry.seo) /
+      4
+    );
+  };
+
+  data.forEach((entry) => {
+    entry = { ...entry, score: calculateScore(entry) };
+    formattedData.push(entry);
+  });
+
+  return formattedData;
+};
+
+const PagespeedAreaChart = ({ data, status }) => {
+  const theme = useTheme();
+  const { pagespeedStyles } = useUtils();
+
+  const formattedData = processData(data);
+
+  return (
+    <ResponsiveContainer width="100%" minWidth={25} height={100}>
+      <AreaChart
+        width="100%"
+        height="100%"
+        data={formattedData}
+        margin={{ top: 10, bottom: -5 }}
+        style={{ cursor: "pointer" }}
+      >
+        <CartesianGrid
+          stroke={theme.palette.border.light}
+          strokeWidth={1}
+          strokeOpacity={1}
+          fill="transparent"
+          vertical={false}
+        />
+        {/* <Tooltip
+          cursor={{ stroke: theme.palette.border.light }}
+          content={<CustomToolTip config={filteredConfig} />}
+        /> */}
+        <defs>
+          <linearGradient
+            id={`pagespeed-chart-${status}`}
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="1"
+          >
+            <stop
+              offset="0%"
+              stopColor={pagespeedStyles[status].stroke}
+              stopOpacity={0.8}
+            />
+            <stop
+              offset="100%"
+              stopColor={pagespeedStyles[status].light}
+              stopOpacity={0}
+            />
+          </linearGradient>
+        </defs>
+        <Area
+          dataKey="score"
+          stroke={pagespeedStyles[status].stroke}
+          strokeWidth={1.5}
+          fill={`url(#pagespeed-chart-${status})`}
+          activeDot={{
+            stroke: pagespeedStyles[status].stroke,
+            fill: pagespeedStyles[status].stroke,
+            r: 4.5,
+          }}
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+};
 
 const Card = ({ monitor }) => {
   const { determineState, pagespeedStatusMsg } = useUtils();
   const theme = useTheme();
   const navigate = useNavigate();
   const monitorState = determineState(monitor);
+
   return (
     <Grid item lg={6} flexGrow={1}>
       <Box
@@ -57,6 +141,14 @@ const Card = ({ monitor }) => {
         >
           {monitor.url}
         </Typography>
+        <Box
+          mx={theme.spacing(-8)}
+          mt={theme.spacing(4)}
+          mb={theme.spacing(-8)}
+          sx={{ gridColumnStart: 1, gridColumnEnd: 4 }}
+        >
+          <PagespeedAreaChart data={monitor.checks} status={monitorState} />
+        </Box>
       </Box>
     </Grid>
   );
