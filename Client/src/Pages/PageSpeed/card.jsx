@@ -1,12 +1,91 @@
 import PropTypes from "prop-types";
 import PageSpeedIcon from "../../assets/icons/page-speed.svg?react";
 import { StatusLabel } from "../../Components/Label";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { IconBox } from "./Details/styled";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+import { useSelector } from "react-redux";
+import { formatDateWithTz } from "../../Utils/timeUtils";
 import useUtils from "../Monitors/utils";
+
+/**
+ * CustomToolTip displays a tooltip with formatted date and score information.
+ * @param {Object} props
+ * @param {Array} props.payload - Data to display in the tooltip
+ * @returns {JSX.Element} The rendered tooltip component
+ */
+const CustomToolTip = ({ payload }) => {
+  const theme = useTheme();
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.main,
+        border: 1,
+        borderColor: theme.palette.border.dark,
+        borderRadius: theme.shape.borderRadius,
+        py: theme.spacing(2),
+        px: theme.spacing(4),
+      }}
+    >
+      <Typography
+        sx={{
+          color: theme.palette.text.tertiary,
+          fontSize: 12,
+          fontWeight: 500,
+        }}
+      >
+        {formatDateWithTz(
+          payload[0]?.payload.createdAt,
+          "ddd, MMMM D, YYYY, h:mm A",
+          uiTimezone
+        )}
+      </Typography>
+
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={theme.spacing(3)}
+        mt={theme.spacing(1)}
+        sx={{
+          "& span": {
+            color: theme.palette.text.tertiary,
+            fontSize: 11,
+            fontWeight: 500,
+          },
+        }}
+      >
+        <Box
+          width={theme.spacing(4)}
+          height={theme.spacing(4)}
+          backgroundColor={payload[0]?.color}
+          sx={{ borderRadius: "50%" }}
+        />
+        <Typography
+          component="span"
+          textTransform="capitalize"
+          sx={{ opacity: 0.8 }}
+        >
+          {payload[0]?.name}
+        </Typography>{" "}
+        <Typography component="span">{payload[0]?.payload.score}</Typography>
+      </Stack>
+    </Box>
+  );
+};
+
+CustomToolTip.propTypes = {
+  payload: PropTypes.array,
+};
 
 /**
  * Processes the raw data to include a score for each entry.
@@ -64,10 +143,10 @@ const PagespeedAreaChart = ({ data, status }) => {
           fill="transparent"
           vertical={false}
         />
-        {/* <Tooltip
+        <Tooltip
           cursor={{ stroke: theme.palette.border.light }}
-          content={<CustomToolTip config={filteredConfig} />}
-        /> */}
+          content={<CustomToolTip />}
+        />
         <defs>
           <linearGradient
             id={`pagespeed-chart-${status}`}
@@ -94,7 +173,7 @@ const PagespeedAreaChart = ({ data, status }) => {
           strokeWidth={1.5}
           fill={`url(#pagespeed-chart-${status})`}
           activeDot={{
-            stroke: pagespeedStyles[status].stroke,
+            stroke: pagespeedStyles[status].light,
             fill: pagespeedStyles[status].stroke,
             r: 4.5,
           }}
@@ -118,7 +197,7 @@ PagespeedAreaChart.propTypes = {
 
 /**
  * Renders a card displaying monitor details and an area chart.
- * @param {Object} props 
+ * @param {Object} props
  * @param {Object} props.monitor - The monitor data to be displayed in the card.
  * @returns {JSX.Element} - The rendered card.
  */
