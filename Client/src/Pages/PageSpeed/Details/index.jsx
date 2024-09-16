@@ -29,11 +29,13 @@ import PulseDot from "../../../Components/Animated/PulseDot";
 import PagespeedDetailsAreaChart from "./Charts/AreaChart";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import PieChart from "./Charts/PieChart";
+import useUtils from "../../Monitors/utils";
 import "./index.css";
 
 const PageSpeedDetails = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
   const [monitor, setMonitor] = useState({});
   const [audits, setAudits] = useState({});
   const { monitorId } = useParams();
@@ -109,11 +111,7 @@ const PageSpeedDetails = () => {
                 gap={theme.spacing(2)}
               >
                 <Tooltip
-                  title={
-                    monitor?.status
-                      ? "Your pagespeed monitor is live."
-                      : "Your pagespeed monitor is down."
-                  }
+                  title={pagespeedStatusMsg[determineState(monitor)]}
                   disableInteractive
                   slotProps={{
                     popper: {
@@ -129,13 +127,7 @@ const PageSpeedDetails = () => {
                   }}
                 >
                   <Box>
-                    <PulseDot
-                      color={
-                        monitor?.status
-                          ? theme.palette.success.main
-                          : theme.palette.error.main
-                      }
-                    />
+                    <PulseDot color={statusColor[determineState(monitor)]} />
                   </Box>
                 </Tooltip>
                 <Typography component="h2" variant="h2">
