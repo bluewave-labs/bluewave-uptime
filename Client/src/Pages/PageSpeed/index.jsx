@@ -56,7 +56,7 @@ const PageSpeed = ({ isAdmin }) => {
   // will show skeletons only on initial load
   // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
   let isActuallyLoading = isLoading && monitors?.length === 0;
-  console.log(monitors);
+
   return (
     <Box
       className="page-speed"
@@ -75,13 +75,7 @@ const PageSpeed = ({ isAdmin }) => {
       {isActuallyLoading ? (
         <SkeletonLayout />
       ) : monitors?.length !== 0 ? (
-        <Box
-          sx={{
-            "& p": {
-              color: theme.palette.text.secondary,
-            },
-          }}
-        >
+        <Box>
           <Box mb={theme.spacing(12)}>
             <Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
             <Stack

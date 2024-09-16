@@ -7,6 +7,7 @@ import { formatDate, formatDurationRounded } from "../../Utils/timeUtils";
 import { getLastChecked } from "../../Utils/monitorUtils";
 import useUtils from "../Monitors/utils";
 import PropTypes from "prop-types";
+import { IconBox } from "./Details/styled";
 
 const Card = ({ monitor }) => {
   const { determineState, pagespeedStatusMsg } = useUtils();
@@ -14,19 +15,8 @@ const Card = ({ monitor }) => {
   const navigate = useNavigate();
   const monitorState = determineState(monitor);
   return (
-    <Grid
-      item
-      lg={6}
-      flexGrow={1}
-      sx={{
-        "&:hover > .MuiStack-root": {
-          backgroundColor: theme.palette.background.accent,
-        },
-      }}
-    >
-      <Stack
-        direction="row"
-        gap={theme.spacing(6)}
+    <Grid item lg={6} flexGrow={1}>
+      <Box
         p={theme.spacing(8)}
         onClick={() => navigate(`/pagespeed/${monitor._id}`)}
         border={1}
@@ -34,41 +24,40 @@ const Card = ({ monitor }) => {
         borderRadius={theme.shape.borderRadius}
         backgroundColor={theme.palette.background.main}
         sx={{
+          display: "grid",
+          gridTemplateColumns: "34px 2fr 1fr",
+          columnGap: theme.spacing(5),
+          gridTemplateRows: "34px 1fr 3fr",
           cursor: "pointer",
-          "& svg path": { stroke: theme.palette.other.icon, strokeWidth: 0.8 },
+          "&:hover": {
+            backgroundColor: theme.palette.background.accent,
+          },
         }}
       >
-        <PageSpeedIcon
-          style={{ width: theme.spacing(8), height: theme.spacing(8) }}
+        <IconBox>
+          <PageSpeedIcon />
+        </IconBox>
+        <Typography component="h2" variant="h2" alignSelf="center">
+          {monitor.name}
+        </Typography>
+        <StatusLabel
+          status={monitorState}
+          text={pagespeedStatusMsg[monitorState] || "Pending..."}
+          customStyles={{
+            width: "max-content",
+            textTransform: "capitalize",
+            alignSelf: "flex-start",
+            justifySelf: "flex-end",
+          }}
         />
-        <Box flex={1}>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography
-              component="h2"
-              mb={theme.spacing(2)}
-              fontSize={16}
-              color={theme.palette.primary.main}
-            >
-              {monitor.name}
-            </Typography>
-            <StatusLabel
-              status={monitorState}
-              text={pagespeedStatusMsg[monitorState] || "Pending..."}
-              customStyles={{ textTransform: "capitalize" }}
-            />
-          </Stack>
-          <Typography>{monitor.url.replace(/^https?:\/\//, "")}</Typography>
-          <Typography mt={theme.spacing(12)}>
-            <Typography component="span" variant="body2" fontWeight={600}>
-              Last checked:{" "}
-            </Typography>
-            {formatDate(getLastChecked(monitor.checks, false))}{" "}
-            <Typography component="span" variant="body2" fontStyle="italic">
-              ({formatDurationRounded(getLastChecked(monitor.checks))} ago)
-            </Typography>
-          </Typography>
-        </Box>
-      </Stack>
+        <Typography
+          variant="body2"
+          mt={theme.spacing(-1)}
+          sx={{ gridColumnStart: 2 }}
+        >
+          {monitor.url}
+        </Typography>
+      </Box>
     </Grid>
   );
 };
