@@ -1,13 +1,7 @@
-.configure-pagespeed .checkbox-wrapper {
-  margin-bottom: 1px;
-}
 .configure-pagespeed button {
   height: var(--env-var-height-2);
 }
 
-.configure-pagespeed h3.MuiTypography-root {
-  flex: 0.7;
-}
 .configure-pagespeed .field,
 .configure-pagespeed .section-disabled,
 .configure-pagespeed .select-wrapper {
