@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -35,7 +35,7 @@ const PageSpeedConfigure = () => {
   const { monitorId } = useParams();
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
-  const { determineState, statusColor } = useUtils();
+  const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
 
   const frequencies = [
     { _id: 3, name: "3 minutes" },
@@ -128,7 +128,7 @@ const PageSpeedConfigure = () => {
   };
 
   return (
-    <Stack className="configure-pagespeed" gap={theme.spacing(12)}>
+    <Stack className="configure-pagespeed" gap={theme.spacing(10)}>
       {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
@@ -146,22 +146,65 @@ const PageSpeedConfigure = () => {
             spellCheck="false"
             onSubmit={handleSave}
             flex={1}
-            gap={theme.spacing(12)}
+            gap={theme.spacing(10)}
           >
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot color={statusColor[determineState(monitor)]} />
               <Box>
-                <Typography component="h1" variant="h1" mb={theme.spacing(2)}>
-                  {monitor?.url}
+                <Typography component="h1" variant="h1">
+                  {monitor.name}
                 </Typography>
-                <Typography
-                  component="span"
-                  sx={{
-                    color: statusColor[determineState(monitor)],
-                  }}
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  height="fit-content"
+                  gap={theme.spacing(2)}
                 >
-                  Your pagespeed monitor is {determineState(monitor)}.
-                </Typography>
+                  <Tooltip
+                    title={pagespeedStatusMsg[determineState(monitor)]}
+                    disableInteractive
+                    slotProps={{
+                      popper: {
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [0, -8],
+                            },
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    <Box>
+                      <PulseDot color={statusColor[determineState(monitor)]} />
+                    </Box>
+                  </Tooltip>
+                  <Typography component="h2" variant="h2">
+                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  </Typography>
+                  <Typography
+                    position="relative"
+                    variant="body2"
+                    ml={theme.spacing(6)}
+                    mt={theme.spacing(1)}
+                    sx={{
+                      "&:before": {
+                        position: "absolute",
+                        content: `""`,
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        backgroundColor: theme.palette.text.tertiary,
+                        opacity: 0.8,
+                        left: -10,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                      },
+                    }}
+                  >
+                    Editting...
+                  </Typography>
+                </Stack>
               </Box>
               <Box alignSelf="flex-end" ml="auto">
                 <LoadingButton
@@ -347,6 +390,7 @@ const PageSpeedConfigure = () => {
             id="modal-delete-pagespeed-monitor"
             component="h2"
             variant="h2"
+            fontWeight={500}
           >
             Do you really want to delete this monitor?
           </Typography>
