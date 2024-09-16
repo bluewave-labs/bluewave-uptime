@@ -177,7 +177,7 @@ const Settings = ({ isAdmin }) => {
             />
           </Stack>
         </ConfigBox>
-        {true && (
+        {isAdmin && (
           <ConfigBox>
             <Box>
               <Typography component="h1">History and monitoring</Typography>
