@@ -13,7 +13,11 @@ import {
   Tooltip,
 } from "recharts";
 import { useSelector } from "react-redux";
-import { formatDateWithTz } from "../../Utils/timeUtils";
+import {
+  formatDateWithTz,
+  formatDurationRounded,
+  formatDurationSplit,
+} from "../../Utils/timeUtils";
 import useUtils from "../Monitors/utils";
 
 /**
@@ -128,7 +132,7 @@ const PagespeedAreaChart = ({ data, status }) => {
   const formattedData = processData(data);
 
   return (
-    <ResponsiveContainer width="100%" minWidth={25} height={100}>
+    <ResponsiveContainer width="100%" minWidth={25} height={85}>
       <AreaChart
         width="100%"
         height="100%"
@@ -210,6 +214,7 @@ const Card = ({ monitor }) => {
   return (
     <Grid item lg={6} flexGrow={1}>
       <Box
+        position="relative"
         p={theme.spacing(8)}
         onClick={() => navigate(`/pagespeed/${monitor._id}`)}
         border={1}
@@ -230,7 +235,12 @@ const Card = ({ monitor }) => {
         <IconBox>
           <PageSpeedIcon />
         </IconBox>
-        <Typography component="h2" variant="h2" alignSelf="center">
+        <Typography
+          component="h2"
+          variant="h2"
+          fontWeight={500}
+          alignSelf="center"
+        >
           {monitor.name}
         </Typography>
         <StatusLabel
@@ -245,7 +255,7 @@ const Card = ({ monitor }) => {
         />
         <Typography
           variant="body2"
-          mt={theme.spacing(-1)}
+          mt={theme.spacing(-2)}
           sx={{ gridColumnStart: 2 }}
         >
           {monitor.url}
@@ -257,6 +267,41 @@ const Card = ({ monitor }) => {
           sx={{ gridColumnStart: 1, gridColumnEnd: 4 }}
         >
           <PagespeedAreaChart data={monitor.checks} status={monitorState} />
+        </Box>
+        <Box
+          position="absolute"
+          bottom={0}
+          py={theme.spacing(1)}
+          px={theme.spacing(4)}
+          borderTop={1}
+          borderRight={1}
+          borderColor={theme.palette.border.light}
+          backgroundColor={theme.palette.background.accent}
+          sx={{
+            pointerEvents: "none",
+            userSelect: "none",
+            borderTopRightRadius: 8,
+            borderBottomLeftRadius: 4,
+          }}
+        >
+          <Typography fontSize={11} color={theme.palette.text.accent}>
+            Checking every{" "}
+            {(() => {
+              const { time, format } = formatDurationSplit(monitor?.interval);
+              return (
+                <>
+                  <Typography
+                    component="span"
+                    fontSize={12}
+                    color={theme.palette.text.primary}
+                  >
+                    {time}{" "}
+                  </Typography>
+                  {format}
+                </>
+              );
+            })()}
+          </Typography>
         </Box>
       </Box>
     </Grid>
