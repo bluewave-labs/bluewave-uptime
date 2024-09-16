@@ -1,9 +1,6 @@
-.page-speed h2.MuiTypography-root {
-  line-height: 1.1;
-}
 .page-speed .label {
   padding: 7px;
-  height: 22px;
+  height: 24px;
   font-size: var(--env-var-font-size-small);
 }
 .page-speed:not(:has([class*="fallback__"])) button {
