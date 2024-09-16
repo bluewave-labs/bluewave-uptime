@@ -7,7 +7,6 @@ const connection = {
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
 const { errorMessages, successMessages } = require("../utils/messages");
-const NetworkService = require("./networkService");
 const SERVICE_NAME = "JobQueue";
 
 class JobQueue {
@@ -47,6 +46,8 @@ class JobQueue {
       await queue.scaleWorkers(workerStats);
       return queue;
     } catch (error) {
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "createJobQueue") : null;
       throw error;
     }
   }
@@ -126,8 +127,10 @@ class JobQueue {
       const load = jobs.length / this.workers.length;
       return { jobs, load };
     } catch (error) {
-      console.log(error);
-
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      errorObject.method === undefined
+        ? (error.method = "getWorkerStats")
+        : null;
       throw error;
     }
   }
@@ -204,8 +207,8 @@ class JobQueue {
       const jobs = await this.queue.getRepeatableJobs();
       return jobs;
     } catch (error) {
-      console.log(error);
-
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "getJobs") : null;
       throw error;
     }
   }
@@ -221,8 +224,8 @@ class JobQueue {
       );
       return { jobs: ret, workers: this.workers.length };
     } catch (error) {
-      console.log(error);
-
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "getJobStats") : null;
       throw error;
     }
   }
@@ -248,7 +251,8 @@ class JobQueue {
       const workerStats = await this.getWorkerStats();
       await this.scaleWorkers(workerStats);
     } catch (error) {
-      console.log(error);
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "addJob") : null;
       throw error;
     }
   }
@@ -277,6 +281,8 @@ class JobQueue {
         });
       }
     } catch (error) {
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "deleteJob") : null;
       throw error;
     }
   }
@@ -329,6 +335,8 @@ class JobQueue {
       });
       return true;
     } catch (error) {
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "obliterate") : null;
       throw error;
     }
   }

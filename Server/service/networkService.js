@@ -89,6 +89,10 @@ class NetworkService {
     } catch (error) {
       const endTime = Date.now();
       error.responseTime = endTime - startTime;
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.mheotd === undefined
+        ? (error.method = "measureResponseTime")
+        : null;
       throw error;
     }
   }

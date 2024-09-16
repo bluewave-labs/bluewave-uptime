@@ -100,7 +100,8 @@ const registerController = async (req, res, next) => {
       data: { user: newUser, token: token },
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "registerController") : null;
     next(error);
   }
 };
@@ -152,7 +153,8 @@ const loginController = async (req, res, next) => {
     });
   } catch (error) {
     error.status = 500;
-    // Anything else should be an error
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "loginController") : null;
     next(error);
   }
 };
@@ -213,7 +215,8 @@ const userEditController = async (req, res, next) => {
       data: updatedUser,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "userEditController") : null;
     next(error);
     return;
   }
@@ -259,7 +262,8 @@ const inviteController = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: "Invite sent", data: inviteToken });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "inviteController") : null;
     next(error);
     return;
   }
@@ -283,7 +287,10 @@ const inviteVerifyController = async (req, res, next) => {
       .status(200)
       .json({ status: "success", msg: "Invite verified", data: invite });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "inviteVerifyController")
+      : null;
     next(error);
     return;
   }
@@ -306,7 +313,10 @@ const checkSuperadminController = async (req, res) => {
       data: superAdminExists,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "checkSuperadminController")
+      : null;
     next(error);
     return;
   }
@@ -356,7 +366,10 @@ const recoveryRequestController = async (req, res, next) => {
       });
     }
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "recoveryRequestController")
+      : null;
     next(error);
     return;
   }
@@ -391,7 +404,10 @@ const validateRecoveryTokenController = async (req, res, next) => {
       msg: successMessages.AUTH_VERIFY_RECOVERY_TOKEN,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "validateRecoveryTokenController")
+      : null;
     next(error);
     return;
   }
@@ -427,7 +443,10 @@ const resetPasswordController = async (req, res, next) => {
       data: { user, token },
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "resetPasswordController")
+      : null;
     next(error);
   }
 };
@@ -482,8 +501,8 @@ const deleteUserController = async (req, res, next) => {
       msg: successMessages.AUTH_DELETE_USER,
     });
   } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method === undefined && error.method === "deleteUserController";
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "deleteUserController") : null;
     next(error);
   }
 };
@@ -495,7 +514,10 @@ const getAllUsersController = async (req, res) => {
       .status(200)
       .json({ success: true, msg: "Got all users", data: allUsers });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getAllUsersController")
+      : null;
     next(error);
   }
 };

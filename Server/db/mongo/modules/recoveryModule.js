@@ -2,6 +2,7 @@ const UserModel = require("../../../models/user");
 const RecoveryToken = require("../../../models/RecoveryToken");
 const crypto = require("crypto");
 const { errorMessages } = require("../../../utils/messages");
+const SERVICE_NAME = "recoveryModule";
 
 /**
  * Request a recovery token
@@ -22,6 +23,8 @@ const requestRecoveryToken = async (req, res) => {
     await recoveryToken.save();
     return recoveryToken;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "requestRecoveryToken";
     throw error;
   }
 };
@@ -38,6 +41,8 @@ const validateRecoveryToken = async (req, res) => {
       throw new Error(errorMessages.DB_TOKEN_NOT_FOUND);
     }
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "validateRecoveryToken";
     throw error;
   }
 };
@@ -70,6 +75,8 @@ const resetPassword = async (req, res) => {
       throw new Error(errorMessages.DB_USER_NOT_FOUND);
     }
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "resetPassword";
     throw error;
   }
 };

@@ -24,11 +24,8 @@ const dateRangeLookup = {
 const createCheck = async (checkData) => {
   try {
     const { monitorId, status } = checkData;
-
     const n = (await Check.countDocuments({ monitorId })) + 1;
-
     const check = await new Check({ ...checkData }).save();
-
     const monitor = await Monitor.findById(monitorId);
 
     if (!monitor) {
@@ -39,6 +36,7 @@ const createCheck = async (checkData) => {
       return;
     }
 
+    // Update uptime percentage
     if (monitor.uptimePercentage === undefined) {
       monitor.uptimePercentage = status === true ? 1 : 0;
     } else {
@@ -50,6 +48,8 @@ const createCheck = async (checkData) => {
 
     return check;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createCheck";
     throw error;
   }
 };
@@ -137,6 +137,8 @@ const getChecks = async (req) => {
       .sort({ createdAt: sortOrder });
     return checks;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getChecks";
     throw error;
   }
 };
@@ -207,6 +209,8 @@ const deleteChecks = async (monitorId) => {
     const result = await Check.deleteMany({ monitorId });
     return result.deletedCount;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteChecks";
     throw error;
   }
 };
@@ -235,6 +239,22 @@ const deleteChecksByTeamId = async (teamId) => {
 
     return totalDeletedCount;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteChecksByTeamId";
+    throw error;
+  }
+};
+
+const updateChecksTTL = async (teamId, ttl) => {
+  try {
+    await Check.collection.dropIndex("expiry_1");
+    await Check.collection.createIndex(
+      { expiry: 1 },
+      { expireAfterSeconds: ttl } // TTL in seconds, adjust as necessary
+    );
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "updateChecksTTL";
     throw error;
   }
 };

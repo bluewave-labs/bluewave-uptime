@@ -1,5 +1,5 @@
 const PageSpeedCheck = require("../../../models/PageSpeedCheck");
-
+const SERVICE_NAME = "pageSpeedCheckModule";
 /**
  * Create a PageSpeed check for a monitor
  * @async
@@ -19,6 +19,8 @@ const createPageSpeedCheck = async (pageSpeedCheckData) => {
     }).save();
     return pageSpeedCheck;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createPageSpeedCheck";
     throw error;
   }
 };
@@ -36,6 +38,8 @@ const getPageSpeedChecks = async (monitorId) => {
     const pageSpeedChecks = await PageSpeedCheck.find({ monitorId });
     return pageSpeedChecks;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getPageSpeedChecks";
     throw error;
   }
 };
@@ -53,6 +57,8 @@ const deletePageSpeedChecksByMonitorId = async (monitorId) => {
     const result = await PageSpeedCheck.deleteMany({ monitorId });
     return result.deletedCount;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deletePageSpeedChecksByMonitorId";
     throw error;
   }
 };

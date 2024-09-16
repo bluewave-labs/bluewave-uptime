@@ -1,4 +1,5 @@
 const MaintenanceWindow = require("../../../models/MaintenanceWindow");
+const SERVICE_NAME = "maintenanceWindowModule";
 
 /**
  * Asynchronously creates a new MaintenanceWindow document and saves it to the database.
@@ -38,6 +39,8 @@ const createMaintenanceWindow = async (maintenanceWindowData) => {
     const result = maintenanceWindow.save();
     return result;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createMaintenanceWindow";
     throw error;
   }
 };
@@ -59,6 +62,8 @@ const getMaintenanceWindowsByUserId = async (userId) => {
     const maintenanceWindows = await MaintenanceWindow.find({ userId: userId });
     return maintenanceWindows;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMaintenanceWindowByUserId";
     throw error;
   }
 };
@@ -82,6 +87,8 @@ const getMaintenanceWindowsByMonitorId = async (monitorId) => {
     });
     return maintenanceWindows;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMaintenanceWindowsByMonitorId";
     throw error;
   }
 };
@@ -104,6 +111,8 @@ const deleteMaintenaceWindowById = async (maintenanceWindowId) => {
       await MaintenanceWindow.findByIdAndDelete(maintenanceWindowId);
     return maintenanceWindow;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMaintenaceWindowById";
     throw error;
   }
 };
@@ -125,6 +134,8 @@ const deleteMaintenanceWindowByMonitorId = async (monitorId) => {
     const result = await MaintenanceWindow.deleteMany({ monitorId: monitorId });
     return result;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMaintenanceWindowByMonitorId";
     throw error;
   }
 };
@@ -146,6 +157,8 @@ const deleteMaintenanceWindowByUserId = async (userId) => {
     const result = await MaintenanceWindow.deleteMany({ userId: userId });
     return result;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMaintenanceWindowByUserId";
     throw error;
   }
 };

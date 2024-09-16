@@ -5,6 +5,7 @@ const { errorMessages } = require("../../../utils/messages");
 const Notification = require("../../../models/Notification");
 const { NormalizeData } = require("../../../utils/dataUtils");
 const demoMonitors = require("../../../utils/demoMonitors.json");
+const SERVICE_NAME = "monitorModule";
 
 /**
  * Get all monitors
@@ -19,6 +20,8 @@ const getAllMonitors = async (req, res) => {
     const monitors = await Monitor.find();
     return monitors;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getAllMonitors";
     throw error;
   }
 };
@@ -262,6 +265,7 @@ const getMonitorStatsById = async (req) => {
 
     return monitorStats;
   } catch (error) {
+    error.service = SERVICE_NAME;
     error.method = "getMonitorStatsById";
     throw error;
   }
@@ -289,6 +293,8 @@ const getMonitorById = async (monitorId) => {
     const monitorWithNotifications = await monitor.save();
     return monitorWithNotifications;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMonitorById";
     throw error;
   }
 };
@@ -325,6 +331,7 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
     monitorCounts.total = monitors.length;
     return { monitors, monitorCounts };
   } catch (error) {
+    error.service = SERVICE_NAME;
     error.method = "getMonitorsAndSummaryByTeamId";
     throw error;
   }
@@ -402,6 +409,8 @@ const getMonitorsByTeamId = async (req, res) => {
     );
     return { monitors: monitorsWithChecks, monitorCount: monitorsCount };
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMonitorsByTeamId";
     throw error;
   }
 };
@@ -422,6 +431,8 @@ const createMonitor = async (req, res) => {
     await monitor.save();
     return monitor;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createMonitor";
     throw error;
   }
 };
@@ -443,6 +454,8 @@ const deleteMonitor = async (req, res) => {
     }
     return monitor;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMonitor";
     throw error;
   }
 };
@@ -458,6 +471,8 @@ const deleteAllMonitors = async (teamId) => {
 
     return { monitors, deletedCount };
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteAllMonitors";
     throw error;
   }
 };
@@ -473,6 +488,8 @@ const deleteMonitorsByUserId = async (userId) => {
     const result = await Monitor.deleteMany({ userId: userId });
     return result;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMonitorsByUserId";
     throw error;
   }
 };
@@ -496,6 +513,7 @@ const editMonitor = async (candidateId, candidateMonitor) => {
     );
     return editedMonitor;
   } catch (error) {
+    error.service = SERVICE_NAME;
     error.method = "editMonitor";
     throw error;
   }
@@ -517,6 +535,7 @@ const addDemoMonitors = async (userId, teamId) => {
     const insertedMonitors = await Monitor.insertMany(demoMonitorsToInsert);
     return insertedMonitors;
   } catch (error) {
+    error.service = SERVICE_NAME;
     error.method = "addDemoMonitors";
     throw error;
   }

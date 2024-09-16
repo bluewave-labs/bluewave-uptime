@@ -39,6 +39,7 @@ const verifyOwnership = (Model, paramName) => {
       return;
     } catch (error) {
       error.service = SERVICE_NAME;
+      error.method = "verifyOwnership";
       next(error);
       return;
     }
