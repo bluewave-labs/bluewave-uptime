@@ -373,12 +373,18 @@ const getMonitorsByTeamId = async (req, res) => {
       sortOrder = -1;
     } else sortOrder = -1;
 
-    // This effectively removes limit, returning all checks
-    if (limit === undefined) limit = 0;
-
     const monitors = await Monitor.find(monitorQuery)
       .skip(skip)
       .limit(rowsPerPage);
+
+    // Early return if limit is set to -1, indicating we don't want any checks
+    if (limit === "-1") {
+      return { monitors, monitorCount: monitorsCount };
+    }
+
+    // This effectively removes limit, returning all checks
+    if (limit === undefined) limit = 0;
+
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
