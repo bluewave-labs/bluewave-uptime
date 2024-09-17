@@ -1,5 +1,6 @@
 const Check = require("../../../models/Check");
 const Monitor = require("../../../models/Monitor");
+const User = require("../../../models/user");
 const logger = require("../../../utils/logger");
 const SERVICE_NAME = "checkModule";
 const dateRangeLookup = {
@@ -248,6 +249,14 @@ const deleteChecksByTeamId = async (teamId) => {
 const updateChecksTTL = async (teamId, ttl) => {
   try {
     await Check.collection.dropIndex("expiry_1");
+  } catch (error) {
+    logger.error("Failed to drop index", {
+      service: SERVICE_NAME,
+      method: "updateChecksTTL",
+    });
+  }
+
+  try {
     await Check.collection.createIndex(
       { expiry: 1 },
       { expireAfterSeconds: ttl } // TTL in seconds, adjust as necessary
@@ -257,15 +266,9 @@ const updateChecksTTL = async (teamId, ttl) => {
     error.method = "updateChecksTTL";
     throw error;
   }
-};
-
-const updateChecksTTL = async (teamId, ttl) => {
+  // Update user
   try {
-    await Check.collection.dropIndex("expiry_1");
-    await Check.collection.createIndex(
-      { expiry: 1 },
-      { expireAfterSeconds: ttl } // TTL in seconds, adjust as necessary
-    );
+    await User.updateMany({ teamId: teamId }, { checkTTL: ttl });
   } catch (error) {
     error.service = SERVICE_NAME;
     error.method = "updateChecksTTL";

@@ -146,9 +146,16 @@ const maintenanceWindowValidation = joi.object({
   }),
 });
 
+const settingsValidation = joi.object({
+  ttl: joi.number().required().messages({
+    "string.empty": "TTL is required",
+  }),
+});
+
 export {
   credentials,
   imageValidation,
   monitorValidation,
   maintenanceWindowValidation,
+  settingsValidation,
 };
