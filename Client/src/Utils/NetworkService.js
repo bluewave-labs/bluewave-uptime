@@ -582,6 +582,19 @@ class NetworkService {
       }
     );
   }
+
+  async updateChecksTTL(authToken, ttl) {
+    return this.axiosInstance.put(
+      `/checks/ttl`,
+      { ttl },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
 
 export default NetworkService;

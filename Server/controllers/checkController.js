@@ -10,6 +10,8 @@ const {
   updateChecksTTLBodyValidation,
 } = require("../validation/joi");
 const { successMessages } = require("../utils/messages");
+const jwt = require("jsonwebtoken");
+const { getTokenFromHeaders } = require("../utils/utils");
 const SERVICE_NAME = "checkController";
 
 const createCheck = async (req, res, next) => {
@@ -144,6 +146,8 @@ const deleteChecksByTeamId = async (req, res, next) => {
 };
 
 const updateChecksTTL = async (req, res, next) => {
+  const SECONDS_PER_DAY = 86400;
+
   try {
     await updateChecksTTLBodyValidation.validateAsync(req.body);
   } catch (error) {
@@ -157,8 +161,11 @@ const updateChecksTTL = async (req, res, next) => {
   }
 
   try {
-    const ttl = req.body.ttl;
-    await req.db.updateChecksTTL(1, ttl);
+    // Get user's teamId
+    const token = getTokenFromHeaders(req.headers);
+    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const ttl = parseInt(req.body.ttl, 10) * SECONDS_PER_DAY;
+    await req.db.updateChecksTTL(teamId, ttl);
     return res.status(200).json({
       success: true,
       msg: successMessages.CHECK_UPDATE_TTL,
