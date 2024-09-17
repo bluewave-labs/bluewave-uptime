@@ -149,17 +149,15 @@ const getTeamChecks = async (req) => {
   let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 
   // Get monitorIDs
-  const userMonitors = await Monitor.find({ teamId: teamId });
-  const monitorIds = userMonitors.map((monitor) => monitor._id);
+  const userMonitors = await Monitor.find({ teamId: teamId }).select("_id");
 
   //Build check query
   // Default limit to 0 if not provided
-  limit = limit === "undefined" ? 0 : limit;
-
+  limit = limit === undefined ? 0 : limit;
   // Default sort order is newest -> oldest
   sortOrder = sortOrder === "asc" ? 1 : -1;
 
-  checksQuery = { monitorId: { $in: monitorIds } };
+  checksQuery = { monitorId: { $in: userMonitors } };
 
   if (filter !== undefined) {
     checksQuery.status = false;
@@ -192,8 +190,8 @@ const getTeamChecks = async (req) => {
   const checks = await Check.find(checksQuery)
     .skip(skip)
     .limit(rowsPerPage)
-    .sort({ createdAt: sortOrder });
-
+    .sort({ createdAt: sortOrder })
+    .select(["monitorId", "status", "responseTime", "statusCode", "message"]);
   return { checksCount, checks };
 };
 
