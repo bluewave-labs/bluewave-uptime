@@ -52,12 +52,35 @@ const useUtils = () => {
       "& h2": { color: theme.palette.warning.main },
     },
   };
+  const pagespeedStyles = {
+    up: {
+      bg: theme.palette.success.bg,
+      light: theme.palette.success.light,
+      stroke: theme.palette.success.main,
+    },
+    down: {
+      bg: theme.palette.error.bg,
+      light: theme.palette.error.light,
+      stroke: theme.palette.error.main,
+    },
+    paused: {
+      bg: theme.palette.warning.bg,
+      light: theme.palette.warning.light,
+      stroke: theme.palette.warning.main,
+    },
+    pending: {
+      bg: theme.palette.warning.bg,
+      light: theme.palette.warning.light,
+      stroke: theme.palette.warning.main,
+    },
+  };
 
   return {
     determineState,
     statusColor,
     statusMsg,
     pagespeedStatusMsg,
+    pagespeedStyles,
     statusStyles,
   };
 };

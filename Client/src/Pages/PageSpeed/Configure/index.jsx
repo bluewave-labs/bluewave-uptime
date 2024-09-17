@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -13,6 +13,7 @@ import {
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
+import { ConfigBox } from "../../Monitors/styled";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
@@ -22,20 +23,27 @@ import PulseDot from "../../../Components/Animated/PulseDot";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineRounded";
 import SkeletonLayout from "./skeleton";
-import "./index.css";
 import useUtils from "../../Monitors/utils";
+import "./index.css";
 
 const PageSpeedConfigure = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const MS_PER_MINUTE = 60000;
-  const { authToken } = useSelector((state) => state.auth);
+  const { user, authToken } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.pageSpeedMonitors);
   const { monitorId } = useParams();
   const [monitor, setMonitor] = useState({});
   const [errors, setErrors] = useState({});
-  const { determineState, statusColor } = useUtils();
+  const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
+  const idMap = {
+    "monitor-url": "url",
+    "monitor-name": "name",
+    "monitor-checks-http": "type",
+    "monitor-checks-ping": "type",
+    "notify-email-default": "notification-email",
+  };
 
   const frequencies = [
     { _id: 3, name: "3 minutes" },
@@ -68,24 +76,58 @@ const PageSpeedConfigure = () => {
     fetchMonitor();
   }, [dispatch, authToken, monitorId, navigate]);
 
-  const handleChange = (event, id) => {
-    let { value } = event.target;
-    if (id === "interval") {
-      value = value * MS_PER_MINUTE;
+  const handleChange = (event, name) => {
+    let { value, id } = event.target;
+    if (!name) name = idMap[id];
+
+    if (name.includes("notification-")) {
+      name = name.replace("notification-", "");
+      let hasNotif = monitor.notifications.some(
+        (notification) => notification.type === name
+      );
+      setMonitor((prev) => {
+        const notifs = [...prev.notifications];
+        if (hasNotif) {
+          return {
+            ...prev,
+            notifications: notifs.filter((notif) => notif.type !== name),
+          };
+        } else {
+          return {
+            ...prev,
+            notifications: [
+              ...notifs,
+              name === "email"
+                ? { type: name, address: value }
+                : // TODO - phone number
+                  { type: name, phone: value },
+            ],
+          };
+        }
+      });
+    } else {
+      if (name === "interval") {
+        value = value * MS_PER_MINUTE;
+      }
+      setMonitor((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+
+      const validation = monitorValidation.validate(
+        { [name]: value },
+        { abortEarly: false }
+      );
+
+      setErrors((prev) => {
+        const updatedErrors = { ...prev };
+
+        if (validation.error)
+          updatedErrors[name] = validation.error.details[0].message;
+        else delete updatedErrors[name];
+        return updatedErrors;
+      });
     }
-    setMonitor((prev) => ({ ...prev, [id]: value }));
-
-    const { error } = monitorValidation.validate(
-      { [id]: value },
-      { abortEarly: false }
-    );
-
-    setErrors((prev) => {
-      const newErrors = { ...prev };
-      if (error) newErrors[id] = error.details[0].message;
-      else delete newErrors[id];
-      return newErrors;
-    });
   };
 
   const handlePause = async () => {
@@ -128,7 +170,7 @@ const PageSpeedConfigure = () => {
   };
 
   return (
-    <Stack className="configure-pagespeed" gap={theme.spacing(12)}>
+    <Stack className="configure-pagespeed" gap={theme.spacing(10)}>
       {Object.keys(monitor).length === 0 ? (
         <SkeletonLayout />
       ) : (
@@ -146,22 +188,65 @@ const PageSpeedConfigure = () => {
             spellCheck="false"
             onSubmit={handleSave}
             flex={1}
-            gap={theme.spacing(12)}
+            gap={theme.spacing(10)}
           >
             <Stack direction="row" gap={theme.spacing(2)}>
-              <PulseDot color={statusColor[determineState(monitor)]} />
               <Box>
-                <Typography component="h1" variant="h1" mb={theme.spacing(2)}>
-                  {monitor?.url}
+                <Typography component="h1" variant="h1">
+                  {monitor.name}
                 </Typography>
-                <Typography
-                  component="span"
-                  sx={{
-                    color: statusColor[determineState(monitor)],
-                  }}
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  height="fit-content"
+                  gap={theme.spacing(2)}
                 >
-                  Your pagespeed monitor is {determineState(monitor)}.
-                </Typography>
+                  <Tooltip
+                    title={pagespeedStatusMsg[determineState(monitor)]}
+                    disableInteractive
+                    slotProps={{
+                      popper: {
+                        modifiers: [
+                          {
+                            name: "offset",
+                            options: {
+                              offset: [0, -8],
+                            },
+                          },
+                        ],
+                      },
+                    }}
+                  >
+                    <Box>
+                      <PulseDot color={statusColor[determineState(monitor)]} />
+                    </Box>
+                  </Tooltip>
+                  <Typography component="h2" variant="h2">
+                    {monitor.url?.replace(/^https?:\/\//, "") || "..."}
+                  </Typography>
+                  <Typography
+                    position="relative"
+                    variant="body2"
+                    ml={theme.spacing(6)}
+                    mt={theme.spacing(1)}
+                    sx={{
+                      "&:before": {
+                        position: "absolute",
+                        content: `""`,
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        backgroundColor: theme.palette.text.tertiary,
+                        opacity: 0.8,
+                        left: -10,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                      },
+                    }}
+                  >
+                    Editting...
+                  </Typography>
+                </Stack>
               </Box>
               <Box alignSelf="flex-end" ml="auto">
                 <LoadingButton
@@ -206,102 +291,116 @@ const PageSpeedConfigure = () => {
                 </LoadingButton>
               </Box>
             </Stack>
-            <Stack
-              border={1}
-              borderColor={theme.palette.border.light}
-              borderRadius={theme.shape.borderRadius}
-              backgroundColor={theme.palette.background.main}
-              p={theme.spacing(20)}
-              pl={theme.spacing(15)}
-              gap={theme.spacing(20)}
-              sx={{
-                "& h3, & p": {
-                  color: theme.palette.text.secondary,
-                },
-              }}
-            >
-              <Stack direction="row">
-                <Typography component="h3">Monitor display name</Typography>
-                <Field
-                  type="text"
-                  id="monitor-name"
-                  placeholder="Example monitor"
-                  value={monitor?.name || ""}
-                  onChange={(event) => handleChange(event, "name")}
-                  error={errors.name}
-                />
-              </Stack>
+            <ConfigBox>
+              <Box>
+                <Typography component="h2">General settings</Typography>
+                <Typography component="p">
+                  Here you can select the URL of the host, together with the
+                  type of monitor.
+                </Typography>
+              </Box>
               <Stack
-                direction="row"
+                gap={theme.spacing(20)}
                 sx={{
                   ".MuiInputBase-root:has(> .Mui-disabled)": {
                     backgroundColor: theme.palette.background.accent,
                   },
                 }}
               >
-                <Typography component="h3">URL</Typography>
                 <Field
                   type="url"
                   id="monitor-url"
+                  label="URL"
                   placeholder="random.website.com"
                   value={monitor?.url?.replace("http://", "") || ""}
-                  onChange={(event) => handleChange(event, "url")}
+                  onChange={handleChange}
                   error={errors.url}
                   disabled={true}
                 />
-              </Stack>
-              <Stack direction="row">
-                <Typography component="h3">Check frequency</Typography>
-                <Select
-                  id="monitor-frequency"
-                  items={frequencies}
-                  value={monitor?.interval / MS_PER_MINUTE || 3}
-                  onChange={(event) => handleChange(event, "interval")}
+                <Field
+                  type="text"
+                  id="monitor-name"
+                  label="Monitor display name"
+                  placeholder="Example monitor"
+                  isOptional={true}
+                  value={monitor?.name || ""}
+                  onChange={handleChange}
+                  error={errors.name}
                 />
               </Stack>
-              <Stack direction="row">
-                <Typography component="h3">
-                  Incidents notifications{" "}
-                  <Typography component="span">(coming soon)</Typography>
+            </ConfigBox>
+            <ConfigBox>
+              <Box>
+                <Typography component="h2">Incident notifications</Typography>
+                <Typography component="p">
+                  When there is an incident, notify users.
                 </Typography>
-                <Stack
-                  className="section-disabled"
-                  backgroundColor={theme.palette.background.fill}
-                >
-                  <Typography mb={theme.spacing(4)}>
-                    When there is a new incident,
-                  </Typography>
-                  <Checkbox
-                    id="notify-sms"
-                    label="Notify via SMS (coming soon)"
-                    isChecked={false}
-                    isDisabled={true}
-                  />
-                  <Checkbox
-                    id="notify-email"
-                    label="Notify via email (to gorkem.cetin@bluewavelabs.ca)"
-                    isChecked={false}
-                  />
-                  <Checkbox
-                    id="notify-emails"
-                    label="Notify via email to following emails"
-                    isChecked={false}
-                  />
+              </Box>
+              <Stack gap={theme.spacing(6)}>
+                <Typography component="p">
+                  When there is a new incident,
+                </Typography>
+                <Checkbox
+                  id="notify-sms"
+                  label="Notify via SMS (coming soon)"
+                  isChecked={false}
+                  value=""
+                  onChange={() => logger.warn("disabled")}
+                  isDisabled={true}
+                />
+                <Checkbox
+                  id="notify-email-default"
+                  label={`Notify via email (to ${user.email})`}
+                  isChecked={
+                    monitor?.notifications?.some(
+                      (notification) => notification.type === "email"
+                    ) || false
+                  }
+                  value={user?.email}
+                  onChange={(event) => handleChange(event)}
+                />
+                <Checkbox
+                  id="notify-email"
+                  label="Also notify via email to multiple addresses (coming soon)"
+                  isChecked={false}
+                  value=""
+                  onChange={() => logger.warn("disabled")}
+                  isDisabled={true}
+                />
+                {monitor?.notifications?.some(
+                  (notification) => notification.type === "emails"
+                ) ? (
                   <Box mx={theme.spacing(16)}>
                     <Field
-                      id="notify-emails-list"
-                      placeholder="notifications@gmail.com"
+                      id="notify-email-list"
+                      type="text"
+                      placeholder="name@gmail.com"
                       value=""
                       onChange={() => logger.warn("disabled")}
-                      error=""
                     />
                     <Typography mt={theme.spacing(4)}>
                       You can separate multiple emails with a comma
                     </Typography>
                   </Box>
-                </Stack>
+                ) : (
+                  ""
+                )}
               </Stack>
-            </Stack>
+            </ConfigBox>
+            <ConfigBox>
+              <Box>
+                <Typography component="h2">Advanced settings</Typography>
+              </Box>
+              <Stack gap={theme.spacing(20)}>
+                <Select
+                  id="monitor-frequency"
+                  label="Check frequency"
+                  items={frequencies}
+                  value={monitor?.interval / MS_PER_MINUTE || 3}
+                  onChange={(event) => handleChange(event, "interval")}
+                />
+              </Stack>
+            </ConfigBox>
             <Stack direction="row" justifyContent="flex-end" mt="auto">
               <LoadingButton
                 loading={isLoading}
@@ -347,6 +446,7 @@ const PageSpeedConfigure = () => {
             id="modal-delete-pagespeed-monitor"
             component="h2"
             variant="h2"
+            fontWeight={500}
           >
             Do you really want to delete this monitor?
           </Typography>
