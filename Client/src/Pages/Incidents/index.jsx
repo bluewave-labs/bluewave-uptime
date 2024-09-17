@@ -28,7 +28,7 @@ const Incidents = () => {
       const res = await networkService.getMonitorsByTeamId(
         authState.authToken,
         authState.user.teamId,
-        1,
+        -1,
         null,
         null,
         null,
@@ -36,6 +36,7 @@ const Incidents = () => {
         null,
         null
       );
+      console.log(res.data.data);
       // Reduce to a lookup object for 0(1) lookup
       if (res?.data?.data?.monitors?.length > 0) {
         const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
