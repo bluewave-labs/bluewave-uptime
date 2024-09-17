@@ -379,7 +379,6 @@ const getMonitorsByTeamId = async (req, res) => {
 
     // Early return if limit is set to -1, indicating we don't want any checks
     if (limit === "-1") {
-      console.log("early return");
       return { monitors, monitorCount: monitorsCount };
     }
 
