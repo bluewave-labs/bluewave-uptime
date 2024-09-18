@@ -153,8 +153,8 @@ const MonitorTable = ({ isAdmin }) => {
           page,
           rowsPerPage,
           null,
-          "createdAt",
-          "desc"
+          null,
+          null
         );
         setMonitors(res?.data?.data?.monitors ?? []);
         setMonitorCount(res?.data?.data?.monitorCount ?? 0);
