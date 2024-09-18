@@ -142,20 +142,20 @@ const MonitorTable = ({ isAdmin }) => {
       try {
         const { authToken } = authState;
         const user = jwtDecode(authToken);
-        const res = await networkService.getMonitorsByTeamId(
+        const res = await networkService.getMonitorsByTeamId({
           authToken,
-          user.teamId,
-          25,
-          ["http", "ping"],
-          null,
-          "desc",
-          true,
-          page,
-          rowsPerPage,
-          null,
-          null,
-          null
-        );
+          teamId: user.teamId,
+          limit: 25,
+          types: ["http", "ping"],
+          status: null,
+          checkOrder: "desc",
+          normalize: true,
+          page: page,
+          rowsPerPage: rowsPerPage,
+          filter: null,
+          field: null,
+          order: null,
+        });
         setMonitors(res?.data?.data?.monitors ?? []);
         setMonitorCount(res?.data?.data?.monitorCount ?? 0);
       } catch (error) {

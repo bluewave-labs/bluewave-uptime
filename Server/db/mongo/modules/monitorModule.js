@@ -359,8 +359,10 @@ const getMonitorsByTeamId = async (req, res) => {
       field,
       order,
     } = req.query || {};
-
-    const monitorQuery = { teamId: req.params.teamId, type };
+    const monitorQuery = { teamId: req.params.teamId };
+    if (type !== undefined) {
+      monitorQuery.type = type;
+    }
     // Add filter if provided
     // $options: "i" makes the search case-insensitive
     if (filter !== undefined) {
