@@ -40,9 +40,9 @@ const useUtils = () => {
       "& h2": { color: theme.palette.error.main },
     },
     paused: {
-      backgroundColor: theme.palette.warning.light,
-      background: `linear-gradient(340deg, ${theme.palette.warning.dark} -60%, ${theme.palette.warning.light} 35%)`,
-      borderColor: theme.palette.warning.dark,
+      backgroundColor: theme.palette.warning.bg,
+      background: `linear-gradient(340deg, ${theme.palette.warning.light} -60%, ${theme.palette.warning.bg} 35%)`,
+      borderColor: theme.palette.warning.light,
       "& h2": { color: theme.palette.warning.main },
     },
     pending: {

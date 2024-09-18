@@ -9,7 +9,7 @@ import {
   Text,
 } from "recharts";
 import { useTheme } from "@emotion/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { formatDateWithTz } from "../../../../Utils/timeUtils";
 import { useSelector } from "react-redux";
@@ -215,6 +215,7 @@ CustomTick.propTypes = {
 
 const PagespeedDetailsAreaChart = ({ data, interval, metrics }) => {
   const theme = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
   const memoizedData = useMemo(
     () => processDataWithGaps(data, interval),
     [data[0]]
@@ -234,6 +235,8 @@ const PagespeedDetailsAreaChart = ({ data, interval, metrics }) => {
         height="100%"
         data={memoizedData}
         margin={{ top: 10 }}
+        onMouseMove={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <CartesianGrid
           stroke={theme.palette.border.light}
@@ -281,7 +284,7 @@ const PagespeedDetailsAreaChart = ({ data, interval, metrics }) => {
               dataKey={key}
               stackId={1}
               stroke={strokeColor}
-              strokeWidth={1.5}
+              strokeWidth={isHovered ? 2.5 : 1.5}
               fill={`url(#${filteredConfig[key].id})`}
               activeDot={{ stroke: bgColor, fill: strokeColor, r: 4.5 }}
             />

@@ -13,12 +13,9 @@ import {
   Tooltip,
 } from "recharts";
 import { useSelector } from "react-redux";
-import {
-  formatDateWithTz,
-  formatDurationRounded,
-  formatDurationSplit,
-} from "../../Utils/timeUtils";
+import { formatDateWithTz, formatDurationSplit } from "../../Utils/timeUtils";
 import useUtils from "../Monitors/utils";
+import { useState } from "react";
 
 /**
  * CustomToolTip displays a tooltip with formatted date and score information.
@@ -127,6 +124,7 @@ const processData = (data) => {
  */
 const PagespeedAreaChart = ({ data, status }) => {
   const theme = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
   const { pagespeedStyles } = useUtils();
 
   const formattedData = processData(data);
@@ -139,6 +137,8 @@ const PagespeedAreaChart = ({ data, status }) => {
         data={formattedData}
         margin={{ top: 10, bottom: -5 }}
         style={{ cursor: "pointer" }}
+        onMouseMove={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <CartesianGrid
           stroke={theme.palette.border.light}
@@ -174,7 +174,7 @@ const PagespeedAreaChart = ({ data, status }) => {
         <Area
           dataKey="score"
           stroke={pagespeedStyles[status].stroke}
-          strokeWidth={1.5}
+          strokeWidth={isHovered ? 2.5 : 1.5}
           fill={`url(#pagespeed-chart-${status})`}
           activeDot={{
             stroke: pagespeedStyles[status].light,
@@ -229,6 +229,9 @@ const Card = ({ monitor }) => {
           cursor: "pointer",
           "&:hover": {
             backgroundColor: theme.palette.background.accent,
+          },
+          "& path": {
+            transition: "stroke-width 400ms ease",
           },
         }}
       >
