@@ -3,6 +3,17 @@ import { Box, ListItem, Autocomplete, TextField } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 
+/**
+ * Search component using Material UI's Autocomplete.
+ *
+ * @param {Object} props
+ * @param {string} props.id - Unique identifier for the Autocomplete component
+ * @param {Array<Object>} props.options - Options to display in the Autocomplete dropdown
+ * @param {string} props.value - Current input value for the Autocomplete
+ * @param {Function} props.handleChange - Function to call when the input changes
+ * @param {Object} props.sx - Additional styles to apply to the component
+ * @returns {JSX.Element} The rendered Search component
+ */
 const Search = ({ id, options, value, handleChange, sx }) => {
   const theme = useTheme();
 
@@ -112,6 +123,18 @@ const Search = ({ id, options, value, handleChange, sx }) => {
       }}
     />
   );
+};
+
+Search.propTypes = {
+  id: PropTypes.string,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  value: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  sx: PropTypes.object,
 };
 
 export default Search;
