@@ -214,7 +214,10 @@ const MonitorTable = ({ isAdmin }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell onClick={() => handleSort("name")}>
+              <TableCell
+                sx={{ cursor: "pointer" }}
+                onClick={() => handleSort("name")}
+              >
                 <Box>
                   Host
                   <span
@@ -230,7 +233,10 @@ const MonitorTable = ({ isAdmin }) => {
                   </span>
                 </Box>
               </TableCell>
-              <TableCell onClick={() => handleSort("status")}>
+              <TableCell
+                sx={{ cursor: "pointer" }}
+                onClick={() => handleSort("status")}
+              >
                 {" "}
                 <Box width="max-content">
                   {" "}
