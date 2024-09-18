@@ -1,5 +1,5 @@
 import "./index.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ const Monitors = ({ isAdmin }) => {
   const navigate = useNavigate();
   const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch({});
 
   useEffect(() => {
@@ -28,7 +29,6 @@ const Monitors = ({ isAdmin }) => {
     monitorState?.isLoading &&
     monitorState?.monitorsSummary?.monitors?.length === 0;
 
-  console.log(monitorState.monitorsSummary.monitors);
   return (
     <Stack className="monitors" gap={theme.spacing(8)}>
       {loading ? (
@@ -118,7 +118,11 @@ const Monitors = ({ isAdmin }) => {
                     {monitorState?.monitorsSummary?.monitorCounts?.total || 0}
                   </Box>
                   <Box width="25%" minWidth={150} ml="auto">
-                    <Search />
+                    <Search
+                      options={monitorState?.monitorsSummary.monitors}
+                      value={search}
+                      handleChange={setSearch}
+                    />
                   </Box>
                 </Stack>
                 <MonitorTable isAdmin={isAdmin} />

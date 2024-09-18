@@ -3,25 +3,21 @@ import { Box, ListItem, Autocomplete, TextField } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 
-const options = [
-  "Google",
-  "Material UI",
-  "Alias",
-  "Twitter",
-  "Discord",
-  "YouTube",
-];
-
-const Search = ({ id, sx }) => {
+const Search = ({ id, options, value, handleChange, sx }) => {
   const theme = useTheme();
 
   return (
     <Autocomplete
       id={id}
+      inputValue={value}
+      onInputChange={(event, newValue) => {
+        handleChange(newValue);
+      }}
       fullWidth
       freeSolo
       disableClearable
       options={options}
+      getOptionLabel={(option) => option.name}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -61,11 +57,11 @@ const Search = ({ id, sx }) => {
       )}
       filterOptions={(options, { inputValue }) => {
         const filtered = options.filter((option) =>
-          option.toLowerCase().includes(inputValue.toLowerCase())
+          option.name.toLowerCase().includes(inputValue.toLowerCase())
         );
 
         if (filtered.length === 0) {
-          return [{ label: "No monitors found", noOptions: true }];
+          return [{ name: "No monitors found", noOptions: true }];
         }
         return filtered;
       }}
@@ -84,7 +80,7 @@ const Search = ({ id, sx }) => {
                 : {}
             }
           >
-            {option.noOptions ? option.label : option}
+            {option.name}
           </ListItem>
         );
       }}
