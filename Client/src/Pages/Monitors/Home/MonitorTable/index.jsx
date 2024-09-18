@@ -156,8 +156,8 @@ const MonitorTable = ({ isAdmin }) => {
           page: page,
           rowsPerPage: rowsPerPage,
           filter: null,
-          field: null,
-          order: null,
+          field: sort.field,
+          order: sort.order,
         });
         setMonitors(res?.data?.data?.monitors ?? []);
         setMonitorCount(res?.data?.data?.monitorCount ?? 0);
