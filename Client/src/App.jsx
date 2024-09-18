@@ -25,7 +25,7 @@ import withAdminProp from "./HOC/withAdminProp";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
-import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
+import CreateMaintenance from "./Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
 import { ThemeProvider } from "@emotion/react";
@@ -89,7 +89,7 @@ function App() {
           />
           <Route
             path="/maintenance/create"
-            element={<CreateNewMaintenanceWindow />}
+            element={<CreateMaintenance />}
           />
           <Route
             path="settings"
