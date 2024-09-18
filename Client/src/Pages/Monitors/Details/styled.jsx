@@ -40,8 +40,7 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     fill: theme.palette.text.tertiary,
   },
   "& path": {
-    transition: "fill 300ms ease",
-    transition: "stroke-width 400ms ease",
+    transition: "fill 300ms ease, stroke-width 400ms ease",
   },
 }));
 
