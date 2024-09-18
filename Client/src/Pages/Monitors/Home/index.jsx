@@ -12,6 +12,7 @@ import StatusBox from "./StatusBox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Greeting from "../../../Utils/greeting";
 import MonitorTable from "./MonitorTable";
+import Search from "../../../Components/Inputs/Search";
 
 const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
@@ -26,6 +27,8 @@ const Monitors = ({ isAdmin }) => {
   let loading =
     monitorState?.isLoading &&
     monitorState?.monitorsSummary?.monitors?.length === 0;
+
+  console.log(monitorState.monitorsSummary.monitors);
   return (
     <Stack className="monitors" gap={theme.spacing(8)}>
       {loading ? (
@@ -85,7 +88,8 @@ const Monitors = ({ isAdmin }) => {
               </Stack>
               <Box
                 flex={1}
-                p={theme.spacing(10)}
+                px={theme.spacing(10)}
+                py={theme.spacing(8)}
                 border={1}
                 borderColor={theme.palette.border.light}
                 borderRadius={theme.shape.borderRadius}
@@ -113,7 +117,9 @@ const Monitors = ({ isAdmin }) => {
                   >
                     {monitorState?.monitorsSummary?.monitorCounts?.total || 0}
                   </Box>
-                  {/* TODO - add search bar */}
+                  <Box width="25%" minWidth={150} ml="auto">
+                    <Search />
+                  </Box>
                 </Stack>
                 <MonitorTable isAdmin={isAdmin} />
               </Box>
