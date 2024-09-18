@@ -312,7 +312,7 @@ const getMonitorsAndSummaryByTeamId = async (
   teamId,
   type,
   search,
-  filter,
+  field,
   order
 ) => {
   try {
@@ -330,8 +330,8 @@ const getMonitorsAndSummaryByTeamId = async (
 
     // Build sort
     let sort = {};
-    if (filter !== undefined && order !== undefined) {
-      sort[filter] = order === "asc" ? 1 : -1;
+    if (field !== undefined && order !== undefined) {
+      sort[field] = order === "asc" ? 1 : -1;
     }
 
     const monitors = await Monitor.find({ teamId, type, ...searchQuery }).sort(
