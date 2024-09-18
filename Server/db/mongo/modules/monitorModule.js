@@ -347,13 +347,25 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
  */
 const getMonitorsByTeamId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
-      req.query || {};
-    const monitorQuery = { teamId: req.params.teamId };
-    const monitorsCount = await Monitor.countDocuments({
-      teamId: req.params.teamId,
+    let {
+      limit,
       type,
-    });
+      status,
+      checkOrder,
+      normalize,
+      page,
+      rowsPerPage,
+      filter,
+    } = req.query || {};
+    const monitorQuery = { teamId: req.params.teamId, type };
+    // Add filter if provided
+    if (filter !== undefined) {
+      monitorQuery.$or = [
+        { name: { $regex: filter, $options: "i" } },
+        { url: { $regex: filter, $options: "i" } },
+      ];
+    }
+    const monitorsCount = await Monitor.countDocuments(monitorQuery);
 
     // Pagination
     let skip = 0;
@@ -367,11 +379,11 @@ const getMonitorsByTeamId = async (req, res) => {
     }
 
     // Default sort order is newest -> oldest
-    if (sortOrder === "asc") {
-      sortOrder = 1;
-    } else if (sortOrder === "desc") {
-      sortOrder = -1;
-    } else sortOrder = -1;
+    if (checkOrder === "asc") {
+      checkOrder = 1;
+    } else if (checkOrder === "desc") {
+      checkOrder = -1;
+    } else checkOrder = -1;
 
     const monitors = await Monitor.find(monitorQuery)
       .skip(skip)
@@ -402,7 +414,7 @@ const getMonitorsByTeamId = async (req, res) => {
         let checks = await model
           .find(checksQuery)
           .sort({
-            createdAt: sortOrder,
+            createdAt: checkOrder,
           })
           .limit(limit);
 

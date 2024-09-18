@@ -98,7 +98,7 @@ class NetworkService {
     limit,
     types,
     status,
-    sortOrder,
+    checkOrder,
     normalize,
     page,
     rowsPerPage
@@ -112,7 +112,7 @@ class NetworkService {
       });
     }
     if (status) params.append("status", status);
-    if (sortOrder) params.append("sortOrder", sortOrder);
+    if (checkOrder) params.append("checkOrder", checkOrder);
     if (normalize) params.append("normalize", normalize);
     if (page) params.append("page", page);
     if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
