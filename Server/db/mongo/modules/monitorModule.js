@@ -356,9 +356,13 @@ const getMonitorsByTeamId = async (req, res) => {
       page,
       rowsPerPage,
       filter,
+      field,
+      order,
     } = req.query || {};
+
     const monitorQuery = { teamId: req.params.teamId, type };
     // Add filter if provided
+    // $options: "i" makes the search case-insensitive
     if (filter !== undefined) {
       monitorQuery.$or = [
         { name: { $regex: filter, $options: "i" } },
@@ -385,9 +389,16 @@ const getMonitorsByTeamId = async (req, res) => {
       checkOrder = -1;
     } else checkOrder = -1;
 
+    // Sort order for monitors
+    let sort = {};
+    if (field !== undefined && order !== undefined) {
+      sort[field] = order === "asc" ? 1 : -1;
+    }
+
     const monitors = await Monitor.find(monitorQuery)
       .skip(skip)
-      .limit(rowsPerPage);
+      .limit(rowsPerPage)
+      .sort(sort);
 
     // Early return if limit is set to -1, indicating we don't want any checks
     if (limit === "-1") {
