@@ -308,8 +308,15 @@ const getMonitorById = async (monitorId) => {
  * @throws {Error}
  */
 
-const getMonitorsAndSummaryByTeamId = async (teamId, type, search) => {
+const getMonitorsAndSummaryByTeamId = async (
+  teamId,
+  type,
+  search,
+  filter,
+  order
+) => {
   try {
+    // Build search
     let searchQuery = {};
     if (search !== undefined) {
       // options: i -> case insensitive
@@ -320,7 +327,16 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type, search) => {
         ],
       };
     }
-    const monitors = await Monitor.find({ teamId, type, ...searchQuery });
+
+    // Build sort
+    let sort = {};
+    if (filter !== undefined && order !== undefined) {
+      sort[filter] = order === "asc" ? 1 : -1;
+    }
+
+    const monitors = await Monitor.find({ teamId, type, ...searchQuery }).sort(
+      sort
+    );
 
     const monitorCounts = monitors.reduce(
       (acc, monitor) => {

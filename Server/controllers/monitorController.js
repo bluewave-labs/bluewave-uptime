@@ -227,11 +227,13 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
 
   try {
     const { teamId } = req.params;
-    const { type, search } = req.query;
+    const { type, search, filter, order } = req.query;
     const monitorsSummary = await req.db.getMonitorsAndSummaryByTeamId(
       teamId,
       type,
-      search
+      search,
+      filter,
+      order
     );
     return res.status(200).json({
       success: true,
