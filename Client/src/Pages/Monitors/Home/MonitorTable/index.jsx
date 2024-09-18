@@ -14,6 +14,7 @@ import {
   Button,
 } from "@mui/material";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import { setRowsPerPage } from "../../../../Features/UI/uiSlice";
 import { useState, useEffect } from "react";
@@ -48,6 +49,7 @@ import useUtils from "../../utils";
  */
 const TablePaginationActions = (props) => {
   const { count, page, rowsPerPage, onPageChange } = props;
+
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0);
   };
@@ -118,6 +120,7 @@ const MonitorTable = ({ isAdmin }) => {
   const [monitorCount, setMonitorCount] = useState(0);
   const authState = useSelector((state) => state.auth);
   const [updateTrigger, setUpdateTrigger] = useState(false);
+  const [sort, setSort] = useState({});
 
   const handleActionMenuDelete = () => {
     setUpdateTrigger((prev) => !prev);
@@ -142,17 +145,20 @@ const MonitorTable = ({ isAdmin }) => {
       try {
         const { authToken } = authState;
         const user = jwtDecode(authToken);
-        const res = await networkService.getMonitorsByTeamId(
+        const res = await networkService.getMonitorsByTeamId({
           authToken,
-          user.teamId,
-          25,
-          ["http", "ping"],
-          null,
-          "desc",
-          true,
-          page,
-          rowsPerPage
-        );
+          teamId: user.teamId,
+          limit: 25,
+          types: ["http", "ping"],
+          status: null,
+          checkOrder: "desc",
+          normalize: true,
+          page: page,
+          rowsPerPage: rowsPerPage,
+          filter: null,
+          field: sort.field,
+          order: sort.order,
+        });
         setMonitors(res?.data?.data?.monitors ?? []);
         setMonitorCount(res?.data?.data?.monitorCount ?? 0);
       } catch (error) {
@@ -172,19 +178,80 @@ const MonitorTable = ({ isAdmin }) => {
     return `${start} - ${end}`;
   };
 
+  const handleSort = async (field) => {
+    let order = "";
+    if (sort.field !== field) {
+      order = "desc";
+    } else {
+      order = sort.order === "asc" ? "desc" : "asc";
+    }
+    setSort({ field, order });
+
+    const { authToken } = authState;
+    const user = jwtDecode(authToken);
+
+    const res = await networkService.getMonitorsByTeamId({
+      authToken,
+      teamId: user.teamId,
+      limit: 25,
+      types: ["http", "ping"],
+      status: null,
+      checkOrder: "desc",
+      normalize: true,
+      page: page,
+      rowsPerPage: rowsPerPage,
+      filter: null,
+      field: field,
+      order: order,
+    });
+    setMonitors(res?.data?.data?.monitors ?? []);
+    setMonitorCount(res?.data?.data?.monitorCount ?? 0);
+  };
+
   return (
     <>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Host</TableCell>
-              <TableCell>
+              <TableCell
+                sx={{ cursor: "pointer" }}
+                onClick={() => handleSort("name")}
+              >
+                <Box>
+                  Host
+                  <span
+                    style={{
+                      visibility: sort.field === "name" ? "visible" : "hidden",
+                    }}
+                  >
+                    {sort.order === "asc" ? (
+                      <ArrowUpwardRoundedIcon />
+                    ) : (
+                      <ArrowDownwardRoundedIcon />
+                    )}
+                  </span>
+                </Box>
+              </TableCell>
+              <TableCell
+                sx={{ cursor: "pointer" }}
+                onClick={() => handleSort("status")}
+              >
                 {" "}
                 <Box width="max-content">
+                  {" "}
                   Status
-                  <span>
-                    <ArrowDownwardRoundedIcon />
+                  <span
+                    style={{
+                      visibility:
+                        sort.field === "status" ? "visible" : "hidden",
+                    }}
+                  >
+                    {sort.order === "asc" ? (
+                      <ArrowUpwardRoundedIcon />
+                    ) : (
+                      <ArrowDownwardRoundedIcon />
+                    )}
                   </span>
                 </Box>
               </TableCell>
