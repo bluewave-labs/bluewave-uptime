@@ -308,9 +308,20 @@ const getMonitorById = async (monitorId) => {
  * @throws {Error}
  */
 
-const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
+const getMonitorsAndSummaryByTeamId = async (teamId, type, search) => {
   try {
-    const monitors = await Monitor.find({ teamId, type });
+    let searchQuery = {};
+    if (search !== undefined) {
+      // options: i -> case insensitive
+      searchQuery = {
+        $or: [
+          { url: { $regex: search, $options: "i" } },
+          { name: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+    const monitors = await Monitor.find({ teamId, type, ...searchQuery });
+
     const monitorCounts = monitors.reduce(
       (acc, monitor) => {
         if (monitor.status === true) {

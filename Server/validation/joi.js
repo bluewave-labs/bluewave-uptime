@@ -172,6 +172,7 @@ const getMonitorsAndSummaryByTeamIdQueryValidation = joi.object({
       joi.string().valid("http", "ping", "pagespeed"),
       joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
     ),
+  search: joi.string(),
 });
 
 const getMonitorsByTeamIdValidation = joi.object({

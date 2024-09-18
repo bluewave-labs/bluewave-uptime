@@ -214,7 +214,6 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
       req.params
     );
     await getMonitorsAndSummaryByTeamIdQueryValidation.validateAsync(req.query);
-    //validation
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -228,10 +227,11 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
 
   try {
     const { teamId } = req.params;
-    const { type } = req.query;
+    const { type, search } = req.query;
     const monitorsSummary = await req.db.getMonitorsAndSummaryByTeamId(
       teamId,
-      type
+      type,
+      search
     );
     return res.status(200).json({
       success: true,
