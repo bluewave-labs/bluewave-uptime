@@ -7,8 +7,8 @@ import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";
-import "./index.css";
 import SkeletonLayout from "./skeleton";
+import "./index.css";
 
 const Incidents = () => {
   const theme = useTheme();
@@ -36,7 +36,6 @@ const Incidents = () => {
         null,
         null
       );
-      console.log(res.data.data);
       // Reduce to a lookup object for 0(1) lookup
       if (res?.data?.data?.monitors?.length > 0) {
         const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
