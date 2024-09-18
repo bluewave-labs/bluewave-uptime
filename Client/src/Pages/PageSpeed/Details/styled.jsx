@@ -36,6 +36,9 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     backgroundColor: theme.palette.background.main,
     background: `linear-gradient(325deg, ${theme.palette.background.accent} 20%, ${theme.palette.background.main} 45%)`,
   },
+  "& path": {
+    transition: "stroke-width 400ms ease",
+  },
 }));
 
 export const IconBox = styled(Box)(({ theme }) => ({

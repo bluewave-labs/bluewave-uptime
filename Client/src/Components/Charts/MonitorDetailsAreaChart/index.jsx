@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
 import "./index.css";
@@ -112,6 +112,7 @@ CustomTick.propTypes = {
 const MonitorDetailsAreaChart = ({ checks }) => {
   const theme = useTheme();
   const memoizedChecks = useMemo(() => checks, [checks[0]]);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <ResponsiveContainer width="100%" minWidth={25} height={220}>
@@ -125,6 +126,8 @@ const MonitorDetailsAreaChart = ({ checks }) => {
           left: 0,
           bottom: 0,
         }}
+        onMouseMove={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <CartesianGrid
           stroke={theme.palette.border.light}
@@ -160,13 +163,14 @@ const MonitorDetailsAreaChart = ({ checks }) => {
         <Tooltip
           cursor={{ stroke: theme.palette.border.light }}
           content={<CustomToolTip />}
+          wrapperStyle={{ pointerEvents: "none" }}
         />
         <Area
           type="monotone"
           dataKey="responseTime"
           stroke={theme.palette.primary.main}
           fill="url(#colorUv)"
-          strokeWidth={1.5}
+          strokeWidth={isHovered ? 2.5 : 1.5}
           activeDot={{ stroke: theme.palette.background.main, r: 5 }}
         />
       </AreaChart>
