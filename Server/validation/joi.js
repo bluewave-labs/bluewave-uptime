@@ -180,7 +180,7 @@ const getMonitorsByTeamIdValidation = joi.object({
 
 const getMonitorsByTeamIdQueryValidation = joi.object({
   status: joi.boolean(),
-  sortOrder: joi.string().valid("asc", "desc"),
+  checkOrder: joi.string().valid("asc", "desc"),
   limit: joi.number(),
   normalize: joi.boolean(),
   type: joi
@@ -191,6 +191,9 @@ const getMonitorsByTeamIdQueryValidation = joi.object({
     ),
   page: joi.number(),
   rowsPerPage: joi.number(),
+  filter: joi.string(),
+  field: joi.string(),
+  order: joi.string().valid("asc", "desc"),
 });
 
 const getMonitorStatsByIdParamValidation = joi.object({

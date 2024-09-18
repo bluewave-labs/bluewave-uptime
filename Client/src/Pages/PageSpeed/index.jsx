@@ -29,17 +29,20 @@ const PageSpeed = ({ isAdmin }) => {
     const fetchMonitors = async () => {
       try {
         setIsLoading(true);
-        const res = await networkService.getMonitorsByTeamId(
-          authToken,
-          user.teamId,
-          10,
-          ["pagespeed"],
-          null,
-          "desc",
-          true,
-          null,
-          null
-        );
+        const res = await networkService.getMonitorsByTeamId({
+          authToken: authToken,
+          teamId: user.teamId,
+          limit: 10,
+          types: ["pagespeed"],
+          status: null,
+          checkOrder: "desc",
+          normalize: true,
+          page: null,
+          rowsPerPage: null,
+          filter: null,
+          field: null,
+          order: null,
+        });
         if (res?.data?.data?.monitors) {
           setMonitors(res.data.data.monitors);
         }

@@ -347,13 +347,31 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
  */
 const getMonitorsByTeamId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
-      req.query || {};
-    const monitorQuery = { teamId: req.params.teamId };
-    const monitorsCount = await Monitor.countDocuments({
-      teamId: req.params.teamId,
+    let {
+      limit,
       type,
-    });
+      status,
+      checkOrder,
+      normalize,
+      page,
+      rowsPerPage,
+      filter,
+      field,
+      order,
+    } = req.query || {};
+    const monitorQuery = { teamId: req.params.teamId };
+    if (type !== undefined) {
+      monitorQuery.type = type;
+    }
+    // Add filter if provided
+    // $options: "i" makes the search case-insensitive
+    if (filter !== undefined) {
+      monitorQuery.$or = [
+        { name: { $regex: filter, $options: "i" } },
+        { url: { $regex: filter, $options: "i" } },
+      ];
+    }
+    const monitorsCount = await Monitor.countDocuments(monitorQuery);
 
     // Pagination
     let skip = 0;
@@ -367,15 +385,22 @@ const getMonitorsByTeamId = async (req, res) => {
     }
 
     // Default sort order is newest -> oldest
-    if (sortOrder === "asc") {
-      sortOrder = 1;
-    } else if (sortOrder === "desc") {
-      sortOrder = -1;
-    } else sortOrder = -1;
+    if (checkOrder === "asc") {
+      checkOrder = 1;
+    } else if (checkOrder === "desc") {
+      checkOrder = -1;
+    } else checkOrder = -1;
+
+    // Sort order for monitors
+    let sort = {};
+    if (field !== undefined && order !== undefined) {
+      sort[field] = order === "asc" ? 1 : -1;
+    }
 
     const monitors = await Monitor.find(monitorQuery)
       .skip(skip)
-      .limit(rowsPerPage);
+      .limit(rowsPerPage)
+      .sort(sort);
 
     // Early return if limit is set to -1, indicating we don't want any checks
     if (limit === "-1") {
@@ -402,7 +427,7 @@ const getMonitorsByTeamId = async (req, res) => {
         let checks = await model
           .find(checksQuery)
           .sort({
-            createdAt: sortOrder,
+            createdAt: checkOrder,
           })
           .limit(limit);
 

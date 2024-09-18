@@ -83,26 +83,37 @@ class NetworkService {
    * ************************************
    *
    * @async
-   * @param {string} authToken - The authorization token to be used in the request header.
-   * @param {string} userId - The ID of the user whose monitors are to be retrieved.
-   * @param {number} [limit] - The maximum number of monitors to retrieve.
-   * @param {Array<string>} [types] - The types of monitors to retrieve.
-   * @param {string} [status] - The status of the monitors to retrieve.
-   * @param {string} [sortOrder] - The order in which to sort the retrieved monitors.
-   * @param {boolean} [normalize] - Whether to normalize the retrieved monitors.
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} config.teamId - The ID of the team whose monitors are to be retrieved.
+   * @param {number} [config.limit] - The maximum number of monitors to retrieve.
+   * @param {Array<string>} [config.types] - The types of monitors to retrieve.
+   * @param {string} [config.status] - The status of the monitors to retrieve.
+   * @param {string} [config.checkOrder] - The order in which to sort the retrieved monitors.
+   * @param {boolean} [config.normalize] - Whether to normalize the retrieved monitors.
+   * @param {number} [config.page] - The page number for pagination.
+   * @param {number} [config.rowsPerPage] - The number of rows per page for pagination.
+   * @param {string} [config.filter] - The filter to apply to the monitors.
+   * @param {string} [config.field] - The field to sort by.
+   * @param {string} [config.order] - The order in which to sort the field.
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    */
-  async getMonitorsByTeamId(
-    authToken,
-    teamId,
-    limit,
-    types,
-    status,
-    sortOrder,
-    normalize,
-    page,
-    rowsPerPage
-  ) {
+  async getMonitorsByTeamId(config) {
+    const {
+      authToken,
+      teamId,
+      limit,
+      types,
+      status,
+      checkOrder,
+      normalize,
+      page,
+      rowsPerPage,
+      filter,
+      field,
+      order,
+    } = config;
+
     const params = new URLSearchParams();
 
     if (limit) params.append("limit", limit);
@@ -112,10 +123,13 @@ class NetworkService {
       });
     }
     if (status) params.append("status", status);
-    if (sortOrder) params.append("sortOrder", sortOrder);
+    if (checkOrder) params.append("checkOrder", checkOrder);
     if (normalize) params.append("normalize", normalize);
     if (page) params.append("page", page);
     if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
+    if (filter) params.append("filter", filter);
+    if (field) params.append("field", field);
+    if (order) params.append("order", order);
 
     return this.axiosInstance.get(
       `/monitors/team/${teamId}?${params.toString()}`,
