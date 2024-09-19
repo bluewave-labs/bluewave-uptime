@@ -15,15 +15,26 @@ import SearchIcon from "../../../assets/icons/search.svg?react";
  * @param {Object} props.sx - Additional styles to apply to the component
  * @returns {JSX.Element} The rendered Search component
  */
-const Search = ({ id, options, filteredBy, value, handleChange, sx }) => {
+const Search = ({
+  id,
+  options,
+  filteredBy,
+  value,
+  handleInputChange,
+  handleChange,
+  sx,
+}) => {
   const theme = useTheme();
 
   return (
     <Autocomplete
       id={id}
       inputValue={value}
-      onInputChange={(event, newValue) => {
-        handleChange(newValue);
+      onInputChange={(_, newValue) => {
+        handleInputChange(newValue);
+      }}
+      onChange={(_, newValue) => {
+        handleChange && handleChange(newValue);
       }}
       fullWidth
       freeSolo
@@ -131,7 +142,8 @@ Search.propTypes = {
   options: PropTypes.array.isRequired,
   filteredBy: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  handleChange: PropTypes.func,
   sx: PropTypes.object,
 };
 

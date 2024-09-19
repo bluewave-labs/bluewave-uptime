@@ -13,6 +13,7 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Greeting from "../../../Utils/greeting";
 import MonitorTable from "./MonitorTable";
 import Search from "../../../Components/Inputs/Search";
+import useDebounce from "../../../Utils/debounce";
 
 const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
@@ -21,6 +22,7 @@ const Monitors = ({ isAdmin }) => {
   const authState = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch({});
+  const debouncedFilter = useDebounce(search, 500);
 
   useEffect(() => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
@@ -122,11 +124,11 @@ const Monitors = ({ isAdmin }) => {
                       options={monitorState?.monitorsSummary.monitors}
                       filteredBy="name"
                       value={search}
-                      handleChange={setSearch}
+                      handleInputChange={setSearch}
                     />
                   </Box>
                 </Stack>
-                <MonitorTable isAdmin={isAdmin} />
+                <MonitorTable isAdmin={isAdmin} filter={debouncedFilter} />
               </Box>
             </>
           )}
