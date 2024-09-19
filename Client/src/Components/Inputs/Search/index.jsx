@@ -9,12 +9,13 @@ import SearchIcon from "../../../assets/icons/search.svg?react";
  * @param {Object} props
  * @param {string} props.id - Unique identifier for the Autocomplete component
  * @param {Array<Object>} props.options - Options to display in the Autocomplete dropdown
+ * @param {string} props.filteredBy - Key to access the option label from the options
  * @param {string} props.value - Current input value for the Autocomplete
  * @param {Function} props.handleChange - Function to call when the input changes
  * @param {Object} props.sx - Additional styles to apply to the component
  * @returns {JSX.Element} The rendered Search component
  */
-const Search = ({ id, options, value, handleChange, sx }) => {
+const Search = ({ id, options, filteredBy, value, handleChange, sx }) => {
   const theme = useTheme();
 
   return (
@@ -28,7 +29,7 @@ const Search = ({ id, options, value, handleChange, sx }) => {
       freeSolo
       disableClearable
       options={options}
-      getOptionLabel={(option) => option.name}
+      getOptionLabel={(option) => option[filteredBy]}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -68,11 +69,11 @@ const Search = ({ id, options, value, handleChange, sx }) => {
       )}
       filterOptions={(options, { inputValue }) => {
         const filtered = options.filter((option) =>
-          option.name.toLowerCase().includes(inputValue.toLowerCase())
+          option[filteredBy].toLowerCase().includes(inputValue.toLowerCase())
         );
 
         if (filtered.length === 0) {
-          return [{ name: "No monitors found", noOptions: true }];
+          return [{ [filteredBy]: "No monitors found", noOptions: true }];
         }
         return filtered;
       }}
@@ -91,7 +92,7 @@ const Search = ({ id, options, value, handleChange, sx }) => {
                 : {}
             }
           >
-            {option.name}
+            {option[filteredBy]}
           </ListItem>
         );
       }}
@@ -127,11 +128,8 @@ const Search = ({ id, options, value, handleChange, sx }) => {
 
 Search.propTypes = {
   id: PropTypes.string,
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  options: PropTypes.array.isRequired,
+  filteredBy: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
   sx: PropTypes.object,

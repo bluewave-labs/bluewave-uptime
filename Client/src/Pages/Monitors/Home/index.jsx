@@ -120,6 +120,7 @@ const Monitors = ({ isAdmin }) => {
                   <Box width="25%" minWidth={150} ml="auto">
                     <Search
                       options={monitorState?.monitorsSummary.monitors}
+                      filteredBy="name"
                       value={search}
                       handleChange={setSearch}
                     />
