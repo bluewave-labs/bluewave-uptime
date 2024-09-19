@@ -167,7 +167,7 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
       }
     };
     fetchPage();
-  }, [updateTrigger, authState, page, rowsPerPage, filter, sort]);
+  }, [updateTrigger, authState, page, rowsPerPage, filter, sort, setLoading]);
 
   /**
    * Helper function to calculate the range of displayed rows.
@@ -408,6 +408,7 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 MonitorTable.propTypes = {
   isAdmin: PropTypes.bool,
   filter: PropTypes.string,
+  setLoading: PropTypes.func,
 };
 
 const MemoizedMonitorTable = memo(MonitorTable);

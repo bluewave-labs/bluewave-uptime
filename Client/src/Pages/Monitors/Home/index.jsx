@@ -27,7 +27,7 @@ const Monitors = ({ isAdmin }) => {
   const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
-  const [isSearching, setIsSearching] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const dispatch = useDispatch({});
   const debouncedFilter = useDebounce(search, 500);
 
