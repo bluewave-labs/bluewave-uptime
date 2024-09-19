@@ -108,7 +108,7 @@ TablePaginationActions.propTypes = {
   onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin }) => {
+const MonitorTable = ({ isAdmin, filter }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -155,7 +155,7 @@ const MonitorTable = ({ isAdmin }) => {
           normalize: true,
           page: page,
           rowsPerPage: rowsPerPage,
-          filter: null,
+          filter: filter,
           field: sort.field,
           order: sort.order,
         });
@@ -166,7 +166,7 @@ const MonitorTable = ({ isAdmin }) => {
       }
     };
     fetchPage();
-  }, [updateTrigger, authState, page, rowsPerPage]);
+  }, [updateTrigger, authState, page, rowsPerPage, filter, sort]);
 
   /**
    * Helper function to calculate the range of displayed rows.
@@ -406,6 +406,7 @@ const MonitorTable = ({ isAdmin }) => {
 
 MonitorTable.propTypes = {
   isAdmin: PropTypes.bool,
+  filter: PropTypes.string,
 };
 
 const MemoizedMonitorTable = memo(MonitorTable);
