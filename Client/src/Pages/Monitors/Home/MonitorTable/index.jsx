@@ -16,7 +16,7 @@ import {
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 
 import { setRowsPerPage } from "../../../../Features/UI/uiSlice";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router";
 import { logger } from "../../../../Utils/Logger";
 import Host from "../host";
@@ -106,7 +106,7 @@ TablePaginationActions.propTypes = {
   onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin }) => {
+const MonitorTable = memo(({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -335,7 +335,7 @@ const MonitorTable = ({ isAdmin }) => {
       </Stack>
     </>
   );
-};
+});
 
 MonitorTable.propTypes = {
   isAdmin: PropTypes.bool,
