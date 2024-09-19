@@ -106,7 +106,7 @@ TablePaginationActions.propTypes = {
   onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = memo(({ isAdmin }) => {
+const MonitorTable = ({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -335,10 +335,11 @@ const MonitorTable = memo(({ isAdmin }) => {
       </Stack>
     </>
   );
-});
+};
 
 MonitorTable.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-export default MonitorTable;
+const MemoizedMonitorTable = memo(MonitorTable);
+export default MemoizedMonitorTable;
