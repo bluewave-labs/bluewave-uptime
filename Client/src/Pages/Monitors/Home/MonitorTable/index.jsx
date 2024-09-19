@@ -108,7 +108,7 @@ TablePaginationActions.propTypes = {
   onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin, filter }) => {
+const MonitorTable = ({ isAdmin, filter, setLoading }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -161,6 +161,7 @@ const MonitorTable = ({ isAdmin, filter }) => {
         });
         setMonitors(res?.data?.data?.monitors ?? []);
         setMonitorCount(res?.data?.data?.monitorCount ?? 0);
+        setLoading(false);
       } catch (error) {
         logger.error(error);
       }
