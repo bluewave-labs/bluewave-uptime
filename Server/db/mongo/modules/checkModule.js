@@ -1,6 +1,8 @@
 const Check = require("../../../models/Check");
 const Monitor = require("../../../models/Monitor");
-const mongoose = require("mongoose");
+const User = require("../../../models/user");
+const logger = require("../../../utils/logger");
+const SERVICE_NAME = "checkModule";
 const dateRangeLookup = {
   day: new Date(new Date().setDate(new Date().getDate() - 1)),
   week: new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -23,28 +25,32 @@ const dateRangeLookup = {
 const createCheck = async (checkData) => {
   try {
     const { monitorId, status } = checkData;
-
-    const n = await Check.countDocuments({ monitorId }) + 1;
-
+    const n = (await Check.countDocuments({ monitorId })) + 1;
     const check = await new Check({ ...checkData }).save();
-
     const monitor = await Monitor.findById(monitorId);
 
     if (!monitor) {
-      throw new Error("Monitor not found");
+      logger.error("Monitor not found", {
+        service: SERVICE_NAME,
+        monitorId,
+      });
+      return;
     }
 
+    // Update uptime percentage
     if (monitor.uptimePercentage === undefined) {
-      monitor.uptimePercentage = (status === true) ? 1 : 0;
+      monitor.uptimePercentage = status === true ? 1 : 0;
     } else {
       monitor.uptimePercentage =
-        (monitor.uptimePercentage * (n - 1) + (status === true ? 1: 0)) / n;
+        (monitor.uptimePercentage * (n - 1) + (status === true ? 1 : 0)) / n;
     }
 
     await monitor.save();
 
     return check;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createCheck";
     throw error;
   }
 };
@@ -132,6 +138,8 @@ const getChecks = async (req) => {
       .sort({ createdAt: sortOrder });
     return checks;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getChecks";
     throw error;
   }
 };
@@ -141,17 +149,15 @@ const getTeamChecks = async (req) => {
   let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 
   // Get monitorIDs
-  const userMonitors = await Monitor.find({ teamId: teamId });
-  const monitorIds = userMonitors.map((monitor) => monitor._id);
+  const userMonitors = await Monitor.find({ teamId: teamId }).select("_id");
 
   //Build check query
   // Default limit to 0 if not provided
-  limit = limit === "undefined" ? 0 : limit;
-
+  limit = limit === undefined ? 0 : limit;
   // Default sort order is newest -> oldest
   sortOrder = sortOrder === "asc" ? 1 : -1;
 
-  checksQuery = { monitorId: { $in: monitorIds } };
+  checksQuery = { monitorId: { $in: userMonitors } };
 
   if (filter !== undefined) {
     checksQuery.status = false;
@@ -184,8 +190,8 @@ const getTeamChecks = async (req) => {
   const checks = await Check.find(checksQuery)
     .skip(skip)
     .limit(rowsPerPage)
-    .sort({ createdAt: sortOrder });
-
+    .sort({ createdAt: sortOrder })
+    .select(["monitorId", "status", "responseTime", "statusCode", "message"]);
   return { checksCount, checks };
 };
 
@@ -202,6 +208,8 @@ const deleteChecks = async (monitorId) => {
     const result = await Check.deleteMany({ monitorId });
     return result.deletedCount;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteChecks";
     throw error;
   }
 };
@@ -230,6 +238,38 @@ const deleteChecksByTeamId = async (teamId) => {
 
     return totalDeletedCount;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteChecksByTeamId";
+    throw error;
+  }
+};
+
+const updateChecksTTL = async (teamId, ttl) => {
+  try {
+    await Check.collection.dropIndex("expiry_1");
+  } catch (error) {
+    logger.error("Failed to drop index", {
+      service: SERVICE_NAME,
+      method: "updateChecksTTL",
+    });
+  }
+
+  try {
+    await Check.collection.createIndex(
+      { expiry: 1 },
+      { expireAfterSeconds: ttl } // TTL in seconds, adjust as necessary
+    );
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "updateChecksTTL";
+    throw error;
+  }
+  // Update user
+  try {
+    await User.updateMany({ teamId: teamId }, { checkTTL: ttl });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "updateChecksTTL";
     throw error;
   }
 };
@@ -241,4 +281,5 @@ module.exports = {
   getTeamChecks,
   deleteChecks,
   deleteChecksByTeamId,
+  updateChecksTTL,
 };

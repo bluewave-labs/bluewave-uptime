@@ -20,7 +20,14 @@ const shadow =
   "0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
 const lightTheme = createTheme({
-  typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
+  typography: {
+    fontFamily: fontFamilyDefault,
+    fontSize: 13,
+    h1: { fontSize: 22, color: text.primary, fontWeight: 500 },
+    h2: { fontSize: 14.5, color: text.secondary, fontWeight: 400 },
+    body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
+    body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
+  },
   palette: {
     primary: { main: "#1570EF" },
     secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
@@ -51,7 +58,7 @@ const lightTheme = createTheme({
       text: "#DC6803",
       main: "#fdb022",
       light: "#ffecbc",
-      bg: "#fffcf5",
+      bg: "#fef8ea",
       border: "#fec84b",
     },
     percentage: {
@@ -67,6 +74,7 @@ const lightTheme = createTheme({
       line: "#d6d9dd",
       fill: "#e3e3e3",
       grid: "#a2a3a3",
+      autofill: "#e8f0fe",
     },
   },
   spacing: 2,
@@ -143,12 +151,14 @@ const lightTheme = createTheme({
       styleOverrides: {
         root: {
           marginTop: 4,
+          padding: 0,
           border: 1,
           borderStyle: "solid",
           borderColor: border.light,
           borderRadius: 4,
           boxShadow: shadow,
           backgroundColor: background.main,
+          backgroundImage: "none",
         },
       },
     },
@@ -175,7 +185,6 @@ const lightTheme = createTheme({
           color: text.secondary,
           fontSize: 13,
           margin: 2,
-          marginBottom: 0,
           minWidth: 100,
           "&:hover, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible":
             {

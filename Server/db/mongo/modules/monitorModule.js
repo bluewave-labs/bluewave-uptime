@@ -4,6 +4,8 @@ const PageSpeedCheck = require("../../../models/PageSpeedCheck");
 const { errorMessages } = require("../../../utils/messages");
 const Notification = require("../../../models/Notification");
 const { NormalizeData } = require("../../../utils/dataUtils");
+const demoMonitors = require("../../../utils/demoMonitors.json");
+const SERVICE_NAME = "monitorModule";
 
 /**
  * Get all monitors
@@ -18,6 +20,8 @@ const getAllMonitors = async (req, res) => {
     const monitors = await Monitor.find();
     return monitors;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getAllMonitors";
     throw error;
   }
 };
@@ -261,7 +265,8 @@ const getMonitorStatsById = async (req) => {
 
     return monitorStats;
   } catch (error) {
-    error.methodName = "getMonitorStatsById";
+    error.service = SERVICE_NAME;
+    error.method = "getMonitorStatsById";
     throw error;
   }
 };
@@ -288,6 +293,8 @@ const getMonitorById = async (monitorId) => {
     const monitorWithNotifications = await monitor.save();
     return monitorWithNotifications;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMonitorById";
     throw error;
   }
 };
@@ -324,6 +331,7 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
     monitorCounts.total = monitors.length;
     return { monitors, monitorCounts };
   } catch (error) {
+    error.service = SERVICE_NAME;
     error.method = "getMonitorsAndSummaryByTeamId";
     throw error;
   }
@@ -339,13 +347,31 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
  */
 const getMonitorsByTeamId = async (req, res) => {
   try {
-    let { limit, type, status, sortOrder, normalize, page, rowsPerPage } =
-      req.query || {};
-    const monitorQuery = { teamId: req.params.teamId };
-    const monitorsCount = await Monitor.countDocuments({
-      teamId: req.params.teamId,
+    let {
+      limit,
       type,
-    });
+      status,
+      checkOrder,
+      normalize,
+      page,
+      rowsPerPage,
+      filter,
+      field,
+      order,
+    } = req.query || {};
+    const monitorQuery = { teamId: req.params.teamId };
+    if (type !== undefined) {
+      monitorQuery.type = type;
+    }
+    // Add filter if provided
+    // $options: "i" makes the search case-insensitive
+    if (filter !== undefined) {
+      monitorQuery.$or = [
+        { name: { $regex: filter, $options: "i" } },
+        { url: { $regex: filter, $options: "i" } },
+      ];
+    }
+    const monitorsCount = await Monitor.countDocuments(monitorQuery);
 
     // Pagination
     let skip = 0;
@@ -359,18 +385,31 @@ const getMonitorsByTeamId = async (req, res) => {
     }
 
     // Default sort order is newest -> oldest
-    if (sortOrder === "asc") {
-      sortOrder = 1;
-    } else if (sortOrder === "desc") {
-      sortOrder = -1;
-    } else sortOrder = -1;
+    if (checkOrder === "asc") {
+      checkOrder = 1;
+    } else if (checkOrder === "desc") {
+      checkOrder = -1;
+    } else checkOrder = -1;
+
+    // Sort order for monitors
+    let sort = {};
+    if (field !== undefined && order !== undefined) {
+      sort[field] = order === "asc" ? 1 : -1;
+    }
+
+    const monitors = await Monitor.find(monitorQuery)
+      .skip(skip)
+      .limit(rowsPerPage)
+      .sort(sort);
+
+    // Early return if limit is set to -1, indicating we don't want any checks
+    if (limit === "-1") {
+      return { monitors, monitorCount: monitorsCount };
+    }
 
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
 
-    const monitors = await Monitor.find(monitorQuery)
-      .skip(skip)
-      .limit(rowsPerPage);
     // Map each monitor to include its associated checks
     const monitorsWithChecks = await Promise.all(
       monitors.map(async (monitor) => {
@@ -388,7 +427,7 @@ const getMonitorsByTeamId = async (req, res) => {
         let checks = await model
           .find(checksQuery)
           .sort({
-            createdAt: sortOrder,
+            createdAt: checkOrder,
           })
           .limit(limit);
 
@@ -401,6 +440,8 @@ const getMonitorsByTeamId = async (req, res) => {
     );
     return { monitors: monitorsWithChecks, monitorCount: monitorsCount };
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMonitorsByTeamId";
     throw error;
   }
 };
@@ -421,6 +462,8 @@ const createMonitor = async (req, res) => {
     await monitor.save();
     return monitor;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "createMonitor";
     throw error;
   }
 };
@@ -442,6 +485,8 @@ const deleteMonitor = async (req, res) => {
     }
     return monitor;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMonitor";
     throw error;
   }
 };
@@ -450,11 +495,15 @@ const deleteMonitor = async (req, res) => {
  * DELETE ALL MONITORS (TEMP)
  */
 
-const deleteAllMonitors = async (req, res) => {
+const deleteAllMonitors = async (teamId) => {
   try {
-    const deletedCount = await Monitor.deleteMany({});
-    return deletedCount.deletedCount;
+    const monitors = await Monitor.find({ teamId });
+    const { deletedCount } = await Monitor.deleteMany({ teamId });
+
+    return { monitors, deletedCount };
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteAllMonitors";
     throw error;
   }
 };
@@ -470,6 +519,8 @@ const deleteMonitorsByUserId = async (userId) => {
     const result = await Monitor.deleteMany({ userId: userId });
     return result;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteMonitorsByUserId";
     throw error;
   }
 };
@@ -493,6 +544,30 @@ const editMonitor = async (candidateId, candidateMonitor) => {
     );
     return editedMonitor;
   } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "editMonitor";
+    throw error;
+  }
+};
+
+const addDemoMonitors = async (userId, teamId) => {
+  try {
+    const demoMonitorsToInsert = demoMonitors.map((monitor) => {
+      return {
+        userId,
+        teamId,
+        name: monitor.name,
+        description: monitor.name,
+        type: "http",
+        url: monitor.url,
+        interval: 60000,
+      };
+    });
+    const insertedMonitors = await Monitor.insertMany(demoMonitorsToInsert);
+    return insertedMonitors;
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "addDemoMonitors";
     throw error;
   }
 };
@@ -508,4 +583,5 @@ module.exports = {
   deleteAllMonitors,
   deleteMonitorsByUserId,
   editMonitor,
+  addDemoMonitors,
 };

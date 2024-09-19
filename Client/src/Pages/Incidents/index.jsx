@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ButtonGroup, Stack, Typography, Button } from "@mui/material";
+import { useParams } from "react-router-dom";
+
 import { networkService } from "../../main";
 import { useTheme } from "@emotion/react";
 import Select from "../../Components/Inputs/Select";
 import IncidentTable from "./IncidentTable";
-import "./index.css";
 import SkeletonLayout from "./skeleton";
+import "./index.css";
 
 const Incidents = () => {
   const theme = useTheme();
   const authState = useSelector((state) => state.auth);
+  const { monitorId } = useParams();
 
   const [monitors, setMonitors] = useState({});
   const [selectedMonitor, setSelectedMonitor] = useState("0");
@@ -22,17 +25,20 @@ const Incidents = () => {
   useEffect(() => {
     const fetchMonitors = async () => {
       setLoading(true);
-      const res = await networkService.getMonitorsByTeamId(
-        authState.authToken,
-        authState.user.teamId,
-        1,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      );
+      const res = await networkService.getMonitorsByTeamId({
+        authToken: authState.authToken,
+        teamId: authState.user.teamId,
+        limit: -1,
+        types: null,
+        status: null,
+        checkOrder: null,
+        normalize: null,
+        page: null,
+        rowsPerPage: null,
+        filter: null,
+        field: null,
+        order: null,
+      });
       // Reduce to a lookup object for 0(1) lookup
       if (res?.data?.data?.monitors?.length > 0) {
         const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
@@ -40,6 +46,7 @@ const Incidents = () => {
           return acc;
         }, {});
         setMonitors(monitorLookup);
+        monitorId !== undefined && setSelectedMonitor(monitorId);
       }
       setLoading(false);
     };
@@ -54,7 +61,7 @@ const Incidents = () => {
   };
 
   return (
-    <Stack className="incidents" pt={theme.spacing(20)} gap={theme.spacing(12)}>
+    <Stack className="incidents" pt={theme.spacing(6)} gap={theme.spacing(12)}>
       {loading ? (
         <SkeletonLayout />
       ) : (

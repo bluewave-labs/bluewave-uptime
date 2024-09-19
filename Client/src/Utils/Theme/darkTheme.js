@@ -21,7 +21,14 @@ const shadow =
   "0px 4px 24px -4px rgba(255, 255, 255, 0.03), 0px 3px 3px -3px rgba(255, 255, 255, 0.01)";
 
 const darkTheme = createTheme({
-  typography: { fontFamily: fontFamilyDefault, fontSize: 13 },
+  typography: {
+    fontFamily: fontFamilyDefault,
+    fontSize: 13,
+    h1: { fontSize: 22, color: text.primary, fontWeight: 500 },
+    h2: { fontSize: 14.5, color: text.secondary, fontWeight: 400 },
+    body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
+    body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
+  },
   palette: {
     mode: "dark",
     primary: { main: "#1570ef" },
@@ -63,13 +70,14 @@ const darkTheme = createTheme({
       uptimeGood: "#ffd600",
       uptimeExcellent: "#079455",
     },
-    unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
+    unresolved: { main: "#664eff", light: "#3a1bff", bg: "#f2f4f7" },
     divider: border.light,
     other: {
       icon: "#e6e6e6",
       line: "#27272a",
       fill: "#18181a",
       grid: "#454546",
+      autofill: "#2d2d33",
     },
   },
   spacing: 2,

@@ -40,7 +40,7 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
     fill: theme.palette.text.tertiary,
   },
   "& path": {
-    transition: "fill 300ms ease",
+    transition: "fill 300ms ease, stroke-width 400ms ease",
   },
 }));
 
@@ -76,6 +76,7 @@ export const StatBox = styled(Box)(({ theme }) => ({
   borderColor: theme.palette.border.light,
   borderRadius: 4,
   backgroundColor: theme.palette.background.main,
+  background: `linear-gradient(340deg, ${theme.palette.background.accent} 20%, ${theme.palette.background.main} 45%)`,
   "& h2": {
     fontSize: 13,
     fontWeight: 500,

@@ -73,6 +73,7 @@ const successMessages = {
   CHECK_CREATE: "Check created successfully",
   CHECK_GET: "Got checks successfully",
   CHECK_DELETE: "Checks deleted successfully",
+  CHECK_UPDATE_TTL: "Checks TTL updated successfully",
 
   //Monitor Controller
   MONITOR_GET_ALL: "Got all monitors successfully",
@@ -83,6 +84,7 @@ const successMessages = {
   MONITOR_DELETE: "Monitor deleted successfully",
   MONITOR_EDIT: "Monitor edited successfully",
   MONITOR_CERTIFICATE: "Got monitor certificate successfully",
+  MONITOR_DEMO_ADDED: "Successfully added demo monitors",
 
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",

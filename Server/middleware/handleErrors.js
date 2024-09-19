@@ -7,7 +7,7 @@ const handleErrors = (error, req, res, next) => {
   const service = error.service || errorMessages.UNKNOWN_SERVICE;
   logger.error(error.message, {
     service: service,
-    methodName: error.methodName,
+    method: error.method,
   });
   res.status(status).json({ success: false, msg: message });
 };

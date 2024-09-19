@@ -121,8 +121,9 @@ const Field = forwardRef(
             sx: {
               color: theme.palette.text.secondary,
               "&:-webkit-autofill": {
-                WebkitBoxShadow: `0 0 0 100px ${theme.palette.background.fill} inset`,
+                WebkitBoxShadow: `0 0 0 100px ${theme.palette.other.autofill} inset`,
                 WebkitTextFillColor: theme.palette.text.secondary,
+                borderRadius: "0 5px 5px 0",
               },
             },
           }}

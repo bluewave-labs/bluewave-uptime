@@ -6,15 +6,19 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  Text,
 } from "recharts";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
 import "./index.css";
 
 const CustomToolTip = ({ active, payload, label }) => {
-  const theme = useTheme();
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
+  const theme = useTheme();
   if (active && payload && payload.length) {
     return (
       <Box
@@ -35,17 +39,7 @@ const CustomToolTip = ({ active, payload, label }) => {
             fontWeight: 500,
           }}
         >
-          {new Date(label).toLocaleDateString("en-US", {
-            weekday: "short", // Mon
-            month: "long", // July
-            day: "numeric", // 17
-          }) +
-            ", " +
-            new Date(label).toLocaleTimeString("en-US", {
-              hour: "numeric", // 12
-              minute: "2-digit", // 15
-              hour12: true, // AM/PM format
-            })}
+          {formatDateWithTz(label, "ddd, MMMM D, YYYY, h:mm A", uiTimezone)}
         </Typography>
         <Box mt={theme.spacing(1)}>
           <Box
@@ -87,19 +81,38 @@ const CustomToolTip = ({ active, payload, label }) => {
   return null;
 };
 
-const MonitorDetailsAreaChart = ({ checks }) => {
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const memoizedChecks = useMemo(() => checks, [checks[0]]);
-
+const CustomTick = ({ x, y, payload, index }) => {
   const theme = useTheme();
+
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
+  // Render nothing for the first tick
+  if (index === 0) return null;
+  return (
+    <Text
+      x={x}
+      y={y + 10}
+      textAnchor="middle"
+      fill={theme.palette.text.tertiary}
+      fontSize={11}
+      fontWeight={400}
+    >
+      {formatDateWithTz(payload?.value, "h:mm a", uiTimezone)}
+    </Text>
+  );
+};
+
+CustomTick.propTypes = {
+  x: PropTypes.number,
+  y: PropTypes.number,
+  payload: PropTypes.object,
+  index: PropTypes.number,
+};
+
+const MonitorDetailsAreaChart = ({ checks }) => {
+  const theme = useTheme();
+  const memoizedChecks = useMemo(() => checks, [checks[0]]);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <ResponsiveContainer width="100%" minWidth={25} height={220}>
@@ -113,6 +126,8 @@ const MonitorDetailsAreaChart = ({ checks }) => {
           left: 0,
           bottom: 0,
         }}
+        onMouseMove={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <CartesianGrid
           stroke={theme.palette.border.light}
@@ -138,21 +153,24 @@ const MonitorDetailsAreaChart = ({ checks }) => {
         <XAxis
           stroke={theme.palette.border.dark}
           dataKey="createdAt"
-          tickFormatter={formatDate}
-          tick={{ fontSize: "13px" }}
+          tick={<CustomTick />}
+          minTickGap={0}
+          axisLine={false}
           tickLine={false}
-          height={18}
+          height={20}
+          interval="equidistantPreserveStart"
         />
         <Tooltip
           cursor={{ stroke: theme.palette.border.light }}
           content={<CustomToolTip />}
+          wrapperStyle={{ pointerEvents: "none" }}
         />
         <Area
           type="monotone"
           dataKey="responseTime"
           stroke={theme.palette.primary.main}
           fill="url(#colorUv)"
-          strokeWidth={1.5}
+          strokeWidth={isHovered ? 2.5 : 1.5}
           activeDot={{ stroke: theme.palette.background.main, r: 5 }}
         />
       </AreaChart>

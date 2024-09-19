@@ -14,7 +14,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { networkService } from "../../../main";
 import { logger } from "../../../Utils/Logger";
 import {
-  formatDate,
   formatDurationRounded,
   formatDurationSplit,
 } from "../../../Utils/timeUtils";
@@ -35,6 +34,8 @@ import { DownBarChart, ResponseGaugeChart, UpBarChart } from "./Charts";
 import SkeletonLayout from "./skeleton";
 import "./index.css";
 import useUtils from "../utils";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
+
 /**
  * Details page component displaying monitor details and related information.
  * @component
@@ -56,6 +57,9 @@ const DetailsPage = ({ isAdmin }) => {
   const closeCertificate = () => {
     setAnchorEl(null);
   };
+
+  const dateFormat = dateRange === "day" ? "MMM D, h A" : "MMM D";
+  const uiTimezone = useSelector((state) => state.ui.timezone);
 
   const fetchMonitor = useCallback(async () => {
     try {
@@ -95,10 +99,7 @@ const DetailsPage = ({ isAdmin }) => {
           const date = new Date(year, month - 1, day);
 
           setCertificateExpiry(
-            formatDate(date, {
-              hour: undefined,
-              minute: undefined,
-            }) ?? "N/A"
+            formatDateWithTz(date, dateFormat, uiTimezone) ?? "N/A"
           );
         }
       } catch (error) {
@@ -138,12 +139,7 @@ const DetailsPage = ({ isAdmin }) => {
           <Stack gap={theme.spacing(10)} mt={theme.spacing(10)}>
             <Stack direction="row" gap={theme.spacing(2)}>
               <Box>
-                <Typography
-                  component="h1"
-                  fontSize={22}
-                  fontWeight={500}
-                  color={theme.palette.text.primary}
-                >
+                <Typography component="h1" variant="h1">
                   {monitor.name}
                 </Typography>
                 <Stack
@@ -172,19 +168,14 @@ const DetailsPage = ({ isAdmin }) => {
                       <PulseDot color={statusColor[determineState(monitor)]} />
                     </Box>
                   </Tooltip>
-                  <Typography
-                    component="h2"
-                    fontSize={14.5}
-                    color={theme.palette.text.secondary}
-                  >
+                  <Typography component="h2" variant="h2">
                     {monitor.url?.replace(/^https?:\/\//, "") || "..."}
                   </Typography>
                   <Typography
+                    position="relative"
+                    variant="body2"
                     mt={theme.spacing(1)}
                     ml={theme.spacing(6)}
-                    fontSize={12}
-                    position="relative"
-                    color={theme.palette.text.tertiary}
                     sx={{
                       "&:before": {
                         position: "absolute",
@@ -217,6 +208,11 @@ const DetailsPage = ({ isAdmin }) => {
                   onClick={openCertificate}
                   sx={{
                     cursor: "pointer",
+                    "& svg": {
+                      width: 23,
+                      height: 23,
+                      top: "52%",
+                    },
                   }}
                 >
                   <CertificateIcon />
@@ -248,9 +244,7 @@ const DetailsPage = ({ isAdmin }) => {
                     },
                   }}
                 >
-                  <Typography fontSize={12} color={theme.palette.text.tertiary}>
-                    Certificate Expiry
-                  </Typography>
+                  <Typography variant="body2">Certificate Expiry</Typography>
                   <Typography
                     component="span"
                     fontSize={13}
@@ -309,7 +303,7 @@ const DetailsPage = ({ isAdmin }) => {
                 gap={theme.spacing(4)}
                 mb={theme.spacing(8)}
               >
-                <Typography fontSize={12} color={theme.palette.text.tertiary}>
+                <Typography variant="body2">
                   Showing statistics for past{" "}
                   {dateRange === "day"
                     ? "24 hours"
@@ -367,12 +361,11 @@ const DetailsPage = ({ isAdmin }) => {
                             fontSize={11}
                             color={theme.palette.text.tertiary}
                           >
-                            {formatDate(new Date(hoveredUptimeData.time), {
-                              month: "short",
-                              year: undefined,
-                              minute: undefined,
-                              hour: dateRange === "day" ? "numeric" : undefined,
-                            })}
+                            {formatDateWithTz(
+                              hoveredUptimeData.time,
+                              dateFormat,
+                              uiTimezone
+                            )}
                           </Typography>
                         )}
                     </Box>
@@ -417,12 +410,11 @@ const DetailsPage = ({ isAdmin }) => {
                           fontSize={11}
                           color={theme.palette.text.tertiary}
                         >
-                          {formatDate(new Date(hoveredIncidentsData.time), {
-                            month: "short",
-                            year: undefined,
-                            minute: undefined,
-                            hour: dateRange === "day" ? "numeric" : undefined,
-                          })}
+                          {formatDateWithTz(
+                            hoveredIncidentsData.time,
+                            dateFormat,
+                            uiTimezone
+                          )}
                         </Typography>
                       )}
                   </Box>
@@ -445,14 +437,8 @@ const DetailsPage = ({ isAdmin }) => {
                     data={[{ response: monitor?.periodAvgResponseTime }]}
                   />
                 </ChartBox>
-                <ChartBox
-                  sx={{
-                    "& tspan": {
-                      fontSize: 11,
-                    },
-                  }}
-                >
-                  <Stack>
+                <ChartBox sx={{ padding: 0 }}>
+                  <Stack pt={theme.spacing(8)} pl={theme.spacing(8)}>
                     <IconBox>
                       <ResponseTimeIcon />
                     </IconBox>

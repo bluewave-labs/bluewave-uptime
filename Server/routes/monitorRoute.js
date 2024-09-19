@@ -32,7 +32,7 @@ router.put(
 );
 
 router.delete(
-  "/all",
+  "/",
   isAllowed(["superadmin"]),
   monitorController.deleteAllMonitors
 );
@@ -41,6 +41,12 @@ router.post(
   "/pause/:monitorId",
   isAllowed(["admin", "superadmin"]),
   monitorController.pauseMonitor
+);
+
+router.post(
+  "/demo",
+  isAllowed(["admin", "superadmin"]),
+  monitorController.addDemoMonitors
 );
 
 module.exports = router;

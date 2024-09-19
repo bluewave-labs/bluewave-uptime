@@ -45,6 +45,9 @@ const UserSchema = mongoose.Schema(
       ref: "Team",
       immutable: true,
     },
+    checkTTL: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

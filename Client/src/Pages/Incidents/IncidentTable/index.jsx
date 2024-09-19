@@ -21,9 +21,16 @@ import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
 import { logger } from "../../../Utils/Logger";
 import { useTheme } from "@emotion/react";
+import { formatDateWithTz } from "../../../Utils/timeUtils";
+import PlaceholderLight from "../../../assets/Images/data_placeholder.svg?react";
+import PlaceholderDark from "../../../assets/Images/data_placeholder_dark.svg?react";
+
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+
   const theme = useTheme();
   const { authToken, user } = useSelector((state) => state.auth);
+  const mode = useSelector((state) => state.ui.mode);
   const [checks, setChecks] = useState([]);
   const [checksCount, setChecksCount] = useState(0);
   const [paginationController, setPaginationController] = useState({
@@ -109,6 +116,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
             {...item}
           />
         )}
+        sx={{ mt: "auto" }}
       />
     );
   }
@@ -125,12 +133,18 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
     <>
       {checks?.length === 0 && selectedMonitor === "0" ? (
         <Box sx={{ ...sharedStyles }}>
+          <Box textAlign="center" pb={theme.spacing(20)}>
+            {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
+          </Box>
           <Typography textAlign="center" color={theme.palette.text.secondary}>
             No incidents recorded yet.
           </Typography>
         </Box>
       ) : checks?.length === 0 ? (
         <Box sx={{ ...sharedStyles }}>
+          <Box textAlign="center" pb={theme.spacing(20)}>
+            {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
+          </Box>
           <Typography textAlign="center" color={theme.palette.text.secondary}>
             The monitor you have selected has no recorded incidents yet.
           </Typography>
@@ -151,6 +165,11 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
               <TableBody>
                 {checks.map((check) => {
                   const status = check.status === true ? "up" : "down";
+                  const formattedDate = formatDateWithTz(
+                    check.createdAt,
+                    "YYYY-MM-DD HH:mm:ss A",
+                    uiTimezone
+                  );
 
                   return (
                     <TableRow key={check._id}>
@@ -162,9 +181,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                           customStyles={{ textTransform: "capitalize" }}
                         />
                       </TableCell>
-                      <TableCell>
-                        {new Date(check.createdAt).toLocaleString()}
-                      </TableCell>
+                      <TableCell>{formattedDate}</TableCell>
                       <TableCell>
                         {check.statusCode ? check.statusCode : "N/A"}
                       </TableCell>

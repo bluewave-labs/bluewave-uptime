@@ -28,6 +28,7 @@ const verifyJWT = (req, res, next) => {
     const error = new Error(errorMessages.INVALID_AUTH_TOKEN); // Instantiate a new Error object for improperly formatted token
     error.status = 400;
     error.service = SERVICE_NAME;
+    error.method = "verifyJWT";
     next(error);
     return;
   }

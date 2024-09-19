@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Stack } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPageSpeedByTeamId } from "../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
@@ -11,24 +11,54 @@ import Breadcrumbs from "../../Components/Breadcrumbs";
 import Greeting from "../../Utils/greeting";
 import SkeletonLayout from "./skeleton";
 import Card from "./card";
+import { networkService } from "../../main";
 
 const PageSpeed = ({ isAdmin }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { authToken } = useSelector((state) => state.auth);
-  const { monitorsSummary, isLoading } = useSelector(
-    (state) => state.pageSpeedMonitors
-  );
+  const { user, authToken } = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
+  const [monitors, setMonitors] = useState([]);
   useEffect(() => {
     dispatch(getPageSpeedByTeamId(authToken));
   }, [authToken, dispatch]);
 
+  useEffect(() => {
+    const fetchMonitors = async () => {
+      try {
+        setIsLoading(true);
+        const res = await networkService.getMonitorsByTeamId({
+          authToken: authToken,
+          teamId: user.teamId,
+          limit: 10,
+          types: ["pagespeed"],
+          status: null,
+          checkOrder: "desc",
+          normalize: true,
+          page: null,
+          rowsPerPage: null,
+          filter: null,
+          field: null,
+          order: null,
+        });
+        if (res?.data?.data?.monitors) {
+          setMonitors(res.data.data.monitors);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMonitors();
+  }, []);
+
   // will show skeletons only on initial load
   // since monitor state is being added to redux persist, there's no reason to display skeletons on every render
-  let isActuallyLoading = isLoading && monitorsSummary?.monitors?.length === 0;
-
+  let isActuallyLoading = isLoading && monitors?.length === 0;
   return (
     <Box
       className="page-speed"
@@ -46,14 +76,8 @@ const PageSpeed = ({ isAdmin }) => {
     >
       {isActuallyLoading ? (
         <SkeletonLayout />
-      ) : monitorsSummary?.monitors?.length !== 0 ? (
-        <Box
-          sx={{
-            "& p": {
-              color: theme.palette.text.secondary,
-            },
-          }}
-        >
+      ) : monitors?.length !== 0 ? (
+        <Box>
           <Box mb={theme.spacing(12)}>
             <Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
             <Stack
@@ -67,13 +91,14 @@ const PageSpeed = ({ isAdmin }) => {
                 variant="contained"
                 color="primary"
                 onClick={() => navigate("/pagespeed/create")}
+                sx={{ whiteSpace: "nowrap" }}
               >
                 Create new
               </Button>
             </Stack>
           </Box>
           <Grid container spacing={theme.spacing(12)}>
-            {monitorsSummary?.monitors?.map((monitor) => (
+            {monitors?.map((monitor) => (
               <Card monitor={monitor} key={monitor._id} />
             ))}
           </Grid>

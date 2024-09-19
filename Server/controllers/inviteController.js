@@ -60,7 +60,8 @@ const inviteController = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: "Invite sent", data: inviteToken });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "inviteController") : null;
     next(error);
     return;
   }
@@ -84,7 +85,10 @@ const inviteVerifyController = async (req, res, next) => {
       .status(200)
       .json({ status: "success", msg: "Invite verified", data: invite });
   } catch (error) {
-    error.service = SERVICE_NAME;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "inviteVerifyController")
+      : null;
     next(error);
     return;
   }

@@ -1,4 +1,5 @@
 import { useTheme } from "@emotion/react";
+import PropTypes from "prop-types";
 import {
   BarChart,
   Bar,
@@ -8,8 +9,9 @@ import {
   RadialBarChart,
   RadialBar,
 } from "recharts";
-import { formatDate } from "../../../../Utils/timeUtils";
 import { memo, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { formatDateWithTz } from "../../../../Utils/timeUtils";
 
 const CustomLabels = ({
   x,
@@ -19,27 +21,35 @@ const CustomLabels = ({
   lastDataPoint,
   type,
 }) => {
-  let options = {
-    month: "short",
-    year: undefined,
-    hour: undefined,
-    minute: undefined,
-  };
-  if (type === "day") delete options.hour;
+  const uiTimezone = useSelector((state) => state.ui.timezone);
+  const dateFormat = type === "day" ? "MMM D, h:mm A" : "MMM D";
 
   return (
     <>
       <text x={x} y={height} dy={-3} textAnchor="start" fontSize={11}>
-        {formatDate(new Date(firstDataPoint.time), options)}
+        {formatDateWithTz(
+          new Date(firstDataPoint.time),
+          dateFormat,
+          uiTimezone
+        )}
       </text>
       <text x={width} y={height} dy={-3} textAnchor="end" fontSize={11}>
-        {formatDate(new Date(lastDataPoint.time), options)}
+        {formatDateWithTz(new Date(lastDataPoint.time), dateFormat, uiTimezone)}
       </text>
     </>
   );
 };
 
-export const UpBarChart = memo(({ data, type, onBarHover }) => {
+CustomLabels.propTypes = {
+  x: PropTypes.number.isRequired,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  firstDataPoint: PropTypes.object.isRequired,
+  lastDataPoint: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+};
+
+const UpBarChart = memo(({ data, type, onBarHover }) => {
   const theme = useTheme();
 
   const [chartHovered, setChartHovered] = useState(false);
@@ -122,7 +132,18 @@ export const UpBarChart = memo(({ data, type, onBarHover }) => {
   );
 });
 
-export const DownBarChart = memo(({ data, type, onBarHover }) => {
+// Add display name for the component
+UpBarChart.displayName = "UpBarChart";
+
+// Validate props using PropTypes
+UpBarChart.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+  type: PropTypes.string,
+  onBarHover: PropTypes.func,
+};
+export { UpBarChart };
+
+const DownBarChart = memo(({ data, type, onBarHover }) => {
   const theme = useTheme();
 
   const [chartHovered, setChartHovered] = useState(false);
@@ -194,7 +215,15 @@ export const DownBarChart = memo(({ data, type, onBarHover }) => {
   );
 });
 
-export const ResponseGaugeChart = ({ data }) => {
+DownBarChart.displayName = "DownBarChart";
+DownBarChart.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+  type: PropTypes.string,
+  onBarHover: PropTypes.func,
+};
+export { DownBarChart };
+
+const ResponseGaugeChart = ({ data }) => {
   const theme = useTheme();
 
   let max = 1000; // max ms
@@ -281,3 +310,9 @@ export const ResponseGaugeChart = ({ data }) => {
     </ResponsiveContainer>
   );
 };
+
+ResponseGaugeChart.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
+
+export { ResponseGaugeChart };

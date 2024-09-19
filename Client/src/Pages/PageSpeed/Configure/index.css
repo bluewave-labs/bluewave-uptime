@@ -1,45 +1,5 @@
-.configure-pagespeed h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large-plus);
-}
-.configure-pagespeed span.MuiTypography-root {
-  font-size: var(--env-var-font-size-small-plus);
-}
-.configure-pagespeed h1.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root,
-.configure-pagespeed h2.MuiTypography-root {
-  font-weight: 600;
-}
-.configure-pagespeed p.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root > span.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
-}
-.configure-pagespeed .MuiBox-root > .field + p.MuiTypography-root {
-  font-size: var(--env-var-font-size-small-plus);
-}
-.configure-pagespeed .MuiBox-root > .field + p.MuiTypography-root,
-.configure-pagespeed h3.MuiTypography-root > span.MuiTypography-root {
-  opacity: 0.6;
-}
-.configure-pagespeed .checkbox-wrapper {
-  margin-bottom: 1px;
-}
-
-/* to be removed */
-.configure-pagespeed .section-disabled {
-  opacity: 0.4;
-  padding: 10px;
-  border-radius: 8px;
-  user-select: none;
-  pointer-events: none;
-}
-
 .configure-pagespeed button {
   height: var(--env-var-height-2);
-}
-
-.configure-pagespeed h3.MuiTypography-root {
-  flex: 0.7;
 }
 
 .configure-pagespeed .field,

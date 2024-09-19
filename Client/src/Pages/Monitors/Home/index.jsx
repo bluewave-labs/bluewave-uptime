@@ -1,5 +1,5 @@
 import "./index.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
@@ -12,13 +12,17 @@ import StatusBox from "./StatusBox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Greeting from "../../../Utils/greeting";
 import MonitorTable from "./MonitorTable";
+import Search from "../../../Components/Inputs/Search";
+import useDebounce from "../../../Utils/debounce";
 
 const Monitors = ({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch({});
+  const debouncedFilter = useDebounce(search, 500);
 
   useEffect(() => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
@@ -26,6 +30,7 @@ const Monitors = ({ isAdmin }) => {
   let loading =
     monitorState?.isLoading &&
     monitorState?.monitorsSummary?.monitors?.length === 0;
+
   return (
     <Stack className="monitors" gap={theme.spacing(8)}>
       {loading ? (
@@ -85,7 +90,8 @@ const Monitors = ({ isAdmin }) => {
               </Stack>
               <Box
                 flex={1}
-                p={theme.spacing(10)}
+                px={theme.spacing(10)}
+                py={theme.spacing(8)}
                 border={1}
                 borderColor={theme.palette.border.light}
                 borderRadius={theme.shape.borderRadius}
@@ -98,8 +104,9 @@ const Monitors = ({ isAdmin }) => {
                 >
                   <Typography
                     component="h2"
-                    color={theme.palette.text.secondary}
-                    letterSpacing={-0.5}
+                    variant="h2"
+                    fontWeight={500}
+                    letterSpacing={-0.2}
                   >
                     Actively monitoring
                   </Typography>
@@ -112,9 +119,16 @@ const Monitors = ({ isAdmin }) => {
                   >
                     {monitorState?.monitorsSummary?.monitorCounts?.total || 0}
                   </Box>
-                  {/* TODO - add search bar */}
+                  <Box width="25%" minWidth={150} ml="auto">
+                    <Search
+                      options={monitorState?.monitorsSummary.monitors}
+                      filteredBy="name"
+                      value={search}
+                      handleInputChange={setSearch}
+                    />
+                  </Box>
                 </Stack>
-                <MonitorTable isAdmin={isAdmin} />
+                <MonitorTable isAdmin={isAdmin} filter={debouncedFilter} />
               </Box>
             </>
           )}

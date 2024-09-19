@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Button, Stack, styled, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
@@ -7,17 +7,97 @@ import { logger } from "../../Utils/Logger";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
-import { deleteMonitorChecksByTeamId } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import {
+  deleteMonitorChecksByTeamId,
+  addDemoMonitors,
+  deleteAllMonitors,
+} from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { update } from "../../Features/Auth/authSlice";
 import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { setTimezone } from "../../Features/UI/uiSlice";
+import timezones from "../../Utils/timezones.json";
+import { useState } from "react";
+import { ConfigBox } from "./styled";
+import { networkService } from "../../main";
+import { settingsValidation } from "../../Validation/validation";
+
+const SECONDS_PER_DAY = 86400;
+
 const Settings = ({ isAdmin }) => {
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
+  const { checkTTL } = user;
   const { isLoading } = useSelector((state) => state.uptimeMonitors);
-
+  const { isLoading: authIsLoading } = useSelector((state) => state.auth);
+  const { timezone } = useSelector((state) => state.ui);
+  const [checksIsLoading, setChecksIsLoading] = useState(false);
+  const [form, setForm] = useState({
+    ttl: (checkTTL / SECONDS_PER_DAY).toString(),
+  });
+  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const { error } = settingsValidation.validate(
+      { [id]: value },
+      {
+        abortEarly: false,
+      }
+    );
+    if (!error || error.details.length === 0) {
+      setErrors({});
+    } else {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      console.log(newErrors);
+      logger.error("Validation errors:", error.details);
+    }
+    let inputValue = value;
+    id === "ttl" && (inputValue = value.replace(/[^0-9]/g, ""));
+    setForm((prev) => ({
+      ...prev,
+      [id]: inputValue,
+    }));
+  };
+
   // TODO Handle saving
+  const handleSave = async () => {
+    try {
+      setChecksIsLoading(true);
+      await networkService.updateChecksTTL(authToken, form.ttl);
+      const updatedUser = { ...user, checkTTL: form.ttl };
+      const action = await dispatch(
+        update({ authToken, localData: updatedUser })
+      );
+      if (action.payload.success) {
+        createToast({
+          body: "Settings saved successfully",
+        });
+      } else {
+        if (action.payload) {
+          // dispatch errors
+          createToast({
+            body: action.payload.msg,
+          });
+        } else {
+          // unknown errors
+          createToast({
+            body: "Unknown error.",
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      createToast({ body: "Failed to save settings" });
+    } finally {
+      setChecksIsLoading(false);
+    }
+  };
 
   const handleClearStats = async () => {
     try {
@@ -36,32 +116,33 @@ const Settings = ({ isAdmin }) => {
     }
   };
 
-  const ConfigBox = styled("div")({
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: theme.spacing(20),
-    paddingTop: theme.spacing(12),
-    paddingInline: theme.spacing(15),
-    paddingBottom: theme.spacing(25),
-    backgroundColor: theme.palette.background.main,
-    border: 1,
-    borderStyle: "solid",
-    borderColor: theme.palette.border.light,
-    borderRadius: theme.spacing(2),
-    "& > div:first-of-type": {
-      flex: 0.7,
-    },
-    "& > div:last-of-type": {
-      flex: 1,
-    },
-    "& h1, & h2": {
-      color: theme.palette.text.secondary,
-    },
-    "& p": {
-      color: theme.palette.text.tertiary,
-    },
-  });
+  const handleInsertDemoMonitors = async () => {
+    try {
+      const action = await dispatch(addDemoMonitors({ authToken }));
+      if (addDemoMonitors.fulfilled.match(action)) {
+        createToast({ body: "Successfully added demo monitors" });
+      } else {
+        createToast({ body: "Failed to add demo monitors" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ Body: "Failed to add demo monitors" });
+    }
+  };
+
+  const handleDeleteAllMonitors = async () => {
+    try {
+      const action = await dispatch(deleteAllMonitors({ authToken }));
+      if (deleteAllMonitors.fulfilled.match(action)) {
+        createToast({ body: "Successfully deleted all monitors" });
+      } else {
+        createToast({ body: "Failed to add demo monitors" });
+      }
+    } catch (error) {
+      logger.error(error);
+      createToast({ Body: "Failed to delete all monitors" });
+    }
+  };
 
   return (
     <Box
@@ -83,25 +164,16 @@ const Settings = ({ isAdmin }) => {
               <Typography component="span">Display timezone</Typography>- The
               timezone of the dashboard you publicly display.
             </Typography>
-            <Typography>
-              <Typography component="span">Server timezone</Typography>- The
-              timezone of your server.
-            </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
             <Select
               id="display-timezone"
               label="Display timezone"
-              value="est"
-              onChange={() => logger.warn("disabled")}
-              items={[{ _id: "est", name: "America / Toronto" }]}
-            />
-            <Select
-              id="server-timezone"
-              label="Server timezone"
-              value="est"
-              onChange={() => logger.warn("disabled")}
-              items={[{ _id: "est", name: "America / Toronto" }]}
+              value={timezone}
+              onChange={(e) => {
+                dispatch(setTimezone({ timezone: e.target.value }));
+              }}
+              items={timezones}
             />
           </Stack>
         </ConfigBox>
@@ -116,25 +188,59 @@ const Settings = ({ isAdmin }) => {
             </Box>
             <Stack gap={theme.spacing(20)}>
               <Field
-                type="text"
-                id="history-monitoring"
+                id="ttl"
                 label="The days you want to keep monitoring history."
-                isOptional={true}
                 optionalLabel="0 for infinite"
-                placeholder="90"
-                value=""
-                onChange={() => logger.warn("Disabled")}
+                value={form.ttl}
+                onChange={handleChange}
+                error={errors.ttl}
               />
               <Box>
                 <Typography>Clear all stats. This is irreversible.</Typography>
                 <LoadingButton
                   variant="contained"
                   color="error"
-                  loading={isLoading}
+                  loading={isLoading || authIsLoading || checksIsLoading}
                   onClick={handleClearStats}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Clear all stats
+                </LoadingButton>
+              </Box>
+            </Stack>
+          </ConfigBox>
+        )}
+        {isAdmin && (
+          <ConfigBox>
+            <Box>
+              <Typography component="h1">Demo Monitors</Typography>
+              <Typography sx={{ mt: theme.spacing(2) }}>
+                Here you can add and remove demo monitors
+              </Typography>
+            </Box>
+            <Stack gap={theme.spacing(20)}>
+              <Box>
+                <Typography>Add demo monitors</Typography>
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading || authIsLoading || checksIsLoading}
+                  onClick={handleInsertDemoMonitors}
+                  sx={{ mt: theme.spacing(4) }}
+                >
+                  Add demo monitors
+                </LoadingButton>
+              </Box>
+              <Box>
+                <Typography>Remove all monitors</Typography>
+                <LoadingButton
+                  variant="contained"
+                  color="error"
+                  loading={isLoading || authIsLoading || checksIsLoading}
+                  onClick={handleDeleteAllMonitors}
+                  sx={{ mt: theme.spacing(4) }}
+                >
+                  Remove all monitors
                 </LoadingButton>
               </Box>
             </Stack>
@@ -160,10 +266,12 @@ const Settings = ({ isAdmin }) => {
         </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
           <LoadingButton
-            loading={false}
+            loading={isLoading || authIsLoading || checksIsLoading}
+            disabled={Object.keys(errors).length > 0}
             variant="contained"
             color="primary"
             sx={{ px: theme.spacing(12), mt: theme.spacing(20) }}
+            onClick={handleSave}
           >
             Save
           </LoadingButton>

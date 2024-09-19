@@ -43,6 +43,7 @@ const isAllowed = (allowedRoles) => {
       }
     } catch (error) {
       error.status = 401;
+      error.method = "isAllowed";
       error.service = SERVICE_NAME;
       next(error);
       return;

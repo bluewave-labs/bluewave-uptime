@@ -19,6 +19,7 @@ const CheckSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Monitor",
       immutable: true,
+      index: true,
     },
     /**
      * Status of the check (true for up, false for down).
@@ -27,6 +28,7 @@ const CheckSchema = mongoose.Schema(
      */
     status: {
       type: Boolean,
+      index: true,
     },
     /**
      * Response time of the check in milliseconds.
@@ -43,6 +45,7 @@ const CheckSchema = mongoose.Schema(
      */
     statusCode: {
       type: Number,
+      index: true,
     },
     /**
      * Message or description of the check result.
@@ -68,5 +71,7 @@ const CheckSchema = mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt timestamps
   }
 );
+
+CheckSchema.index({ createdAt: 1 });
 
 module.exports = mongoose.model("Check", CheckSchema);

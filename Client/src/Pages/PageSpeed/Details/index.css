@@ -1,41 +1,7 @@
-.page-speed-details h1 {
-  font-size: var(--env-var-font-size-large-plus);
-}
-.page-speed-details h2,
-.page-speed-details h6 {
-  font-size: var(--env-var-font-size-large);
-}
-.page-speed-details h4,
-.page-speed-details p,
-.page-speed-details p > span {
-  font-size: var(--env-var-font-size-medium);
-}
-.page-speed-details h1 + span,
-.page-speed-details h4 > span {
-  font-size: var(--env-var-font-size-small-plus);
-}
-.page-speed-details h6 {
-  line-height: 22px;
-}
-.page-speed-details h1,
-.page-speed-details h2,
-.page-speed-details h6 {
-  font-weight: 600;
-}
 .page-speed-details button.MuiButtonBase-root {
   height: 34px;
 }
 
-.page-speed-details .stat-box {
-  flex: 1;
-}
-.page-speed-details .stat-box:last-of-type {
-  flex-shrink: 1;
-}
-.page-speed-details .stat-box svg {
-  width: 22px;
-  height: 22px;
-}
 .page-speed-details .MuiPieArcLabel-root {
   font-size: var(--env-var-font-size-small-plus);
   transition: fill 300ms ease;
@@ -49,9 +15,4 @@
 }
 .page-speed-details .MuiPieArc-root {
   stroke: inherit;
-}
-
-.page-speed-details .metric {
-  min-width: 200px;
-  flex: 1;
 }

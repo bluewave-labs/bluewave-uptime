@@ -91,6 +91,7 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={(e) => closeMenu(e)}
+        disableScrollLock
         slotProps={{
           paper: {
             sx: {
@@ -125,7 +126,14 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
           Details
         </MenuItem>
         {/* TODO - pass monitor id to Incidents page */}
-        <MenuItem disabled>Incidents</MenuItem>
+        <MenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/incidents/${actions.id}`);
+          }}
+        >
+          Incidents
+        </MenuItem>
         {isAdmin && (
           <MenuItem
             onClick={(e) => {
@@ -169,7 +177,6 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
       >
         <Stack
           gap={theme.spacing(2)}
-          color={theme.palette.text.secondary}
           sx={{
             position: "absolute",
             top: "50%",
@@ -187,10 +194,10 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
             },
           }}
         >
-          <Typography id="modal-delete-monitor" component="h2" fontWeight={600}>
+          <Typography id="modal-delete-monitor" component="h2" variant="h2">
             Do you really want to delete this monitor?
           </Typography>
-          <Typography id="delete-monitor-confirmation" fontSize={13}>
+          <Typography id="delete-monitor-confirmation" variant="body1">
             Once deleted, this monitor cannot be retrieved.
           </Typography>
           <Stack

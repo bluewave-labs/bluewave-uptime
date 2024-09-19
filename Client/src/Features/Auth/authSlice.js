@@ -67,7 +67,7 @@ export const update = createAsyncThunk(
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
       const res = await networkService.updateUser(token, user._id, fd);
-
+      console.log(res);
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
