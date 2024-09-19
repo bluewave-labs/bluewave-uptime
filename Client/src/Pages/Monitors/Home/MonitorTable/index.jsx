@@ -17,7 +17,7 @@ import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import { setRowsPerPage } from "../../../../Features/UI/uiSlice";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router";
 import { logger } from "../../../../Utils/Logger";
 import Host from "../host";
@@ -408,4 +408,5 @@ MonitorTable.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-export default MonitorTable;
+const MemoizedMonitorTable = memo(MonitorTable);
+export default MemoizedMonitorTable;

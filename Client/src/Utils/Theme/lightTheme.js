@@ -151,12 +151,14 @@ const lightTheme = createTheme({
       styleOverrides: {
         root: {
           marginTop: 4,
+          padding: 0,
           border: 1,
           borderStyle: "solid",
           borderColor: border.light,
           borderRadius: 4,
           boxShadow: shadow,
           backgroundColor: background.main,
+          backgroundImage: "none",
         },
       },
     },
@@ -183,7 +185,6 @@ const lightTheme = createTheme({
           color: text.secondary,
           fontSize: 13,
           margin: 2,
-          marginBottom: 0,
           minWidth: 100,
           "&:hover, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible":
             {
