@@ -83,14 +83,14 @@ function App() {
             path="integrations"
             element={<ProtectedRoute Component={Integrations} />}
           />
-          <Route
+          {/* <Route
             path="maintenance"
             element={<ProtectedRoute Component={MaintenanceWithAdminProp} />}
-          />
-          <Route
+          /> */}
+          {/* <Route
             path="/maintenance/create"
             element={<CreateNewMaintenanceWindow />}
-          />
+          /> */}
           <Route
             path="settings"
             element={<ProtectedRoute Component={SettingsWithAdminProp} />}
