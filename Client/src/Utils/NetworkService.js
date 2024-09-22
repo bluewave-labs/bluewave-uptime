@@ -244,7 +244,7 @@ class NetworkService {
    * @async
    * @param {Object} config - The configuration object.
    * @param {string} config.authToken - The authorization token to be used in the request header.
-   * @param {string} config.monitorId - The ID of the monitor to be deleted.
+   * @param {string} config.teamId - The team ID of the monitors to be deleted.
    * @returns {Promise<AxiosResponse>} The response from the axios DELETE request.
    */
   async deleteChecksByTeamId(config) {
