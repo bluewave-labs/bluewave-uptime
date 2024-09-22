@@ -55,7 +55,9 @@ const TeamPanel = () => {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const response = await networkService.getAllUsers(authToken);
+        const response = await networkService.getAllUsers({
+          authToken: authToken,
+        });
         setMembers(response.data.data);
       } catch (error) {
         createToast({
@@ -187,11 +189,11 @@ const TeamPanel = () => {
     }
 
     try {
-      await networkService.requestInvitationToken(
-        authToken,
-        toInvite.email,
-        toInvite.role
-      );
+      await networkService.requestInvitationToken({
+        authToken: authToken,
+        email: toInvite.email,
+        role: toInvite.role,
+      });
       closeInviteModal();
       createToast({
         body: "Member invited. They will receive an email with details on how to create their account.",

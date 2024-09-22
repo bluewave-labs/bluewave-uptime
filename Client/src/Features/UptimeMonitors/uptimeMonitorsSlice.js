@@ -13,7 +13,10 @@ export const createUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await networkService.createMonitor(authToken, monitor);
+      const res = await networkService.createMonitor({
+        authToken: authToken,
+        monitor: monitor,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -33,7 +36,7 @@ export const getUptimeMonitorById = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitorId } = data;
-      const res = await networkService.getMonitorByid(authToken, monitorId);
+      const res = await networkService.getMonitorByid({ authToken, monitorId });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -53,11 +56,11 @@ export const getUptimeMonitorsByTeamId = createAsyncThunk(
   async (token, thunkApi) => {
     const user = jwtDecode(token);
     try {
-      const res = await networkService.getMonitorsAndSummaryByTeamId(
-        token,
-        user.teamId,
-        ["http", "ping"]
-      );
+      const res = await networkService.getMonitorsAndSummaryByTeamId({
+        authToken: token,
+        teamId: user.teamId,
+        types: ["http", "ping"],
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -83,11 +86,11 @@ export const updateUptimeMonitor = createAsyncThunk(
         interval: monitor.interval,
         notifications: monitor.notifications,
       };
-      const res = await networkService.updateMonitor(
-        authToken,
-        monitor._id,
-        updatedFields
-      );
+      const res = await networkService.updateMonitor({
+        authToken: authToken,
+        monitorId: monitor._id,
+        updatedFields: updatedFields,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -107,10 +110,10 @@ export const deleteUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitor } = data;
-      const res = await networkService.deleteMonitorById(
-        authToken,
-        monitor._id
-      );
+      const res = await networkService.deleteMonitorById({
+        authToken: authToken,
+        monitorId: monitor._id,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -130,7 +133,10 @@ export const pauseUptimeMonitor = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitorId } = data;
-      const res = await networkService.pauseMonitorById(authToken, monitorId);
+      const res = await networkService.pauseMonitorById({
+        authToken: authToken,
+        monitorId: monitorId,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -150,7 +156,10 @@ export const deleteMonitorChecksByTeamId = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, teamId } = data;
-      const res = await networkService.deleteChecksByTeamId(authToken, teamId);
+      const res = await networkService.deleteChecksByTeamId({
+        authToken: authToken,
+        teamId: teamId,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -169,7 +178,9 @@ export const addDemoMonitors = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken } = data;
-      const res = await networkService.addDemoMonitors(authToken);
+      const res = await networkService.addDemoMonitors({
+        authToken: authToken,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -188,7 +199,9 @@ export const deleteAllMonitors = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken } = data;
-      const res = await networkService.deleteAllMonitors(authToken);
+      const res = await networkService.deleteAllMonitors({
+        authToken: authToken,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
