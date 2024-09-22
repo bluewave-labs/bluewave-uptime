@@ -36,7 +36,10 @@ export const getUptimeMonitorById = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitorId } = data;
-      const res = await networkService.getMonitorByid({ authToken, monitorId });
+      const res = await networkService.getMonitorById({
+        authToken: authToken,
+        monitorId: monitorId,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {

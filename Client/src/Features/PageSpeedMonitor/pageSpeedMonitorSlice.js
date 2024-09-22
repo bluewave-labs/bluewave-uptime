@@ -15,7 +15,7 @@ export const createPageSpeed = createAsyncThunk(
       const { authToken, monitor } = data;
       const res = await networkService.createMonitor({
         authToken: authToken,
-        moniotr: monitor,
+        monitor: monitor,
       });
       return res.data;
     } catch (error) {
@@ -36,7 +36,10 @@ export const getPagespeedMonitorById = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const { authToken, monitorId } = data;
-      const res = await networkService.getMonitorByid({ authToken, monitorId });
+      const res = await networkService.getMonitorById({
+        authToken: authToken,
+        monitorId: monitorId,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {

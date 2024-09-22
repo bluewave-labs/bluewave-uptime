@@ -30,7 +30,7 @@ class NetworkService {
    * @returns {Promise<AxiosResponse>} The response from the axios GET request.
    */
 
-  async getMonitorByid(config) {
+  async getMonitorById(config) {
     return this.axiosInstance.get(`/monitors/${config.monitorId}`, {
       headers: {
         Authorization: `Bearer ${config.authToken}`,
