@@ -136,8 +136,8 @@ Also check other developer and contributor-friendly projects of BlueWave:
 
 #### <u> Quickstart for Users</u><a id="user-quickstart"></a>
 
-1. Download our [Docker Compose File](Docker/quickstart/docker-compose.yaml)
-2. Download our [Quickstart script](Docker/quickstart/quickstart.sh)
+1. Download our [Docker Compose File](/Docker/quickstart/docker-compose.yaml)
+2. Download our [Quickstart script](/Docker/quickstart/quickstart.sh)
 3. Place these files in a directory of your choice
 4. Run `quickstart.sh` and generate config files
 5. Run `docker compose up` to start the application
