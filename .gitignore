@@ -2,4 +2,3 @@
 .vscode
 *.sh
 !uptime.sh
-!quickstart.sh

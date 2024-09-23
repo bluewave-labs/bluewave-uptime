@@ -1,4 +1,5 @@
 *.sh
+!quickstart.sh
 !build_images.sh
 mongo/data/*
 redis/data/*
