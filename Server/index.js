@@ -1,3 +1,7 @@
+const path = require("path");
+const fs = require("fs");
+const swaggerUi = require("swagger-ui-express");
+
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -21,8 +25,11 @@ const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
 const SERVICE_NAME = "Server";
-let cleaningUp = false;
 
+let cleaningUp = false;
+const openApiSpec = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "openapi.json"), "utf8")
+);
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
   // **************************
@@ -69,6 +76,9 @@ const startApp = async () => {
     req.pageSpeedService = pageSpeedService;
     next();
   });
+
+  // Swagger UI
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
   //routes
   app.use("/api/v1/auth", authRouter);
