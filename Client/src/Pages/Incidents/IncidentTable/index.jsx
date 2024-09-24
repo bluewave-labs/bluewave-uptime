@@ -55,7 +55,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
         if (selectedMonitor === "0") {
           res = await networkService.getChecksByTeam({
             authToken: authToken,
-            userId: user.teamId,
+            teamId: user.teamId,
             sortOrder: "desc",
             limit: null,
             dateRange: null,
