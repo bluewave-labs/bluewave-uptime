@@ -45,48 +45,6 @@ const getAllMonitors = async (req, res, next) => {
 };
 
 /**
- * Returns agregate stats for a monitor
- * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
- */
-
-const getMonitorAggregateStats = async (req, res, next) => {
-  try {
-    await getMonitorAggregateStatsParamValidation.validateAsync(req.params);
-    await getMonitorAggregateStatsQueryValidation.validateAsync(req.query);
-  } catch (error) {
-    error.status = 422;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
-
-  try {
-    const { monitorId } = req.params;
-    const dateRange = req.query.dateRange;
-    const aggregateStats = await req.db.getMonitorAggregateStats(
-      monitorId,
-      dateRange
-    );
-    return res.json({
-      success: true,
-      msg: successMessages.MONTIOR_STATS_BY_ID,
-      data: aggregateStats,
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getMonitorAggregateStats")
-      : null;
-    next(error);
-  }
-};
-
-/**
  * Returns monitor stats for monitor with matching ID
  * @async
  * @param {Express.Request} req
@@ -516,7 +474,6 @@ const addDemoMonitors = async (req, res, next) => {
 
 module.exports = {
   getAllMonitors,
-  getMonitorAggregateStats,
   getMonitorStatsById,
   getMonitorCertificate,
   getMonitorById,

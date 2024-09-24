@@ -3,7 +3,6 @@ const monitorController = require("../controllers/monitorController");
 const { isAllowed } = require("../middleware/isAllowed");
 
 router.get("/", monitorController.getAllMonitors);
-router.get("/aggregate/:monitorId", monitorController.getMonitorAggregateStats);
 router.get("/stats/:monitorId", monitorController.getMonitorStatsById);
 router.get("/certificate/:monitorId", monitorController.getMonitorCertificate);
 router.get("/:monitorId", monitorController.getMonitorById);

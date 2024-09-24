@@ -235,13 +235,6 @@ const pauseMonitorParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
-const getMonitorAggregateStatsParamValidation = joi.object({
-  monitorId: joi.string().required(),
-});
-const getMonitorAggregateStatsQueryValidation = joi.object({
-  dateRange: joi.string().valid("day", "week", "month"),
-});
-
 //****************************************
 // Alerts
 //****************************************
@@ -407,8 +400,6 @@ module.exports = {
   getMonitorStatsByIdParamValidation,
   getMonitorStatsByIdQueryValidation,
   getCertificateParamValidation,
-  getMonitorAggregateStatsParamValidation,
-  getMonitorAggregateStatsQueryValidation,
   editMonitorBodyValidation,
   pauseMonitorParamValidation,
   editUserParamValidation,
