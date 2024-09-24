@@ -40,16 +40,16 @@ const PaginationTable = ({ monitorId, dateRange }) => {
   useEffect(() => {
     const fetchPage = async () => {
       try {
-        const res = await networkService.getChecksByMonitor(
-          authToken,
-          monitorId,
-          "desc",
-          null,
-          dateRange,
-          null,
-          paginationController.page,
-          paginationController.rowsPerPage
-        );
+        const res = await networkService.getChecksByMonitor({
+          authToken: authToken,
+          monitoirId: monitorId,
+          sortOrder: "desc",
+          limit: null,
+          dateRange: dateRange,
+          filter: null,
+          page: paginationController.page,
+          rowsPerPage: paginationController.rowsPerPage,
+        });
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);
       } catch (error) {

@@ -69,7 +69,10 @@ const Settings = ({ isAdmin }) => {
   const handleSave = async () => {
     try {
       setChecksIsLoading(true);
-      await networkService.updateChecksTTL(authToken, form.ttl);
+      await networkService.updateChecksTTL({
+        authToken: authToken,
+        ttl: form.ttl,
+      });
       const updatedUser = { ...user, checkTTL: form.ttl };
       const action = await dispatch(
         update({ authToken, localData: updatedUser })

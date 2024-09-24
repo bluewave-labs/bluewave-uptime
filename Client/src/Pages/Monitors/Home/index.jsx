@@ -4,7 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import SkeletonLayout from "./skeleton";
 import Fallback from "./fallback";
@@ -21,12 +27,19 @@ const Monitors = ({ isAdmin }) => {
   const monitorState = useSelector((state) => state.uptimeMonitors);
   const authState = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const dispatch = useDispatch({});
   const debouncedFilter = useDebounce(search, 500);
+
+  const handleSearch = (value) => {
+    setIsSearching(true);
+    setSearch(value);
+  };
 
   useEffect(() => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
+
   let loading =
     monitorState?.isLoading &&
     monitorState?.monitorsSummary?.monitors?.length === 0;
@@ -124,11 +137,47 @@ const Monitors = ({ isAdmin }) => {
                       options={monitorState?.monitorsSummary.monitors}
                       filteredBy="name"
                       value={search}
-                      handleInputChange={setSearch}
+                      handleInputChange={handleSearch}
                     />
                   </Box>
                 </Stack>
-                <MonitorTable isAdmin={isAdmin} filter={debouncedFilter} />
+                <Box position="relative">
+                  {isSearching && (
+                    <>
+                      <Box
+                        width="100%"
+                        height="100%"
+                        position="absolute"
+                        sx={{
+                          backgroundColor: theme.palette.background.main,
+                          opacity: 0.8,
+                          zIndex: 100,
+                        }}
+                      />
+                      <Box
+                        height="100%"
+                        position="absolute"
+                        top="20%"
+                        left="50%"
+                        sx={{
+                          transform: "translateX(-50%)",
+                          zIndex: 101,
+                        }}
+                      >
+                        <CircularProgress
+                          sx={{
+                            color: theme.palette.other.icon,
+                          }}
+                        />
+                      </Box>
+                    </>
+                  )}
+                  <MonitorTable
+                    isAdmin={isAdmin}
+                    filter={debouncedFilter}
+                    setLoading={setIsSearching}
+                  />
+                </Box>
               </Box>
             </>
           )}

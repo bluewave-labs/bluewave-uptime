@@ -55,7 +55,7 @@ const menu = [
   },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   // { name: "Status pages", path: "status", icon: <StatusPages /> },
-  { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
+  // { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
   // { name: "Integrations", path: "integrations", icon: <Integrations /> },
   {
     name: "Account",

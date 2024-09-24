@@ -17,7 +17,7 @@ import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import { setRowsPerPage } from "../../../../Features/UI/uiSlice";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useCallback, useRef } from "react";
 import { useNavigate } from "react-router";
 import { logger } from "../../../../Utils/Logger";
 import Host from "../host";
@@ -49,7 +49,6 @@ import useUtils from "../../utils";
  */
 const TablePaginationActions = (props) => {
   const { count, page, rowsPerPage, onPageChange } = props;
-
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0);
   };
@@ -108,7 +107,7 @@ TablePaginationActions.propTypes = {
   onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin, filter }) => {
+const MonitorTable = ({ isAdmin, filter, setLoading }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -121,6 +120,7 @@ const MonitorTable = ({ isAdmin, filter }) => {
   const authState = useSelector((state) => state.auth);
   const [updateTrigger, setUpdateTrigger] = useState(false);
   const [sort, setSort] = useState({});
+  const prevFilter = useRef(filter);
 
   const handleActionMenuDelete = () => {
     setUpdateTrigger((prev) => !prev);
@@ -140,33 +140,53 @@ const MonitorTable = ({ isAdmin, filter }) => {
     setPage(0);
   };
 
+  const fetchPage = useCallback(async () => {
+    try {
+      const { authToken } = authState;
+      const user = jwtDecode(authToken);
+      const res = await networkService.getMonitorsByTeamId({
+        authToken,
+        teamId: user.teamId,
+        limit: 25,
+        types: ["http", "ping"],
+        status: null,
+        checkOrder: "desc",
+        normalize: true,
+        page: page,
+        rowsPerPage: rowsPerPage,
+        filter: filter,
+        field: sort.field,
+        order: sort.order,
+      });
+      setMonitors(res?.data?.data?.monitors ?? []);
+      setMonitorCount(res?.data?.data?.monitorCount ?? 0);
+      setLoading(false);
+    } catch (error) {
+      logger.error(error);
+    }
+  }, [authState, page, rowsPerPage, filter, sort, setLoading]);
+
   useEffect(() => {
-    const fetchPage = async () => {
-      try {
-        const { authToken } = authState;
-        const user = jwtDecode(authToken);
-        const res = await networkService.getMonitorsByTeamId({
-          authToken,
-          teamId: user.teamId,
-          limit: 25,
-          types: ["http", "ping"],
-          status: null,
-          checkOrder: "desc",
-          normalize: true,
-          page: page,
-          rowsPerPage: rowsPerPage,
-          filter: filter,
-          field: sort.field,
-          order: sort.order,
-        });
-        setMonitors(res?.data?.data?.monitors ?? []);
-        setMonitorCount(res?.data?.data?.monitorCount ?? 0);
-      } catch (error) {
-        logger.error(error);
-      }
-    };
     fetchPage();
-  }, [updateTrigger, authState, page, rowsPerPage, filter, sort]);
+  }, [
+    updateTrigger,
+    authState,
+    page,
+    rowsPerPage,
+    filter,
+    sort,
+    setLoading,
+    fetchPage,
+  ]);
+
+  // Listen for changes in filter, if new value reset the page
+  useEffect(() => {
+    if (prevFilter.current !== filter) {
+      setPage(0);
+      fetchPage();
+    }
+    prevFilter.current = filter;
+  }, [filter, fetchPage]);
 
   /**
    * Helper function to calculate the range of displayed rows.
@@ -407,6 +427,7 @@ const MonitorTable = ({ isAdmin, filter }) => {
 MonitorTable.propTypes = {
   isAdmin: PropTypes.bool,
   filter: PropTypes.string,
+  setLoading: PropTypes.func,
 };
 
 const MemoizedMonitorTable = memo(MonitorTable);

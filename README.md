@@ -15,6 +15,10 @@
 
 BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
+## Demo
+
+See [BlueWave Uptime](https://uptime-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
+
 ## Features
 
 - [x] Completely open source, deployable on your servers
@@ -74,6 +78,7 @@ Also check other developer and contributor-friendly projects of BlueWave:
 
 - Clone this repository to your local machine
 
+1.  [Quickstart for Users](#user-quickstart)
 1.  [Quickstart for Developers](#dev-quickstart)
 1.  [Docker Compose](#docker-compose)
 1.  [Installation (Client)](#client)
@@ -128,6 +133,15 @@ Also check other developer and contributor-friendly projects of BlueWave:
 1.  [Contributors](#contributors)
 
 ---
+
+#### <u> Quickstart for Users</u><a id="user-quickstart"></a>
+
+1. Download our [Docker Compose File](/Docker/quickstart/docker-compose.yaml)
+2. Download our [Quickstart script](/Docker/quickstart/quickstart.sh)
+3. Place these files in a directory of your choice
+4. Run `quickstart.sh` and generate config files
+5. Run `docker compose up` to start the application
+6. Application is running at `http://localhost`
 
 #### <u>Quickstart for Developers</u> <a id="dev-quickstart"></a>
 
