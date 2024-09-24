@@ -66,8 +66,11 @@ export const update = createAsyncThunk(
       form.deleteProfileImage &&
         fd.append("deleteProfileImage", form.deleteProfileImage);
 
-      const res = await networkService.updateUser(token, user._id, fd);
-      console.log(res);
+      const res = await networkService.updateUser({
+        authToken: token,
+        userId: user._id,
+        form: fd,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -88,7 +91,10 @@ export const deleteUser = createAsyncThunk(
     const user = jwtDecode(data);
 
     try {
-      const res = await networkService.deleteUser(data, user._id);
+      const res = await networkService.deleteUser({
+        authToken: data,
+        userId: user._id,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -127,8 +133,11 @@ export const setNewPassword = createAsyncThunk(
   async (data, thunkApi) => {
     const { token, form } = data;
     try {
-      await networkService.validateRecoveryToken(token);
-      const res = await networkService.setNewPassword(token, form);
+      await networkService.validateRecoveryToken({ recoveryToken: token });
+      const res = await networkService.setNewPassword({
+        recoveryToken: token,
+        form: form,
+      });
       return res.data;
     } catch (error) {
       if (error.response.data) {

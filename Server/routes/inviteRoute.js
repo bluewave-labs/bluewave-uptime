@@ -13,10 +13,6 @@ router.post(
   verifyJWT,
   inviteController
 );
-router.post(
-  "/verify",
-  isAllowed(["admin", "superadmin"]),
-  inviteVerifyController
-);
+router.post("/verify", inviteVerifyController);
 
 module.exports = router;

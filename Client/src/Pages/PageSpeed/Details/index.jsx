@@ -44,15 +44,15 @@ const PageSpeedDetails = () => {
   useEffect(() => {
     const fetchMonitor = async () => {
       try {
-        const res = await networkService.getStatsByMonitorId(
-          authToken,
-          monitorId,
-          "desc",
-          50,
-          "day",
-          null,
-          null
-        );
+        const res = await networkService.getStatsByMonitorId({
+          authToken: authToken,
+          monitorId: monitorId,
+          sortOrder: "desc",
+          limit: 50,
+          dateRange: "day",
+          numToDisplay: null,
+          normalize: null,
+        });
         setMonitor(res?.data?.data ?? {});
         setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
       } catch (error) {
