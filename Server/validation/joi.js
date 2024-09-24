@@ -137,7 +137,6 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
-  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
