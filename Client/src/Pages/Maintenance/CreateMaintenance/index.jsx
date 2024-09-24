@@ -1,11 +1,15 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
+import { ConfigBox } from "./styled";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Select from "../../../Components/Inputs/Select";
 import Field from "../../../Components/Inputs/Field";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import CalendarIcon from "../../../assets/icons/calendar.svg?react";
 import "./index.css";
-import { ConfigBox } from "./styled";
 
 const repeatConfig = [
   { _id: 0, name: "Don't repeat" },
@@ -69,8 +73,7 @@ const CreateMaintenance = () => {
             General Settings
           </Typography>
           <Box
-            pl={theme.spacing(18)}
-            pr={theme.spacing(8)}
+            px={theme.spacing(14)}
             borderLeft={1}
             borderLeftColor={theme.palette.border.light}
           >
@@ -80,9 +83,54 @@ const CreateMaintenance = () => {
               value={0}
               items={repeatConfig}
             />
-            <Box mt={theme.spacing(16)}>
-              <Typography component="h3">Days</Typography>
-            </Box>
+            <Stack gap={theme.spacing(2)} mt={theme.spacing(16)}>
+              <Typography component="h3">Date</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  disablePast
+                  disableHighlightToday
+                  slots={{ openPickerIcon: CalendarIcon }}
+                  slotProps={{
+                    switchViewButton: { sx: { display: "none" } },
+                    nextIconButton: { sx: { ml: theme.spacing(2) } },
+                    field: {
+                      sx: {
+                        width: "fit-content",
+                        "& > .MuiOutlinedInput-root": {
+                          flexDirection: "row-reverse",
+                        },
+                        "& input": {
+                          height: 34,
+                          p: 0,
+                          pr: theme.spacing(5),
+                        },
+                        "& fieldset": {
+                          borderColor: theme.palette.border.dark,
+                          borderRadius: theme.shape.borderRadius,
+                        },
+                        "&:not(:has(.Mui-disabled)):not(:has(.Mui-error)) .MuiOutlinedInput-root:not(:has(input:focus)):hover fieldset":
+                          {
+                            borderColor: theme.palette.border.dark,
+                          },
+                      },
+                    },
+                    inputAdornment: { sx: { ml: 0, px: 3 } },
+                    openPickerButton: {
+                      sx: {
+                        py: 0,
+                        mr: 0,
+                        "& path": {
+                          stroke: theme.palette.other.icon,
+                          strokeWidth: 1.1,
+                        },
+                        "&:hover": { backgroundColor: "transparent" },
+                      },
+                    },
+                  }}
+                  sx={{}}
+                />
+              </LocalizationProvider>
+            </Stack>
           </Box>
         </ConfigBox>
         <ConfigBox>
@@ -156,7 +204,7 @@ const CreateMaintenance = () => {
             onClick={() => console.log("disabled")}
             disabled={false}
           >
-            Create window
+            Create maintenance
           </Button>
         </Box>
       </Stack>

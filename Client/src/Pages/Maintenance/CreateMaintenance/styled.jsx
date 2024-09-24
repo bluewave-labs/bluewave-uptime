@@ -13,8 +13,13 @@ export const ConfigBox = styled(Stack)(({ theme }) => ({
   "& > div:last-of-type, & > .MuiStack-root > div:last-of-type": {
     flex: 1,
   },
+  "& > .MuiStack-root > div:first-of-type": { paddingRight: theme.spacing(14) },
+  "& > .MuiStack-root > div:last-of-type": {
+    paddingLeft: theme.spacing(14),
+  },
   "& h2": { fontSize: 13.5, fontWeight: 500 },
   "& h3, & p": {
     color: theme.palette.text.tertiary,
   },
+  "& h3": { fontWeight: 500 },
 }));
