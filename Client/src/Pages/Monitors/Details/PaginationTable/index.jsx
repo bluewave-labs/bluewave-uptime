@@ -42,7 +42,7 @@ const PaginationTable = ({ monitorId, dateRange }) => {
       try {
         const res = await networkService.getChecksByMonitor({
           authToken: authToken,
-          monitoirId: monitorId,
+          monitorId: monitorId,
           sortOrder: "desc",
           limit: null,
           dateRange: dateRange,
