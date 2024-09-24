@@ -128,7 +128,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -186,7 +186,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -238,6 +238,38 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
         "security": [
           {
             "bearerAuth": []
@@ -257,24 +289,13 @@
             }
           }
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/auth/users/admin": {
-      "get": {
-        "tags": ["auth"],
-        "description": "Checks to see if an admin account exists",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -299,7 +320,55 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/users/superadmin": {
+      "get": {
+        "tags": ["auth"],
+        "description": "Checks to see if an admin account exists",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/auth/users": {
@@ -312,7 +381,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -337,96 +406,41 @@
               }
             }
           }
-        }
-      }
-    },
-    "/auth/invite": {
-      "post": {
-        "tags": ["auth"],
-        "description": "Invite people to application",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Unprocessable Content",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+        },
+        "security": [
+          {
+            "bearerAuth": []
           }
-        }
-      }
-    },
-    "/auth/invite/verify": {
-      "post": {
-        "tags": ["auth"],
-        "description": "Verify the invite",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Unprocessable Content",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/auth/recovery/request": {
       "post": {
         "tags": ["auth"],
         "description": "Request a recovery token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -458,13 +472,28 @@
       "post": {
         "tags": ["auth"],
         "description": "Validate recovery token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["recoveryToken"],
+                "properties": {
+                  "recoveryToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -496,13 +525,31 @@
       "post": {
         "tags": ["auth"],
         "description": "Password reset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["recoveryToken", "password"],
+                "properties": {
+                  "recoveryToken": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserSuccessResponse"
+                  "$ref": "#/components/schemas/SuccessResponse"
                 }
               }
             }
@@ -523,44 +570,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/healthy": {
-      "get": {
-        "tags": ["healthy"],
-        "description": "Health check",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
                 }
               }
             }
@@ -594,7 +603,8 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": true
           },
           "msg": {
             "type": "string"
@@ -640,223 +650,6 @@
           },
           "deleteProfileImage": {
             "type": "boolean"
-          }
-        }
-      },
-      "UserSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "msg": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "$ref": "#/components/schemas/UserDataType"
-          }
-        }
-      },
-      "MonitorSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "msg": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "$ref": "#/components/schemas/MonitorDataType"
-          }
-        }
-      },
-      "CheckDataSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "msg": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "$ref": "#/components/schemas/CheckDataType"
-          }
-        }
-      },
-      "AlertDataSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "msg": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "$ref": "#/components/schemas/AlertDataType"
-          }
-        }
-      },
-      "UserDataType": {
-        "type": "object",
-        "required": [
-          "firstname",
-          "lastname",
-          "email",
-          "profilePicUrl",
-          "isActive",
-          "isVerified",
-          "updatedAt",
-          "createdAt"
-        ],
-        "properties": {
-          "firstname": {
-            "type": "string"
-          },
-          "lastname": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "profilePicUrl": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "isVerified": {
-            "type": "boolean"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
-          }
-        }
-      },
-      "MonitorDataType": {
-        "type": "object",
-        "required": [
-          "userId",
-          "name",
-          "description",
-          "url",
-          "isActive",
-          "interval",
-          "updatedAt",
-          "createdAt"
-        ],
-        "properties": {
-          "userId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "interval": {
-            "type": "integer"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
-          }
-        }
-      },
-      "CheckDataType": {
-        "type": "object",
-        "required": [
-          "monitorId",
-          "status",
-          "responseTime",
-          "statusCode",
-          "message",
-          "updatedAt",
-          "createdAt"
-        ],
-        "properties": {
-          "monitorId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "responseTime": {
-            "type": "integer"
-          },
-          "statusCode": {
-            "type": "integer"
-          },
-          "message": {
-            "type": "string"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
-          }
-        }
-      },
-      "AlertDataType": {
-        "type": "object",
-        "required": [
-          "checkId",
-          "monitorId",
-          "userId",
-          "status",
-          "message",
-          "notifiedStatus",
-          "acknowledgedStatus",
-          "updatedAt",
-          "createdAt"
-        ],
-        "properties": {
-          "checkId": {
-            "type": "string"
-          },
-          "monitorId": {
-            "type": "string"
-          },
-          "userId": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "notifiedStatus": {
-            "type": "boolean"
-          },
-          "acknowledgedStatus": {
-            "type": "boolean"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
           }
         }
       }
