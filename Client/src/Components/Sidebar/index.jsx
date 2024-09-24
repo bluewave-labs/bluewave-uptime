@@ -93,7 +93,7 @@ function Sidebar() {
   const { user } = useSelector((state) => state.auth);
 
   // Remove demo password if demo
-  const accountMenuItem = menu.find((item) => item.name === "account");
+  const accountMenuItem = menu.find((item) => item.name === "Account");
   if (user.role?.includes("demo") && accountMenuItem) {
     accountMenuItem.nested = accountMenuItem.nested.filter((item) => {
       return item.name !== "Password";
