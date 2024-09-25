@@ -137,7 +137,6 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
-  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
@@ -234,13 +233,6 @@ const editMonitorBodyValidation = joi.object({
 
 const pauseMonitorParamValidation = joi.object({
   monitorId: joi.string().required(),
-});
-
-const getMonitorAggregateStatsParamValidation = joi.object({
-  monitorId: joi.string().required(),
-});
-const getMonitorAggregateStatsQueryValidation = joi.object({
-  dateRange: joi.string().valid("day", "week", "month"),
 });
 
 //****************************************
@@ -408,8 +400,6 @@ module.exports = {
   getMonitorStatsByIdParamValidation,
   getMonitorStatsByIdQueryValidation,
   getCertificateParamValidation,
-  getMonitorAggregateStatsParamValidation,
-  getMonitorAggregateStatsQueryValidation,
   editMonitorBodyValidation,
   pauseMonitorParamValidation,
   editUserParamValidation,

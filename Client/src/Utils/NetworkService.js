@@ -609,7 +609,7 @@ class NetworkService {
    */
   async updateChecksTTL(config) {
     return this.axiosInstance.put(
-      `/checks/ttl`,
+      `/checks/team/ttl`,
       { ttl: config.ttl },
       {
         headers: {

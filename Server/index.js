@@ -1,3 +1,7 @@
+const path = require("path");
+const fs = require("fs");
+const swaggerUi = require("swagger-ui-express");
+
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -10,8 +14,6 @@ const authRouter = require("./routes/authRoute");
 const inviteRouter = require("./routes/inviteRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
-const alertRouter = require("./routes/alertRoute");
-const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
 const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
 
 const { connectDbAndRunServer } = require("./configs/db");
@@ -21,8 +23,11 @@ const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
 const SERVICE_NAME = "Server";
-let cleaningUp = false;
 
+let cleaningUp = false;
+const openApiSpec = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "openapi.json"), "utf8")
+);
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
   // **************************
@@ -70,16 +75,16 @@ const startApp = async () => {
     next();
   });
 
+  // Swagger UI
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+
   //routes
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/invite", inviteRouter);
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
-  app.use("/api/v1/alerts", verifyJWT, alertRouter);
-  app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
   app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
-  //Temporary route for testing, remove later
-  app.use("/api/v1/job", queueRouter);
+  app.use("/api/v1/queue", verifyJWT, queueRouter);
 
   //health check
   app.use("/api/v1/healthy", (req, res) => {
