@@ -32,7 +32,7 @@ import PieChart from "./Charts/PieChart";
 import useUtils from "../../Monitors/utils";
 import "./index.css";
 
-const PageSpeedDetails = () => {
+const PageSpeedDetails = ({ isAdmin }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
@@ -157,25 +157,27 @@ const PageSpeedDetails = () => {
                 </Typography>
               </Stack>
             </Box>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
-              sx={{
-                ml: "auto",
-                alignSelf: "flex-end",
-                px: theme.spacing(5),
-                "& svg": {
-                  mr: theme.spacing(3),
-                  "& path": {
-                    stroke: theme.palette.other.icon,
+            {isAdmin && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => navigate(`/pagespeed/configure/${monitorId}`)}
+                sx={{
+                  ml: "auto",
+                  alignSelf: "flex-end",
+                  px: theme.spacing(5),
+                  "& svg": {
+                    mr: theme.spacing(3),
+                    "& path": {
+                      stroke: theme.palette.other.icon,
+                    },
                   },
-                },
-              }}
-            >
-              <SettingsIcon />
-              Configure
-            </Button>
+                }}
+              >
+                <SettingsIcon />
+                Configure
+              </Button>
+            )}
           </Stack>
           <Stack direction="row" gap={theme.spacing(8)}>
             <StatBox>
@@ -393,6 +395,7 @@ const PageSpeedDetails = () => {
 };
 
 PageSpeedDetails.propTypes = {
+  isAdmin: PropTypes.bool,
   push: PropTypes.func,
 };
 

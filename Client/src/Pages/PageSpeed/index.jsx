@@ -87,14 +87,16 @@ const PageSpeed = ({ isAdmin }) => {
               mt={theme.spacing(5)}
             >
               <Greeting type="pagespeed" />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => navigate("/pagespeed/create")}
-                sx={{ whiteSpace: "nowrap" }}
-              >
-                Create new
-              </Button>
+              {isAdmin && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate("/pagespeed/create")}
+                  sx={{ whiteSpace: "nowrap" }}
+                >
+                  Create new
+                </Button>
+              )}
             </Stack>
           </Box>
           <Grid container spacing={theme.spacing(12)}>
