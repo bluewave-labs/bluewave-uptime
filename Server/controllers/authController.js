@@ -51,6 +51,11 @@ const registerController = async (req, res, next) => {
   }
   // Create a new user
   try {
+    const { inviteToken } = req.body;
+    const superAdminExists = await req.db.checkSuperadmin(req, res);
+    if (superAdminExists) {
+      await req.db.getInviteTokenAndDelete(inviteToken);
+    }
     const newUser = await req.db.insertUser({ ...req.body }, req.file);
     logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,

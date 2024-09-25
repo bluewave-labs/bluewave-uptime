@@ -596,6 +596,7 @@ const Register = ({ isSuperAdmin }) => {
     let registerForm = {
       ...form,
       role: isSuperAdmin ? ["superadmin"] : form.role,
+      inviteToken: token ? token : "",
     };
     let error = validateForm(registerForm, {
       context: { password: form.password },
@@ -608,8 +609,8 @@ const Register = ({ isSuperAdmin }) => {
     delete registerForm.confirm;
     const action = await dispatch(register(registerForm));
     if (action.payload.success) {
-      const token = action.payload.data;
-      localStorage.setItem("token", token);
+      const authToken = action.payload.data;
+      localStorage.setItem("token", authToken);
       navigate("/");
       createToast({
         body: "Welcome! Your account was created successfully.",
