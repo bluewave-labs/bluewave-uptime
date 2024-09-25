@@ -14,7 +14,6 @@ const authRouter = require("./routes/authRoute");
 const inviteRouter = require("./routes/inviteRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
-const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
 const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
 
 const { connectDbAndRunServer } = require("./configs/db");
@@ -84,7 +83,6 @@ const startApp = async () => {
   app.use("/api/v1/invite", inviteRouter);
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
-  app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
   app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
   //Temporary route for testing, remove later
   app.use("/api/v1/job", queueRouter);
