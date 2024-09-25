@@ -3,8 +3,14 @@ const maintenanceWindowController = require("../controllers/maintenanceWindowCon
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const Monitor = require("../models/Monitor");
 
+router.get(
+  "/monitor/:monitorId",
+  verifyOwnership(Monitor, "monitorId"),
+  maintenanceWindowController.getMaintenanceWindowsByMonitorId
+);
+
 router.post(
-  "/:monitorId",
+  "/monitor/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   maintenanceWindowController.createMaintenanceWindow
 );
@@ -12,12 +18,6 @@ router.post(
 router.get(
   "/user/:userId",
   maintenanceWindowController.getMaintenanceWindowsByUserId
-);
-
-router.get(
-  "/monitor/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  maintenanceWindowController.getMaintenanceWindowsByMonitorId
 );
 
 module.exports = router;
