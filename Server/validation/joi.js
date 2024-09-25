@@ -74,6 +74,7 @@ const registrationBodyValidation = joi.object({
     .min(1)
     .required(),
   teamId: joi.string().allow("").required(),
+  inviteToken: joi.string().allow("").required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -137,6 +138,7 @@ const inviteBodyValidation = joi.object({
     "string.email": "Must be a valid email address",
   }),
   role: joi.array().required(),
+  teamId: joi.string().required(),
 });
 
 const inviteVerifciationBodyValidation = joi.object({
