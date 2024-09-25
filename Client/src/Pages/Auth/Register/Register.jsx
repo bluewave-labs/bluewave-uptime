@@ -596,7 +596,7 @@ const Register = ({ isSuperAdmin }) => {
     let registerForm = {
       ...form,
       role: isSuperAdmin ? ["superadmin"] : form.role,
-      inviteToken: token ? token : "",
+      inviteToken: token ? token : "", // Add the token to the request for verification
     };
     let error = validateForm(registerForm, {
       context: { password: form.password },

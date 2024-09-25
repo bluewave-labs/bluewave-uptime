@@ -52,6 +52,7 @@ const registerController = async (req, res, next) => {
   // Create a new user
   try {
     const { inviteToken } = req.body;
+    // If superAdmin exists, a token should be attached to all further register requests
     const superAdminExists = await req.db.checkSuperadmin(req, res);
     if (superAdminExists) {
       await req.db.getInviteTokenAndDelete(inviteToken);

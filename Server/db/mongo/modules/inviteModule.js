@@ -42,7 +42,6 @@ const requestInviteToken = async (userData) => {
  * @throws {Error} If the invite token is not found or there is another error.
  */
 const getInviteToken = async (token) => {
-  console.log(token);
   try {
     const invite = await InviteToken.findOne({
       token,
