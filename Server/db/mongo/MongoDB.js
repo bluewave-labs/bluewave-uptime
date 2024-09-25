@@ -47,6 +47,7 @@ const {
 const {
   requestInviteToken,
   getInviteToken,
+  getInviteTokenAndDelete,
 } = require("./modules/inviteModule");
 
 //****************************************
@@ -128,6 +129,7 @@ module.exports = {
   logoutUser,
   requestInviteToken,
   getInviteToken,
+  getInviteTokenAndDelete,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
