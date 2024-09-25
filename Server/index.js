@@ -84,8 +84,7 @@ const startApp = async () => {
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
   app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
-  //Temporary route for testing, remove later
-  app.use("/api/v1/job", queueRouter);
+  app.use("/api/v1/queue", verifyJWT, queueRouter);
 
   //health check
   app.use("/api/v1/healthy", (req, res) => {
