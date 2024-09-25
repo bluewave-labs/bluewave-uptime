@@ -240,12 +240,12 @@ class JobQueue {
    */
   async addJob(jobName, payload) {
     try {
-      console.log("Adding job", payload.url);
+      console.log("Adding job", payload?.url ?? "No URL");
       // Execute job immediately
       await this.queue.add(jobName, payload);
       await this.queue.add(jobName, payload, {
         repeat: {
-          every: payload.interval,
+          every: payload?.interval ?? 60000,
         },
       });
       const workerStats = await this.getWorkerStats();

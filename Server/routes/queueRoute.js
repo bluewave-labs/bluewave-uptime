@@ -4,10 +4,10 @@ const queueController = require("../controllers/queueController");
 router.get("/metrics", queueController.getMetrics);
 
 // Get Jobs
-router.get("/", queueController.getJobs);
+router.get("/jobs", queueController.getJobs);
 
 // Add Job
-router.post("/", queueController.addJob);
+router.post("/jobs", queueController.addJob);
 
 // Obliterate Queue
 router.post("/obliterate", queueController.obliterateQueue);

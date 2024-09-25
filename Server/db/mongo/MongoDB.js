@@ -101,20 +101,6 @@ const {
 } = require("./modules/checkModule");
 
 //****************************************
-// Alerts
-//****************************************
-
-const {
-  createAlert,
-  getAlertsByUserId,
-  getAlertsByMonitorId,
-  getAlertById,
-  editAlert,
-  deleteAlert,
-  deleteAlertByMonitorId,
-} = require("./modules/alertModule");
-
-//****************************************
 // Maintenance Window
 //****************************************
 const {
@@ -163,13 +149,6 @@ module.exports = {
   deleteChecks,
   deleteChecksByTeamId,
   updateChecksTTL,
-  createAlert,
-  getAlertsByUserId,
-  getAlertsByMonitorId,
-  getAlertById,
-  editAlert,
-  deleteAlert,
-  deleteAlertByMonitorId,
   deleteMonitorsByUserId,
   createPageSpeedCheck,
   getPageSpeedChecks,
