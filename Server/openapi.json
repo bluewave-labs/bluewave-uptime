@@ -22,12 +22,28 @@
       "variables": {
         "PORT": {
           "description": "API Port",
-          "enum": ["5000", "3000", "8080"],
+          "enum": ["5000"],
           "default": "5000"
         },
         "API_PATH": {
           "description": "API Base Path",
-          "enum": ["api/v1", "api/v1.1", "api/v2"],
+          "enum": ["api/v1"],
+          "default": "api/v1"
+        }
+      }
+    },
+    {
+      "url": "https://uptime-demo.bluewavelabs.ca:/{API_PATH}",
+      "description": "Bluewave Demo Server",
+      "variables": {
+        "PORT": {
+          "description": "API Port",
+          "enum": ["5000"],
+          "default": "5000"
+        },
+        "API_PATH": {
+          "description": "API Base Path",
+          "enum": ["api/v1"],
           "default": "api/v1"
         }
       }
