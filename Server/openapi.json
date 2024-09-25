@@ -51,24 +51,8 @@
       "description": "Checks"
     },
     {
-      "name": "alerts",
-      "description": "Alerts"
-    },
-    {
-      "name": "pagespeed",
-      "description": "Page Speed"
-    },
-    {
       "name": "maintenance-window",
       "description": "Maintenance window"
-    },
-    {
-      "name": "healthy",
-      "description": "Health check"
-    },
-    {
-      "name": "mail",
-      "description": "Mail service"
     }
   ],
   "paths": {
