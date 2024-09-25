@@ -244,7 +244,7 @@ const PageSpeedConfigure = () => {
                       },
                     }}
                   >
-                    Editting...
+                    Editing...
                   </Typography>
                 </Stack>
               </Box>
