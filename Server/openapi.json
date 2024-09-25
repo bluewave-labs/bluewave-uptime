@@ -1669,6 +1669,58 @@
           }
         ]
       }
+    },
+    "/checks/team/ttl": {
+      "put": {
+        "tags": ["checks"],
+        "description": "Update check TTL",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCheckTTLBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
 
@@ -1831,6 +1883,15 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateCheckTTLBody": {
+        "type": "object",
+        "required": ["ttl"],
+        "properties": {
+          "ttl": {
+            "type": "integer"
           }
         }
       }

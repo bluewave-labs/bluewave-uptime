@@ -25,7 +25,7 @@ router.delete(
 );
 
 router.put(
-  "/ttl",
+  "/team/ttl",
   isAllowed(["admin", "superadmin"]),
   checkController.updateChecksTTL
 );
