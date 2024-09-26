@@ -4,7 +4,7 @@ const { verifyOwnership } = require("../middleware/verifyOwnership");
 const { isAllowed } = require("../middleware/isAllowed");
 const multer = require("multer");
 const upload = multer();
-const User = require("../models/user");
+const User = require("../models/User");
 
 const {
   registerController,

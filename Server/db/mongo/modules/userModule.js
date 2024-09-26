@@ -1,4 +1,4 @@
-const UserModel = require("../../../models/user");
+const UserModel = require("../../../models/User");
 const TeamModel = require("../../../models/Team");
 const { errorMessages } = require("../../../utils/messages");
 const { GenerateAvatarImage } = require("../../../utils/imageProcessing");
