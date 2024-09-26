@@ -16,7 +16,7 @@ const logger = require("../utils/logger");
 require("dotenv").config();
 const { errorMessages, successMessages } = require("../utils/messages");
 var jwt = require("jsonwebtoken");
-const SERVICE_NAME = "auth";
+const SERVICE_NAME = "AuthController";
 const { getTokenFromHeaders } = require("../utils/utils");
 
 /**
@@ -466,23 +466,26 @@ const deleteUserController = async (req, res, next) => {
     const result = await req.db.getMonitorsByTeamId({
       params: { teamId: user.teamId },
     });
-    if (user.role.includes("superadmin") && result?.monitors.length > 0) {
+    if (user.role.includes("superadmin")) {
       //2.  Remove all jobs, delete checks and alerts
-      await Promise.all(
-        monitors.map(async (monitor) => {
-          await req.jobQueue.deleteJob(monitor);
+      result?.monitors.length > 0 &&
+        (await Promise.all(
+          result.monitors.map(async (monitor) => {
+            await req.jobQueue.deleteJob(monitor);
+            await req.db.deleteChecks(monitor._id);
+            await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+            await req.db.deleteNotificationsByMonitorId(monitor._id);
+          })
+        ));
 
-          await req.db.deleteChecks(monitor._id);
-          await req.db.deleteAlertByMonitorId(monitor._id);
-          await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
-          await req.db.deleteNotificationsByMonitorId(monitor._id);
-        })
-      );
-
-      // 3. Delete each monitor
+      // 3. Delete team
+      await req.db.deleteTeam(user.teamId);
+      // 4. Delete all other team members
+      await req.db.deleteAllOtherUsers();
+      // 5. Delete each monitor
       await req.db.deleteMonitorsByUserId(user._id);
     }
-    // 4. Delete the user by id
+    // 6. Delete the user by id
     await req.db.deleteUser(user._id);
 
     return res.status(200).json({

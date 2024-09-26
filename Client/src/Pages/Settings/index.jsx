@@ -33,7 +33,7 @@ const Settings = ({ isAdmin }) => {
   const { timezone } = useSelector((state) => state.ui);
   const [checksIsLoading, setChecksIsLoading] = useState(false);
   const [form, setForm] = useState({
-    ttl: (checkTTL / SECONDS_PER_DAY).toString(),
+    ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();

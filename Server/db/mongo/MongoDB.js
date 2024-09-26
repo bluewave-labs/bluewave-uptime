@@ -36,6 +36,8 @@ const {
   getUserByEmail,
   updateUser,
   deleteUser,
+  deleteTeam,
+  deleteAllOtherUsers,
   getAllUsers,
   logoutUser,
 } = require("./modules/userModule");
@@ -125,6 +127,8 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  deleteTeam,
+  deleteAllOtherUsers,
   getAllUsers,
   logoutUser,
   requestInviteToken,
