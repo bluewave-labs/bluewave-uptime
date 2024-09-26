@@ -72,7 +72,7 @@ Also check other developer and contributor-friendly projects of BlueWave:
 - [BlueWave HRM](https://github.com/bluewave-labs/bluewave-hrm)
 - [BlueWave Onboarding](https://github.com/bluewave-labs/bluewave-onboarding)
 - [BlueWave DataRoom](https://github.com/bluewave-labs/bluewave-dataroom)
-- [BlueWave ChatFabrica](https://github.com/bluewave-labs/bluewave-chatfabrica)
+- [VerifyWise](https://github.com/bluewave-labs/verifywise)
 
 ## Getting Started
 
@@ -154,7 +154,7 @@ USERNAME_ENV_VAR=user
 PASSWORD_ENV_VAR=password
 ```
 
-3. In the `Docker` directory, create a `server.env` file with the [requried environtmental variables](#env-vars-server) for the server. Sample file:
+3. In the `Docker` directory, create a `server.env` file with the [requried environmental variables](#env-vars-server) for the server. Sample file:
 
 ```
 CLIENT_HOST="http://localhost:5173"
@@ -171,7 +171,7 @@ SYSTEM_EMAIL_ADDRESS=<system_email>
 SYSTEM_EMAIL_PASSWORD=<system_email_password>
 ```
 
-4.  In the `Client` directory, create a `client.env` file with the [required environtmental variables](#env-vars-client) for the client. Sample file:
+4.  In the `Client` directory, create a `client.env` file with the [required environmental variables](#env-vars-client) for the client. Sample file:
 
 ```
 VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
@@ -246,10 +246,10 @@ Configure the server with the following environmental variables:
 
 ##### Databases <a id="databases"></a>
 
-This project requires a number of databases to run:
+This project requires two databases:
 
-1.  Main database for the application. This project includes an implementation for a MongoDB database as well as a MongoDB Docker image.
-2.  A Redis database is required for the Queue implementation in the PingService. This project includes a Redis docker image.
+1. **Main Application Database:** The project uses MongoDB for its primary database, with a MongoDB Docker image provided for easy setup.
+2. **Redis for Queue Management:** A Redis database is used for the PingService’s queue system, and a Redis Docker image is included for deployment.
 
 You may use the included Dockerfiles to spin up databases quickly if you wish.
 
