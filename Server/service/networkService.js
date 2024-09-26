@@ -44,10 +44,17 @@ class NetworkService {
   }
 
   async handleStatusUpdate(job, isAlive) {
+    let monitor;
+    // Look up the monitor, if it doesn't exist, it's probably been removed, return
     try {
       const { _id } = job.data;
-      const monitor = await this.db.getMonitorById(_id);
+      monitor = await this.db.getMonitorById(_id);
+    } catch (error) {
+      return;
+    }
 
+    // Otherwise, try to update monitor status
+    try {
       if (monitor === null || monitor === undefined) {
         logger.error(`Null Monitor: ${_id}`, {
           method: "handleStatusUpdate",
@@ -90,7 +97,7 @@ class NetworkService {
       const endTime = Date.now();
       error.responseTime = endTime - startTime;
       error.service === undefined ? (error.service = SERVICE_NAME) : null;
-      error.mheotd === undefined
+      error.method === undefined
         ? (error.method = "measureResponseTime")
         : null;
       throw error;

@@ -1,5 +1,5 @@
 import TabPanel from "@mui/lab/TabPanel";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -116,6 +116,14 @@ const PasswordPanel = () => {
           <Box flex={0.9}>
             <Typography component="h1">Current password</Typography>
           </Box>
+          <Field
+            type="text"
+            id="hidden-username"
+            name="username"
+            autoComplete="username"
+            hidden={true}
+            value=""
+          />
           <Field
             type="password"
             id="edit-current-password"
