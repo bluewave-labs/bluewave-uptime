@@ -72,7 +72,6 @@ class EmailService {
         pass: systemEmailPassword,
       },
     };
-    console.log(emailConfig);
 
     this.transporter = nodemailer.createTransport(emailConfig);
   }
