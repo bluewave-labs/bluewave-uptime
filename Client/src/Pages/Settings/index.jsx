@@ -13,11 +13,12 @@ import {
   deleteAllMonitors,
 } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { update } from "../../Features/Auth/authSlice";
+import { getAppSettings } from "../../Features/Settings/settingsSlice";
 import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { setTimezone } from "../../Features/UI/uiSlice";
 import timezones from "../../Utils/timezones.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConfigBox } from "./styled";
 import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
@@ -35,8 +36,24 @@ const Settings = ({ isAdmin }) => {
   const [form, setForm] = useState({
     ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
+  const [settings, setSettings] = useState({
+    apiBaseUrl: "",
+  });
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const action = await dispatch(getAppSettings({ authToken }));
+      if (getAppSettings.fulfilled.match(action)) {
+        const settings = action.payload.data;
+        setSettings(settings);
+      } else if (getAppSettings.rejected.match(action)) {
+        throw new Error(action.error.message);
+      }
+    };
+    fetchSettings();
+  }, [dispatch, authToken]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -249,6 +266,23 @@ const Settings = ({ isAdmin }) => {
             </Stack>
           </ConfigBox>
         )}
+        <ConfigBox>
+          <Box>
+            <Typography component="h1">Client Settings</Typography>
+            <Typography sx={{ mt: theme.spacing(2) }}>
+              Here you can modify settings for the client.
+            </Typography>
+          </Box>
+          <Stack gap={theme.spacing(20)}>
+            <Field
+              id="apiBaseUrl"
+              label="Base URL for backend API"
+              value={settings.apiBaseUrl}
+              onChange={handleChange}
+              error={errors["settings-client-base-url"]}
+            />
+          </Stack>
+        </ConfigBox>
         <ConfigBox>
           <Box>
             <Typography component="h1">About</Typography>

@@ -619,6 +619,27 @@ class NetworkService {
       }
     );
   }
+
+  /**
+   * ************************************
+   * Get app settings
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
+
+  async getAppSettings(config) {
+    return this.axiosInstance.get("/settings", {
+      headers: {
+        Authorization: `Bearer ${config.authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }
 
 export default NetworkService;
