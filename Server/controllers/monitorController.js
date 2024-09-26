@@ -325,6 +325,7 @@ const deleteMonitor = async (req, res, next) => {
       logger.error(
         `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
         {
+          method: "deleteMonitor",
           service: SERVICE_NAME,
           error: error.message,
         }
