@@ -22,6 +22,19 @@ class SettingsService {
     }
   }
 
+  async reloadSettings() {
+    try {
+      this.settings = await AppSettings.findOne();
+      if (!this.settings) {
+        throw new Error("Settings not found");
+      }
+    } catch (error) {
+      error.service === undefined ? (error.service = SERVICE_NAME) : null;
+      error.method === undefined ? (error.method = "reloadSettings") : null;
+      throw error;
+    }
+  }
+
   getSettings() {
     if (!this.settings) {
       throw new Error("Settings have not been loaded");
