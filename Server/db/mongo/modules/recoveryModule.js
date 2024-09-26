@@ -1,4 +1,4 @@
-const UserModel = require("../../../models/user");
+const UserModel = require("../../../models/User");
 const RecoveryToken = require("../../../models/RecoveryToken");
 const crypto = require("crypto");
 const { errorMessages } = require("../../../utils/messages");

@@ -4,7 +4,7 @@ const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
 const { errorMessages } = require("../utils/messages");
 const { parse } = require("path");
-const User = require("../models/user");
+const User = require("../models/User");
 /**
  * Verifies the JWT token
  * @function
