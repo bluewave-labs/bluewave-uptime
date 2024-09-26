@@ -98,6 +98,9 @@ const successMessages = {
 
   //Ping Operations
   PING_SUCCESS: "Success",
+
+  // App Settings
+  GET_APP_SETTINGS: "Got app settings successfully",
 };
 
 module.exports = {

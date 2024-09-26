@@ -25,10 +25,15 @@ const { getTokenFromHeaders } = require("../utils/utils");
  * @param {Object} payload
  * @returns {String}
  */
-const issueToken = (payload) => {
-  //TODO Add proper expiration date
-  const tokenTTL = process.env.TOKEN_TTL ? process.env.TOKEN_TTL : "2h";
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
+const issueToken = async (payload, appSettings) => {
+  try {
+    const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
+    return jwt.sign(payload, appSettings.jwtSecret, { expiresIn: tokenTTL });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "issueToken") : null;
+    next(error);
+  }
 };
 
 /**
@@ -67,7 +72,8 @@ const registerController = async (req, res, next) => {
     delete userForToken.profileImage;
     delete userForToken.avatarImage;
 
-    const token = issueToken(userForToken);
+    const appSettings = await req.settingsService.getSettings();
+    const token = issueToken(userForToken, appSettings);
 
     req.emailService
       .buildAndSendEmail(
@@ -130,8 +136,8 @@ const loginController = async (req, res, next) => {
     delete userWithoutPassword.avatarImage;
 
     // Happy path, return token
-    const token = issueToken(userWithoutPassword);
-
+    const appSettings = req.settingsService.getSettings();
+    const token = await issueToken(userWithoutPassword, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
@@ -425,7 +431,9 @@ const resetPasswordController = async (req, res, next) => {
   }
   try {
     const user = await req.db.resetPassword(req, res);
-    const token = issueToken(user._doc);
+
+    const appSettings = await req.settingsService.getSettings();
+    const token = issueToken(user._doc, appSettings);
     res.status(200).json({
       success: true,
       msg: successMessages.AUTH_RESET_PASSWORD,

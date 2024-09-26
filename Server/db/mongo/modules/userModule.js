@@ -35,6 +35,7 @@ const insertUser = async (userData, imageFile) => {
         email: userData.email,
       });
       userData.teamId = team._id;
+      userData.checkTTL = 60 * 60 * 24 * 30;
       await team.save();
     }
 
