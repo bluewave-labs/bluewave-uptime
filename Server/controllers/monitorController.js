@@ -345,7 +345,8 @@ const deleteMonitor = async (req, res, next) => {
 const deleteAllMonitors = async (req, res) => {
   try {
     const token = getTokenFromHeaders(req.headers);
-    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
     const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
     await monitors.forEach(async (monitor) => {
       await req.jobQueue.deleteJob(monitor);
@@ -460,7 +461,9 @@ const pauseMonitor = async (req, res, next) => {
 const addDemoMonitors = async (req, res, next) => {
   try {
     const token = getTokenFromHeaders(req.headers);
-    const { _id, teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { jwtSecret } = req.settingsService.getSettings();
+
+    const { _id, teamId } = jwt.verify(token, jwtSecret);
     const demoMonitors = await req.db.addDemoMonitors(_id, teamId);
     await demoMonitors.forEach(async (monitor) => {
       await req.jobQueue.addJob(monitor._id, monitor);

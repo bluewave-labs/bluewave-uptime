@@ -25,7 +25,7 @@ const { getTokenFromHeaders } = require("../utils/utils");
  * @param {Object} payload
  * @returns {String}
  */
-const issueToken = async (payload, appSettings) => {
+const issueToken = (payload, appSettings) => {
   try {
     const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
     return jwt.sign(payload, appSettings.jwtSecret, { expiresIn: tokenTTL });
@@ -74,7 +74,6 @@ const registerController = async (req, res, next) => {
 
     const appSettings = await req.settingsService.getSettings();
     const token = issueToken(userForToken, appSettings);
-
     req.emailService
       .buildAndSendEmail(
         "welcomeEmailTemplate",
@@ -137,7 +136,7 @@ const loginController = async (req, res, next) => {
 
     // Happy path, return token
     const appSettings = req.settingsService.getSettings();
-    const token = await issueToken(userWithoutPassword, appSettings);
+    const token = issueToken(userWithoutPassword, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
@@ -186,7 +185,8 @@ const userEditController = async (req, res, next) => {
       // Get token from headers
       const token = getTokenFromHeaders(req.headers);
       // Get email from token
-      const { email } = jwt.verify(token, process.env.JWT_SECRET);
+      const { jwtSecret } = req.settingsService.getSettings();
+      const { email } = jwt.verify(token, jwtSecret);
       // Add user email to body for DB operation
       req.body.email = email;
       // Get user
@@ -236,12 +236,13 @@ const inviteController = async (req, res, next) => {
     }
 
     const inviteToken = await req.db.requestInviteToken(req, res);
+    const { clientHost } = req.settingsService.getSettings();
     req.emailService
       .buildAndSendEmail(
         "employeeActivationTemplate",
         {
           name: firstname,
-          link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+          link: `${clientHost}/register/${inviteToken.token}`,
         },
         req.body.email,
         "Welcome to Uptime Monitor"
@@ -345,7 +346,8 @@ const recoveryRequestController = async (req, res, next) => {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
       const name = user.firstName;
       const email = req.body.email;
-      const url = `${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}`;
+      const { clientHost } = req.settingsService.getSettings();
+      const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
 
       const msgId = await req.emailService.buildAndSendEmail(
         "passwordResetTemplate",

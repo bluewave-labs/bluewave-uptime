@@ -126,12 +126,17 @@ const startApp = async () => {
 
   // Create services
   await connectDbAndRunServer(app, db);
-  const emailService = new EmailService();
-  const networkService = new NetworkService(db, emailService);
-  const jobQueue = await JobQueue.createJobQueue(db, networkService);
-  const pageSpeedService = new PageSpeedService();
   const settingsService = new SettingsService();
-  settingsService.loadSettings();
+
+  await settingsService.loadSettings();
+  const emailService = new EmailService(settingsService);
+  const networkService = new NetworkService(db, emailService);
+  const jobQueue = await JobQueue.createJobQueue(
+    db,
+    networkService,
+    settingsService
+  );
+  const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {
     if (cleaningUp) {

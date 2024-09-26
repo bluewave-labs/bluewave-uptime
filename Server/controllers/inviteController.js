@@ -39,12 +39,13 @@ const inviteController = async (req, res, next) => {
     }
 
     const inviteToken = await req.db.requestInviteToken({ ...req.body });
+    const { clientHost } = req.settingsService.getSettings();
     req.emailService
       .buildAndSendEmail(
         "employeeActivationTemplate",
         {
           name: firstname,
-          link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+          link: `${clientHost}/register/${inviteToken.token}`,
         },
         req.body.email,
         "Welcome to Uptime Monitor"

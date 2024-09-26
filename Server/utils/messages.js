@@ -101,6 +101,7 @@ const successMessages = {
 
   // App Settings
   GET_APP_SETTINGS: "Got app settings successfully",
+  UPDATE_APP_SETTINGS: "Updated app settings successfully",
 };
 
 module.exports = {

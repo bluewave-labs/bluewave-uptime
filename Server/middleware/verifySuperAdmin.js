@@ -33,7 +33,9 @@ const verifySuperAdmin = (req, res, next) => {
 
   const parsedToken = token.slice(TOKEN_PREFIX.length, token.length);
   // verify admin role is present
-  jwt.verify(parsedToken, process.env.JWT_SECRET, (err, decoded) => {
+  const { jwtSecret } = req.settingsService.getSettings();
+
+  jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
     if (err) {
       logger.error(errorMessages.INVALID_AUTH_TOKEN, {
         service: SERVICE_NAME,

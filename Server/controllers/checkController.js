@@ -163,7 +163,8 @@ const updateChecksTTL = async (req, res, next) => {
   try {
     // Get user's teamId
     const token = getTokenFromHeaders(req.headers);
-    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
     const ttl = parseInt(req.body.ttl, 10) * SECONDS_PER_DAY;
     await req.db.updateChecksTTL(teamId, ttl);
     return res.status(200).json({

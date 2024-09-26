@@ -137,7 +137,10 @@ const {
 //****************************************
 // AppSettings
 //****************************************
-const { getAppSettings } = require("./modules/settingsModule");
+const {
+  getAppSettings,
+  updateAppSettings,
+} = require("./modules/settingsModule");
 
 module.exports = {
   connect,
@@ -187,4 +190,5 @@ module.exports = {
   getNotificationsByMonitorId,
   deleteNotificationsByMonitorId,
   getAppSettings,
+  updateAppSettings,
 };

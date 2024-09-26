@@ -51,15 +51,19 @@ const AppSettingsSchema = mongoose.Schema(
     },
     systemEmailHost: {
       type: String,
+      default: "smtp.gmail.com",
     },
     systemEmailPort: {
       type: Number,
+      default: 465,
     },
     systemEmailAddress: {
       type: String,
+      default: "",
     },
-    systemEmailAddress: {
+    systemEmailPassword: {
       type: String,
+      default: "",
     },
     singleton: {
       type: Boolean,

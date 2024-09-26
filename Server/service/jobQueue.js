@@ -1,9 +1,6 @@
 const { Queue, Worker, Job } = require("bullmq");
 const QUEUE_NAME = "monitors";
-const connection = {
-  host: process.env.REDIS_HOST || "127.0.0.1",
-  port: process.env.REDIS_PORT || 6379,
-};
+
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
 const { errorMessages, successMessages } = require("../utils/messages");
@@ -15,13 +12,20 @@ class JobQueue {
    * @constructor
    * @throws {Error}
    */
-  constructor(networkService) {
+  constructor(settingsService) {
+    const { redisHost, redisPort } = settingsService.getSettings();
+    const connection = {
+      host: redisHost || "127.0.0.1",
+      port: redisPort || 6379,
+    };
+    this.connection = connection;
     this.queue = new Queue(QUEUE_NAME, {
       connection,
     });
     this.workers = [];
     this.db = null;
     this.networkService = null;
+    this.settingsService = settingsService;
   }
 
   /**
@@ -31,8 +35,8 @@ class JobQueue {
    * @returns {Promise<JobQueue>} - Returns a new JobQueue
    *
    */
-  static async createJobQueue(db, networkService) {
-    const queue = new JobQueue();
+  static async createJobQueue(db, networkService, settingsService) {
+    const queue = new JobQueue(settingsService);
     try {
       queue.db = db;
       queue.networkService = networkService;
@@ -99,7 +103,7 @@ class JobQueue {
         }
       },
       {
-        connection,
+        connection: this.connection,
       }
     );
     return worker;
