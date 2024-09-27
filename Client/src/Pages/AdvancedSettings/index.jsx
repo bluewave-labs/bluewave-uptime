@@ -1,8 +1,7 @@
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography, Button } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
-import { logger } from "../../Utils/Logger";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
@@ -10,18 +9,19 @@ import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { ConfigBox } from "../Settings/styled";
 import { useNavigate } from "react-router";
-import {
-  getAppSettings,
-  updateAppSettings,
-} from "../../Features/Settings/settingsSlice";
-import { useEffect, useState } from "react";
+import { updateAppSettings } from "../../Features/Settings/settingsSlice";
+import { useState } from "react";
 import Select from "../../Components/Inputs/Select";
 
 const AdvancedSettings = ({ isAdmin }) => {
-  const theme = useTheme();
-  const { user, authToken } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  if (!isAdmin) {
+    navigate("/");
+  }
+
+  const theme = useTheme();
+  const { authToken } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
   const [localSettings, setLocalSettings] = useState(settings);
   const logItems = [
@@ -139,6 +139,64 @@ const AdvancedSettings = ({ isAdmin }) => {
               label="System Email Password"
               name="systemEmailPassword"
               value={localSettings.systemEmailPassword}
+              onChange={handleChange}
+            />
+          </Stack>
+        </ConfigBox>
+        <ConfigBox>
+          <Box>
+            <Typography component="h1">Server Settings</Typography>
+            <Typography sx={{ mt: theme.spacing(2) }}>
+              Modify server settings here
+            </Typography>
+          </Box>
+          <Stack gap={theme.spacing(20)}>
+            <Field
+              type="text"
+              id="jwtSecret"
+              label="JWT Secret"
+              name="jwtSecret"
+              value={localSettings.jwtSecret}
+              onChange={handleChange}
+            />
+            <Field
+              type="text"
+              id="jwtTTL"
+              label="JWT Time To Live"
+              name="jwtTTL"
+              value={localSettings.jwtTTL}
+              onChange={handleChange}
+            />
+            <Field
+              type="text"
+              id="dbType"
+              label="Database Type"
+              name="dbType"
+              value={localSettings.dbType}
+              onChange={handleChange}
+            />
+            <Field
+              type="text"
+              id="redisHost"
+              label="Redis Host"
+              name="redisHost"
+              value={localSettings.redisHost}
+              onChange={handleChange}
+            />
+            <Field
+              type="number"
+              id="redisPort"
+              label="Redis Port"
+              name="redisPort"
+              value={localSettings.redisPort.toString()}
+              onChange={handleChange}
+            />
+            <Field
+              type="text"
+              id="pagespeedApiKey"
+              label="PageSpeed API Key"
+              name="pagespeedApiKey"
+              value={localSettings.pagespeedApiKey}
               onChange={handleChange}
             />
           </Stack>
