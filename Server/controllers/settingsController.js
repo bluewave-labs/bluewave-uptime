@@ -31,6 +31,7 @@ const updateAppSettings = async (req, res, next) => {
 
   try {
     const settings = await req.db.updateAppSettings(req.body);
+    await req.settingsService.reloadSettings();
     return res.status(200).json({
       success: true,
       msg: successMessages.UPDATE_APP_SETTINGS,
