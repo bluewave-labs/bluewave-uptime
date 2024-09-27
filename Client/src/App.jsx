@@ -19,6 +19,7 @@ import SetNewPassword from "./Pages/Auth/SetNewPassword";
 import NewPasswordConfirmed from "./Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
+import AdvancedSettings from "./Pages/AdvancedSettings";
 // import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
 import withAdminProp from "./HOC/withAdminProp";
@@ -33,7 +34,9 @@ import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
 import { useSelector } from "react-redux";
 import { CssBaseline } from "@mui/material";
-
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getAppSettings } from "./Features/Settings/settingsSlice";
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
   const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -42,8 +45,14 @@ function App() {
   const PageSpeedDetailsWithAdminProp = withAdminProp(PageSpeedDetails);
   // const MaintenanceWithAdminProp = withAdminProp(Maintenance);
   const SettingsWithAdminProp = withAdminProp(Settings);
-
+  const AdvancedSettingsWithAdminProp = withAdminProp(AdvancedSettings);
   const mode = useSelector((state) => state.ui.mode);
+  const { authToken } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAppSettings(authToken));
+  }, [dispatch, authToken]);
 
   return (
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
@@ -95,6 +104,12 @@ function App() {
           <Route
             path="settings"
             element={<ProtectedRoute Component={SettingsWithAdminProp} />}
+          />
+          <Route
+            path="advanced-settings"
+            element={
+              <ProtectedRoute Component={AdvancedSettingsWithAdminProp} />
+            }
           />
           <Route
             path="account/profile"

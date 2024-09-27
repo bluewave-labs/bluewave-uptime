@@ -23,10 +23,10 @@ const initialState = {
 
 export const getAppSettings = createAsyncThunk(
   "settings/getSettings",
-  async (data, thunkApi) => {
+  async (authToken, thunkApi) => {
     try {
       const res = await networkService.getAppSettings({
-        authToken: data.authToken,
+        authToken: authToken,
       });
       return res.data;
     } catch (error) {
@@ -65,6 +65,7 @@ const handleGetSettingsFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
+  Object.assign(state, action.payload.data);
 };
 const handleGetSettingsRejected = (state, action) => {
   state.isLoading = false;
@@ -87,17 +88,7 @@ const handleUpdateSettingsRejected = (state, action) => {
 const settingsSlice = createSlice({
   name: "settings",
   initialState,
-  reducers: {
-    clearAuthState: (state) => {
-      state.authToken = "";
-      state.user = "";
-      state.isLoading = false;
-      state.success = true;
-      state.msg = "Logged out successfully";
-    },
-  },
   extraReducers: (builder) => {
-    // Register thunk
     builder
       .addCase(getAppSettings.pending, (state) => {
         state.isLoading = true;
@@ -105,7 +96,6 @@ const settingsSlice = createSlice({
       .addCase(getAppSettings.fulfilled, handleGetSettingsFulfilled)
       .addCase(getAppSettings.rejected, handleGetSettingsRejected);
 
-    // Login thunk
     builder
       .addCase(updateAppSettings.pending, (state) => {
         state.isLoading = true;
@@ -116,4 +106,3 @@ const settingsSlice = createSlice({
 });
 
 export default settingsSlice.reducer;
-export const { clearAuthState } = settingsSlice.actions;
