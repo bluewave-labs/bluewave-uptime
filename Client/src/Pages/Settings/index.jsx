@@ -251,26 +251,28 @@ const Settings = ({ isAdmin }) => {
             </Stack>
           </ConfigBox>
         )}
-        <ConfigBox>
-          <Box>
-            <Typography component="h1">Advanced Settings</Typography>
-            <Typography sx={{ mt: theme.spacing(2) }}>
-              Click here to modify advanced settings
-            </Typography>
-          </Box>
-          <Stack gap={theme.spacing(20)}>
+        {isAdmin && (
+          <ConfigBox>
             <Box>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  navigate("/advanced-settings");
-                }}
-              >
-                Advanced Settings
-              </Button>
+              <Typography component="h1">Advanced Settings</Typography>
+              <Typography sx={{ mt: theme.spacing(2) }}>
+                Click here to modify advanced settings
+              </Typography>
             </Box>
-          </Stack>
-        </ConfigBox>
+            <Stack gap={theme.spacing(20)}>
+              <Box>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    navigate("/advanced-settings");
+                  }}
+                >
+                  Advanced Settings
+                </Button>
+              </Box>
+            </Stack>
+          </ConfigBox>
+        )}
         <ConfigBox>
           <Box>
             <Typography component="h1">About</Typography>

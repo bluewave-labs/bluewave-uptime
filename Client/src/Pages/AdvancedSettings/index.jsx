@@ -10,14 +10,17 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { ConfigBox } from "../Settings/styled";
 import { useNavigate } from "react-router";
 import { updateAppSettings } from "../../Features/Settings/settingsSlice";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "../../Components/Inputs/Select";
 
 const AdvancedSettings = ({ isAdmin }) => {
   const navigate = useNavigate();
-  if (!isAdmin) {
-    navigate("/");
-  }
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate("/");
+    }
+  }, [navigate, isAdmin]);
 
   const theme = useTheme();
   const { authToken } = useSelector((state) => state.auth);
@@ -75,7 +78,6 @@ const AdvancedSettings = ({ isAdmin }) => {
         noValidate
         spellCheck="false"
       >
-        \{" "}
         <ConfigBox>
           <Box>
             <Typography component="h1">Client Settings</Typography>
