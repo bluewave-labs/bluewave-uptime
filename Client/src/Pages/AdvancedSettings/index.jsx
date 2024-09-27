@@ -10,16 +10,20 @@ import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { ConfigBox } from "../Settings/styled";
 import { useNavigate } from "react-router";
-import { getAppSettings } from "../../Features/Settings/settingsSlice";
+import {
+  getAppSettings,
+  updateAppSettings,
+} from "../../Features/Settings/settingsSlice";
 import { useEffect, useState } from "react";
 import Select from "../../Components/Inputs/Select";
+
 const AdvancedSettings = ({ isAdmin }) => {
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const settings = useSelector((state) => state.settings);
   const [localSettings, setLocalSettings] = useState(settings);
-
   const logItems = [
     { _id: 1, name: "none" },
     { _id: 2, name: "debug" },
@@ -45,6 +49,19 @@ const AdvancedSettings = ({ isAdmin }) => {
     setLocalSettings({ ...localSettings, [id]: value });
   };
 
+  const handleSave = async () => {
+    const action = await dispatch(
+      updateAppSettings({ settings: localSettings, authToken })
+    );
+    let body = "";
+    if (action.payload.success) {
+      body = "Settings saved successfully";
+    } else {
+      body = "Failed to save settings";
+    }
+    createToast({ body });
+  };
+
   return (
     <Box
       className="settings"
@@ -68,9 +85,9 @@ const AdvancedSettings = ({ isAdmin }) => {
           </Box>
           <Stack gap={theme.spacing(20)}>
             <Field
-              id="clientHost"
+              id="apiBaseUrl"
               label="Client Host"
-              value={localSettings.clientHost}
+              value={localSettings.apiBaseUrl}
               onChange={handleChange}
             />
             <Select
@@ -144,6 +161,17 @@ const AdvancedSettings = ({ isAdmin }) => {
             />
           </Box>
         </ConfigBox>
+        <Stack direction="row" justifyContent="flex-end">
+          <LoadingButton
+            loading={settings.isLoading || settings.authIsLoading}
+            variant="contained"
+            color="primary"
+            sx={{ px: theme.spacing(12), mt: theme.spacing(20) }}
+            onClick={handleSave}
+          >
+            Save
+          </LoadingButton>
+        </Stack>
       </Stack>
     </Box>
   );

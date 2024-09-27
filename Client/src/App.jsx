@@ -37,6 +37,8 @@ import { CssBaseline } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getAppSettings } from "./Features/Settings/settingsSlice";
+import { logger } from "./Utils/Logger"; // Import the logger
+import { networkService } from "./main";
 function App() {
   const AdminCheckedRegister = withAdminCheck(Register);
   const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -53,6 +55,14 @@ function App() {
   useEffect(() => {
     dispatch(getAppSettings(authToken));
   }, [dispatch, authToken]);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      logger.cleanup();
+      networkService.cleanup();
+    };
+  }, []);
 
   return (
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>

@@ -1,7 +1,5 @@
 import { networkService } from "../../main";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 
 const initialState = {
   isLoading: false,
@@ -44,9 +42,29 @@ export const getAppSettings = createAsyncThunk(
 
 export const updateAppSettings = createAsyncThunk(
   "settings/updateSettings",
-  async (form, thunkApi) => {
+  async ({ settings, authToken }, thunkApi) => {
+    networkService.setBaseUrl(settings.apiBaseUrl);
     try {
-      const res = await networkService.loginUser(form);
+      const parsedSettings = {
+        apiBaseUrl: settings.apiBaseUrl,
+        logLevel: settings.logLevel,
+        clientHost: settings.clientHost,
+        jwtSecret: settings.jwtSecret,
+        dbType: settings.dbType,
+        dbConnectionString: settings.dbConnectionString,
+        redisHost: settings.redisHost,
+        redisPort: settings.redisPort,
+        jwtTTL: settings.jwtTTL,
+        pagespeedApiKey: settings.pagespeedApiKey,
+        systemEmailHost: settings.systemEmailHost,
+        systemEmailPort: settings.systemEmailPort,
+        systemEmailAddress: settings.systemEmailAddress,
+        systemEmailPassword: settings.systemEmailPassword,
+      };
+      const res = await networkService.updateAppSettings({
+        settings: parsedSettings,
+        authToken,
+      });
       return res.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -76,6 +94,7 @@ const handleUpdateSettingsFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
+  Object.assign(state, action.payload.data);
 };
 const handleUpdateSettingsRejected = (state, action) => {
   state.isLoading = false;

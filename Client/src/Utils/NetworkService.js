@@ -1,10 +1,18 @@
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+const BASE_URL =
+  import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:5000/api/v1";
 import { logger } from "./Logger";
 class NetworkService {
   constructor(store) {
     this.store = store;
-    this.axiosInstance = axios.create({ baseURL: BASE_URL });
+    let baseURL = BASE_URL;
+    this.axiosInstance = axios.create();
+    this.setBaseUrl(baseURL);
+    this.unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+      baseURL = state.settings.apiBaseUrl || BASE_URL;
+      this.setBaseUrl(baseURL);
+    });
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -15,6 +23,16 @@ class NetworkService {
         return Promise.reject(error);
       }
     );
+  }
+
+  setBaseUrl = (url) => {
+    this.axiosInstance.defaults.baseURL = url;
+  };
+
+  cleanup() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   /**
@@ -634,6 +652,27 @@ class NetworkService {
 
   async getAppSettings(config) {
     return this.axiosInstance.get("/settings", {
+      headers: {
+        Authorization: `Bearer ${config.authToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  /**
+   *
+   * ************************************
+   * Create a new monitor
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {Object} config.settings - The monitor object to be sent in the request body.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
+  async updateAppSettings(config) {
+    return this.axiosInstance.put(`/settings`, config.settings, {
       headers: {
         Authorization: `Bearer ${config.authToken}`,
         "Content-Type": "application/json",
