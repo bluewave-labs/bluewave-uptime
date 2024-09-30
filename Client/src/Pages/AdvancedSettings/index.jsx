@@ -47,7 +47,6 @@ const AdvancedSettings = ({ isAdmin }) => {
     const getSettings = async () => {
       const action = await dispatch(getAppSettings({ authToken }));
       if (action.payload.success) {
-        console.log(action.payload.data);
         setLocalSettings(action.payload.data);
       } else {
         createToast({ body: "Failed to get settings" });

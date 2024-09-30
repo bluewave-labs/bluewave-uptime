@@ -10,7 +10,9 @@ class NetworkService {
     this.setBaseUrl(baseURL);
     this.unsubscribe = store.subscribe(() => {
       const state = store.getState();
-      baseURL = state.settings.apiBaseUrl || BASE_URL;
+      if (state.settings.apiBaseUrl) {
+        baseURL = state.settings.apiBaseUrl;
+      }
       this.setBaseUrl(baseURL);
     });
     this.axiosInstance.interceptors.response.use(
