@@ -15,6 +15,7 @@ const envConfig = {
   systemEmailAddress: process.env.SYSTEM_EMAIL_ADDRESS,
   systemEmailPassword: process.env.SYSTEM_EMAIL_PASSWORD,
 };
+
 class SettingsService {
   constructor() {
     this.settings = envConfig;
@@ -26,11 +27,18 @@ class SettingsService {
       if (!this.settings) {
         throw new Error("Settings not found");
       }
+
+      // Try to load settings from env first, if not found, load from db
       for (const key in envConfig) {
         if (envConfig[key] === undefined && dbSettings[key] !== undefined) {
           this.settings[key] = dbSettings[key];
         }
       }
+
+      if (!this.settings) {
+        throw new Error("Settings not found");
+      }
+
       return this.settings;
     } catch (error) {
       error.service === undefined ? (error.service = SERVICE_NAME) : null;
@@ -40,22 +48,7 @@ class SettingsService {
   }
 
   async reloadSettings() {
-    try {
-      const dbSettings = await AppSettings.findOne();
-
-      for (const key in envConfig) {
-        if (envConfig[key] === undefined && dbSettings[key] !== undefined) {
-          this.settings[key] = dbSettings[key];
-        }
-      }
-      if (!this.settings) {
-        throw new Error("Settings not found");
-      }
-    } catch (error) {
-      error.service === undefined ? (error.service = SERVICE_NAME) : null;
-      error.method === undefined ? (error.method = "reloadSettings") : null;
-      throw error;
-    }
+    return this.loadSettings();
   }
 
   getSettings() {
