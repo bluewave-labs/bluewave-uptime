@@ -18,6 +18,7 @@ const { errorMessages, successMessages } = require("../utils/messages");
 var jwt = require("jsonwebtoken");
 const SERVICE_NAME = "AuthController";
 const { getTokenFromHeaders } = require("../utils/utils");
+const crypto = require("crypto");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -25,10 +26,15 @@ const { getTokenFromHeaders } = require("../utils/utils");
  * @param {Object} payload
  * @returns {String}
  */
-const issueToken = (payload) => {
-  //TODO Add proper expiration date
-  const tokenTTL = process.env.TOKEN_TTL ? process.env.TOKEN_TTL : "2h";
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: tokenTTL });
+const issueToken = (payload, appSettings) => {
+  try {
+    const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
+    return jwt.sign(payload, appSettings.jwtSecret, { expiresIn: tokenTTL });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined ? (error.method = "issueToken") : null;
+    next(error);
+  }
 };
 
 /**
@@ -56,7 +62,12 @@ const registerController = async (req, res, next) => {
     const superAdminExists = await req.db.checkSuperadmin(req, res);
     if (superAdminExists) {
       await req.db.getInviteTokenAndDelete(inviteToken);
+    } else {
+      // This is the first account, create JWT secret to use if one is not supplied by env
+      const jwtSecret = crypto.randomBytes(64).toString("hex");
+      await req.db.updateAppSettings({ jwtSecret });
     }
+
     const newUser = await req.db.insertUser({ ...req.body }, req.file);
     logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,
@@ -67,8 +78,8 @@ const registerController = async (req, res, next) => {
     delete userForToken.profileImage;
     delete userForToken.avatarImage;
 
-    const token = issueToken(userForToken);
-
+    const appSettings = await req.settingsService.getSettings();
+    const token = issueToken(userForToken, appSettings);
     req.emailService
       .buildAndSendEmail(
         "welcomeEmailTemplate",
@@ -130,8 +141,8 @@ const loginController = async (req, res, next) => {
     delete userWithoutPassword.avatarImage;
 
     // Happy path, return token
-    const token = issueToken(userWithoutPassword);
-
+    const appSettings = req.settingsService.getSettings();
+    const token = issueToken(userWithoutPassword, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
@@ -180,7 +191,8 @@ const userEditController = async (req, res, next) => {
       // Get token from headers
       const token = getTokenFromHeaders(req.headers);
       // Get email from token
-      const { email } = jwt.verify(token, process.env.JWT_SECRET);
+      const { jwtSecret } = req.settingsService.getSettings();
+      const { email } = jwt.verify(token, jwtSecret);
       // Add user email to body for DB operation
       req.body.email = email;
       // Get user
@@ -230,12 +242,13 @@ const inviteController = async (req, res, next) => {
     }
 
     const inviteToken = await req.db.requestInviteToken(req, res);
+    const { clientHost } = req.settingsService.getSettings();
     req.emailService
       .buildAndSendEmail(
         "employeeActivationTemplate",
         {
           name: firstname,
-          link: `${process.env.CLIENT_HOST}/register/${inviteToken.token}`,
+          link: `${clientHost}/register/${inviteToken.token}`,
         },
         req.body.email,
         "Welcome to Uptime Monitor"
@@ -339,7 +352,8 @@ const recoveryRequestController = async (req, res, next) => {
       const recoveryToken = await req.db.requestRecoveryToken(req, res);
       const name = user.firstName;
       const email = req.body.email;
-      const url = `${process.env.CLIENT_HOST}/set-new-password/${recoveryToken.token}`;
+      const { clientHost } = req.settingsService.getSettings();
+      const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
 
       const msgId = await req.emailService.buildAndSendEmail(
         "passwordResetTemplate",
@@ -425,7 +439,9 @@ const resetPasswordController = async (req, res, next) => {
   }
   try {
     const user = await req.db.resetPassword(req, res);
-    const token = issueToken(user._doc);
+
+    const appSettings = await req.settingsService.getSettings();
+    const token = issueToken(user._doc, appSettings);
     res.status(200).json({
       success: true,
       msg: successMessages.AUTH_RESET_PASSWORD,

@@ -5,7 +5,6 @@ const swaggerUi = require("swagger-ui-express");
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
@@ -15,6 +14,7 @@ const inviteRouter = require("./routes/inviteRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
 const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
+const settingsRouter = require("./routes/settingsRoute");
 
 const { connectDbAndRunServer } = require("./configs/db");
 const queueRouter = require("./routes/queueRoute");
@@ -22,6 +22,7 @@ const JobQueue = require("./service/jobQueue");
 const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
 const PageSpeedService = require("./service/pageSpeedService");
+const SettingsService = require("./service/settingsService");
 const SERVICE_NAME = "Server";
 
 let cleaningUp = false;
@@ -47,9 +48,11 @@ const startApp = async () => {
     FakedDB: () => require("./db/FakeDb"),
   };
 
-  const db = DB_TYPE[process.env.DB_TYPE]
-    ? DB_TYPE[process.env.DB_TYPE]()
-    : require("./db/FakeDb");
+  // const db = DB_TYPE[process.env.DB_TYPE]
+  //   ? DB_TYPE[process.env.DB_TYPE]()
+  //   : require("./db/FakeDb");
+
+  const db = DB_TYPE.MongoDB();
 
   const app = express();
 
@@ -60,7 +63,6 @@ const startApp = async () => {
   );
   app.use(express.json());
   app.use(helmet());
-
   // **************************
   // Make DB accessible anywhere we have a Request object
   // By adding the DB to the request object, we can access it in any route
@@ -72,6 +74,7 @@ const startApp = async () => {
     req.jobQueue = jobQueue;
     req.emailService = emailService;
     req.pageSpeedService = pageSpeedService;
+    req.settingsService = settingsService;
     next();
   });
 
@@ -80,6 +83,7 @@ const startApp = async () => {
 
   //routes
   app.use("/api/v1/auth", authRouter);
+  app.use("/api/v1/settings", verifyJWT, settingsRouter);
   app.use("/api/v1/invite", inviteRouter);
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
@@ -122,9 +126,16 @@ const startApp = async () => {
 
   // Create services
   await connectDbAndRunServer(app, db);
-  const emailService = new EmailService();
+  const settingsService = new SettingsService();
+
+  await settingsService.loadSettings();
+  const emailService = new EmailService(settingsService);
   const networkService = new NetworkService(db, emailService);
-  const jobQueue = await JobQueue.createJobQueue(db, networkService);
+  const jobQueue = await JobQueue.createJobQueue(
+    db,
+    networkService,
+    settingsService
+  );
   const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {

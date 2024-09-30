@@ -382,6 +382,26 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+//****************************************
+// SettingsValidation
+//****************************************
+const updateAppSettingsBodyValidation = joi.object({
+  apiBaseUrl: joi.string().allow(""),
+  logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
+  clientHost: joi.string().allow(""),
+  jwtSecret: joi.string().allow(""),
+  dbType: joi.string().allow(""),
+  dbConnectionString: joi.string().allow(""),
+  redisHost: joi.string().allow(""),
+  redisPort: joi.number().allow(null, ""),
+  jwtTTL: joi.string().allow(""),
+  pagespeedApiKey: joi.string().allow(""),
+  systemEmailHost: joi.string().allow(""),
+  systemEmailPort: joi.number().allow(""),
+  systemEmailAddress: joi.string().allow(""),
+  systemEmailPassword: joi.string().allow(""),
+});
+
 module.exports = {
   roleValidatior,
   loginValidation,
@@ -432,4 +452,5 @@ module.exports = {
   createMaintenanceWindowBodyValidation,
   getMaintenanceWindowsByUserIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
+  updateAppSettingsBodyValidation,
 };
