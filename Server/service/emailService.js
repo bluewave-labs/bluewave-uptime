@@ -13,7 +13,8 @@ class EmailService {
   /**
    * Constructs an instance of the EmailService, initializing template loaders and the email transporter.
    */
-  constructor() {
+  constructor(settingsService) {
+    this.settingsService = settingsService;
     /**
      * Loads an email template from the filesystem.
      *
@@ -54,15 +55,25 @@ class EmailService {
      * The email transporter used to send emails.
      * @type {Object}
      */
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SYSTEM_EMAIL_HOST,
-      port: process.env.SYSTEM_EMAIL_PORT,
-      secure: true, // Use `true` for port 465, `false` for all other ports
+
+    const {
+      systemEmailHost,
+      systemEmailPort,
+      systemEmailAddress,
+      systemEmailPassword,
+    } = this.settingsService.getSettings();
+
+    const emailConfig = {
+      host: systemEmailHost,
+      port: systemEmailPort,
+      secure: true,
       auth: {
-        user: process.env.SYSTEM_EMAIL_ADDRESS,
-        pass: process.env.SYSTEM_EMAIL_PASSWORD,
+        user: systemEmailAddress,
+        pass: systemEmailPassword,
       },
-    });
+    };
+
+    this.transporter = nodemailer.createTransport(emailConfig);
   }
 
   /**

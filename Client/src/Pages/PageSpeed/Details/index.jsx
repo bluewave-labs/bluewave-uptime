@@ -54,7 +54,7 @@ const PageSpeedDetails = ({ isAdmin }) => {
           normalize: null,
         });
         setMonitor(res?.data?.data ?? {});
-        setAudits(res?.data?.data?.checks?.[0]?.audits ?? []);
+        setAudits(res?.data?.data?.checks?.[0]?.audits ?? {});
       } catch (error) {
         logger.error(logger);
         navigate("/not-found", { replace: true });

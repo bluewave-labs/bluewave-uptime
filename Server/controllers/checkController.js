@@ -34,7 +34,7 @@ const createCheck = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: successMessages.CHECK_CREATE, data: check });
   } catch (error) {
-    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
     error.method === undefined ? (error.method = "createCheck") : null;
     next(error);
   }
@@ -62,7 +62,7 @@ const getChecks = async (req, res, next) => {
       data: { checksCount, checks },
     });
   } catch (error) {
-    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
     error.method === undefined ? (error.method = "getChecks") : null;
     next(error);
   }
@@ -88,7 +88,7 @@ const getTeamChecks = async (req, res, next) => {
       data: checkData,
     });
   } catch (error) {
-    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
     error.method === undefined ? (error.method = "getTeamChecks") : null;
     next(error);
   }
@@ -114,7 +114,7 @@ const deleteChecks = async (req, res, next) => {
       data: { deletedCount },
     });
   } catch (error) {
-    error.service === undefined ? (error.serivce = SERVICE_NAME) : null;
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
     error.method === undefined ? (error.method = "deleteChecks") : null;
     next(error);
   }
@@ -163,7 +163,8 @@ const updateChecksTTL = async (req, res, next) => {
   try {
     // Get user's teamId
     const token = getTokenFromHeaders(req.headers);
-    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
     const ttl = parseInt(req.body.ttl, 10) * SECONDS_PER_DAY;
     await req.db.updateChecksTTL(teamId, ttl);
     return res.status(200).json({

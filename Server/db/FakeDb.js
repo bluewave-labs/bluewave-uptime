@@ -21,7 +21,7 @@
 // **************************
 
 const Monitor = require("../models/Monitor");
-const UserModel = require("../models/user");
+const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
 
 let FAKE_MONITOR_DATA = [];

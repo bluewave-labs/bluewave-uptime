@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, Button } from "@mui/material";
 import Field from "../../Components/Inputs/Field";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
@@ -21,6 +21,7 @@ import { useState } from "react";
 import { ConfigBox } from "./styled";
 import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
+import { useNavigate } from "react-router";
 
 const SECONDS_PER_DAY = 86400;
 
@@ -33,10 +34,11 @@ const Settings = ({ isAdmin }) => {
   const { timezone } = useSelector((state) => state.ui);
   const [checksIsLoading, setChecksIsLoading] = useState(false);
   const [form, setForm] = useState({
-    ttl: (checkTTL / SECONDS_PER_DAY).toString(),
+    ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -245,6 +247,28 @@ const Settings = ({ isAdmin }) => {
                 >
                   Remove all monitors
                 </LoadingButton>
+              </Box>
+            </Stack>
+          </ConfigBox>
+        )}
+        {isAdmin && (
+          <ConfigBox>
+            <Box>
+              <Typography component="h1">Advanced Settings</Typography>
+              <Typography sx={{ mt: theme.spacing(2) }}>
+                Click here to modify advanced settings
+              </Typography>
+            </Box>
+            <Stack gap={theme.spacing(20)}>
+              <Box>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    navigate("/advanced-settings");
+                  }}
+                >
+                  Advanced Settings
+                </Button>
               </Box>
             </Stack>
           </ConfigBox>

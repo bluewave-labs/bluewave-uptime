@@ -20,6 +20,7 @@ const SERVICE_NAME = "monitorController";
 const { errorMessages, successMessages } = require("../utils/messages");
 const jwt = require("jsonwebtoken");
 const { getTokenFromHeaders } = require("../utils/utils");
+const logger = require("../utils/logger");
 
 /**
  * Returns all monitors
@@ -315,18 +316,22 @@ const deleteMonitor = async (req, res, next) => {
   try {
     const monitor = await req.db.deleteMonitor(req, res, next);
     // Delete associated checks,alerts,and notifications
-    await req.jobQueue.deleteJob(monitor);
-    await req.db.deleteChecks(monitor._id);
-    await req.db.deleteAlertByMonitorId(monitor._id);
-    await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
-    await req.db.deleteNotificationsByMonitorId(monitor._id);
+    try {
+      await req.jobQueue.deleteJob(monitor);
+      await req.db.deleteChecks(monitor._id);
+      await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+      await req.db.deleteNotificationsByMonitorId(monitor._id);
+    } catch (error) {
+      logger.error(
+        `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+        {
+          method: "deleteMonitor",
+          service: SERVICE_NAME,
+          error: error.message,
+        }
+      );
+    }
 
-    /**
-     * TODO
-     * We should remove all checks and alerts associated with this monitor
-     * when it is deleted so there is no orphaned data
-     * We also need to make sure to stop all running services for this monitor
-     */
     return res
       .status(200)
       .json({ success: true, msg: successMessages.MONITOR_DELETE });
@@ -340,7 +345,8 @@ const deleteMonitor = async (req, res, next) => {
 const deleteAllMonitors = async (req, res) => {
   try {
     const token = getTokenFromHeaders(req.headers);
-    const { teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
     const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
     await monitors.forEach(async (monitor) => {
       await req.jobQueue.deleteJob(monitor);
@@ -455,7 +461,9 @@ const pauseMonitor = async (req, res, next) => {
 const addDemoMonitors = async (req, res, next) => {
   try {
     const token = getTokenFromHeaders(req.headers);
-    const { _id, teamId } = jwt.verify(token, process.env.JWT_SECRET);
+    const { jwtSecret } = req.settingsService.getSettings();
+
+    const { _id, teamId } = jwt.verify(token, jwtSecret);
     const demoMonitors = await req.db.addDemoMonitors(_id, teamId);
     await demoMonitors.forEach(async (monitor) => {
       await req.jobQueue.addJob(monitor._id, monitor);
