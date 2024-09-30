@@ -1,22 +1,21 @@
 services:
   client:
-    image: bluewaveuptime/uptime_client:latest
+    image: bluewaveuptime/uptime_client:test
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - server
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d/:ro
   server:
-    image: bluewaveuptime/uptime_server:latest
+    image: bluewaveuptime/uptime_server:test
     ports:
       - "5000:5000"
-    env_file:
-      - server.env
     depends_on:
       - redis
       - mongodb
+    environment:
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/uptime_db
+      - REDIS_HOST=redis
   redis:
     image: bluewaveuptime/uptime_redis:latest
     ports:
@@ -25,10 +24,8 @@ services:
       - ./redis/data:/data
   mongodb:
     image: bluewaveuptime/uptime_database_mongo:latest
-    command: ["mongod", "--quiet", "--auth"]
-    ports:
-      - "27017:27017"
     volumes:
       - ./mongo/data:/data/db
-    env_file:
-      - mongo.env
+    command: ["mongod", "--quiet"]
+    ports:
+      - "27017:27017"
