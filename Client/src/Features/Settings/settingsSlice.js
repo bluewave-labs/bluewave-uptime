@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: false,
-  apiBaseUrl: "http://localhost:5000/api/v1",
+  apiBaseUrl: "",
   logLevel: "debug",
 };
 
