@@ -53,7 +53,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAppSettings(authToken));
+    dispatch(getAppSettings({ authToken }));
   }, [dispatch, authToken]);
 
   // Cleanup

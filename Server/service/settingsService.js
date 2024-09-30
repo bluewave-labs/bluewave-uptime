@@ -2,6 +2,8 @@ const { env } = require("process");
 const AppSettings = require("../models/AppSettings");
 const SERVICE_NAME = "SettingsService";
 const envConfig = {
+  logLevel: undefined,
+  apiBaseUrl: undefined,
   clientHost: process.env.CLIENT_HOST,
   jwtSecret: process.env.JWT_SECRET,
   dbType: process.env.DB_TYPE,
@@ -18,7 +20,7 @@ const envConfig = {
 
 class SettingsService {
   constructor() {
-    this.settings = envConfig;
+    this.settings = { ...envConfig };
   }
 
   async loadSettings() {
@@ -27,7 +29,6 @@ class SettingsService {
       if (!this.settings) {
         throw new Error("Settings not found");
       }
-
       // Try to load settings from env first, if not found, load from db
       for (const key in envConfig) {
         if (envConfig[key] === undefined && dbSettings[key] !== undefined) {
@@ -38,7 +39,6 @@ class SettingsService {
       if (!this.settings) {
         throw new Error("Settings not found");
       }
-
       return this.settings;
     } catch (error) {
       error.service === undefined ? (error.service = SERVICE_NAME) : null;

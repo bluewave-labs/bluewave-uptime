@@ -5,26 +5,14 @@ const initialState = {
   isLoading: false,
   apiBaseUrl: "http://localhost:5000/api/v1",
   logLevel: "debug",
-  clientHost: "http://localhost:5173",
-  jwtSecret: "my_secret",
-  dbType: "MongoDB",
-  dbConnectionString: "mongodb://localhost:27017/uptime_db",
-  redisHost: "127.0.0.1",
-  redisPort: 6379,
-  jwtTTL: "99d",
-  pagespeedApiKey: "",
-  systemEmailHost: "smtp.gmail.com",
-  systemEmailPort: 465,
-  systemEmailAddress: "",
-  systemEmailPassword: "",
 };
 
 export const getAppSettings = createAsyncThunk(
   "settings/getSettings",
-  async (authToken, thunkApi) => {
+  async (data, thunkApi) => {
     try {
       const res = await networkService.getAppSettings({
-        authToken: authToken,
+        authToken: data.authToken,
       });
       return res.data;
     } catch (error) {
@@ -83,7 +71,8 @@ const handleGetSettingsFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
-  Object.assign(state, action.payload.data);
+  state.apiBaseUrl = action.payload.data.apiBaseUrl;
+  state.logLevel = action.payload.data.logLevel;
 };
 const handleGetSettingsRejected = (state, action) => {
   state.isLoading = false;
@@ -94,7 +83,8 @@ const handleUpdateSettingsFulfilled = (state, action) => {
   state.isLoading = false;
   state.success = action.payload.success;
   state.msg = action.payload.msg;
-  Object.assign(state, action.payload.data);
+  state.apiBaseUrl = action.payload.data.apiBaseUrl;
+  state.logLevel = action.payload.data.logLevel;
 };
 const handleUpdateSettingsRejected = (state, action) => {
   state.isLoading = false;

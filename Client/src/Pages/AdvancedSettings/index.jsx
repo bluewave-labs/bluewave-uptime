@@ -9,7 +9,10 @@ import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { ConfigBox } from "../Settings/styled";
 import { useNavigate } from "react-router";
-import { updateAppSettings } from "../../Features/Settings/settingsSlice";
+import {
+  getAppSettings,
+  updateAppSettings,
+} from "../../Features/Settings/settingsSlice";
 import { useState, useEffect } from "react";
 import Select from "../../Components/Inputs/Select";
 
@@ -26,7 +29,33 @@ const AdvancedSettings = ({ isAdmin }) => {
   const { authToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
-  const [localSettings, setLocalSettings] = useState(settings);
+  const [localSettings, setLocalSettings] = useState({
+    apiBaseUrl: "",
+    logLevel: "debug",
+    systemEmailHost: "",
+    systemEmailPort: "",
+    systemEmailAddress: "",
+    systemEmailPassword: "",
+    jwtTTL: "",
+    dbType: "",
+    redisHost: "",
+    redisPort: "",
+    pagespeedApiKey: "",
+  });
+
+  useEffect(() => {
+    const getSettings = async () => {
+      const action = await dispatch(getAppSettings({ authToken }));
+      if (action.payload.success) {
+        console.log(action.payload.data);
+        setLocalSettings(action.payload.data);
+      } else {
+        createToast({ body: "Failed to get settings" });
+      }
+    };
+    getSettings();
+  }, [authToken, dispatch]);
+
   const logItems = [
     { _id: 1, name: "none" },
     { _id: 2, name: "debug" },
@@ -58,6 +87,8 @@ const AdvancedSettings = ({ isAdmin }) => {
     );
     let body = "";
     if (action.payload.success) {
+      console.log(action.payload.data);
+      setLocalSettings(action.payload.data);
       body = "Settings saved successfully";
     } else {
       body = "Failed to save settings";
@@ -153,14 +184,6 @@ const AdvancedSettings = ({ isAdmin }) => {
             </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
-            <Field
-              type="text"
-              id="jwtSecret"
-              label="JWT Secret"
-              name="jwtSecret"
-              value={localSettings.jwtSecret}
-              onChange={handleChange}
-            />
             <Field
               type="text"
               id="jwtTTL"
