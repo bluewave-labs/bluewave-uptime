@@ -389,7 +389,6 @@ const updateAppSettingsBodyValidation = joi.object({
   apiBaseUrl: joi.string().allow(""),
   logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
   clientHost: joi.string().allow(""),
-  jwtSecret: joi.string().allow(""),
   dbType: joi.string().allow(""),
   dbConnectionString: joi.string().allow(""),
   redisHost: joi.string().allow(""),

@@ -36,7 +36,6 @@ const verifyJWT = (req, res, next) => {
   const parsedToken = token.slice(TOKEN_PREFIX.length, token.length);
   // Verify the token's authenticity
   const { jwtSecret } = req.settingsService.getSettings();
-
   jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
     if (err) {
       return res

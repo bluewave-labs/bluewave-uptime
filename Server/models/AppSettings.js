@@ -48,6 +48,7 @@ const AppSettingsSchema = mongoose.Schema(
     },
     pagespeedApiKey: {
       type: String,
+      default: "",
     },
     systemEmailHost: {
       type: String,
