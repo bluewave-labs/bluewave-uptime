@@ -18,6 +18,7 @@ const { errorMessages, successMessages } = require("../utils/messages");
 var jwt = require("jsonwebtoken");
 const SERVICE_NAME = "AuthController";
 const { getTokenFromHeaders } = require("../utils/utils");
+const crypto = require("crypto");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -61,7 +62,12 @@ const registerController = async (req, res, next) => {
     const superAdminExists = await req.db.checkSuperadmin(req, res);
     if (superAdminExists) {
       await req.db.getInviteTokenAndDelete(inviteToken);
+    } else {
+      // This is the first account, create JWT secret to use if one is not supplied by env
+      const jwtSecret = crypto.randomBytes(64).toString("hex");
+      await req.db.updateAppSettings({ jwtSecret });
     }
+
     const newUser = await req.db.insertUser({ ...req.body }, req.file);
     logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,
