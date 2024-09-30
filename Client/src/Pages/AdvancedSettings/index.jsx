@@ -119,7 +119,7 @@ const AdvancedSettings = ({ isAdmin }) => {
           <Stack gap={theme.spacing(20)}>
             <Field
               id="apiBaseUrl"
-              label="Client Host"
+              label="API URL Host"
               value={localSettings.apiBaseUrl}
               onChange={handleChange}
             />
