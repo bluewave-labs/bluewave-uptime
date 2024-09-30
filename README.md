@@ -78,123 +78,77 @@ Also check other developer and contributor-friendly projects of BlueWave:
 
 - Clone this repository to your local machine
 
-1.  [Quickstart for Users](#user-quickstart)
-1.  [Quickstart for Developers](#dev-quickstart)
-1.  [Docker Compose](#docker-compose)
-1.  [Installation (Client)](#client)
-1.  [Configuration(Client)](#config-client)
-    - [Environment](#env-vars-client)
-1.  [Getting Started (Server)](#server)
-    - [Install Server](#install-server)
-    - [Environment](#env-vars-server)
-    - [Database](#databases)
-      - [(Optional) Dockerised Databases](#optional-docker-databases)
-    - [Start Server](#start-server)
-1.  [API Documentation](#api-documentation)
-1.  [Error Handling](#error-handling)
-1.  [Contributors](#contributors)
+1. [Quickstart for Users](#user-quickstart)
+2. [Quickstart for Developers](#dev-quickstart)
+3. [Manual Install](#manual-install)
+
+   - [Install Client](#install-client)
+   - [Environment](#env-vars-client)
+   - [Start Client](#start-client)
+   - [Install Server](#install-server)
+   - [Environment](#env-vars-server)
+   - [Database](#databases)
+     - [(Optional) Dockerised Databases](#optional-docker-databases)
+   - [Start Server](#start-server)
+
+4. [API Documentation](#api-documentation)
+5. [Error Handling](#error-handling)
+6. [Contributors](#contributors)
 
 ---
 
-#### <u> Quickstart for Users</u><a id="user-quickstart"></a>
+## <u> Quickstart for Users</u><a id="user-quickstart"></a>
 
-1. Download our [Docker Compose File](/Docker/quickstart/docker-compose.yaml)
-2. Download our [Quickstart script](/Docker/quickstart/quickstart.sh)
-3. Place these files in a directory of your choice
-4. Run `quickstart.sh` and generate config files
-5. Run `docker compose up` to start the application
-6. Application is running at `http://localhost`
+1. Download our [Docker Compose File](/Docker/dist/docker-compose.yaml)
+2. Run `docker compose up` to start the application
+3. Application is running at `http://localhost`
 
-#### <u>Quickstart for Developers</u> <a id="dev-quickstart"></a>
+## <u>Quickstart for Developers</u> <a id="dev-quickstart"></a>
 
 <span style="color: red; font-weight: bold;">MAKE SURE YOU CD TO THE SPECIFIED DIRECTORIES AS PATHS IN COMMANDS ARE RELATIVE</span>
 
-##### Cloning and Initial Setup
+### Cloning and Initial Setup
 
 1.  Clone this repository
 2.  Checkout the `develop` branch `git checkout develop`
 
-##### Docker Images Setup
+### Docker Images Setup
 
 3.  <span style="color: red; font-weight: bold;">CD</span> to the `Docker` directory
 4.  Run `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`
 5.  Run `docker run -d -p 27017:27017 -v $(pwd)/mongo/data:/data/db --name uptime_database_mongo uptime_database_mongo`
 
-##### Server Setup
+### Server Setup
 
 6.  <span style="color: red; font-weight: bold;">CD</span> to `Server` directory, run `npm install`
 7.  While in `Server` directory, create a `.env` file with the [required environmental variables](#env-vars-server)
 8.  While in the `Server` directory, run `npm run dev`
 
-##### Client Setup
+### Client Setup
 
 9.  <span style="color: red; font-weight: bold;">CD</span> to `Client` directory `run npm install`
 10. While in the `Client` directory, create a `.env` file with the [required environmental variables](#env-vars-client)
 11. While in the `Client` cirectory run `npm run dev`
 
-##### Access Application
+### Access Application
 
 12. Client is running at `localhost:5173`
 13. Server is running at `localhost:5000`
 
 ---
 
-#### <u>Docker Compose</u> <a id="docker-compose"></a>
+## <u>Manual Install</u> <a id="manual-install"></a>
 
-The fastest way to start the application is to use our Dockerfiles and [Docker Compose](https://docs.docker.com/compose/).
+---
 
-To get the application up and running you need to:
-
-1. In the `Docker` directory run the build script `build_images.sh` to build docker images for the client, server, Redis database, and MongoDB database.
-
-2. In the `Dokcer` directory create a `mongo.env` file with a username and password:
-
-```
-USERNAME_ENV_VAR=user
-PASSWORD_ENV_VAR=password
-```
-
-3. In the `Docker` directory, create a `server.env` file with the [requried environmental variables](#env-vars-server) for the server. Sample file:
-
-```
-CLIENT_HOST="http://localhost:5173"
-JWT_SECRET=<jwt_secret>
-DB_TYPE="MongoDB"
-DB_CONNECTION_STRING="mongodb://<username>:<password>@mongodb:27017/uptime_db"
-REDIS_HOST="redis"
-REDIS_PORT=6379
-TOKEN_TTL="99d"
-PAGESPEED_API_KEY=<api_key>
-SYSTEM_EMAIL_HOST="smtp.gmail.com"
-SYSTEM_EMAIL_PORT=465
-SYSTEM_EMAIL_ADDRESS=<system_email>
-SYSTEM_EMAIL_PASSWORD=<system_email_password>
-```
-
-4.  In the `Client` directory, create a `client.env` file with the [required environmental variables](#env-vars-client) for the client. Sample file:
-
-```
-VITE_APP_API_BASE_URL="http://localhost:5000/api/v1"
-VITE_APP_API_LOG_LEVEL="debug"
-```
-
-5.  In the `Docker` directory run `docker compose up` to run the `docker-compose.yaml` file and start all four images.
-
-That's it, the application is ready to use on port 80.
-<br/>
-
-### Client
-
-#### <u>Installation</u>
+### Client Installation<a id="install-client"></a>
 
 1.  Change directory to the `Client` directory
 2.  Install all dependencies by running `npm install`
 
-<br/>
+---
 
-#### <u>Configuration</u> <a id="config-client"></a>
-
-##### Environmental Variables <a id="env-vars-client"></a>
+### Environmental Variables <a id="env-vars-client"></a>
 
 | ENV Variable Name     | Required/Optional | Type      | Description        | Accepted Values                    |
 | --------------------- | ----------------- | --------- | ------------------ | ---------------------------------- |
@@ -202,26 +156,22 @@ That's it, the application is ready to use on port 80.
 | VITE_APP_LOG_LEVEL    | Optional          | `string`  | Log level          | `"none"`\|`"error"` \| `"warn"` \| |
 | VITE_APP_DEMO         | Optional          | `boolean` | Demo server or not | `true`\|`false` \|                 |
 
-<br/>
+---
 
-#### <u>Starting Development Server</u>
+### Starting Development Server<a id="start-client"></a>
 
 1.  Run `npm run dev` to start the development server.
 
 ---
 
-### Getting Started (Server) <a id="server"></a>
-
-#### <u>Manual Install</u> <a id="manual-install"></a>
-
-##### Install Server <a id="install-server"></a>
+### Server Installation<a id="install-server"></a>
 
 1.  Change directory to the `Server` directory
 2.  Install all dependencies by running `npm install`
 
-<br/>
+---
 
-##### Environmental Variables <a id="env-vars-server"></a>
+### Environmental Variables <a id="env-vars-server"></a>
 
 Configure the server with the following environmental variables:
 
@@ -242,9 +192,9 @@ Configure the server with the following environmental variables:
 | SYSTEM_EMAIL_ADDRESS  | Required          | `string`  | System Email Address                     |                                                  |
 | SYSTEM_EMAIL_PASSWORD | Required          | `string`  | System Email Password                    |                                                  |
 
-<br/>
+---
 
-##### Databases <a id="databases"></a>
+### Databases <a id="databases"></a>
 
 This project requires two databases:
 
@@ -253,7 +203,7 @@ This project requires two databases:
 
 You may use the included Dockerfiles to spin up databases quickly if you wish.
 
-###### (Optional) Dockerised Databases <a id="optional-docker-databases"></a>
+#### (Optional) Dockerised Databases <a id="optional-docker-databases"></a>
 
 Dockerfiles for the server and databases are located in the `Docker` directory
 
@@ -282,9 +232,10 @@ From the `Docker` directory run
 1.  Build the image: `docker build -f redis.Dockerfile -t uptime_redis .`
 2.  Run the image: `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`
 </details>
-<br/>
 
-##### Starting the Development Server <a id="start-server"></a>
+---
+
+### Starting the Development Server <a id="start-server"></a>
 
 - run `npm run dev` to start the development server
 
@@ -294,15 +245,15 @@ OR
 
 ---
 
-#### API Documentation<a id="api-documentation"></a>
+## <u>API Documentation</u><a id="api-documentation"></a>
 
 Our API is documented in accordance with the [OpenAPI spec](https://www.openapis.org/).
 
-You can see the documentation on your local development server at [http://localhost:{port}/api-docs](http://localhost:5000/api-docs)
+You can see the documentation on your local development server at [http://localhost:{port}/api-docs](htt>>p://localhost:5000/api-docs)
 
 You can also view the documentation on our demo server at [https://uptime-demo.bluewavelabs.ca/api-docs](https://uptime-demo.bluewavelabs.ca/api-docs)
 
-### Error handling
+## <u>Error handling</u>
 
 Errors are returned in a standard format:
 
