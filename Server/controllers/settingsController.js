@@ -4,7 +4,7 @@ const { updateAppSettingsBodyValidation } = require("../validation/joi");
 
 const getAppSettings = async (req, res, next) => {
   try {
-    const settings = await req.db.getAppSettings();
+    const settings = await req.settingsService.getSettings();
     return res.status(200).json({
       success: true,
       msg: successMessages.GET_APP_SETTINGS,
@@ -30,7 +30,7 @@ const updateAppSettings = async (req, res, next) => {
   }
 
   try {
-    const settings = await req.db.updateAppSettings(req.body);
+    await req.db.updateAppSettings(req.body);
     const updatedSettings = await req.settingsService.reloadSettings();
     return res.status(200).json({
       success: true,
