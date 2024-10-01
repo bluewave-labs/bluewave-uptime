@@ -4,6 +4,13 @@ const logger = require("../utils/logger");
 const http = require("http");
 const { errorMessages, successMessages } = require("../utils/messages");
 
+/**
+ * NetworkService
+ *
+ * This service handles all network requests on the back end
+ * This includes pings, http requests, and pagespeed checks
+ */
+
 class NetworkService {
   constructor(db, emailService) {
     this.db = db;

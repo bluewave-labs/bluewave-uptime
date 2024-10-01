@@ -5,11 +5,18 @@ const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
 const { errorMessages, successMessages } = require("../utils/messages");
 const SERVICE_NAME = "JobQueue";
-
+/**
+ * JobQueue
+ *
+ * This service is responsible for managing the job queue.
+ * It handles enqueuing, dequeuing, and processing jobs.
+ * It scales the number of workers based on the number of jobs/worker
+ */
 class JobQueue {
   /**
    * Constructs a new JobQueue
    * @constructor
+   * @param {SettingsService} settingsService - The settings service
    * @throws {Error}
    */
   constructor(settingsService) {

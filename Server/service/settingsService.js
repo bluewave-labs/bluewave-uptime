@@ -1,6 +1,7 @@
-const { env } = require("process");
 const AppSettings = require("../models/AppSettings");
 const SERVICE_NAME = "SettingsService";
+
+// Load settings from environment variables
 const envConfig = {
   logLevel: undefined,
   apiBaseUrl: undefined,
@@ -17,19 +18,34 @@ const envConfig = {
   systemEmailAddress: process.env.SYSTEM_EMAIL_ADDRESS,
   systemEmailPassword: process.env.SYSTEM_EMAIL_PASSWORD,
 };
-
+/**
+ * SettingsService
+ *
+ * This service is responsible for loading and managing the application settings.
+ * It gives priority to environment variables and will only load settings
+ * from the database if they are not set in the environment.
+ */
 class SettingsService {
-  constructor() {
+  /**
+   * Constructs a new SettingsService
+   * @constructor
+   * @throws {Error}
+   */ constructor() {
     this.settings = { ...envConfig };
   }
-
-  async loadSettings() {
+  /**
+   * Load settings from the database and merge with environment settings.
+   * If there are any settings that weren't set by environment variables, use user settings from the database.
+   * @returns {Promise<Object>} The merged settings.
+   * @throws Will throw an error if settings are not found in the database or if settings have not been loaded.
+   */ async loadSettings() {
     try {
       const dbSettings = await AppSettings.findOne();
       if (!this.settings) {
         throw new Error("Settings not found");
       }
-      // Try to load settings from env first, if not found, load from db
+
+      // If there are any settings that weren't set by environment variables, use user settings from DB
       for (const key in envConfig) {
         if (envConfig[key] === undefined && dbSettings[key] !== undefined) {
           this.settings[key] = dbSettings[key];
@@ -46,11 +62,18 @@ class SettingsService {
       throw error;
     }
   }
-
+  /**
+   * Reload settings by calling loadSettings.
+   * @returns {Promise<Object>} The reloaded settings.
+   */
   async reloadSettings() {
     return this.loadSettings();
   }
-
+  /**
+   * Get the current settings.
+   * @returns {Object} The current settings.
+   * @throws Will throw an error if settings have not been loaded.
+   */
   getSettings() {
     if (!this.settings) {
       throw new Error("Settings have not been loaded");
