@@ -69,7 +69,7 @@ const getMonitorStatsById = async (req, res, next) => {
     const monitorStats = await req.db.getMonitorStatsById(req);
     return res.json({
       success: true,
-      msg: successMessages.MONTIOR_STATS_BY_ID,
+      msg: successMessages.MONITOR_STATS_BY_ID,
       data: monitorStats,
     });
   } catch (error) {
@@ -150,7 +150,7 @@ const getMonitorById = async (req, res, next) => {
 
     return res.json({
       success: true,
-      msg: successMessages.MONTIOR_GET_BY_ID,
+      msg: successMessages.MONITOR_GET_BY_ID,
       data: monitor,
     });
   } catch (error) {

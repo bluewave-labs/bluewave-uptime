@@ -1,4 +1,3 @@
-const express = require("express");
 const {
     registrationBodyValidation,
     loginValidation,
@@ -7,9 +6,6 @@ const {
     recoveryValidation,
     recoveryTokenValidation,
     newPasswordValidation,
-    inviteRoleValidation,
-    inviteBodyValidation,
-    inviteVerificationBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -24,28 +20,31 @@ const crypto = require("crypto");
  * @function
  * @param {Object} payload
  * @param {Object} appSettings
- * @param {function} next
  * @returns {String}
  * @throws {Error}
  */
-const issueToken = (payload, appSettings, next) => {
+const issueToken = (payload, appSettings) => {
     try {
         const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
         return jwt.sign(payload, appSettings.jwtSecret, {expiresIn: tokenTTL});
     } catch (error) {
         error.service === undefined ? (error.service = SERVICE_NAME) : null;
         error.method === undefined ? (error.method = "issueToken") : null;
-        next(error);
+        throw error;
     }
 };
 
 /**
- * @function
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {function} next
- * @returns {{success: Boolean, msg: String}}
- * @throws {Error}
+ * Registers a new user. If the user is the first account, a JWT secret is created. If not, an invite token is required.
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @property {string} req.body.inviteToken - The invite token for registration.
+ * @property {Object} req.file - The file object for the user's profile image.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the creation of the user, the created user data, and a JWT token.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const registerUser = async (req, res, next) => {
     // joi validation
@@ -101,12 +100,16 @@ const registerUser = async (req, res, next) => {
 };
 
 /**
- * Returns JWT with User info
+ * Logs in a user by validating the user's credentials and issuing a JWT token.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @param {function} next
- * @returns {Promise<Express.Response>}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @property {string} req.body.email - The email of the user.
+ * @property {string} req.body.password - The password of the user.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the login of the user, the user data (without password and avatar image), and a JWT token.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422) or the password is incorrect.
  */
 const loginUser = async (req, res, next) => {
     try {
@@ -126,7 +129,8 @@ const loginUser = async (req, res, next) => {
         // Compare password
         const match = await user.comparePassword(password);
         if (match !== true) {
-            throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
+            next(new Error(errorMessages.AUTH_INCORRECT_PASSWORD));
+            return;
         }
 
         // Remove password from user object.  Should this be abstracted to DB layer?
@@ -151,6 +155,20 @@ const loginUser = async (req, res, next) => {
     }
 };
 
+/**
+ * Edits a user's information. If the user wants to change their password, the current password is checked before updating to the new password.
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.userId - The ID of the user to be edited.
+ * @property {Object} req.body - The body of the request.
+ * @property {string} req.body.password - The current password of the user.
+ * @property {string} req.body.newPassword - The new password of the user.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the update of the user, and the updated user data.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422), the user is unauthorized (401), or the password is incorrect (403).
+ */
 const editUser = async (req, res, next) => {
     try {
         await editUserParamValidation.validateAsync(req.params);
@@ -175,10 +193,6 @@ const editUser = async (req, res, next) => {
     try {
         // Change Password check
         if (req.body.password && req.body.newPassword) {
-            const newPassword = req.body.newPassword;
-            const password = req.body.password;
-
-            // Compare password
             // Get token from headers
             const token = getTokenFromHeaders(req.headers);
             // Get email from token
@@ -194,7 +208,8 @@ const editUser = async (req, res, next) => {
             if (!match) {
                 const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
                 error.status = 403;
-                throw error;
+                next(error)
+                return;
             }
             // If a match, update the password
             req.body.password = req.body.newPassword;
@@ -208,83 +223,19 @@ const editUser = async (req, res, next) => {
         error.service === undefined ? (error.service = SERVICE_NAME) : null;
         error.method === undefined ? (error.method = "userEditController") : null;
         next(error);
-        return;
-    }
-};
-
-const createInvitation = async (req, res, next) => {
-    try {
-        // Only admins can invite
-        const token = getTokenFromHeaders(req.headers);
-        const {role, firstname, teamId} = jwt.decode(token);
-        req.body.teamId = teamId;
-        try {
-            await inviteRoleValidation.validateAsync({roles: role});
-            await inviteBodyValidation.validateAsync(req.body);
-        } catch (error) {
-            error.status = 422;
-            error.service = SERVICE_NAME;
-            error.message = error.details?.[0]?.message || error.message || "Validation Error";
-            next(error);
-            return;
-        }
-
-        const inviteToken = await req.db.requestInviteToken(req, res);
-        const {clientHost} = req.settingsService.getSettings();
-        req.emailService
-            .buildAndSendEmail("employeeActivationTemplate", {
-                name: firstname, link: `${clientHost}/register/${inviteToken.token}`,
-            }, req.body.email, "Welcome to Uptime Monitor")
-            .catch((error) => {
-                logger.error("Error sending invite email", {
-                    service: SERVICE_NAME, error: error.message,
-                });
-            });
-
-        return res
-            .status(200)
-            .json({success: true, msg: "Invite sent", data: inviteToken});
-    } catch (error) {
-        error.service === undefined ? (error.service = SERVICE_NAME) : null;
-        error.method === undefined ? (error.method = "inviteController") : null;
-        next(error);
-        return;
-    }
-};
-
-const verifyInvitation = async (req, res, next) => {
-    try {
-        await inviteVerificationBodyValidation.validateAsync(req.body);
-    } catch (error) {
-        error.status = 422;
-        error.service = SERVICE_NAME;
-        error.message = error.details?.[0]?.message || error.message || "Validation Error";
-        next(error);
-        return;
-    }
-
-    try {
-        const invite = await req.db.getInviteToken(req, res);
-        res
-            .status(200)
-            .json({status: "success", msg: "Invite verified", data: invite});
-    } catch (error) {
-        error.service === undefined ? (error.service = SERVICE_NAME) : null;
-        error.method === undefined ? (error.method = "inviteVerifyController") : null;
-        next(error);
-        return;
     }
 };
 
 /**
- * Checks to see if an admin account exists
+ * Checks if a superadmin account exists in the database.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
+ * @param {Object} req - The Express request object.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the existence of a superadmin, and a boolean indicating the existence of a superadmin.
+ * @throws {Error} If there is an error during the process.
  */
-
-const checkSuperadminExists = async (req, res) => {
+const checkSuperAdminExists = async (req, res, next) => {
     try {
         const superAdminExists = await req.db.checkSuperadmin(req, res);
         return res.status(200).json({
@@ -294,18 +245,19 @@ const checkSuperadminExists = async (req, res) => {
         error.service === undefined ? (error.service = SERVICE_NAME) : null;
         error.method === undefined ? (error.method = "checkSuperadminController") : null;
         next(error);
-        return;
     }
 };
 
 /**
- * Returns a recovery token
+ * Requests a recovery token for a user. The user's email is validated and a recovery token is created and sent via email.
  * @async
- * @param {Express.Request} req
- * @property {Object} req.body
- * @property {string} req.body.email
- * @property {EmailService} req.body.emailService
- * @returns {Promise<Express.Response>}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @property {string} req.body.email - The email of the user requesting recovery.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the creation of the recovery token, and the message ID of the sent email.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const requestRecovery = async (req, res, next) => {
     try {
@@ -332,7 +284,7 @@ const requestRecovery = async (req, res, next) => {
                 name,
                 email,
                 url
-            }, email, "Bluewaves Uptime Password Resest");
+            }, email, "Bluewave Uptime Password Reset");
 
             return res.status(200).json({
                 success: true, msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN, data: msgId,
@@ -342,18 +294,19 @@ const requestRecovery = async (req, res, next) => {
         error.service === undefined ? (error.service = SERVICE_NAME) : null;
         error.method === undefined ? (error.method = "recoveryRequestController") : null;
         next(error);
-        return;
     }
 };
 
 /**
- * Returns a recovery token
+ * Validates a recovery token. The recovery token is validated and if valid, a success message is returned.
  * @async
- * @param {Express.Request} req
- * @property {Object} req.body
- * @property {string} req.body.token
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @property {string} req.body.token - The recovery token to be validated.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status and a message indicating the validation of the recovery token.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const validateRecovery = async (req, res, next) => {
     try {
@@ -375,19 +328,20 @@ const validateRecovery = async (req, res, next) => {
         error.service === undefined ? (error.service = SERVICE_NAME) : null;
         error.method === undefined ? (error.method = "validateRecoveryTokenController") : null;
         next(error);
-        return;
     }
 };
 
 /**
- * Returns an updated user
+ * Resets a user's password. The new password is validated and if valid, the user's password is updated in the database and a new JWT token is issued.
  * @async
- * @param {Express.Request} req
- * @property {Object} req.body
- * @property {string} req.body.token
- * @property {string} req.body.password
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @property {string} req.body.token - The recovery token.
+ * @property {string} req.body.password - The new password of the user.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the reset of the password, the updated user data (without password and avatar image), and a new JWT token.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const resetPassword = async (req, res, next) => {
     try {
@@ -427,12 +381,13 @@ const deleteUser = async (req, res, next) => {
     try {
         const token = getTokenFromHeaders(req.headers);
         const decodedToken = jwt.decode(token);
-        const {_id, email} = decodedToken;
+        const {email} = decodedToken;
 
         // Check if the user exists
         const user = await req.db.getUserByEmail(email);
         if (!user) {
-            throw new Error(errorMessages.DB_USER_NOT_FOUND);
+            next(new Error(errorMessages.DB_USER_NOT_FOUND));
+            return;
         }
 
         // 1. Find all the monitors associated with the team ID if superadmin
@@ -486,9 +441,7 @@ module.exports = {
     registerUser,
     loginUser,
     editUser,
-    createInvitation,
-    verifyInvitation,
-    checkSuperadminExists,
+    checkSuperadminExists: checkSuperAdminExists,
     requestRecovery,
     validateRecovery,
     resetPassword,

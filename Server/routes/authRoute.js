@@ -9,7 +9,6 @@ const User = require("../db/models/User");
 const {
   registerUser,
   loginUser,
-  logoutController,
   editUser,
   requestRecovery,
   validateRecovery,
