@@ -2,7 +2,7 @@ const router = require("express").Router();
 const checkController = require("../controllers/checkController");
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const { isAllowed } = require("../middleware/isAllowed");
-const Monitor = require("../models/Monitor");
+const Monitor = require("../db/models/Monitor");
 
 router.get("/:monitorId", checkController.getChecks);
 router.post(

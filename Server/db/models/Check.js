@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const EmailService = require("../service/emailService");
-const Notification = require("../models/Notification");
+const EmailService = require("../../service/emailService");
+const Notification = require("./Notification");
 
 /**
  * Check Schema for MongoDB collection.

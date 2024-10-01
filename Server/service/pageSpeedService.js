@@ -1,4 +1,4 @@
-const PageSpeedCheck = require("../models/PageSpeedCheck");
+const PageSpeedCheck = require("../db/models/PageSpeedCheck");
 const axios = require("axios");
 const logger = require("../utils/logger");
 

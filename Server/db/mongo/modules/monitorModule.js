@@ -1,8 +1,8 @@
-const Monitor = require("../../../models/Monitor");
-const Check = require("../../../models/Check");
-const PageSpeedCheck = require("../../../models/PageSpeedCheck");
+const Monitor = require("../../models/Monitor");
+const Check = require("../../models/Check");
+const PageSpeedCheck = require("../../models/PageSpeedCheck");
 const { errorMessages } = require("../../../utils/messages");
-const Notification = require("../../../models/Notification");
+const Notification = require("../../models/Notification");
 const { NormalizeData } = require("../../../utils/dataUtils");
 const demoMonitors = require("../../../utils/demoMonitors.json");
 const SERVICE_NAME = "monitorModule";
