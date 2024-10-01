@@ -164,7 +164,7 @@ const Settings = ({ isAdmin }) => {
       >
         <ConfigBox>
           <Box>
-            <Typography component="h1">General Settings</Typography>
+            <Typography component="h1">General settings</Typography>
             <Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(2) }}>
               <Typography component="span">Display timezone</Typography>- The
               timezone of the dashboard you publicly display.
@@ -218,7 +218,7 @@ const Settings = ({ isAdmin }) => {
         {isAdmin && (
           <ConfigBox>
             <Box>
-              <Typography component="h1">Demo Monitors</Typography>
+              <Typography component="h1">Demo monitors</Typography>
               <Typography sx={{ mt: theme.spacing(2) }}>
                 Here you can add and remove demo monitors
               </Typography>
@@ -254,7 +254,7 @@ const Settings = ({ isAdmin }) => {
         {isAdmin && (
           <ConfigBox>
             <Box>
-              <Typography component="h1">Advanced Settings</Typography>
+              <Typography component="h1">Advanced settings</Typography>
               <Typography sx={{ mt: theme.spacing(2) }}>
                 Click here to modify advanced settings
               </Typography>
