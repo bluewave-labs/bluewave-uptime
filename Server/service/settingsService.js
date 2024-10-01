@@ -1,5 +1,5 @@
 const { env } = require("process");
-const AppSettings = require("../models/AppSettings");
+const AppSettings = require("../db/models/AppSettings");
 const SERVICE_NAME = "SettingsService";
 const envConfig = {
   logLevel: undefined,
