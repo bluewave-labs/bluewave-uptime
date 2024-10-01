@@ -1,0 +1,30 @@
+services:
+  client:
+    image: uptime_client:latest
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - server
+  server:
+    image: uptime_server:latest
+    ports:
+      - "5000:5000"
+    env_file:
+      - server.env
+    depends_on:
+      - redis
+      - mongodb
+  redis:
+    image: uptime_redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+  mongodb:
+    image: uptime_database_mongo:latest
+    command: ["mongod", "--quiet"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/data:/data/db
