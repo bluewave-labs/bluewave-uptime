@@ -19,6 +19,10 @@ BlueWave Uptime is an open source server monitoring application used to track th
 
 See [BlueWave Uptime](https://uptime-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
 
+## Questions & Ideas
+
+We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-uptime/discussions) page! Feel free to ask questions or share your ideas—we'd love to hear from you!
+
 ## Features
 
 - [x] Completely open source, deployable on your servers

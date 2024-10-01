@@ -21,7 +21,6 @@ const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
 const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
-const PageSpeedService = require("./service/pageSpeedService");
 const SettingsService = require("./service/settingsService");
 const SERVICE_NAME = "Server";
 
@@ -73,7 +72,6 @@ const startApp = async () => {
     req.db = db;
     req.jobQueue = jobQueue;
     req.emailService = emailService;
-    req.pageSpeedService = pageSpeedService;
     req.settingsService = settingsService;
     next();
   });
@@ -136,7 +134,6 @@ const startApp = async () => {
     networkService,
     settingsService
   );
-  const pageSpeedService = new PageSpeedService();
 
   const cleanup = async () => {
     if (cleaningUp) {
