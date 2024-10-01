@@ -11,8 +11,6 @@ const {
   getMonitorStatsByIdParamValidation,
   getMonitorStatsByIdQueryValidation,
   getCertificateParamValidation,
-  getMonitorAggregateStatsParamValidation,
-  getMonitorAggregateStatsQueryValidation,
 } = require("../validation/joi");
 
 const sslChecker = require("ssl-checker");
@@ -27,6 +25,7 @@ const logger = require("../utils/logger");
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
+ * @param {function} next
  * @returns {Promise<Express.Response>}
  * @throws {Error}
  */
@@ -50,6 +49,7 @@ const getAllMonitors = async (req, res, next) => {
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
+ * @param {function} next
  * @returns {Promise<Express.Response>}
  * @throws {Error}
  */
@@ -119,12 +119,15 @@ const getMonitorCertificate = async (req, res, next) => {
 };
 
 /**
- * Returns monitor with matching ID
+ * Retrieves a monitor by its ID.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.monitorId - The ID of the monitor to be retrieved.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message, and the retrieved monitor data.
+ * @throws {Error} If there is an error during the process, especially if the monitor is not found (404) or if there is a validation error (422).
  */
 const getMonitorById = async (req, res, next) => {
   try {
@@ -143,7 +146,6 @@ const getMonitorById = async (req, res, next) => {
     if (!monitor) {
       const error = new Error(errorMessages.MONITOR_GET_BY_ID);
       error.status = 404;
-      throw error;
     }
 
     return res.json({
@@ -159,14 +161,18 @@ const getMonitorById = async (req, res, next) => {
 };
 
 /**
- * Returns all monitors and a sumamry for a team with TeamID
+ * Retrieves all monitors and a summary for a team based on the team ID.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.teamId - The ID of the team.
+ * @property {Object} req.query - The query parameters of the request.
+ * @property {string} req.query.type - The type of the request.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message, and the data containing the monitors and summary for the team.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
-
 const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
   try {
     await getMonitorsAndSummaryByTeamIdParamValidation.validateAsync(
@@ -177,8 +183,7 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
-    error.method === undefined &&
-      error.method === "getMonitorsAndSummaryByTeamId";
+    error.method === undefined? error.method = "getMonitorsAndSummaryByTeamId": null;
     error.message =
       error.details?.[0]?.message || error.message || "Validation Error";
     next(error);
@@ -207,12 +212,16 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
 };
 
 /**
- * Returns all monitors belong to team with TeamID
+ * Retrieves all monitors associated with a team by the team's ID.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.teamId - The ID of the team.
+ * @property {Object} req.query - The query parameters of the request.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message, and the data containing the monitors for the team.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const getMonitorsByTeamId = async (req, res, next) => {
   try {
@@ -243,14 +252,16 @@ const getMonitorsByTeamId = async (req, res, next) => {
 };
 
 /**
- * Creates a new monitor
+ * Creates a new monitor and adds it to the job queue.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @property {Array} req.body.notifications - The notifications associated with the monitor.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the creation of the monitor, and the created monitor data.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
-
 const createMonitor = async (req, res, next) => {
   try {
     await createMonitorBodyValidation.validateAsync(req.body);
@@ -269,13 +280,12 @@ const createMonitor = async (req, res, next) => {
     const monitor = await req.db.createMonitor(req, res);
 
     if (notifications && notifications.length !== 0) {
-      const setNotifications = await Promise.all(
-        notifications.map(async (notification) => {
-          notification.monitorId = monitor._id;
-          await req.db.createNotification(notification);
-        })
+      monitor.notifications = await Promise.all(
+          notifications.map(async (notification) => {
+            notification.monitorId = monitor._id;
+            await req.db.createNotification(notification);
+          })
       );
-      monitor.notifications = setNotifications;
       await monitor.save();
     }
     // Add monitor to job queue
@@ -293,14 +303,16 @@ const createMonitor = async (req, res, next) => {
 };
 
 /**
- * Delete a monitor by ID
+ * Deletes a monitor by its ID and also deletes associated checks, alerts, and notifications.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.monitorId - The ID of the monitor to be deleted.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status and a message indicating the deletion of the monitor.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422) or an error in deleting associated records.
  */
-
 const deleteMonitor = async (req, res, next) => {
   try {
     await getMonitorByIdParamValidation.validateAsync(req.params);
@@ -331,7 +343,6 @@ const deleteMonitor = async (req, res, next) => {
         }
       );
     }
-
     return res
       .status(200)
       .json({ success: true, msg: successMessages.MONITOR_DELETE });
@@ -342,7 +353,18 @@ const deleteMonitor = async (req, res, next) => {
   }
 };
 
-const deleteAllMonitors = async (req, res) => {
+/**
+ * Deletes all monitors associated with a team.
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.headers - The headers of the request.
+ * @property {string} req.headers.authorization - The authorization header containing the JWT token.
+ * @param {Object} res - The Express response object.
+ * @param {function} next
+ * @returns {Object} The response object with a success status and a message indicating the number of deleted monitors.
+ * @throws {Error} If there is an error during the deletion process.
+ */
+const deleteAllMonitors = async (req, res, next) => {
   try {
     const token = getTokenFromHeaders(req.headers);
     const { jwtSecret } = req.settingsService.getSettings();
@@ -367,12 +389,17 @@ const deleteAllMonitors = async (req, res) => {
 };
 
 /**
- * Edit a monitor by ID
+ * Edits a monitor by its ID, updates its notifications, and updates its job in the job queue.
  * @async
- * @param {Express.Request} req
- * @param {Express.Response} res
- * @returns {Promise<Express.Response>}
- * @throws {Error}
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.monitorId - The ID of the monitor to be edited.
+ * @property {Object} req.body - The body of the request.
+ * @property {Array} req.body.notifications - The notifications to be associated with the monitor.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the editing of the monitor, and the edited monitor data.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const editMonitor = async (req, res, next) => {
   try {
@@ -423,6 +450,17 @@ const editMonitor = async (req, res, next) => {
   }
 };
 
+/**
+ * Pauses or resumes a monitor based on its current state.
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.params - The parameters of the request.
+ * @property {string} req.params.monitorId - The ID of the monitor to be paused or resumed.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the new state of the monitor, and the updated monitor data.
+ * @throws {Error} If there is an error during the process.
+ */
 const pauseMonitor = async (req, res, next) => {
   try {
     await pauseMonitorParamValidation.validateAsync(req.params);
@@ -458,6 +496,17 @@ const pauseMonitor = async (req, res, next) => {
   }
 };
 
+/**
+ * Adds demo monitors for a team.
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.headers - The headers of the request.
+ * @property {string} req.headers.authorization - The authorization header containing the JWT token.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message indicating the addition of demo monitors, and the number of demo monitors added.
+ * @throws {Error} If there is an error during the process.
+ */
 const addDemoMonitors = async (req, res, next) => {
   try {
     const token = getTokenFromHeaders(req.headers);

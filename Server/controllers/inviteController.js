@@ -1,7 +1,7 @@
 const {
   inviteRoleValidation,
   inviteBodyValidation,
-  inviteVerifciationBodyValidation,
+  inviteVerificationBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
@@ -70,7 +70,7 @@ const inviteController = async (req, res, next) => {
 
 const inviteVerifyController = async (req, res, next) => {
   try {
-    await inviteVerifciationBodyValidation.validateAsync(req.body);
+    await inviteVerificationBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;

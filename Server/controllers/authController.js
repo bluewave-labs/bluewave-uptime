@@ -1,109 +1,103 @@
 const express = require("express");
 const {
-  registrationBodyValidation,
-  loginValidation,
-  editUserParamValidation,
-  editUserBodyValidation,
-  recoveryValidation,
-  recoveryTokenValidation,
-  newPasswordValidation,
-  deleteUserParamValidation,
-  inviteRoleValidation,
-  inviteBodyValidation,
-  inviteVerifciationBodyValidation,
+    registrationBodyValidation,
+    loginValidation,
+    editUserParamValidation,
+    editUserBodyValidation,
+    recoveryValidation,
+    recoveryTokenValidation,
+    newPasswordValidation,
+    inviteRoleValidation,
+    inviteBodyValidation,
+    inviteVerificationBodyValidation,
 } = require("../validation/joi");
 const logger = require("../utils/logger");
 require("dotenv").config();
-const { errorMessages, successMessages } = require("../utils/messages");
-var jwt = require("jsonwebtoken");
+const {errorMessages, successMessages} = require("../utils/messages");
+const jwt = require("jsonwebtoken");
 const SERVICE_NAME = "AuthController";
-const { getTokenFromHeaders } = require("../utils/utils");
+const {getTokenFromHeaders} = require("../utils/utils");
 const crypto = require("crypto");
 
 /**
  * Creates and returns JWT token with an arbitrary payload
  * @function
  * @param {Object} payload
+ * @param {Object} appSettings
+ * @param {function} next
  * @returns {String}
+ * @throws {Error}
  */
-const issueToken = (payload, appSettings) => {
-  try {
-    const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
-    return jwt.sign(payload, appSettings.jwtSecret, { expiresIn: tokenTTL });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "issueToken") : null;
-    next(error);
-  }
+const issueToken = (payload, appSettings, next) => {
+    try {
+        const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
+        return jwt.sign(payload, appSettings.jwtSecret, {expiresIn: tokenTTL});
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "issueToken") : null;
+        next(error);
+    }
 };
 
 /**
  * @function
  * @param {express.Request} req
  * @param {express.Response} res
+ * @param {function} next
  * @returns {{success: Boolean, msg: String}}
+ * @throws {Error}
  */
-const registerController = async (req, res, next) => {
-  // joi validation
-  try {
-    await registrationBodyValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
-  // Create a new user
-  try {
-    const { inviteToken } = req.body;
-    // If superAdmin exists, a token should be attached to all further register requests
-    const superAdminExists = await req.db.checkSuperadmin(req, res);
-    if (superAdminExists) {
-      await req.db.getInviteTokenAndDelete(inviteToken);
-    } else {
-      // This is the first account, create JWT secret to use if one is not supplied by env
-      const jwtSecret = crypto.randomBytes(64).toString("hex");
-      await req.db.updateAppSettings({ jwtSecret });
+const registerUser = async (req, res, next) => {
+    // joi validation
+    try {
+        await registrationBodyValidation.validateAsync(req.body);
+    } catch (error) {
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
     }
+    // Create a new user
+    try {
+        const {inviteToken} = req.body;
+        // If superAdmin exists, a token should be attached to all further register requests
+        const superAdminExists = await req.db.checkSuperadmin(req, res);
+        if (superAdminExists) {
+            await req.db.getInviteTokenAndDelete(inviteToken);
+        } else {
+            // This is the first account, create JWT secret to use if one is not supplied by env
+            const jwtSecret = crypto.randomBytes(64).toString("hex");
+            await req.db.updateAppSettings({jwtSecret});
+        }
 
-    const newUser = await req.db.insertUser({ ...req.body }, req.file);
-    logger.info(successMessages.AUTH_CREATE_USER, {
-      service: SERVICE_NAME,
-      userId: newUser._id,
-    });
-
-    const userForToken = { ...newUser._doc };
-    delete userForToken.profileImage;
-    delete userForToken.avatarImage;
-
-    const appSettings = await req.settingsService.getSettings();
-    const token = issueToken(userForToken, appSettings);
-    req.emailService
-      .buildAndSendEmail(
-        "welcomeEmailTemplate",
-        { name: newUser.firstName },
-        newUser.email,
-        "Welcome to Uptime Monitor"
-      )
-      .catch((error) => {
-        logger.error("Error sending welcome email", {
-          service: SERVICE_NAME,
-          error: error.message,
+        const newUser = await req.db.insertUser({...req.body}, req.file);
+        logger.info(successMessages.AUTH_CREATE_USER, {
+            service: SERVICE_NAME, userId: newUser._id,
         });
-      });
 
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_CREATE_USER,
-      data: { user: newUser, token: token },
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "registerController") : null;
-    next(error);
-  }
+        const userForToken = {...newUser._doc};
+        delete userForToken.profileImage;
+        delete userForToken.avatarImage;
+
+        const appSettings = await req.settingsService.getSettings();
+        const token = issueToken(userForToken, appSettings);
+        req.emailService
+            .buildAndSendEmail("welcomeEmailTemplate", {name: newUser.firstName}, newUser.email, "Welcome to Uptime Monitor")
+            .catch((error) => {
+                logger.error("Error sending welcome email", {
+                    service: SERVICE_NAME, error: error.message,
+                });
+            });
+
+        return res.status(200).json({
+            success: true, msg: successMessages.AUTH_CREATE_USER, data: {user: newUser, token: token},
+        });
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "registerController") : null;
+        next(error);
+    }
 };
 
 /**
@@ -111,191 +105,175 @@ const registerController = async (req, res, next) => {
  * @async
  * @param {Express.Request} req
  * @param {Express.Response} res
+ * @param {function} next
  * @returns {Promise<Express.Response>}
  */
-const loginController = async (req, res, next) => {
-  try {
-    await loginValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
-  try {
-    const { email, password } = req.body;
-    // Check if user exists
-    const user = await req.db.getUserByEmail(email);
-
-    // Compare password
-    const match = await user.comparePassword(password);
-    if (match !== true) {
-      throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
-    }
-
-    // Remove password from user object.  Should this be abstracted to DB layer?
-    const userWithoutPassword = { ...user._doc };
-    delete userWithoutPassword.password;
-    delete userWithoutPassword.avatarImage;
-
-    // Happy path, return token
-    const appSettings = req.settingsService.getSettings();
-    const token = issueToken(userWithoutPassword, appSettings);
-    // reset avatar image
-    userWithoutPassword.avatarImage = user.avatarImage;
-
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_LOGIN_USER,
-      data: { user: userWithoutPassword, token: token },
-    });
-  } catch (error) {
-    error.status = 500;
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "loginController") : null;
-    next(error);
-  }
-};
-
-const userEditController = async (req, res, next) => {
-  try {
-    await editUserParamValidation.validateAsync(req.params);
-    await editUserBodyValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
-
-  // TODO is this neccessary any longer? Verify ownership middleware should handle this
-  if (req.params.userId !== req.user._id.toString()) {
-    const error = new Error(errorMessages.AUTH_UNAUTHORIZED);
-    error.status = 401;
-    error.service = SERVICE_NAME;
-    next(error);
-    return;
-  }
-
-  try {
-    // Change Password check
-    if (req.body.password && req.body.newPassword) {
-      const newPassword = req.body.newPassword;
-      const password = req.body.password;
-
-      // Compare password
-      // Get token from headers
-      const token = getTokenFromHeaders(req.headers);
-      // Get email from token
-      const { jwtSecret } = req.settingsService.getSettings();
-      const { email } = jwt.verify(token, jwtSecret);
-      // Add user email to body for DB operation
-      req.body.email = email;
-      // Get user
-      const user = await req.db.getUserByEmail(email);
-      // Compare passwords
-      const match = await user.comparePassword(req.body.password);
-      // If not a match, throw a 403
-      if (!match) {
-        const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
-        error.status = 403;
-        throw error;
-      }
-      // If a match, update the password
-      req.body.password = req.body.newPassword;
-    }
-
-    const updatedUser = await req.db.updateUser(req, res);
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_UPDATE_USER,
-      data: updatedUser,
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "userEditController") : null;
-    next(error);
-    return;
-  }
-};
-
-const inviteController = async (req, res, next) => {
-  try {
-    // Only admins can invite
-    const token = getTokenFromHeaders(req.headers);
-    const { role, firstname, teamId } = jwt.decode(token);
-    req.body.teamId = teamId;
+const loginUser = async (req, res, next) => {
     try {
-      await inviteRoleValidation.validateAsync({ roles: role });
-      await inviteBodyValidation.validateAsync(req.body);
+        await loginValidation.validateAsync(req.body);
     } catch (error) {
-      error.status = 422;
-      error.service = SERVICE_NAME;
-      error.message =
-        error.details?.[0]?.message || error.message || "Validation Error";
-      next(error);
-      return;
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
     }
+    try {
+        const {email, password} = req.body;
+        // Check if user exists
+        const user = await req.db.getUserByEmail(email);
 
-    const inviteToken = await req.db.requestInviteToken(req, res);
-    const { clientHost } = req.settingsService.getSettings();
-    req.emailService
-      .buildAndSendEmail(
-        "employeeActivationTemplate",
-        {
-          name: firstname,
-          link: `${clientHost}/register/${inviteToken.token}`,
-        },
-        req.body.email,
-        "Welcome to Uptime Monitor"
-      )
-      .catch((error) => {
-        logger.error("Error sending invite email", {
-          service: SERVICE_NAME,
-          error: error.message,
+        // Compare password
+        const match = await user.comparePassword(password);
+        if (match !== true) {
+            throw new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
+        }
+
+        // Remove password from user object.  Should this be abstracted to DB layer?
+        const userWithoutPassword = {...user._doc};
+        delete userWithoutPassword.password;
+        delete userWithoutPassword.avatarImage;
+
+        // Happy path, return token
+        const appSettings = req.settingsService.getSettings();
+        const token = issueToken(userWithoutPassword, appSettings);
+        // reset avatar image
+        userWithoutPassword.avatarImage = user.avatarImage;
+
+        return res.status(200).json({
+            success: true, msg: successMessages.AUTH_LOGIN_USER, data: {user: userWithoutPassword, token: token},
         });
-      });
-
-    return res
-      .status(200)
-      .json({ success: true, msg: "Invite sent", data: inviteToken });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "inviteController") : null;
-    next(error);
-    return;
-  }
+    } catch (error) {
+        error.status = 500;
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "loginController") : null;
+        next(error);
+    }
 };
 
-const inviteVerifyController = async (req, res, next) => {
-  try {
-    await inviteVerifciationBodyValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
+const editUser = async (req, res, next) => {
+    try {
+        await editUserParamValidation.validateAsync(req.params);
+        await editUserBodyValidation.validateAsync(req.body);
+    } catch (error) {
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
+    }
 
-  try {
-    const invite = await req.db.getInviteToken(req, res);
-    res
-      .status(200)
-      .json({ status: "success", msg: "Invite verified", data: invite });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "inviteVerifyController")
-      : null;
-    next(error);
-    return;
-  }
+    // TODO is this neccessary any longer? Verify ownership middleware should handle this
+    if (req.params.userId !== req.user._id.toString()) {
+        const error = new Error(errorMessages.AUTH_UNAUTHORIZED);
+        error.status = 401;
+        error.service = SERVICE_NAME;
+        next(error);
+        return;
+    }
+
+    try {
+        // Change Password check
+        if (req.body.password && req.body.newPassword) {
+            const newPassword = req.body.newPassword;
+            const password = req.body.password;
+
+            // Compare password
+            // Get token from headers
+            const token = getTokenFromHeaders(req.headers);
+            // Get email from token
+            const {jwtSecret} = req.settingsService.getSettings();
+            const {email} = jwt.verify(token, jwtSecret);
+            // Add user email to body for DB operation
+            req.body.email = email;
+            // Get user
+            const user = await req.db.getUserByEmail(email);
+            // Compare passwords
+            const match = await user.comparePassword(req.body.password);
+            // If not a match, throw a 403
+            if (!match) {
+                const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
+                error.status = 403;
+                throw error;
+            }
+            // If a match, update the password
+            req.body.password = req.body.newPassword;
+        }
+
+        const updatedUser = await req.db.updateUser(req, res);
+        return res.status(200).json({
+            success: true, msg: successMessages.AUTH_UPDATE_USER, data: updatedUser,
+        });
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "userEditController") : null;
+        next(error);
+        return;
+    }
+};
+
+const createInvitation = async (req, res, next) => {
+    try {
+        // Only admins can invite
+        const token = getTokenFromHeaders(req.headers);
+        const {role, firstname, teamId} = jwt.decode(token);
+        req.body.teamId = teamId;
+        try {
+            await inviteRoleValidation.validateAsync({roles: role});
+            await inviteBodyValidation.validateAsync(req.body);
+        } catch (error) {
+            error.status = 422;
+            error.service = SERVICE_NAME;
+            error.message = error.details?.[0]?.message || error.message || "Validation Error";
+            next(error);
+            return;
+        }
+
+        const inviteToken = await req.db.requestInviteToken(req, res);
+        const {clientHost} = req.settingsService.getSettings();
+        req.emailService
+            .buildAndSendEmail("employeeActivationTemplate", {
+                name: firstname, link: `${clientHost}/register/${inviteToken.token}`,
+            }, req.body.email, "Welcome to Uptime Monitor")
+            .catch((error) => {
+                logger.error("Error sending invite email", {
+                    service: SERVICE_NAME, error: error.message,
+                });
+            });
+
+        return res
+            .status(200)
+            .json({success: true, msg: "Invite sent", data: inviteToken});
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "inviteController") : null;
+        next(error);
+        return;
+    }
+};
+
+const verifyInvitation = async (req, res, next) => {
+    try {
+        await inviteVerificationBodyValidation.validateAsync(req.body);
+    } catch (error) {
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
+    }
+
+    try {
+        const invite = await req.db.getInviteToken(req, res);
+        res
+            .status(200)
+            .json({status: "success", msg: "Invite verified", data: invite});
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "inviteVerifyController") : null;
+        next(error);
+        return;
+    }
 };
 
 /**
@@ -306,22 +284,18 @@ const inviteVerifyController = async (req, res, next) => {
  * @returns {Promise<Express.Response>}
  */
 
-const checkSuperadminController = async (req, res) => {
-  try {
-    const superAdminExists = await req.db.checkSuperadmin(req, res);
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_ADMIN_EXISTS,
-      data: superAdminExists,
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "checkSuperadminController")
-      : null;
-    next(error);
-    return;
-  }
+const checkSuperadminExists = async (req, res) => {
+    try {
+        const superAdminExists = await req.db.checkSuperadmin(req, res);
+        return res.status(200).json({
+            success: true, msg: successMessages.AUTH_ADMIN_EXISTS, data: superAdminExists,
+        });
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "checkSuperadminController") : null;
+        next(error);
+        return;
+    }
 };
 
 /**
@@ -333,49 +307,43 @@ const checkSuperadminController = async (req, res) => {
  * @property {EmailService} req.body.emailService
  * @returns {Promise<Express.Response>}
  */
-const recoveryRequestController = async (req, res, next) => {
-  try {
-    await recoveryValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
-
-  try {
-    const { email } = req.body;
-    const user = await req.db.getUserByEmail(email);
-    if (user) {
-      const recoveryToken = await req.db.requestRecoveryToken(req, res);
-      const name = user.firstName;
-      const email = req.body.email;
-      const { clientHost } = req.settingsService.getSettings();
-      const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
-
-      const msgId = await req.emailService.buildAndSendEmail(
-        "passwordResetTemplate",
-        { name, email, url },
-        email,
-        "Bluewaves Uptime Password Resest"
-      );
-
-      return res.status(200).json({
-        success: true,
-        msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
-        data: msgId,
-      });
+const requestRecovery = async (req, res, next) => {
+    try {
+        await recoveryValidation.validateAsync(req.body);
+    } catch (error) {
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
     }
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "recoveryRequestController")
-      : null;
-    next(error);
-    return;
-  }
+
+    try {
+        const {email} = req.body;
+        const user = await req.db.getUserByEmail(email);
+        if (user) {
+            const recoveryToken = await req.db.requestRecoveryToken(req, res);
+            const name = user.firstName;
+            const email = req.body.email;
+            const {clientHost} = req.settingsService.getSettings();
+            const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
+
+            const msgId = await req.emailService.buildAndSendEmail("passwordResetTemplate", {
+                name,
+                email,
+                url
+            }, email, "Bluewaves Uptime Password Resest");
+
+            return res.status(200).json({
+                success: true, msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN, data: msgId,
+            });
+        }
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "recoveryRequestController") : null;
+        next(error);
+        return;
+    }
 };
 
 /**
@@ -387,33 +355,28 @@ const recoveryRequestController = async (req, res, next) => {
  * @param {Express.Response} res
  * @returns {Promise<Express.Response>}
  */
-const validateRecoveryTokenController = async (req, res, next) => {
-  try {
-    await recoveryTokenValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
+const validateRecovery = async (req, res, next) => {
+    try {
+        await recoveryTokenValidation.validateAsync(req.body);
+    } catch (error) {
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
+    }
 
-  try {
-    await req.db.validateRecoveryToken(req, res);
-    // TODO Redirect user to reset password after validating token
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_VERIFY_RECOVERY_TOKEN,
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "validateRecoveryTokenController")
-      : null;
-    next(error);
-    return;
-  }
+    try {
+        await req.db.validateRecoveryToken(req, res);
+        return res.status(200).json({
+            success: true, msg: successMessages.AUTH_VERIFY_RECOVERY_TOKEN,
+        });
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "validateRecoveryTokenController") : null;
+        next(error);
+        return;
+    }
 };
 
 /**
@@ -426,34 +389,29 @@ const validateRecoveryTokenController = async (req, res, next) => {
  * @param {Express.Response} res
  * @returns {Promise<Express.Response>}
  */
-const resetPasswordController = async (req, res, next) => {
-  try {
-    await newPasswordValidation.validateAsync(req.body);
-  } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
-    return;
-  }
-  try {
-    const user = await req.db.resetPassword(req, res);
+const resetPassword = async (req, res, next) => {
+    try {
+        await newPasswordValidation.validateAsync(req.body);
+    } catch (error) {
+        error.status = 422;
+        error.service = SERVICE_NAME;
+        error.message = error.details?.[0]?.message || error.message || "Validation Error";
+        next(error);
+        return;
+    }
+    try {
+        const user = await req.db.resetPassword(req, res);
 
-    const appSettings = await req.settingsService.getSettings();
-    const token = issueToken(user._doc, appSettings);
-    res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_RESET_PASSWORD,
-      data: { user, token },
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "resetPasswordController")
-      : null;
-    next(error);
-  }
+        const appSettings = await req.settingsService.getSettings();
+        const token = issueToken(user._doc, appSettings);
+        res.status(200).json({
+            success: true, msg: successMessages.AUTH_RESET_PASSWORD, data: {user, token},
+        });
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "resetPasswordController") : null;
+        next(error);
+    }
 };
 
 /**
@@ -465,81 +423,75 @@ const resetPasswordController = async (req, res, next) => {
  * @returns {Object} The response object with success status and message.
  * @throws {Error} If user validation fails or user is not found in the database.
  */
-const deleteUserController = async (req, res, next) => {
-  try {
-    const token = getTokenFromHeaders(req.headers);
-    const decodedToken = jwt.decode(token);
-    const { _id, email } = decodedToken;
+const deleteUser = async (req, res, next) => {
+    try {
+        const token = getTokenFromHeaders(req.headers);
+        const decodedToken = jwt.decode(token);
+        const {_id, email} = decodedToken;
 
-    // Check if the user exists
-    const user = await req.db.getUserByEmail(email);
-    if (!user) {
-      throw new Error(errorMessages.DB_USER_NOT_FOUND);
+        // Check if the user exists
+        const user = await req.db.getUserByEmail(email);
+        if (!user) {
+            throw new Error(errorMessages.DB_USER_NOT_FOUND);
+        }
+
+        // 1. Find all the monitors associated with the team ID if superadmin
+
+        const result = await req.db.getMonitorsByTeamId({
+            params: {teamId: user.teamId},
+        });
+        if (user.role.includes("superadmin")) {
+            //2.  Remove all jobs, delete checks and alerts
+            result?.monitors.length > 0 && (await Promise.all(result.monitors.map(async (monitor) => {
+                await req.jobQueue.deleteJob(monitor);
+                await req.db.deleteChecks(monitor._id);
+                await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+                await req.db.deleteNotificationsByMonitorId(monitor._id);
+            })));
+
+            // 3. Delete team
+            await req.db.deleteTeam(user.teamId);
+            // 4. Delete all other team members
+            await req.db.deleteAllOtherUsers();
+            // 5. Delete each monitor
+            await req.db.deleteMonitorsByUserId(user._id);
+        }
+        // 6. Delete the user by id
+        await req.db.deleteUser(user._id);
+
+        return res.status(200).json({
+            success: true, msg: successMessages.AUTH_DELETE_USER,
+        });
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "deleteUserController") : null;
+        next(error);
     }
-
-    // 1. Find all the monitors associated with the team ID if superadmin
-
-    const result = await req.db.getMonitorsByTeamId({
-      params: { teamId: user.teamId },
-    });
-    if (user.role.includes("superadmin")) {
-      //2.  Remove all jobs, delete checks and alerts
-      result?.monitors.length > 0 &&
-        (await Promise.all(
-          result.monitors.map(async (monitor) => {
-            await req.jobQueue.deleteJob(monitor);
-            await req.db.deleteChecks(monitor._id);
-            await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
-            await req.db.deleteNotificationsByMonitorId(monitor._id);
-          })
-        ));
-
-      // 3. Delete team
-      await req.db.deleteTeam(user.teamId);
-      // 4. Delete all other team members
-      await req.db.deleteAllOtherUsers();
-      // 5. Delete each monitor
-      await req.db.deleteMonitorsByUserId(user._id);
-    }
-    // 6. Delete the user by id
-    await req.db.deleteUser(user._id);
-
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_DELETE_USER,
-    });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "deleteUserController") : null;
-    next(error);
-  }
 };
 
-const getAllUsersController = async (req, res) => {
-  try {
-    const allUsers = await req.db.getAllUsers(req, res);
-    res
-      .status(200)
-      .json({ success: true, msg: "Got all users", data: allUsers });
-  } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getAllUsersController")
-      : null;
-    next(error);
-  }
+const getAllUsers = async (req, res) => {
+    try {
+        const allUsers = await req.db.getAllUsers(req, res);
+        res
+            .status(200)
+            .json({success: true, msg: "Got all users", data: allUsers});
+    } catch (error) {
+        error.service === undefined ? (error.service = SERVICE_NAME) : null;
+        error.method === undefined ? (error.method = "getAllUsersController") : null;
+        next(error);
+    }
 };
 
 module.exports = {
-  registerController,
-  loginController,
-  userEditController,
-  inviteController,
-  inviteVerifyController,
-  checkSuperadminController,
-  recoveryRequestController,
-  validateRecoveryTokenController,
-  resetPasswordController,
-  deleteUserController,
-  getAllUsersController,
+    registerUser,
+    loginUser,
+    editUser,
+    createInvitation,
+    verifyInvitation,
+    checkSuperadminExists,
+    requestRecovery,
+    validateRecovery,
+    resetPassword,
+    deleteUser,
+    getAllUsers,
 };
