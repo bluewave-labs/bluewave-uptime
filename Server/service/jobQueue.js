@@ -139,7 +139,7 @@ class JobQueue {
       return { jobs, load };
     } catch (error) {
       error.service === undefined ? (error.service = SERVICE_NAME) : null;
-      errorObject.method === undefined
+      error.method === undefined
         ? (error.method = "getWorkerStats")
         : null;
       throw error;
@@ -285,6 +285,8 @@ class JobQueue {
           service: SERVICE_NAME,
           jobId: monitor.id,
         });
+        const workerStats = await this.getWorkerStats();
+        await this.scaleWorkers(workerStats);
       } else {
         logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
           service: SERVICE_NAME,
