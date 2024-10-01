@@ -1,7 +1,6 @@
+const { env } = require("process");
 const AppSettings = require("../models/AppSettings");
 const SERVICE_NAME = "SettingsService";
-
-// Load settings from environment variables
 const envConfig = {
   logLevel: undefined,
   apiBaseUrl: undefined,

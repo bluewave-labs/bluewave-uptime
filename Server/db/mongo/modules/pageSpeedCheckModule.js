@@ -1,4 +1,4 @@
-const PageSpeedCheck = require("../../../models/PageSpeedCheck");
+const PageSpeedCheck = require("../../models/PageSpeedCheck");
 const SERVICE_NAME = "pageSpeedCheckModule";
 /**
  * Create a PageSpeed check for a monitor

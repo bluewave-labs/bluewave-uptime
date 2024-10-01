@@ -410,7 +410,7 @@ module.exports = {
   newPasswordValidation,
   inviteRoleValidation,
   inviteBodyValidation,
-  inviteVerifciationBodyValidation,
+  inviteVerificationBodyValidation: inviteVerifciationBodyValidation,
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,

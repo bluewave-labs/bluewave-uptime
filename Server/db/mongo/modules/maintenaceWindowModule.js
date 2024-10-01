@@ -1,4 +1,4 @@
-const MaintenanceWindow = require("../../../models/MaintenanceWindow");
+const MaintenanceWindow = require("../../models/MaintenanceWindow");
 const SERVICE_NAME = "maintenanceWindowModule";
 
 /**

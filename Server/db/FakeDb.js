@@ -20,8 +20,8 @@
 // The rest of the code is the same, as all the `db` methods are standardized.
 // **************************
 
-const Monitor = require("../models/Monitor");
-const UserModel = require("../models/User");
+const Monitor = require("./models/Monitor");
+const UserModel = require("./models/User");
 const bcrypt = require("bcrypt");
 
 let FAKE_MONITOR_DATA = [];
