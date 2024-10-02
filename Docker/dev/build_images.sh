@@ -2,19 +2,19 @@
 #!/bin/bash
 
 # Change directory to root Server directory for correct Docker Context
-cd ..
+cd ../..
 
 #Client
-client="./Docker/client.Dockerfile"
+client="./Docker/dev/client.Dockerfile"
 
 # MongoDB
-mongoDB="./Docker/mongoDB.Dockerfile"
+mongoDB="./Docker/dev/mongoDB.Dockerfile"
 
 # Redis
-redis="./Docker/redis.Dockerfile"
+redis="./Docker/dev/redis.Dockerfile"
 
 # Server
-server="./Docker/server.Dockerfile"
+server="./Docker/dev/server.Dockerfile"
 
 docker build -f $client -t uptime_client .
 docker build -f $mongoDB -t uptime_database_mongo .

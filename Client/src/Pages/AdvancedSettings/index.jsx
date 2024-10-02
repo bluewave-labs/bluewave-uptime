@@ -110,9 +110,9 @@ const AdvancedSettings = ({ isAdmin }) => {
       >
         <ConfigBox>
           <Box>
-            <Typography component="h1">Client Settings</Typography>
+            <Typography component="h1">Client settings</Typography>
             <Typography sx={{ mt: theme.spacing(2) }}>
-              Modify client settings here
+              Modify client settings here.
             </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
@@ -124,7 +124,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             />
             <Select
               id="logLevel"
-              label="logLevel"
+              label="Log level"
               name="logLevel"
               items={logItems}
               value={logItemLookup[localSettings.logLevel]}
@@ -134,17 +134,17 @@ const AdvancedSettings = ({ isAdmin }) => {
         </ConfigBox>
         <ConfigBox>
           <Box>
-            <Typography component="h1">Email Settings</Typography>
+            <Typography component="h1">Email settings</Typography>
             <Typography sx={{ mt: theme.spacing(2) }}>
               Set your host email settings here. These settings are used for
-              sending system emails
+              sending system emails.
             </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
             <Field
               type="text"
               id="systemEmailHost"
-              label="Email Host"
+              label="Email host"
               name="systemEmailHost"
               value={localSettings.systemEmailHost}
               onChange={handleChange}
@@ -152,7 +152,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="number"
               id="systemEmailPort"
-              label="System Email Address"
+              label="System email address"
               name="systemEmailPort"
               value={localSettings.systemEmailPort.toString()}
               onChange={handleChange}
@@ -160,7 +160,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="email"
               id="systemEmailAddress"
-              label="System Email Address"
+              label="System email address"
               name="systemEmailAddress"
               value={localSettings.systemEmailAddress}
               onChange={handleChange}
@@ -168,7 +168,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="text"
               id="systemEmailPassword"
-              label="System Email Password"
+              label="System email password"
               name="systemEmailPassword"
               value={localSettings.systemEmailPassword}
               onChange={handleChange}
@@ -177,16 +177,16 @@ const AdvancedSettings = ({ isAdmin }) => {
         </ConfigBox>
         <ConfigBox>
           <Box>
-            <Typography component="h1">Server Settings</Typography>
+            <Typography component="h1">Server settings</Typography>
             <Typography sx={{ mt: theme.spacing(2) }}>
-              Modify server settings here
+              Modify server settings here.
             </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
             <Field
               type="text"
               id="jwtTTL"
-              label="JWT Time To Live"
+              label="JWT time to live"
               name="jwtTTL"
               value={localSettings.jwtTTL}
               onChange={handleChange}
@@ -194,7 +194,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="text"
               id="dbType"
-              label="Database Type"
+              label="Database type"
               name="dbType"
               value={localSettings.dbType}
               onChange={handleChange}
@@ -202,7 +202,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="text"
               id="redisHost"
-              label="Redis Host"
+              label="Redis host"
               name="redisHost"
               value={localSettings.redisHost}
               onChange={handleChange}
@@ -210,7 +210,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="number"
               id="redisPort"
-              label="Redis Port"
+              label="Redis port"
               name="redisPort"
               value={localSettings.redisPort.toString()}
               onChange={handleChange}
@@ -218,7 +218,7 @@ const AdvancedSettings = ({ isAdmin }) => {
             <Field
               type="text"
               id="pagespeedApiKey"
-              label="PageSpeed API Key"
+              label="PageSpeed API key"
               name="pagespeedApiKey"
               value={localSettings.pagespeedApiKey}
               onChange={handleChange}

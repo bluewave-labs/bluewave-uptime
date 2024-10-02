@@ -1,4 +1,4 @@
-const AppSettings = require("../../../models/AppSettings");
+const AppSettings = require("../../models/AppSettings");
 const SERVICE_NAME = "SettingsModule";
 
 const getAppSettings = async () => {

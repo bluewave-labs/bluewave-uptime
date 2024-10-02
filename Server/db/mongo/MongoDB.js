@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const UserModel = require("../../models/User");
-const AppSettings = require("../../models/AppSettings");
+const UserModel = require("../models/User");
+const AppSettings = require("../models/AppSettings");
 
 //****************************************
 // DB Connection

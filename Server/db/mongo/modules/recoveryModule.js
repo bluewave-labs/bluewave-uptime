@@ -1,5 +1,5 @@
-const UserModel = require("../../../models/User");
-const RecoveryToken = require("../../../models/RecoveryToken");
+const UserModel = require("../../models/User");
+const RecoveryToken = require("../../models/RecoveryToken");
 const crypto = require("crypto");
 const { errorMessages } = require("../../../utils/messages");
 const SERVICE_NAME = "recoveryModule";

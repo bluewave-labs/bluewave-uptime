@@ -1,4 +1,4 @@
-const InviteToken = require("../../../models/InviteToken");
+const InviteToken = require("../../models/InviteToken");
 const crypto = require("crypto");
 const { errorMessages } = require("../../../utils/messages");
 const SERVICE_NAME = "inviteModule";
