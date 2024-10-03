@@ -15,6 +15,29 @@ import SearchIcon from "../../../assets/icons/search.svg?react";
  * @param {Object} props.sx - Additional styles to apply to the component
  * @returns {JSX.Element} The rendered Search component
  */
+
+const SearchAdornment = () => {
+  const theme = useTheme();
+  return (
+    <Box
+      mr={theme.spacing(4)}
+      height={16}
+      sx={{
+        "& svg": {
+          width: 16,
+          height: 16,
+          "& path": {
+            stroke: theme.palette.text.tertiary,
+            strokeWidth: 1.2,
+          },
+        },
+      }}
+    >
+      <SearchIcon />
+    </Box>
+  );
+};
+
 const Search = ({
   id,
   options,
@@ -24,11 +47,14 @@ const Search = ({
   handleInputChange,
   handleChange,
   sx,
+  multiple = false,
+  isAdorned = true,
 }) => {
   const theme = useTheme();
 
   return (
     <Autocomplete
+      multiple={multiple}
       id={id}
       inputValue={value}
       onInputChange={(_, newValue) => {
@@ -38,7 +64,7 @@ const Search = ({
         handleChange && handleChange(newValue);
       }}
       fullWidth
-      // freeSolo
+      freeSolo
       disableClearable
       options={options}
       getOptionLabel={(option) => option[filteredBy]}
@@ -48,24 +74,7 @@ const Search = ({
           placeholder="Type to search"
           InputProps={{
             ...params.InputProps,
-            startAdornment: (
-              <Box
-                mr={theme.spacing(4)}
-                height={16}
-                sx={{
-                  "& svg": {
-                    width: 16,
-                    height: 16,
-                    "& path": {
-                      stroke: theme.palette.text.tertiary,
-                      strokeWidth: 1.2,
-                    },
-                  },
-                }}
-              >
-                <SearchIcon />
-              </Box>
-            ),
+            ...(isAdorned && { startAdornment: <SearchAdornment /> }),
           }}
           sx={{
             "& fieldset": {
@@ -141,12 +150,14 @@ const Search = ({
 
 Search.propTypes = {
   id: PropTypes.string,
+  multiple: PropTypes.bool,
   options: PropTypes.array.isRequired,
   filteredBy: PropTypes.string.isRequired,
   secondaryLabel: PropTypes.string,
   value: PropTypes.string.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   handleChange: PropTypes.func,
+  isAdorned: PropTypes.bool,
   sx: PropTypes.object,
 };
 

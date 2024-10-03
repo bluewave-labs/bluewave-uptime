@@ -6,6 +6,10 @@ import { ConfigBox } from "./styled";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
+
+import dayjs from "dayjs";
+
 import Select from "../../../Components/Inputs/Select";
 import Field from "../../../Components/Inputs/Field";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -15,9 +19,9 @@ import Search from "../../../Components/Inputs/Search";
 import { networkService } from "../../../main";
 
 const repeatConfig = [
-  { _id: 0, name: "Don't repeat" },
-  { _id: 1, name: "Repeat daily" },
-  { _id: 2, name: "Repeat weekly" },
+  { _id: 0, name: "Don't repeat", value: "none" },
+  { _id: 1, name: "Repeat daily", value: "daily" },
+  { _id: 2, name: "Repeat weekly", value: "weekly" },
 ];
 
 const durationConfig = [
@@ -27,17 +31,33 @@ const durationConfig = [
   { _id: 3, name: "days" },
 ];
 
-const periodConfig = [
-  { _id: 0, name: "AM" },
-  { _id: 1, name: "PM" },
-];
+const getValueById = (config, id) => {
+  const item = config.find((config) => config._id === id);
+  return item ? (item.value ? item.value : item.name) : null;
+};
+
+const getIdByValue = (config, name) => {
+  const item = config.find((config) => {
+    if (config.value) return config.value === name;
+    else return config.name === name;
+  });
+  return item ? item._id : null;
+};
 
 const CreateMaintenance = () => {
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
   const [monitors, setMonitors] = useState([]);
   const [search, setSearch] = useState("");
-  const [selectedMonitor, setSelectedMonitor] = useState(null);
+  const [form, setForm] = useState({
+    repeat: "none",
+    startDate: dayjs().toISOString(),
+    startTime: dayjs().toISOString(),
+    duration: "",
+    durationUnit: "seconds",
+    name: "",
+    monitors: [],
+  });
 
   useEffect(() => {
     const fetchMonitors = async () => {
@@ -56,9 +76,18 @@ const CreateMaintenance = () => {
     setSearch(value);
   };
 
-  const handleSelectMonitor = (monitor) => {
-    setSelectedMonitor(monitor);
+  const handleSelectMonitors = (monitors) => {
+    setForm({ ...form, monitors });
   };
+
+  const handleFormChange = (key, value) => {
+    setForm({ ...form, [key]: value });
+  };
+
+  const handleTimeChange = (key, newTime) => {
+    setForm({ ...form, [key]: newTime });
+  };
+
   return (
     <Box className="create-maintenance">
       <Breadcrumbs
@@ -106,9 +135,15 @@ const CreateMaintenance = () => {
           >
             <Select
               id="maintenance-repeat"
+              name="maintenance-repeat"
               label="Maintenance Repeat"
-              value={0}
-              onChange={() => {}}
+              value={getIdByValue(repeatConfig, form.repeat)}
+              onChange={(event) => {
+                handleFormChange(
+                  "repeat",
+                  getValueById(repeatConfig, event.target.value)
+                );
+              }}
               items={repeatConfig}
             />
             <Stack gap={theme.spacing(2)} mt={theme.spacing(16)}>
@@ -156,6 +191,9 @@ const CreateMaintenance = () => {
                     },
                   }}
                   sx={{}}
+                  onChange={(newDate) => {
+                    handleTimeChange("startDate", newDate.toISOString());
+                  }}
                 />
               </LocalizationProvider>
             </Stack>
@@ -172,12 +210,39 @@ const CreateMaintenance = () => {
               </Typography>
             </Box>
             <Stack direction="row">
-              <Select
-                id="maintenance-period"
-                value={0}
-                items={periodConfig}
-                onChange={() => {}}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MobileTimePicker
+                  id="maintenance-start-time"
+                  value={dayjs(form.startTime)}
+                  onChange={(newTime) => {
+                    handleTimeChange("startTime", newTime.toISOString());
+                  }}
+                  slotProps={{
+                    nextIconButton: { sx: { ml: theme.spacing(2) } },
+                    field: {
+                      sx: {
+                        width: "fit-content",
+                        "& > .MuiOutlinedInput-root": {
+                          flexDirection: "row-reverse",
+                        },
+                        "& input": {
+                          height: 34,
+                          p: 0,
+                          pl: theme.spacing(5),
+                        },
+                        "& fieldset": {
+                          borderColor: theme.palette.border.dark,
+                          borderRadius: theme.shape.borderRadius,
+                        },
+                        "&:not(:has(.Mui-disabled)):not(:has(.Mui-error)) .MuiOutlinedInput-root:not(:has(input:focus)):hover fieldset":
+                          {
+                            borderColor: theme.palette.border.dark,
+                          },
+                      },
+                    },
+                  }}
+                />
+              </LocalizationProvider>
             </Stack>
           </Stack>
           <Stack direction="row">
@@ -186,12 +251,25 @@ const CreateMaintenance = () => {
                 Duration
               </Typography>
             </Box>
-            <Stack direction="row">
+            <Stack direction="row" spacing={theme.spacing(8)}>
+              <Field
+                type="number"
+                id="maintenance-duration"
+                value={form.duration}
+                onChange={(event) => {
+                  handleFormChange("duration", event.target.value);
+                }}
+              />
               <Select
                 id="maintenance-unit"
-                value={0}
+                value={getIdByValue(durationConfig, form.durationUnit)}
                 items={durationConfig}
-                onChange={() => {}}
+                onChange={(event) => {
+                  handleFormChange(
+                    "durationUnit",
+                    getValueById(durationConfig, event.target.value)
+                  );
+                }}
               />
             </Stack>
           </Stack>
@@ -216,7 +294,10 @@ const CreateMaintenance = () => {
                 <Field
                   id="maintenance-name"
                   placeholder="Maintenance at __ : __ for ___ minutes"
-                  value=""
+                  value={form.name}
+                  onChange={(event) => {
+                    handleFormChange("name", event.target.value);
+                  }}
                 />
               </Box>
             </Stack>
@@ -228,12 +309,14 @@ const CreateMaintenance = () => {
               </Box>
               <Box>
                 <Search
+                  multiple={true}
+                  isAdorned={false}
                   options={monitors ? monitors : []}
                   filteredBy="name"
                   secondaryLabel={"type"}
                   value={search}
                   handleInputChange={handleSearch}
-                  handleChange={handleSelectMonitor}
+                  handleChange={handleSelectMonitors}
                 />
               </Box>
             </Stack>
@@ -251,7 +334,7 @@ const CreateMaintenance = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => console.log("disabled")}
+            onClick={() => console.log(form)}
             disabled={false}
           >
             Create maintenance
