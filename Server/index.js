@@ -1,7 +1,10 @@
+const path = require("path");
+const fs = require("fs");
+const swaggerUi = require("swagger-ui-express");
+
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-require("dotenv").config();
 const logger = require("./utils/logger");
 const { verifyJWT } = require("./middleware/verifyJWT");
 const { handleErrors } = require("./middleware/handleErrors");
@@ -10,19 +13,21 @@ const authRouter = require("./routes/authRoute");
 const inviteRouter = require("./routes/inviteRoute");
 const monitorRouter = require("./routes/monitorRoute");
 const checkRouter = require("./routes/checkRoute");
-const alertRouter = require("./routes/alertRoute");
-const pageSpeedCheckRouter = require("./routes/pageSpeedCheckRoute");
 const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
+const settingsRouter = require("./routes/settingsRoute");
 
 const { connectDbAndRunServer } = require("./configs/db");
 const queueRouter = require("./routes/queueRoute");
 const JobQueue = require("./service/jobQueue");
 const NetworkService = require("./service/networkService");
 const EmailService = require("./service/emailService");
-const PageSpeedService = require("./service/pageSpeedService");
+const SettingsService = require("./service/settingsService");
 const SERVICE_NAME = "Server";
-let cleaningUp = false;
 
+let cleaningUp = false;
+const openApiSpec = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "openapi.json"), "utf8")
+);
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
   // **************************
@@ -42,9 +47,11 @@ const startApp = async () => {
     FakedDB: () => require("./db/FakeDb"),
   };
 
-  const db = DB_TYPE[process.env.DB_TYPE]
-    ? DB_TYPE[process.env.DB_TYPE]()
-    : require("./db/FakeDb");
+  // const db = DB_TYPE[process.env.DB_TYPE]
+  //   ? DB_TYPE[process.env.DB_TYPE]()
+  //   : require("./db/FakeDb");
+
+  const db = DB_TYPE.MongoDB();
 
   const app = express();
 
@@ -55,7 +62,6 @@ const startApp = async () => {
   );
   app.use(express.json());
   app.use(helmet());
-
   // **************************
   // Make DB accessible anywhere we have a Request object
   // By adding the DB to the request object, we can access it in any route
@@ -66,20 +72,21 @@ const startApp = async () => {
     req.db = db;
     req.jobQueue = jobQueue;
     req.emailService = emailService;
-    req.pageSpeedService = pageSpeedService;
+    req.settingsService = settingsService;
     next();
   });
 
+  // Swagger UI
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+
   //routes
   app.use("/api/v1/auth", authRouter);
+  app.use("/api/v1/settings", verifyJWT, settingsRouter);
   app.use("/api/v1/invite", inviteRouter);
   app.use("/api/v1/monitors", verifyJWT, monitorRouter);
   app.use("/api/v1/checks", verifyJWT, checkRouter);
-  app.use("/api/v1/alerts", verifyJWT, alertRouter);
-  app.use("/api/v1/pagespeed", verifyJWT, pageSpeedCheckRouter);
   app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
-  //Temporary route for testing, remove later
-  app.use("/api/v1/job", queueRouter);
+  app.use("/api/v1/queue", verifyJWT, queueRouter);
 
   //health check
   app.use("/api/v1/healthy", (req, res) => {
@@ -117,10 +124,16 @@ const startApp = async () => {
 
   // Create services
   await connectDbAndRunServer(app, db);
-  const emailService = new EmailService();
+  const settingsService = new SettingsService();
+
+  await settingsService.loadSettings();
+  const emailService = new EmailService(settingsService);
   const networkService = new NetworkService(db, emailService);
-  const jobQueue = await JobQueue.createJobQueue(db, networkService);
-  const pageSpeedService = new PageSpeedService();
+  const jobQueue = await JobQueue.createJobQueue(
+    db,
+    networkService,
+    settingsService
+  );
 
   const cleanup = async () => {
     if (cleaningUp) {

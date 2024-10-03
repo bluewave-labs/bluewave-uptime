@@ -1,4 +1,4 @@
-const Notification = require("../../../models/Notification");
+const Notification = require("../../models/Notification");
 const SERVICE_NAME = "notificationModule";
 /**
  * Creates a new notification.

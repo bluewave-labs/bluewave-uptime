@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const UserModel = require("../../models/user");
+const UserModel = require("../models/User");
+const AppSettings = require("../models/AppSettings");
 
 //****************************************
 // DB Connection
@@ -7,7 +8,16 @@ const UserModel = require("../../models/user");
 
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.DB_CONNECTION_STRING);
+    const connectionString =
+      process.env.DB_CONNECTION_STRING || "mongodb://localhost:27017/uptime_db";
+    await mongoose.connect(connectionString);
+    // If there are no AppSettings, create one
+    let appSettings = await AppSettings.find();
+    if (appSettings.length === 0) {
+      appSettings = new AppSettings({});
+      await appSettings.save();
+    }
+
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Failed to connect to MongoDB");
@@ -36,6 +46,8 @@ const {
   getUserByEmail,
   updateUser,
   deleteUser,
+  deleteTeam,
+  deleteAllOtherUsers,
   getAllUsers,
   logoutUser,
 } = require("./modules/userModule");
@@ -47,6 +59,7 @@ const {
 const {
   requestInviteToken,
   getInviteToken,
+  getInviteTokenAndDelete,
 } = require("./modules/inviteModule");
 
 //****************************************
@@ -101,20 +114,6 @@ const {
 } = require("./modules/checkModule");
 
 //****************************************
-// Alerts
-//****************************************
-
-const {
-  createAlert,
-  getAlertsByUserId,
-  getAlertsByMonitorId,
-  getAlertById,
-  editAlert,
-  deleteAlert,
-  deleteAlertByMonitorId,
-} = require("./modules/alertModule");
-
-//****************************************
 // Maintenance Window
 //****************************************
 const {
@@ -126,11 +125,22 @@ const {
   deleteMaintenanceWindowByUserId,
 } = require("./modules/maintenaceWindowModule");
 
+//****************************************
+// Notifications
+//****************************************
 const {
   createNotification,
   getNotificationsByMonitorId,
   deleteNotificationsByMonitorId,
 } = require("./modules/notificationModule");
+
+//****************************************
+// AppSettings
+//****************************************
+const {
+  getAppSettings,
+  updateAppSettings,
+} = require("./modules/settingsModule");
 
 module.exports = {
   connect,
@@ -138,10 +148,13 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  deleteTeam,
+  deleteAllOtherUsers,
   getAllUsers,
   logoutUser,
   requestInviteToken,
   getInviteToken,
+  getInviteTokenAndDelete,
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
@@ -163,13 +176,6 @@ module.exports = {
   deleteChecks,
   deleteChecksByTeamId,
   updateChecksTTL,
-  createAlert,
-  getAlertsByUserId,
-  getAlertsByMonitorId,
-  getAlertById,
-  editAlert,
-  deleteAlert,
-  deleteAlertByMonitorId,
   deleteMonitorsByUserId,
   createPageSpeedCheck,
   getPageSpeedChecks,
@@ -183,4 +189,6 @@ module.exports = {
   createNotification,
   getNotificationsByMonitorId,
   deleteNotificationsByMonitorId,
+  getAppSettings,
+  updateAppSettings,
 };

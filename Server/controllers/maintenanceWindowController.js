@@ -5,8 +5,9 @@ const {
   getMaintenanceWindowsByMonitorIdParamValidation,
 } = require("../validation/joi");
 
+const {successMessages} = require("../utils/messages")
+
 const SERVICE_NAME = "maintenanceWindowController";
-const { errorMessages, successMessages } = require("../utils/messages");
 
 const createMaintenanceWindow = async (req, res, next) => {
   try {
@@ -67,7 +68,7 @@ const getMaintenanceWindowsByUserId = async (req, res, next) => {
 
     return res.status(201).json({
       success: true,
-      msg: successMessages.MAINTEANCE_WINDOW_GET_BY_USER,
+      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_USER,
       data: maintenanceWindows,
     });
   } catch (error) {
@@ -100,7 +101,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
 
     return res.status(201).json({
       success: true,
-      msg: successMessages.MAINTEANCE_WINDOW_GET_BY_USER,
+      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_USER,
       data: maintenanceWindows,
     });
   } catch (error) {

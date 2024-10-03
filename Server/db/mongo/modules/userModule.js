@@ -1,5 +1,5 @@
-const UserModel = require("../../../models/user");
-const TeamModel = require("../../../models/Team");
+const UserModel = require("../../models/User");
+const TeamModel = require("../../models/Team");
 const { errorMessages } = require("../../../utils/messages");
 const { GenerateAvatarImage } = require("../../../utils/imageProcessing");
 
@@ -35,6 +35,7 @@ const insertUser = async (userData, imageFile) => {
         email: userData.email,
       });
       userData.teamId = team._id;
+      userData.checkTTL = 60 * 60 * 24 * 30;
       await team.save();
     }
 
@@ -156,6 +157,33 @@ const deleteUser = async (userId) => {
   }
 };
 
+/**
+ * Delete a user by ID
+ * @async
+ * @param {string} teamId
+ * @returns {void}
+ * @throws {Error}
+ */
+const deleteTeam = async (teamId) => {
+  try {
+    await TeamModel.findByIdAndDelete(teamId);
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteTeam";
+    throw error;
+  }
+};
+
+const deleteAllOtherUsers = async () => {
+  try {
+    await UserModel.deleteMany({ role: { $ne: "superadmin" } });
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "deleteAllOtherUsers";
+    throw error;
+  }
+};
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.find()
@@ -185,6 +213,8 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  deleteTeam,
+  deleteAllOtherUsers,
   getAllUsers,
   logoutUser,
 };

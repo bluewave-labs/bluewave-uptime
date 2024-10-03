@@ -1,6 +1,16 @@
-const LOG_LEVEL = import.meta.env.VITE_APP_LOG_LEVEL;
+import store from "../store";
+const LOG_LEVEL = import.meta.env.VITE_APP_LOG_LEVEL || "debug";
 class Logger {
-  constructor(logLevel) {
+  constructor() {
+    let logLevel = LOG_LEVEL;
+    this.unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+      logLevel = state.settings.logLevel || "debug";
+      this.updateLogLevel(logLevel);
+    });
+  }
+
+  updateLogLevel(logLevel) {
     const NO_OP = () => {};
 
     if (logLevel === "none") {
@@ -25,6 +35,12 @@ class Logger {
     }
     this.log = console.log.bind(console);
   }
+
+  cleanup() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
 }
 
-export const logger = new Logger(LOG_LEVEL);
+export const logger = new Logger();

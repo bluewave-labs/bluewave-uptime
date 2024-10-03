@@ -74,6 +74,7 @@ const registrationBodyValidation = joi.object({
     .min(1)
     .required(),
   teamId: joi.string().allow("").required(),
+  inviteToken: joi.string().allow("").required(),
 });
 
 const editUserParamValidation = joi.object({
@@ -236,13 +237,6 @@ const pauseMonitorParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
-const getMonitorAggregateStatsParamValidation = joi.object({
-  monitorId: joi.string().required(),
-});
-const getMonitorAggregateStatsQueryValidation = joi.object({
-  dateRange: joi.string().valid("day", "week", "month"),
-});
-
 //****************************************
 // Alerts
 //****************************************
@@ -388,6 +382,25 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+//****************************************
+// SettingsValidation
+//****************************************
+const updateAppSettingsBodyValidation = joi.object({
+  apiBaseUrl: joi.string().allow(""),
+  logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
+  clientHost: joi.string().allow(""),
+  dbType: joi.string().allow(""),
+  dbConnectionString: joi.string().allow(""),
+  redisHost: joi.string().allow(""),
+  redisPort: joi.number().allow(null, ""),
+  jwtTTL: joi.string().allow(""),
+  pagespeedApiKey: joi.string().allow(""),
+  systemEmailHost: joi.string().allow(""),
+  systemEmailPort: joi.number().allow(""),
+  systemEmailAddress: joi.string().allow(""),
+  systemEmailPassword: joi.string().allow(""),
+});
+
 module.exports = {
   roleValidatior,
   loginValidation,
@@ -397,7 +410,7 @@ module.exports = {
   newPasswordValidation,
   inviteRoleValidation,
   inviteBodyValidation,
-  inviteVerifciationBodyValidation,
+  inviteVerificationBodyValidation: inviteVerifciationBodyValidation,
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
@@ -408,8 +421,6 @@ module.exports = {
   getMonitorStatsByIdParamValidation,
   getMonitorStatsByIdQueryValidation,
   getCertificateParamValidation,
-  getMonitorAggregateStatsParamValidation,
-  getMonitorAggregateStatsQueryValidation,
   editMonitorBodyValidation,
   pauseMonitorParamValidation,
   editUserParamValidation,
@@ -440,4 +451,5 @@ module.exports = {
   createMaintenanceWindowBodyValidation,
   getMaintenanceWindowsByUserIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
+  updateAppSettingsBodyValidation,
 };

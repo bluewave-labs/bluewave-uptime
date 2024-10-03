@@ -16,6 +16,7 @@ import "./index.css";
  * @param {Object} props
  * @param {string} [props.type] - Type of input field (e.g., 'text', 'password').
  * @param {string} props.id - ID of the input field.
+ * @param {string} props.name - Name of the input field.
  * @param {string} [props.label] - Label for the input field.
  * @param {boolean} [props.https] - Indicates if it should display http or https.
  * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
@@ -27,6 +28,7 @@ import "./index.css";
  * @param {function} props.onChange - Function called on input change.
  * @param {string} [props.error] - Error message to display for the input field.
  * @param {boolean} [props.disabled] - Indicates if the input field is disabled.
+ * @param {boolean} [props.hidden] - Indicates if the input field is hidden.
  * @param {React.Ref} [ref] - Ref forwarded to the underlying `TextField` component. Allows for direct interactions such as focusing.
  */
 
@@ -35,6 +37,7 @@ const Field = forwardRef(
     {
       type = "text",
       id,
+      name,
       label,
       https,
       isRequired,
@@ -47,6 +50,7 @@ const Field = forwardRef(
       onInput,
       error,
       disabled,
+      hidden,
     },
     ref
   ) => {
@@ -107,6 +111,7 @@ const Field = forwardRef(
         )}
         <TextField
           type={type === "password" ? (isVisible ? "text" : type) : type}
+          name={name}
           id={id}
           autoComplete={autoComplete}
           placeholder={placeholder}
@@ -136,7 +141,9 @@ const Field = forwardRef(
                     borderBottomLeftRadius: theme.shape.borderRadius,
                   },
                 }
-              : {}
+              : {
+                  display: hidden ? "none" : "",
+                }
           }
           InputProps={{
             startAdornment: type === "url" && (
@@ -213,6 +220,7 @@ Field.propTypes = {
     "number",
   ]),
   id: PropTypes.string.isRequired,
+  name: PropTypes.string,
   label: PropTypes.string,
   https: PropTypes.bool,
   isRequired: PropTypes.bool,
@@ -225,6 +233,7 @@ Field.propTypes = {
   onInput: PropTypes.func,
   error: PropTypes.string,
   disabled: PropTypes.bool,
+  hidden: PropTypes.bool,
 };
 
 export default Field;

@@ -4,47 +4,46 @@ const { verifyOwnership } = require("../middleware/verifyOwnership");
 const { isAllowed } = require("../middleware/isAllowed");
 const multer = require("multer");
 const upload = multer();
-const User = require("../models/user");
+const User = require("../db/models/User");
 
 const {
-  registerController,
-  loginController,
-  logoutController,
-  userEditController,
-  recoveryRequestController,
-  validateRecoveryTokenController,
-  resetPasswordController,
-  checkSuperadminController,
-  getAllUsersController,
-  deleteUserController,
+  registerUser,
+  loginUser,
+  editUser,
+  requestRecovery,
+  validateRecovery,
+  resetPassword,
+  checkSuperadminExists,
+  getAllUsers,
+  deleteUser,
 } = require("../controllers/authController");
 
 //Auth routes
-router.post("/register", upload.single("profileImage"), registerController);
-router.post("/login", loginController);
+router.post("/register", upload.single("profileImage"), registerUser);
+router.post("/login", loginUser);
 router.put(
   "/user/:userId",
   upload.single("profileImage"),
   verifyJWT,
-  userEditController
+  editUser
 );
-router.get("/users/superadmin", checkSuperadminController);
+router.get("/users/superadmin", checkSuperadminExists);
 router.get(
   "/users",
   verifyJWT,
   isAllowed(["admin", "superadmin"]),
-  getAllUsersController
+  getAllUsers
 );
 router.delete(
   "/user/:userId",
   verifyJWT,
   verifyOwnership(User, "userId"),
-  deleteUserController
+  deleteUser
 );
 
 //Recovery routes
-router.post("/recovery/request", recoveryRequestController);
-router.post("/recovery/validate", validateRecoveryTokenController);
-router.post("/recovery/reset/", resetPasswordController);
+router.post("/recovery/request", requestRecovery);
+router.post("/recovery/validate", validateRecovery);
+router.post("/recovery/reset/", resetPassword);
 
 module.exports = router;

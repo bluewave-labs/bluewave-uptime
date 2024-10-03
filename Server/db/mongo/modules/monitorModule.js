@@ -1,8 +1,8 @@
-const Monitor = require("../../../models/Monitor");
-const Check = require("../../../models/Check");
-const PageSpeedCheck = require("../../../models/PageSpeedCheck");
+const Monitor = require("../../models/Monitor");
+const Check = require("../../models/Check");
+const PageSpeedCheck = require("../../models/PageSpeedCheck");
 const { errorMessages } = require("../../../utils/messages");
-const Notification = require("../../../models/Notification");
+const Notification = require("../../models/Notification");
 const { NormalizeData } = require("../../../utils/dataUtils");
 const demoMonitors = require("../../../utils/demoMonitors.json");
 const SERVICE_NAME = "monitorModule";
@@ -147,7 +147,7 @@ const getMonitorStatsById = async (req) => {
     let { limit, sortOrder, dateRange, numToDisplay, normalize } = req.query;
     const monitor = await Monitor.findById(monitorId);
     if (monitor === null || monitor === undefined) {
-      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+      throw new Error(errorMessages.DB_FIND_MONITOR_BY_ID(monitorId));
     }
     // This effectively removes limit, returning all checks
     if (limit === undefined) limit = 0;
@@ -283,7 +283,7 @@ const getMonitorById = async (monitorId) => {
   try {
     const monitor = await Monitor.findById(monitorId);
     if (monitor === null || monitor === undefined) {
-      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+      throw new Error(errorMessages.DB_FIND_MONITOR_BY_ID(monitorId));
     }
     // Get notifications
     const notifications = await Notification.find({
@@ -481,7 +481,7 @@ const deleteMonitor = async (req, res) => {
   try {
     const monitor = await Monitor.findByIdAndDelete(monitorId);
     if (!monitor) {
-      throw new Error(errorMessages.DB_FIND_MONTIOR_BY_ID(monitorId));
+      throw new Error(errorMessages.DB_FIND_MONITOR_BY_ID(monitorId));
     }
     return monitor;
   } catch (error) {

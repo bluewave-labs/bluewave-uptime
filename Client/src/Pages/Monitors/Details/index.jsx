@@ -63,15 +63,15 @@ const DetailsPage = ({ isAdmin }) => {
 
   const fetchMonitor = useCallback(async () => {
     try {
-      const res = await networkService.getStatsByMonitorId(
-        authToken,
-        monitorId,
-        null,
-        null,
-        dateRange,
-        50,
-        true
-      );
+      const res = await networkService.getStatsByMonitorId({
+        authToken: authToken,
+        monitorId: monitorId,
+        sortOrder: null,
+        limit: null,
+        dateRange: dateRange,
+        numToDisplay: 50,
+        normalize: true,
+      });
       setMonitor(res?.data?.data ?? {});
     } catch (error) {
       logger.error(error);
@@ -89,10 +89,10 @@ const DetailsPage = ({ isAdmin }) => {
         return;
       }
       try {
-        const res = await networkService.getCertificateExpiry(
-          authToken,
-          monitorId
-        );
+        const res = await networkService.getCertificateExpiry({
+          authToken: authToken,
+          monitorId: monitorId,
+        });
 
         if (res?.data?.data?.certificateDate) {
           let [month, day, year] = res.data.data.certificateDate.split("/");

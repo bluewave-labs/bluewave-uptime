@@ -53,27 +53,27 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
       try {
         let res;
         if (selectedMonitor === "0") {
-          res = await networkService.getChecksByTeam(
-            authToken,
-            user.teamId,
-            "desc",
-            null,
-            null,
-            filter,
-            paginationController.page,
-            paginationController.rowsPerPage
-          );
+          res = await networkService.getChecksByTeam({
+            authToken: authToken,
+            teamId: user.teamId,
+            sortOrder: "desc",
+            limit: null,
+            dateRange: null,
+            filter: filter,
+            page: paginationController.page,
+            rowsPerPage: paginationController.rowsPerPage,
+          });
         } else {
-          res = await networkService.getChecksByMonitor(
-            authToken,
-            selectedMonitor,
-            "desc",
-            null,
-            null,
-            filter,
-            paginationController.page,
-            paginationController.rowsPerPage
-          );
+          res = await networkService.getChecksByMonitor({
+            authToken: authToken,
+            monitorId: selectedMonitor,
+            sortOrder: "desc",
+            limit: null,
+            dateRange: null,
+            sitler: filter,
+            page: paginationController.page,
+            rowsPerPage: paginationController.rowsPerPage,
+          });
         }
         setChecks(res.data.data.checks);
         setChecksCount(res.data.data.checksCount);

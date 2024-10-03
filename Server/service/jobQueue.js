@@ -1,27 +1,38 @@
 const { Queue, Worker, Job } = require("bullmq");
 const QUEUE_NAME = "monitors";
-const connection = {
-  host: process.env.REDIS_HOST || "127.0.0.1",
-  port: process.env.REDIS_PORT || 6379,
-};
+
 const JOBS_PER_WORKER = 5;
 const logger = require("../utils/logger");
 const { errorMessages, successMessages } = require("../utils/messages");
 const SERVICE_NAME = "JobQueue";
-
+/**
+ * JobQueue
+ *
+ * This service is responsible for managing the job queue.
+ * It handles enqueuing, dequeuing, and processing jobs.
+ * It scales the number of workers based on the number of jobs/worker
+ */
 class JobQueue {
   /**
    * Constructs a new JobQueue
    * @constructor
+   * @param {SettingsService} settingsService - The settings service
    * @throws {Error}
    */
-  constructor(networkService) {
+  constructor(settingsService) {
+    const { redisHost, redisPort } = settingsService.getSettings();
+    const connection = {
+      host: redisHost || "127.0.0.1",
+      port: redisPort || 6379,
+    };
+    this.connection = connection;
     this.queue = new Queue(QUEUE_NAME, {
       connection,
     });
     this.workers = [];
     this.db = null;
     this.networkService = null;
+    this.settingsService = settingsService;
   }
 
   /**
@@ -31,8 +42,8 @@ class JobQueue {
    * @returns {Promise<JobQueue>} - Returns a new JobQueue
    *
    */
-  static async createJobQueue(db, networkService) {
-    const queue = new JobQueue();
+  static async createJobQueue(db, networkService, settingsService) {
+    const queue = new JobQueue(settingsService);
     try {
       queue.db = db;
       queue.networkService = networkService;
@@ -99,7 +110,7 @@ class JobQueue {
         }
       },
       {
-        connection,
+        connection: this.connection,
       }
     );
     return worker;
@@ -128,7 +139,7 @@ class JobQueue {
       return { jobs, load };
     } catch (error) {
       error.service === undefined ? (error.service = SERVICE_NAME) : null;
-      errorObject.method === undefined
+      error.method === undefined
         ? (error.method = "getWorkerStats")
         : null;
       throw error;
@@ -240,12 +251,12 @@ class JobQueue {
    */
   async addJob(jobName, payload) {
     try {
-      console.log("Adding job", payload.url);
+      console.log("Adding job", payload?.url ?? "No URL");
       // Execute job immediately
       await this.queue.add(jobName, payload);
       await this.queue.add(jobName, payload, {
         repeat: {
-          every: payload.interval,
+          every: payload?.interval ?? 60000,
         },
       });
       const workerStats = await this.getWorkerStats();
@@ -274,6 +285,8 @@ class JobQueue {
           service: SERVICE_NAME,
           jobId: monitor.id,
         });
+        const workerStats = await this.getWorkerStats();
+        await this.scaleWorkers(workerStats);
       } else {
         logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
           service: SERVICE_NAME,

@@ -41,7 +41,7 @@ const addJob = async (req, res, next) => {
 const obliterateQueue = async (req, res, next) => {
   try {
     const obliterated = await req.jobQueue.obliterate();
-    return res.status(200).send("Obliterated jobs");
+    return res.status(200).send("Obliterated queue");
   } catch (error) {
     error.service === undefined ? (error.service = SERVICE_NAME) : null;
     error.method === undefined ? (error.method = "obliterateQueue") : null;

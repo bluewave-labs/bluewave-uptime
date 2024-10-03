@@ -55,7 +55,7 @@ const menu = [
   },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   // { name: "Status pages", path: "status", icon: <StatusPages /> },
-  { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
+  // { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
   // { name: "Integrations", path: "integrations", icon: <Integrations /> },
   {
     name: "Account",
@@ -93,8 +93,9 @@ function Sidebar() {
   const { user } = useSelector((state) => state.auth);
 
   // Remove demo password if demo
-  if (user.role?.includes("demo")) {
-    menu[3].nested = menu[3].nested.filter((item) => {
+  const accountMenuItem = menu.find((item) => item.name === "Account");
+  if (user.role?.includes("demo") && accountMenuItem) {
+    accountMenuItem.nested = accountMenuItem.nested.filter((item) => {
       return item.name !== "Password";
     });
   }
