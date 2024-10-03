@@ -19,6 +19,7 @@ const Search = ({
   id,
   options,
   filteredBy,
+  secondaryLabel,
   value,
   handleInputChange,
   handleChange,
@@ -37,7 +38,7 @@ const Search = ({
         handleChange && handleChange(newValue);
       }}
       fullWidth
-      freeSolo
+      // freeSolo
       disableClearable
       options={options}
       getOptionLabel={(option) => option[filteredBy]}
@@ -103,7 +104,8 @@ const Search = ({
                 : {}
             }
           >
-            {option[filteredBy]}
+            {option[filteredBy] +
+              (secondaryLabel ? ` (${option[secondaryLabel]})` : "")}
           </ListItem>
         );
       }}
@@ -141,6 +143,7 @@ Search.propTypes = {
   id: PropTypes.string,
   options: PropTypes.array.isRequired,
   filteredBy: PropTypes.string.isRequired,
+  secondaryLabel: PropTypes.string,
   value: PropTypes.string.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   handleChange: PropTypes.func,

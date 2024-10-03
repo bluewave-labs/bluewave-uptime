@@ -26,7 +26,7 @@ import withAdminProp from "./HOC/withAdminProp";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
-import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
+import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
 import { ThemeProvider } from "@emotion/react";
@@ -45,7 +45,7 @@ function App() {
   const MonitorDetailsWithAdminProp = withAdminProp(Details);
   const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   const PageSpeedDetailsWithAdminProp = withAdminProp(PageSpeedDetails);
-  // const MaintenanceWithAdminProp = withAdminProp(Maintenance);
+  const MaintenanceWithAdminProp = withAdminProp(Maintenance);
   const SettingsWithAdminProp = withAdminProp(Settings);
   const AdvancedSettingsWithAdminProp = withAdminProp(AdvancedSettings);
   const mode = useSelector((state) => state.ui.mode);
@@ -86,7 +86,7 @@ function App() {
           />
           <Route
             path="/monitors/:monitorId/"
-            element={<ProtectedRoute Component={DetailsWithAdminProp} />}
+            element={<ProtectedRoute Component={MonitorDetailsWithAdminProp} />}
           />
           <Route
             path="/monitors/configure/:monitorId/"

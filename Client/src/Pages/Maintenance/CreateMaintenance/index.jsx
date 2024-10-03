@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConfigBox } from "./styled";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -10,6 +11,8 @@ import Field from "../../../Components/Inputs/Field";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import CalendarIcon from "../../../assets/icons/calendar.svg?react";
 import "./index.css";
+import Search from "../../../Components/Inputs/Search";
+import { networkService } from "../../../main";
 
 const repeatConfig = [
   { _id: 0, name: "Don't repeat" },
@@ -31,12 +34,36 @@ const periodConfig = [
 
 const CreateMaintenance = () => {
   const theme = useTheme();
+  const { user, authToken } = useSelector((state) => state.auth);
+  const [monitors, setMonitors] = useState([]);
+  const [search, setSearch] = useState("");
+  const [selectedMonitor, setSelectedMonitor] = useState(null);
 
+  useEffect(() => {
+    const fetchMonitors = async () => {
+      const response = await networkService.getMonitorsByTeamId({
+        authToken: authToken,
+        teamId: user.teamId,
+        limit: -1,
+        types: ["http", "ping", "pagespeed"],
+      });
+      setMonitors(response.data.data.monitors);
+    };
+    fetchMonitors();
+  }, [authToken, user]);
+
+  const handleSearch = (value) => {
+    setSearch(value);
+  };
+
+  const handleSelectMonitor = (monitor) => {
+    setSelectedMonitor(monitor);
+  };
   return (
     <Box className="create-maintenance">
       <Breadcrumbs
         list={[
-          { name: "mainteanance", path: "/maintenance" },
+          { name: "maintenance", path: "/maintenance" },
           { name: "create", path: `/maintenance/create` },
         ]}
       />
@@ -65,7 +92,7 @@ const CreateMaintenance = () => {
             </Typography>
           </Typography>
           <Typography component="h2" variant="body2" fontSize={14}>
-            Your pings won't be sent during this time frame
+            Your pings won&apos;t be sent during this time frame
           </Typography>
         </Box>
         <ConfigBox direction="row">
@@ -81,6 +108,7 @@ const CreateMaintenance = () => {
               id="maintenance-repeat"
               label="Maintenance Repeat"
               value={0}
+              onChange={() => {}}
               items={repeatConfig}
             />
             <Stack gap={theme.spacing(2)} mt={theme.spacing(16)}>
@@ -144,7 +172,12 @@ const CreateMaintenance = () => {
               </Typography>
             </Box>
             <Stack direction="row">
-              <Select id="maintenance-period" value={0} items={periodConfig} />
+              <Select
+                id="maintenance-period"
+                value={0}
+                items={periodConfig}
+                onChange={() => {}}
+              />
             </Stack>
           </Stack>
           <Stack direction="row">
@@ -154,7 +187,12 @@ const CreateMaintenance = () => {
               </Typography>
             </Box>
             <Stack direction="row">
-              <Select id="maintenance-unit" value={0} items={durationConfig} />
+              <Select
+                id="maintenance-unit"
+                value={0}
+                items={durationConfig}
+                onChange={() => {}}
+              />
             </Stack>
           </Stack>
         </ConfigBox>
@@ -177,15 +215,27 @@ const CreateMaintenance = () => {
               <Box>
                 <Field
                   id="maintenance-name"
-                  placeholder="Maintanence at __ : __ for ___ minutes"
+                  placeholder="Maintenance at __ : __ for ___ minutes"
                   value=""
                 />
               </Box>
             </Stack>
             <Stack direction="row">
-              <Typography component="h2" variant="h2">
-                Add monitors
-              </Typography>
+              <Box>
+                <Typography component="h2" variant="h2">
+                  Add monitors
+                </Typography>
+              </Box>
+              <Box>
+                <Search
+                  options={monitors ? monitors : []}
+                  filteredBy="name"
+                  secondaryLabel={"type"}
+                  value={search}
+                  handleInputChange={handleSearch}
+                  handleChange={handleSelectMonitor}
+                />
+              </Box>
             </Stack>
           </ConfigBox>
         </Box>

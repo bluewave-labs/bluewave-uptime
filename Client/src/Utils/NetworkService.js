@@ -123,7 +123,7 @@ class NetworkService {
    * @param {Object} config - The configuration object.
    * @param {string} config.authToken - The authorization token to be used in the request header.
    * @param {string} config.teamId - The ID of the team whose monitors are to be retrieved.
-   * @param {number} [config.limit] - The maximum number of monitors to retrieve.
+   * @param {number} [config.limit] - The maximum number of checks to retrieve.  0 for all, -1 for none
    * @param {Array<string>} [config.types] - The types of monitors to retrieve.
    * @param {string} [config.status] - The status of the monitors to retrieve.
    * @param {string} [config.checkOrder] - The order in which to sort the retrieved monitors.
