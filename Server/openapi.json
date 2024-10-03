@@ -33,6 +33,17 @@
       }
     },
     {
+      "url": "http://localhost/{API_PATH}",
+      "description": "Distribution Local Development Server",
+      "variables": {
+        "API_PATH": {
+          "description": "API Base Path",
+          "enum": ["api/v1"],
+          "default": "api/v1"
+        }
+      }
+    },
+    {
       "url": "https://uptime-demo.bluewavelabs.ca/{API_PATH}",
       "description": "Bluewave Demo Server",
       "variables": {
