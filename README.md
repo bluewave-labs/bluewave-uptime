@@ -118,7 +118,7 @@ Also check other developer and contributor-friendly projects of BlueWave:
 
 ### Docker Images Setup
 
-3.  <span style="color: red; font-weight: bold;">CD</span> to the `Docker` directory
+3.  <span style="color: red; font-weight: bold;">CD</span> to the `Docker/dev` directory
 4.  Run `docker run -d -p 6379:6379 -v $(pwd)/redis/data:/data --name uptime_redis uptime_redis`
 5.  Run `docker run -d -p 27017:27017 -v $(pwd)/mongo/data:/data/db --name uptime_database_mongo uptime_database_mongo`
 
