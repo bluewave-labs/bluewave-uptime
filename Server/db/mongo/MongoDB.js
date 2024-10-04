@@ -118,12 +118,12 @@ const {
 //****************************************
 const {
   createMaintenanceWindow,
-  getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
-  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
-} = require("./modules/maintenaceWindowModule");
+} = require("./modules/maintenanceWindowModule");
 
 //****************************************
 // Notifications
@@ -181,9 +181,9 @@ module.exports = {
   getPageSpeedChecks,
   deletePageSpeedChecksByMonitorId,
   createMaintenanceWindow,
-  getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
-  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
   createNotification,

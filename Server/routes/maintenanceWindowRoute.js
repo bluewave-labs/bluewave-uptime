@@ -11,9 +11,6 @@ router.get(
   maintenanceWindowController.getMaintenanceWindowsByMonitorId
 );
 
-router.get(
-  "/user/:userId",
-  maintenanceWindowController.getMaintenanceWindowsByUserId
-);
+router.get("/team/", maintenanceWindowController.getMaintenanceWindowsByTeamId);
 
 module.exports = router;

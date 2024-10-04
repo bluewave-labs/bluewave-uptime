@@ -1,7 +1,7 @@
 const {
   createMaintenanceWindowBodyValidation,
-  getMaintenanceWindowsByUserIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
+  getMaintenanceWindowsByTeamIdQueryValidation,
 } = require("../validation/joi");
 const jwt = require("jsonwebtoken");
 const { getTokenFromHeaders } = require("../utils/utils");
@@ -48,11 +48,9 @@ const createMaintenanceWindows = async (req, res, next) => {
   }
 };
 
-const getMaintenanceWindowsByUserId = async (req, res, next) => {
+const getMaintenanceWindowsByTeamId = async (req, res, next) => {
   try {
-    await getMaintenanceWindowsByUserIdParamValidation.validateAsync(
-      req.params
-    );
+    await getMaintenanceWindowsByTeamIdQueryValidation.validateAsync(req.query);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -61,14 +59,19 @@ const getMaintenanceWindowsByUserId = async (req, res, next) => {
     next(error);
     return;
   }
+
   try {
-    const maintenanceWindows = await req.db.getMaintenanceWindowsByUserId(
-      req.params.userId
+    const token = getTokenFromHeaders(req.headers);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
+    const maintenanceWindows = await req.db.getMaintenanceWindowsByTeamId(
+      teamId,
+      req.query
     );
 
     return res.status(201).json({
       success: true,
-      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_USER,
+      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_TEAM,
       data: maintenanceWindows,
     });
   } catch (error) {
@@ -114,6 +117,6 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
 };
 module.exports = {
   createMaintenanceWindows,
-  getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
 };

@@ -46,21 +46,46 @@ const createMaintenanceWindow = async (maintenanceWindowData) => {
 };
 
 /**
- * Asynchronously retrieves all MaintenanceWindow documents associated with a specific user ID.
+ * Asynchronously retrieves all MaintenanceWindow documents associated with a specific team ID.
  * @async
  * @function getMaintenanceWindowByUserId
- * @param {String} userId - The ID of the user.
+ * @param {String} teamId - The ID of the team.
+ * @param {Object} query - The request body.
  * @returns {Promise<Array<MaintenanceWindow>>} An array of MaintenanceWindow documents.
  * @throws {Error} If there is an error retrieving the documents.
  * @example
- * getMaintenanceWindowByUserId('userId')
+ * getMaintenanceWindowByUserId(teamId)
  *   .then(maintenanceWindows => console.log(maintenanceWindows))
  *   .catch(error => console.error(error));
  */
-const getMaintenanceWindowsByUserId = async (userId) => {
+const getMaintenanceWindowsByTeamId = async (teamId, query) => {
   try {
-    const maintenanceWindows = await MaintenanceWindow.find({ userId: userId });
-    return maintenanceWindows;
+    let { active, page, rowsPerPage, field, order } = query || {};
+    const maintenanceQuery = { teamId };
+
+    if (active !== undefined) maintenanceQuery.active = active;
+
+    const maintenanceWindowCount =
+      await MaintenanceWindow.countDocuments(maintenanceQuery);
+
+    // Pagination
+    let skip = 0;
+    if (page && rowsPerPage) {
+      skip = page * rowsPerPage;
+    }
+
+    // Sorting
+    let sort = {};
+    if (field !== undefined && order !== undefined) {
+      sort[field] = order === "asc" ? 1 : -1;
+    }
+
+    const maintenanceWindows = await MaintenanceWindow.find(maintenanceQuery)
+      .skip(skip)
+      .limit(rowsPerPage)
+      .sort(sort);
+
+    return { maintenanceWindows, maintenanceWindowCount };
   } catch (error) {
     error.service = SERVICE_NAME;
     error.method = "getMaintenanceWindowByUserId";
@@ -96,23 +121,23 @@ const getMaintenanceWindowsByMonitorId = async (monitorId) => {
 /**
  * Asynchronously deletes a MaintenanceWindow document by its ID.
  * @async
- * @function deleteMaintenaceWindowById
+ * @function deleteMaintenanceWindowById
  * @param {mongoose.Schema.Types.ObjectId} maintenanceWindowId - The ID of the MaintenanceWindow document to delete.
  * @returns {Promise<MaintenanceWindow>} The deleted MaintenanceWindow document.
  * @throws {Error} If there is an error deleting the document.
  * @example
- * deleteMaintenaceWindowById('maintenanceWindowId')
+ * deleteMaintenanceWindowById('maintenanceWindowId')
  *   .then(maintenanceWindow => console.log(maintenanceWindow))
  *   .catch(error => console.error(error));
  */
-const deleteMaintenaceWindowById = async (maintenanceWindowId) => {
+const deleteMaintenanceWindowById = async (maintenanceWindowId) => {
   try {
     const maintenanceWindow =
       await MaintenanceWindow.findByIdAndDelete(maintenanceWindowId);
     return maintenanceWindow;
   } catch (error) {
     error.service = SERVICE_NAME;
-    error.method = "deleteMaintenaceWindowById";
+    error.method = "deleteMaintenanceWindowById";
     throw error;
   }
 };
@@ -165,9 +190,9 @@ const deleteMaintenanceWindowByUserId = async (userId) => {
 
 module.exports = {
   createMaintenanceWindow,
-  getMaintenanceWindowsByUserId,
+  getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
-  deleteMaintenaceWindowById,
+  deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
 };

@@ -372,8 +372,12 @@ const createMaintenanceWindowBodyValidation = joi.object({
   expiry: joi.date(),
 });
 
-const getMaintenanceWindowsByUserIdParamValidation = joi.object({
-  userId: joi.string().required(),
+const getMaintenanceWindowsByTeamIdQueryValidation = joi.object({
+  active: joi.boolean(),
+  page: joi.number(),
+  rowsPerPage: joi.number(),
+  field: joi.string(),
+  order: joi.string().valid("asc", "desc"),
 });
 
 const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
@@ -446,7 +450,7 @@ module.exports = {
   deletePageSpeedCheckParamValidation,
   createPageSpeedCheckBodyValidation,
   createMaintenanceWindowBodyValidation,
-  getMaintenanceWindowsByUserIdParamValidation,
+  getMaintenanceWindowsByTeamIdQueryValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
   updateAppSettingsBodyValidation,
 };
