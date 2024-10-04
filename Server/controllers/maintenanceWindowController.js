@@ -1,17 +1,15 @@
 const {
-  createMaintenanceWindowParamValidation,
   createMaintenanceWindowBodyValidation,
   getMaintenanceWindowsByUserIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
 } = require("../validation/joi");
 
-const {successMessages} = require("../utils/messages")
+const { successMessages } = require("../utils/messages");
 
 const SERVICE_NAME = "maintenanceWindowController";
 
-const createMaintenanceWindow = async (req, res, next) => {
+const createMaintenanceWindows = async (req, res, next) => {
   try {
-    await createMaintenanceWindowParamValidation.validateAsync(req.params);
     await createMaintenanceWindowBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
@@ -21,23 +19,21 @@ const createMaintenanceWindow = async (req, res, next) => {
     next(error);
     return;
   }
-
   try {
-    const data = {
-      monitorId: req.params.monitorId,
-      ...req.body,
-    };
-
-    if (data.oneTime === true) {
-      data.expiry = data.end;
-    }
-
-    const maintenanceWindow = await req.db.createMaintenanceWindow(data);
-
+    const monitorIds = req.body.monitors;
+    const dbTransactions = monitorIds.map((monitorId) => {
+      return req.db.createMaintenanceWindow({
+        monitorId,
+        active: req.body.active ? req.body.active : true,
+        repeat: req.body.repeat,
+        start: req.body.start,
+        end: req.body.end,
+      });
+    });
+    await Promise.all(dbTransactions);
     return res.status(201).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_CREATE,
-      data: maintenanceWindow,
     });
   } catch (error) {
     error.service === undefined ? (error.service = SERVICE_NAME) : null;
@@ -113,7 +109,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
   }
 };
 module.exports = {
-  createMaintenanceWindow,
+  createMaintenanceWindows,
   getMaintenanceWindowsByUserId,
   getMaintenanceWindowsByMonitorId,
 };

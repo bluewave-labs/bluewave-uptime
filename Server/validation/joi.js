@@ -361,16 +361,14 @@ const deletePageSpeedCheckParamValidation = joi.object({
 //****************************************
 // MaintenanceWindowValidation
 //****************************************
-const createMaintenanceWindowParamValidation = joi.object({
-  monitorId: joi.string().required(),
-});
 
 const createMaintenanceWindowBodyValidation = joi.object({
+  monitors: joi.array().items(joi.string()).required(),
   userId: joi.string().required(),
-  active: joi.boolean().required(),
-  oneTime: joi.boolean().required(),
+  active: joi.boolean(),
   start: joi.date().required(),
   end: joi.date().required(),
+  repeat: joi.number().required(),
   expiry: joi.date(),
 });
 
@@ -447,7 +445,6 @@ module.exports = {
   createPageSpeedCheckParamValidation,
   deletePageSpeedCheckParamValidation,
   createPageSpeedCheckBodyValidation,
-  createMaintenanceWindowParamValidation,
   createMaintenanceWindowBodyValidation,
   getMaintenanceWindowsByUserIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
