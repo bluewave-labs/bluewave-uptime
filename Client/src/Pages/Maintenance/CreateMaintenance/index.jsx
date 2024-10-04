@@ -7,9 +7,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
-
+import { maintenanceWindowValidation } from "../../../Validation/validation";
 import dayjs from "dayjs";
-
 import Select from "../../../Components/Inputs/Select";
 import Field from "../../../Components/Inputs/Field";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -17,10 +16,27 @@ import CalendarIcon from "../../../assets/icons/calendar.svg?react";
 import "./index.css";
 import Search from "../../../Components/Inputs/Search";
 import { networkService } from "../../../main";
+import {
+  MS_PER_SECOND,
+  MS_PER_MINUTE,
+  MS_PER_HOUR,
+  MS_PER_DAY,
+} from "../../../Utils/timeUtils";
+
+const MS_LOOKUP = {
+  seconds: MS_PER_SECOND,
+  minutes: MS_PER_MINUTE,
+  hours: MS_PER_HOUR,
+  days: MS_PER_DAY,
+};
 
 const repeatConfig = [
   { _id: 0, name: "Don't repeat", value: "none" },
-  { _id: 1, name: "Repeat daily", value: "daily" },
+  {
+    _id: 1,
+    name: "Repeat daily",
+    value: "daily",
+  },
   { _id: 2, name: "Repeat weekly", value: "weekly" },
 ];
 
@@ -28,7 +44,10 @@ const durationConfig = [
   { _id: 0, name: "seconds" },
   { _id: 1, name: "minutes" },
   { _id: 2, name: "hours" },
-  { _id: 3, name: "days" },
+  {
+    _id: 3,
+    name: "days",
+  },
 ];
 
 const getValueById = (config, id) => {
@@ -38,8 +57,11 @@ const getValueById = (config, id) => {
 
 const getIdByValue = (config, name) => {
   const item = config.find((config) => {
-    if (config.value) return config.value === name;
-    else return config.name === name;
+    if (config.value) {
+      return config.value === name;
+    } else {
+      return config.name === name;
+    }
   });
   return item ? item._id : null;
 };
@@ -51,13 +73,14 @@ const CreateMaintenance = () => {
   const [search, setSearch] = useState("");
   const [form, setForm] = useState({
     repeat: "none",
-    startDate: dayjs().toISOString(),
-    startTime: dayjs().toISOString(),
+    startDate: dayjs(),
+    startTime: dayjs(),
     duration: "",
     durationUnit: "seconds",
     name: "",
     monitors: [],
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchMonitors = async () => {
@@ -72,20 +95,82 @@ const CreateMaintenance = () => {
     fetchMonitors();
   }, [authToken, user]);
 
+  const buildErrors = (prev, id, error) => {
+    const updatedErrors = { ...prev };
+    if (error) {
+      updatedErrors[id] = error.details[0].message;
+    } else {
+      delete updatedErrors[id];
+    }
+    return updatedErrors;
+  };
+
   const handleSearch = (value) => {
     setSearch(value);
   };
 
   const handleSelectMonitors = (monitors) => {
     setForm({ ...form, monitors });
+    const { error } = maintenanceWindowValidation.validate(
+      { monitors },
+      { abortEarly: false }
+    );
+    setErrors((prev) => {
+      return buildErrors(prev, "monitors", error);
+    });
   };
 
   const handleFormChange = (key, value) => {
     setForm({ ...form, [key]: value });
+    const { error } = maintenanceWindowValidation.validate(
+      { [key]: value },
+      { abortEarly: false }
+    );
+    setErrors((prev) => {
+      return buildErrors(prev, key, error);
+    });
   };
 
   const handleTimeChange = (key, newTime) => {
     setForm({ ...form, [key]: newTime });
+    const { error } = maintenanceWindowValidation.validate(
+      { [key]: newTime },
+      { abortEarly: false }
+    );
+    setErrors((prev) => {
+      return buildErrors(prev, key, error);
+    });
+  };
+
+  const handleSubmit = () => {
+    const { error } = maintenanceWindowValidation.validate(form, {
+      abortEarly: false,
+    });
+
+    // If errors, return early
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      console.log(error);
+      return;
+    }
+    // Build timestamp for maintenance window from startDate and startTime
+    const startTimestamp = dayjs(form.startDate);
+    startTimestamp
+      .set("hour", form.startTime.hour())
+      .set("minute", form.startTime.minute())
+      .set("second", form.startTime.second())
+      .set("millisecond", form.startTime.millisecond());
+
+    // Build end timestamp for maintenance window
+    const MS_MULTIPLIER = MS_LOOKUP[form.durationUnit];
+    const durationInMs = form.duration * MS_MULTIPLIER;
+    const endTimeStamp = startTimestamp.add(durationInMs);
+    console.log(startTimestamp.toISOString());
+    console.log(endTimeStamp.toISOString());
   };
 
   return (
@@ -134,7 +219,7 @@ const CreateMaintenance = () => {
             borderLeftColor={theme.palette.border.light}
           >
             <Select
-              id="maintenance-repeat"
+              id="repeat"
               name="maintenance-repeat"
               label="Maintenance Repeat"
               value={getIdByValue(repeatConfig, form.repeat)}
@@ -150,8 +235,10 @@ const CreateMaintenance = () => {
               <Typography component="h3">Date</Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
+                  id="startDate"
                   disablePast
                   disableHighlightToday
+                  value={form.startDate}
                   slots={{ openPickerIcon: CalendarIcon }}
                   slotProps={{
                     switchViewButton: { sx: { display: "none" } },
@@ -192,8 +279,9 @@ const CreateMaintenance = () => {
                   }}
                   sx={{}}
                   onChange={(newDate) => {
-                    handleTimeChange("startDate", newDate.toISOString());
+                    handleTimeChange("startDate", newDate);
                   }}
+                  error={errors["startDate"]}
                 />
               </LocalizationProvider>
             </Stack>
@@ -212,10 +300,10 @@ const CreateMaintenance = () => {
             <Stack direction="row">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <MobileTimePicker
-                  id="maintenance-start-time"
-                  value={dayjs(form.startTime)}
+                  id="startTime"
+                  value={form.startTime}
                   onChange={(newTime) => {
-                    handleTimeChange("startTime", newTime.toISOString());
+                    handleTimeChange("startTime", newTime);
                   }}
                   slotProps={{
                     nextIconButton: { sx: { ml: theme.spacing(2) } },
@@ -241,6 +329,7 @@ const CreateMaintenance = () => {
                       },
                     },
                   }}
+                  error={errors["startTime"]}
                 />
               </LocalizationProvider>
             </Stack>
@@ -254,14 +343,15 @@ const CreateMaintenance = () => {
             <Stack direction="row" spacing={theme.spacing(8)}>
               <Field
                 type="number"
-                id="maintenance-duration"
+                id="duration"
                 value={form.duration}
                 onChange={(event) => {
                   handleFormChange("duration", event.target.value);
                 }}
+                error={errors["duration"]}
               />
               <Select
-                id="maintenance-unit"
+                id="durationUnit"
                 value={getIdByValue(durationConfig, form.durationUnit)}
                 items={durationConfig}
                 onChange={(event) => {
@@ -270,6 +360,7 @@ const CreateMaintenance = () => {
                     getValueById(durationConfig, event.target.value)
                   );
                 }}
+                error={errors["durationUnit"]}
               />
             </Stack>
           </Stack>
@@ -292,12 +383,13 @@ const CreateMaintenance = () => {
               </Box>
               <Box>
                 <Field
-                  id="maintenance-name"
+                  id="name"
                   placeholder="Maintenance at __ : __ for ___ minutes"
                   value={form.name}
                   onChange={(event) => {
                     handleFormChange("name", event.target.value);
                   }}
+                  error={errors["name"]}
                 />
               </Box>
             </Stack>
@@ -309,6 +401,7 @@ const CreateMaintenance = () => {
               </Box>
               <Box>
                 <Search
+                  id={"monitors"}
                   multiple={true}
                   isAdorned={false}
                   options={monitors ? monitors : []}
@@ -317,6 +410,7 @@ const CreateMaintenance = () => {
                   value={search}
                   handleInputChange={handleSearch}
                   handleChange={handleSelectMonitors}
+                  error={errors["monitors"]}
                 />
               </Box>
             </Stack>
@@ -334,7 +428,7 @@ const CreateMaintenance = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => console.log(form)}
+            onClick={handleSubmit}
             disabled={false}
           >
             Create maintenance

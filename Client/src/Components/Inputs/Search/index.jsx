@@ -1,5 +1,12 @@
 import PropTypes from "prop-types";
-import { Box, ListItem, Autocomplete, TextField } from "@mui/material";
+import {
+  Box,
+  ListItem,
+  Autocomplete,
+  TextField,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@emotion/react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 
@@ -49,6 +56,7 @@ const Search = ({
   sx,
   multiple = false,
   isAdorned = true,
+  error,
 }) => {
   const theme = useTheme();
 
@@ -69,24 +77,40 @@ const Search = ({
       options={options}
       getOptionLabel={(option) => option[filteredBy]}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Type to search"
-          InputProps={{
-            ...params.InputProps,
-            ...(isAdorned && { startAdornment: <SearchAdornment /> }),
-          }}
-          sx={{
-            "& fieldset": {
-              borderColor: theme.palette.border.light,
-              borderRadius: theme.shape.borderRadius,
-            },
-            "& .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus)) fieldset":
-              {
+        <Stack>
+          <TextField
+            {...params}
+            error={Boolean(error)}
+            placeholder="Type to search"
+            InputProps={{
+              ...params.InputProps,
+              ...(isAdorned && { startAdornment: <SearchAdornment /> }),
+            }}
+            sx={{
+              "& fieldset": {
                 borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
               },
-          }}
-        />
+              "& .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus)) fieldset":
+                {
+                  borderColor: theme.palette.border.light,
+                },
+            }}
+          />
+          {error && (
+            <Typography
+              component="span"
+              className="input-error"
+              color={theme.palette.error.text}
+              mt={theme.spacing(2)}
+              sx={{
+                opacity: 0.8,
+              }}
+            >
+              {error}
+            </Typography>
+          )}
+        </Stack>
       )}
       filterOptions={(options, { inputValue }) => {
         const filtered = options.filter((option) =>
@@ -159,6 +183,7 @@ Search.propTypes = {
   handleChange: PropTypes.func,
   isAdorned: PropTypes.bool,
   sx: PropTypes.object,
+  error: PropTypes.string,
 };
 
 export default Search;
