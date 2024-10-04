@@ -77,7 +77,6 @@ class JobQueue {
           const monitorId = job.data._id;
           const maintenanceWindows =
             await this.db.getMaintenanceWindowsByMonitorId(monitorId);
-
           // Check for active maintenance window:
           const maintenanceWindowActive = maintenanceWindows.reduce(
             (acc, window) => {
@@ -87,9 +86,9 @@ class JobQueue {
                 const now = new Date();
                 const repeatInterval = window.repeat || 0;
 
-                while (start < now) {
-                  start.setDate(start.getTime() + repeatInterval);
-                  end.setDate(end.getTime() + repeatInterval);
+                while ((start < now) & (repeatInterval !== 0)) {
+                  start.setTime(start.getTime() + repeatInterval);
+                  end.setTime(end.getTime() + repeatInterval);
                 }
 
                 if (start < now && end > now) {
