@@ -1,3 +1,7 @@
+---
+icon: diagram-project
+---
+
 # General project structure
 
 The Uptime Manager product uses the MERN stack, which is to say that the project uses:

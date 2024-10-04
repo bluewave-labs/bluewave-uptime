@@ -1,3 +1,7 @@
+---
+icon: list-check
+---
+
 # Contributing to the code
 
 We generally follow the [gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) workflow model.  If you’re not familiar with it, the general steps are
