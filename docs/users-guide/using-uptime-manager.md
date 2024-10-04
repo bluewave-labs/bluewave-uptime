@@ -1,8 +1,8 @@
 ---
-icon: computer-mouse
 description: >-
   This user guide helps new users navigate and understand the Uptime Manager
   dashboard layout and functionality.
+icon: computer-mouse
 ---
 
 # Using Uptime Manager

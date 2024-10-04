@@ -2,16 +2,17 @@
 
 * [Welcome to Uptime Manager](README.md)
 
-## Group 1
+## USER'S GUIDE
 
-* [Installing Uptime Manager](group-1/quickstart.md)
-* [Using Uptime Manager](group-1/using-uptime-manager.md)
-* [Creating a new monitor](group-1/creating-a-new-monitor.md)
-* [Page 1](group-1/page-1.md)
-* [Pagespeed monitoring](group-1/pagespeed-monitoring.md)
+* [Installing Uptime Manager](users-guide/quickstart.md)
+* [Using Uptime Manager](users-guide/using-uptime-manager.md)
+* [Creating a new monitor](users-guide/creating-a-new-monitor.md)
+* [Pagespeed monitoring](users-guide/pagespeed-monitoring.md)
+* [Incidents page](users-guide/incidents-page.md)
+* [Server settings](users-guide/server-settings.md)
+* [User settings](users-guide/user-settings.md)
 
-***
+## DEVELOPER'S GUIDE
 
-* [Incidents page](incidents-page.md)
-* [Server settings](server-settings.md)
-* [User settings](user-settings.md)
+* [Contributing to the code](developers-guide/contributing-to-the-code.md)
+* [General project structure](developers-guide/general-project-structure.md)
