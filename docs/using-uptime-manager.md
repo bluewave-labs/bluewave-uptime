@@ -41,7 +41,7 @@ The dashboard offers a summary of your uptime monitors:
 
 This section lists all the services being monitored, showing key details for each service:
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-03 at 10.56.43 PM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-03 at 10.56.43 PM.png" alt=""><figcaption></figcaption></figure>
 
 * **Host**: The name and URL of the service being monitored.
 * **Status**: The current status of the service, indicated by color-coded icons:
@@ -68,7 +68,7 @@ The gear icon next to each monitored service allows for quick access to configur
 
 ### Table actions&#x20;
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-03 at 10.57.45 PM.png" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-03 at 10.57.45 PM.png" alt="" width="375"><figcaption></figcaption></figure>
 
 When you click on the gear icon, you'll see a few options that correspond to that host:&#x20;
 

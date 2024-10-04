@@ -6,7 +6,7 @@ icon: brake-warning
 
 This page shows a list of incidents of all the servers you monitor.&#x20;
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-03 at 11.54.31 PM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-03 at 11.54.31 PM.png" alt=""><figcaption></figcaption></figure>
 
 Page includes a table where Monitor name, Status (down or cannot resolve), date and time of the incident, status code and corresponding message is shown.
 

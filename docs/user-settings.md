@@ -8,7 +8,7 @@ This screen allows you to manage your personal information and account settings 
 
 ### Profile section
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-04 at 12.17.57 AM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-04 at 12.17.57 AM.png" alt=""><figcaption></figcaption></figure>
 
 Enter your first name, last name and email here. You can also upload or delete a profile photo. If you want to delete an account, this can also be done here. Note that that this is irreversible and cannot be undone.
 
@@ -16,7 +16,7 @@ Enter your first name, last name and email here. You can also upload or delete a
 
 This screen allows you to update your password for your account.
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-04 at 12.16.53 AM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-04 at 12.16.53 AM.png" alt=""><figcaption></figcaption></figure>
 
 In order to change your password, you need to enter your password, and the new password twice. The new password must meet the specified criteria (e.g., minimum length, uppercase letter, number, symbol).
 
@@ -29,7 +29,7 @@ In order to change your password, you need to enter your password, and the new p
 
 This screen allows you to manage your team members within the application.
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-04 at 12.14.45 AM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-04 at 12.14.45 AM.png" alt=""><figcaption></figcaption></figure>
 
 Here you can see a list of all users in your system. A user can be either admin or a member, where an admin can create or delete a monitor, and a user can only view them.&#x20;
 

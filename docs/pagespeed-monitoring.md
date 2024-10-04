@@ -6,7 +6,7 @@ icon: gauge-min
 
 Under Dashboard > Pagespeed, you can see an overview of pagespeed monitors for different websites. This dashboard helps you view optimal website performance by providing clear, actionable insights into various aspects of your site's speed and user experience.
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-03 at 11.37.47 PM (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-03 at 11.37.47 PM (1).png" alt=""><figcaption></figcaption></figure>
 
 When you add a new page speed monitor, it is added here. Click on the "Create new" button to add a new page speed.&#x20;
 
@@ -14,7 +14,7 @@ Here, both monitors are shown as "Live (Collecting Data)" with a green dot, indi
 
 ### Details of a pagespeed monitor
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-03 at 11.41.55 PM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-03 at 11.41.55 PM.png" alt=""><figcaption></figcaption></figure>
 
 When you click on a pagespeed card, you'll see an overview of data collected using Google's PageSpeed Monitor API.&#x20;
 
@@ -45,7 +45,7 @@ You'll see an overall score of your server's pagespeed.&#x20;
 
 When you are on a pagespeed screen, click on the "Create pagespeed" button. You'll see a screen similar to this:&#x20;
 
-<figure><img src="../.gitbook/assets/Screenshot 2024-10-03 at 11.47.41 PM.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Screenshot 2024-10-03 at 11.47.41 PM.png" alt=""><figcaption></figcaption></figure>
 
 This page allows you to set up a new pagespeed monitor for your website. Follow these steps to configure your monitor:
 
