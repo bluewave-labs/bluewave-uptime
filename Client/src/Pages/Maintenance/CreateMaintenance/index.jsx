@@ -22,6 +22,8 @@ import {
   MS_PER_HOUR,
   MS_PER_DAY,
 } from "../../../Utils/timeUtils";
+import { createToast } from "../../../Utils/toastUtils";
+import { useNavigate } from "react-router-dom";
 
 const MS_LOOKUP = {
   seconds: MS_PER_SECOND,
@@ -73,6 +75,7 @@ const getIdByValue = (config, name) => {
 };
 
 const CreateMaintenance = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
   const [monitors, setMonitors] = useState([]);
@@ -191,13 +194,16 @@ const CreateMaintenance = () => {
       submit.expiry = end;
     }
 
-    console.log(submit);
-
     try {
-      networkService.createMaintenanceWindow({
+      await networkService.createMaintenanceWindow({
         authToken: authToken,
         maintenanceWindow: submit,
       });
+
+      createToast({
+        body: "Successfully created maintenance window",
+      });
+      navigate("/maintenance");
     } catch (error) {
       console.log(error);
     }
@@ -450,7 +456,7 @@ const CreateMaintenance = () => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => console.log("disabled")}
+            onClick={() => navigate("/maintenance")}
             sx={{ mr: theme.spacing(6) }}
           >
             Cancel
