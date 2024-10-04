@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { ConfigBox } from "./styled";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -28,6 +28,12 @@ const MS_LOOKUP = {
   minutes: MS_PER_MINUTE,
   hours: MS_PER_HOUR,
   days: MS_PER_DAY,
+};
+
+const REPEAT_LOOKUP = {
+  none: 0,
+  daily: MS_PER_DAY,
+  weekly: MS_PER_DAY * 7,
 };
 
 const repeatConfig = [
@@ -158,8 +164,8 @@ const CreateMaintenance = () => {
       return;
     }
     // Build timestamp for maintenance window from startDate and startTime
-    const startTimestamp = dayjs(form.startDate);
-    startTimestamp
+    const start = dayjs(form.startDate);
+    start
       .set("hour", form.startTime.hour())
       .set("minute", form.startTime.minute())
       .set("second", form.startTime.second())
@@ -168,9 +174,24 @@ const CreateMaintenance = () => {
     // Build end timestamp for maintenance window
     const MS_MULTIPLIER = MS_LOOKUP[form.durationUnit];
     const durationInMs = form.duration * MS_MULTIPLIER;
-    const endTimeStamp = startTimestamp.add(durationInMs);
-    console.log(startTimestamp.toISOString());
-    console.log(endTimeStamp.toISOString());
+    const end = start.add(durationInMs);
+
+    // Get repeat value in milliseconds
+    const repeat = REPEAT_LOOKUP[form.repeat];
+
+    const submit = {
+      monitors: form.monitors.map((monitor) => monitor._id),
+      name: form.name,
+      start: start.toISOString(),
+      end: end.toISOString(),
+      repeat,
+    };
+
+    if (repeat === 0) {
+      submit.expiry = end;
+    }
+
+    console.log(submit);
   };
 
   return (

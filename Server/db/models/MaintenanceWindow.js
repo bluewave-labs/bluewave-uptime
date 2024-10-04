@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
  * @typedef {Object} MaintenanceWindow
  * @property {mongoose.Schema.Types.ObjectId} monitorId - The ID of the monitor. This is a reference to the Monitor model and is immutable.
  * @property {Boolean} active - Indicates whether the maintenance window is active.
- * @property {Boolean} oneTime - Indicates whether the maintenance window is a one-time event.
+ * @property {Number} repeat - Indicates how often this maintenance window should repeat.
  * @property {Date} start - The start date and time of the maintenance window.
  * @property {Date} end - The end date and time of the maintenance window.
  * @property {Date} expiry - The expiry date and time of the maintenance window. This is used for MongoDB's TTL index to automatically delete the document at this time. This field is set to the same value as `end` when `oneTime` is `true`.
@@ -16,12 +16,12 @@ const mongoose = require("mongoose");
  * let maintenanceWindow = new MaintenanceWindow({
  *   monitorId: monitorId,
  *   active: active,
- *   oneTime: oneTime,
+ *   repeat: repeat,
  *   start: start,
  *   end: end,
  * });
  *
- * if (oneTime) {
+ * if (repeat === 0) {
  *   maintenanceWindow.expiry = end;
  * }
  *
@@ -41,9 +41,10 @@ const MaintenanceWindow = mongoose.Schema(
     },
     active: {
       type: Boolean,
+      default: true,
     },
-    oneTime: {
-      type: Boolean,
+    repeat: {
+      type: Number,
     },
     start: {
       type: Date,
