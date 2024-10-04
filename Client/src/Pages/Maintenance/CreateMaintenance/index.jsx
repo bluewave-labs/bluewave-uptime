@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
-import { act, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ConfigBox } from "./styled";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -148,7 +148,7 @@ const CreateMaintenance = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { error } = maintenanceWindowValidation.validate(form, {
       abortEarly: false,
     });
@@ -192,6 +192,15 @@ const CreateMaintenance = () => {
     }
 
     console.log(submit);
+
+    try {
+      networkService.createMaintenanceWindow({
+        authToken: authToken,
+        maintenanceWindow: submit,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -364,7 +364,7 @@ const deletePageSpeedCheckParamValidation = joi.object({
 
 const createMaintenanceWindowBodyValidation = joi.object({
   monitors: joi.array().items(joi.string()).required(),
-  teamId: joi.string().required(),
+  name: joi.string().required(),
   active: joi.boolean(),
   start: joi.date().required(),
   end: joi.date().required(),

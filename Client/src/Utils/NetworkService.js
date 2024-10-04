@@ -683,6 +683,32 @@ class NetworkService {
       },
     });
   }
+
+  /**
+   * ************************************
+   * Creates a maintenance window
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {Object} config.maintenanceWindow - The maintenance window object to be sent in the request body.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async createMaintenanceWindow(config) {
+    return this.axiosInstance.post(
+      `/maintenance-window`,
+      config.maintenanceWindow,
+      {
+        headers: {
+          Authorization: `Bearer ${config.authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
 
 export default NetworkService;
