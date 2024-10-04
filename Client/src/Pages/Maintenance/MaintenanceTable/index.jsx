@@ -27,6 +27,7 @@ import SelectorVertical from "../../../assets/icons/selector-vertical.svg?react"
 import { formatDurationRounded } from "../../../Utils/timeUtils";
 import { StatusLabel } from "../../../Components/Label";
 import { setRowsPerPage } from "../../../Features/UI/uiSlice";
+import dayjs from "dayjs";
 
 /**
  * Component for pagination actions (first, previous, next, last).
@@ -114,6 +115,41 @@ const MaintenanceTable = ({
   const dispatch = useDispatch();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const getTimeToNextWindow = (startTime, endTime, repeat) => {
+    //1.  Advance time closest to next window as possible
+    const now = dayjs();
+    let start = dayjs(startTime);
+    let end = dayjs(endTime);
+    if (repeat > 0) {
+      // Advance time closest to next window as possible
+      while (start.isBefore(now) && end.isBefore(now)) {
+        start = start.add(repeat, "milliseconds");
+        end = end.add(repeat, "milliseconds");
+      }
+    }
+
+    //Check if we are in a window
+    if (now.isAfter(start) && now.isBefore(end)) {
+      return "In maintenance window";
+    }
+
+    if (start.isAfter(now)) {
+      const diffInMinutes = start.diff(now, "minutes");
+      const diffInHours = start.diff(now, "hours");
+      const diffInDays = start.diff(now, "days");
+
+      if (diffInMinutes < 60) {
+        return diffInMinutes + " minutes";
+      } else if (diffInHours < 24) {
+        return diffInHours + " hours";
+      } else if (diffInDays < 7) {
+        return diffInDays + " days";
+      } else {
+        return diffInDays + " days";
+      }
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -215,7 +251,13 @@ const MaintenanceTable = ({
                       customStyles={{ textTransform: "capitalize" }}
                     />
                   </TableCell>
-                  <TableCell>{maintenanceWindow.start}</TableCell>
+                  <TableCell>
+                    {getTimeToNextWindow(
+                      maintenanceWindow.start,
+                      maintenanceWindow.end,
+                      maintenanceWindow.repeat
+                    )}
+                  </TableCell>
                   <TableCell>
                     {maintenanceWindow.repeat === 0
                       ? "N/A"
