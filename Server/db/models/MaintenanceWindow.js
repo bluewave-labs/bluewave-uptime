@@ -34,9 +34,9 @@ const MaintenanceWindow = mongoose.Schema(
       ref: "Monitor",
       immutable: true,
     },
-    userId: {
+    teamId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Team",
       immutable: true,
     },
     active: {

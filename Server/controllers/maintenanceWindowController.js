@@ -3,9 +3,9 @@ const {
   getMaintenanceWindowsByUserIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
 } = require("../validation/joi");
-
+const jwt = require("jsonwebtoken");
+const { getTokenFromHeaders } = require("../utils/utils");
 const { successMessages } = require("../utils/messages");
-
 const SERVICE_NAME = "maintenanceWindowController";
 
 const createMaintenanceWindows = async (req, res, next) => {
@@ -20,9 +20,13 @@ const createMaintenanceWindows = async (req, res, next) => {
     return;
   }
   try {
+    const token = getTokenFromHeaders(req.headers);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
     const monitorIds = req.body.monitors;
     const dbTransactions = monitorIds.map((monitorId) => {
       return req.db.createMaintenanceWindow({
+        teamId,
         monitorId,
         active: req.body.active ? req.body.active : true,
         repeat: req.body.repeat,
