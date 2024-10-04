@@ -36,7 +36,7 @@ const createMaintenanceWindow = async (maintenanceWindowData) => {
     if (maintenanceWindowData.oneTime) {
       maintenanceWindow.expiry = maintenanceWindowData.end;
     }
-    const result = maintenanceWindow.save();
+    const result = await maintenanceWindow.save();
     return result;
   } catch (error) {
     error.service = SERVICE_NAME;

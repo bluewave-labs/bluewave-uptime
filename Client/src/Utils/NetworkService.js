@@ -709,6 +709,44 @@ class NetworkService {
       }
     );
   }
+  /**
+   * ************************************
+   * Get maintenance windows by teamId
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} [config.active] - The status of the maintenance windows to retrieve.
+   * @param {number} [config.page] - The page number for pagination.
+   * @param {number} [config.rowsPerPage] - The number of rows per page for pagination.
+   * @param {string} [config.field] - The field to sort by.
+   * @param {string} [config.order] - The order in which to sort the field.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async getMaintenanceWindowsByTeamId(config) {
+    const { authToken, active, page, rowsPerPage, field, order } = config;
+
+    const params = new URLSearchParams();
+
+    if (active) params.append("status", active);
+    if (page) params.append("page", page);
+    if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
+    if (field) params.append("field", field);
+    if (order) params.append("order", order);
+
+    return this.axiosInstance.get(
+      `/maintenance-window/team?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
 
 export default NetworkService;

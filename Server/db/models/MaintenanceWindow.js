@@ -43,6 +43,9 @@ const MaintenanceWindow = mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    name: {
+      type: String,
+    },
     repeat: {
       type: Number,
     },

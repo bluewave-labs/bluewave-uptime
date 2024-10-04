@@ -28,6 +28,7 @@ const createMaintenanceWindows = async (req, res, next) => {
       return req.db.createMaintenanceWindow({
         teamId,
         monitorId,
+        name: req.body.name,
         active: req.body.active ? req.body.active : true,
         repeat: req.body.repeat,
         start: req.body.start,

@@ -15,16 +15,18 @@ import {
 } from "@mui/material";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
-
+import ActionsMenu from "./ActionsMenu";
 import { useState, useEffect, memo, useCallback, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import LeftArrowDouble from "../../../assets/icons/left-arrow-double.svg?react";
 import RightArrowDouble from "../../../assets/icons/right-arrow-double.svg?react";
 import LeftArrow from "../../../assets/icons/left-arrow.svg?react";
 import RightArrow from "../../../assets/icons/right-arrow.svg?react";
 import SelectorVertical from "../../../assets/icons/selector-vertical.svg?react";
-// import ActionsMenu from "../actionsMenu";
+import { formatDurationRounded } from "../../../Utils/timeUtils";
+import { StatusLabel } from "../../../Components/Label";
+import { setRowsPerPage } from "../../../Features/UI/uiSlice";
 
 /**
  * Component for pagination actions (first, previous, next, last).
@@ -101,16 +103,15 @@ TablePaginationActions.propTypes = {
 const MaintenanceTable = ({
   page,
   setPage,
-  rowsPerPage,
-  setRowsPerPage,
   sort,
   setSort,
   maintenanceWindows,
   maintenanceWindowCount,
 }) => {
+  const { rowsPerPage } = useSelector((state) => state.ui.maintenance);
+
   const theme = useTheme();
   const dispatch = useDispatch();
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -119,7 +120,7 @@ const MaintenanceTable = ({
     dispatch(
       setRowsPerPage({
         value: parseInt(event.target.value, 10),
-        table: "monitors",
+        table: "maintenance",
       })
     );
     setPage(0);
@@ -159,7 +160,7 @@ const MaintenanceTable = ({
                 onClick={() => handleSort("name")}
               >
                 <Box>
-                  Host
+                  Maintenance Window Name
                   <span
                     style={{
                       visibility: sort.field === "name" ? "visible" : "hidden",
@@ -184,7 +185,7 @@ const MaintenanceTable = ({
                   <span
                     style={{
                       visibility:
-                        sort.field === "status" ? "visible" : "hidden",
+                        sort.field === "active" ? "visible" : "hidden",
                     }}
                   >
                     {sort.order === "asc" ? (
@@ -195,12 +196,38 @@ const MaintenanceTable = ({
                   </span>
                 </Box>
               </TableCell>
-              <TableCell>Response Time</TableCell>
-              <TableCell>Type</TableCell>
+              <TableCell>Next Window</TableCell>
+              <TableCell>Repeat</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody></TableBody>
+          <TableBody>
+            {maintenanceWindows.map((maintenanceWindow) => {
+              const text = maintenanceWindow.active ? "active" : "paused";
+              const status = maintenanceWindow.active ? "up" : "paused";
+              return (
+                <TableRow key={maintenanceWindow._id}>
+                  <TableCell>{maintenanceWindow.name}</TableCell>
+                  <TableCell>
+                    <StatusLabel
+                      status={status}
+                      text={text}
+                      customStyles={{ textTransform: "capitalize" }}
+                    />
+                  </TableCell>
+                  <TableCell>{maintenanceWindow.start}</TableCell>
+                  <TableCell>
+                    {maintenanceWindow.repeat === 0
+                      ? "N/A"
+                      : formatDurationRounded(maintenanceWindow.repeat)}
+                  </TableCell>
+                  <TableCell>
+                    <ActionsMenu maintenanceWindow={maintenanceWindow} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
         </Table>
       </TableContainer>
       <Stack

@@ -190,6 +190,7 @@ const CreateMaintenance = () => {
       repeat,
     };
 
+    console.log(submit);
     if (repeat === 0) {
       submit.expiry = end;
     }
