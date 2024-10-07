@@ -1,5 +1,6 @@
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+const FALLBACK_BASE_URL = "http://localhost:5000/api/v1";
 import { logger } from "./Logger";
 class NetworkService {
   constructor(store) {
@@ -9,8 +10,12 @@ class NetworkService {
     this.setBaseUrl(baseURL);
     this.unsubscribe = store.subscribe(() => {
       const state = store.getState();
-      if (BASE_URL === undefined && state.settings.apiBaseUrl) {
+      if (BASE_URL !== undefined) {
+        baseURL = BASE_URL;
+      } else if (state?.settings?.apiBaseUrl ?? null) {
         baseURL = state.settings.apiBaseUrl;
+      } else {
+        baseURL = FALLBACK_BASE_URL;
       }
       this.setBaseUrl(baseURL);
     });
