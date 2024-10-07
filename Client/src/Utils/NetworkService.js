@@ -10,7 +10,9 @@ class NetworkService {
     this.setBaseUrl(baseURL);
     this.unsubscribe = store.subscribe(() => {
       const state = store.getState();
-      if (BASE_URL === undefined && state.settings.apiBaseUrl) {
+      if (BASE_URL !== undefined) {
+        baseURL = BASE_URL;
+      } else if (state?.settings?.apiBaseUrl ?? null) {
         baseURL = state.settings.apiBaseUrl;
       } else {
         baseURL = FALLBACK_BASE_URL;
