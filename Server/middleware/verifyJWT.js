@@ -38,6 +38,11 @@ const verifyJWT = (req, res, next) => {
   const { jwtSecret } = req.settingsService.getSettings();
   jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
     if (err) {
+      if (err.name === "TokenExpiredError") {
+        res
+          .status(401)
+          .json({ success: false, msg: errorMessages.EXPIRED_AUTH_TOKEN });
+      }
       return res
         .status(401)
         .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
