@@ -1,10 +1,14 @@
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 const FALLBACK_BASE_URL = "http://localhost:5000/api/v1";
+import { clearAuthState } from "../Features/Auth/authSlice";
+import { clearUptimeMonitorState } from "../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { logger } from "./Logger";
 class NetworkService {
-  constructor(store) {
+  constructor(store, dispatch, navigate) {
     this.store = store;
+    this.dispatch = dispatch;
+    this.navigate = navigate;
     let baseURL = BASE_URL;
     this.axiosInstance = axios.create();
     this.setBaseUrl(baseURL);
@@ -22,9 +26,10 @@ class NetworkService {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        logger.error(error);
         if (error.response && error.response.status === 401) {
-          logger.error("Invalid token received");
+          dispatch(clearAuthState());
+          dispatch(clearUptimeMonitorState());
+          navigate("/login");
         }
         return Promise.reject(error);
       }
@@ -688,3 +693,10 @@ class NetworkService {
 }
 
 export default NetworkService;
+
+let networkService;
+
+export const setNetworkService = (service) => {
+  networkService = service;
+};
+export { networkService };
