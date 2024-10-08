@@ -12,6 +12,7 @@ const errorMessages = {
   UNKNOWN_SERVICE: "Unknown service",
   NO_AUTH_TOKEN: "No auth token provided",
   INVALID_AUTH_TOKEN: "Invalid auth token",
+  EXPIRED_AUTH_TOKEN: "Token expired",
 
   //Ownership Middleware
   VERIFY_OWNER_NOT_FOUND: "Document not found",
