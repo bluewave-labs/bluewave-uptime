@@ -28,6 +28,7 @@
     "multer": "1.4.5-lts.1",
     "nodemailer": "^6.9.14",
     "ping": "0.4.4",
+    "prettier": "^3.3.3",
     "sharp": "0.33.4",
     "ssl-checker": "2.0.10",
     "swagger-ui-express": "5.0.1",
