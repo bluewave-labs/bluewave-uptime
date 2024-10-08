@@ -70,7 +70,11 @@ function App() {
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
       <CssBaseline />
       <Routes>
-        <Route exact path="/" element={<HomeLayout />}>
+        <Route
+          exact
+          path="/"
+          element={<HomeLayout />}
+        >
           <Route
             exact
             path="/"
@@ -119,21 +123,34 @@ function App() {
           />
           <Route
             path="advanced-settings"
-            element={
-              <ProtectedRoute Component={AdvancedSettingsWithAdminProp} />
-            }
+            element={<ProtectedRoute Component={AdvancedSettingsWithAdminProp} />}
           />
           <Route
             path="account/profile"
-            element={<ProtectedRoute Component={Account} open="profile" />}
+            element={
+              <ProtectedRoute
+                Component={Account}
+                open="profile"
+              />
+            }
           />
           <Route
             path="account/password"
-            element={<ProtectedRoute Component={Account} open="password" />}
+            element={
+              <ProtectedRoute
+                Component={Account}
+                open="password"
+              />
+            }
           />
           <Route
             path="account/team"
-            element={<ProtectedRoute Component={Account} open="team" />}
+            element={
+              <ProtectedRoute
+                Component={Account}
+                open="team"
+              />
+            }
           />
           <Route
             path="pagespeed"
@@ -145,9 +162,7 @@ function App() {
           />
           <Route
             path="pagespeed/:monitorId"
-            element={
-              <ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />
-            }
+            element={<ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />}
           />
           <Route
             path="pagespeed/configure/:monitorId"
@@ -155,15 +170,39 @@ function App() {
           />
         </Route>
 
-        <Route exact path="/login" element={<Login />} />
+        <Route
+          exact
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route exact path="/register" element={<AdminCheckedRegister />} />
-        <Route exact path="/register/:token" element={<Register />} />
+        <Route
+          exact
+          path="/register"
+          element={<AdminCheckedRegister />}
+        />
+        <Route
+          exact
+          path="/register/:token"
+          element={<Register />}
+        />
         {/* <Route path="/toast" element={<ToastComponent />} /> */}
-        <Route path="*" element={<NotFound />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/check-email" element={<CheckEmail />} />
-        <Route path="/set-new-password/:token" element={<SetNewPassword />} />
+        <Route
+          path="*"
+          element={<NotFound />}
+        />
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+        <Route
+          path="/check-email"
+          element={<CheckEmail />}
+        />
+        <Route
+          path="/set-new-password/:token"
+          element={<SetNewPassword />}
+        />
         <Route
           path="/new-password-confirmed"
           element={<NewPasswordConfirmed />}
