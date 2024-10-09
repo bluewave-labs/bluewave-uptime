@@ -22,6 +22,7 @@ class Logger {
     }
 
     if (logLevel === "error") {
+      this.error = console.error.bind(console);
       this.info = NO_OP;
       this.warn = NO_OP;
       this.log = NO_OP;
@@ -29,20 +30,20 @@ class Logger {
     }
 
     if (logLevel === "warn") {
+      this.error = console.error.bind(console);
+      this.warn = console.warn.bind(console);
       this.info = NO_OP;
       this.log = NO_OP;
       return;
     }
 
     if (logLevel === "info") {
+      this.error = console.error.bind(console);
+      this.warn = console.warn.bind(console);
+      this.info = console.info.bind(console);
       this.log = NO_OP;
       return;
     }
-
-    this.error = console.error.bind(console);
-    this.warn = console.warn.bind(console);
-    this.info = console.info.bind(console);
-    this.log = console.log.bind(console);
   }
 
   cleanup() {
