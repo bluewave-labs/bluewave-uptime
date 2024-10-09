@@ -384,6 +384,10 @@ const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+const deleteMaintenanceWindowByIdParamValidation = joi.object({
+  id: joi.string().required(),
+});
+
 //****************************************
 // SettingsValidation
 //****************************************
@@ -452,5 +456,6 @@ module.exports = {
   createMaintenanceWindowBodyValidation,
   getMaintenanceWindowsByTeamIdQueryValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
+  deleteMaintenanceWindowByIdParamValidation,
   updateAppSettingsBodyValidation,
 };

@@ -13,4 +13,6 @@ router.get(
 
 router.get("/team/", maintenanceWindowController.getMaintenanceWindowsByTeamId);
 
+router.delete("/:id", maintenanceWindowController.deleteMaintenanceWindow);
+
 module.exports = router;

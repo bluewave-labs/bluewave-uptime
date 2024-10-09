@@ -2,6 +2,7 @@ const {
   createMaintenanceWindowBodyValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
   getMaintenanceWindowsByTeamIdQueryValidation,
+  deleteMaintenanceWindowByIdParamValidation,
 } = require("../validation/joi");
 const jwt = require("jsonwebtoken");
 const { getTokenFromHeaders } = require("../utils/utils");
@@ -116,8 +117,34 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
     next(error);
   }
 };
+
+const deleteMaintenanceWindow = async (req, res, next) => {
+  try {
+    await deleteMaintenanceWindowByIdParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
+    await req.db.deleteMaintenanceWindowById(req.params.id);
+    return res.status(201).json({
+      success: true,
+      msg: successMessages.MAINTENANCE_WINDOW_DELETE,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "deleteMaintenanceWindow")
+      : null;
+  }
+};
 module.exports = {
   createMaintenanceWindows,
   getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
+  deleteMaintenanceWindow,
 };

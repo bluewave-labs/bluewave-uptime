@@ -96,6 +96,7 @@ const successMessages = {
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
   MAINTENANCE_WINDOW_GET_BY_TEAM:
     "Got Maintenance Windows by Team successfully",
+  MAINTENANCE_WINDOW_DELETE: "Maintenance Window deleted successfully",
 
   //Ping Operations
   PING_SUCCESS: "Success",
