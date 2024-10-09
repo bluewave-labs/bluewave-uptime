@@ -118,6 +118,7 @@ const {
 //****************************************
 const {
   createMaintenanceWindow,
+  getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenanceWindowById,
@@ -183,6 +184,7 @@ module.exports = {
   deletePageSpeedChecksByMonitorId,
   createMaintenanceWindow,
   getMaintenanceWindowsByTeamId,
+  getMaintenanceWindowById,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,

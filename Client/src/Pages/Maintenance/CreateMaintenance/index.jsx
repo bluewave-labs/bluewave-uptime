@@ -8,6 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { maintenanceWindowValidation } from "../../../Validation/validation";
+import { createToast } from "../../../Utils/toastUtils";
 import dayjs from "dayjs";
 import Select from "../../../Components/Inputs/Select";
 import Field from "../../../Components/Inputs/Field";
@@ -16,14 +17,14 @@ import CalendarIcon from "../../../assets/icons/calendar.svg?react";
 import "./index.css";
 import Search from "../../../Components/Inputs/Search";
 import { networkService } from "../../../main";
+import { logger } from "../../../Utils/Logger";
 import {
   MS_PER_SECOND,
   MS_PER_MINUTE,
   MS_PER_HOUR,
   MS_PER_DAY,
 } from "../../../Utils/timeUtils";
-import { createToast } from "../../../Utils/toastUtils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const MS_LOOKUP = {
   seconds: MS_PER_SECOND,
@@ -75,11 +76,13 @@ const getIdByValue = (config, name) => {
 };
 
 const CreateMaintenance = () => {
+  const { maintenanceWindowId } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
   const { user, authToken } = useSelector((state) => state.auth);
   const [monitors, setMonitors] = useState([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     repeat: "none",
     startDate: dayjs(),
@@ -93,13 +96,48 @@ const CreateMaintenance = () => {
 
   useEffect(() => {
     const fetchMonitors = async () => {
-      const response = await networkService.getMonitorsByTeamId({
-        authToken: authToken,
-        teamId: user.teamId,
-        limit: -1,
-        types: ["http", "ping", "pagespeed"],
-      });
-      setMonitors(response.data.data.monitors);
+      setIsLoading(true);
+      try {
+        const response = await networkService.getMonitorsByTeamId({
+          authToken: authToken,
+          teamId: user.teamId,
+          limit: -1,
+          types: ["http", "ping", "pagespeed"],
+        });
+        setMonitors(response.data.data.monitors);
+
+        if (maintenanceWindowId === undefined) {
+          return;
+        }
+
+        const maintenanceWindow = await networkService.getMaintenanceWindowById(
+          {
+            authToken: authToken,
+            maintenanceWindowId: maintenanceWindowId,
+          }
+        );
+        logger.info(maintenanceWindow);
+        // const { name, start, end, repeat, monitors } =
+        //   maintenanceWindow.data.data.maintenanceWindow;
+        // const startDate = dayjs(start);
+        // const startTime = dayjs(start);
+        // const duration = dayjs(end).diff(dayjs(start), "seconds");
+        // const durationUnit = "seconds";
+        // setForm({
+        //   name,
+        //   startDate,
+        //   startTime,
+        //   duration,
+        //   durationUnit,
+        //   repeat,
+        //   monitors,
+        // });
+      } catch (error) {
+        createToast({ body: "Failed to fetch data" });
+        logger.error("Failed to fetch monitors", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchMonitors();
   }, [authToken, user]);
@@ -190,7 +228,6 @@ const CreateMaintenance = () => {
       repeat,
     };
 
-    console.log(submit);
     if (repeat === 0) {
       submit.expiry = end;
     }

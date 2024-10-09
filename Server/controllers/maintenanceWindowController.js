@@ -1,5 +1,6 @@
 const {
   createMaintenanceWindowBodyValidation,
+  getMaintenanceWindowByIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
   getMaintenanceWindowsByTeamIdQueryValidation,
   deleteMaintenanceWindowByIdParamValidation,
@@ -45,6 +46,35 @@ const createMaintenanceWindows = async (req, res, next) => {
     error.service === undefined ? (error.service = SERVICE_NAME) : null;
     error.method === undefined
       ? (error.method = "createMaintenanceWindow")
+      : null;
+    next(error);
+  }
+};
+
+const getMaintenanceWindowById = async (req, res, next) => {
+  try {
+    await getMaintenanceWindowByIdParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
+    const maintenanceWindow = await req.db.getMaintenanceWindowById(
+      req.params.id
+    );
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_ID,
+      data: maintenanceWindow,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMaintenanceWindowById")
       : null;
     next(error);
   }
@@ -171,6 +201,7 @@ const editMaintenanceWindow = async (req, res, next) => {
 
 module.exports = {
   createMaintenanceWindows,
+  getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenanceWindow,

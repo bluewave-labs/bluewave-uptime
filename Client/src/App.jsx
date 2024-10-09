@@ -110,7 +110,7 @@ function App() {
             element={<ProtectedRoute Component={MaintenanceWithAdminProp} />}
           />
           <Route
-            path="/maintenance/create"
+            path="/maintenance/create/:maintenanceWindowId?"
             element={<CreateNewMaintenanceWindow />}
           />
           <Route

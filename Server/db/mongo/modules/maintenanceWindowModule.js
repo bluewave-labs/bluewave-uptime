@@ -45,6 +45,19 @@ const createMaintenanceWindow = async (maintenanceWindowData) => {
   }
 };
 
+const getMaintenanceWindowById = async (maintenanceWindowId) => {
+  try {
+    const maintenanceWindow = await MaintenanceWindow.findById({
+      _id: maintenanceWindowId,
+    });
+    return maintenanceWindow;
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "getMaintenanceWindowById";
+    throw error;
+  }
+};
+
 /**
  * Asynchronously retrieves all MaintenanceWindow documents associated with a specific team ID.
  * @async
@@ -202,6 +215,7 @@ const editMaintenanceWindowById = async (
 
 module.exports = {
   createMaintenanceWindow,
+  getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenanceWindowById,

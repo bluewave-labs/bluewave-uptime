@@ -93,6 +93,7 @@ const successMessages = {
   JOB_QUEUE_RESUME_JOB: "Job resumed successfully",
 
   //Maintenance Window Controller
+  MAINTENANCE_WINDOW_GET_BY_ID: "Got Maintenance Window by Id successfully",
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
   MAINTENANCE_WINDOW_GET_BY_TEAM:
     "Got Maintenance Windows by Team successfully",
