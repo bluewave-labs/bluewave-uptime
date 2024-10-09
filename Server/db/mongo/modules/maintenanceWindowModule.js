@@ -205,6 +205,7 @@ const editMaintenanceWindowById = async (
   maintenanceWindowId,
   maintenanceWindowData
 ) => {
+  console.log(maintenanceWindowData);
   try {
     const editedMaintenanceWindow = MaintenanceWindow.findByIdAndUpdate(
       maintenanceWindowId,

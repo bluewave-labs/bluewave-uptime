@@ -188,10 +188,14 @@ const editMaintenanceWindow = async (req, res, next) => {
     return;
   }
   try {
-    await req.db.editMaintenanceWindowById(req.params.id, req.body);
-    return res.status(201).json({
+    const editedMaintenanceWindow = await req.db.editMaintenanceWindowById(
+      req.params.id,
+      req.body
+    );
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_EDIT,
+      data: editedMaintenanceWindow,
     });
   } catch (error) {
     error.service === undefined ? (error.service = SERVICE_NAME) : null;

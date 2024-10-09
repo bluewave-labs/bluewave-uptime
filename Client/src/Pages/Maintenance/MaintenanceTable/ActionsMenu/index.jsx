@@ -19,6 +19,7 @@ import { networkService } from "../../../../main";
 import { createToast } from "../../../../Utils/toastUtils";
 
 const ActionsMenu = ({ isAdmin, maintenanceWindow, updateCallback }) => {
+  maintenanceWindow;
   const { authToken } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +45,26 @@ const ActionsMenu = ({ isAdmin, maintenanceWindow, updateCallback }) => {
       setIsLoading(false);
     }
     setIsOpen(false);
+  };
+
+  const handlePause = async () => {
+    try {
+      setIsLoading(true);
+      const data = {
+        active: !maintenanceWindow.active,
+      };
+      await networkService.editMaintenanceWindow({
+        authToken,
+        maintenanceWindowId: maintenanceWindow._id,
+        maintenanceWindow: data,
+      });
+      updateCallback();
+    } catch (error) {
+      logger.error(error);
+      createToast({ body: "Failed to pause maintenance window." });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEdit = () => {
@@ -117,12 +138,12 @@ const ActionsMenu = ({ isAdmin, maintenanceWindow, updateCallback }) => {
         </MenuItem>
         <MenuItem
           onClick={(e) => {
+            handlePause();
             closeMenu(e);
             e.stopPropagation();
-            console.log("Pause");
           }}
         >
-          Pause
+          {`${maintenanceWindow.active === true ? "Pause" : "Resume"}`}
         </MenuItem>
 
         <MenuItem
