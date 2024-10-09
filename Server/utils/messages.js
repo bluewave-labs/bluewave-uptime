@@ -12,6 +12,7 @@ const errorMessages = {
   UNKNOWN_SERVICE: "Unknown service",
   NO_AUTH_TOKEN: "No auth token provided",
   INVALID_AUTH_TOKEN: "Invalid auth token",
+  EXPIRED_AUTH_TOKEN: "Token expired",
 
   //Ownership Middleware
   VERIFY_OWNER_NOT_FOUND: "Document not found",
@@ -92,8 +93,12 @@ const successMessages = {
   JOB_QUEUE_RESUME_JOB: "Job resumed successfully",
 
   //Maintenance Window Controller
+  MAINTENANCE_WINDOW_GET_BY_ID: "Got Maintenance Window by Id successfully",
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
-  MAINTENANCE_WINDOW_GET_BY_USER: "Got Maintenance Windows by User successfully",
+  MAINTENANCE_WINDOW_GET_BY_TEAM:
+    "Got Maintenance Windows by Team successfully",
+  MAINTENANCE_WINDOW_DELETE: "Maintenance Window deleted successfully",
+  MAINTENANCE_WINDOW_EDIT: "Maintenance Window edited successfully",
 
   //Ping Operations
   PING_SUCCESS: "Success",

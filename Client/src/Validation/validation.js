@@ -1,4 +1,5 @@
 import joi from "joi";
+import dayjs from "dayjs";
 
 const nameSchema = joi
   .string()
@@ -113,50 +114,33 @@ const imageValidation = joi.object({
     }),
 });
 
-const maintenanceWindowValidation = joi.object({
-  repeat: joi.number().valid(1, 2, 3).required().messages({
-    "number.base": "Repeat must be a number.",
-    "any.only": "Repeat must be one of [1, 2, 3].",
-    "any.required": "Repeat is required.",
-  }),
-  date: joi.date().required().messages({
-    "date.base": "Date must be a valid date.",
-    "any.required": "Date is required.",
-  }),
-  startTime: joi.string().required().messages({
-    "string.base": "Start time must be a valid time.",
-    "any.required": "Start time is required.",
-  }),
-  duration: joi.number().required().messages({
-    "number.empty": "duration is required.",
-    "number.base": "Duration must be a number.",
-    "any.required": "Duration is required.",
-  }),
-  unit: joi.string().valid("minutes", "hours", "days").required().messages({
-    "string.base": "Unit must be a string.",
-    "any.only": "Unit must be one of ['minutes', 'hours', 'days'].",
-    "any.required": "Unit is required.",
-  }),
-  displayName: joi.string().max(50).required().messages({
-    "string.empty": "Display name is required.",
-    "string.max": "Display name must be less than 50 characters long",
-  }),
-  addMonitors: joi.string().max(50).required().messages({
-    "string.empty": "Add monitors is required.",
-    "string.max": "Add monitors must be less than 50 characters long",
-  }),
-});
-
 const settingsValidation = joi.object({
   ttl: joi.number().required().messages({
     "string.empty": "TTL is required",
   }),
 });
 
+const dayjsValidator = (value, helpers) => {
+  if (!dayjs(value).isValid()) {
+    return helpers.error("any.invalid");
+  }
+  return value;
+};
+
+const maintenanceWindowValidation = joi.object({
+  repeat: joi.string(),
+  startDate: joi.custom(dayjsValidator, "Day.js date validation"),
+  startTime: joi.custom(dayjsValidator, "Day.js date validation"),
+  duration: joi.number(),
+  durationUnit: joi.string(),
+  name: joi.string(),
+  monitors: joi.array().min(1),
+});
+
 export {
   credentials,
   imageValidation,
   monitorValidation,
-  maintenanceWindowValidation,
   settingsValidation,
+  maintenanceWindowValidation,
 };
