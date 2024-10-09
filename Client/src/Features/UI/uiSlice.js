@@ -9,6 +9,9 @@ const initialState = {
   team: {
     rowsPerPage: 5,
   },
+  maintenance: {
+    rowsPerPage: 5,
+  },
   sidebar: {
     collapsed: false,
   },

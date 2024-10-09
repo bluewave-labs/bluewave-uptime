@@ -112,7 +112,7 @@ const CreateMonitor = () => {
         { [name]: value },
         { abortEarly: false }
       );
-
+      console.log(error);
       setErrors((prev) => {
         const updatedErrors = { ...prev };
         if (error) updatedErrors[name] = error.details[0].message;

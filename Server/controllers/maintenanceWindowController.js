@@ -1,17 +1,19 @@
 const {
-  createMaintenanceWindowParamValidation,
   createMaintenanceWindowBodyValidation,
-  getMaintenanceWindowsByUserIdParamValidation,
+  editMaintenanceWindowByIdParamValidation,
+  editMaintenanceByIdWindowBodyValidation,
+  getMaintenanceWindowByIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
+  getMaintenanceWindowsByTeamIdQueryValidation,
+  deleteMaintenanceWindowByIdParamValidation,
 } = require("../validation/joi");
-
-const {successMessages} = require("../utils/messages")
-
+const jwt = require("jsonwebtoken");
+const { getTokenFromHeaders } = require("../utils/utils");
+const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "maintenanceWindowController";
 
-const createMaintenanceWindow = async (req, res, next) => {
+const createMaintenanceWindows = async (req, res, next) => {
   try {
-    await createMaintenanceWindowParamValidation.validateAsync(req.params);
     await createMaintenanceWindowBodyValidation.validateAsync(req.body);
   } catch (error) {
     error.status = 422;
@@ -21,23 +23,26 @@ const createMaintenanceWindow = async (req, res, next) => {
     next(error);
     return;
   }
-
   try {
-    const data = {
-      monitorId: req.params.monitorId,
-      ...req.body,
-    };
-
-    if (data.oneTime === true) {
-      data.expiry = data.end;
-    }
-
-    const maintenanceWindow = await req.db.createMaintenanceWindow(data);
-
+    const token = getTokenFromHeaders(req.headers);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
+    const monitorIds = req.body.monitors;
+    const dbTransactions = monitorIds.map((monitorId) => {
+      return req.db.createMaintenanceWindow({
+        teamId,
+        monitorId,
+        name: req.body.name,
+        active: req.body.active ? req.body.active : true,
+        repeat: req.body.repeat,
+        start: req.body.start,
+        end: req.body.end,
+      });
+    });
+    await Promise.all(dbTransactions);
     return res.status(201).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_CREATE,
-      data: maintenanceWindow,
     });
   } catch (error) {
     error.service === undefined ? (error.service = SERVICE_NAME) : null;
@@ -48,11 +53,9 @@ const createMaintenanceWindow = async (req, res, next) => {
   }
 };
 
-const getMaintenanceWindowsByUserId = async (req, res, next) => {
+const getMaintenanceWindowById = async (req, res, next) => {
   try {
-    await getMaintenanceWindowsByUserIdParamValidation.validateAsync(
-      req.params
-    );
+    await getMaintenanceWindowByIdParamValidation.validateAsync(req.params);
   } catch (error) {
     error.status = 422;
     error.service = SERVICE_NAME;
@@ -62,13 +65,47 @@ const getMaintenanceWindowsByUserId = async (req, res, next) => {
     return;
   }
   try {
-    const maintenanceWindows = await req.db.getMaintenanceWindowsByUserId(
-      req.params.userId
+    const maintenanceWindow = await req.db.getMaintenanceWindowById(
+      req.params.id
+    );
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_ID,
+      data: maintenanceWindow,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "getMaintenanceWindowById")
+      : null;
+    next(error);
+  }
+};
+
+const getMaintenanceWindowsByTeamId = async (req, res, next) => {
+  try {
+    await getMaintenanceWindowsByTeamIdQueryValidation.validateAsync(req.query);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+
+  try {
+    const token = getTokenFromHeaders(req.headers);
+    const { jwtSecret } = req.settingsService.getSettings();
+    const { teamId } = jwt.verify(token, jwtSecret);
+    const maintenanceWindows = await req.db.getMaintenanceWindowsByTeamId(
+      teamId,
+      req.query
     );
 
     return res.status(201).json({
       success: true,
-      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_USER,
+      msg: successMessages.MAINTENANCE_WINDOW_GET_BY_TEAM,
       data: maintenanceWindows,
     });
   } catch (error) {
@@ -112,8 +149,67 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
     next(error);
   }
 };
+
+const deleteMaintenanceWindow = async (req, res, next) => {
+  try {
+    await deleteMaintenanceWindowByIdParamValidation.validateAsync(req.params);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
+    await req.db.deleteMaintenanceWindowById(req.params.id);
+    return res.status(201).json({
+      success: true,
+      msg: successMessages.MAINTENANCE_WINDOW_DELETE,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "deleteMaintenanceWindow")
+      : null;
+  }
+};
+
+const editMaintenanceWindow = async (req, res, next) => {
+  try {
+    await editMaintenanceWindowByIdParamValidation.validateAsync(req.params);
+    await editMaintenanceByIdWindowBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
+    const editedMaintenanceWindow = await req.db.editMaintenanceWindowById(
+      req.params.id,
+      req.body
+    );
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.MAINTENANCE_WINDOW_EDIT,
+      data: editedMaintenanceWindow,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "editMaintenanceWindow")
+      : null;
+  }
+};
+
 module.exports = {
-  createMaintenanceWindow,
-  getMaintenanceWindowsByUserId,
+  createMaintenanceWindows,
+  getMaintenanceWindowById,
+  getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
+  deleteMaintenanceWindow,
+  editMaintenanceWindow,
 };

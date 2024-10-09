@@ -1,5 +1,7 @@
+const exp = require("constants");
 const joi = require("joi");
 const { normalize } = require("path");
+const { start } = require("repl");
 
 //****************************************
 // Custom Validators
@@ -361,25 +363,49 @@ const deletePageSpeedCheckParamValidation = joi.object({
 //****************************************
 // MaintenanceWindowValidation
 //****************************************
-const createMaintenanceWindowParamValidation = joi.object({
-  monitorId: joi.string().required(),
-});
 
 const createMaintenanceWindowBodyValidation = joi.object({
-  userId: joi.string().required(),
-  active: joi.boolean().required(),
-  oneTime: joi.boolean().required(),
+  monitors: joi.array().items(joi.string()).required(),
+  name: joi.string().required(),
+  active: joi.boolean(),
   start: joi.date().required(),
   end: joi.date().required(),
+  repeat: joi.number().required(),
   expiry: joi.date(),
 });
 
-const getMaintenanceWindowsByUserIdParamValidation = joi.object({
-  userId: joi.string().required(),
+const getMaintenanceWindowByIdParamValidation = joi.object({
+  id: joi.string().required(),
+});
+
+const getMaintenanceWindowsByTeamIdQueryValidation = joi.object({
+  active: joi.boolean(),
+  page: joi.number(),
+  rowsPerPage: joi.number(),
+  field: joi.string(),
+  order: joi.string().valid("asc", "desc"),
 });
 
 const getMaintenanceWindowsByMonitorIdParamValidation = joi.object({
   monitorId: joi.string().required(),
+});
+
+const deleteMaintenanceWindowByIdParamValidation = joi.object({
+  id: joi.string().required(),
+});
+
+const editMaintenanceWindowByIdParamValidation = joi.object({
+  id: joi.string().required(),
+});
+
+const editMaintenanceByIdWindowBodyValidation = joi.object({
+  active: joi.boolean(),
+  name: joi.string(),
+  repeat: joi.number(),
+  start: joi.date(),
+  end: joi.date(),
+  expiry: joi.date(),
+  monitors: joi.array(),
 });
 
 //****************************************
@@ -447,9 +473,12 @@ module.exports = {
   createPageSpeedCheckParamValidation,
   deletePageSpeedCheckParamValidation,
   createPageSpeedCheckBodyValidation,
-  createMaintenanceWindowParamValidation,
   createMaintenanceWindowBodyValidation,
-  getMaintenanceWindowsByUserIdParamValidation,
+  getMaintenanceWindowByIdParamValidation,
+  getMaintenanceWindowsByTeamIdQueryValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
+  deleteMaintenanceWindowByIdParamValidation,
+  editMaintenanceWindowByIdParamValidation,
+  editMaintenanceByIdWindowBodyValidation,
   updateAppSettingsBodyValidation,
 };
