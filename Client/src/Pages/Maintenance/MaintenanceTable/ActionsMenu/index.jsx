@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   Button,
   IconButton,
@@ -10,19 +11,39 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { logger } from "../../../../Utils/Logger";
 import Settings from "../../../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
+import { networkService } from "../../../../main";
+import { createToast } from "../../../../Utils/toastUtils";
 
-const ActionsMenu = ({ isAdmin, maintenanceWindow }) => {
+const ActionsMenu = ({ isAdmin, maintenanceWindow, updateCallback }) => {
+  const { authToken } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const theme = useTheme();
 
   const handleRemove = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log("remove");
-    setIsOpen(false); // close modal
+    try {
+      setIsLoading(true);
+      await networkService.deleteMaintenanceWindow({
+        authToken,
+        maintenanceWindowId: maintenanceWindow._id,
+      });
+      updateCallback();
+      createToast({ body: "Maintenance window deleted successfully." });
+    } catch (error) {
+      createToast({ body: "Failed to delete maintenance window." });
+      logger.error("Failed to delete maintenance window", error);
+    } finally {
+      setIsLoading(false);
+    }
+    setIsOpen(false);
   };
 
   const openMenu = (event) => {
@@ -156,7 +177,8 @@ const ActionsMenu = ({ isAdmin, maintenanceWindow }) => {
             >
               Cancel
             </Button>
-            <Button
+            <LoadingButton
+              loading={isLoading}
               variant="contained"
               color="error"
               onClick={(e) => {
@@ -165,7 +187,7 @@ const ActionsMenu = ({ isAdmin, maintenanceWindow }) => {
               }}
             >
               Delete
-            </Button>
+            </LoadingButton>
           </Stack>
         </Stack>
       </Modal>

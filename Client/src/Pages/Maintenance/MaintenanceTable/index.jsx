@@ -108,11 +108,12 @@ const MaintenanceTable = ({
   setSort,
   maintenanceWindows,
   maintenanceWindowCount,
+  updateCallback,
 }) => {
   const { rowsPerPage } = useSelector((state) => state.ui.maintenance);
-
   const theme = useTheme();
   const dispatch = useDispatch();
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -264,7 +265,10 @@ const MaintenanceTable = ({
                       : formatDurationRounded(maintenanceWindow.repeat)}
                   </TableCell>
                   <TableCell>
-                    <ActionsMenu maintenanceWindow={maintenanceWindow} />
+                    <ActionsMenu
+                      maintenanceWindow={maintenanceWindow}
+                      updateCallback={updateCallback}
+                    />
                   </TableCell>
                 </TableRow>
               );
@@ -352,6 +356,7 @@ MaintenanceTable.propTypes = {
   setSort: PropTypes.func,
   maintenanceWindows: PropTypes.array,
   maintenanceWindowCount: PropTypes.number,
+  updateCallback: PropTypes.func,
 };
 
 const MemoizedMaintenanceTable = memo(MaintenanceTable);

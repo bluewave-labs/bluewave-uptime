@@ -19,6 +19,11 @@ const Maintenance = ({ isAdmin }) => {
   const [maintenanceWindowCount, setMaintenanceWindowCount] = useState(0);
   const [page, setPage] = useState(0);
   const [sort, setSort] = useState({});
+  const [updateTrigger, setUpdateTrigger] = useState(false);
+
+  const handleActionMenuDelete = () => {
+    setUpdateTrigger((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchMaintenanceWindows = async () => {
@@ -37,7 +42,7 @@ const Maintenance = ({ isAdmin }) => {
       }
     };
     fetchMaintenanceWindows();
-  }, [authToken, page, rowsPerPage]);
+  }, [authToken, page, rowsPerPage, updateTrigger]);
 
   return (
     <Box
@@ -84,6 +89,7 @@ const Maintenance = ({ isAdmin }) => {
             setSort={setSort}
             maintenanceWindows={maintenanceWindows}
             maintenanceWindowCount={maintenanceWindowCount}
+            updateCallback={handleActionMenuDelete}
           />
         </Stack>
       )}

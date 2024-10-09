@@ -754,6 +754,31 @@ class NetworkService {
       }
     );
   }
+  /**
+   * ************************************
+   * Get maintenance windows by teamId
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} [config.maintenanceWindowId] - The id of the maintenance window to delete.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async deleteMaintenanceWindow(config) {
+    const { authToken, maintenanceWindowId } = config;
+    return this.axiosInstance.delete(
+      `/maintenance-window/${maintenanceWindowId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
 
 export default NetworkService;
