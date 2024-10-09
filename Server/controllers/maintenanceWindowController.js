@@ -1,5 +1,7 @@
 const {
   createMaintenanceWindowBodyValidation,
+  editMaintenanceWindowByIdParamValidation,
+  editMaintenanceByIdWindowBodyValidation,
   getMaintenanceWindowByIdParamValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
   getMaintenanceWindowsByTeamIdQueryValidation,
@@ -186,7 +188,7 @@ const editMaintenanceWindow = async (req, res, next) => {
     return;
   }
   try {
-    await req.db.editMaintenanceWindow(req.params.id, req.body);
+    await req.db.editMaintenanceWindowById(req.params.id, req.body);
     return res.status(201).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_EDIT,

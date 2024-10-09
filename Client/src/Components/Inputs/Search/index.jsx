@@ -51,12 +51,14 @@ const Search = ({
   filteredBy,
   secondaryLabel,
   value,
+  inputValue,
   handleInputChange,
   handleChange,
   sx,
   multiple = false,
   isAdorned = true,
   error,
+  disabled,
 }) => {
   const theme = useTheme();
 
@@ -64,7 +66,8 @@ const Search = ({
     <Autocomplete
       multiple={multiple}
       id={id}
-      inputValue={value}
+      value={value}
+      inputValue={inputValue}
       onInputChange={(_, newValue) => {
         handleInputChange(newValue);
       }}
@@ -73,6 +76,7 @@ const Search = ({
       }}
       fullWidth
       freeSolo
+      disabled={disabled}
       disableClearable
       options={options}
       getOptionLabel={(option) => option[filteredBy]}
@@ -178,12 +182,14 @@ Search.propTypes = {
   options: PropTypes.array.isRequired,
   filteredBy: PropTypes.string.isRequired,
   secondaryLabel: PropTypes.string,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.array,
+  inputValue: PropTypes.string.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   handleChange: PropTypes.func,
   isAdorned: PropTypes.bool,
   sx: PropTypes.object,
   error: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default Search;

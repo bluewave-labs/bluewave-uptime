@@ -46,6 +46,10 @@ const ActionsMenu = ({ isAdmin, maintenanceWindow, updateCallback }) => {
     setIsOpen(false);
   };
 
+  const handleEdit = () => {
+    navigate(`/maintenance/create/${maintenanceWindow._id}`);
+  };
+
   const openMenu = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -106,7 +110,7 @@ const ActionsMenu = ({ isAdmin, maintenanceWindow, updateCallback }) => {
           onClick={(e) => {
             closeMenu(e);
             e.stopPropagation();
-            console.log("Edit");
+            handleEdit();
           }}
         >
           Edit

@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, duration, Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
@@ -9,6 +9,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import { maintenanceWindowValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 import dayjs from "dayjs";
 import Select from "../../../Components/Inputs/Select";
 import Field from "../../../Components/Inputs/Field";
@@ -23,20 +25,52 @@ import {
   MS_PER_MINUTE,
   MS_PER_HOUR,
   MS_PER_DAY,
+  MS_PER_WEEK,
 } from "../../../Utils/timeUtils";
 import { useNavigate, useParams } from "react-router-dom";
+
+const getDurationAndUnit = (durationInMs) => {
+  if (durationInMs % MS_PER_DAY === 0) {
+    return {
+      duration: (durationInMs / MS_PER_DAY).toString(),
+      durationUnit: "days",
+    };
+  } else if (durationInMs % MS_PER_HOUR === 0) {
+    return {
+      duration: (durationInMs / MS_PER_HOUR).toString(),
+      durationUnit: "hours",
+    };
+  } else if (durationInMs % MS_PER_MINUTE === 0) {
+    return {
+      duration: (durationInMs / MS_PER_MINUTE).toString(),
+      durationUnit: "minutes",
+    };
+  } else {
+    return {
+      duration: (durationInMs / MS_PER_SECOND).toString(),
+      durationUnit: "seconds",
+    };
+  }
+};
 
 const MS_LOOKUP = {
   seconds: MS_PER_SECOND,
   minutes: MS_PER_MINUTE,
   hours: MS_PER_HOUR,
   days: MS_PER_DAY,
+  weeks: MS_PER_WEEK,
 };
 
 const REPEAT_LOOKUP = {
   none: 0,
   daily: MS_PER_DAY,
   weekly: MS_PER_DAY * 7,
+};
+
+const REVERSE_REPEAT_LOOKUP = {
+  0: "none",
+  [MS_PER_DAY]: "daily",
+  [MS_PER_WEEK]: "weekly",
 };
 
 const repeatConfig = [
@@ -104,34 +138,34 @@ const CreateMaintenance = () => {
           limit: -1,
           types: ["http", "ping", "pagespeed"],
         });
-        setMonitors(response.data.data.monitors);
+        const monitors = response.data.data.monitors;
+        setMonitors(monitors);
 
         if (maintenanceWindowId === undefined) {
           return;
         }
 
-        const maintenanceWindow = await networkService.getMaintenanceWindowById(
-          {
-            authToken: authToken,
-            maintenanceWindowId: maintenanceWindowId,
-          }
-        );
-        logger.info(maintenanceWindow);
-        // const { name, start, end, repeat, monitors } =
-        //   maintenanceWindow.data.data.maintenanceWindow;
-        // const startDate = dayjs(start);
-        // const startTime = dayjs(start);
-        // const duration = dayjs(end).diff(dayjs(start), "seconds");
-        // const durationUnit = "seconds";
-        // setForm({
-        //   name,
-        //   startDate,
-        //   startTime,
-        //   duration,
-        //   durationUnit,
-        //   repeat,
-        //   monitors,
-        // });
+        const res = await networkService.getMaintenanceWindowById({
+          authToken: authToken,
+          maintenanceWindowId: maintenanceWindowId,
+        });
+        const maintenanceWindow = res.data.data;
+        const { name, start, end, repeat, monitorId } = maintenanceWindow;
+        const startTime = dayjs(start);
+        const endTime = dayjs(end);
+        const durationInMs = endTime.diff(startTime, "milliseconds").toString();
+        const { duration, durationUnit } = getDurationAndUnit(durationInMs);
+        const monitor = monitors.find((monitor) => monitor._id === monitorId);
+        setForm({
+          ...form,
+          name,
+          repeat: REVERSE_REPEAT_LOOKUP[repeat],
+          startDate: startTime,
+          startTime,
+          duration,
+          durationUnit,
+          monitors: monitor ? [monitor] : [],
+        });
       } catch (error) {
         createToast({ body: "Failed to fetch data" });
         logger.error("Failed to fetch monitors", error);
@@ -201,17 +235,13 @@ const CreateMaintenance = () => {
         newErrors[err.path[0]] = err.message;
       });
       setErrors(newErrors);
-      console.log(error);
+      logger.error(error);
       return;
     }
     // Build timestamp for maintenance window from startDate and startTime
-    const start = dayjs(form.startDate);
-    start
+    const start = dayjs(form.startDate)
       .set("hour", form.startTime.hour())
-      .set("minute", form.startTime.minute())
-      .set("second", form.startTime.second())
-      .set("millisecond", form.startTime.millisecond());
-
+      .set("minute", form.startTime.minute());
     // Build end timestamp for maintenance window
     const MS_MULTIPLIER = MS_LOOKUP[form.durationUnit];
     const durationInMs = form.duration * MS_MULTIPLIER;
@@ -232,18 +262,32 @@ const CreateMaintenance = () => {
       submit.expiry = end;
     }
 
-    try {
-      await networkService.createMaintenanceWindow({
-        authToken: authToken,
-        maintenanceWindow: submit,
-      });
+    const requestConfig = { authToken: authToken, maintenanceWindow: submit };
 
+    if (maintenanceWindowId !== undefined) {
+      requestConfig.maintenanceWindowId = maintenanceWindowId;
+    }
+    const request =
+      maintenanceWindowId === undefined
+        ? networkService.createMaintenanceWindow(requestConfig)
+        : networkService.editMaintenanceWindow(requestConfig);
+
+    try {
+      setIsLoading(true);
+      await request;
       createToast({
         body: "Successfully created maintenance window",
       });
       navigate("/maintenance");
     } catch (error) {
-      console.log(error);
+      createToast({
+        body: `Failed to ${
+          maintenanceWindowId === undefined ? "create" : "edit"
+        } maintenance window`,
+      });
+      logger.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -252,7 +296,10 @@ const CreateMaintenance = () => {
       <Breadcrumbs
         list={[
           { name: "maintenance", path: "/maintenance" },
-          { name: "create", path: `/maintenance/create` },
+          {
+            name: maintenanceWindowId === undefined ? "create" : "edit",
+            path: `/maintenance/create`,
+          },
         ]}
       />
       <Stack
@@ -265,7 +312,7 @@ const CreateMaintenance = () => {
         <Box>
           <Typography component="h1" variant="h1">
             <Typography component="span" fontSize="inherit">
-              Create a{" "}
+              {`${maintenanceWindowId === undefined ? "Create a" : "Edit"}`}{" "}
             </Typography>
             <Typography
               component="span"
@@ -481,10 +528,12 @@ const CreateMaintenance = () => {
                   options={monitors ? monitors : []}
                   filteredBy="name"
                   secondaryLabel={"type"}
-                  value={search}
+                  inputValue={search}
+                  value={form.monitors}
                   handleInputChange={handleSearch}
                   handleChange={handleSelectMonitors}
                   error={errors["monitors"]}
+                  disabled={maintenanceWindowId !== undefined}
                 />
               </Box>
             </Stack>
@@ -499,14 +548,19 @@ const CreateMaintenance = () => {
           >
             Cancel
           </Button>
-          <Button
+          <LoadingButton
+            loading={isLoading}
             variant="contained"
             color="primary"
             onClick={handleSubmit}
             disabled={false}
           >
-            Create maintenance
-          </Button>
+            {`${
+              maintenanceWindowId === undefined
+                ? "Create maintenance"
+                : "Edit maintenance"
+            }`}
+          </LoadingButton>
         </Box>
       </Stack>
     </Box>

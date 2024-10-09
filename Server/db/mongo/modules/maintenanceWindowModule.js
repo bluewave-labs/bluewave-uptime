@@ -206,6 +206,12 @@ const editMaintenanceWindowById = async (
   maintenanceWindowData
 ) => {
   try {
+    const editedMaintenanceWindow = MaintenanceWindow.findByIdAndUpdate(
+      maintenanceWindowId,
+      maintenanceWindowData,
+      { new: true }
+    );
+    return editedMaintenanceWindow;
   } catch (error) {
     error.service = SERVICE_NAME;
     error.method = "editMaintenanceWindowById";

@@ -405,6 +405,7 @@ const editMaintenanceByIdWindowBodyValidation = joi.object({
   start: joi.date(),
   end: joi.date(),
   expiry: joi.date(),
+  monitors: joi.array(),
 });
 
 //****************************************
