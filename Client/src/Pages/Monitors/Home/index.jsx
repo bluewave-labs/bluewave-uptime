@@ -136,7 +136,7 @@ const Monitors = ({ isAdmin }) => {
                     <Search
                       options={monitorState?.monitorsSummary?.monitors ?? []}
                       filteredBy="name"
-                      value={search}
+                      inputValue={search}
                       handleInputChange={handleSearch}
                     />
                   </Box>

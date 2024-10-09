@@ -1,5 +1,7 @@
 import store from "../store";
 const LOG_LEVEL = import.meta.env.VITE_APP_LOG_LEVEL || "debug";
+const NO_OP = () => {};
+
 class Logger {
   constructor() {
     let logLevel = LOG_LEVEL;
@@ -11,8 +13,6 @@ class Logger {
   }
 
   updateLogLevel(logLevel) {
-    const NO_OP = () => {};
-
     if (logLevel === "none") {
       this.info = NO_OP;
       this.error = NO_OP;
