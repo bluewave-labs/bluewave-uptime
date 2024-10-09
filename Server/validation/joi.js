@@ -1,5 +1,7 @@
+const exp = require("constants");
 const joi = require("joi");
 const { normalize } = require("path");
+const { start } = require("repl");
 
 //****************************************
 // Custom Validators
@@ -388,6 +390,19 @@ const deleteMaintenanceWindowByIdParamValidation = joi.object({
   id: joi.string().required(),
 });
 
+const editMaintenanceWindowByIdParamValidation = joi.object({
+  id: joi.string().required(),
+});
+
+const editMaintenanceByIdWindowBodyValidation = joi.object({
+  active: joi.boolean(),
+  name: joi.string(),
+  repeat: joi.number(),
+  start: joi.date(),
+  end: joi.date(),
+  expiry: joi.date(),
+});
+
 //****************************************
 // SettingsValidation
 //****************************************
@@ -457,5 +472,7 @@ module.exports = {
   getMaintenanceWindowsByTeamIdQueryValidation,
   getMaintenanceWindowsByMonitorIdParamValidation,
   deleteMaintenanceWindowByIdParamValidation,
+  editMaintenanceWindowByIdParamValidation,
+  editMaintenanceByIdWindowBodyValidation,
   updateAppSettingsBodyValidation,
 };

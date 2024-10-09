@@ -188,6 +188,18 @@ const deleteMaintenanceWindowByUserId = async (userId) => {
   }
 };
 
+const editMaintenanceWindowById = async (
+  maintenanceWindowId,
+  maintenanceWindowData
+) => {
+  try {
+  } catch (error) {
+    error.service = SERVICE_NAME;
+    error.method = "editMaintenanceWindowById";
+    throw error;
+  }
+};
+
 module.exports = {
   createMaintenanceWindow,
   getMaintenanceWindowsByTeamId,
@@ -195,4 +207,5 @@ module.exports = {
   deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
+  editMaintenanceWindowById,
 };

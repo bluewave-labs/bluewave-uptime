@@ -123,6 +123,7 @@ const {
   deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
+  editMaintenanceWindowById,
 } = require("./modules/maintenanceWindowModule");
 
 //****************************************
@@ -186,6 +187,7 @@ module.exports = {
   deleteMaintenanceWindowById,
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
+  editMaintenanceWindowById,
   createNotification,
   getNotificationsByMonitorId,
   deleteNotificationsByMonitorId,

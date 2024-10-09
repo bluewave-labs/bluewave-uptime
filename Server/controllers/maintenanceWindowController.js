@@ -142,9 +142,37 @@ const deleteMaintenanceWindow = async (req, res, next) => {
       : null;
   }
 };
+
+const editMaintenanceWindow = async (req, res, next) => {
+  try {
+    await editMaintenanceWindowByIdParamValidation.validateAsync(req.params);
+    await editMaintenanceByIdWindowBodyValidation.validateAsync(req.body);
+  } catch (error) {
+    error.status = 422;
+    error.service = SERVICE_NAME;
+    error.message =
+      error.details?.[0]?.message || error.message || "Validation Error";
+    next(error);
+    return;
+  }
+  try {
+    await req.db.editMaintenanceWindow(req.params.id, req.body);
+    return res.status(201).json({
+      success: true,
+      msg: successMessages.MAINTENANCE_WINDOW_EDIT,
+    });
+  } catch (error) {
+    error.service === undefined ? (error.service = SERVICE_NAME) : null;
+    error.method === undefined
+      ? (error.method = "editMaintenanceWindow")
+      : null;
+  }
+};
+
 module.exports = {
   createMaintenanceWindows,
   getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenanceWindow,
+  editMaintenanceWindow,
 };
