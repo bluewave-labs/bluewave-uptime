@@ -4,11 +4,13 @@ const {
   editUser,
   checkSuperadminExists,
   requestRecovery,
+  validateRecovery,
 } = require("../../controllers/authController");
 const jwt = require("jsonwebtoken");
 
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
+const { before } = require("node:test");
 describe("Auth Controller - registerUser", () => {
   // Set up test
   beforeEach(() => {
@@ -314,6 +316,43 @@ describe("Auth Controller - requestRecovery", async () => {
         success: true,
         msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
         data: msgId,
+      })
+    ).to.be.true;
+  });
+});
+
+describe("Auth Controller - validateRecovery", async () => {
+  beforeEach(() => {
+    req = {
+      body: { recoveryToken: "recovery-token" },
+      db: {
+        validateRecoveryToken: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  it("should call next with a validation error if the token is invalid", async () => {
+    req = {
+      body: {},
+    };
+    await validateRecovery(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should return a success message if the token is valid", async () => {
+    req.db.validateRecoveryToken.resolves();
+    await validateRecovery(req, res, next);
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.AUTH_VERIFY_RECOVERY_TOKEN,
       })
     ).to.be.true;
   });
