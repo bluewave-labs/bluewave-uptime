@@ -3,6 +3,7 @@ const {
   loginUser,
   editUser,
   checkSuperadminExists,
+  requestRecovery,
 } = require("../../controllers/authController");
 const jwt = require("jsonwebtoken");
 
@@ -253,6 +254,66 @@ describe("Auth Controller - checkSuperadminExists", async () => {
         success: true,
         msg: successMessages.AUTH_SUPERADMIN_EXISTS,
         data: false,
+      })
+    ).to.be.true;
+  });
+});
+
+describe("Auth Controller - requestRecovery", async () => {
+  beforeEach(() => {
+    req = {
+      body: { email: "test@test.com" },
+      db: {
+        getUserByEmail: sinon.stub(),
+        requestRecoveryToken: sinon.stub(),
+      },
+      settingsService: {
+        getSettings: sinon.stub().returns({ clientHost: "http://localhost" }),
+      },
+      emailService: {
+        buildAndSendEmail: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  it("should throw an error if the email is not provided", async () => {
+    req.body = {};
+    await requestRecovery(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should return a success message if the email is provided", async () => {
+    const user = { firstName: "John" };
+    const recoveryToken = { token: "recovery-token" };
+    const msgId = "message-id";
+    req.db.getUserByEmail.resolves(user);
+    req.db.requestRecoveryToken.resolves(recoveryToken);
+    req.emailService.buildAndSendEmail.resolves(msgId);
+    await requestRecovery(req, res, next);
+    expect(req.db.getUserByEmail.calledOnceWith("test@test.com")).to.be.true;
+    expect(req.db.requestRecoveryToken.calledOnceWith(req, res)).to.be.true;
+    expect(
+      req.emailService.buildAndSendEmail.calledOnceWith(
+        "passwordResetTemplate",
+        {
+          name: "John",
+          email: "test@test.com",
+          url: "http://localhost/set-new-password/recovery-token",
+        },
+        "test@test.com",
+        "Bluewave Uptime Password Reset"
+      )
+    ).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
+        data: msgId,
       })
     ).to.be.true;
   });
