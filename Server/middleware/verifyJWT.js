@@ -1,10 +1,7 @@
 const jwt = require("jsonwebtoken");
-const logger = require("../utils/logger");
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
 const { errorMessages } = require("../utils/messages");
-const { parse } = require("path");
-const User = require("../db/models/User");
 /**
  * Verifies the JWT token
  * @function
