@@ -7,6 +7,7 @@ const {
   validateRecovery,
   resetPassword,
   deleteUser,
+  getAllUsers,
 } = require("../../controllers/authController");
 const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
@@ -549,13 +550,59 @@ describe("Auth Controller - deleteUser", async () => {
   it("should handle errors", async () => {
     const error = new Error("Something went wrong");
     const SERVICE_NAME = "AuthController";
-
     jwt.decode.returns({ email: "test@example.com" });
     req.db.getUserByEmail.rejects(error);
-
     await deleteUser(req, res, next);
     expect(next.calledOnce).to.be.true;
     expect(next.firstCall.args[0].message).to.equal("Something went wrong");
+    expect(res.status.notCalled).to.be.true;
+    expect(res.json.notCalled).to.be.true;
+  });
+});
+
+describe("Auth Controller - getAllUsers", async () => {
+  beforeEach(() => {
+    req = {
+      db: {
+        getAllUsers: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    handleError = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore(); // Restore the original methods after each test
+  });
+
+  it("should return 200 and all users", async () => {
+    const allUsers = [{ id: 1, name: "John Doe" }];
+    req.db.getAllUsers.resolves(allUsers);
+
+    await getAllUsers(req, res, next);
+
+    expect(req.db.getAllUsers.calledOnce).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: "Got all users",
+        data: allUsers,
+      })
+    ).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+
+  it("should call next with error when an exception occurs", async () => {
+    const error = new Error("Something went wrong");
+    req.db.getAllUsers.rejects(error);
+    await getAllUsers(req, res, next);
+    expect(req.db.getAllUsers.calledOnce).to.be.true;
+    expect(next.calledOnce).to.be.true;
     expect(res.status.notCalled).to.be.true;
     expect(res.json.notCalled).to.be.true;
   });
