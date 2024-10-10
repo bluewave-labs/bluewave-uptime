@@ -2,3 +2,5 @@ node_modules
 .env
 *.log
 *.sh
+.nyc_output
+coverage
