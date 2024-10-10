@@ -1,6 +1,7 @@
 const { successMessages } = require("../utils/messages");
 const SERVICE_NAME = "SettingsController";
 const { updateAppSettingsBodyValidation } = require("../validation/joi");
+const { handleValidationError, handleError } = require("./controllerUtils");
 
 const getAppSettings = async (req, res, next) => {
   try {
@@ -12,9 +13,7 @@ const getAppSettings = async (req, res, next) => {
       data: settings,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "getAppSettings") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getAppSettings"));
   }
 };
 
@@ -22,11 +21,7 @@ const updateAppSettings = async (req, res, next) => {
   try {
     await updateAppSettingsBodyValidation.validateAsync(req.body);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -40,9 +35,7 @@ const updateAppSettings = async (req, res, next) => {
       data: updatedSettings,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "updateAppSettings") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "updateAppSettings"));
   }
 };
 
