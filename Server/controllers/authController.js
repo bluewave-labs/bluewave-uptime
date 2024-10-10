@@ -141,7 +141,7 @@ const loginUser = async (req, res, next) => {
     delete userWithoutPassword.avatarImage;
 
     // Happy path, return token
-    const appSettings = req.settingsService.getSettings();
+    const appSettings = await req.settingsService.getSettings();
     const token = issueToken(userWithoutPassword, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
