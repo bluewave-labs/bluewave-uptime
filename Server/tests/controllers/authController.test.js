@@ -2,6 +2,7 @@ const {
   registerUser,
   loginUser,
   editUser,
+  checkSuperadminExists,
 } = require("../../controllers/authController");
 const jwt = require("jsonwebtoken");
 
@@ -213,5 +214,46 @@ describe("Auth Controller - editUser", async () => {
 
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(next.firstCall.args[0].status).to.equal(422);
+  });
+});
+
+describe("Auth Controller - checkSuperadminExists", async () => {
+  beforeEach(() => {
+    req = {
+      db: {
+        checkSuperadmin: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  it("should return true if a superadmin exists", async () => {
+    req.db.checkSuperadmin.resolves(true);
+    await checkSuperadminExists(req, res, next);
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(
+      res.json.calledWith({
+        success: true,
+        msg: successMessages.AUTH_SUPERADMIN_EXISTS,
+        data: true,
+      })
+    ).to.be.true;
+  });
+
+  it("should return false if a superadmin does not exist", async () => {
+    req.db.checkSuperadmin.resolves(false);
+    await checkSuperadminExists(req, res, next);
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(
+      res.json.calledWith({
+        success: true,
+        msg: successMessages.AUTH_SUPERADMIN_EXISTS,
+        data: false,
+      })
+    ).to.be.true;
   });
 });
