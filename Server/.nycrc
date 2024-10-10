@@ -1,0 +1,8 @@
+{
+  "all": true,
+  "include": ["**/*.js"],
+  "exclude": ["**/*.test.js"],
+  "reporter": ["html", "text", "lcov"],
+  "sourceMap": false,
+  "instrument": true
+}

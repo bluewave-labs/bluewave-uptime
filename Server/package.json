@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "nyc mocha",
     "dev": "nodemon index.js"
   },
   "keywords": [],
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "nodemon": "3.1.0",
+    "nyc": "17.1.0",
     "sinon": "19.0.2"
   }
 }
