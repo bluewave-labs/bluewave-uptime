@@ -5,6 +5,7 @@ const {
   checkSuperadminExists,
   requestRecovery,
   validateRecovery,
+  resetPassword,
 } = require("../../controllers/authController");
 const jwt = require("jsonwebtoken");
 
@@ -72,6 +73,7 @@ describe("Auth Controller - registerUser", () => {
         })
       )
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
   it("should reject a user with an invalid password", async () => {
     req.body = {
@@ -146,6 +148,7 @@ describe("Auth Controller - loginUser", () => {
         },
       })
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
   it("should reject a user with an incorrect password", async () => {
     req.body = {
@@ -204,6 +207,7 @@ describe("Auth Controller - editUser", async () => {
         data: { email: "test@example.com" },
       })
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
 
   it("should reject an edit request if password format is incorrect", async () => {
@@ -245,6 +249,7 @@ describe("Auth Controller - checkSuperadminExists", async () => {
         data: true,
       })
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
 
   it("should return false if a superadmin does not exist", async () => {
@@ -258,6 +263,7 @@ describe("Auth Controller - checkSuperadminExists", async () => {
         data: false,
       })
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
 });
 
@@ -318,6 +324,7 @@ describe("Auth Controller - requestRecovery", async () => {
         data: msgId,
       })
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
 });
 
@@ -355,5 +362,64 @@ describe("Auth Controller - validateRecovery", async () => {
         msg: successMessages.AUTH_VERIFY_RECOVERY_TOKEN,
       })
     ).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+});
+
+describe("Auth Controller - resetPassword", async () => {
+  beforeEach(() => {
+    req = {
+      body: {
+        recoveryToken: "recovery-token",
+        password: "Password1!",
+      },
+      db: {
+        resetPassword: sinon.stub(),
+      },
+      settingsService: {
+        getSettings: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    newPasswordValidation = {
+      validateAsync: sinon.stub(),
+    };
+    handleValidationError = sinon.stub();
+    handleError = sinon.stub();
+    issueToken = sinon.stub();
+  });
+  it("should call next with a validation error if the password is invalid", async () => {
+    req.body = { password: "bad_password" };
+    await resetPassword(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reset password successfully", async () => {
+    const user = { _doc: {} };
+    const appSettings = { jwtSecret: "my_secret" };
+    const token = "token";
+
+    newPasswordValidation.validateAsync.resolves();
+    req.db.resetPassword.resolves(user);
+    req.settingsService.getSettings.resolves(appSettings);
+    issueToken.returns(token);
+
+    await resetPassword(req, res, next);
+
+    expect(req.db.resetPassword.calledOnceWith(req, res)).to.be.true;
+    expect(req.settingsService.getSettings.calledOnce).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.AUTH_RESET_PASSWORD,
+        data: { user: sinon.match.object, token: sinon.match.string },
+      })
+    ).to.be.true;
+    expect(next.notCalled).to.be.true;
   });
 });
