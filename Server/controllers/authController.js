@@ -392,6 +392,7 @@ const deleteUser = async (req, res, next) => {
     const result = await req.db.getMonitorsByTeamId({
       params: { teamId: user.teamId },
     });
+
     if (user.role.includes("superadmin")) {
       //2.  Remove all jobs, delete checks and alerts
       result?.monitors.length > 0 &&
@@ -413,7 +414,6 @@ const deleteUser = async (req, res, next) => {
     }
     // 6. Delete the user by id
     await req.db.deleteUser(user._id);
-
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_DELETE_USER,

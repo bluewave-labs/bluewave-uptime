@@ -6,12 +6,12 @@ const {
   requestRecovery,
   validateRecovery,
   resetPassword,
+  deleteUser,
 } = require("../../controllers/authController");
 const jwt = require("jsonwebtoken");
-
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
-const { before } = require("node:test");
+
 describe("Auth Controller - registerUser", () => {
   // Set up test
   beforeEach(() => {
@@ -421,5 +421,142 @@ describe("Auth Controller - resetPassword", async () => {
       })
     ).to.be.true;
     expect(next.notCalled).to.be.true;
+  });
+});
+
+describe("Auth Controller - deleteUser", async () => {
+  beforeEach(() => {
+    req = {
+      headers: {
+        authorization: "Bearer token",
+      },
+      db: {
+        getUserByEmail: sinon.stub(),
+        getMonitorsByTeamId: sinon.stub(),
+        deleteJob: sinon.stub(),
+        deleteChecks: sinon.stub(),
+        deletePageSpeedChecksByMonitorId: sinon.stub(),
+        deleteNotificationsByMonitorId: sinon.stub(),
+        deleteTeam: sinon.stub(),
+        deleteAllOtherUsers: sinon.stub(),
+        deleteMonitorsByUserId: sinon.stub(),
+        deleteUser: sinon.stub(),
+      },
+      jobQueue: {
+        deleteJob: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+
+    sinon.stub(jwt, "decode");
+
+    handleError = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should return 404 if user is not found", async () => {
+    jwt.decode.returns({ email: "test@example.com" });
+    req.db.getUserByEmail.resolves(null);
+
+    await deleteUser(req, res, next);
+
+    expect(req.db.getUserByEmail.calledOnceWith("test@example.com")).to.be.true;
+    expect(next.calledOnce).to.be.true;
+    expect(next.firstCall.args[0].message).to.equal(
+      errorMessages.DB_USER_NOT_FOUND
+    );
+    expect(res.status.notCalled).to.be.true;
+    expect(res.json.notCalled).to.be.true;
+  });
+
+  it("should delete user and associated data if user is superadmin", async () => {
+    const user = {
+      _id: "user_id",
+      email: "test@example.com",
+      role: ["superadmin"],
+      teamId: "team_id",
+    };
+    const monitors = [{ _id: "monitor_id" }];
+
+    jwt.decode.returns({ email: "test@example.com" });
+    req.db.getUserByEmail.resolves(user);
+    req.db.getMonitorsByTeamId.resolves({ monitors });
+
+    await deleteUser(req, res, next);
+
+    expect(req.db.getUserByEmail.calledOnceWith("test@example.com")).to.be.true;
+    expect(
+      req.db.getMonitorsByTeamId.calledOnceWith({
+        params: { teamId: "team_id" },
+      })
+    ).to.be.true;
+    expect(req.jobQueue.deleteJob.calledOnceWith(monitors[0])).to.be.true;
+    expect(req.db.deleteChecks.calledOnceWith("monitor_id")).to.be.true;
+    expect(req.db.deletePageSpeedChecksByMonitorId.calledOnceWith("monitor_id"))
+      .to.be.true;
+    expect(req.db.deleteNotificationsByMonitorId.calledOnceWith("monitor_id"))
+      .to.be.true;
+    expect(req.db.deleteTeam.calledOnceWith("team_id")).to.be.true;
+    expect(req.db.deleteAllOtherUsers.calledOnce).to.be.true;
+    expect(req.db.deleteMonitorsByUserId.calledOnceWith("user_id")).to.be.true;
+    expect(req.db.deleteUser.calledOnceWith("user_id")).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.AUTH_DELETE_USER,
+      })
+    ).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+
+  it("should delete user if user is not superadmin", async () => {
+    const user = {
+      _id: "user_id",
+      email: "test@example.com",
+      role: ["user"],
+      teamId: "team_id",
+    };
+
+    jwt.decode.returns({ email: "test@example.com" });
+    req.db.getUserByEmail.resolves(user);
+
+    await deleteUser(req, res, next);
+
+    expect(req.db.getUserByEmail.calledOnceWith("test@example.com")).to.be.true;
+    expect(
+      req.db.getMonitorsByTeamId.calledOnceWith({
+        params: { teamId: "team_id" },
+      })
+    ).to.be.true;
+    expect(req.db.deleteUser.calledOnceWith("user_id")).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.AUTH_DELETE_USER,
+      })
+    ).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+
+  it("should handle errors", async () => {
+    const error = new Error("Something went wrong");
+    const SERVICE_NAME = "AuthController";
+
+    jwt.decode.returns({ email: "test@example.com" });
+    req.db.getUserByEmail.rejects(error);
+
+    await deleteUser(req, res, next);
+    expect(next.calledOnce).to.be.true;
+    expect(next.firstCall.args[0].message).to.equal("Something went wrong");
+    expect(res.status.notCalled).to.be.true;
+    expect(res.json.notCalled).to.be.true;
   });
 });
