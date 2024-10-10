@@ -1,7 +1,12 @@
-const { registerUser, loginUser } = require("../../controllers/authController");
+const {
+  registerUser,
+  loginUser,
+  editUser,
+} = require("../../controllers/authController");
+const jwt = require("jsonwebtoken");
+
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
-
 describe("Auth Controller - registerUser", () => {
   // Set up test
   beforeEach(() => {
@@ -150,5 +155,63 @@ describe("Auth Controller - loginUser", () => {
     expect(next.firstCall.args[0].message).to.equal(
       errorMessages.AUTH_INCORRECT_PASSWORD
     );
+  });
+});
+
+describe("Auth Controller - editUser", async () => {
+  beforeEach(() => {
+    req = {
+      params: { userId: "123" },
+      body: { password: "Password1!", newPassword: "Password2!" },
+      headers: { authorization: "Bearer token" },
+      user: { _id: "123" },
+      settingsService: {
+        getSettings: sinon.stub().returns({ jwtSecret: "my_secret" }),
+      },
+      db: {
+        getUserByEmail: sinon.stub(),
+        updateUser: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  it("should edit a user if it receives a proper request", async () => {
+    sinon.stub(jwt, "verify").returns({ email: "test@example.com" });
+    const user = {
+      comparePassword: sinon.stub().resolves(true),
+    };
+    req.db.getUserByEmail.resolves(user);
+    req.db.updateUser.resolves({ email: "test@example.com" });
+
+    await editUser(req, res, next);
+
+    expect(req.db.getUserByEmail.calledOnce).to.be.true;
+    expect(req.db.updateUser.calledOnce).to.be.true;
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(
+      res.json.calledWith({
+        success: true,
+        msg: successMessages.AUTH_UPDATE_USER,
+        data: { email: "test@example.com" },
+      })
+    ).to.be.true;
+  });
+
+  it("should reject an edit request if password format is incorrect", async () => {
+    req.body = { password: "bad_password", newPassword: "bad_password" };
+    const user = {
+      comparePassword: sinon.stub().resolves(true),
+    };
+    req.db.getUserByEmail.resolves(user);
+
+    await editUser(req, res, next);
+
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
   });
 });
