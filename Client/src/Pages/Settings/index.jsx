@@ -279,6 +279,7 @@ const Settings = ({ isAdmin }) => {
               nBtnLbl="Cancel" 
               nBtnOnClick={() => setIsOpen({delMntrs:false, delSts: false})}
               theme={theme} 
+              isLoading={isLoading || authIsLoading || checksIsLoading}
               >
             </Dialog>
           </ConfigBox>
