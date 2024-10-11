@@ -187,8 +187,7 @@ const Settings = ({ isAdmin }) => {
           <Box>
             <Typography component="h1">Appearance</Typography>
             <Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(2) }}>
-              <Typography component="span">Theme</Typography>- The
-              timezone of the dashboard you publicly display.
+              Switch between light and dark mode.
             </Typography>
           </Box>
           <Stack gap={theme.spacing(20)}>
