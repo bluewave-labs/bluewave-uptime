@@ -2,6 +2,8 @@ const {
   createCheck,
   getChecks,
   getTeamChecks,
+  deleteChecks,
+  deleteChecksByTeamId,
 } = require("../../controllers/checkController");
 const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
@@ -172,5 +174,56 @@ describe("Check Controller - getTeamChecks", () => {
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(res.status.notCalled).to.be.true;
     expect(res.json.notCalled).to.be.true;
+  });
+});
+
+describe("Check Controller - deleteChecks", () => {
+  beforeEach(() => {
+    req = {
+      params: {},
+      db: {
+        deleteChecks: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject with an error if param validation fails", async () => {
+    await deleteChecks(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should call next with error if data retrieval fails", async () => {
+    req.params = { monitorId: "1" };
+    req.db.deleteChecks.rejects(new Error("Deletion Error"));
+    await deleteChecks(req, res, next);
+    expect(req.db.deleteChecks.calledOnceWith(req.params.monitorId)).to.be.true;
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(res.status.notCalled).to.be.true;
+    expect(res.json.notCalled).to.be.true;
+  });
+
+  it("should delete checks successfully", async () => {
+    req.params = { monitorId: "123" };
+    req.db.deleteChecks.resolves(1);
+    await deleteChecks(req, res, next);
+    expect(req.db.deleteChecks.calledOnceWith("123")).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.CHECK_DELETE,
+        data: { deletedCount: 1 },
+      })
+    ).to.be.true;
   });
 });
