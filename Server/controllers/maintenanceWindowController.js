@@ -84,7 +84,7 @@ const getMaintenanceWindowsByTeamId = async (req, res, next) => {
       req.query
     );
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_GET_BY_TEAM,
       data: maintenanceWindows,
