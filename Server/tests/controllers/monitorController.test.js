@@ -266,3 +266,58 @@ describe("Monitor Controller - getMonitorById", () => {
     ).to.be.true;
   });
 });
+
+describe("Monitor Controller - getMonitorsAndSummaryByTeamId", () => {
+  beforeEach(() => {
+    req = {
+      params: {
+        teamId: "123",
+      },
+      query: {},
+      body: {},
+      db: {
+        getMonitorsAndSummaryByTeamId: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject with an error if param validation fails", async () => {
+    req.params = {};
+    await getMonitorsAndSummaryByTeamId(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if query validation fails", async () => {
+    req.query = { invalid: 1 };
+    await getMonitorsAndSummaryByTeamId(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if DB operations fail", async () => {
+    req.db.getMonitorsAndSummaryByTeamId.throws(new Error("DB error"));
+    await getMonitorsAndSummaryByTeamId(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should return success message and data if all operations succeed", async () => {
+    const data = { monitors: "data", summary: "data" };
+    req.db.getMonitorsAndSummaryByTeamId.returns(data);
+    await getMonitorsAndSummaryByTeamId(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_GET_BY_USER_ID(req.params.teamId),
+        data: data,
+      })
+    ).to.be.true;
+  });
+});
