@@ -20,7 +20,6 @@ const createCheck = async (req, res, next) => {
     await createCheckParamValidation.validateAsync(req.params);
     await createCheckBodyValidation.validateAsync(req.body);
   } catch (error) {
-    console.log(error);
     next(handleValidationError(error, SERVICE_NAME));
     return;
   }

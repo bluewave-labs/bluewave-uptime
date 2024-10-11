@@ -1,4 +1,4 @@
-const { createCheck } = require("../../controllers/checkController");
+const { createCheck, getChecks } = require("../../controllers/checkController");
 const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
@@ -59,5 +59,60 @@ describe("Check Controller - createCheck", () => {
       })
     ).to.be.true;
     expect(next.notCalled).to.be.true;
+  });
+});
+
+describe("Check Controller - getChecks", () => {
+  beforeEach(() => {
+    req = {
+      params: {},
+      query: {},
+      db: {
+        getChecks: sinon.stub(),
+        getChecksCount: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject with a validation error if params are invalid", async () => {
+    await getChecks(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should return a success message if checks are found", async () => {
+    req.params = {
+      monitorId: "monitorId",
+    };
+    req.db.getChecks.resolves([{ id: "123" }]);
+    req.db.getChecksCount.resolves(1);
+    await getChecks(req, res, next);
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(
+      res.json.calledWith({
+        success: true,
+        msg: successMessages.CHECK_GET,
+        data: { checksCount: 1, checks: [{ id: "123" }] },
+      })
+    ).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+
+  it("should handle errors", async () => {
+    req.db.getChecks.rejects(new Error("error"));
+    await getChecks(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    req.db.getChecks.resolves([]);
+    req.db.getChecksCount.rejects(new Error("error"));
+    await getChecks(req, res, next);
   });
 });
