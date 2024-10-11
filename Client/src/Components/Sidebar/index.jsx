@@ -632,7 +632,7 @@ function Sidebar() {
             </MenuItem>
           )}
           {collapsed && <Divider />}
-          <MenuItem
+          {/* <MenuItem
             onClick={() => {
               dispatch(setMode("light"));
               closePopup();
@@ -647,7 +647,7 @@ function Sidebar() {
             }}
           >
             Dark
-          </MenuItem>
+          </MenuItem> */}
           <Divider />
           <MenuItem
             onClick={logout}
