@@ -92,3 +92,7 @@ aside .MuiListSubheader-root {
     visibility: visible;
   }
 }
+
+.MuiTabPanel-root.css-8i83hh-MuiTabPanel-root .MuiStack-root.field.field-text.css-qm2p9n-MuiStack-root, .MuiTabPanel-root.css-2aha5r-MuiTabPanel-root .MuiStack-root.field.field-text.css-78xnin-MuiStack-root {
+  display: none;
+}
