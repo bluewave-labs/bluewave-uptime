@@ -43,7 +43,25 @@ describe("Check Controller - createCheck", () => {
     };
     await createCheck(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
   });
+
+  it("should call next with error if data retrieval fails", async () => {
+    req.params = {
+      monitorId: "monitorId",
+    };
+    req.body = {
+      monitorId: "monitorId",
+      status: true,
+      responseTime: 100,
+      statusCode: 200,
+      message: "message",
+    };
+    req.db.createCheck.rejects(new Error("error"));
+    await createCheck(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+  });
+
   it("should return a success message if check is created", async () => {
     req.params = {
       monitorId: "monitorId",
@@ -115,12 +133,12 @@ describe("Check Controller - getChecks", () => {
   });
 
   it("should call next with error if data retrieval fails", async () => {
+    req.params = {
+      monitorId: "monitorId",
+    };
     req.db.getChecks.rejects(new Error("error"));
     await getChecks(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
-    req.db.getChecks.resolves([]);
-    req.db.getChecksCount.rejects(new Error("error"));
-    await getChecks(req, res, next);
   });
 });
 
