@@ -85,6 +85,21 @@ describe("maintenanceWindowController - createMaintenanceWindows", () => {
     ).to.be.true;
     stub.restore();
   });
+  it("should return success message if all operations are successful with active set to undefined", async () => {
+    req.body.active = undefined;
+    stub = sinon.stub(jwt, "verify").callsFake(() => {
+      return { teamId: "123" };
+    });
+    await createMaintenanceWindows(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(201);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MAINTENANCE_WINDOW_CREATE,
+      })
+    ).to.be.true;
+    stub.restore();
+  });
 });
 
 describe("maintenanceWindowController - getMaintenanceWindowById", () => {
