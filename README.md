@@ -33,14 +33,14 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 ## Features
 
-- [x] Completely open source, deployable on your servers
-- [x] Website monitoring
-- [x] Port monitoring
-- [x] Ping monitoring
-- [x] Incidents at a glance
-- [x] Page speed monitoring
-- [x] E-mail notifications
-- [ ] Scheduled maintenance (in the works)
+- Completely open source, deployable on your servers
+- Website monitoring
+- Port monitoring
+- Ping monitoring
+- Incidents at a glance
+- Page speed monitoring
+- E-mail notifications
+- Scheduled maintenance
 
 **Roadmap (short term):**
 
