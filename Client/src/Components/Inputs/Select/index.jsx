@@ -34,6 +34,7 @@ import "./index.css";
  *
  * <Select
  *  id="frequency-id"
+ *  name="my-name"
  *  label="Check frequency"
  *  placeholder="Select frequency"
  *  value={value}
@@ -51,6 +52,7 @@ const Select = ({
   items,
   onChange,
   sx,
+  name = "",
 }) => {
   const theme = useTheme();
   const itemStyles = {
@@ -77,6 +79,7 @@ const Select = ({
         value={value}
         onChange={onChange}
         displayEmpty
+        name={name}
         inputProps={{ id: id }}
         IconComponent={KeyboardArrowDownIcon}
         MenuProps={{ disableScrollLock: true }}
@@ -127,6 +130,7 @@ const Select = ({
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
+  name: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
   isHidden: PropTypes.bool,

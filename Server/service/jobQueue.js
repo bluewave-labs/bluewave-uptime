@@ -77,14 +77,21 @@ class JobQueue {
           const monitorId = job.data._id;
           const maintenanceWindows =
             await this.db.getMaintenanceWindowsByMonitorId(monitorId);
-
           // Check for active maintenance window:
           const maintenanceWindowActive = maintenanceWindows.reduce(
             (acc, window) => {
               if (window.active) {
                 const start = new Date(window.start);
                 const end = new Date(window.end);
-                if (start < new Date() && end > new Date()) {
+                const now = new Date();
+                const repeatInterval = window.repeat || 0;
+
+                while ((start < now) & (repeatInterval !== 0)) {
+                  start.setTime(start.getTime() + repeatInterval);
+                  end.setTime(end.getTime() + repeatInterval);
+                }
+
+                if (start < now && end > now) {
                   return true;
                 }
               }
@@ -139,9 +146,7 @@ class JobQueue {
       return { jobs, load };
     } catch (error) {
       error.service === undefined ? (error.service = SERVICE_NAME) : null;
-      error.method === undefined
-        ? (error.method = "getWorkerStats")
-        : null;
+      error.method === undefined ? (error.method = "getWorkerStats") : null;
       throw error;
     }
   }

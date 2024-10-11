@@ -1,10 +1,7 @@
 const jwt = require("jsonwebtoken");
-const logger = require("../utils/logger");
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
 const { errorMessages } = require("../utils/messages");
-const { parse } = require("path");
-const User = require("../db/models/User");
 /**
  * Verifies the JWT token
  * @function
@@ -38,11 +35,14 @@ const verifyJWT = (req, res, next) => {
   const { jwtSecret } = req.settingsService.getSettings();
   jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
     if (err) {
-      return res
-        .status(401)
-        .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
+      const errorMessage =
+        err.name === "TokenExpiredError"
+          ? errorMessages.EXPIRED_AUTH_TOKEN
+          : errorMessages.INVALID_AUTH_TOKEN;
+      return res.status(401).json({ success: false, msg: errorMessage });
     }
-    //Add the user to the request object for use in the route
+
+    // Add the user to the request object for use in the route
     req.user = decoded;
     next();
   });

@@ -1,10 +1,14 @@
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 const FALLBACK_BASE_URL = "http://localhost:5000/api/v1";
+import { clearAuthState } from "../Features/Auth/authSlice";
+import { clearUptimeMonitorState } from "../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { logger } from "./Logger";
 class NetworkService {
-  constructor(store) {
+  constructor(store, dispatch, navigate) {
     this.store = store;
+    this.dispatch = dispatch;
+    this.navigate = navigate;
     let baseURL = BASE_URL;
     this.axiosInstance = axios.create();
     this.setBaseUrl(baseURL);
@@ -22,9 +26,10 @@ class NetworkService {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        logger.error(error);
         if (error.response && error.response.status === 401) {
-          logger.error("Invalid token received");
+          dispatch(clearAuthState());
+          dispatch(clearUptimeMonitorState());
+          navigate("/login");
         }
         return Promise.reject(error);
       }
@@ -125,7 +130,7 @@ class NetworkService {
    * @param {Object} config - The configuration object.
    * @param {string} config.authToken - The authorization token to be used in the request header.
    * @param {string} config.teamId - The ID of the team whose monitors are to be retrieved.
-   * @param {number} [config.limit] - The maximum number of monitors to retrieve.
+   * @param {number} [config.limit] - The maximum number of checks to retrieve.  0 for all, -1 for none
    * @param {Array<string>} [config.types] - The types of monitors to retrieve.
    * @param {string} [config.status] - The status of the monitors to retrieve.
    * @param {string} [config.checkOrder] - The order in which to sort the retrieved monitors.
@@ -685,6 +690,155 @@ class NetworkService {
       },
     });
   }
+
+  /**
+   * ************************************
+   * Creates a maintenance window
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {Object} config.maintenanceWindow - The maintenance window object to be sent in the request body.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async createMaintenanceWindow(config) {
+    return this.axiosInstance.post(
+      `/maintenance-window`,
+      config.maintenanceWindow,
+      {
+        headers: {
+          Authorization: `Bearer ${config.authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
+   * Edits a maintenance window
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {Object} config.maintenanceWindowId - The maintenance window id.
+   * @param {Object} config.maintenanceWindow - The maintenance window object to be sent in the request body.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async editMaintenanceWindow(config) {
+    return this.axiosInstance.put(
+      `/maintenance-window/${config.maintenanceWindowId}`,
+      config.maintenanceWindow,
+      {
+        headers: {
+          Authorization: `Bearer ${config.authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
+   * Get maintenance window by id
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} [config.maintenanceWindowId] - The id of the maintenance window to delete.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async getMaintenanceWindowById(config) {
+    const { authToken, maintenanceWindowId } = config;
+    return this.axiosInstance.get(
+      `/maintenance-window/${maintenanceWindowId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
+  /**
+   * ************************************
+   * Get maintenance windows by teamId
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} [config.active] - The status of the maintenance windows to retrieve.
+   * @param {number} [config.page] - The page number for pagination.
+   * @param {number} [config.rowsPerPage] - The number of rows per page for pagination.
+   * @param {string} [config.field] - The field to sort by.
+   * @param {string} [config.order] - The order in which to sort the field.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async getMaintenanceWindowsByTeamId(config) {
+    const { authToken, active, page, rowsPerPage, field, order } = config;
+    const params = new URLSearchParams();
+
+    if (active) params.append("status", active);
+    if (page) params.append("page", page);
+    if (rowsPerPage) params.append("rowsPerPage", rowsPerPage);
+    if (field) params.append("field", field);
+    if (order) params.append("order", order);
+
+    return this.axiosInstance.get(
+      `/maintenance-window/team?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+  /**
+   * ************************************
+   * Delete maintenance window by id
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} [config.maintenanceWindowId] - The id of the maintenance window to delete.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   *
+   */
+
+  async deleteMaintenanceWindow(config) {
+    const { authToken, maintenanceWindowId } = config;
+    return this.axiosInstance.delete(
+      `/maintenance-window/${maintenanceWindowId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }
 
 export default NetworkService;
+
+let networkService;
+
+export const setNetworkService = (service) => {
+  networkService = service;
+};
+export { networkService };

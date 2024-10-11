@@ -1,5 +1,12 @@
 import PropTypes from "prop-types";
-import { Box, ListItem, Autocomplete, TextField } from "@mui/material";
+import {
+  Box,
+  ListItem,
+  Autocomplete,
+  TextField,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@emotion/react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 
@@ -15,21 +22,52 @@ import SearchIcon from "../../../assets/icons/search.svg?react";
  * @param {Object} props.sx - Additional styles to apply to the component
  * @returns {JSX.Element} The rendered Search component
  */
+
+const SearchAdornment = () => {
+  const theme = useTheme();
+  return (
+    <Box
+      mr={theme.spacing(4)}
+      height={16}
+      sx={{
+        "& svg": {
+          width: 16,
+          height: 16,
+          "& path": {
+            stroke: theme.palette.text.tertiary,
+            strokeWidth: 1.2,
+          },
+        },
+      }}
+    >
+      <SearchIcon />
+    </Box>
+  );
+};
+
 const Search = ({
   id,
   options,
   filteredBy,
+  secondaryLabel,
   value,
+  inputValue,
   handleInputChange,
   handleChange,
   sx,
+  multiple = false,
+  isAdorned = true,
+  error,
+  disabled,
 }) => {
   const theme = useTheme();
 
   return (
     <Autocomplete
+      multiple={multiple}
       id={id}
-      inputValue={value}
+      value={value}
+      inputValue={inputValue}
       onInputChange={(_, newValue) => {
         handleInputChange(newValue);
       }}
@@ -38,45 +76,45 @@ const Search = ({
       }}
       fullWidth
       freeSolo
+      disabled={disabled}
       disableClearable
       options={options}
       getOptionLabel={(option) => option[filteredBy]}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Type to search"
-          InputProps={{
-            ...params.InputProps,
-            startAdornment: (
-              <Box
-                mr={theme.spacing(4)}
-                height={16}
-                sx={{
-                  "& svg": {
-                    width: 16,
-                    height: 16,
-                    "& path": {
-                      stroke: theme.palette.text.tertiary,
-                      strokeWidth: 1.2,
-                    },
-                  },
-                }}
-              >
-                <SearchIcon />
-              </Box>
-            ),
-          }}
-          sx={{
-            "& fieldset": {
-              borderColor: theme.palette.border.light,
-              borderRadius: theme.shape.borderRadius,
-            },
-            "& .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus)) fieldset":
-              {
+        <Stack>
+          <TextField
+            {...params}
+            error={Boolean(error)}
+            placeholder="Type to search"
+            InputProps={{
+              ...params.InputProps,
+              ...(isAdorned && { startAdornment: <SearchAdornment /> }),
+            }}
+            sx={{
+              "& fieldset": {
                 borderColor: theme.palette.border.light,
+                borderRadius: theme.shape.borderRadius,
               },
-          }}
-        />
+              "& .MuiOutlinedInput-root:hover:not(:has(input:focus)):not(:has(textarea:focus)) fieldset":
+                {
+                  borderColor: theme.palette.border.light,
+                },
+            }}
+          />
+          {error && (
+            <Typography
+              component="span"
+              className="input-error"
+              color={theme.palette.error.text}
+              mt={theme.spacing(2)}
+              sx={{
+                opacity: 0.8,
+              }}
+            >
+              {error}
+            </Typography>
+          )}
+        </Stack>
       )}
       filterOptions={(options, { inputValue }) => {
         const filtered = options.filter((option) =>
@@ -103,7 +141,8 @@ const Search = ({
                 : {}
             }
           >
-            {option[filteredBy]}
+            {option[filteredBy] +
+              (secondaryLabel ? ` (${option[secondaryLabel]})` : "")}
           </ListItem>
         );
       }}
@@ -139,12 +178,18 @@ const Search = ({
 
 Search.propTypes = {
   id: PropTypes.string,
+  multiple: PropTypes.bool,
   options: PropTypes.array.isRequired,
   filteredBy: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  secondaryLabel: PropTypes.string,
+  value: PropTypes.array,
+  inputValue: PropTypes.string.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   handleChange: PropTypes.func,
+  isAdorned: PropTypes.bool,
   sx: PropTypes.object,
+  error: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default Search;
