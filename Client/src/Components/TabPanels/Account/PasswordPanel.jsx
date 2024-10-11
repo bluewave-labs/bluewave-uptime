@@ -117,6 +117,14 @@ const PasswordPanel = () => {
             <Typography component="h1">Current password</Typography>
           </Box>
           <Field
+            type="text"
+            id="hidden-username"
+            name="username"
+            autoComplete="username"
+            hidden={true}
+            value=""
+          />
+          <Field
             type="password"
             id="edit-current-password"
             placeholder="Enter your current password"
