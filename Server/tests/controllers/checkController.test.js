@@ -1,4 +1,8 @@
-const { createCheck, getChecks } = require("../../controllers/checkController");
+const {
+  createCheck,
+  getChecks,
+  getTeamChecks,
+} = require("../../controllers/checkController");
 const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
@@ -107,12 +111,66 @@ describe("Check Controller - getChecks", () => {
     expect(next.notCalled).to.be.true;
   });
 
-  it("should handle errors", async () => {
+  it("should call next with error if data retrieval fails", async () => {
     req.db.getChecks.rejects(new Error("error"));
     await getChecks(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
     req.db.getChecks.resolves([]);
     req.db.getChecksCount.rejects(new Error("error"));
     await getChecks(req, res, next);
+  });
+});
+
+describe("Check Controller - getTeamChecks", () => {
+  beforeEach(() => {
+    req = {
+      params: {},
+      query: {},
+      db: {
+        getTeamChecks: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject with a validation error if params are invalid", async () => {
+    await getTeamChecks(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should return 200 and check data on successful validation and data retrieval", async () => {
+    req.params = { teamId: "1" };
+    const checkData = [{ id: 1, name: "Check 1" }];
+    req.db.getTeamChecks.resolves(checkData);
+
+    await getTeamChecks(req, res, next);
+    expect(req.db.getTeamChecks.calledOnceWith(req)).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.CHECK_GET,
+        data: checkData,
+      })
+    ).to.be.true;
+  });
+
+  it("should call next with error if data retrieval fails", async () => {
+    req.params = { teamId: "1" };
+    req.db.getTeamChecks.rejects(new Error("Retrieval Error"));
+    await getTeamChecks(req, res, next);
+    expect(req.db.getTeamChecks.calledOnceWith(req)).to.be.true;
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(res.status.notCalled).to.be.true;
+    expect(res.json.notCalled).to.be.true;
   });
 });
