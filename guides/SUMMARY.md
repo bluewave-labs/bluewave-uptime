@@ -9,6 +9,7 @@
 * [Creating a new monitor](users-guide/creating-a-new-monitor.md)
 * [Pagespeed monitoring](users-guide/pagespeed-monitoring.md)
 * [Incidents page](users-guide/incidents-page.md)
+* [Maintenance mode](users-guide/maintenance-mode.md)
 * [Server settings](users-guide/server-settings.md)
 * [User settings](users-guide/user-settings.md)
 
