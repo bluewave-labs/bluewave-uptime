@@ -203,3 +203,66 @@ describe("maintenanceWindowController - getMaintenanceWindowsByTeamId", () => {
     stub.restore();
   });
 });
+
+describe("maintenanceWindowController - getMaintenanceWindowsByMonitorId", () => {
+  beforeEach(() => {
+    req = {
+      body: {},
+      params: {
+        monitorId: "123",
+      },
+      query: {},
+      headers: {
+        authorization: "Bearer token",
+      },
+      settingsService: {
+        getSettings: sinon.stub().returns({ jwtSecret: "jwtSecret" }),
+      },
+      db: {
+        getMaintenanceWindowsByMonitorId: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject if param validation fails", async () => {
+    req.params = {};
+    await getMaintenanceWindowsByMonitorId(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if DB operations fail", async () => {
+    req.db.getMaintenanceWindowsByMonitorId.throws(new Error("DB error"));
+    await getMaintenanceWindowsByMonitorId(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+
+  it("should return success message with data if all operations are successful", async () => {
+    const data = [{ monitorId: "123" }];
+    req.db.getMaintenanceWindowsByMonitorId.returns(data);
+    await getMaintenanceWindowsByMonitorId(req, res, next);
+    expect(
+      req.db.getMaintenanceWindowsByMonitorId.calledOnceWith(
+        req.params.monitorId
+      )
+    );
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MAINTENANCE_WINDOW_GET_BY_MONITOR,
+        data: data,
+      })
+    ).to.be.true;
+  });
+});

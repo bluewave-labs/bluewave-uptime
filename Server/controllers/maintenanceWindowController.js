@@ -109,7 +109,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
       req.params.monitorId
     );
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_GET_BY_USER,
       data: maintenanceWindows,
