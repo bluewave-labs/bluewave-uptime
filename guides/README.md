@@ -34,25 +34,25 @@ If you have a question, head over to GitHub's [discussions](https://github.com/b
 
 ## Features
 
-* [x] Completely open source, deployable on your servers
-* [x] Website monitoring
-* [x] Port monitoring
-* [x] Ping monitoring
-* [x] Incidents at a glance
-* [x] Page speed monitoring
-* [x] E-mail notifications
-* [x] Scheduled maintenance (in the works)
+* Completely open source, deployable on your servers
+* Website monitoring
+* Port monitoring
+* Ping monitoring
+* Incidents at a glance
+* Page speed monitoring
+* E-mail notifications
+* Scheduled maintenance&#x20;
 
 ## **Roadmap (short term)**
 
-* [ ] Memory, disk and CPU monitoring
-* [ ] 3rd party integrations
-* [ ] DNS monitoring
-* [ ] SSL monitoring
+* Memory, disk and CPU monitoring
+* 3rd party integrations
+* DNS monitoring
+* SSL monitoring
 
 ## **Roadmap (long term)**
 
-* [ ] Status pages
+* Status pages
 
 ## Tech stack
 
