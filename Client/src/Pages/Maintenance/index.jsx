@@ -93,7 +93,7 @@ const Maintenance = ({ isAdmin }) => {
           />
         </Stack>
       )}
-      {isAdmin && maintenanceWindows.length === 0 && (
+      {maintenanceWindows.length === 0 && (
         <Fallback
           title="maintenance window"
           checks={[
@@ -102,7 +102,7 @@ const Maintenance = ({ isAdmin }) => {
             "Stop sending alerts in maintenance windows",
           ]}
           link="/maintenance/create"
-          isAdmin={isAdmin}
+          isAdmin={true}
         />
       )}
     </Box>
