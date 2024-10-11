@@ -130,9 +130,10 @@ const getMonitorById = async (req, res, next) => {
     if (!monitor) {
       const error = new Error(errorMessages.MONITOR_GET_BY_ID);
       error.status = 404;
+      throw error;
     }
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_GET_BY_ID,
       data: monitor,

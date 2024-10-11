@@ -16,7 +16,6 @@ const jwt = require("jsonwebtoken");
 const proxyquire = require("proxyquire");
 const sinon = require("sinon");
 const { errorMessages, successMessages } = require("../../utils/messages");
-const { valid } = require("joi");
 const sslCheckerStub = sinon.stub();
 const monitorController = proxyquire("../../controllers/monitorController", {
   "ssl-checker": sslCheckerStub,
@@ -193,7 +192,7 @@ describe("Monitor Controller - getMonitorCertificate", () => {
 
   it("should return success message and N/A if certificate doesn't have validTo", async () => {
     req.db.getMonitorById.returns({ url: "https://example.com" });
-    sslCheckerStub.returns({ validFrom: 1 });
+    sslCheckerStub.returns({ valid: 1 });
     await monitorController.getMonitorCertificate(req, res, next);
     expect(res.status.firstCall.args[0]).to.equal(200);
     expect(
@@ -203,6 +202,66 @@ describe("Monitor Controller - getMonitorCertificate", () => {
         data: {
           certificateDate: "N/A",
         },
+      })
+    ).to.be.true;
+  });
+});
+
+describe("Monitor Controller - getMonitorById", () => {
+  beforeEach(() => {
+    req = {
+      params: {
+        monitorId: "123",
+      },
+      query: {},
+      body: {},
+      db: {
+        getMonitorById: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should reject with an error if param validation fails", async () => {
+    req.params = {};
+    await getMonitorById(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if query param validation fails", async () => {
+    req.query = { invalid: 1 };
+    await getMonitorById(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if DB operations fail", async () => {
+    req.db.getMonitorById.throws(new Error("DB error"));
+    await getMonitorById(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should return 404 if a monitor is not found", async () => {
+    req.db.getMonitorById.returns(null);
+    await getMonitorById(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(404);
+  });
+  it("should return success message and data if all operations succeed", async () => {
+    const data = { monitor: "data" };
+    req.db.getMonitorById.returns(data);
+    await getMonitorById(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_GET_BY_ID,
+        data: data,
       })
     ).to.be.true;
   });
