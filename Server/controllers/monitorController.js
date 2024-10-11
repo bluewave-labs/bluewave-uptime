@@ -19,6 +19,7 @@ const { errorMessages, successMessages } = require("../utils/messages");
 const jwt = require("jsonwebtoken");
 const { getTokenFromHeaders } = require("../utils/utils");
 const logger = require("../utils/logger");
+const { handleError, handleValidationError } = require("./controllerUtils");
 
 /**
  * Returns all monitors
@@ -38,9 +39,7 @@ const getAllMonitors = async (req, res, next) => {
       data: monitors,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "getAllMonitors") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getAllMonitors"));
   }
 };
 
@@ -58,10 +57,7 @@ const getMonitorStatsById = async (req, res, next) => {
     await getMonitorStatsByIdParamValidation.validateAsync(req.params);
     await getMonitorStatsByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
-    error.status = 422;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -73,9 +69,7 @@ const getMonitorStatsById = async (req, res, next) => {
       data: monitorStats,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "getMonitorStatsById") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMonitorStatsById"));
   }
 };
 
@@ -83,10 +77,7 @@ const getMonitorCertificate = async (req, res, next) => {
   try {
     await getCertificateParamValidation.validateAsync(req.params);
   } catch (error) {
-    error.status = 422;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
   }
 
   try {
@@ -110,11 +101,7 @@ const getMonitorCertificate = async (req, res, next) => {
       });
     }
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getMonitorCertificate")
-      : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMonitorCertificate"));
   }
 };
 
@@ -134,10 +121,7 @@ const getMonitorById = async (req, res, next) => {
     await getMonitorByIdParamValidation.validateAsync(req.params);
     await getMonitorByIdQueryValidation.validateAsync(req.query);
   } catch (error) {
-    error.status = 422;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -154,9 +138,7 @@ const getMonitorById = async (req, res, next) => {
       data: monitor,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "getMonitorById") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMonitorById"));
   }
 };
 
@@ -179,14 +161,8 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
       req.params
     );
     await getMonitorsAndSummaryByTeamIdQueryValidation.validateAsync(req.query);
-    //validation
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.method === undefined? error.method = "getMonitorsAndSummaryByTeamId": null;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -203,11 +179,7 @@ const getMonitorsAndSummaryByTeamId = async (req, res, next) => {
       data: monitorsSummary,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getMonitorsAndSummaryByTeamId")
-      : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMonitorsAndSummaryByTeamId"));
   }
 };
 
@@ -228,11 +200,7 @@ const getMonitorsByTeamId = async (req, res, next) => {
     await getMonitorsByTeamIdValidation.validateAsync(req.params);
     await getMonitorsByTeamIdQueryValidation.validateAsync(req.query);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -245,8 +213,7 @@ const getMonitorsByTeamId = async (req, res, next) => {
       data: monitors,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "getMonitorsByTeamId") : null;
+    next(handleError(error, SERVICE_NAME, "getMonitorsByTeamId"));
     next(error);
   }
 };
@@ -266,12 +233,7 @@ const createMonitor = async (req, res, next) => {
   try {
     await createMonitorBodyValidation.validateAsync(req.body);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -281,10 +243,10 @@ const createMonitor = async (req, res, next) => {
 
     if (notifications && notifications.length !== 0) {
       monitor.notifications = await Promise.all(
-          notifications.map(async (notification) => {
-            notification.monitorId = monitor._id;
-            await req.db.createNotification(notification);
-          })
+        notifications.map(async (notification) => {
+          notification.monitorId = monitor._id;
+          await req.db.createNotification(notification);
+        })
       );
       await monitor.save();
     }
@@ -296,9 +258,7 @@ const createMonitor = async (req, res, next) => {
       data: monitor,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "createMonitor") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "createMonitor"));
   }
 };
 
@@ -317,11 +277,7 @@ const deleteMonitor = async (req, res, next) => {
   try {
     await getMonitorByIdParamValidation.validateAsync(req.params);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -347,9 +303,7 @@ const deleteMonitor = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: successMessages.MONITOR_DELETE });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "deleteMonitor") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "deleteMonitor"));
   }
 };
 
@@ -382,9 +336,7 @@ const deleteAllMonitors = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: `Deleted ${deletedCount} monitors` });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "deleteAllMonitors") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "deleteAllMonitors"));
   }
 };
 
@@ -406,11 +358,7 @@ const editMonitor = async (req, res, next) => {
     await getMonitorByIdParamValidation.validateAsync(req.params);
     await editMonitorBodyValidation.validateAsync(req.body);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -444,9 +392,7 @@ const editMonitor = async (req, res, next) => {
       data: editedMonitor,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "editMonitor") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "editMonitor"));
   }
 };
 
@@ -465,11 +411,7 @@ const pauseMonitor = async (req, res, next) => {
   try {
     await pauseMonitorParamValidation.validateAsync(req.params);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
   }
 
   try {
@@ -490,9 +432,7 @@ const pauseMonitor = async (req, res, next) => {
       data: monitor,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "pauseMonitor") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "pauseMonitor"));
   }
 };
 
@@ -511,21 +451,19 @@ const addDemoMonitors = async (req, res, next) => {
   try {
     const token = getTokenFromHeaders(req.headers);
     const { jwtSecret } = req.settingsService.getSettings();
-
     const { _id, teamId } = jwt.verify(token, jwtSecret);
     const demoMonitors = await req.db.addDemoMonitors(_id, teamId);
-    await demoMonitors.forEach(async (monitor) => {
-      await req.jobQueue.addJob(monitor._id, monitor);
-    });
+    await Promise.all(
+      demoMonitors.map((monitor) => req.jobQueue.addJob(monitor._id, monitor))
+    );
+
     return res.status(200).json({
       success: true,
       message: successMessages.MONITOR_DEMO_ADDED,
       data: demoMonitors.length,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined ? (error.method = "addDemoMonitors") : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "addDemoMonitors"));
   }
 };
 

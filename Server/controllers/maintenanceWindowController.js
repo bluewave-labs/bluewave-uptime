@@ -10,17 +10,14 @@ const {
 const jwt = require("jsonwebtoken");
 const { getTokenFromHeaders } = require("../utils/utils");
 const { successMessages } = require("../utils/messages");
+const { handleValidationError, handleError } = require("./controllerUtils");
 const SERVICE_NAME = "maintenanceWindowController";
 
 const createMaintenanceWindows = async (req, res, next) => {
   try {
     await createMaintenanceWindowBodyValidation.validateAsync(req.body);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
   try {
@@ -45,11 +42,7 @@ const createMaintenanceWindows = async (req, res, next) => {
       msg: successMessages.MAINTENANCE_WINDOW_CREATE,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "createMaintenanceWindow")
-      : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "createMaintenanceWindow"));
   }
 };
 
@@ -57,11 +50,7 @@ const getMaintenanceWindowById = async (req, res, next) => {
   try {
     await getMaintenanceWindowByIdParamValidation.validateAsync(req.params);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
   try {
@@ -74,11 +63,7 @@ const getMaintenanceWindowById = async (req, res, next) => {
       data: maintenanceWindow,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getMaintenanceWindowById")
-      : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMaintenanceWindowById"));
   }
 };
 
@@ -86,11 +71,7 @@ const getMaintenanceWindowsByTeamId = async (req, res, next) => {
   try {
     await getMaintenanceWindowsByTeamIdQueryValidation.validateAsync(req.query);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -109,11 +90,7 @@ const getMaintenanceWindowsByTeamId = async (req, res, next) => {
       data: maintenanceWindows,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getMaintenanceWindowsByUserId")
-      : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMaintenanceWindowsByUserId"));
   }
 };
 
@@ -123,11 +100,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
       req.params
     );
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
 
@@ -142,11 +115,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
       data: maintenanceWindows,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "getMaintenanceWindowsByMonitorId")
-      : null;
-    next(error);
+    next(handleError(error, SERVICE_NAME, "getMaintenanceWindowsByMonitorId"));
   }
 };
 
@@ -154,11 +123,7 @@ const deleteMaintenanceWindow = async (req, res, next) => {
   try {
     await deleteMaintenanceWindowByIdParamValidation.validateAsync(req.params);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
   try {
@@ -168,10 +133,7 @@ const deleteMaintenanceWindow = async (req, res, next) => {
       msg: successMessages.MAINTENANCE_WINDOW_DELETE,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "deleteMaintenanceWindow")
-      : null;
+    next(handleError(error, SERVICE_NAME, "deleteMaintenanceWindow"));
   }
 };
 
@@ -180,11 +142,7 @@ const editMaintenanceWindow = async (req, res, next) => {
     await editMaintenanceWindowByIdParamValidation.validateAsync(req.params);
     await editMaintenanceByIdWindowBodyValidation.validateAsync(req.body);
   } catch (error) {
-    error.status = 422;
-    error.service = SERVICE_NAME;
-    error.message =
-      error.details?.[0]?.message || error.message || "Validation Error";
-    next(error);
+    next(handleValidationError(error, SERVICE_NAME));
     return;
   }
   try {
@@ -198,10 +156,7 @@ const editMaintenanceWindow = async (req, res, next) => {
       data: editedMaintenanceWindow,
     });
   } catch (error) {
-    error.service === undefined ? (error.service = SERVICE_NAME) : null;
-    error.method === undefined
-      ? (error.method = "editMaintenanceWindow")
-      : null;
+    next(handleError(error, SERVICE_NAME, "editMaintenanceWindow"));
   }
 };
 
