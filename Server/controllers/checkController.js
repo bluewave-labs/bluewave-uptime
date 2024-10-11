@@ -31,7 +31,6 @@ const createCheck = async (req, res, next) => {
       .status(200)
       .json({ success: true, msg: successMessages.CHECK_CREATE, data: check });
   } catch (error) {
-    console.log(error);
     next(handleError(error, SERVICE_NAME, "createCheck"));
   }
 };
