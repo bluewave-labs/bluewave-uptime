@@ -86,7 +86,7 @@ const getMonitorCertificate = async (req, res, next) => {
     const monitorUrl = new URL(monitor.url);
     const certificate = await sslChecker(monitorUrl.hostname);
     if (certificate && certificate.validTo) {
-      return res.json({
+      return res.status(200).json({
         success: true,
         msg: successMessages.MONITOR_CERTIFICATE,
         data: {
@@ -94,7 +94,7 @@ const getMonitorCertificate = async (req, res, next) => {
         },
       });
     } else {
-      return res.json({
+      return res.status(200).json({
         success: true,
         msg: successMessages.MONITOR_CERTIFICATE,
         data: { certificateDate: "N/A" },
