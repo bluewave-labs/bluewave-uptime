@@ -22,6 +22,7 @@ import { ConfigBox } from "./styled";
 import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
 import { useNavigate } from "react-router";
+import Dialog from "../../Components/Dialog"
 
 const SECONDS_PER_DAY = 86400;
 
@@ -37,6 +38,7 @@ const Settings = ({ isAdmin }) => {
     ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
   const [errors, setErrors] = useState({});
+  const [isOpen, setIsOpen] = useState({delMntrs: false, delSts: false});  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -118,6 +120,8 @@ const Settings = ({ isAdmin }) => {
     } catch (error) {
       logger.error(error);
       createToast({ body: "Failed to clear stats" });
+    } finally {
+      setIsOpen({delMntrs: false, delSts:false})
     }
   };
 
@@ -146,6 +150,8 @@ const Settings = ({ isAdmin }) => {
     } catch (error) {
       logger.error(error);
       createToast({ Body: "Failed to delete all monitors" });
+    } finally {
+      setIsOpen({ delMntrs: false, delSts: false })
     }
   };
 
@@ -202,17 +208,30 @@ const Settings = ({ isAdmin }) => {
               />
               <Box>
                 <Typography>Clear all stats. This is irreversible.</Typography>
-                <LoadingButton
+                <Button
                   variant="contained"
-                  color="error"
-                  loading={isLoading || authIsLoading || checksIsLoading}
-                  onClick={handleClearStats}
+                  color="error"                  
+                  onClick={()=>setIsOpen({delSts: true, delMntrs: false})}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Clear all stats
-                </LoadingButton>
+                </Button>
               </Box>
             </Stack>
+            <Dialog
+              arialabelledby="model-clear-stats"
+              ariadescribedby="clear-stats-confirmation"
+              open={isOpen.delSts}
+              onClose={() => setIsOpen({ delSts: false, delMntrs: false })}
+              bdy1="Do you want to clear all stats?"
+              yBtnLbl="Yes, clear all stats"
+              yBtnOnClick={handleClearStats}
+              nBtnLbl="Cancel"
+              nBtnOnClick={() => setIsOpen({ delSts: false, delMntrs: false })}
+              theme={theme}
+              isLoading={isLoading || authIsLoading || checksIsLoading}
+            >
+            </Dialog>
           </ConfigBox>
         )}
         {isAdmin && (
@@ -242,13 +261,26 @@ const Settings = ({ isAdmin }) => {
                   variant="contained"
                   color="error"
                   loading={isLoading || authIsLoading || checksIsLoading}
-                  onClick={handleDeleteAllMonitors}
+                  onClick={()=>setIsOpen({delMntrs: true, delSts: false})}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Remove all monitors
                 </LoadingButton>
               </Box>
             </Stack>
+            <Dialog
+              arialabelledby="model-delete-all-monitors" 
+              ariadescribedby="delete-all-monitors-confirmation"
+              open={isOpen.delMntrs} 
+              onClose={() => setIsOpen({delMntrs:false, delSts: false})} 
+              bdy1="Do you want to remove all monitors?"               
+              yBtnLbl="Yes, clear all monitors" 
+              yBtnOnClick={handleDeleteAllMonitors} 
+              nBtnLbl="Cancel" 
+              nBtnOnClick={() => setIsOpen({delMntrs:false, delSts: false})}
+              theme={theme} 
+              >
+            </Dialog>
           </ConfigBox>
         )}
         {isAdmin && (
