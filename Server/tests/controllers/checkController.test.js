@@ -4,6 +4,7 @@ const {
   getTeamChecks,
   deleteChecks,
   deleteChecksByTeamId,
+  updateChecksTTL,
 } = require("../../controllers/checkController");
 const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
@@ -216,13 +217,135 @@ describe("Check Controller - deleteChecks", () => {
     req.params = { monitorId: "123" };
     req.db.deleteChecks.resolves(1);
     await deleteChecks(req, res, next);
-    expect(req.db.deleteChecks.calledOnceWith("123")).to.be.true;
+    expect(req.db.deleteChecks.calledOnceWith(req.params.monitorId)).to.be.true;
     expect(res.status.calledOnceWith(200)).to.be.true;
     expect(
       res.json.calledOnceWith({
         success: true,
         msg: successMessages.CHECK_DELETE,
         data: { deletedCount: 1 },
+      })
+    ).to.be.true;
+  });
+});
+
+describe("Check Controller - deleteChecksByTeamId", () => {
+  beforeEach(() => {
+    req = {
+      params: {},
+      db: {
+        deleteChecksByTeamId: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject with an error if param validation fails", async () => {
+    await deleteChecksByTeamId(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should call next with error if data retrieval fails", async () => {
+    req.params = { teamId: "1" };
+    req.db.deleteChecksByTeamId.rejects(new Error("Deletion Error"));
+    await deleteChecksByTeamId(req, res, next);
+    expect(req.db.deleteChecksByTeamId.calledOnceWith(req.params.teamId)).to.be
+      .true;
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(res.status.notCalled).to.be.true;
+    expect(res.json.notCalled).to.be.true;
+  });
+
+  it("should delete checks successfully", async () => {
+    req.params = { teamId: "123" };
+    req.db.deleteChecksByTeamId.resolves(1);
+    await deleteChecksByTeamId(req, res, next);
+    expect(req.db.deleteChecksByTeamId.calledOnceWith(req.params.teamId)).to.be
+      .true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.CHECK_DELETE,
+        data: { deletedCount: 1 },
+      })
+    ).to.be.true;
+  });
+});
+
+describe("Check Controller - updateCheckTTL", () => {
+  beforeEach(() => {
+    stub = sinon.stub(jwt, "verify").callsFake(() => {
+      return { teamId: "123" };
+    });
+
+    req = {
+      body: {},
+      headers: { authorization: "Bearer token" },
+      settingsService: {
+        getSettings: sinon.stub().returns({ jwtSecret: "my_secret" }),
+      },
+      db: {
+        updateChecksTTL: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+    stub.restore();
+  });
+
+  it("should reject if body validation fails", async () => {
+    await updateChecksTTL(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should throw a JwtError if verification fails", async () => {
+    stub.restore();
+    req.body = {
+      ttl: 1,
+    };
+    await updateChecksTTL(req, res, next);
+    expect(next.firstCall.args[0]).to.be.instanceOf(jwt.JsonWebTokenError);
+  });
+
+  it("should call next with error if data retrieval fails", async () => {
+    req.body = {
+      ttl: 1,
+    };
+    req.db.updateChecksTTL.rejects(new Error("Update Error"));
+    await updateChecksTTL(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+  });
+
+  it("should update TTL successfully", async () => {
+    req.body = {
+      ttl: 1,
+    };
+    req.db.updateChecksTTL.resolves();
+    await updateChecksTTL(req, res, next);
+    expect(req.db.updateChecksTTL.calledOnceWith("123", 1 * 86400)).to.be.true;
+    expect(res.status.calledOnceWith(200)).to.be.true;
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.CHECK_UPDATE_TTL,
       })
     ).to.be.true;
   });
