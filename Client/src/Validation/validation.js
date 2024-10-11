@@ -131,7 +131,7 @@ const maintenanceWindowValidation = joi.object({
   repeat: joi.string(),
   startDate: joi.custom(dayjsValidator, "Day.js date validation"),
   startTime: joi.custom(dayjsValidator, "Day.js date validation"),
-  duration: joi.number(),
+  duration: joi.number().integer().min(0),
   durationUnit: joi.string(),
   name: joi.string(),
   monitors: joi.array().min(1),
