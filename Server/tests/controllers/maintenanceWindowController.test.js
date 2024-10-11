@@ -266,3 +266,58 @@ describe("maintenanceWindowController - getMaintenanceWindowsByMonitorId", () =>
     ).to.be.true;
   });
 });
+
+describe("maintenanceWindowController - deleteMaintenanceWindow", () => {
+  beforeEach(() => {
+    req = {
+      body: {},
+      params: {
+        id: "123",
+      },
+      query: {},
+      headers: {
+        authorization: "Bearer token",
+      },
+      settingsService: {
+        getSettings: sinon.stub().returns({ jwtSecret: "jwtSecret" }),
+      },
+      db: {
+        deleteMaintenanceWindowById: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject if param validation fails", async () => {
+    req.params = {};
+    await deleteMaintenanceWindow(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if DB operations fail", async () => {
+    req.db.deleteMaintenanceWindowById.throws(new Error("DB error"));
+    await deleteMaintenanceWindow(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+
+  it("should return success message if all operations are successful", async () => {
+    await deleteMaintenanceWindow(req, res, next);
+    expect(req.db.deleteMaintenanceWindowById.calledOnceWith(req.params.id));
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MAINTENANCE_WINDOW_DELETE,
+      })
+    ).to.be.true;
+  });
+});

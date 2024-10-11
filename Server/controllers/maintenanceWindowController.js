@@ -128,7 +128,7 @@ const deleteMaintenanceWindow = async (req, res, next) => {
   }
   try {
     await req.db.deleteMaintenanceWindowById(req.params.id);
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_DELETE,
     });
