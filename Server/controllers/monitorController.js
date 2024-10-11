@@ -33,7 +33,7 @@ const { handleError, handleValidationError } = require("./controllerUtils");
 const getAllMonitors = async (req, res, next) => {
   try {
     const monitors = await req.db.getAllMonitors();
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_GET_ALL,
       data: monitors,
@@ -63,7 +63,7 @@ const getMonitorStatsById = async (req, res, next) => {
 
   try {
     const monitorStats = await req.db.getMonitorStatsById(req);
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_STATS_BY_ID,
       data: monitorStats,
