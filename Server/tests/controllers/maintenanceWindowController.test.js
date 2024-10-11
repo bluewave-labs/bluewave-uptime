@@ -85,3 +85,43 @@ describe("maintenanceWindowController - createMaintenanceWindows", () => {
     ).to.be.true;
   });
 });
+
+describe("maintenanceWindowController - getMaintenanceWindowById", () => {
+  beforeEach(() => {
+    req = {
+      body: {},
+      params: {
+        id: "123",
+      },
+      headers: {
+        authorization: "Bearer token",
+      },
+      settingsService: {
+        getSettings: sinon.stub().returns({ jwtSecret: "jwtSecret" }),
+      },
+      db: {
+        getMaintenanceWindowById: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  it("should reject if param validation fails", async () => {
+    req.params = {};
+    await getMaintenanceWindowById(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject if DB operations fail", async () => {
+    req.db.getMaintenanceWindowById.throws(new Error("DB error"));
+    await getMaintenanceWindowById(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should return success message with data if all operations are successful", async () => {});
+});
