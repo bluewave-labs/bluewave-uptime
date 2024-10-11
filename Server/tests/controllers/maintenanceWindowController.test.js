@@ -321,3 +321,75 @@ describe("maintenanceWindowController - deleteMaintenanceWindow", () => {
     ).to.be.true;
   });
 });
+
+describe("maintenanceWindowController - editMaintenanceWindow", () => {
+  beforeEach(() => {
+    req = {
+      body: {
+        active: true,
+        name: "test",
+      },
+      params: {
+        id: "123",
+      },
+      query: {},
+      headers: {
+        authorization: "Bearer token",
+      },
+      settingsService: {
+        getSettings: sinon.stub().returns({ jwtSecret: "jwtSecret" }),
+      },
+      db: {
+        editMaintenanceWindowById: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject if param validation fails", async () => {
+    req.params = {};
+    await editMaintenanceWindow(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject if body validation fails", async () => {
+    req.body = { invalid: 1 };
+    await editMaintenanceWindow(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if DB operations fail", async () => {
+    req.db.editMaintenanceWindowById.throws(new Error("DB error"));
+    await editMaintenanceWindow(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+
+  it("should return success message with data if all operations are successful", async () => {
+    const data = { id: "123" };
+    req.db.editMaintenanceWindowById.returns(data);
+
+    await editMaintenanceWindow(req, res, next);
+    expect(
+      req.db.editMaintenanceWindowById.calledOnceWith(req.params.id, req.body)
+    );
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MAINTENANCE_WINDOW_EDIT,
+        data: data,
+      })
+    ).to.be.true;
+  });
+});
