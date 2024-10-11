@@ -20,7 +20,7 @@ layout:
 
 # Welcome to Uptime Manager
 
-BlueWave Uptime Manager is an open-source server monitoring application used to track the operational status and performance of servers and websites.&#x20;
+BlueWave Uptime Manager is an open-source server monitoring application used to track the operational status and performance of servers and websites.
 
 It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
@@ -41,7 +41,7 @@ If you have a question, head over to GitHub's [discussions](https://github.com/b
 * [x] Incidents at a glance
 * [x] Page speed monitoring
 * [x] E-mail notifications
-* [ ] Scheduled maintenance (in the works)
+* [x] Scheduled maintenance (in the works)
 
 ## **Roadmap (short term)**
 
@@ -60,4 +60,3 @@ If you have a question, head over to GitHub's [discussions](https://github.com/b
 * [MUI (React framework)](https://mui.com/)
 * [Node.js](https://nodejs.org/en)
 * [MongoDB](https://mongodb.com)
-
