@@ -469,14 +469,6 @@ const ProfilePanel = () => {
             gap={theme.spacing(5)}
             justifyContent="flex-end"
           >
-            <Button
-              variant="outlined"
-              color="secondary"
-              disabled
-              sx={{ mr: "auto" }}
-            >
-              Edit
-            </Button>
             <Button variant="text" color="info" onClick={removePicture}>
               Remove
             </Button>
