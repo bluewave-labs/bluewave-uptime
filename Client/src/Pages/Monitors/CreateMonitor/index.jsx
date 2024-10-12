@@ -124,46 +124,58 @@ const CreateMonitor = () => {
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
-    //obj to submit
-    let form = {
-      url:
-        //preprending protocol for url
-        monitor.type === "http"
-          ? `http${https ? "s" : ""}://` + monitor.url
-          : monitor.url,
-      name: monitor.name === "" ? monitor.url : monitor.name,
-      type: monitor.type,
-      interval: monitor.interval * MS_PER_MINUTE,
-    };
 
-    const { error } = monitorValidation.validate(form, {
-      abortEarly: false,
-    });
+    const formattedUrl = monitor.type === "http"
+    ? `http${https ? "s" : ""}://` + monitor.url
+    : monitor.url;
 
-    if (error) {
-      const newErrors = {};
-      error.details.forEach((err) => {
-        newErrors[err.path[0]] = err.message;
-      });
-      setErrors(newErrors);
-      createToast({ body: "Error validation data." });
-    } else {
-      form = {
-        ...form,
-        description: form.name,
-        teamId: user.teamId,
-        userId: user._id,
-        notifications: monitor.notifications,
-      };
-      const action = await dispatch(
-        createUptimeMonitor({ authToken, monitor: form })
-      );
-      if (action.meta.requestStatus === "fulfilled") {
-        createToast({ body: "Monitor created successfully!" });
-        navigate("/monitors");
-      } else {
-        createToast({ body: "Failed to create monitor." });
+    try {
+      // Check if the URL resolves by sending a request
+      const response = await fetch(formattedUrl, { method: 'GET', mode: 'no-cors' });
+      if (!response) {
+        throw new Error();
       }
+
+      //obj to submit
+      let form = {
+        url:formattedUrl,
+        name: monitor.name === "" ? monitor.url : monitor.name,
+        type: monitor.type,
+        interval: monitor.interval * MS_PER_MINUTE,
+      };
+
+      const { error } = monitorValidation.validate(form, {
+        abortEarly: false,
+      });
+
+      if (error) {
+        const newErrors = {};
+        error.details.forEach((err) => {
+          newErrors[err.path[0]] = err.message;
+        });
+        setErrors(newErrors);
+        createToast({ body: "Error validation data." });
+      } else {
+        form = {
+          ...form,
+          description: form.name,
+          teamId: user.teamId,
+          userId: user._id,
+          notifications: monitor.notifications,
+        };
+        const action = await dispatch(
+          createUptimeMonitor({ authToken, monitor: form })
+        );
+        if (action.meta.requestStatus === "fulfilled") {
+          createToast({ body: "Monitor created successfully!" });
+          navigate("/monitors");
+        } else {
+          createToast({ body: "Failed to create monitor." });
+        }
+      }
+    } catch (error) {
+      createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again."  });
+      setErrors({ url: "The entered URL is not reachable." });
     }
   };
 
@@ -375,7 +387,7 @@ const CreateMonitor = () => {
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           >
-            Create monitor
+            {monitor.type === "http" ? "Create Monitor" : "Check Endpoint"}
           </Button>
         </Stack>
       </Stack>
