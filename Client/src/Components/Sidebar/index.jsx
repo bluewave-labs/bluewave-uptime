@@ -41,6 +41,8 @@ import ArrowUp from "../../assets/icons/up-arrow.svg?react";
 import ArrowRight from "../../assets/icons/right-arrow.svg?react";
 import ArrowLeft from "../../assets/icons/left-arrow.svg?react";
 import DotsVertical from "../../assets/icons/dots-vertical.svg?react";
+import ChangeLog from "../../assets/icons/changeLog.svg?react";
+import Docs from "../../assets/icons/docs.svg?react";
 
 import "./index.css";
 
@@ -71,6 +73,8 @@ const menu = [
 const other = [
   { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },
+  { name: "Docs", path: "docs", icon: <Docs /> },
+  { name: "Changelog", path: "changelog", icon: <ChangeLog /> },
 ];
 
 /**
@@ -498,14 +502,33 @@ function Sidebar() {
               className={
                 location.pathname.includes(item.path) ? "selected-path" : ""
               }
-              onClick={() =>
-                item.path === "support"
-                  ? window.open(
+              onClick={
+                () => {
+                  if (item.path === "support") {
+                    window.open(
                       "https://github.com/bluewave-labs/bluewave-uptime/issues",
                       "_blank",
                       "noreferrer"
-                    )
-                  : navigate(`/${item.path}`)
+                    );
+                  }
+                  else if(item.path === "docs"){
+                    window.open(
+                            "https://bluewavelabs.gitbook.io/uptime-manager",
+                            "_blank",
+                            "noreferrer"
+                          )
+                  }
+                  else if(item.path === "changelog"){
+                    window.open(
+                            "https://github.com/bluewave-labs/bluewave-uptime/releases",
+                            "_blank",
+                            "noreferrer"
+                          )
+                  }
+                  else{
+                    navigate(`/${item.path}`)
+                  }
+                }
               }
               sx={{
                 gap: theme.spacing(4),
