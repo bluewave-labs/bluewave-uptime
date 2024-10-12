@@ -8,17 +8,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { handleError, handleValidationError } = require("./controllerUtils");
 const SERVICE_NAME = "inviteController";
-
-const getTokenFromHeaders = (headers) => {
-  const authorizationHeader = headers.authorization;
-  if (!authorizationHeader) throw new Error("No auth headers");
-
-  const parts = authorizationHeader.split(" ");
-  if (parts.length !== 2 || parts[0] !== "Bearer")
-    throw new Error("Invalid auth headers");
-
-  return parts[1];
-};
+const { getTokenFromHeaders } = require("../utils/utils");
 
 /**
  * Issues an invitation to a new user. Only admins can invite new users. An invitation token is created and sent via email.
@@ -93,6 +83,6 @@ const inviteVerifyController = async (req, res, next) => {
 };
 
 module.exports = {
-  inviteController: issueInvitation,
+  issueInvitation,
   inviteVerifyController,
 };

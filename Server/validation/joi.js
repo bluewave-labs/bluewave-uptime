@@ -10,8 +10,8 @@ const { start } = require("repl");
 const roleValidatior = (role) => (value, helpers) => {
   const hasRole = role.some((role) => value.includes(role));
   if (!hasRole) {
-    throw new Joi.ValidationError(
-      `You do not have the required authorization. Required roles: ${roles.join(", ")}`
+    throw new joi.ValidationError(
+      `You do not have the required authorization. Required roles: ${role.join(", ")}`
     );
   }
   return value;
