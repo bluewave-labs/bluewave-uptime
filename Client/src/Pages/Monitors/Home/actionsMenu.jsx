@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { createToast } from "../../../Utils/toastUtils";
+import { logger } from "../../../Utils/Logger";
 import {
   Button,
   IconButton,
@@ -47,24 +48,20 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
     }
   };
 
-  const handlePause = async (event) => {
+  const handlePause = async () => {
     try {
       const action = await dispatch(
         pauseUptimeMonitor({ authToken, monitorId: monitor._id })
       );
       if (pauseUptimeMonitor.fulfilled.match(action)) {
         updateCallback();
-        //window.location.reload();
-        if (action.payload?.isActive === false){
-          createToast({ body: "Monitor paused successfully." });
-        }else{
-          createToast({ body: "Monitor resumed successfully." });
-        }
+        const state = action?.payload?.data.isActive === false ? "paused" : "resumed";
+        createToast({ body: `Monitor ${state} successfully.` });
       } else {
-        throw new Error(action.error.message);
+        throw new Error(action?.error?.message ?? "Failed to pause monitor.");
       }
     } catch (error) {
-      console.error("Error pausing monitor:", monitor._id, error);
+      logger.error("Error pausing monitor:", monitor._id, error);
       createToast({ body: "Failed to pause monitor." });
     }
   };
@@ -187,11 +184,8 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
               handlePause(e);
             }}
           >
-          {monitor?.isActive ? (
-            "Pause"
-          ) : (
-            "Resume"
-          )}
+          {monitor?.isActive  === true ? "Pause" : "Resume"}
+
         </MenuItem>
         )}
         {isAdmin && (
