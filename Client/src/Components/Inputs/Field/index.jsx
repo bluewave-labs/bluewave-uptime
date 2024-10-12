@@ -74,6 +74,7 @@ const Field = forwardRef(
           "&:has(.input-error) .MuiOutlinedInput-root fieldset": {
             borderColor: theme.palette.error.text,
           },
+          display: hidden ? "none" : "",
         }}
       >
         {label && (
@@ -142,7 +143,7 @@ const Field = forwardRef(
                   },
                 }
               : {
-                  display: hidden ? "none" : "",
+                  
                 }
           }
           InputProps={{
