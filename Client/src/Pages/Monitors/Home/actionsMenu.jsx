@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import {
   deleteUptimeMonitor,
+  pauseUptimeMonitor,
   getUptimeMonitorsByTeamId,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Settings from "../../../assets/icons/settings-bold.svg?react";
@@ -26,6 +27,8 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const authState = useSelector((state) => state.auth);
+  const authToken = authState.authToken;
+  
 
   const handleRemove = async (event) => {
     event.preventDefault();
@@ -41,6 +44,28 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
       createToast({ body: "Monitor deleted successfully." });
     } else {
       createToast({ body: "Failed to delete monitor." });
+    }
+  };
+
+  const handlePause = async (event) => {
+    try {
+      const action = await dispatch(
+        pauseUptimeMonitor({ authToken, monitorId: monitor._id })
+      );
+      if (pauseUptimeMonitor.fulfilled.match(action)) {
+        updateCallback();
+        //window.location.reload();
+        if (monitor?.isActive){
+          createToast({ body: "Monitor paused successfully." });
+        }else{
+          createToast({ body: "Monitor resume successfully." });
+        }
+      } else {
+        throw new Error(action.error.message);
+      }
+    } catch (error) {
+      console.error("Error pausing monitor:", monitor._id, error);
+      createToast({ body: "Failed to pause monitor." });
     }
   };
 
@@ -159,12 +184,26 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
           <MenuItem
             onClick={(e) => {
               e.stopPropagation();
+              handlePause(e);
+            }}
+          >
+          {monitor?.isActive ? (
+            "Pause"
+          ) : (
+            "Resume"
+          )}
+        </MenuItem>
+        )}
+        {isAdmin && (
+          <MenuItem
+            onClick={(e) => {
+              e.stopPropagation();
               openRemove(e);
             }}
           >
             Remove
           </MenuItem>
-        )}
+        )}     
       </Menu>
       <Modal
         aria-labelledby="modal-delete-monitor"
