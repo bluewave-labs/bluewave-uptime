@@ -55,10 +55,10 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
       if (pauseUptimeMonitor.fulfilled.match(action)) {
         updateCallback();
         //window.location.reload();
-        if (monitor?.isActive){
+        if (action.payload?.isActive === false){
           createToast({ body: "Monitor paused successfully." });
         }else{
-          createToast({ body: "Monitor resume successfully." });
+          createToast({ body: "Monitor resumed successfully." });
         }
       } else {
         throw new Error(action.error.message);
@@ -277,6 +277,7 @@ ActionsMenu.propTypes = {
     _id: PropTypes.string,
     url: PropTypes.string,
     type: PropTypes.string,
+    isActive: PropTypes.bool,
   }).isRequired,
   isAdmin: PropTypes.bool,
   updateCallback: PropTypes.func,
