@@ -172,6 +172,10 @@ const TeamPanel = () => {
   };
 
   const handleInviteMember = async () => {
+    if (!toInvite.email) {
+      setErrors((prev) => ({ ...prev, email: "Email is required." }));
+      return;
+    }
     setIsSendingInvite(true);
     if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
       setToInvite((prev) => ({ ...prev, role: ["user"] }));
