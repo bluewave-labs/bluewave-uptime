@@ -41,6 +41,8 @@ import ArrowUp from "../../assets/icons/up-arrow.svg?react";
 import ArrowRight from "../../assets/icons/right-arrow.svg?react";
 import ArrowLeft from "../../assets/icons/left-arrow.svg?react";
 import DotsVertical from "../../assets/icons/dots-vertical.svg?react";
+import ChangeLog from "../../assets/icons/changeLog.svg?react";
+import Docs from "../../assets/icons/docs.svg?react";
 
 import "./index.css";
 
@@ -69,9 +71,17 @@ const menu = [
 ];
 
 const other = [
-  { name: "Support", path: "support", icon: <Support /> },
   { name: "Settings", path: "settings", icon: <Settings /> },
+  { name: "Support", path: "support", icon: <Support /> },
+  { name: "Docs", path: "docs", icon: <Docs /> },
+  { name: "Changelog", path: "changelog", icon: <ChangeLog /> },
 ];
+
+const URL_MAP = {
+  support: "https://github.com/bluewave-labs/bluewave-uptime/issues",
+  docs: "https://bluewavelabs.gitbook.io/uptime-manager",
+  changelog: "https://github.com/bluewave-labs/bluewave-uptime/releases",
+};
 
 /**
  * @component
@@ -498,15 +508,14 @@ function Sidebar() {
               className={
                 location.pathname.includes(item.path) ? "selected-path" : ""
               }
-              onClick={() =>
-                item.path === "support"
-                  ? window.open(
-                      "https://github.com/bluewave-labs/bluewave-uptime/issues",
-                      "_blank",
-                      "noreferrer"
-                    )
-                  : navigate(`/${item.path}`)
-              }
+              onClick={() => {
+                const url = URL_MAP[item.path];
+                if (url) {
+                  window.open(url, "_blank", "noreferrer");
+                } else {
+                  navigate(`/${item.path}`);
+                }
+              }}
               sx={{
                 gap: theme.spacing(4),
                 borderRadius: theme.shape.borderRadius,
