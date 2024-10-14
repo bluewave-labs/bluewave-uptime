@@ -20,6 +20,8 @@ const sslCheckerStub = sinon.stub();
 const monitorController = proxyquire("../../controllers/monitorController", {
   "ssl-checker": sslCheckerStub,
 });
+const logger = require("../../utils/logger");
+const SERVICE_NAME = "monitorController";
 
 describe("Monitor Controller - getAllMonitors", () => {
   beforeEach(() => {
@@ -400,9 +402,6 @@ describe("Monitor Controller - createMonitor", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    monitor = {
-      save: sinon.stub(),
-    };
   });
   afterEach(() => {
     sinon.restore();
@@ -434,5 +433,123 @@ describe("Monitor Controller - createMonitor", () => {
     await createMonitor(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+});
+
+describe("Monitor Controller - deleteMonitor", () => {
+  beforeEach(() => {
+    req = {
+      params: {
+        monitorId: "123",
+      },
+      query: {},
+      body: {},
+      db: {
+        deleteMonitor: sinon.stub(),
+        deleteChecks: sinon.stub(),
+        deletePageSpeedChecksByMonitorId: sinon.stub(),
+        deleteNotificationsByMonitorId: sinon.stub(),
+      },
+      jobQueue: {
+        deleteJob: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    sinon.stub(logger, "error");
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should reject with an error if param validation fails", async () => {
+    req.params = {};
+    await deleteMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if DB deleteMonitor operation fail", async () => {
+    req.db.deleteMonitor.throws(new Error("DB error"));
+    await deleteMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should log an error if deleteJob throws an error", async () => {
+    const error = new Error("Job error");
+    const monitor = { name: "test_monitor", _id: "123" };
+    req.db.deleteMonitor.returns(monitor);
+    req.jobQueue.deleteJob.rejects(error);
+    await monitorController.deleteMonitor(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.equal(
+      `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`
+    );
+    expect(logger.error.firstCall.args[1]).to.deep.equal({
+      method: "deleteMonitor",
+      service: SERVICE_NAME,
+      error: error.message,
+    });
+  });
+  it("should log an error if deleteChecks throws an error", async () => {
+    const error = new Error("Checks error");
+    const monitor = { name: "test_monitor", _id: "123" };
+    req.db.deleteMonitor.returns(monitor);
+    req.db.deleteChecks.rejects(error);
+    await monitorController.deleteMonitor(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.equal(
+      `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`
+    );
+    expect(logger.error.firstCall.args[1]).to.deep.equal({
+      method: "deleteMonitor",
+      service: SERVICE_NAME,
+      error: error.message,
+    });
+  });
+  it("should log an error if deletePageSpeedChecksByMonitorId throws an error", async () => {
+    const error = new Error("PageSpeed error");
+    const monitor = { name: "test_monitor", _id: "123" };
+    req.db.deleteMonitor.returns(monitor);
+    req.db.deletePageSpeedChecksByMonitorId.rejects(error);
+    await monitorController.deleteMonitor(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.equal(
+      `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`
+    );
+    expect(logger.error.firstCall.args[1]).to.deep.equal({
+      method: "deleteMonitor",
+      service: SERVICE_NAME,
+      error: error.message,
+    });
+  });
+  it("should log an error if deleteNotificationsByMonitorId throws an error", async () => {
+    const error = new Error("Notifications error");
+    const monitor = { name: "test_monitor", _id: "123" };
+    req.db.deleteMonitor.returns(monitor);
+    req.db.deleteNotificationsByMonitorId.rejects(error);
+    await monitorController.deleteMonitor(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.equal(
+      `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`
+    );
+    expect(logger.error.firstCall.args[1]).to.deep.equal({
+      method: "deleteMonitor",
+      service: SERVICE_NAME,
+      error: error.message,
+    });
+  });
+  it("should return success message if all operations succeed", async () => {
+    const monitor = { name: "test_monitor", _id: "123" };
+    req.db.deleteMonitor.returns(monitor);
+    await monitorController.deleteMonitor(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_DELETE,
+      })
+    ).to.be.true;
   });
 });
