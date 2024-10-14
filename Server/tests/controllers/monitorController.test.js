@@ -631,7 +631,7 @@ describe("Monitor Controller - deleteAllMonitors", () => {
   });
   it("should reject with an error if getTokenFromHeaders throws an error", async () => {
     req.headers = {};
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(next.firstCall.args[0].message).to.equal("No auth headers");
     expect(next.firstCall.args[0].status).to.equal(500);
@@ -639,13 +639,13 @@ describe("Monitor Controller - deleteAllMonitors", () => {
   it("should reject with an error if token validation fails", async () => {
     stub.restore();
     req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(next.firstCall.args[0]).to.be.instanceOf(jwt.JsonWebTokenError);
   });
   it("should reject with an error if DB deleteAllMonitors operation fail", async () => {
     req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
     req.db.deleteAllMonitors.throws(new Error("DB error"));
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(next.firstCall.args[0].message).to.equal("DB error");
   });
@@ -655,7 +655,7 @@ describe("Monitor Controller - deleteAllMonitors", () => {
     req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
     const error = new Error("Job error");
     req.jobQueue.deleteJob.rejects(error);
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(logger.error.calledOnce).to.be.true;
     expect(logger.error.firstCall.args[0]).to.deep.equal(
       `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
@@ -667,7 +667,7 @@ describe("Monitor Controller - deleteAllMonitors", () => {
     req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
     const error = new Error("Check error");
     req.db.deleteChecks.rejects(error);
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(logger.error.calledOnce).to.be.true;
     expect(logger.error.firstCall.args[0]).to.deep.equal(
       `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
@@ -679,7 +679,7 @@ describe("Monitor Controller - deleteAllMonitors", () => {
     req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
     const error = new Error("Pagespeed Check error");
     req.db.deletePageSpeedChecksByMonitorId.rejects(error);
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(logger.error.calledOnce).to.be.true;
     expect(logger.error.firstCall.args[0]).to.deep.equal(
       `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
@@ -691,7 +691,7 @@ describe("Monitor Controller - deleteAllMonitors", () => {
     req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
     const error = new Error("Notifications Check error");
     req.db.deleteNotificationsByMonitorId.rejects(error);
-    await monitorController.deleteAllMonitors(req, res, next);
+    await deleteAllMonitors(req, res, next);
     expect(logger.error.calledOnce).to.be.true;
     expect(logger.error.firstCall.args[0]).to.deep.equal(
       `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
