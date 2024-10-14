@@ -1,4 +1,5 @@
 const {
+  issueToken,
   registerUser,
   loginUser,
   editUser,
@@ -12,11 +13,45 @@ const {
 const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
+const logger = require("../../utils/logger");
+
+describe("Auth Controller - issueToken", () => {
+  it("should reject with an error if jwt.sign fails", () => {
+    const error = new Error("jwt.sign error");
+    stub = sinon.stub(jwt, "sign").throws(error);
+    const payload = { id: "123" };
+    const appSettings = { jwtSecret: "my_secret" };
+    expect(() => issueToken(payload, appSettings)).to.throw(error);
+    stub.restore();
+  });
+
+  it("should return a token if jwt.sign is successful and appSettings.jtwTTL is not defined", () => {
+    const payload = { id: "123" };
+    const appSettings = { jwtSecret: "my_secret" };
+    const token = issueToken(payload, appSettings);
+    expect(token).to.be.a("string");
+  });
+
+  it("should return a token if jwt.sign is successful and appSettings.jwtTTL is defined", () => {
+    const payload = { id: "123" };
+    const appSettings = { jwtSecret: "my_secret", jwtTTL: "1s" };
+    const token = issueToken(payload, appSettings);
+    expect(token).to.be.a("string");
+  });
+});
 
 describe("Auth Controller - registerUser", () => {
-  // Set up test
   beforeEach(() => {
     req = {
+      body: {
+        firstName: "firstname",
+        lastName: "lastname",
+        email: "test@test.com",
+        password: "Uptime1!",
+        role: ["admin"],
+        teamId: "123",
+        inviteToken: "invite",
+      },
       db: {
         checkSuperadmin: sinon.stub(),
         getInviteTokenAndDelete: sinon.stub(),
@@ -29,7 +64,7 @@ describe("Auth Controller - registerUser", () => {
         }),
       },
       emailService: {
-        buildAndSendEmail: sinon.stub().returns(Promise.resolve()),
+        buildAndSendEmail: sinon.stub(),
       },
       file: {},
     };
@@ -38,71 +73,96 @@ describe("Auth Controller - registerUser", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
+    sinon.stub(logger, "error");
+  });
+  afterEach(() => {
+    sinon.restore();
   });
 
-  it("should register a valid user", async () => {
-    req.body = {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      password: "Uptime1!",
-      inviteToken: "someToken",
-      role: ["user"],
-      teamId: "123",
-    };
-    req.db.checkSuperadmin.resolves(false);
-    req.db.insertUser.resolves({
-      _id: "123",
-      _doc: {
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-      },
-    });
+  it("should reject with an error if body validation fails", async () => {
+    req.body = {};
+    await registerUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
 
+  it("should reject with an error if checkSuperadmin fails", async () => {
+    req.db.checkSuperadmin.rejects(new Error("checkSuperadmin error"));
+    await registerUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("checkSuperadmin error");
+  });
+
+  it("should reject with an error if getInviteTokenAndDelete fails", async () => {
+    req.db.checkSuperadmin.resolves(true);
+    req.db.getInviteTokenAndDelete.rejects(
+      new Error("getInviteTokenAndDelete error")
+    );
+    await registerUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal(
+      "getInviteTokenAndDelete error"
+    );
+  });
+
+  it("should reject with an error if updateAppSettings fails", async () => {
+    req.db.checkSuperadmin.resolves(false);
+    req.db.updateAppSettings.rejects(new Error("updateAppSettings error"));
+    await registerUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("updateAppSettings error");
+  });
+
+  it("should reject with an error if insertUser fails", async () => {
+    req.db.checkSuperadmin.resolves(false);
+    req.db.updateAppSettings.resolves();
+    req.db.insertUser.rejects(new Error("insertUser error"));
+    await registerUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("insertUser error");
+  });
+
+  it("should reject with an error if settingsService.getSettings fails", async () => {
+    req.db.checkSuperadmin.resolves(false);
+    req.db.updateAppSettings.resolves();
+    req.db.insertUser.resolves({ _id: "123" });
+    req.settingsService.getSettings.rejects(
+      new Error("settingsService.getSettings error")
+    );
+    await registerUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal(
+      "settingsService.getSettings error"
+    );
+  });
+
+  it("should log an error if emailService.buildAndSendEmail fails", async () => {
+    req.db.checkSuperadmin.resolves(false);
+    req.db.updateAppSettings.resolves();
+    req.db.insertUser.returns({ _id: "123" });
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.emailService.buildAndSendEmail.rejects(new Error("emailService error"));
+    await registerUser(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[1].error).to.equal("emailService error");
+  });
+  it("should return a success message and data if all operations are successful", async () => {
+    const user = { _id: "123" };
+    req.db.checkSuperadmin.resolves(false);
+    req.db.updateAppSettings.resolves();
+    req.db.insertUser.returns(user);
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.emailService.buildAndSendEmail.resolves("message-id");
     await registerUser(req, res, next);
     expect(res.status.calledWith(200)).to.be.true;
     expect(
-      res.json.calledWith(
-        sinon.match({
-          success: true,
-          msg: sinon.match.string,
-          data: {
-            user: sinon.match.object,
-            token: sinon.match.string,
-          },
-        })
-      )
+      res.json.calledWith({
+        success: true,
+        msg: successMessages.AUTH_CREATE_USER,
+        data: { user, token: sinon.match.string },
+      })
     ).to.be.true;
     expect(next.notCalled).to.be.true;
-  });
-  it("should reject a user with an invalid password", async () => {
-    req.body = {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      password: "bad_password",
-      inviteToken: "someToken",
-      role: ["user"],
-      teamId: "123",
-    };
-    await registerUser(req, res, next);
-    expect(next.firstCall.args[0]).to.be.an("error");
-    expect(next.firstCall.args[0].status).to.equal(422);
-  });
-  it("should reject a user with an invalid role", async () => {
-    req.body = {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      password: "Uptime1!",
-      inviteToken: "someToken",
-      role: ["superman"],
-      teamId: "123",
-    };
-    await registerUser(req, res, next);
-    expect(next.firstCall.args[0]).to.be.an("error");
-    expect(next.firstCall.args[0].status).to.equal(422);
   });
 });
 
@@ -131,6 +191,20 @@ describe("Auth Controller - loginUser", () => {
       comparePassword: sinon.stub(),
     };
   });
+  it("should reject with an error if validation fails", async () => {
+    req.body = {};
+    await loginUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if getUserByEmail fails", async () => {
+    req.db.getUserByEmail.rejects(new Error("getUserByEmail error"));
+    await loginUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("getUserByEmail error");
+  });
+
   it("should login user successfully", async () => {
     req.db.getUserByEmail.resolves(user);
     user.comparePassword.resolves(true);
@@ -186,10 +260,63 @@ describe("Auth Controller - editUser", async () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
+    stub = sinon.stub(jwt, "verify").returns({ email: "test@example.com" });
+  });
+  afterEach(() => {
+    sinon.restore();
+    stub.restore();
+  });
+
+  it("should reject with an error if param validation fails", async () => {
+    req.params = {};
+    await editUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if body validation fails", async () => {
+    req.body = { invalid: 1 };
+    await editUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if param.userId !== req.user._id", async () => {
+    req.params = { userId: "456" };
+    await editUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(401);
+  });
+
+  it("should reject with an error if !req.body.password and getUserByEmail fails", async () => {
+    req.db.getUserByEmail.rejects(new Error("getUserByEmail error"));
+    await editUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("getUserByEmail error");
+  });
+
+  it("should reject with an error if user.comparePassword fails", async () => {
+    req.db.getUserByEmail.returns({
+      comparePassword: sinon.stub().rejects(new Error("Bad Password Match")),
+    });
+    await editUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Bad Password Match");
+  });
+
+  it("should reject with an error if user.comparePassword returns false", async () => {
+    req.db.getUserByEmail.returns({
+      comparePassword: sinon.stub().returns(false),
+    });
+    await editUser(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(403);
+    expect(next.firstCall.args[0].message).to.equal(
+      errorMessages.AUTH_INCORRECT_PASSWORD
+    );
   });
 
   it("should edit a user if it receives a proper request", async () => {
-    sinon.stub(jwt, "verify").returns({ email: "test@example.com" });
     const user = {
       comparePassword: sinon.stub().resolves(true),
     };
@@ -200,6 +327,24 @@ describe("Auth Controller - editUser", async () => {
 
     expect(req.db.getUserByEmail.calledOnce).to.be.true;
     expect(req.db.updateUser.calledOnce).to.be.true;
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(
+      res.json.calledWith({
+        success: true,
+        msg: successMessages.AUTH_UPDATE_USER,
+        data: { email: "test@example.com" },
+      })
+    ).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+
+  it("should edit a user if it receives a proper request and both password fields are undefined", async () => {
+    req.body.password = undefined;
+    req.body.newPassword = undefined;
+    req.db.getUserByEmail.resolves(user);
+    req.db.updateUser.resolves({ email: "test@example.com" });
+
+    await editUser(req, res, next);
     expect(res.status.calledWith(200)).to.be.true;
     expect(
       res.json.calledWith({
@@ -237,6 +382,13 @@ describe("Auth Controller - checkSuperadminExists", async () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
+  });
+
+  it("should reject with an error if checkSuperadmin fails", async () => {
+    req.db.checkSuperadmin.rejects(new Error("checkSuperadmin error"));
+    await checkSuperadminExists(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("checkSuperadmin error");
   });
 
   it("should return true if a superadmin exists", async () => {
@@ -289,6 +441,30 @@ describe("Auth Controller - requestRecovery", async () => {
     };
     next = sinon.stub();
   });
+
+  it("should reject with an error if validation fails", async () => {
+    req.body = {};
+    await requestRecovery(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if getUserByEmail fails", async () => {
+    req.db.getUserByEmail.rejects(new Error("getUserByEmail error"));
+    await requestRecovery(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("getUserByEmail error");
+  });
+
+  it("should throw an error if the user is not found", async () => {
+    req.db.getUserByEmail.resolves(null);
+    await requestRecovery(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    // expect(next.firstCall.args[0].message).to.equal(
+    //   errorMessages.FRIENDLY_ERROR
+    // );
+  });
+
   it("should throw an error if the email is not provided", async () => {
     req.body = {};
     await requestRecovery(req, res, next);
@@ -344,13 +520,22 @@ describe("Auth Controller - validateRecovery", async () => {
     next = sinon.stub();
   });
 
-  it("should call next with a validation error if the token is invalid", async () => {
-    req = {
-      body: {},
-    };
+  it("should reject with an error if validation fails", async () => {
+    req.body = {};
     await validateRecovery(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(next.firstCall.args[0].status).to.equal(422);
+  });
+
+  it("should reject with an error if validateRecoveryToken fails", async () => {
+    req.db.validateRecoveryToken.rejects(
+      new Error("validateRecoveryToken error")
+    );
+    await validateRecovery(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal(
+      "validateRecoveryToken error"
+    );
   });
 
   it("should return a success message if the token is valid", async () => {
@@ -391,14 +576,23 @@ describe("Auth Controller - resetPassword", async () => {
     };
     handleValidationError = sinon.stub();
     handleError = sinon.stub();
-    issueToken = sinon.stub();
   });
-  it("should call next with a validation error if the password is invalid", async () => {
+  it("should reject with an error if validation fails", async () => {
     req.body = { password: "bad_password" };
     await resetPassword(req, res, next);
     expect(next.firstCall.args[0]).to.be.an("error");
     expect(next.firstCall.args[0].status).to.equal(422);
   });
+
+  it("should reject with an error if resetPassword fails", async () => {
+    const error = new Error("resetPassword error");
+    newPasswordValidation.validateAsync.resolves();
+    req.db.resetPassword.rejects(error);
+    await resetPassword(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("resetPassword error");
+  });
+
   it("should reset password successfully", async () => {
     const user = { _doc: {} };
     const appSettings = { jwtSecret: "my_secret" };
@@ -407,7 +601,6 @@ describe("Auth Controller - resetPassword", async () => {
     newPasswordValidation.validateAsync.resolves();
     req.db.resetPassword.resolves(user);
     req.settingsService.getSettings.resolves(appSettings);
-    issueToken.returns(token);
 
     await resetPassword(req, res, next);
 
