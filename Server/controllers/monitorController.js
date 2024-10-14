@@ -325,14 +325,23 @@ const deleteAllMonitors = async (req, res, next) => {
     const { jwtSecret } = req.settingsService.getSettings();
     const { teamId } = jwt.verify(token, jwtSecret);
     const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
-    await monitors.forEach(async (monitor) => {
-      await req.jobQueue.deleteJob(monitor);
-      await req.db.deleteChecks(monitor._id);
-      await req.db.deleteAlertByMonitorId(monitor._id);
-      await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
-      await req.db.deleteNotificationsByMonitorId(monitor._id);
-    });
-
+    await Promise.all(
+      monitors.map(async (monitor) => {
+        try {
+          await req.jobQueue.deleteJob(monitor);
+          await req.db.deleteChecks(monitor._id);
+          await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+          await req.db.deleteNotificationsByMonitorId(monitor._id);
+        } catch (error) {
+          logger.error(
+            `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+            {
+              method: "deleteAllMonitors",
+            }
+          );
+        }
+      })
+    );
     return res
       .status(200)
       .json({ success: true, msg: `Deleted ${deletedCount} monitors` });

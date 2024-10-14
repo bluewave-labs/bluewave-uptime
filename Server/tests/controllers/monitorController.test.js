@@ -553,3 +553,111 @@ describe("Monitor Controller - deleteMonitor", () => {
     ).to.be.true;
   });
 });
+
+describe("Monitor Controller - deleteAllMonitors", () => {
+  beforeEach(() => {
+    stub = sinon.stub(jwt, "verify").callsFake(() => {
+      return { teamId: "123" };
+    });
+    req = {
+      headers: {
+        authorization: "Bearer token",
+      },
+      params: {
+        monitorId: "123",
+      },
+      query: {},
+      body: {},
+      db: {
+        deleteAllMonitors: sinon.stub(),
+        deleteChecks: sinon.stub(),
+        deletePageSpeedChecksByMonitorId: sinon.stub(),
+        deleteNotificationsByMonitorId: sinon.stub(),
+      },
+      jobQueue: {
+        deleteJob: sinon.stub(),
+      },
+      settingsService: {
+        getSettings: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    sinon.stub(logger, "error");
+  });
+  afterEach(() => {
+    sinon.restore();
+    stub.restore();
+  });
+  it("should reject with an error if getTokenFromHeaders throws an error", async () => {
+    req.headers = {};
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("No auth headers");
+    expect(next.firstCall.args[0].status).to.equal(500);
+  });
+  it("should reject with an error if token validation fails", async () => {
+    stub.restore();
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.instanceOf(jwt.JsonWebTokenError);
+  });
+  it("should reject with an error if DB deleteAllMonitors operation fail", async () => {
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.deleteAllMonitors.throws(new Error("DB error"));
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should log an error if deleteJob throws an error", async () => {
+    const monitors = [{ name: "test_monitor", _id: "123" }];
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
+    const error = new Error("Job error");
+    req.jobQueue.deleteJob.rejects(error);
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.deep.equal(
+      `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
+    );
+  });
+  it("should log an error if deleteChecks throws an error", async () => {
+    const monitors = [{ name: "test_monitor", _id: "123" }];
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
+    const error = new Error("Check error");
+    req.db.deleteChecks.rejects(error);
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.deep.equal(
+      `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
+    );
+  });
+  it("should log an error if deletePageSpeedChecksByMonitorId throws an error", async () => {
+    const monitors = [{ name: "test_monitor", _id: "123" }];
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
+    const error = new Error("Pagespeed Check error");
+    req.db.deletePageSpeedChecksByMonitorId.rejects(error);
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.deep.equal(
+      `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
+    );
+  });
+  it("should log an error if deleteNotificationsByMonitorId throws an error", async () => {
+    const monitors = [{ name: "test_monitor", _id: "123" }];
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.deleteAllMonitors.returns({ monitors, deletedCount: 1 });
+    const error = new Error("Notifications Check error");
+    req.db.deleteNotificationsByMonitorId.rejects(error);
+    await monitorController.deleteAllMonitors(req, res, next);
+    expect(logger.error.calledOnce).to.be.true;
+    expect(logger.error.firstCall.args[0]).to.deep.equal(
+      `Error deleting associated records for monitor ${monitors[0]._id} with name ${monitors[0].name}`
+    );
+  });
+});
