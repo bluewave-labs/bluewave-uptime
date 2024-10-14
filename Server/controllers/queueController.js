@@ -46,7 +46,9 @@ const addJob = async (req, res, next) => {
 const obliterateQueue = async (req, res, next) => {
   try {
     await req.jobQueue.obliterate();
-    return res.status(200).send("Obliterated queue");
+    return res
+      .status(200)
+      .json({ success: true, msg: successMessages.QUEUE_OBLITERATE });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "obliterateQueue"));
     return;
