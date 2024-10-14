@@ -33,7 +33,7 @@ const { handleError, handleValidationError } = require("./controllerUtils");
 const getAllMonitors = async (req, res, next) => {
   try {
     const monitors = await req.db.getAllMonitors();
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_GET_ALL,
       data: monitors,
@@ -63,7 +63,7 @@ const getMonitorStatsById = async (req, res, next) => {
 
   try {
     const monitorStats = await req.db.getMonitorStatsById(req);
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_STATS_BY_ID,
       data: monitorStats,
@@ -86,7 +86,7 @@ const getMonitorCertificate = async (req, res, next) => {
     const monitorUrl = new URL(monitor.url);
     const certificate = await sslChecker(monitorUrl.hostname);
     if (certificate && certificate.validTo) {
-      return res.json({
+      return res.status(200).json({
         success: true,
         msg: successMessages.MONITOR_CERTIFICATE,
         data: {
@@ -94,7 +94,7 @@ const getMonitorCertificate = async (req, res, next) => {
         },
       });
     } else {
-      return res.json({
+      return res.status(200).json({
         success: true,
         msg: successMessages.MONITOR_CERTIFICATE,
         data: { certificateDate: "N/A" },
@@ -130,9 +130,10 @@ const getMonitorById = async (req, res, next) => {
     if (!monitor) {
       const error = new Error(errorMessages.MONITOR_GET_BY_ID);
       error.status = 404;
+      throw error;
     }
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_GET_BY_ID,
       data: monitor,
@@ -207,7 +208,7 @@ const getMonitorsByTeamId = async (req, res, next) => {
   try {
     const teamId = req.params.teamId;
     const monitors = await req.db.getMonitorsByTeamId(req, res);
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_GET_BY_USER_ID(teamId),
       data: monitors,
@@ -324,14 +325,23 @@ const deleteAllMonitors = async (req, res, next) => {
     const { jwtSecret } = req.settingsService.getSettings();
     const { teamId } = jwt.verify(token, jwtSecret);
     const { monitors, deletedCount } = await req.db.deleteAllMonitors(teamId);
-    await monitors.forEach(async (monitor) => {
-      await req.jobQueue.deleteJob(monitor);
-      await req.db.deleteChecks(monitor._id);
-      await req.db.deleteAlertByMonitorId(monitor._id);
-      await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
-      await req.db.deleteNotificationsByMonitorId(monitor._id);
-    });
-
+    await Promise.all(
+      monitors.map(async (monitor) => {
+        try {
+          await req.jobQueue.deleteJob(monitor);
+          await req.db.deleteChecks(monitor._id);
+          await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+          await req.db.deleteNotificationsByMonitorId(monitor._id);
+        } catch (error) {
+          logger.error(
+            `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+            {
+              method: "deleteAllMonitors",
+            }
+          );
+        }
+      })
+    );
     return res
       .status(200)
       .json({ success: true, msg: `Deleted ${deletedCount} monitors` });
@@ -459,7 +469,7 @@ const addDemoMonitors = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: successMessages.MONITOR_DEMO_ADDED,
+      msg: successMessages.MONITOR_DEMO_ADDED,
       data: demoMonitors.length,
     });
   } catch (error) {
