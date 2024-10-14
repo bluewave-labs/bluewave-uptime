@@ -375,3 +375,64 @@ describe("Monitor Controller - getMonitorsByTeamId", () => {
     ).to.be.true;
   });
 });
+
+describe("Monitor Controller - createMonitor", () => {
+  beforeEach(() => {
+    req = {
+      params: {},
+      query: {},
+      body: {
+        userId: "123",
+        teamId: "123",
+        name: "test_monitor",
+        description: "test_monitor_desc",
+        type: "http",
+        url: "https://example.com",
+        notifications: [{ email: "example@example.com" }],
+      },
+      db: {
+        createMonitor: sinon.stub(),
+        createNotification: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    monitor = {
+      save: sinon.stub(),
+    };
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should reject with an error if body validation fails", async () => {
+    req.body = {};
+    await createMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if DB createMonitor operation fail", async () => {
+    req.db.createMonitor.throws(new Error("DB error"));
+    await createMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if DB createNotification operation fail", async () => {
+    req.db.createNotification.throws(new Error("DB error"));
+    req.db.createMonitor.returns({ _id: "123" });
+    await createMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if DB createNotification operation fail", async () => {
+    req.db.createMonitor.returns({
+      _id: "123",
+      save: sinon.stub().throws(new Error("DB error")),
+    });
+    await createMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+});
