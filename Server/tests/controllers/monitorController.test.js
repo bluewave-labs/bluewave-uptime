@@ -874,3 +874,85 @@ describe("Monitor Controller - pauseMonitor", () => {
     ).to.be.true;
   });
 });
+
+describe("Monitor Controller - addDemoMonitors", () => {
+  beforeEach(() => {
+    stub = sinon.stub(jwt, "verify").callsFake(() => {
+      return { _id: "123", teamId: "123" };
+    });
+    req = {
+      headers: {
+        authorization: "Bearer token",
+      },
+      params: {},
+      query: {},
+      body: {},
+      db: {
+        addDemoMonitors: sinon.stub(),
+      },
+      settingsService: {
+        getSettings: sinon.stub(),
+      },
+      jobQueue: {
+        addJob: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+    stub.restore();
+  });
+  it("should reject with an error if getTokenFromHeaders fails", async () => {
+    req.headers = {};
+    await addDemoMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("No auth headers");
+    expect(next.firstCall.args[0].status).to.equal(500);
+  });
+  it("should reject with an error if getting settings fails", async () => {
+    req.settingsService.getSettings.throws(new Error("Settings error"));
+    await addDemoMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Settings error");
+  });
+  it("should reject with an error if JWT validation fails", async () => {
+    stub.restore();
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    await addDemoMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.instanceOf(jwt.JsonWebTokenError);
+  });
+  it("should reject with an error if addDemoMonitors operation fails", async () => {
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.addDemoMonitors.throws(new Error("DB error"));
+    await addDemoMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if addJob operation fails", async () => {
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.addDemoMonitors.returns([{ _id: "123" }]);
+    req.jobQueue.addJob.throws(new Error("Add Job error"));
+    await addDemoMonitors(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Add Job error");
+  });
+  it("should return success message with data if all operations succeed", async () => {
+    const monitors = [{ _id: "123" }];
+    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+    req.db.addDemoMonitors.returns(monitors);
+    await addDemoMonitors(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_DEMO_ADDED,
+        data: monitors.length,
+      })
+    ).to.be.true;
+  });
+});
