@@ -49,6 +49,7 @@ const TeamPanel = () => {
   const [tableData, setTableData] = useState({});
   const [members, setMembers] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [isDisabled, setIsDisabled] = useState(true);
   const [errors, setErrors] = useState({});
   const [isSendingInvite, setIsSendingInvite] = useState(false);
 
@@ -137,6 +138,9 @@ const TeamPanel = () => {
 
     setTableData(data);
   }, [members, filter]);
+  useEffect(() => {
+    setIsDisabled(Object.keys(errors).length !== 0 || toInvite.email === "");
+  }, [errors, toInvite.email]); 
 
   // RENAME ORGANIZATION
   const toggleEdit = () => {
@@ -172,6 +176,10 @@ const TeamPanel = () => {
   };
 
   const handleInviteMember = async () => {
+    if (!toInvite.email) {
+      setErrors((prev) => ({ ...prev, email: "Email is required." }));
+      return;
+    }
     setIsSendingInvite(true);
     if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
       setToInvite((prev) => ({ ...prev, role: ["user"] }));
@@ -415,7 +423,7 @@ const TeamPanel = () => {
               color="primary"
               onClick={handleInviteMember}
               loading={isSendingInvite}
-              disabled={Object.keys(errors).length !== 0}
+              disabled={isDisabled}
             >
               Send invite
             </LoadingButton>
