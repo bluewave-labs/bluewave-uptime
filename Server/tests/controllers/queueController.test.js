@@ -127,42 +127,42 @@ describe("Queue Controller - addJob", () => {
       msg: successMessages.QUEUE_ADD_JOB,
     });
   });
+});
 
-  describe("Queue Controller - obliterateQueue", () => {
-    beforeEach(() => {
-      req = {
-        headers: {},
-        params: {},
-        body: {},
-        db: {},
-        jobQueue: {
-          obliterate: sinon.stub(),
-        },
-      };
-      res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-      };
-      next = sinon.stub();
-      handleError = sinon.stub();
-    });
-    afterEach(() => {
-      sinon.restore();
-    });
-    it("should reject with an error if obliterateQueue throws an error", async () => {
-      req.jobQueue.obliterate.throws(new Error("obliterateQueue error"));
-      await obliterateQueue(req, res, next);
-      expect(next.firstCall.args[0]).to.be.an("error");
-      expect(next.firstCall.args[0].message).to.equal("obliterateQueue error");
-    });
-    it("should return a success message if obliterateQueue is successful", async () => {
-      req.jobQueue.obliterate.resolves();
-      await obliterateQueue(req, res, next);
-      expect(res.status.firstCall.args[0]).to.equal(200);
-      expect(res.json.firstCall.args[0]).to.deep.equal({
-        success: true,
-        msg: successMessages.QUEUE_OBLITERATE,
-      });
+describe("Queue Controller - obliterateQueue", () => {
+  beforeEach(() => {
+    req = {
+      headers: {},
+      params: {},
+      body: {},
+      db: {},
+      jobQueue: {
+        obliterate: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    handleError = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should reject with an error if obliterateQueue throws an error", async () => {
+    req.jobQueue.obliterate.throws(new Error("obliterateQueue error"));
+    await obliterateQueue(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("obliterateQueue error");
+  });
+  it("should return a success message if obliterateQueue is successful", async () => {
+    req.jobQueue.obliterate.resolves();
+    await obliterateQueue(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(res.json.firstCall.args[0]).to.deep.equal({
+      success: true,
+      msg: successMessages.QUEUE_OBLITERATE,
     });
   });
 });
