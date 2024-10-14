@@ -208,7 +208,7 @@ const getMonitorsByTeamId = async (req, res, next) => {
   try {
     const teamId = req.params.teamId;
     const monitors = await req.db.getMonitorsByTeamId(req, res);
-    return res.json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MONITOR_GET_BY_USER_ID(teamId),
       data: monitors,
