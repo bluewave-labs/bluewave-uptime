@@ -768,3 +768,109 @@ describe("Monitor Controller - editMonitor", () => {
     ).to.be.true;
   });
 });
+
+describe("Monitor Controller - pauseMonitor", () => {
+  beforeEach(() => {
+    req = {
+      headers: {},
+      params: {
+        monitorId: "123",
+      },
+      query: {},
+      body: {},
+      db: {
+        getMonitorById: sinon.stub(),
+      },
+      jobQueue: {
+        deleteJob: sinon.stub(),
+        addJob: sinon.stub(),
+      },
+      settingsService: {
+        getSettings: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("should reject with an error if param validation fails", async () => {
+    req.params = {};
+    await pauseMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if getMonitorById operation fails", async () => {
+    req.db.getMonitorById.throws(new Error("DB error"));
+    await pauseMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  "it should reject with an error if deleteJob operation fails",
+    async () => {
+      const monitor = { _id: req.params.monitorId, active: true };
+      req.db.getMonitorById.returns(monitor);
+      req.jobQueue.deleteJob.throws(new Error("Delete Job error"));
+      await pauseMonitor(req, res, next);
+      expect(next.firstCall.args[0]).to.be.an("error");
+      expect(next.firstCall.args[0].message).to.equal("Delete Job error");
+    };
+  it("should reject with an error if addJob operation fails", async () => {
+    const monitor = { _id: req.params.monitorId, active: false };
+    req.db.getMonitorById.returns(monitor);
+    req.jobQueue.addJob.throws(new Error("Add Job error"));
+    await pauseMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Add Job error");
+  });
+  it("should reject with an error if monitor.save operation fails", async () => {
+    const monitor = {
+      _id: req.params.monitorId,
+      active: false,
+      save: sinon.stub().throws(new Error("Save error")),
+    };
+    req.db.getMonitorById.returns(monitor);
+    await pauseMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Save error");
+  });
+  it("should return success pause message with data if all operations succeed with inactive monitor", async () => {
+    const monitor = {
+      _id: req.params.monitorId,
+      active: false,
+      save: sinon.stub().resolves(),
+    };
+    req.db.getMonitorById.returns(monitor);
+    await pauseMonitor(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_PAUSE,
+        data: monitor,
+      })
+    ).to.be.true;
+  });
+  it("should return success resume message with data if all operations succeed with active monitor", async () => {
+    const monitor = {
+      _id: req.params.monitorId,
+      active: true,
+      save: sinon.stub().resolves(),
+    };
+    req.db.getMonitorById.returns(monitor);
+    await pauseMonitor(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_RESUME,
+        data: monitor,
+      })
+    ).to.be.true;
+  });
+});
