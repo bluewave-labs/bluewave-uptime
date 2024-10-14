@@ -90,3 +90,41 @@ describe("Queue Controller - getJobs", () => {
     });
   });
 });
+
+describe("Queue Controller - addJob", () => {
+  beforeEach(() => {
+    req = {
+      headers: {},
+      params: {},
+      body: {},
+      db: {},
+      jobQueue: {
+        addJob: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+    handleError = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should reject with an error if addJob throws an error", async () => {
+    req.jobQueue.addJob.throws(new Error("addJob error"));
+    await addJob(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("addJob error");
+  });
+  it("should return a success message if addJob is successful", async () => {
+    req.jobQueue.addJob.resolves();
+    await addJob(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(res.json.firstCall.args[0]).to.deep.equal({
+      success: true,
+      msg: successMessages.QUEUE_ADD_JOB,
+    });
+  });
+});

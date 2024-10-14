@@ -19,13 +19,11 @@ const getMetrics = async (req, res, next) => {
 const getJobs = async (req, res, next) => {
   try {
     const jobs = await req.jobQueue.getJobStats();
-    return res
-      .status(200)
-      .json({
-        success: true,
-        msg: successMessages.QUEUE_GET_METRICS,
-        data: jobs,
-      });
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.QUEUE_GET_METRICS,
+      data: jobs,
+    });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "getJobs"));
     return;
@@ -35,7 +33,10 @@ const getJobs = async (req, res, next) => {
 const addJob = async (req, res, next) => {
   try {
     await req.jobQueue.addJob(Math.random().toString(36).substring(7));
-    return res.send("Added job");
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.QUEUE_ADD_JOB,
+    });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "addJob"));
     return;
