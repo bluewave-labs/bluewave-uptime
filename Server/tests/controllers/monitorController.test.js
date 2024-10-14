@@ -661,3 +661,110 @@ describe("Monitor Controller - deleteAllMonitors", () => {
     );
   });
 });
+
+describe("Monitor Controller - editMonitor", () => {
+  beforeEach(() => {
+    req = {
+      headers: {},
+      params: {
+        monitorId: "123",
+      },
+      query: {},
+      body: {
+        notifications: [{ email: "example@example.com" }],
+      },
+      db: {
+        getMonitorById: sinon.stub(),
+        editMonitor: sinon.stub(),
+        deleteNotificationsByMonitorId: sinon.stub(),
+        createNotification: sinon.stub(),
+      },
+      jobQueue: {
+        deleteJob: sinon.stub(),
+        addJob: sinon.stub(),
+      },
+      settingsService: {
+        getSettings: sinon.stub(),
+      },
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    next = sinon.stub();
+  });
+  afterEach(() => {
+    sinon.restore();
+  });
+  it("should reject with an error if param validation fails", async () => {
+    req.params = {};
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if body validation fails", async () => {
+    req.body = { invalid: 1 };
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].status).to.equal(422);
+  });
+  it("should reject with an error if getMonitorById operation fails", async () => {
+    req.db.getMonitorById.throws(new Error("DB error"));
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if editMonitor operation fails", async () => {
+    req.db.getMonitorById.returns({ teamId: "123" });
+    req.db.editMonitor.throws(new Error("DB error"));
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if deleteNotificationsByMonitorId operation fails", async () => {
+    req.db.getMonitorById.returns({ teamId: "123" });
+    req.db.editMonitor.returns({ _id: "123" });
+    req.db.deleteNotificationsByMonitorId.throws(new Error("DB error"));
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if createNotification operation fails", async () => {
+    req.db.getMonitorById.returns({ teamId: "123" });
+    req.db.editMonitor.returns({ _id: "123" });
+    req.db.createNotification.throws(new Error("DB error"));
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("DB error");
+  });
+  it("should reject with an error if deleteJob operation fails", async () => {
+    req.db.getMonitorById.returns({ teamId: "123" });
+    req.db.editMonitor.returns({ _id: "123" });
+    req.jobQueue.deleteJob.throws(new Error("Job error"));
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Job error");
+  });
+  it("should reject with an error if addJob operation fails", async () => {
+    req.db.getMonitorById.returns({ teamId: "123" });
+    req.db.editMonitor.returns({ _id: "123" });
+    req.jobQueue.addJob.throws(new Error("Add Job error"));
+    await editMonitor(req, res, next);
+    expect(next.firstCall.args[0]).to.be.an("error");
+    expect(next.firstCall.args[0].message).to.equal("Add Job error");
+  });
+  it("should return success message with data if all operations succeed", async () => {
+    const monitor = { _id: "123" };
+    req.db.getMonitorById.returns({ teamId: "123" });
+    req.db.editMonitor.returns(monitor);
+    await editMonitor(req, res, next);
+    expect(res.status.firstCall.args[0]).to.equal(200);
+    expect(
+      res.json.calledOnceWith({
+        success: true,
+        msg: successMessages.MONITOR_EDIT,
+        data: monitor,
+      })
+    ).to.be.true;
+  });
+});
