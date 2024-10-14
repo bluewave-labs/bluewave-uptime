@@ -87,6 +87,13 @@ const URL_MAP = {
   changelog: "https://github.com/bluewave-labs/bluewave-uptime/releases",
 };
 
+const PATH_MAP = {
+  monitors: "Dashboard",
+  pagespeed: "Dashboard",
+  account: "Account",
+  settings: "Other",
+};
+
 /**
  * @component
  * Sidebar component serves as a sidebar containing a menu.
@@ -134,15 +141,13 @@ function Sidebar() {
   };
 
   useEffect(() => {
-    if (
-      location.pathname.includes("monitors") ||
-      location.pathname.includes("pagespeed")
-    )
-      setOpen((prev) => ({ ...prev, Dashboard: true }));
-    else if (location.pathname.includes("/account"))
-      setOpen((prev) => ({ ...prev, Account: true }));
-    else if (location.pathname.includes("/settings"))
-      setOpen((prev) => ({ ...prev, Other: true }));
+    const matchedKey = Object.keys(PATH_MAP).find((key) =>
+      location.pathname.includes(key)
+    );
+
+    if (matchedKey) {
+      setOpen((prev) => ({ ...prev, [PATH_MAP[matchedKey]]: true }));
+    }
   }, []);
 
   return (
@@ -218,7 +223,9 @@ function Sidebar() {
             },
           }}
           onClick={() => {
-            setOpen({ Dashboard: false, Account: false, Other: false });
+            setOpen(prev => 
+              Object.fromEntries(Object.keys(prev).map(key => [key, false]))
+            )
             dispatch(toggleSidebar());
           }}
         >
@@ -393,14 +400,8 @@ function Sidebar() {
               <ListItemButton
                 onClick={() =>
                   setOpen((prev) => ({
-                    ...Object.keys(prev).reduce(
-                      (acc, key) => ({
-                        ...acc,
-                        [key]: false,      // close all other sections
-                      }),
-                      {}
-                    ),
-                    [`${item.name}`]: !prev[`${item.name}`],    // toggle clicked section 
+                    ...Object.fromEntries(Object.keys(prev).map(key => [key, false])),
+                    [item.name]: !prev[item.name]
                   }))
                 }
                 sx={{
