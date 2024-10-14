@@ -45,22 +45,22 @@ describe("controllerUtils - handleValidationError", () => {
 });
 
 describe("handleError", () => {
-  it("should set code to the provided code if error.code is undefined", () => {
+  it("should set stats to the provided status if error.code is undefined", () => {
     const error = {};
     const serviceName = "TestService";
     const method = "testMethod";
-    const code = 400;
-    const result = handleError(error, serviceName, method, code);
-    expect(result.code).to.equal(code);
+    const status = 400;
+    const result = handleError(error, serviceName, method, status);
+    expect(result.status).to.equal(status);
   });
 
   it("should not overwrite error.code if it is already defined", () => {
-    const error = { code: 404 };
+    const error = { status: 404 };
     const serviceName = "TestService";
     const method = "testMethod";
-    const code = 400;
-    const result = handleError(error, serviceName, method, code);
-    expect(result.code).to.equal(404);
+    const status = 400;
+    const result = handleError(error, serviceName, method, status);
+    expect(result.status).to.equal(404);
   });
 
   it("should set service to the provided serviceName if error.service is undefined", () => {
@@ -100,6 +100,6 @@ describe("handleError", () => {
     const serviceName = "TestService";
     const method = "testMethod";
     const result = handleError(error, serviceName, method);
-    expect(result.code).to.equal(500);
+    expect(result.status).to.equal(500);
   });
 });
