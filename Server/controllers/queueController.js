@@ -1,13 +1,15 @@
 const { handleError } = require("./controllerUtils");
-
+const { errorMessages, successMessages } = require("../utils/messages");
 const SERVICE_NAME = "JobQueueController";
 
 const getMetrics = async (req, res, next) => {
   try {
     const metrics = await req.jobQueue.getMetrics();
-    res
-      .status(200)
-      .json({ success: true, msg: "Metrics retrieved", data: metrics });
+    res.status(200).json({
+      success: true,
+      msg: successMessages.QUEUE_GET_METRICS,
+      data: metrics,
+    });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "getMetrics"));
     return;
@@ -17,7 +19,13 @@ const getMetrics = async (req, res, next) => {
 const getJobs = async (req, res, next) => {
   try {
     const jobs = await req.jobQueue.getJobStats();
-    return res.status(200).json({ jobs });
+    return res
+      .status(200)
+      .json({
+        success: true,
+        msg: successMessages.QUEUE_GET_METRICS,
+        data: jobs,
+      });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "getJobs"));
     return;
