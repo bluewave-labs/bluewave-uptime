@@ -18,6 +18,12 @@ router.post(
   monitorController.createMonitor
 );
 
+router.get(
+  "/check-endpoint/url",
+  isAllowed(["admin", "superadmin"]), 
+  monitorController.checkEndpointResolution
+)
+
 router.delete(
   "/:monitorId",
   isAllowed(["admin", "superadmin"]),

@@ -3,6 +3,7 @@ import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
@@ -124,58 +125,55 @@ const CreateMonitor = () => {
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
+    //obj to submit
+    let form = {
+      url:
+        //preprending protocol for url
+        monitor.type === "http"
+          ? `http${https ? "s" : ""}://` + monitor.url
+          : monitor.url,
+      name: monitor.name === "" ? monitor.url : monitor.name,
+      type: monitor.type,
+      interval: monitor.interval * MS_PER_MINUTE,
+    };
 
-    const formattedUrl = monitor.type === "http"
-    ? `http${https ? "s" : ""}://` + monitor.url
-    : monitor.url;
+    const { error } = monitorValidation.validate(form, {
+      abortEarly: false,
+    });
 
-    try {
-      // Check if the URL resolves by sending a request
-      const response = await fetch(formattedUrl, { method: 'GET', mode: 'no-cors' });
-      if (!response) {
-        throw new Error();
-      }
-
-      //obj to submit
-      let form = {
-        url:formattedUrl,
-        name: monitor.name === "" ? monitor.url : monitor.name,
-        type: monitor.type,
-        interval: monitor.interval * MS_PER_MINUTE,
-      };
-
-      const { error } = monitorValidation.validate(form, {
-        abortEarly: false,
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
       });
-
-      if (error) {
-        const newErrors = {};
-        error.details.forEach((err) => {
-          newErrors[err.path[0]] = err.message;
-        });
-        setErrors(newErrors);
-        createToast({ body: "Error validation data." });
-      } else {
-        form = {
-          ...form,
-          description: form.name,
-          teamId: user.teamId,
-          userId: user._id,
-          notifications: monitor.notifications,
-        };
-        const action = await dispatch(
-          createUptimeMonitor({ authToken, monitor: form })
-        );
-        if (action.meta.requestStatus === "fulfilled") {
-          createToast({ body: "Monitor created successfully!" });
-          navigate("/monitors");
-        } else {
-          createToast({ body: "Failed to create monitor." });
-        }
+      setErrors(newErrors);
+      createToast({ body: "Error validation data." });
+    } else {
+      const checkEndpointAction = await dispatch(
+        checkEndpointResolution({ authToken, monitorURL: form.url })
+      )
+      if (checkEndpointAction.meta.requestStatus === "rejected") {
+        createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
+        setErrors({ url: "The entered URL is not reachable." });
+        return;
       }
-    } catch (error) {
-      createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again."  });
-      setErrors({ url: "The entered URL is not reachable." });
+
+      form = {
+        ...form,
+        description: form.name,
+        teamId: user.teamId,
+        userId: user._id,
+        notifications: monitor.notifications,
+      };
+      const action = await dispatch(
+        createUptimeMonitor({ authToken, monitor: form })
+      );
+      if (action.meta.requestStatus === "fulfilled") {
+        createToast({ body: "Monitor created successfully!" });
+        navigate("/monitors");
+      } else {
+        createToast({ body: "Failed to create monitor." });
+      }
     }
   };
 
@@ -387,7 +385,7 @@ const CreateMonitor = () => {
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           >
-            {monitor.type === "http" ? "Create Monitor" : "Check Endpoint"}
+            Create Monitor
           </Button>
         </Stack>
       </Stack>
