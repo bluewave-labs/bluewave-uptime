@@ -1,8 +1,10 @@
-const router = require("express").Router();
-const checkController = require("../controllers/checkController");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
-const { isAllowed } = require("../middleware/isAllowed");
-const Monitor = require("../db/models/Monitor");
+import { Router } from "express";
+import checkController from "../controllers/checkController.js";
+import { verifyOwnership } from "../middleware/verifyOwnership.js";
+import { isAllowed } from "../middleware/isAllowed.js";
+import Monitor from "../db/models/Monitor.js";
+
+const router = Router();
 
 router.get("/:monitorId", checkController.getChecks);
 router.post(
@@ -30,4 +32,4 @@ router.put(
   checkController.updateChecksTTL
 );
 
-module.exports = router;
+export default router;

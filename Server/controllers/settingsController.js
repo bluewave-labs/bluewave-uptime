@@ -1,7 +1,7 @@
-const { successMessages } = require("../utils/messages");
+import { successMessages } from "../utils/messages.js";
+import { updateAppSettingsBodyValidation } from "../validation/joi.js";
+import { handleValidationError, handleError } from "./controllerUtils.js";
 const SERVICE_NAME = "SettingsController";
-const { updateAppSettingsBodyValidation } = require("../validation/joi");
-const { handleValidationError, handleError } = require("./controllerUtils");
 
 const getAppSettings = async (req, res, next) => {
   try {
@@ -39,7 +39,7 @@ const updateAppSettings = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   getAppSettings,
   updateAppSettings,
 };

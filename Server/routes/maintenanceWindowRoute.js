@@ -1,7 +1,9 @@
-const router = require("express").Router();
-const maintenanceWindowController = require("../controllers/maintenanceWindowController");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
-const Monitor = require("../db/models/Monitor");
+import { Router } from "express";
+import maintenanceWindowController from "../controllers/maintenanceWindowController.js";
+import { verifyOwnership } from "../middleware/verifyOwnership.js";
+import Monitor from "../db/models/Monitor.js";
+
+const router = Router();
 
 router.post("/", maintenanceWindowController.createMaintenanceWindows);
 
@@ -19,4 +21,4 @@ router.put("/:id", maintenanceWindowController.editMaintenanceWindow);
 
 router.delete("/:id", maintenanceWindowController.deleteMaintenanceWindow);
 
-module.exports = router;
+export default router;

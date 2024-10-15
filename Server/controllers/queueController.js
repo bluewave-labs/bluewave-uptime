@@ -1,5 +1,6 @@
-const { handleError } = require("./controllerUtils");
-const { errorMessages, successMessages } = require("../utils/messages");
+import { handleError } from "./controllerUtils.js";
+import { errorMessages, successMessages } from "../utils/messages.js";
+
 const SERVICE_NAME = "JobQueueController";
 
 const getMetrics = async (req, res, next) => {
@@ -55,7 +56,7 @@ const obliterateQueue = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   getMetrics,
   getJobs,
   addJob,

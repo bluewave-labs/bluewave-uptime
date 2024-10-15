@@ -1,4 +1,4 @@
-const {
+import {
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,
   getMonitorsByTeamIdValidation,
@@ -11,15 +11,15 @@ const {
   getMonitorStatsByIdParamValidation,
   getMonitorStatsByIdQueryValidation,
   getCertificateParamValidation,
-} = require("../validation/joi");
+} from "../validation/joi.js";
 
-const sslChecker = require("ssl-checker");
+import sslChecker from "ssl-checker";
 const SERVICE_NAME = "monitorController";
-const { errorMessages, successMessages } = require("../utils/messages");
-const jwt = require("jsonwebtoken");
-const { getTokenFromHeaders } = require("../utils/utils");
-const logger = require("../utils/logger");
-const { handleError, handleValidationError } = require("./controllerUtils");
+import { errorMessages, successMessages } from "../utils/messages.js";
+import jwt from "jsonwebtoken";
+import { getTokenFromHeaders } from "../utils/utils.js";
+import logger from "../utils/logger.js";
+import { handleError, handleValidationError } from "./controllerUtils.js";
 
 /**
  * Returns all monitors
@@ -477,7 +477,7 @@ const addDemoMonitors = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorCertificate,

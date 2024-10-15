@@ -1,4 +1,4 @@
-const {
+import {
   createCheckParamValidation,
   createCheckBodyValidation,
   getChecksParamValidation,
@@ -8,12 +8,13 @@ const {
   deleteChecksParamValidation,
   deleteChecksByTeamIdParamValidation,
   updateChecksTTLBodyValidation,
-} = require("../validation/joi");
-const { successMessages } = require("../utils/messages");
-const jwt = require("jsonwebtoken");
-const { getTokenFromHeaders } = require("../utils/utils");
+} from "../validation/joi.js";
+import { successMessages } from "../utils/messages.js";
+import jwt from "jsonwebtoken";
+import { getTokenFromHeaders } from "../utils/utils.js";
+import { handleValidationError, handleError } from "./controllerUtils.js";
+
 const SERVICE_NAME = "checkController";
-const { handleValidationError, handleError } = require("./controllerUtils");
 
 const createCheck = async (req, res, next) => {
   try {
@@ -143,7 +144,7 @@ const updateChecksTTL = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   createCheck,
   getChecks,
   getTeamChecks,

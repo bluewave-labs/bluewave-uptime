@@ -1,6 +1,7 @@
-const router = require("express").Router();
-const queueController = require("../controllers/queueController");
+import { Router } from "express";
+import queueController from "../controllers/queueController.js";
 
+const router = Router();
 router.get("/metrics", queueController.getMetrics);
 
 // Get Jobs
@@ -12,4 +13,4 @@ router.post("/jobs", queueController.addJob);
 // Obliterate Queue
 router.post("/obliterate", queueController.obliterateQueue);
 
-module.exports = router;
+export default router;

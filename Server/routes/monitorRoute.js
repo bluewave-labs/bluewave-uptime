@@ -1,6 +1,8 @@
-const router = require("express").Router();
-const monitorController = require("../controllers/monitorController");
-const { isAllowed } = require("../middleware/isAllowed");
+import { Router } from "express";
+import monitorController from "../controllers/monitorController.js";
+import { isAllowed } from "../middleware/isAllowed.js";
+
+const router = Router();
 
 router.get("/", monitorController.getAllMonitors);
 router.get("/stats/:monitorId", monitorController.getMonitorStatsById);
@@ -48,4 +50,4 @@ router.post(
   monitorController.addDemoMonitors
 );
 
-module.exports = router;
+export default router;

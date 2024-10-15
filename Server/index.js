@@ -1,30 +1,35 @@
-const path = require("path");
-const fs = require("fs");
-const swaggerUi = require("swagger-ui-express");
+import path from "path";
+import fs from "fs";
+import swaggerUi from "swagger-ui-express";
 
-const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
-const logger = require("./utils/logger");
-const { verifyJWT } = require("./middleware/verifyJWT");
-const { handleErrors } = require("./middleware/handleErrors");
-const { errorMessages } = require("./utils/messages");
-const authRouter = require("./routes/authRoute");
-const inviteRouter = require("./routes/inviteRoute");
-const monitorRouter = require("./routes/monitorRoute");
-const checkRouter = require("./routes/checkRoute");
-const maintenanceWindowRouter = require("./routes/maintenanceWindowRoute");
-const settingsRouter = require("./routes/settingsRoute");
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import logger from "./utils/logger.js";
+import { verifyJWT } from "./middleware/verifyJWT.js";
+import { handleErrors } from "./middleware/handleErrors.js";
+import { errorMessages } from "./utils/messages.js";
+import authRouter from "./routes/authRoute.js";
+import inviteRouter from "./routes/inviteRoute.js";
+import monitorRouter from "./routes/monitorRoute.js";
+import checkRouter from "./routes/checkRoute.js";
+import maintenanceWindowRouter from "./routes/maintenanceWindowRoute.js";
+import settingsRouter from "./routes/settingsRoute.js";
+import { fileURLToPath } from "url";
 
-const { connectDbAndRunServer } = require("./configs/db");
-const queueRouter = require("./routes/queueRoute");
-const JobQueue = require("./service/jobQueue");
-const NetworkService = require("./service/networkService");
-const EmailService = require("./service/emailService");
-const SettingsService = require("./service/settingsService");
+import { connectDbAndRunServer } from "./configs/db.js";
+import queueRouter from "./routes/queueRoute.js";
+import JobQueue from "./service/jobQueue.js";
+import NetworkService from "./service/networkService.js";
+import EmailService from "./service/emailService.js";
+import SettingsService from "./service/settingsService.js";
+import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
 
 let cleaningUp = false;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const openApiSpec = JSON.parse(
   fs.readFileSync(path.join(__dirname, "openapi.json"), "utf8")
 );
@@ -42,16 +47,16 @@ const startApp = async () => {
   // const db = require("./db/MongoDB");
   //
   // **************************
-  const DB_TYPE = {
-    MongoDB: () => require("./db/mongo/MongoDB"),
-    FakedDB: () => require("./db/FakeDb"),
-  };
+  // const DB_TYPE = {
+  //   MongoDB: async () => (await import("./db/mongo/MongoDB.js")).default,
+  //   FakedDB: async () => (await import("./db/FakeDb.js")).default,
+  // };
 
   // const db = DB_TYPE[process.env.DB_TYPE]
   //   ? DB_TYPE[process.env.DB_TYPE]()
   //   : require("./db/FakeDb");
 
-  const db = DB_TYPE.MongoDB();
+  // const db = DB_TYPE.MongoDB();
 
   const app = express();
 

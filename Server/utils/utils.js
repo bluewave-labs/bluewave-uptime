@@ -27,7 +27,4 @@ const getTokenFromHeaders = (headers) => {
   return parts[1];
 };
 
-module.exports = {
-  ParseBoolean,
-  getTokenFromHeaders,
-};
+export { ParseBoolean, getTokenFromHeaders };

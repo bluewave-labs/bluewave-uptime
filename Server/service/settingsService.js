@@ -1,5 +1,4 @@
-const { env } = require("process");
-const AppSettings = require("../db/models/AppSettings");
+import AppSettings from "../db/models/AppSettings.js";
 const SERVICE_NAME = "SettingsService";
 const envConfig = {
   logLevel: undefined,
@@ -81,4 +80,4 @@ class SettingsService {
   }
 }
 
-module.exports = SettingsService;
+export default SettingsService;

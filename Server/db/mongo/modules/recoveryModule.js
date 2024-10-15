@@ -1,7 +1,8 @@
-const UserModel = require("../../models/User");
-const RecoveryToken = require("../../models/RecoveryToken");
-const crypto = require("crypto");
-const { errorMessages } = require("../../../utils/messages");
+import UserModel from "../../models/User.js";
+import RecoveryToken from "../../models/RecoveryToken.js";
+import crypto from "crypto";
+import { errorMessages } from "../../../utils/messages.js";
+
 const SERVICE_NAME = "recoveryModule";
 
 /**
@@ -81,8 +82,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = {
-  requestRecoveryToken,
-  validateRecoveryToken,
-  resetPassword,
-};
+export { requestRecoveryToken, validateRecoveryToken, resetPassword };

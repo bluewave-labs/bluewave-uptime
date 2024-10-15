@@ -1,8 +1,8 @@
-const axios = require("axios");
-const ping = require("ping");
-const logger = require("../utils/logger");
-const http = require("http");
-const { errorMessages, successMessages } = require("../utils/messages");
+import axios from "axios";
+import ping from "ping";
+import logger from "../utils/logger.js";
+import http from "http";
+import { errorMessages, successMessages } from "../utils/messages.js";
 
 /**
  * NetworkService
@@ -329,4 +329,4 @@ class NetworkService {
   }
 }
 
-module.exports = NetworkService;
+export default NetworkService;

@@ -13,7 +13,4 @@ const handleError = (error, serviceName, method, status = 500) => {
   return error;
 };
 
-module.exports = {
-  handleValidationError,
-  handleError,
-};
+export { handleValidationError, handleError };

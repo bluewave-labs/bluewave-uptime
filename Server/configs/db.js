@@ -12,4 +12,4 @@ const connectDbAndRunServer = async (app, db) => {
   }
 };
 
-module.exports = { connectDbAndRunServer };
+export { connectDbAndRunServer };

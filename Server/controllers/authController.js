@@ -1,4 +1,4 @@
-const {
+import {
   registrationBodyValidation,
   loginValidation,
   editUserParamValidation,
@@ -6,15 +6,16 @@ const {
   recoveryValidation,
   recoveryTokenValidation,
   newPasswordValidation,
-} = require("../validation/joi");
-const logger = require("../utils/logger");
-require("dotenv").config();
-const { errorMessages, successMessages } = require("../utils/messages");
-const jwt = require("jsonwebtoken");
-const SERVICE_NAME = "AuthController";
-const { getTokenFromHeaders } = require("../utils/utils");
-const crypto = require("crypto");
-const { handleValidationError, handleError } = require("./controllerUtils");
+} from "../validation/joi.js";
+import logger from "../utils/logger.js";
+import dotenv from "dotenv";
+import { errorMessages, successMessages } from "../utils/messages.js";
+import jwt from "jsonwebtoken";
+import { getTokenFromHeaders } from "../utils/utils.js";
+import crypto from "crypto";
+import { handleValidationError, handleError } from "./controllerUtils.js";
+
+dotenv.config();
 
 /**
  * Creates and returns JWT token with an arbitrary payload
@@ -238,7 +239,7 @@ const editUser = async (req, res, next) => {
  * @returns {Object} The response object with a success status, a message indicating the existence of a superadmin, and a boolean indicating the existence of a superadmin.
  * @throws {Error} If there is an error during the process.
  */
-const checkSuperAdminExists = async (req, res, next) => {
+const checkSuperadminExists = async (req, res, next) => {
   try {
     const superAdminExists = await req.db.checkSuperadmin(req, res);
     return res.status(200).json({
@@ -440,12 +441,12 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   issueToken,
   registerUser,
   loginUser,
   editUser,
-  checkSuperadminExists: checkSuperAdminExists,
+  checkSuperadminExists,
   requestRecovery,
   validateRecovery,
   resetPassword,

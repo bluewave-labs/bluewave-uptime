@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
-const { errorMessages } = require("../utils/messages");
+import { errorMessages } from "../utils/messages.js";
 /**
  * Verifies the JWT token
  * @function
@@ -48,4 +48,4 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-module.exports = { verifyJWT };
+export { verifyJWT };

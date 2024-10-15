@@ -1,4 +1,4 @@
-const AppSettings = require("../../models/AppSettings");
+import AppSettings from "../../models/AppSettings.js";
 const SERVICE_NAME = "SettingsModule";
 
 const getAppSettings = async () => {
@@ -27,7 +27,4 @@ const updateAppSettings = async (newSettings) => {
   }
 };
 
-module.exports = {
-  getAppSettings,
-  updateAppSettings,
-};
+export { getAppSettings, updateAppSettings };

@@ -1,8 +1,8 @@
-const InviteToken = require("../../models/InviteToken");
-const crypto = require("crypto");
-const { errorMessages } = require("../../../utils/messages");
-const SERVICE_NAME = "inviteModule";
+import InviteToken from "../../models/InviteToken.js";
+import crypto from "crypto";
+import { errorMessages } from "../../../utils/messages.js";
 
+const SERVICE_NAME = "inviteModule";
 /**
  * Request an invite token for a user.
  *
@@ -83,8 +83,4 @@ const getInviteTokenAndDelete = async (token) => {
   }
 };
 
-module.exports = {
-  requestInviteToken,
-  getInviteToken,
-  getInviteTokenAndDelete,
-};
+export { requestInviteToken, getInviteToken, getInviteTokenAndDelete };
