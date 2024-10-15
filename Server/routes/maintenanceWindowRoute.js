@@ -3,21 +3,20 @@ const maintenanceWindowController = require("../controllers/maintenanceWindowCon
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const Monitor = require("../db/models/Monitor");
 
+router.post("/", maintenanceWindowController.createMaintenanceWindows);
+
 router.get(
   "/monitor/:monitorId",
   verifyOwnership(Monitor, "monitorId"),
   maintenanceWindowController.getMaintenanceWindowsByMonitorId
 );
 
-router.post(
-  "/monitor/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  maintenanceWindowController.createMaintenanceWindow
-);
+router.get("/team/", maintenanceWindowController.getMaintenanceWindowsByTeamId);
 
-router.get(
-  "/user/:userId",
-  maintenanceWindowController.getMaintenanceWindowsByUserId
-);
+router.get("/:id", maintenanceWindowController.getMaintenanceWindowById);
+
+router.put("/:id", maintenanceWindowController.editMaintenanceWindow);
+
+router.delete("/:id", maintenanceWindowController.deleteMaintenanceWindow);
 
 module.exports = router;

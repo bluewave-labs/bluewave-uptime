@@ -20,13 +20,13 @@ import NewPasswordConfirmed from "./Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import AdvancedSettings from "./Pages/AdvancedSettings";
-// import Maintenance from "./Pages/Maintenance";
+import Maintenance from "./Pages/Maintenance";
 import withAdminCheck from "./HOC/withAdminCheck";
 import withAdminProp from "./HOC/withAdminProp";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
-// import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenanceWindow";
+import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
 import { ThemeProvider } from "@emotion/react";
@@ -45,7 +45,7 @@ function App() {
   const MonitorDetailsWithAdminProp = withAdminProp(Details);
   const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
   const PageSpeedDetailsWithAdminProp = withAdminProp(PageSpeedDetails);
-  // const MaintenanceWithAdminProp = withAdminProp(Maintenance);
+  const MaintenanceWithAdminProp = withAdminProp(Maintenance);
   const SettingsWithAdminProp = withAdminProp(Settings);
   const AdvancedSettingsWithAdminProp = withAdminProp(AdvancedSettings);
   const mode = useSelector((state) => state.ui.mode);
@@ -109,14 +109,14 @@ function App() {
             path="integrations"
             element={<ProtectedRoute Component={Integrations} />}
           />
-          {/* <Route
+          <Route
             path="maintenance"
             element={<ProtectedRoute Component={MaintenanceWithAdminProp} />}
-          /> */}
-          {/* <Route
-            path="/maintenance/create"
+          />
+          <Route
+            path="/maintenance/create/:maintenanceWindowId?"
             element={<CreateNewMaintenanceWindow />}
-          /> */}
+          />
           <Route
             path="settings"
             element={<ProtectedRoute Component={SettingsWithAdminProp} />}

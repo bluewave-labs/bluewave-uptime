@@ -59,18 +59,19 @@ const Monitors = ({ isAdmin }) => {
               mt={theme.spacing(5)}
             >
               <Greeting type="uptime" />
-              {monitorState?.monitorsSummary?.monitors?.length !== 0 && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    navigate("/monitors/create");
-                  }}
-                  sx={{ fontWeight: 500 }}
-                >
-                  Create monitor
-                </Button>
-              )}
+              {isAdmin &&
+                monitorState?.monitorsSummary?.monitors?.length !== 0 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      navigate("/monitors/create");
+                    }}
+                    sx={{ fontWeight: 500 }}
+                  >
+                    Create monitor
+                  </Button>
+                )}
             </Stack>
           </Box>
           {isAdmin && monitorState?.monitorsSummary?.monitors?.length === 0 && (
@@ -136,7 +137,7 @@ const Monitors = ({ isAdmin }) => {
                     <Search
                       options={monitorState?.monitorsSummary?.monitors ?? []}
                       filteredBy="name"
-                      value={search}
+                      inputValue={search}
                       handleInputChange={handleSearch}
                     />
                   </Box>

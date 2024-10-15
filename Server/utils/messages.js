@@ -86,6 +86,12 @@ const successMessages = {
   MONITOR_CERTIFICATE: "Got monitor certificate successfully",
   MONITOR_DEMO_ADDED: "Successfully added demo monitors",
 
+  // Queue Controller
+  QUEUE_GET_METRICS: "Got metrics successfully",
+  QUEUE_GET_METRICS: "Got job stats successfully",
+  QUEUE_ADD_JOB: "Job added successfully",
+  QUEUE_OBLITERATE: "Queue obliterated",
+
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",
   JOB_QUEUE_OBLITERATE: "Queue OBLITERATED!!!",
@@ -93,9 +99,12 @@ const successMessages = {
   JOB_QUEUE_RESUME_JOB: "Job resumed successfully",
 
   //Maintenance Window Controller
+  MAINTENANCE_WINDOW_GET_BY_ID: "Got Maintenance Window by Id successfully",
   MAINTENANCE_WINDOW_CREATE: "Maintenance Window created successfully",
-  MAINTENANCE_WINDOW_GET_BY_USER:
-    "Got Maintenance Windows by User successfully",
+  MAINTENANCE_WINDOW_GET_BY_TEAM:
+    "Got Maintenance Windows by Team successfully",
+  MAINTENANCE_WINDOW_DELETE: "Maintenance Window deleted successfully",
+  MAINTENANCE_WINDOW_EDIT: "Maintenance Window edited successfully",
 
   //Ping Operations
   PING_SUCCESS: "Success",

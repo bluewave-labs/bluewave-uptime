@@ -1,5 +1,7 @@
 import store from "../store";
 const LOG_LEVEL = import.meta.env.VITE_APP_LOG_LEVEL || "debug";
+const NO_OP = () => {};
+
 class Logger {
   constructor() {
     let logLevel = LOG_LEVEL;
@@ -11,29 +13,37 @@ class Logger {
   }
 
   updateLogLevel(logLevel) {
-    const NO_OP = () => {};
-
     if (logLevel === "none") {
+      this.info = NO_OP;
       this.error = NO_OP;
       this.warn = NO_OP;
       this.log = NO_OP;
       return;
     }
 
-    this.error = console.error.bind(console);
-
     if (logLevel === "error") {
+      this.error = console.error.bind(console);
+      this.info = NO_OP;
       this.warn = NO_OP;
       this.log = NO_OP;
       return;
     }
-    this.warn = console.warn.bind(console);
 
     if (logLevel === "warn") {
+      this.error = console.error.bind(console);
+      this.warn = console.warn.bind(console);
+      this.info = NO_OP;
       this.log = NO_OP;
       return;
     }
-    this.log = console.log.bind(console);
+
+    if (logLevel === "info") {
+      this.error = console.error.bind(console);
+      this.warn = console.warn.bind(console);
+      this.info = console.info.bind(console);
+      this.log = NO_OP;
+      return;
+    }
   }
 
   cleanup() {

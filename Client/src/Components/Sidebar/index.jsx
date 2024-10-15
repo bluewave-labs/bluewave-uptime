@@ -41,6 +41,9 @@ import ArrowUp from "../../assets/icons/up-arrow.svg?react";
 import ArrowRight from "../../assets/icons/right-arrow.svg?react";
 import ArrowLeft from "../../assets/icons/left-arrow.svg?react";
 import DotsVertical from "../../assets/icons/dots-vertical.svg?react";
+import ChangeLog from "../../assets/icons/changeLog.svg?react";
+import Docs from "../../assets/icons/docs.svg?react";
+import Folder from "../../assets/icons/folder.svg?react";
 
 import "./index.css";
 
@@ -55,7 +58,7 @@ const menu = [
   },
   { name: "Incidents", path: "incidents", icon: <Incidents /> },
   // { name: "Status pages", path: "status", icon: <StatusPages /> },
-  // { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
+  { name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
   // { name: "Integrations", path: "integrations", icon: <Integrations /> },
   {
     name: "Account",
@@ -66,12 +69,30 @@ const menu = [
       { name: "Team", path: "account/team", icon: <TeamSvg /> },
     ],
   },
+  {
+    name: "Other",
+    icon: <Folder />,
+    nested: [
+      { name: "Settings", path: "settings", icon: <Settings /> },
+      { name: "Support", path: "support", icon: <Support /> },
+      { name: "Docs", path: "docs", icon: <Docs /> },
+      { name: "Changelog", path: "changelog", icon: <ChangeLog /> },
+    ],
+  },
 ];
 
-const other = [
-  { name: "Support", path: "support", icon: <Support /> },
-  { name: "Settings", path: "settings", icon: <Settings /> },
-];
+const URL_MAP = {
+  support: "https://github.com/bluewave-labs/bluewave-uptime/issues",
+  docs: "https://bluewavelabs.gitbook.io/uptime-manager",
+  changelog: "https://github.com/bluewave-labs/bluewave-uptime/releases",
+};
+
+const PATH_MAP = {
+  monitors: "Dashboard",
+  pagespeed: "Dashboard",
+  account: "Account",
+  settings: "Other",
+};
 
 /**
  * @component
@@ -87,7 +108,7 @@ function Sidebar() {
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const collapsed = useSelector((state) => state.ui.sidebar.collapsed);
-  const [open, setOpen] = useState({ Dashboard: false, Account: false });
+  const [open, setOpen] = useState({ Dashboard: false, Account: false, Other: false });
   const [anchorEl, setAnchorEl] = useState(null);
   const [popup, setPopup] = useState();
   const { user } = useSelector((state) => state.auth);
@@ -120,13 +141,13 @@ function Sidebar() {
   };
 
   useEffect(() => {
-    if (
-      location.pathname.includes("monitors") ||
-      location.pathname.includes("pagespeed")
-    )
-      setOpen((prev) => ({ ...prev, Dashboard: true }));
-    else if (location.pathname.includes("/account"))
-      setOpen((prev) => ({ ...prev, Account: true }));
+    const matchedKey = Object.keys(PATH_MAP).find((key) =>
+      location.pathname.includes(key)
+    );
+
+    if (matchedKey) {
+      setOpen((prev) => ({ ...prev, [PATH_MAP[matchedKey]]: true }));
+    }
   }, []);
 
   return (
@@ -202,7 +223,9 @@ function Sidebar() {
             },
           }}
           onClick={() => {
-            setOpen({ Dashboard: false, Account: false });
+            setOpen(prev => 
+              Object.fromEntries(Object.keys(prev).map(key => [key, false]))
+            )
             dispatch(toggleSidebar());
           }}
         >
@@ -346,7 +369,12 @@ function Sidebar() {
                       }
                       key={child.path}
                       onClick={() => {
-                        navigate(`/${child.path}`);
+                        const url = URL_MAP[child.path];
+                        if (url) {
+                          window.open(url, "_blank", "noreferrer");
+                        } else {
+                          navigate(`/${child.path}`);
+                        }
                         closePopup();
                       }}
                       sx={{
@@ -372,8 +400,8 @@ function Sidebar() {
               <ListItemButton
                 onClick={() =>
                   setOpen((prev) => ({
-                    ...prev,
-                    [`${item.name}`]: !prev[`${item.name}`],
+                    ...Object.fromEntries(Object.keys(prev).map(key => [key, false])),
+                    [item.name]: !prev[item.name]
                   }))
                 }
                 sx={{
@@ -409,7 +437,14 @@ function Sidebar() {
                             : ""
                         }
                         key={child.path}
-                        onClick={() => navigate(`/${child.path}`)}
+                        onClick={() => {
+                          const url = URL_MAP[child.path];
+                          if (url) {
+                            window.open(url, "_blank", "noreferrer");
+                          } else {
+                            navigate(`/${child.path}`);
+                          }
+                        }}
                         sx={{
                           gap: theme.spacing(4),
                           borderRadius: theme.shape.borderRadius,
@@ -454,70 +489,6 @@ function Sidebar() {
             </React.Fragment>
           )
         )}
-      </List>
-      <Divider sx={{ my: theme.spacing(4) }} />
-      {/* other */}
-      <List
-        component="nav"
-        aria-labelledby="nested-other-subheader"
-        subheader={
-          <ListSubheader
-            component="div"
-            id="nested-other-subheader"
-            sx={{
-              pt: theme.spacing(4),
-              px: collapsed ? 0 : theme.spacing(4),
-              backgroundColor: "transparent",
-            }}
-          >
-            Other
-          </ListSubheader>
-        }
-        sx={{ px: theme.spacing(6) }}
-      >
-        {other.map((item) => (
-          <Tooltip
-            key={item.path}
-            placement="right"
-            title={collapsed ? item.name : ""}
-            slotProps={{
-              popper: {
-                modifiers: [
-                  {
-                    name: "offset",
-                    options: {
-                      offset: [0, -16],
-                    },
-                  },
-                ],
-              },
-            }}
-            disableInteractive
-          >
-            <ListItemButton
-              className={
-                location.pathname.includes(item.path) ? "selected-path" : ""
-              }
-              onClick={() =>
-                item.path === "support"
-                  ? window.open(
-                      "https://github.com/bluewave-labs/bluewave-uptime/issues",
-                      "_blank",
-                      "noreferrer"
-                    )
-                  : navigate(`/${item.path}`)
-              }
-              sx={{
-                gap: theme.spacing(4),
-                borderRadius: theme.shape.borderRadius,
-                px: theme.spacing(4),
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 0 }}>{item.icon}</ListItemIcon>
-              <ListItemText>{item.name}</ListItemText>
-            </ListItemButton>
-          </Tooltip>
-        ))}
       </List>
       <Divider sx={{ mt: "auto" }} />
 
@@ -632,7 +603,7 @@ function Sidebar() {
             </MenuItem>
           )}
           {collapsed && <Divider />}
-          <MenuItem
+          {/* <MenuItem
             onClick={() => {
               dispatch(setMode("light"));
               closePopup();
@@ -647,7 +618,7 @@ function Sidebar() {
             }}
           >
             Dark
-          </MenuItem>
+          </MenuItem> */}
           <Divider />
           <MenuItem
             onClick={logout}
