@@ -1,11 +1,11 @@
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Button, Modal, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-const Dialog = ({ arialabelledby, ariadescribedby,
-    open, onClose, bdy1, yBtnLbl, yBtnOnClick, nBtnLbl, nBtnOnClick, theme, isLoading, bdy2 }) => {
+const Dialog = ({ modelTitle, modelDescription,
+    open, onClose, title, confirmationBtnLbl, confirmationBtnOnClick, cancelBtnLbl, cancelBtnOnClick, theme, isLoading, description }) => {
     return <Modal
-        aria-labelledby={arialabelledby}
-        aria-describedby={ariadescribedby}
+        aria-labelledby={modelTitle}
+        aria-describedby={modelDescription}
         open={open}
         onClose={onClose} >
         <Stack
@@ -27,14 +27,14 @@ const Dialog = ({ arialabelledby, ariadescribedby,
                 },
             }}
         >
-            <Typography id={arialabelledby} component="h2"
+            <Typography id={modelTitle} component="h2"
                 fontSize={16}
                 color={theme.palette.text.primary}
                 fontWeight={600}>
-                {bdy1}
+                {title}
             </Typography>
-            {bdy2 && <Typography id={ariadescribedby} color={theme.palette.text.tertiary}>
-                {bdy2}
+            {description && <Typography id={modelDescription} color={theme.palette.text.tertiary}>
+                {description}
             </Typography>}
             <Stack
                 direction="row"
@@ -45,36 +45,36 @@ const Dialog = ({ arialabelledby, ariadescribedby,
                 <Button
                     variant="text"
                     color="info"
-                    onClick={nBtnOnClick}
+                    onClick={cancelBtnOnClick}
                 >
-                    {nBtnLbl}
+                    {cancelBtnLbl}
                 </Button>
                 <LoadingButton
                     variant="contained"
                     color="error"
                     loading= {isLoading}
-                    onClick={yBtnOnClick}
+                    onClick={confirmationBtnOnClick}
                 >
-                    {yBtnLbl}
+                    {confirmationBtnLbl}
                 </LoadingButton>
             </Stack>
         </Stack>
     </Modal>
 }
 
-Dialog.prototypes = {
-    arialabelledby: PropTypes.string.isRequired,
-    ariadescribedby: PropTypes.string.isRequired,
+Dialog.PropTypes = {
+    modelTitle: PropTypes.string.isRequired,
+    modelDescription: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    bdy1: PropTypes.string.isRequired,
-    nBtnLbl: PropTypes.string.isRequired,
-    nBtnOnClick: PropTypes.func.isRequired,
-    yBtnLbl: PropTypes.string.isRequired,
-    yBtnOnClick: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    confirmationBtnLbl: PropTypes.string.isRequired,
+    confirmationBtnOnClick: PropTypes.func.isRequired,
+    cancelBtnLbl: PropTypes.string.isRequired,
+    cancelBtnOnClick: PropTypes.func.isRequired,
     theme: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    bdy2: PropTypes.string    
+    description: PropTypes.string    
 }
 
 export default Dialog

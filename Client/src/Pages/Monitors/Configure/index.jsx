@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Box, Button, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
@@ -24,6 +24,7 @@ import PulseDot from "../../../Components/Animated/PulseDot";
 import SkeletonLayout from "./skeleton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
+import Dialog from "../../../Components/Dialog";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -447,71 +448,21 @@ const Configure = () => {
           </Stack>
         </>
       )}
-      <Modal
-        aria-labelledby="modal-delete-monitor"
-        aria-describedby="delete-monitor-confirmation"
+      <Dialog
+        modelTitle="modal-delete-monitor"
+        modelDescription="delete-monitor-confirmation"
         open={isOpen}
         onClose={() => setIsOpen(false)}
-        disablePortal
+        title="Do you really want to delete this monitor?"
+        confirmationBtnLbl="Delete"
+        confirmationBtnOnClick={handleRemove}
+        cancelBtnLbl="Cancel"
+        cancelBtnOnClick={() => setIsOpen(false)}
+        theme={theme}
+        isLoading={isLoading}
+        description="Once deleted, this monitor cannot be retrieved."
       >
-        <Stack
-          gap={theme.spacing(2)}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: theme.palette.background.main,
-            border: 1,
-            borderColor: theme.palette.border.light,
-            borderRadius: theme.shape.borderRadius,
-            boxShadow: 24,
-            p: theme.spacing(15),
-            "&:focus": {
-              outline: "none",
-            },
-          }}
-        >
-          <Typography
-            id="modal-delete-monitor"
-            component="h2"
-            fontSize={16}
-            color={theme.palette.text.primary}
-            fontWeight={600}
-          >
-            Do you really want to delete this monitor?
-          </Typography>
-          <Typography
-            id="delete-monitor-confirmation"
-            color={theme.palette.text.tertiary}
-          >
-            Once deleted, this monitor cannot be retrieved.
-          </Typography>
-          <Stack
-            direction="row"
-            gap={theme.spacing(4)}
-            mt={theme.spacing(12)}
-            justifyContent="flex-end"
-          >
-            <Button
-              variant="text"
-              color="info"
-              onClick={() => setIsOpen(false)}
-            >
-              Cancel
-            </Button>
-            <LoadingButton
-              variant="contained"
-              color="error"
-              loading={isLoading}
-              onClick={handleRemove}
-            >
-              Delete
-            </LoadingButton>
-          </Stack>
-        </Stack>
-      </Modal>
+      </Dialog>
     </Stack>
   );
 };
