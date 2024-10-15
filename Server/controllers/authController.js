@@ -34,6 +34,24 @@ const issueToken = (payload, appSettings) => {
 };
 
 /**
+ * Creates and returns a JWT refresh token with an arbitrary payload
+ * @function
+ * @param {Object} payload - Here we have passed MongoDB assigned _id.
+ * @param {Object} appSettings
+ * @returns {String}
+ * @throws {Error}
+ */
+const issueRefreshToken = (payload, appSettings) => {
+  try {
+    const tokenTTL = appSettings.refreshTokenTTL ? appSettings.refreshTokenTTL : "7d";
+    return jwt.sign({ id: payload }, appSettings.refreshTokenSecret, { expiresIn: tokenTTL });
+  } catch (error) {
+    throw handleError(error, SERVICE_NAME, "issueRefreshToken");
+  }
+};
+
+
+/**
  * Registers a new user. If the user is the first account, a JWT secret is created. If not, an invite token is required.
  * @async
  * @param {Object} req - The Express request object.
@@ -81,6 +99,7 @@ const registerUser = async (req, res, next) => {
     const appSettings = await req.settingsService.getSettings();
 
     const token = issueToken(userForToken, appSettings);
+    const refreshToken = issueRefreshToken(userForToken._id, appSettings);
 
     req.emailService
       .buildAndSendEmail(
@@ -99,7 +118,7 @@ const registerUser = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_CREATE_USER,
-      data: { user: newUser, token: token },
+      data: { user: newUser, token: token, refreshToken: refreshToken },
     });
   } catch (error) {
     console.log("ERROR", error);
@@ -147,13 +166,14 @@ const loginUser = async (req, res, next) => {
     // Happy path, return token
     const appSettings = await req.settingsService.getSettings();
     const token = issueToken(userWithoutPassword, appSettings);
+    const refreshToken = issueRefreshToken(userWithoutPassword._id, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
     return res.status(200).json({
       success: true,
       msg: successMessages.AUTH_LOGIN_USER,
-      data: { user: userWithoutPassword, token: token },
+      data: { user: userWithoutPassword, token: token, refreshToken: refreshToken },
     });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "loginController"));
