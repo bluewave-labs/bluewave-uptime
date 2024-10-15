@@ -48,4 +48,42 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-module.exports = { verifyJWT };
+/**
+ * Verifies the Refresh token
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @property {Object} req.body - The Refresh Token will be passed in body of the request.
+ * @returns {express.Response}
+ */
+const verifyRefreshToken = (req, res, next) => {
+  const { refreshToken } = req.body;
+  // Make sure a token is provided
+  if (!refreshToken) {
+    const error = new Error(errorMessages.NO_REFRESH_TOKEN);
+    error.status = 401;
+    error.service = SERVICE_NAME;
+    error.method = "verifyRefreshToken";
+    next(error);
+    return;
+  }
+
+  // Verify the token's authenticity
+  const { refreshTokenSecret } = req.settingsService.getSettings();
+  jwt.verify(refreshToken, refreshTokenSecret, (err, decoded) => {
+    if (err) {
+      const errorMessage =
+        err.name === "TokenExpiredError"
+          ? errorMessages.EXPIRED_REFRESH_TOKEN
+          : errorMessages.INVALID_REFRESH_TOKEN;
+      return res.status(401).json({ success: false, msg: errorMessage });
+    }
+
+    // Add the user to the request object for use in the route
+    req.user = decoded;
+    next();
+  });
+};
+
+module.exports = { verifyJWT, verifyRefreshToken };
