@@ -13,6 +13,9 @@ const errorMessages = {
   NO_AUTH_TOKEN: "No auth token provided",
   INVALID_AUTH_TOKEN: "Invalid auth token",
   EXPIRED_AUTH_TOKEN: "Token expired",
+  NO_REFRESH_TOKEN: "No refresh token provided",
+  INVALID_REFRESH_TOKEN: "Invalid refresh token",
+  EXPIRED_REFRESH_TOKEN: "Refresh token expired",
 
   //Ownership Middleware
   VERIFY_OWNER_NOT_FOUND: "Document not found",
@@ -68,6 +71,9 @@ const successMessages = {
   AUTH_RESET_PASSWORD: "Password reset successfully",
   AUTH_ADMIN_CHECK: "Admin check completed successfully",
   AUTH_DELETE_USER: "User deleted successfully",
+
+  // Refresh Token Controller
+  NEW_ACCESS_TOKEN_CREATED: "New access token generated successfully",
 
   // Check Controller
   CHECK_CREATE: "Check created successfully",
