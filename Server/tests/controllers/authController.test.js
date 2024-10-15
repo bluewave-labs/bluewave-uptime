@@ -1,4 +1,4 @@
-const {
+import {
   issueToken,
   registerUser,
   loginUser,
@@ -9,16 +9,16 @@ const {
   resetPassword,
   deleteUser,
   getAllUsers,
-} = require("../../controllers/authController");
-const jwt = require("jsonwebtoken");
-const { errorMessages, successMessages } = require("../../utils/messages");
-const sinon = require("sinon");
-const logger = require("../../utils/logger");
+} from "../../controllers/authController.js";
+import jwt from "jsonwebtoken";
+import { errorMessages, successMessages } from "../../utils/messages.js";
+import sinon from "sinon";
+import logger from "../../utils/logger.js";
 
 describe("Auth Controller - issueToken", () => {
   it("should reject with an error if jwt.sign fails", () => {
     const error = new Error("jwt.sign error");
-    stub = sinon.stub(jwt, "sign").throws(error);
+    const stub = sinon.stub(jwt, "sign").throws(error);
     const payload = { id: "123" };
     const appSettings = { jwtSecret: "my_secret" };
     expect(() => issueToken(payload, appSettings)).to.throw(error);
@@ -41,6 +41,7 @@ describe("Auth Controller - issueToken", () => {
 });
 
 describe("Auth Controller - registerUser", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: {
@@ -167,6 +168,7 @@ describe("Auth Controller - registerUser", () => {
 });
 
 describe("Auth Controller - loginUser", () => {
+  let req, res, next, user;
   beforeEach(() => {
     req = {
       body: { email: "test@example.com", password: "Password123!" },
@@ -241,6 +243,7 @@ describe("Auth Controller - loginUser", () => {
 });
 
 describe("Auth Controller - editUser", async () => {
+  let req, res, next, stub, user;
   beforeEach(() => {
     req = {
       params: { userId: "123" },
@@ -371,6 +374,7 @@ describe("Auth Controller - editUser", async () => {
 });
 
 describe("Auth Controller - checkSuperadminExists", async () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       db: {
@@ -420,7 +424,8 @@ describe("Auth Controller - checkSuperadminExists", async () => {
   });
 });
 
-describe("Auth Controller - requestRecovery", async () => {
+describe("Auth Controller - requestRecovery", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: { email: "test@test.com" },
@@ -505,7 +510,8 @@ describe("Auth Controller - requestRecovery", async () => {
   });
 });
 
-describe("Auth Controller - validateRecovery", async () => {
+describe("Auth Controller - validateRecovery", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: { recoveryToken: "recovery-token" },
@@ -552,7 +558,8 @@ describe("Auth Controller - validateRecovery", async () => {
   });
 });
 
-describe("Auth Controller - resetPassword", async () => {
+describe("Auth Controller - resetPassword", () => {
+  let req, res, next, newPasswordValidation, handleValidationError, handleError;
   beforeEach(() => {
     req = {
       body: {
@@ -618,7 +625,8 @@ describe("Auth Controller - resetPassword", async () => {
   });
 });
 
-describe("Auth Controller - deleteUser", async () => {
+describe("Auth Controller - deleteUser", () => {
+  let req, res, next, handleError;
   beforeEach(() => {
     req = {
       headers: {
@@ -753,7 +761,9 @@ describe("Auth Controller - deleteUser", async () => {
   });
 });
 
-describe("Auth Controller - getAllUsers", async () => {
+describe("Auth Controller - getAllUsers", () => {
+  let req, res, next;
+
   beforeEach(() => {
     req = {
       db: {
@@ -765,7 +775,6 @@ describe("Auth Controller - getAllUsers", async () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
 
   afterEach(() => {

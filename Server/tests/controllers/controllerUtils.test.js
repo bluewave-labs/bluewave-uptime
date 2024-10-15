@@ -1,7 +1,7 @@
-const {
+import {
   handleValidationError,
   handleError,
-} = require("../../controllers/controllerUtils");
+} from "../../controllers/controllerUtils.js";
 
 describe("controllerUtils - handleValidationError", () => {
   it("should set status to 422", () => {

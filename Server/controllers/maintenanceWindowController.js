@@ -161,7 +161,7 @@ const editMaintenanceWindow = async (req, res, next) => {
   }
 };
 
-export default {
+export {
   createMaintenanceWindows,
   getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,

@@ -56,9 +56,4 @@ const obliterateQueue = async (req, res, next) => {
   }
 };
 
-export default {
-  getMetrics,
-  getJobs,
-  addJob,
-  obliterateQueue,
-};
+export { getMetrics, getJobs, addJob, obliterateQueue };

@@ -14,7 +14,7 @@ import jwt from "jsonwebtoken";
 import { getTokenFromHeaders } from "../utils/utils.js";
 import crypto from "crypto";
 import { handleValidationError, handleError } from "./controllerUtils.js";
-
+const SERVICE_NAME = "authController";
 dotenv.config();
 
 /**
@@ -430,7 +430,7 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const allUsers = await req.db.getAllUsers(req, res);
     res

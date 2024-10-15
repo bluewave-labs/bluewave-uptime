@@ -39,7 +39,4 @@ const updateAppSettings = async (req, res, next) => {
   }
 };
 
-export default {
-  getAppSettings,
-  updateAppSettings,
-};
+export { getAppSettings, updateAppSettings };

@@ -477,7 +477,7 @@ const addDemoMonitors = async (req, res, next) => {
   }
 };
 
-export default {
+export {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorCertificate,
