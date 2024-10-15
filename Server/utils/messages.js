@@ -86,6 +86,12 @@ const successMessages = {
   MONITOR_CERTIFICATE: "Got monitor certificate successfully",
   MONITOR_DEMO_ADDED: "Successfully added demo monitors",
 
+  // Queue Controller
+  QUEUE_GET_METRICS: "Got metrics successfully",
+  QUEUE_GET_METRICS: "Got job stats successfully",
+  QUEUE_ADD_JOB: "Job added successfully",
+  QUEUE_OBLITERATE: "Queue obliterated",
+
   //Job Queue
   JOB_QUEUE_DELETE_JOB: "Job removed successfully",
   JOB_QUEUE_OBLITERATE: "Queue OBLITERATED!!!",

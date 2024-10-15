@@ -15,7 +15,7 @@ import {
 import { update } from "../../Features/Auth/authSlice";
 import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { setTimezone } from "../../Features/UI/uiSlice";
+import { setTimezone, setMode } from "../../Features/UI/uiSlice";
 import timezones from "../../Utils/timezones.json";
 import { useState } from "react";
 import { ConfigBox } from "./styled";
@@ -33,6 +33,7 @@ const Settings = ({ isAdmin }) => {
   const { isLoading } = useSelector((state) => state.uptimeMonitors);
   const { isLoading: authIsLoading } = useSelector((state) => state.auth);
   const { timezone } = useSelector((state) => state.ui);
+  const {mode} = useSelector((state) => state.ui);
   const [checksIsLoading, setChecksIsLoading] = useState(false);
   const [form, setForm] = useState({
     ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
@@ -186,6 +187,26 @@ const Settings = ({ isAdmin }) => {
               }}
               items={timezones}
             />
+          </Stack>
+        </ConfigBox>
+        <ConfigBox>
+          <Box>
+            <Typography component="h1">Appearance</Typography>
+            <Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(2) }}>
+              Switch between light and dark mode.
+            </Typography>
+          </Box>
+          <Stack gap={theme.spacing(20)}>
+            <Select
+              id="theme-mode"
+              label="Theme Mode"
+              value={mode}
+              onChange={(e) => {
+                dispatch(setMode(e.target.value));
+              }}
+              items={[{_id:'light', name:'Light'},{_id:'dark', name:'Dark'}]}
+            >
+            </Select>
           </Stack>
         </ConfigBox>
         {isAdmin && (

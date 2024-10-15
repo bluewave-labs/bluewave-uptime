@@ -84,7 +84,7 @@ const getMaintenanceWindowsByTeamId = async (req, res, next) => {
       req.query
     );
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_GET_BY_TEAM,
       data: maintenanceWindows,
@@ -109,7 +109,7 @@ const getMaintenanceWindowsByMonitorId = async (req, res, next) => {
       req.params.monitorId
     );
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_GET_BY_USER,
       data: maintenanceWindows,
@@ -128,7 +128,7 @@ const deleteMaintenanceWindow = async (req, res, next) => {
   }
   try {
     await req.db.deleteMaintenanceWindowById(req.params.id);
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       msg: successMessages.MAINTENANCE_WINDOW_DELETE,
     });
