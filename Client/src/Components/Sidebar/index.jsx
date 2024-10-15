@@ -173,32 +173,39 @@ function Sidebar() {
       }}
     >
       <Stack pt={theme.spacing(6)} pb={theme.spacing(12)} pl={theme.spacing(8)}>
-        <Stack direction="row" alignItems="center" gap={theme.spacing(4)}>
-          <Stack
-            justifyContent="center"
-            alignItems="center"
-            minWidth={theme.spacing(16)}
-            minHeight={theme.spacing(16)}
-            pl="1px"
-            fontSize={18}
-            color="white"
-            sx={{
-              position: "relative",
-              backgroundColor: theme.palette.primary.main,
-              borderRadius: theme.shape.borderRadius,
-              userSelect: "none",
-            }}
-          >
-            BU
+        <a 
+          href="https://github.com/bluewave-labs/bluewave-uptime" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Stack direction="row" alignItems="center" gap={theme.spacing(4)}>
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              minWidth={theme.spacing(16)}
+              minHeight={theme.spacing(16)}
+              pl="1px"
+              fontSize={18}
+              color="white"
+              sx={{
+                position: "relative",
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: theme.shape.borderRadius,
+                userSelect: "none",
+              }}
+            >
+              BU
+            </Stack>
+            <Typography
+              component="span"
+              mt={theme.spacing(2)}
+              sx={{ opacity: 0.8, fontWeight: 500 }}
+            >
+              BlueWave Uptime
+            </Typography>
           </Stack>
-          <Typography
-            component="span"
-            mt={theme.spacing(2)}
-            sx={{ opacity: 0.8, fontWeight: 500 }}
-          >
-            BlueWave Uptime
-          </Typography>
-        </Stack>
+        </a>
         <IconButton
           sx={{
             position: "absolute",
