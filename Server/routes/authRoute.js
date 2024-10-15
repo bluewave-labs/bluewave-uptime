@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { verifyJWT } = require("../middleware/verifyJWT");
+const { verifyJWT, verifyRefreshToken } = require("../middleware/verifyJWT");
 const { verifyOwnership } = require("../middleware/verifyOwnership");
 const { isAllowed } = require("../middleware/isAllowed");
 const multer = require("multer");
@@ -9,6 +9,7 @@ const User = require("../db/models/User");
 const {
   registerUser,
   loginUser,
+  refreshJwtToken,
   editUser,
   requestRecovery,
   validateRecovery,
@@ -21,6 +22,7 @@ const {
 //Auth routes
 router.post("/register", upload.single("profileImage"), registerUser);
 router.post("/login", loginUser);
+router.post("/refresh", verifyRefreshToken, refreshJwtToken);
 router.put(
   "/user/:userId",
   upload.single("profileImage"),

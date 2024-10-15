@@ -181,6 +181,31 @@ const loginUser = async (req, res, next) => {
 };
 
 /**
+ * Refreshes the JWT token using refresh token.
+ * If we are here, then the refresh token is valid.
+ * @async
+ * @param {express.Request} req - The Express request object.
+ * @property {Object} req.body - The body of the request.
+ * @param {express.Response} res - The Express response object.
+ * @param {express.NextFunction} next - The next middleware function.
+ * @returns {Object} The response object with a new jwt token.
+ */
+const refreshJwtToken = async (req, res, next) => {
+  try {
+    const appSettings = await req.settingsService.getSettings();
+    const newToken = issueToken({user : req.user}, appSettings);
+
+    return res.status(200).json({
+      success: true,
+      msg: successMessages.NEW_ACCESS_TOKEN_CREATED,
+      data: { user: req.user, token: newToken },
+    });
+  } catch (error) {
+    next(handleError(error, SERVICE_NAME, "refreshTokenController"));
+  }
+}
+
+/**
  * Edits a user's information. If the user wants to change their password, the current password is checked before updating to the new password.
  * @async
  * @param {Object} req - The Express request object.
@@ -464,6 +489,7 @@ module.exports = {
   issueToken,
   registerUser,
   loginUser,
+  refreshJwtToken,
   editUser,
   checkSuperadminExists: checkSuperAdminExists,
   requestRecovery,
