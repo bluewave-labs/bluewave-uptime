@@ -59,7 +59,7 @@ const Settings = ({ isAdmin }) => {
 			}
 		};
 		fetchLatestVersion();
-	});
+	},[]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
