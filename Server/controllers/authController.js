@@ -44,7 +44,7 @@ const issueToken = (payload, appSettings) => {
 const issueRefreshToken = (payload, appSettings) => {
   try {
     const tokenTTL = appSettings.refreshTokenTTL ? appSettings.refreshTokenTTL : "7d";
-    return jwt.sign({ id: payload }, appSettings.refreshTokenSecret, { expiresIn: tokenTTL });
+    return jwt.sign(payload, appSettings.refreshTokenSecret, { expiresIn: tokenTTL });
   } catch (error) {
     throw handleError(error, SERVICE_NAME, "issueRefreshToken");
   }
@@ -99,7 +99,7 @@ const registerUser = async (req, res, next) => {
     const appSettings = await req.settingsService.getSettings();
 
     const token = issueToken(userForToken, appSettings);
-    const refreshToken = issueRefreshToken(userForToken._id, appSettings);
+    const refreshToken = issueRefreshToken(userForToken, appSettings);
 
     req.emailService
       .buildAndSendEmail(
@@ -166,7 +166,7 @@ const loginUser = async (req, res, next) => {
     // Happy path, return token
     const appSettings = await req.settingsService.getSettings();
     const token = issueToken(userWithoutPassword, appSettings);
-    const refreshToken = issueRefreshToken(userWithoutPassword._id, appSettings);
+    const refreshToken = issueRefreshToken(userWithoutPassword, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
