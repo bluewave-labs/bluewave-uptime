@@ -12,36 +12,44 @@ import { ColoredLabel } from "../Label";
  * <HttpStatusLabel status=400 />
  */
 
+const getColors = (theme) => ({
+	500: {
+		textColor: theme.palette.error.main,
+	},
+	400: {
+		textColor: theme.palette.warning.text,
+	},
+    unresolved: {
+        textColor: theme.palette.info.text,
+    },
+});
+
+const getGenericStatus = (status) => {
+    if (typeof status === 'number' && status >= 100 && status < 600) {
+        return Math.floor(status / 100) * 100;
+    }
+    return "unresolved";
+};
+
 const HttpStatusLabel = ({ status }) => {
 	const theme = useTheme();
-	const colors = {
-		500: {
-			textColor: theme.palette.error.main,
-		},
-		400: {
-			textColor: theme.palette.warning.main,
-		},
-		unresolved: {
-			textColor: theme.palette.unresolved.main,
-		},
-	};
-
+	const colors = getColors(theme);
 	// Get the generic status code
-	const genericStatus = String(status)[0] * 100;
+	const genericStatus = getGenericStatus(status);
 	// Look up the color for the status
 	const { textColor } =
-		colors[genericStatus] || colors["unresolved"];
+		colors[genericStatus] || colors.unresolved;
 
 	return (
 		<ColoredLabel
-			label={String(status)}
+			label={status}
 			color={textColor}
 		/>
 	);
 };
 
 HttpStatusLabel.propTypes = {
-	status: PropTypes.oneOf([400, 500, 5000, "unresolved"]),
+	status: PropTypes.oneOfType([PropTypes.number]).isRequired,
 };
 
 export { HttpStatusLabel };
