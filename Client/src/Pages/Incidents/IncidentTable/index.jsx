@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import { StatusLabel } from "../../../Components/Label";
+import { HttpStatusLabel } from "../../../Components/HttpStatusLabel";
 import { logger } from "../../../Utils/Logger";
 import { useTheme } from "@emotion/react";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
@@ -183,7 +184,11 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                       </TableCell>
                       <TableCell>{formattedDate}</TableCell>
                       <TableCell>
-                        {check.statusCode ? check.statusCode : "N/A"}
+                        {check.statusCode ? (
+                          <HttpStatusLabel status={check.statusCode} />
+                        ) : (
+                          "N/A"
+                        )}
                       </TableCell>
                       <TableCell>{check.message}</TableCell>
                     </TableRow>
