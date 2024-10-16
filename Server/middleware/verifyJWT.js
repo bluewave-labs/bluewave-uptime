@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
 const { errorMessages } = require("../utils/messages");
+const { getTokenFromHeaders } = require("../utils/utils");
+const { handleError } = require("../controllers/controllerUtils");
+
 /**
  * Verifies the JWT token
  * @function
@@ -48,4 +51,57 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-module.exports = { verifyJWT };
+/**
+ * Verifies the Refresh token
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @property {Object} req.body - The Refresh Token & JWT Token will be passed in body of the request.
+ * @returns {express.Response}
+ */
+const verifyRefreshToken = (req, res, next) => {
+  try {
+    const jwtToken = getTokenFromHeaders(req.headers);
+    // Make sure a jwtToken is provided
+    if (!jwtToken) {
+      const error = new Error(errorMessages.NO_AUTH_TOKEN);
+      error.status = 401;
+      error.service = SERVICE_NAME;
+      error.method = "verifyRefreshToken";
+      next(error);
+      return;
+    }
+
+    const { refreshToken } = req.body;
+    // Make sure refreshTokens is provided
+    if (!refreshToken) {
+      const error = new Error(errorMessages.NO_REFRESH_TOKEN);
+      error.status = 401;
+      error.service = SERVICE_NAME;
+      error.method = "verifyRefreshToken";
+      next(error);
+      return;
+    }
+
+    // Verify the refreshToken's authenticity
+    const { refreshTokenSecret } = req.settingsService.getSettings();
+    jwt.verify(refreshToken, refreshTokenSecret, (err, decoded) => {
+      if (err) {
+        const errorMessage =
+          err.name === "TokenExpiredError"
+            ? errorMessages.EXPIRED_REFRESH_TOKEN
+            : errorMessages.INVALID_REFRESH_TOKEN;
+        return res.status(401).json({ success: false, msg: errorMessage });
+      }
+
+      // Authenticity of refreshToken is verified, now we can decode jwtToken for payload
+      req.user = jwt.decode(jwtToken);
+      next();
+    });
+  } catch (error) {
+    next(handleError(error, SERVICE_NAME, "verifyRefreshToken"));
+  }
+};
+
+module.exports = { verifyJWT, verifyRefreshToken };
