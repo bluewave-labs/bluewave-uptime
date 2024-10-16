@@ -17,6 +17,9 @@ const errorMessages = {
   INVALID_REFRESH_TOKEN: "Invalid refresh token",
   EXPIRED_REFRESH_TOKEN: "Refresh token expired",
 
+  //Payload
+  INVALID_PAYLOAD: "Invalid payload",
+
   //Ownership Middleware
   VERIFY_OWNER_NOT_FOUND: "Document not found",
   VERIFY_OWNER_UNAUTHORIZED: "Unauthorized access",

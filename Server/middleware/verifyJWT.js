@@ -96,7 +96,19 @@ const verifyRefreshToken = (req, res, next) => {
       }
 
       // Authenticity of refreshToken is verified, now we can decode jwtToken for payload
-      req.user = jwt.decode(jwtToken);
+      const jwtSecret = req.settingsService.getSettings().jwtSecret;
+      const decoded = jwt.verify(jwtToken, jwtSecret, { ignoreExpiration: true });
+
+      if (!decoded) {
+        const error = new Error(errorMessages.INVALID_PAYLOAD);
+        error.status = 401;
+        error.service = SERVICE_NAME;
+        error.method = "verifyRefreshToken";
+        next(error);
+        return;
+      }
+
+      req.user = decoded;
       next();
     });
   } catch (error) {
