@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { setTimezone, setMode } from "../../Features/UI/uiSlice";
 import timezones from "../../Utils/timezones.json";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { ConfigBox } from "./styled";
 import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
@@ -37,9 +37,29 @@ const Settings = ({ isAdmin }) => {
   const [form, setForm] = useState({
     ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
+  const [version,setVersion]=useState("unknown");
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  //Fetching latest release version from github
+  useEffect(() => {
+		const fetchLatestVersion = async () => {
+			let version="unknown";
+			try {
+				const response = await networkService.fetchGithubLatestRelease();
+				if (!response.status===200) {
+					throw new Error("Failed to fetch latest version");
+				}
+				version=response.data.tag_name;
+			} catch (error) {
+				createToast({ body: error.message || "Error fetching latest version" }); // Set error message
+			} finally{
+        setVersion(version);
+      }
+		};
+		fetchLatestVersion();
+	},[]);
 
   const handleChange = (event) => {
     const { value, id } = event.target;
@@ -299,7 +319,7 @@ const Settings = ({ isAdmin }) => {
             <Typography component="h1">About</Typography>
           </Box>
           <Box>
-            <Typography component="h2">BlueWave Uptime v1.0.0</Typography>
+            <Typography component="h2">BlueWave Uptime {version}</Typography>
             <Typography
               sx={{ mt: theme.spacing(2), mb: theme.spacing(6), opacity: 0.6 }}
             >
@@ -307,8 +327,8 @@ const Settings = ({ isAdmin }) => {
             </Typography>
             <Link
               level="secondary"
-              url="https://github.com/bluewave-labs"
-              label="https://github.com/bluewave-labs"
+              url="https://github.com/bluewave-labs/bluewave-uptime"
+              label="https://github.com/bluewave-labs/bluewave-uptime"
             />
           </Box>
         </ConfigBox>

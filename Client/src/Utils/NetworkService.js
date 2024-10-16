@@ -832,6 +832,20 @@ class NetworkService {
       }
     );
   }
+
+  /**
+   * ************************************
+   * Fetcher github latest release version
+   * ************************************
+   *
+   * @async
+   * @returns {Promise<AxiosResponse>} The response from the axios GET request.
+   *
+   */
+  async fetchGithubLatestRelease() {
+    return this.axiosInstance.get('https://api.github.com/repos/bluewave-labs/bluewave-uptime/releases/latest');
+  }
+
 }
 
 export default NetworkService;
