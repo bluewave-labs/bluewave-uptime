@@ -37,7 +37,7 @@ const Settings = ({ isAdmin }) => {
   const [form, setForm] = useState({
     ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
-  const [version,setVersion]=useState("");
+  const [version,setVersion]=useState("unknown");
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,18 +45,18 @@ const Settings = ({ isAdmin }) => {
   //Fetching latest release version from github
   useEffect(() => {
 		const fetchLatestVersion = async () => {
+			let version="unknown";
 			try {
-				const response = await fetch(
-					"https://api.github.com/repos/bluewave-labs/bluewave-uptime/releases/latest"
-				);
-				if (!response.ok) {
+				const response = await networkService.fetchGithubLatestRelease();
+				if (!response.status===200) {
 					throw new Error("Failed to fetch latest version");
 				}
-				const data = await response.json();
-				setVersion(data.tag_name); // Set the latest version number
+				version=response.data.tag_name;
 			} catch (error) {
 				createToast({ body: error.message || "Error fetching latest version" }); // Set error message
-			}
+			} finally{
+        setVersion(version);
+      }
 		};
 		fetchLatestVersion();
 	},[]);
