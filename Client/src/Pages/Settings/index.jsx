@@ -319,8 +319,7 @@ const Settings = ({ isAdmin }) => {
             <Typography component="h1">About</Typography>
           </Box>
           <Box>
-            <Typography component="h2">BlueWave Uptime v1.0.0</Typography>
-            <Typography component="h2">Latest Version: {version}</Typography>
+            <Typography component="h2">BlueWave Uptime {version}</Typography>
             <Typography
               sx={{ mt: theme.spacing(2), mb: theme.spacing(6), opacity: 0.6 }}
             >
