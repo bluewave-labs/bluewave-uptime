@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material";
-import { ColoredLabel } from "../Label";
+import { BaseLabel } from "../Label";
 
 /**
  * @component
@@ -14,13 +14,19 @@ import { ColoredLabel } from "../Label";
 
 const getColors = (theme) => ({
 	500: {
-		textColor: theme.palette.error.main,
+      textColor: theme.palette.error.text,
+      bgColor: theme.palette.error.bg,
+      borderColor: theme.palette.error.light,
 	},
 	400: {
-		textColor: theme.palette.warning.text,
+      textColor: theme.palette.warning.text,
+      bgColor: theme.palette.warning.bg,
+      borderColor: theme.palette.warning.light,
 	},
     unresolved: {
-        textColor: theme.palette.info.text,
+      textColor: theme.palette.unresolved.text,
+      bgColor: theme.palette.unresolved.bg,
+      borderColor: theme.palette.unresolved.light,
     },
 });
 
@@ -37,14 +43,18 @@ const HttpStatusLabel = ({ status }) => {
 	// Get the generic status code
 	const genericStatus = getGenericStatus(status);
 	// Look up the color for the status
-	const { textColor } =
+	const { textColor, bgColor, borderColor } =
 		colors[genericStatus] || colors.unresolved;
 
 	return (
-		<ColoredLabel
-			label={status}
-			color={textColor}
-		/>
+      <BaseLabel
+          label={status}
+          styles={{
+            color: textColor,
+            backgroundColor: bgColor,
+            borderColor: borderColor,
+          }}
+      />
 	);
 };
 
