@@ -45,7 +45,7 @@ const Monitors = ({ isAdmin }) => {
     monitorState?.monitorsSummary?.monitors?.length === 0;
 
   return (
-    <Stack className="monitors" gap={theme.spacing(8)}>
+    <Stack className="monitors table-container" gap={theme.spacing(8)}>
       {loading ? (
         <SkeletonLayout />
       ) : (
