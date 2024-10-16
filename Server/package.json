@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
-		"test": "nyc mocha",
+		"test": "c8 mocha",
 		"dev": "nodemon index.js"
 	},
 	"keywords": [],
@@ -29,7 +30,6 @@
 		"nodemailer": "^6.9.14",
 		"ping": "0.4.4",
 		"sharp": "0.33.4",
-		"ssl-checker": "2.0.10",
 		"swagger-ui-express": "5.0.1",
 		"winston": "^3.13.0"
 	},
