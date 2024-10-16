@@ -12,7 +12,7 @@ require("dotenv").config();
 const { errorMessages, successMessages } = require("../utils/messages");
 const jwt = require("jsonwebtoken");
 const SERVICE_NAME = "AuthController";
-const { getTokenFromHeaders } = require("../utils/utils");
+const { getTokenFromHeaders, tokenType } = require("../utils/utils");
 const crypto = require("crypto");
 const { handleValidationError, handleError } = require("./controllerUtils");
 
@@ -20,36 +20,30 @@ const { handleValidationError, handleError } = require("./controllerUtils");
  * Creates and returns JWT token with an arbitrary payload
  * @function
  * @param {Object} payload
+ * @param {tokenType} typeOfToken - Whether to generate refresh token with long TTL or access token with short TTL.
  * @param {Object} appSettings
  * @returns {String}
  * @throws {Error}
  */
-const issueToken = (payload, appSettings) => {
+const issueToken = (payload, typeOfToken, appSettings) => {
   try {
-    const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
-    return jwt.sign(payload, appSettings.jwtSecret, { expiresIn: tokenTTL });
+    let tokenSecret, tokenTTL, payloadData = {};
+
+    if(typeOfToken === tokenType.REFRESH_TOKEN) {
+      tokenSecret = appSettings.refreshTokenSecret;
+      tokenTTL = appSettings.refreshTokenTTL ? appSettings.refreshTokenTTL : "7d";
+    }
+    else {
+      tokenSecret = appSettings.jwtSecret;
+      tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
+      payloadData = payload;
+    }
+
+    return jwt.sign(payloadData, tokenSecret, { expiresIn: tokenTTL });
   } catch (error) {
     throw handleError(error, SERVICE_NAME, "issueToken");
   }
 };
-
-/**
- * Creates and returns a JWT refresh token with an arbitrary payload
- * @function
- * @param {Object} payload - Here we have passed MongoDB assigned _id.
- * @param {Object} appSettings
- * @returns {String}
- * @throws {Error}
- */
-const issueRefreshToken = (payload, appSettings) => {
-  try {
-    const tokenTTL = appSettings.refreshTokenTTL ? appSettings.refreshTokenTTL : "7d";
-    return jwt.sign(payload, appSettings.refreshTokenSecret, { expiresIn: tokenTTL });
-  } catch (error) {
-    throw handleError(error, SERVICE_NAME, "issueRefreshToken");
-  }
-};
-
 
 /**
  * Registers a new user. If the user is the first account, a JWT secret is created. If not, an invite token is required.
@@ -98,8 +92,8 @@ const registerUser = async (req, res, next) => {
 
     const appSettings = await req.settingsService.getSettings();
 
-    const token = issueToken(userForToken, appSettings);
-    const refreshToken = issueRefreshToken(userForToken, appSettings);
+    const token = issueToken(userForToken, tokenType.ACCESS_TOKEN, appSettings);
+    const refreshToken = issueToken({}, tokenType.REFRESH_TOKEN, appSettings);
 
     req.emailService
       .buildAndSendEmail(
@@ -165,8 +159,8 @@ const loginUser = async (req, res, next) => {
 
     // Happy path, return token
     const appSettings = await req.settingsService.getSettings();
-    const token = issueToken(userWithoutPassword, appSettings);
-    const refreshToken = issueRefreshToken(userWithoutPassword, appSettings);
+    const token = issueToken(userWithoutPassword, tokenType.ACCESS_TOKEN, appSettings);
+    const refreshToken = issueToken({}, tokenType.REFRESH_TOKEN, appSettings);
     // reset avatar image
     userWithoutPassword.avatarImage = user.avatarImage;
 
@@ -380,7 +374,7 @@ const resetPassword = async (req, res, next) => {
     const user = await req.db.resetPassword(req, res);
 
     const appSettings = await req.settingsService.getSettings();
-    const token = issueToken(user._doc, appSettings);
+    const token = issueToken(user._doc, tokenType.ACCESS_TOKEN, appSettings);
     res.status(200).json({
       success: true,
       msg: successMessages.AUTH_RESET_PASSWORD,
