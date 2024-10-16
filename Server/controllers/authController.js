@@ -27,17 +27,9 @@ const { handleValidationError, handleError } = require("./controllerUtils");
  */
 const issueToken = (payload, typeOfToken, appSettings) => {
   try {
-    let tokenSecret, tokenTTL, payloadData = {};
-
-    if(typeOfToken === tokenType.REFRESH_TOKEN) {
-      tokenSecret = appSettings.refreshTokenSecret;
-      tokenTTL = appSettings.refreshTokenTTL ? appSettings.refreshTokenTTL : "7d";
-    }
-    else {
-      tokenSecret = appSettings.jwtSecret;
-      tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
-      payloadData = payload;
-    }
+    const tokenTTL = (typeOfToken === tokenType.REFRESH_TOKEN) ? (appSettings?.refreshTokenTTL?? "7d") : (appSettings?.jwtTTL?? "2h");
+    const tokenSecret = (typeOfToken === tokenType.REFRESH_TOKEN) ? appSettings?.refreshTokenSecret : appSettings?.jwtSecret;
+    const payloadData = (typeOfToken === tokenType.REFRESH_TOKEN) ? {} : payload;
 
     return jwt.sign(payloadData, tokenSecret, { expiresIn: tokenTTL });
   } catch (error) {
