@@ -103,7 +103,6 @@ const registerUser = async (req, res, next) => {
 			data: { user: newUser, token: token },
 		});
 	} catch (error) {
-		console.log("ERROR", error);
 		next(handleError(error, SERVICE_NAME, "registerController"));
 	}
 };

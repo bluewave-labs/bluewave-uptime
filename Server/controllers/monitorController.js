@@ -77,7 +77,7 @@ const getMonitorStatsById = async (req, res, next) => {
 	}
 };
 
-const getMonitorCertificate = async (req, res, next) => {
+const getMonitorCertificate = async (req, res, next, fetchMonitorCertificate) => {
 	try {
 		await getCertificateParamValidation.validateAsync(req.params);
 	} catch (error) {

@@ -204,7 +204,7 @@ describe("controllerUtils - fetchMonitorCertificate", () => {
 		try {
 			await fetchMonitorCertificate(tls, monitor);
 		} catch (error) {
-			console.log(error);
+			expect(error.message).to.equal("Certificate error");
 		}
 	});
 });
