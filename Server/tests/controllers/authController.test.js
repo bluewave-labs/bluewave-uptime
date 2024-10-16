@@ -14,29 +14,61 @@ const jwt = require("jsonwebtoken");
 const { errorMessages, successMessages } = require("../../utils/messages");
 const sinon = require("sinon");
 const logger = require("../../utils/logger");
+const { tokenType } = require("../../utils/utils");
 
 describe("Auth Controller - issueToken", () => {
+  let stub;
+
+  afterEach(() => {
+    sinon.restore(); // Restore stubs after each test
+  });
+
   it("should reject with an error if jwt.sign fails", () => {
     const error = new Error("jwt.sign error");
     stub = sinon.stub(jwt, "sign").throws(error);
     const payload = { id: "123" };
     const appSettings = { jwtSecret: "my_secret" };
-    expect(() => issueToken(payload, appSettings)).to.throw(error);
-    stub.restore();
+    expect(() => issueToken(payload, tokenType.ACCESS_TOKEN, appSettings)).to.throw(error);
   });
 
-  it("should return a token if jwt.sign is successful and appSettings.jtwTTL is not defined", () => {
+  it("should return a token if jwt.sign is successful and appSettings.jwtTTL is not defined", () => {
     const payload = { id: "123" };
     const appSettings = { jwtSecret: "my_secret" };
-    const token = issueToken(payload, appSettings);
-    expect(token).to.be.a("string");
+    const expectedToken = "mockToken";
+
+    stub = sinon.stub(jwt, "sign").returns(expectedToken);
+    const token = issueToken(payload, tokenType.ACCESS_TOKEN, appSettings);
+    expect(token).to.equal(expectedToken);
   });
 
   it("should return a token if jwt.sign is successful and appSettings.jwtTTL is defined", () => {
     const payload = { id: "123" };
     const appSettings = { jwtSecret: "my_secret", jwtTTL: "1s" };
-    const token = issueToken(payload, appSettings);
-    expect(token).to.be.a("string");
+    const expectedToken = "mockToken";
+
+    stub = sinon.stub(jwt, "sign").returns(expectedToken);
+    const token = issueToken(payload, tokenType.ACCESS_TOKEN, appSettings);
+    expect(token).to.equal(expectedToken);
+  });
+
+  it("should return a refresh token if jwt.sign is successful and appSettings.refreshTokenTTL is not defined", () => {
+    const payload = {};
+    const appSettings = { refreshTokenSecret: "my_refresh_secret" };
+    const expectedToken = "mockRefreshToken";
+
+    stub = sinon.stub(jwt, "sign").returns(expectedToken);
+    const token = issueToken(payload, tokenType.REFRESH_TOKEN, appSettings);
+    expect(token).to.equal(expectedToken);
+  });
+
+  it("should return a refresh token if jwt.sign is successful and appSettings.refreshTokenTTL is defined", () => {
+    const payload = {};
+    const appSettings = { refreshTokenSecret: "my_refresh_secret", refreshTokenTTL: "7d" };
+    const expectedToken = "mockRefreshToken";
+
+    stub = sinon.stub(jwt, "sign").returns(expectedToken);
+    const token = issueToken(payload, tokenType.REFRESH_TOKEN, appSettings);
+    expect(token).to.equal(expectedToken);
   });
 });
 
@@ -61,6 +93,7 @@ describe("Auth Controller - registerUser", () => {
       settingsService: {
         getSettings: sinon.stub().resolves({
           jwtSecret: "my_secret",
+          refreshTokenSecret: "my_refresh_secret",
         }),
       },
       emailService: {
@@ -140,7 +173,6 @@ describe("Auth Controller - registerUser", () => {
     req.db.checkSuperadmin.resolves(false);
     req.db.updateAppSettings.resolves();
     req.db.insertUser.returns({ _id: "123" });
-    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
     req.emailService.buildAndSendEmail.rejects(new Error("emailService error"));
     await registerUser(req, res, next);
     expect(logger.error.calledOnce).to.be.true;
@@ -151,7 +183,6 @@ describe("Auth Controller - registerUser", () => {
     req.db.checkSuperadmin.resolves(false);
     req.db.updateAppSettings.resolves();
     req.db.insertUser.returns(user);
-    req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
     req.emailService.buildAndSendEmail.resolves("message-id");
     await registerUser(req, res, next);
     expect(res.status.calledWith(200)).to.be.true;
@@ -159,7 +190,7 @@ describe("Auth Controller - registerUser", () => {
       res.json.calledWith({
         success: true,
         msg: successMessages.AUTH_CREATE_USER,
-        data: { user, token: sinon.match.string },
+        data: { user, token: sinon.match.string, refreshToken: sinon.match.string },
       })
     ).to.be.true;
     expect(next.notCalled).to.be.true;
@@ -176,6 +207,7 @@ describe("Auth Controller - loginUser", () => {
       settingsService: {
         getSettings: sinon.stub().resolves({
           jwtSecret: "my_secret",
+          refreshTokenSecret: "my_refresh_token",
         }),
       },
     };
@@ -220,6 +252,7 @@ describe("Auth Controller - loginUser", () => {
             avatarImage: undefined,
           },
           token: sinon.match.string,
+          refreshToken: sinon.match.string,
         },
       })
     ).to.be.true;
