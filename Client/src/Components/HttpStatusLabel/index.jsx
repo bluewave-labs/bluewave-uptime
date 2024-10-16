@@ -5,7 +5,7 @@ import { ColoredLabel } from "../Label";
 /**
  * @component
  * @param {Object} props
- * @param { 400 | 500 | 5000 } props.status - The http status for the label
+ * @param { number } props.status - The http status for the label
  * @returns {JSX.Element}
  * @example
  * // Render an 400 http status code label
