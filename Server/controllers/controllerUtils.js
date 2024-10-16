@@ -1,6 +1,3 @@
-import sslChecker from "ssl-checker";
-import * as tls from "tls";
-
 const handleValidationError = (error, serviceName) => {
 	error.status = 422;
 	error.service = serviceName;
@@ -15,11 +12,11 @@ const handleError = (error, serviceName, method, status = 500) => {
 	return error;
 };
 
-const fetchMonitorCertificate = async (monitor) => {
+const fetchMonitorCertificate = async (tls, monitor) => {
 	return new Promise((resolve, reject) => {
+		const monitorUrl = new URL(monitor.url);
+		const hostname = monitorUrl.hostname;
 		try {
-			const monitorUrl = new URL(monitor.url);
-			const hostname = monitorUrl.hostname;
 			let socket = tls.connect(
 				{
 					port: 443,
@@ -37,34 +34,10 @@ const fetchMonitorCertificate = async (monitor) => {
 					}
 				}
 			);
-			socket.on("error", (error) => {
-				console.log(error);
-				reject(
-					new Error(
-						`TLS connection error while fetching certificate from ${error.hostname}`
-					)
-				);
-			});
 		} catch (error) {
 			reject(error);
 		}
 	});
 };
 
-const test = async () => {
-	let host = "httpbin.org";
-	console.log(cert.validTo);
-	let socket = tls.connect(
-		{
-			port: 443,
-			host,
-			servername: host, // this is required in case the server enabled SNI
-		},
-		() => {
-			let x509Certificate = socket.getPeerX509Certificate();
-			console.log(x509Certificate.validTo);
-		}
-	);
-};
-
-export { handleValidationError, handleError, fetchMonitorCertificate, test };
+export { handleValidationError, handleError, fetchMonitorCertificate };

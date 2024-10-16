@@ -12,6 +12,7 @@ import {
 	getMonitorStatsByIdQueryValidation,
 	getCertificateParamValidation,
 } from "../validation/joi.js";
+import * as tls from "tls";
 
 const SERVICE_NAME = "monitorController";
 import { errorMessages, successMessages } from "../utils/messages.js";
@@ -86,7 +87,7 @@ const getMonitorCertificate = async (req, res, next) => {
 	try {
 		const { monitorId } = req.params;
 		const monitor = await req.db.getMonitorById(monitorId);
-		const certificate = await fetchMonitorCertificate(monitor);
+		const certificate = await fetchMonitorCertificate(tls, monitor);
 		if (certificate && certificate.validTo) {
 			return res.status(200).json({
 				success: true,
