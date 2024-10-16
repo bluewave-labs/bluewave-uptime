@@ -62,7 +62,7 @@ const Dialog = ({ modelTitle, modelDescription,
     </Modal>
 }
 
-Dialog.PropTypes = {
+Dialog.propTypes = {
     modelTitle: PropTypes.string.isRequired,
     modelDescription: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,

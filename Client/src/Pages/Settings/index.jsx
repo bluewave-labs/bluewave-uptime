@@ -39,8 +39,8 @@ const Settings = ({ isAdmin }) => {
     ttl: checkTTL ? (checkTTL / SECONDS_PER_DAY).toString() : 0,
   });
   const [errors, setErrors] = useState({});
-  const delStatMntrInitState = { delMntrs: false, delSts: false };
-  const [isOpen, setIsOpen] = useState(delStatMntrInitState);  
+  const deleteStatsMonitorsInitState = { deleteMonitors: false, deleteStats: false };
+  const [isOpen, setIsOpen] = useState(deleteStatsMonitorsInitState);  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -123,7 +123,7 @@ const Settings = ({ isAdmin }) => {
       logger.error(error);
       createToast({ body: "Failed to clear stats" });
     } finally {
-      setIsOpen(delStatMntrInitState)
+      setIsOpen(deleteStatsMonitorsInitState)
     }
   };
 
@@ -153,7 +153,7 @@ const Settings = ({ isAdmin }) => {
       logger.error(error);
       createToast({ Body: "Failed to delete all monitors" });
     } finally {
-      setIsOpen(delStatMntrInitState)
+      setIsOpen(deleteStatsMonitorsInitState)
     }
   };
   
@@ -233,7 +233,7 @@ const Settings = ({ isAdmin }) => {
                 <Button
                   variant="contained"
                   color="error"                  
-                  onClick={()=>setIsOpen({delSts: true, delMntrs: false})}
+                  onClick={()=>setIsOpen({...deleteStatsMonitorsInitState, deleteStats: true})}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Clear all stats
@@ -243,13 +243,13 @@ const Settings = ({ isAdmin }) => {
             <Dialog
               modelTitle="model-clear-stats"
               modelDescription="clear-stats-confirmation"
-              open={isOpen.delSts}
-              onClose={() => setIsOpen(delStatMntrInitState)}
+              open={isOpen.deleteStats}
+              onClose={() => setIsOpen(deleteStatsMonitorsInitState)}
               title="Do you want to clear all stats?"
               confirmationBtnLbl="Yes, clear all stats"
               confirmationBtnOnClick={handleClearStats}
               cancelBtnLbl="Cancel"
-              cancelBtnOnClick={() => setIsOpen(delStatMntrInitState)}
+              cancelBtnOnClick={() => setIsOpen(deleteStatsMonitorsInitState)}
               theme={theme}
               isLoading={isLoading || authIsLoading || checksIsLoading}
             >
@@ -283,7 +283,7 @@ const Settings = ({ isAdmin }) => {
                   variant="contained"
                   color="error"
                   loading={isLoading || authIsLoading || checksIsLoading}
-                  onClick={()=>setIsOpen({delMntrs: true, delSts: false})}
+                  onClick={()=>setIsOpen({...deleteStatsMonitorsInitState, deleteMonitors: true})}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Remove all monitors
@@ -293,13 +293,13 @@ const Settings = ({ isAdmin }) => {
             <Dialog
               modelTitle="model-delete-all-monitors" 
               modelDescription="delete-all-monitors-confirmation"
-              open={isOpen.delMntrs} 
-              onClose={() => setIsOpen(delStatMntrInitState)} 
+              open={isOpen.deleteMonitors} 
+              onClose={() => setIsOpen(deleteStatsMonitorsInitState)} 
               title="Do you want to remove all monitors?"               
               confirmationBtnLbl="Yes, clear all monitors" 
               confirmationBtnOnClick={handleDeleteAllMonitors} 
               cancelBtnLbl="Cancel" 
-              cancelBtnOnClick={() => setIsOpen(delStatMntrInitState)}
+              cancelBtnOnClick={() => setIsOpen(deleteStatsMonitorsInitState)}
               theme={theme} 
               isLoading={isLoading || authIsLoading || checksIsLoading}
               >
