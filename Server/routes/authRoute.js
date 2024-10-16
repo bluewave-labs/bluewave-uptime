@@ -9,15 +9,15 @@ const router = Router();
 const upload = multer();
 
 import {
-  registerUser,
-  loginUser,
-  editUser,
-  requestRecovery,
-  validateRecovery,
-  resetPassword,
-  checkSuperadminExists,
-  getAllUsers,
-  deleteUser,
+	registerUser,
+	loginUser,
+	editUser,
+	requestRecovery,
+	validateRecovery,
+	resetPassword,
+	checkSuperadminExists,
+	getAllUsers,
+	deleteUser,
 } from "../controllers/authController.js";
 
 //Auth routes
@@ -25,18 +25,8 @@ router.post("/register", upload.single("profileImage"), registerUser);
 router.post("/login", loginUser);
 router.put("/user/:userId", upload.single("profileImage"), verifyJWT, editUser);
 router.get("/users/superadmin", checkSuperadminExists);
-router.get(
-  "/users",
-  verifyJWT,
-  isAllowed(["admin", "superadmin"]),
-  getAllUsers
-);
-router.delete(
-  "/user/:userId",
-  verifyJWT,
-  verifyOwnership(User, "userId"),
-  deleteUser
-);
+router.get("/users", verifyJWT, isAllowed(["admin", "superadmin"]), getAllUsers);
+router.delete("/user/:userId", verifyJWT, verifyOwnership(User, "userId"), deleteUser);
 
 //Recovery routes
 router.post("/recovery/request", requestRecovery);
