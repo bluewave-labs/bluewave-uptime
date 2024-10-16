@@ -128,7 +128,7 @@ From the `Docker` directory run
 
 ---
 
-#### Starting the development derver <a href="#start-server" id="start-server"></a>
+#### Starting the development server <a href="#start-server" id="start-server"></a>
 
 - run `npm run dev` to start the development server
 

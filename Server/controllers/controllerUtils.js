@@ -6,8 +6,8 @@ const handleValidationError = (error, serviceName) => {
   return error;
 };
 
-const handleError = (error, serviceName, method, code = 500) => {
-  error.code === undefined ? (error.code = code) : null;
+const handleError = (error, serviceName, method, status = 500) => {
+  error.status === undefined ? (error.status = status) : null;
   error.service === undefined ? (error.service = serviceName) : null;
   error.method === undefined ? (error.method = method) : null;
   return error;

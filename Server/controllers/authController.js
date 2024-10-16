@@ -68,6 +68,7 @@ const registerUser = async (req, res, next) => {
     }
 
     const newUser = await req.db.insertUser({ ...req.body }, req.file);
+
     logger.info(successMessages.AUTH_CREATE_USER, {
       service: SERVICE_NAME,
       userId: newUser._id,
@@ -78,7 +79,9 @@ const registerUser = async (req, res, next) => {
     delete userForToken.avatarImage;
 
     const appSettings = await req.settingsService.getSettings();
+
     const token = issueToken(userForToken, appSettings);
+
     req.emailService
       .buildAndSendEmail(
         "welcomeEmailTemplate",
@@ -99,6 +102,7 @@ const registerUser = async (req, res, next) => {
       data: { user: newUser, token: token },
     });
   } catch (error) {
+    console.log("ERROR", error);
     next(handleError(error, SERVICE_NAME, "registerController"));
   }
 };
@@ -293,6 +297,8 @@ const requestRecovery = async (req, res, next) => {
         msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
         data: msgId,
       });
+    } else {
+      throw new Error(errorMessages.FRIENDLY_ERROR);
     }
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "recoveryRequestController"));
@@ -435,6 +441,7 @@ const getAllUsers = async (req, res) => {
 };
 
 module.exports = {
+  issueToken,
   registerUser,
   loginUser,
   editUser,
