@@ -6,6 +6,7 @@ const {
   getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
+  checkEndpointResolution,
   deleteMonitor,
   deleteAllMonitors,
   editMonitor,
@@ -21,6 +22,7 @@ const monitorController = proxyquire("../../controllers/monitorController", {
   "ssl-checker": sslCheckerStub,
 });
 const logger = require("../../utils/logger");
+const dns = require("dns");
 const SERVICE_NAME = "monitorController";
 
 describe("Monitor Controller - getAllMonitors", () => {
@@ -470,6 +472,58 @@ describe("Monitor Controller - createMonitor", () => {
         data: monitor,
       })
     ).to.be.true;
+  });
+});
+
+describe('checkEndpointResolution', () => {
+  let dnsResolveStub;
+  beforeEach(() => {
+    req = { query: { monitorURL: 'example.com' } };
+    res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
+    next = sinon.stub();
+    dnsResolveStub = sinon.stub(dns, 'resolve');
+  });
+  afterEach(() => {
+    dnsResolveStub.restore();
+  });
+  it('should resolve the URL successfully', async () => {
+    dnsResolveStub.callsFake((monitorURL, callback) => callback(null));
+    await checkEndpointResolution(req, res, next);
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(res.json.calledWith({
+      success: true,
+      msg: 'URL resolved successfully',
+    })).to.be.true;
+    expect(next.called).to.be.false;
+  });
+  it("should return a 400 error message if DNS resolution fails", async () => {
+    const dnsError = new Error("DNS resolution failed");
+    dnsResolveStub.callsFake((monitorURL, callback) => callback(dnsError));
+    await checkEndpointResolution(req, res, next);
+    expect(res.status.calledOnceWith(400)).to.be.true;
+    expect(res.json.calledOnceWith({
+      success: false,
+      msg: "DNS resolution failed",
+    })).to.be.true;
+    expect(next.notCalled).to.be.true;
+  });
+  it("should remove the trailing slash and resolve the URL successfully", async () => {
+    req.query.monitorURL = 'http://example.com/'; // URL with a trailing slash
+    dnsResolveStub.callsFake((monitorURL, callback) => callback(null));
+    await checkEndpointResolution(req, res, next);
+    expect(res.status.calledWith(200)).to.be.true;
+    expect(res.json.calledWith({
+      success: true,
+      msg: 'URL resolved successfully',
+    })).to.be.true;
+    expect(next.called).to.be.false;
+  });
+  it("should call next with an error if an exception is thrown", async () => {
+    req.query = {};  // Missing monitorURL will cause an error
+    await checkEndpointResolution(req, res, next);
+    expect(next.calledOnce).to.be.true;
+    const error = next.getCall(0).args[0];
+    expect(error).to.be.an.instanceOf(Error);
   });
 });
 

@@ -274,7 +274,6 @@ const createMonitor = async (req, res, next) => {
  * @returns {Object} The response object with a success status, a message, and the resolution result.
  * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
-
 const checkEndpointResolution = async (req, res, next) => {
   try {
     let { monitorURL } = req.query;
@@ -284,12 +283,12 @@ const checkEndpointResolution = async (req, res, next) => {
     // Remove the trailing slash if it exists
     monitorURL = monitorURL.endsWith('/') ? monitorURL.slice(0, -1) : monitorURL;
 
-    dns.setServers(['8.8.8.8', '1.1.1.1']);// Google, Cloudfare    
     dns.resolve(monitorURL, (error) => {
-      console.log("Inside .resolve");
       if (error) {
-        next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
-        return ;
+        return res.status(400).json({
+          success: false,
+          msg: `DNS resolution failed`,
+        });
       }
       return res.status(200).json({
         success: true,
