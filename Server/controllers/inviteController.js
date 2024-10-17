@@ -1,7 +1,7 @@
 import {
-  inviteRoleValidation,
-  inviteBodyValidation,
-  inviteVerificationBodyValidation,
+	inviteRoleValidation,
+	inviteBodyValidation,
+	inviteVerificationBodyValidation,
 } from "../validation/joi.js";
 import logger from "../utils/logger.js";
 import dotenv from "dotenv";
@@ -27,62 +27,58 @@ const SERVICE_NAME = "inviteController";
  * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const issueInvitation = async (req, res, next) => {
-  try {
-    // Only admins can invite
-    const token = getTokenFromHeaders(req.headers);
-    const { role, firstname, teamId } = jwt.decode(token);
-    req.body.teamId = teamId;
-    try {
-      await inviteRoleValidation.validateAsync({ roles: role });
-      await inviteBodyValidation.validateAsync(req.body);
-    } catch (error) {
-      next(handleValidationError(error, SERVICE_NAME));
-      return;
-    }
+	try {
+		// Only admins can invite
+		const token = getTokenFromHeaders(req.headers);
+		const { role, firstname, teamId } = jwt.decode(token);
+		req.body.teamId = teamId;
+		try {
+			await inviteRoleValidation.validateAsync({ roles: role });
+			await inviteBodyValidation.validateAsync(req.body);
+		} catch (error) {
+			next(handleValidationError(error, SERVICE_NAME));
+			return;
+		}
 
-    const inviteToken = await req.db.requestInviteToken({ ...req.body });
-    const { clientHost } = req.settingsService.getSettings();
-    req.emailService
-      .buildAndSendEmail(
-        "employeeActivationTemplate",
-        {
-          name: firstname,
-          link: `${clientHost}/register/${inviteToken.token}`,
-        },
-        req.body.email,
-        "Welcome to Uptime Monitor"
-      )
-      .catch((error) => {
-        logger.error("Error sending invite email", {
-          service: SERVICE_NAME,
-          error: error.message,
-        });
-      });
+		const inviteToken = await req.db.requestInviteToken({ ...req.body });
+		const { clientHost } = req.settingsService.getSettings();
+		req.emailService
+			.buildAndSendEmail(
+				"employeeActivationTemplate",
+				{
+					name: firstname,
+					link: `${clientHost}/register/${inviteToken.token}`,
+				},
+				req.body.email,
+				"Welcome to Uptime Monitor"
+			)
+			.catch((error) => {
+				logger.error("Error sending invite email", {
+					service: SERVICE_NAME,
+					error: error.message,
+				});
+			});
 
-    return res
-      .status(200)
-      .json({ success: true, msg: "Invite sent", data: inviteToken });
-  } catch (error) {
-    next(handleError(error, SERVICE_NAME, "inviteController"));
-  }
+		return res.status(200).json({ success: true, msg: "Invite sent", data: inviteToken });
+	} catch (error) {
+		next(handleError(error, SERVICE_NAME, "inviteController"));
+	}
 };
 
 const inviteVerifyController = async (req, res, next) => {
-  try {
-    await inviteVerificationBodyValidation.validateAsync(req.body);
-  } catch (error) {
-    next(handleValidationError(error, SERVICE_NAME));
-    return;
-  }
+	try {
+		await inviteVerificationBodyValidation.validateAsync(req.body);
+	} catch (error) {
+		next(handleValidationError(error, SERVICE_NAME));
+		return;
+	}
 
-  try {
-    const invite = await req.db.getInviteToken(req.body.token);
-    res
-      .status(200)
-      .json({ status: "success", msg: "Invite verified", data: invite });
-  } catch (error) {
-    next(handleError(error, SERVICE_NAME, "inviteVerifyController"));
-  }
+	try {
+		const invite = await req.db.getInviteToken(req.body.token);
+		res.status(200).json({ status: "success", msg: "Invite verified", data: invite });
+	} catch (error) {
+		next(handleError(error, SERVICE_NAME, "inviteVerifyController"));
+	}
 };
 
 export { issueInvitation, inviteVerifyController };
