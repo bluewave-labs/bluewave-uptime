@@ -845,6 +845,61 @@
         ]
       }
     },
+    "/monitors//check-endpoint/url": {
+      "get": {
+        "tags": ["monitors"],
+        "description": "Check DNS resolution for a given URL",
+        "parameters": [
+          {
+            "name": "monitorURL",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "https://example.com"
+            },
+            "description": "The URL to check DNS resolution for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URL resolved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "DNS resolution failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/monitors/{monitorId}": {
       "get": {
         "tags": ["monitors"],
