@@ -478,7 +478,7 @@ describe("Monitor Controller - createMonitor", () => {
 describe('checkEndpointResolution', () => {
   let dnsResolveStub;
   beforeEach(() => {
-    req = { query: { monitorURL: 'example.com' } };
+    req = { query: { monitorURL: 'https://example.com' } };
     res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
     next = sinon.stub();
     dnsResolveStub = sinon.stub(dns, 'resolve');
@@ -487,7 +487,7 @@ describe('checkEndpointResolution', () => {
     dnsResolveStub.restore();
   });
   it('should resolve the URL successfully', async () => {
-    dnsResolveStub.callsFake((monitorURL, callback) => callback(null));
+    dnsResolveStub.callsFake((hostname, callback) => callback(null));
     await checkEndpointResolution(req, res, next);
     expect(res.status.calledWith(200)).to.be.true;
     expect(res.json.calledWith({
@@ -498,7 +498,7 @@ describe('checkEndpointResolution', () => {
   });
   it("should return a 400 error message if DNS resolution fails", async () => {
     const dnsError = new Error("DNS resolution failed");
-    dnsResolveStub.callsFake((monitorURL, callback) => callback(dnsError));
+    dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
     await checkEndpointResolution(req, res, next);
     expect(res.status.calledOnceWith(400)).to.be.true;
     expect(res.json.calledOnceWith({
@@ -507,23 +507,21 @@ describe('checkEndpointResolution', () => {
     })).to.be.true;
     expect(next.notCalled).to.be.true;
   });
-  it("should remove the trailing slash and resolve the URL successfully", async () => {
-    req.query.monitorURL = 'http://example.com/'; // URL with a trailing slash
-    dnsResolveStub.callsFake((monitorURL, callback) => callback(null));
-    await checkEndpointResolution(req, res, next);
-    expect(res.status.calledWith(200)).to.be.true;
-    expect(res.json.calledWith({
-      success: true,
-      msg: 'URL resolved successfully',
-    })).to.be.true;
-    expect(next.called).to.be.false;
-  });
-  it("should call next with an error if an exception is thrown", async () => {
-    req.query = {};  // Missing monitorURL will cause an error
+  it('should call next with an error for invalid monitorURL', async () => {
+    req.query.monitorURL = 'invalid-url';
     await checkEndpointResolution(req, res, next);
     expect(next.calledOnce).to.be.true;
     const error = next.getCall(0).args[0];
     expect(error).to.be.an.instanceOf(Error);
+    expect(error.message).to.include('Invalid URL');
+  });
+  it('should handle an edge case where monitorURL is not provided', async () => {
+    req.query = {};
+    await checkEndpointResolution(req, res, next);
+    expect(next.calledOnce).to.be.true;
+    const error = next.getCall(0).args[0];
+    expect(error).to.be.an.instanceOf(Error);
+    expect(error.message).to.include('Invalid URL');
   });
 });
 

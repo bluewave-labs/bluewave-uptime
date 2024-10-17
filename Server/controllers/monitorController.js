@@ -277,13 +277,8 @@ const createMonitor = async (req, res, next) => {
 const checkEndpointResolution = async (req, res, next) => {
   try {
     let { monitorURL } = req.query;
-
-    // Remove the protocol (http:// or https://) if present
-    monitorURL = monitorURL.replace(/^https?:\/\//, '');
-    // Remove the trailing slash if it exists
-    monitorURL = monitorURL.endsWith('/') ? monitorURL.slice(0, -1) : monitorURL;
-
-    dns.resolve(monitorURL, (error) => {
+    monitorURL = new URL(monitorURL);
+    dns.resolve(monitorURL.hostname, (error) => {
       if (error) {
         return res.status(400).json({
           success: false,
