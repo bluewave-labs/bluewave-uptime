@@ -490,6 +490,7 @@ describe("Monitor Controllor - checkEndpointResolution", () => {
   		expect(errorPassedToNext).to.be.an.instanceOf(Error);
 		expect(errorPassedToNext.message).to.include('DNS resolution failed');
 		expect(errorPassedToNext.code).to.equal('ENOTFOUND');
+		expect(errorPassedToNext.status).to.equal(500);
 	});
 	it('should reject with an error if query validation fails', async () => {
 		req.query.monitorURL = 'invalid-url';
@@ -498,6 +499,7 @@ describe("Monitor Controllor - checkEndpointResolution", () => {
 		const error = next.getCall(0).args[0];
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].status).to.equal(422);
+		expect(error.message).to.equal('"monitorURL" must be a valid uri');
 	});
 });
 

@@ -264,7 +264,7 @@ const createMonitor = async (req, res, next) => {
 };
 
 /**
- * Checks if the endpoint can be resolved and adds it to the job queue.
+ * Checks if the endpoint can be resolved
  * @async
  * @param {Object} req - The Express request object.
  * @property {Object} req.query - The query parameters of the request.
