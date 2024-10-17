@@ -5,6 +5,7 @@ import { monitorValidation } from "../../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
@@ -111,6 +112,15 @@ const CreatePageSpeed = () => {
       setErrors(newErrors);
       createToast({ body: "Error validation data." });
     } else {
+      const checkEndpointAction = await dispatch(
+        checkEndpointResolution({ authToken, monitorURL: form.url })
+      )
+      if (checkEndpointAction.meta.requestStatus === "rejected") {
+        createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
+        setErrors({ url: "The entered URL is not reachable." });
+        return;
+      }
+
       form = {
         ...form,
         description: form.name,
