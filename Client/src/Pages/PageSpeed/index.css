@@ -1,8 +1,8 @@
 .page-speed .label {
-  padding: 7px;
-  height: 24px;
-  font-size: var(--env-var-font-size-small);
+	padding: 7px;
+	height: 24px;
+	font-size: var(--env-var-font-size-small);
 }
 .page-speed:not(:has([class*="fallback__"])) button {
-  height: 34px;
+	height: 34px;
 }

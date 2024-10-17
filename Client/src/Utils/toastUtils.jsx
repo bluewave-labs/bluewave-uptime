@@ -12,40 +12,40 @@ import Alert from "../Components/Alert";
  */
 
 export const createToast = ({
-  variant = "info",
-  title,
-  body,
-  hasIcon = false,
-  config = {},
+	variant = "info",
+	title,
+	body,
+	hasIcon = false,
+	config = {},
 }) => {
-  const toastConfig = {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: true,
-    closeButton: false,
-    transition: Slide,
-    ...config,
-  };
+	const toastConfig = {
+		position: "top-right",
+		autoClose: 3000,
+		hideProgressBar: true,
+		closeButton: false,
+		transition: Slide,
+		...config,
+	};
 
-  toast(
-    ({ closeToast }) => (
-      <Alert
-        variant={variant}
-        title={title}
-        body={body}
-        isToast={true}
-        hasIcon={hasIcon}
-        onClick={closeToast}
-      />
-    ),
-    toastConfig
-  );
+	toast(
+		({ closeToast }) => (
+			<Alert
+				variant={variant}
+				title={title}
+				body={body}
+				isToast={true}
+				hasIcon={hasIcon}
+				onClick={closeToast}
+			/>
+		),
+		toastConfig
+	);
 };
 
 createToast.propTypes = {
-  variant: PropTypes.oneOf(["info", "error", "warning"]),
-  title: PropTypes.string,
-  body: PropTypes.string.isRequired,
-  hasIcon: PropTypes.bool,
-  config: PropTypes.object,
+	variant: PropTypes.oneOf(["info", "error", "warning"]),
+	title: PropTypes.string,
+	body: PropTypes.string.isRequired,
+	hasIcon: PropTypes.bool,
+	config: PropTypes.object,
 };
