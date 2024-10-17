@@ -191,4 +191,4 @@ StatusLabel.propTypes = {
   customStyles: PropTypes.object,
 };
 
-export { ColoredLabel, StatusLabel };
+export { ColoredLabel, StatusLabel, BaseLabel };
