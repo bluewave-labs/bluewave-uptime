@@ -32,7 +32,7 @@ export const createUptimeMonitor = createAsyncThunk(
 );
 
 export const checkEndpointResolution = createAsyncThunk(
-  "monitors/checkEnpoint",
+  "monitors/checkEndpoint",
   async(data, thunkApi) => {
     try{
       const { authToken, monitorURL } = data;

@@ -19,7 +19,7 @@ router.post(
 );
 
 router.get(
-  "/check-endpoint/url",
+  "/resolution/url",
   isAllowed(["admin", "superadmin"]), 
   monitorController.checkEndpointResolution
 )

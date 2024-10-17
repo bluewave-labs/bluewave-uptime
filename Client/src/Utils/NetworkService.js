@@ -107,7 +107,7 @@ class NetworkService {
   
       if (monitorURL) params.append("monitorURL", monitorURL);
 
-      return this.axiosInstance.get(`/monitors/check-endpoint/url?${params.toString()}`, {
+      return this.axiosInstance.get(`/monitors/resolution/url?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",

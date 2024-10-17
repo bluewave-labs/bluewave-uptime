@@ -845,7 +845,7 @@
         ]
       }
     },
-    "/monitors//check-endpoint/url": {
+    "/monitors/resolution/url": {
       "get": {
         "tags": ["monitors"],
         "description": "Check DNS resolution for a given URL",

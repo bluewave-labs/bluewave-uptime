@@ -385,7 +385,7 @@ const CreateMonitor = () => {
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           >
-            Create Monitor
+            Create monitor
           </Button>
         </Stack>
       </Stack>
