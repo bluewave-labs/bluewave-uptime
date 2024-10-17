@@ -173,7 +173,10 @@ describe("Auth Controller - registerUser", () => {
 		req.db.checkSuperadmin.resolves(false);
 		req.db.updateAppSettings.resolves();
 		req.db.insertUser.returns({ _id: "123" });
-		req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+		req.settingsService.getSettings.returns({
+			jwtSecret: "my_secret",
+			refreshTokenSecret: "my_secret",
+		});
 		req.emailService.buildAndSendEmail.rejects(new Error("emailService error"));
 		await registerUser(req, res, next);
 		expect(logger.error.calledOnce).to.be.true;
@@ -184,7 +187,10 @@ describe("Auth Controller - registerUser", () => {
 		req.db.checkSuperadmin.resolves(false);
 		req.db.updateAppSettings.resolves();
 		req.db.insertUser.returns(user);
-		req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+		req.settingsService.getSettings.returns({
+			jwtSecret: "my_secret",
+			refreshTokenSecret: "my_secret",
+		});
 		req.emailService.buildAndSendEmail.resolves("message-id");
 		await registerUser(req, res, next);
 		expect(res.status.calledWith(200)).to.be.true;
@@ -192,7 +198,7 @@ describe("Auth Controller - registerUser", () => {
 			res.json.calledWith({
 				success: true,
 				msg: successMessages.AUTH_CREATE_USER,
-				data: { user, token: sinon.match.string },
+				data: { user, token: sinon.match.string, refreshToken: sinon.match.string },
 			})
 		).to.be.true;
 		expect(next.notCalled).to.be.true;
@@ -202,7 +208,10 @@ describe("Auth Controller - registerUser", () => {
 		req.db.checkSuperadmin.resolves(true);
 		req.db.updateAppSettings.resolves();
 		req.db.insertUser.returns(user);
-		req.settingsService.getSettings.returns({ jwtSecret: "my_secret" });
+		req.settingsService.getSettings.returns({
+			jwtSecret: "my_secret",
+			refreshTokenSecret: "my_secret",
+		});
 		req.emailService.buildAndSendEmail.resolves("message-id");
 		await registerUser(req, res, next);
 		expect(res.status.calledWith(200)).to.be.true;
