@@ -211,23 +211,23 @@ const refreshAuthToken = (req, res, next) => {
         error.service = SERVICE_NAME;
         return next(error);
       }
-    });
 
-    // Refresh token is valid and unexpired, generate new access token
-    const oldAuthToken = getTokenFromHeaders(req.headers);
-    const { jwtSecret } = req.settingsService.getSettings();
+      // Refresh token is valid and unexpired, generate new access token
+      const oldAuthToken = getTokenFromHeaders(req.headers);
+      const { jwtSecret } = req.settingsService.getSettings();
 
-    const payloadData = jwt.verify(oldAuthToken, jwtSecret, { ignoreExpiration: true });
-    // delete old token related data
-    delete payloadData.iat;
-    delete payloadData.exp;
+      const payloadData = jwt.verify(oldAuthToken, jwtSecret, { ignoreExpiration: true });
+      // delete old token related data
+      delete payloadData.iat;
+      delete payloadData.exp;
 
-    const newAuthToken = issueToken(payloadData, tokenType.ACCESS_TOKEN, req.settingsService.getSettings());
+      const newAuthToken = issueToken(payloadData, tokenType.ACCESS_TOKEN, req.settingsService.getSettings());
 
-    return res.status(200).json({
-      success: true,
-      msg: successMessages.AUTH_TOKEN_REFRESHED,
-      data: { user: payloadData, token: newAuthToken, refreshToken: refreshToken },
+      return res.status(200).json({
+        success: true,
+        msg: successMessages.AUTH_TOKEN_REFRESHED,
+        data: { user: payloadData, token: newAuthToken, refreshToken: refreshToken },
+      });
     });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "refreshAuthToken"));
