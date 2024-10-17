@@ -40,7 +40,7 @@ const Monitors = ({ isAdmin }) => {
     dispatch(getUptimeMonitorsByTeamId(authState.authToken));
   }, [authState.authToken, dispatch]);
 
-  let loading =
+  const loading =
     monitorState?.isLoading &&
     monitorState?.monitorsSummary?.monitors?.length === 0;
 
