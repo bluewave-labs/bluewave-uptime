@@ -43,6 +43,7 @@ const CreateMonitor = () => {
   });
   const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
+  const [isCheckingEndpoint, setIsCheckingEndpoint] = useState(false);
 
   useEffect(() => {
     const fetchMonitor = async () => {
@@ -125,6 +126,7 @@ const CreateMonitor = () => {
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
+    setIsCheckingEndpoint(true);
     //obj to submit
     let form = {
       url:
@@ -156,8 +158,10 @@ const CreateMonitor = () => {
         if (checkEndpointAction.meta.requestStatus === "rejected") {
           createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
           setErrors({ url: "The entered URL is not reachable." });
+          setIsCheckingEndpoint(false);
           return;
         }
+        setIsCheckingEndpoint(false);
       }
 
       form = {
@@ -387,7 +391,7 @@ const CreateMonitor = () => {
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           >
-            Create monitor
+            { isCheckingEndpoint ? "Checking endpoint" : "Create monitor" }
           </Button>
         </Stack>
       </Stack>
