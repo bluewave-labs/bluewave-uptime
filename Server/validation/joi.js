@@ -245,7 +245,7 @@ const getMonitorURLByQueryValidation = joi.object({
 //****************************************
 
 const createAlertParamValidation = joi.object({
-  monitorId: joi.string().uri().required(),
+  monitorId: joi.string().required(),
 });
 
 const createAlertBodyValidation = joi.object({
