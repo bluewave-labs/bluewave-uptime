@@ -21,7 +21,6 @@ import logger from "../utils/logger.js";
 import {
   handleError,
 	handleValidationError,
-	fetchMonitorCertificate,
 } from "./controllerUtils.js";
 import dns from "dns";
 

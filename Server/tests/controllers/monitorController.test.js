@@ -17,8 +17,6 @@ import jwt from "jsonwebtoken";
 import sinon from "sinon";
 import { successMessages } from "../../utils/messages.js";
 import logger from "../../utils/logger.js";
-// import * as monitorController from "../../controllers/monitorController.js";
-// import { fetchMonitorCertificate } from "../../controllers/controllerUtils.js";
 import dns from "dns";
 const SERVICE_NAME = "monitorController";
 
