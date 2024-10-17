@@ -41,4 +41,4 @@ const NormalizeData = (checks, rangeMin, rangeMax) => {
 	}
 };
 
-export { NormalizeData };
+export { calculatePercentile, NormalizeData };
