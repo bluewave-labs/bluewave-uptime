@@ -16,6 +16,7 @@ const errorMessages = {
   NO_REFRESH_TOKEN: "No refresh token provided",
   INVALID_REFRESH_TOKEN: "Invalid refresh token",
   EXPIRED_REFRESH_TOKEN: "Refresh token expired",
+  REQUEST_NEW_ACCESS_TOKEN: "Request new access token",
 
   //Payload
   INVALID_PAYLOAD: "Invalid payload",
