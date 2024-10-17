@@ -484,12 +484,10 @@ describe('checkEndpointResolution', () => {
 		const dnsError = new Error("DNS resolution failed");
 		dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
 		await checkEndpointResolution(req, res, next);
-		expect(res.status.calledOnceWith(400)).to.be.true;
-		expect(res.json.calledOnceWith({
-			success: false,
-			msg: "DNS resolution failed",
-		})).to.be.true;
-		expect(next.notCalled).to.be.true;
+		expect(next.calledOnce).to.be.true;
+  		const errorPassedToNext = next.getCall(0).args[0];
+  		expect(errorPassedToNext).to.be.an.instanceOf(Error);
+  		expect(errorPassedToNext.message).to.include('DNS resolution failed');
 	});
 	it('should call next with an error for invalid monitorURL', async () => {
 		req.query.monitorURL = 'invalid-url';

@@ -276,17 +276,17 @@ const checkEndpointResolution = async (req, res, next) => {
   try {
     let { monitorURL } = req.query;
     monitorURL = new URL(monitorURL);
-    dns.resolve(monitorURL.hostname, (error) => {
-      if (error) {
-        return res.status(400).json({
-          success: false,
-          msg: `DNS resolution failed`,
-        });
-      }
-      return res.status(200).json({
-        success: true,
-        msg: `URL resolved successfully`,
+    await new Promise((resolve, reject) => {
+      dns.resolve(monitorURL.hostname, (error) => {
+        if (error) {
+          reject(error);
+        }
+        resolve();
       });
+    });
+    return res.status(200).json({
+      success: true,
+      msg: `URL resolved successfully`,
     });
   } catch (error) {
     next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
