@@ -149,13 +149,15 @@ const CreateMonitor = () => {
       setErrors(newErrors);
       createToast({ body: "Error validation data." });
     } else {
-      const checkEndpointAction = await dispatch(
-        checkEndpointResolution({ authToken, monitorURL: form.url })
-      )
-      if (checkEndpointAction.meta.requestStatus === "rejected") {
-        createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
-        setErrors({ url: "The entered URL is not reachable." });
-        return;
+      if (monitor.type === "http") {
+        const checkEndpointAction = await dispatch(
+          checkEndpointResolution({ authToken, monitorURL: form.url })
+        )
+        if (checkEndpointAction.meta.requestStatus === "rejected") {
+          createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
+          setErrors({ url: "The entered URL is not reachable." });
+          return;
+        }
       }
 
       form = {
