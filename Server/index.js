@@ -21,7 +21,14 @@ import { connectDbAndRunServer } from "./configs/db.js";
 import queueRouter from "./routes/queueRoute.js";
 import JobQueue from "./service/jobQueue.js";
 import NetworkService from "./service/networkService.js";
+
+// Email service and dependencies
 import EmailService from "./service/emailService.js";
+import nodemailer from "nodemailer";
+import pkg from "handlebars";
+const { compile } = pkg;
+import mjml2html from "mjml";
+
 import SettingsService from "./service/settingsService.js";
 import db from "./db/mongo/MongoDB.js";
 import { fetchMonitorCertificate } from "./controllers/controllerUtils.js";
@@ -133,7 +140,15 @@ const startApp = async () => {
 	const settingsService = new SettingsService();
 
 	await settingsService.loadSettings();
-	const emailService = new EmailService(settingsService);
+	const emailService = new EmailService(
+		settingsService,
+		fs,
+		path,
+		compile,
+		mjml2html,
+		nodemailer,
+		logger
+	);
 	const networkService = new NetworkService(db, emailService);
 	const jobQueue = await JobQueue.createJobQueue(db, networkService, settingsService);
 
