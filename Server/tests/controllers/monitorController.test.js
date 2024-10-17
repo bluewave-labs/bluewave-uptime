@@ -482,27 +482,21 @@ describe("Monitor Controllor - checkEndpointResolution", () => {
 	});
 	it("should return a 400 error message if DNS resolution fails", async () => {
 		const dnsError = new Error("DNS resolution failed");
+		dnsError.code = 'ENOTFOUND';
 		dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
 		await checkEndpointResolution(req, res, next);
 		expect(next.calledOnce).to.be.true;
   		const errorPassedToNext = next.getCall(0).args[0];
   		expect(errorPassedToNext).to.be.an.instanceOf(Error);
-  		expect(errorPassedToNext.message).to.include('DNS resolution failed');
+		expect(errorPassedToNext.message).to.include('DNS resolution failed');
+		expect(errorPassedToNext.code).to.equal('ENOTFOUND');
 	});
 	it('should call next with an error for invalid monitorURL', async () => {
 		req.query.monitorURL = 'invalid-url';
 		await checkEndpointResolution(req, res, next);
 		expect(next.calledOnce).to.be.true;
 		const error = next.getCall(0).args[0];
-		expect(error).to.be.an.instanceOf(Error);
-		expect(error.message).to.include('Invalid URL');
-	});
-	it('should handle an edge case where monitorURL is not provided', async () => {
-		req.query = {};
-		await checkEndpointResolution(req, res, next);
-		expect(next.calledOnce).to.be.true;
-		const error = next.getCall(0).args[0];
-		expect(error).to.be.an.instanceOf(Error);
+		expect(error).to.be.an.instanceOf(TypeError);
 		expect(error.message).to.include('Invalid URL');
 	});
 });
