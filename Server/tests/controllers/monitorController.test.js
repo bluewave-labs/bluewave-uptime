@@ -459,7 +459,7 @@ describe("Monitor Controller - createMonitor", () => {
 	});
 });
 
-describe('checkEndpointResolution', () => {
+describe("Monitor Controllor - checkEndpointResolution", () => {
 	let req, res, next, dnsResolveStub;
 	beforeEach(() => {
 		req = { query: { monitorURL: 'https://example.com' } };
