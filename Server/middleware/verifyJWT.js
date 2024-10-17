@@ -1,8 +1,9 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+import { errorMessages } from "../utils/messages.js";
+import { handleError } from "../controllers/controllerUtils.js";
+
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
-const { errorMessages } = require("../utils/messages");
-const { handleError } = require("../controllers/controllerUtils");
 
 /**
  * Verifies the JWT token
@@ -91,4 +92,5 @@ function handleExpiredJwtToken(req, res, next) {
   });
 }
 
-module.exports = { verifyJWT };
+export { verifyJWT };
+

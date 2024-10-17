@@ -1,4 +1,4 @@
-const Notification = require("../../models/Notification");
+import Notification from "../../models/Notification.js";
 const SERVICE_NAME = "notificationModule";
 /**
  * Creates a new notification.
@@ -49,7 +49,7 @@ const deleteNotificationsByMonitorId = async (monitorId) => {
   }
 };
 
-module.exports = {
+export {
   createNotification,
   getNotificationsByMonitorId,
   deleteNotificationsByMonitorId,

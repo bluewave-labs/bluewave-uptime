@@ -22,6 +22,7 @@ import { ConfigBox } from "./styled";
 import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
 import { useNavigate } from "react-router";
+import Dialog from "../../Components/Dialog"
 
 const SECONDS_PER_DAY = 86400;
 
@@ -39,6 +40,8 @@ const Settings = ({ isAdmin }) => {
   });
   const [version,setVersion]=useState("unknown");
   const [errors, setErrors] = useState({});
+  const deleteStatsMonitorsInitState = { deleteMonitors: false, deleteStats: false };
+  const [isOpen, setIsOpen] = useState(deleteStatsMonitorsInitState);  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -139,6 +142,8 @@ const Settings = ({ isAdmin }) => {
     } catch (error) {
       logger.error(error);
       createToast({ body: "Failed to clear stats" });
+    } finally {
+      setIsOpen(deleteStatsMonitorsInitState)
     }
   };
 
@@ -167,9 +172,11 @@ const Settings = ({ isAdmin }) => {
     } catch (error) {
       logger.error(error);
       createToast({ Body: "Failed to delete all monitors" });
+    } finally {
+      setIsOpen(deleteStatsMonitorsInitState)
     }
   };
-
+  
   return (
     <Box
       className="settings"
@@ -243,17 +250,30 @@ const Settings = ({ isAdmin }) => {
               />
               <Box>
                 <Typography>Clear all stats. This is irreversible.</Typography>
-                <LoadingButton
+                <Button
                   variant="contained"
-                  color="error"
-                  loading={isLoading || authIsLoading || checksIsLoading}
-                  onClick={handleClearStats}
+                  color="error"                  
+                  onClick={()=>setIsOpen({...deleteStatsMonitorsInitState, deleteStats: true})}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Clear all stats
-                </LoadingButton>
+                </Button>
               </Box>
             </Stack>
+            <Dialog
+              modelTitle="model-clear-stats"
+              modelDescription="clear-stats-confirmation"
+              open={isOpen.deleteStats}
+              onClose={() => setIsOpen(deleteStatsMonitorsInitState)}
+              title="Do you want to clear all stats?"
+              confirmationBtnLbl="Yes, clear all stats"
+              confirmationBtnOnClick={handleClearStats}
+              cancelBtnLbl="Cancel"
+              cancelBtnOnClick={() => setIsOpen(deleteStatsMonitorsInitState)}
+              theme={theme}
+              isLoading={isLoading || authIsLoading || checksIsLoading}
+            >
+            </Dialog>
           </ConfigBox>
         )}
         {isAdmin && (
@@ -283,13 +303,27 @@ const Settings = ({ isAdmin }) => {
                   variant="contained"
                   color="error"
                   loading={isLoading || authIsLoading || checksIsLoading}
-                  onClick={handleDeleteAllMonitors}
+                  onClick={()=>setIsOpen({...deleteStatsMonitorsInitState, deleteMonitors: true})}
                   sx={{ mt: theme.spacing(4) }}
                 >
                   Remove all monitors
                 </LoadingButton>
               </Box>
             </Stack>
+            <Dialog
+              modelTitle="model-delete-all-monitors" 
+              modelDescription="delete-all-monitors-confirmation"
+              open={isOpen.deleteMonitors} 
+              onClose={() => setIsOpen(deleteStatsMonitorsInitState)} 
+              title="Do you want to remove all monitors?"               
+              confirmationBtnLbl="Yes, clear all monitors" 
+              confirmationBtnOnClick={handleDeleteAllMonitors} 
+              cancelBtnLbl="Cancel" 
+              cancelBtnOnClick={() => setIsOpen(deleteStatsMonitorsInitState)}
+              theme={theme} 
+              isLoading={isLoading || authIsLoading || checksIsLoading}
+              >
+            </Dialog>
           </ConfigBox>
         )}
         {isAdmin && (

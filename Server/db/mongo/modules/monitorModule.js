@@ -1,10 +1,22 @@
-const Monitor = require("../../models/Monitor");
-const Check = require("../../models/Check");
-const PageSpeedCheck = require("../../models/PageSpeedCheck");
-const { errorMessages } = require("../../../utils/messages");
-const Notification = require("../../models/Notification");
-const { NormalizeData } = require("../../../utils/dataUtils");
-const demoMonitors = require("../../../utils/demoMonitors.json");
+import Monitor from "../../models/Monitor.js";
+import Check from "../../models/Check.js";
+import PageSpeedCheck from "../../models/PageSpeedCheck.js";
+import { errorMessages } from "../../../utils/messages.js";
+import Notification from "../../models/Notification.js";
+import { NormalizeData } from "../../../utils/dataUtils.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const demoMonitorsPath = path.resolve(
+  __dirname,
+  "../../../utils/demoMonitors.json"
+);
+const demoMonitors = JSON.parse(fs.readFileSync(demoMonitorsPath, "utf8"));
+
 const SERVICE_NAME = "monitorModule";
 
 /**
@@ -572,7 +584,7 @@ const addDemoMonitors = async (userId, teamId) => {
   }
 };
 
-module.exports = {
+export {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,

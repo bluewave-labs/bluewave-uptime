@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const UserModel = require("../models/User");
-const AppSettings = require("../models/AppSettings");
+import mongoose from "mongoose";
+import UserModel from "../models/User.js";
+import AppSettings from "../models/AppSettings.js";
 
 //****************************************
 // DB Connection
@@ -41,7 +41,7 @@ const checkSuperadmin = async (req, res) => {
 // User Operations
 //****************************************
 
-const {
+import {
   insertUser,
   getUserByEmail,
   updateUser,
@@ -50,32 +50,32 @@ const {
   deleteAllOtherUsers,
   getAllUsers,
   logoutUser,
-} = require("./modules/userModule");
+} from "./modules/userModule.js";
 
 //****************************************
 // Invite Token Operations
 //****************************************
 
-const {
+import {
   requestInviteToken,
   getInviteToken,
   getInviteTokenAndDelete,
-} = require("./modules/inviteModule");
+} from "./modules/inviteModule.js";
 
 //****************************************
 // Recovery Operations
 //****************************************
-const {
+import {
   requestRecoveryToken,
   validateRecoveryToken,
   resetPassword,
-} = require("./modules/recoveryModule");
+} from "./modules/recoveryModule.js";
 
 //****************************************
 //  Monitors
 //****************************************
 
-const {
+import {
   getAllMonitors,
   getMonitorStatsById,
   getMonitorById,
@@ -87,23 +87,23 @@ const {
   deleteMonitorsByUserId,
   editMonitor,
   addDemoMonitors,
-} = require("./modules/monitorModule");
+} from "./modules/monitorModule.js";
 
 //****************************************
 // Page Speed Checks
 //****************************************
 
-const {
+import {
   createPageSpeedCheck,
   getPageSpeedChecks,
   deletePageSpeedChecksByMonitorId,
-} = require("./modules/pageSpeedCheckModule");
+} from "./modules/pageSpeedCheckModule.js";
 
 //****************************************
 // Checks
 //****************************************
 
-const {
+import {
   createCheck,
   getChecksCount,
   getChecks,
@@ -111,12 +111,12 @@ const {
   deleteChecks,
   deleteChecksByTeamId,
   updateChecksTTL,
-} = require("./modules/checkModule");
+} from "./modules/checkModule.js";
 
 //****************************************
 // Maintenance Window
 //****************************************
-const {
+import {
   createMaintenanceWindow,
   getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,
@@ -125,26 +125,23 @@ const {
   deleteMaintenanceWindowByMonitorId,
   deleteMaintenanceWindowByUserId,
   editMaintenanceWindowById,
-} = require("./modules/maintenanceWindowModule");
+} from "./modules/maintenanceWindowModule.js";
 
 //****************************************
 // Notifications
 //****************************************
-const {
+import {
   createNotification,
   getNotificationsByMonitorId,
   deleteNotificationsByMonitorId,
-} = require("./modules/notificationModule");
+} from "./modules/notificationModule.js";
 
 //****************************************
 // AppSettings
 //****************************************
-const {
-  getAppSettings,
-  updateAppSettings,
-} = require("./modules/settingsModule");
+import { getAppSettings, updateAppSettings } from "./modules/settingsModule.js";
 
-module.exports = {
+export default {
   connect,
   insertUser,
   getUserByEmail,

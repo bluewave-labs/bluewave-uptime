@@ -1,6 +1,6 @@
-const logger = require("../utils/logger");
+import logger from "../utils/logger.js";
+import { errorMessages } from "../utils/messages.js";
 const SERVICE_NAME = "verifyOwnership";
-const { errorMessages } = require("../utils/messages");
 
 const verifyOwnership = (Model, paramName) => {
   return async (req, res, next) => {
@@ -46,4 +46,4 @@ const verifyOwnership = (Model, paramName) => {
   };
 };
 
-module.exports = { verifyOwnership };
+export { verifyOwnership };

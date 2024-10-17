@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Notification = require("./Notification");
+import mongoose from "mongoose";
+import Notification from "./Notification.js";
 
 const MonitorSchema = mongoose.Schema(
   {
@@ -60,4 +60,4 @@ const MonitorSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Monitor", MonitorSchema);
+export default mongoose.model("Monitor", MonitorSchema);

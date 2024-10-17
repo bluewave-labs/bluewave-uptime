@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 /**
  * MaintenanceWindow Schema
  * @module MaintenanceWindow
@@ -66,4 +65,4 @@ const MaintenanceWindow = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("MaintenanceWindow", MaintenanceWindow);
+export default mongoose.model("MaintenanceWindow", MaintenanceWindow);

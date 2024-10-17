@@ -1,16 +1,16 @@
-const {
+import {
   createCheck,
   getChecks,
   getTeamChecks,
   deleteChecks,
   deleteChecksByTeamId,
   updateChecksTTL,
-} = require("../../controllers/checkController");
-const jwt = require("jsonwebtoken");
-const { errorMessages, successMessages } = require("../../utils/messages");
-const sinon = require("sinon");
-
+} from "../../controllers/checkController.js";
+import jwt from "jsonwebtoken";
+import { errorMessages, successMessages } from "../../utils/messages.js";
+import sinon from "sinon";
 describe("Check Controller - createCheck", () => {
+  let req, res, next, handleError;
   beforeEach(() => {
     req = {
       params: {},
@@ -88,6 +88,7 @@ describe("Check Controller - createCheck", () => {
 });
 
 describe("Check Controller - getChecks", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       params: {},
@@ -143,6 +144,7 @@ describe("Check Controller - getChecks", () => {
 });
 
 describe("Check Controller - getTeamChecks", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       params: {},
@@ -197,6 +199,7 @@ describe("Check Controller - getTeamChecks", () => {
 });
 
 describe("Check Controller - deleteChecks", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       params: {},
@@ -248,6 +251,7 @@ describe("Check Controller - deleteChecks", () => {
 });
 
 describe("Check Controller - deleteChecksByTeamId", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       params: {},
@@ -301,6 +305,7 @@ describe("Check Controller - deleteChecksByTeamId", () => {
 });
 
 describe("Check Controller - updateCheckTTL", () => {
+  let stub, req, res, next;
   beforeEach(() => {
     stub = sinon.stub(jwt, "verify").callsFake(() => {
       return { teamId: "123" };

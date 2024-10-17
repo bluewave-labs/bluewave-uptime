@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const RecoveryTokenSchema = mongoose.Schema(
   {
@@ -22,4 +22,4 @@ const RecoveryTokenSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("RecoveryToken", RecoveryTokenSchema);
+export default mongoose.model("RecoveryToken", RecoveryTokenSchema);

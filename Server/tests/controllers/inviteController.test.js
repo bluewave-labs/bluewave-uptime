@@ -1,12 +1,12 @@
-const {
+import {
   issueInvitation,
   inviteVerifyController,
-} = require("../../controllers/inviteController");
-const jwt = require("jsonwebtoken");
-const { errorMessages, successMessages } = require("../../utils/messages");
-const sinon = require("sinon");
-const joi = require("joi");
+} from "../../controllers/inviteController.js";
+import jwt from "jsonwebtoken";
+import sinon from "sinon";
+import joi from "joi";
 describe("inviteController - issueInvitation", () => {
+  let req, res, next, stub;
   beforeEach(() => {
     req = {
       headers: { authorization: "Bearer token" },
@@ -154,6 +154,7 @@ describe("inviteController - issueInvitation", () => {
 });
 
 describe("inviteController - inviteVerifyController", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: { token: "token" },

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const EmailService = require("../../service/emailService");
-const Notification = require("./Notification");
+import mongoose from "mongoose";
+import EmailService from "../../service/emailService.js";
+import Notification from "./Notification.js";
 
 /**
  * Check Schema for MongoDB collection.
@@ -73,5 +73,4 @@ const CheckSchema = mongoose.Schema(
 );
 
 CheckSchema.index({ createdAt: 1 });
-
-module.exports = mongoose.model("Check", CheckSchema);
+export default mongoose.model("Check", CheckSchema);

@@ -1,13 +1,14 @@
-const { afterEach } = require("node:test");
-const {
+import { afterEach } from "node:test";
+import {
   getAppSettings,
   updateAppSettings,
-} = require("../../controllers/settingsController");
+} from "../../controllers/settingsController.js";
 
-const { errorMessages, successMessages } = require("../../utils/messages");
-const sinon = require("sinon");
+import { successMessages } from "../../utils/messages.js";
+import sinon from "sinon";
 
 describe("Settings Controller - getAppSettings", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       headers: {},
@@ -23,7 +24,6 @@ describe("Settings Controller - getAppSettings", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
   afterEach(() => {
     sinon.restore();
@@ -49,6 +49,7 @@ describe("Settings Controller - getAppSettings", () => {
 });
 
 describe("Settings Controller - updateAppSettings", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       headers: {},
@@ -66,7 +67,6 @@ describe("Settings Controller - updateAppSettings", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
   afterEach(() => {
     sinon.restore();

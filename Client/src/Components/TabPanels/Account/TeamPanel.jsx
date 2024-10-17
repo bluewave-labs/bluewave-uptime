@@ -223,6 +223,7 @@ const TeamPanel = () => {
 
   return (
     <TabPanel
+      className="team-panel table-container"
       value="team"
       sx={{
         "& h1": {

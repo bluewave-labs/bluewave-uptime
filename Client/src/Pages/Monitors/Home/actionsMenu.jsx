@@ -5,13 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import {
-  Button,
   IconButton,
   Menu,
-  MenuItem,
-  Modal,
-  Stack,
-  Typography,
+  MenuItem
 } from "@mui/material";
 import {
   deleteUptimeMonitor,
@@ -20,6 +16,7 @@ import {
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Settings from "../../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
+import Dialog from "../../../Components/Dialog"
 
 const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -29,7 +26,7 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
   const theme = useTheme();
   const authState = useSelector((state) => state.auth);
   const authToken = authState.authToken;
-  
+  const { isLoading } = useSelector((state) => state.uptimeMonitors);  
 
   const handleRemove = async (event) => {
     event.preventDefault();
@@ -199,69 +196,21 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
           </MenuItem>
         )}     
       </Menu>
-      <Modal
-        aria-labelledby="modal-delete-monitor"
-        aria-describedby="delete-monitor-confirmation"
+      <Dialog
+        modelTitle="modal-delete-monitor"
+        modelDescription="delete-monitor-confirmation"
         open={isOpen}
-        onClose={(e) => {
-          e.stopPropagation();
-          setIsOpen(false);
-        }}
+        onClose={() => setIsOpen(false)}
+        title="Do you really want to delete this monitor?"
+        confirmationBtnLbl="Delete"
+        confirmationBtnOnClick={e => { e.stopPropagation(); handleRemove(e) }}
+        cancelBtnLbl="Cancel"
+        cancelBtnOnClick={e => { e.stopPropagation(); setIsOpen(false) }}
+        theme={theme}
+        isLoading={isLoading}
+        description="Once deleted, this monitor cannot be retrieved."
       >
-        <Stack
-          gap={theme.spacing(2)}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: theme.palette.background.main,
-            border: 1,
-            borderColor: theme.palette.border.light,
-            borderRadius: theme.shape.borderRadius,
-            boxShadow: 24,
-            p: theme.spacing(15),
-            "&:focus": {
-              outline: "none",
-            },
-          }}
-        >
-          <Typography id="modal-delete-monitor" component="h2" variant="h2">
-            Do you really want to delete this monitor?
-          </Typography>
-          <Typography id="delete-monitor-confirmation" variant="body1">
-            Once deleted, this monitor cannot be retrieved.
-          </Typography>
-          <Stack
-            direction="row"
-            gap={theme.spacing(4)}
-            mt={theme.spacing(12)}
-            justifyContent="flex-end"
-          >
-            <Button
-              variant="text"
-              color="info"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpen(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={(e) => {
-                e.stopPropagation(e);
-                handleRemove(e);
-              }}
-            >
-              Delete
-            </Button>
-          </Stack>
-        </Stack>
-      </Modal>
+      </Dialog>
     </>
   );
 };
