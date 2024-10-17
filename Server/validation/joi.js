@@ -236,12 +236,16 @@ const pauseMonitorParamValidation = joi.object({
   monitorId: joi.string().required(),
 });
 
+const getMonitorURLByQueryValidation = joi.object({
+  monitorURL: joi.string().uri().required(),
+});
+
 //****************************************
 // Alerts
 //****************************************
 
 const createAlertParamValidation = joi.object({
-  monitorId: joi.string().required(),
+  monitorId: joi.string().uri().required(),
 });
 
 const createAlertBodyValidation = joi.object({
@@ -446,6 +450,7 @@ export {
   getCertificateParamValidation,
   editMonitorBodyValidation,
   pauseMonitorParamValidation,
+  getMonitorURLByQueryValidation,
   editUserParamValidation,
   editUserBodyValidation,
   createAlertParamValidation,

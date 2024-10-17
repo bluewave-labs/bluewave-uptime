@@ -3,6 +3,7 @@ import {
 	getMonitorByIdQueryValidation,
 	getMonitorsByTeamIdValidation,
 	createMonitorBodyValidation,
+  getMonitorURLByQueryValidation,
 	editMonitorBodyValidation,
 	getMonitorsAndSummaryByTeamIdParamValidation,
 	getMonitorsAndSummaryByTeamIdQueryValidation,
@@ -273,6 +274,13 @@ const createMonitor = async (req, res, next) => {
  * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const checkEndpointResolution = async (req, res, next) => {
+  try {
+		await getMonitorURLByQueryValidation.validateAsync(req.query);
+	} catch (error) {
+		next(handleValidationError(error, SERVICE_NAME));
+		return;
+	}
+
   try {
     let { monitorURL } = req.query;
     monitorURL = new URL(monitorURL);
