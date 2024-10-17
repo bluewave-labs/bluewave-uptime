@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const TOKEN_PREFIX = "Bearer ";
 const SERVICE_NAME = "allowedRoles";
-const { errorMessages } = require("../utils/messages");
+import { errorMessages } from "../utils/messages.js";
 
 const isAllowed = (allowedRoles) => {
   return (req, res, next) => {
@@ -52,4 +52,4 @@ const isAllowed = (allowedRoles) => {
   };
 };
 
-module.exports = { isAllowed };
+export { isAllowed };

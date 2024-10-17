@@ -1,16 +1,15 @@
-const { afterEach } = require("node:test");
-const {
+import { afterEach } from "node:test";
+import {
   getMetrics,
   getJobs,
   addJob,
   obliterateQueue,
-} = require("../../controllers/queueController");
-const SERVICE_NAME = "JobQueueController";
-
-const { errorMessages, successMessages } = require("../../utils/messages");
-const sinon = require("sinon");
+} from "../../controllers/queueController.js";
+import { successMessages } from "../../utils/messages.js";
+import sinon from "sinon";
 
 describe("Queue Controller - getMetrics", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       headers: {},
@@ -26,7 +25,6 @@ describe("Queue Controller - getMetrics", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
   afterEach(() => {
     sinon.restore();
@@ -52,6 +50,7 @@ describe("Queue Controller - getMetrics", () => {
 });
 
 describe("Queue Controller - getJobs", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       headers: {},
@@ -67,7 +66,6 @@ describe("Queue Controller - getJobs", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
   afterEach(() => {
     sinon.restore();
@@ -92,6 +90,7 @@ describe("Queue Controller - getJobs", () => {
 });
 
 describe("Queue Controller - addJob", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       headers: {},
@@ -107,7 +106,6 @@ describe("Queue Controller - addJob", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
   afterEach(() => {
     sinon.restore();
@@ -130,6 +128,7 @@ describe("Queue Controller - addJob", () => {
 });
 
 describe("Queue Controller - obliterateQueue", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       headers: {},
@@ -145,7 +144,6 @@ describe("Queue Controller - obliterateQueue", () => {
       json: sinon.stub(),
     };
     next = sinon.stub();
-    handleError = sinon.stub();
   });
   afterEach(() => {
     sinon.restore();

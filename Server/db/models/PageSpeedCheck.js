@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const AuditSchema = mongoose.Schema({
   id: { type: String, required: true },
   title: { type: String, required: true },
@@ -109,4 +108,4 @@ PageSpeedCheck.pre("save", async function (next) {
   }
 });
 
-module.exports = mongoose.model("PageSpeedCheck", PageSpeedCheck);
+export default mongoose.model("PageSpeedCheck", PageSpeedCheck);

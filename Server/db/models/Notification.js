@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const NotificationSchema = mongoose.Schema(
   {
     monitorId: {
@@ -22,5 +21,4 @@ const NotificationSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-module.exports = mongoose.model("Notification", NotificationSchema);
+export default mongoose.model("Notification", NotificationSchema);

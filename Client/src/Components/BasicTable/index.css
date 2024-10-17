@@ -120,7 +120,7 @@
   opacity: 0.4;
 }
 
-.monitors .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
+.table-container .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
   text-transform: uppercase;
   opacity: 0.8;
   font-size: var(--env-var-font-size-small-plus);

@@ -1,17 +1,18 @@
-const {
+import {
   createMaintenanceWindows,
   getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,
   getMaintenanceWindowsByMonitorId,
   deleteMaintenanceWindow,
   editMaintenanceWindow,
-} = require("../../controllers/maintenanceWindowController");
+} from "../../controllers/maintenanceWindowController.js";
 
-const jwt = require("jsonwebtoken");
-const { errorMessages, successMessages } = require("../../utils/messages");
-const sinon = require("sinon");
+import jwt from "jsonwebtoken";
+import { successMessages } from "../../utils/messages.js";
+import sinon from "sinon";
 
 describe("maintenanceWindowController - createMaintenanceWindows", () => {
+  let req, res, next, stub;
   beforeEach(() => {
     req = {
       body: {
@@ -103,6 +104,7 @@ describe("maintenanceWindowController - createMaintenanceWindows", () => {
 });
 
 describe("maintenanceWindowController - getMaintenanceWindowById", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: {},
@@ -154,6 +156,7 @@ describe("maintenanceWindowController - getMaintenanceWindowById", () => {
 });
 
 describe("maintenanceWindowController - getMaintenanceWindowsByTeamId", () => {
+  let req, res, next, stub;
   beforeEach(() => {
     req = {
       body: {},
@@ -220,6 +223,7 @@ describe("maintenanceWindowController - getMaintenanceWindowsByTeamId", () => {
 });
 
 describe("maintenanceWindowController - getMaintenanceWindowsByMonitorId", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: {},
@@ -283,6 +287,7 @@ describe("maintenanceWindowController - getMaintenanceWindowsByMonitorId", () =>
 });
 
 describe("maintenanceWindowController - deleteMaintenanceWindow", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: {},
@@ -338,6 +343,7 @@ describe("maintenanceWindowController - deleteMaintenanceWindow", () => {
 });
 
 describe("maintenanceWindowController - editMaintenanceWindow", () => {
+  let req, res, next;
   beforeEach(() => {
     req = {
       body: {

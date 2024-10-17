@@ -1,7 +1,7 @@
-const Check = require("../../models/Check");
-const Monitor = require("../../models/Monitor");
-const User = require("../../models/User");
-const logger = require("../../../utils/logger");
+import Check from "../../models/Check.js";
+import Monitor from "../../models/Monitor.js";
+import User from "../../models/User.js";
+import logger from "../../../utils/logger.js";
 const SERVICE_NAME = "checkModule";
 const dateRangeLookup = {
   day: new Date(new Date().setDate(new Date().getDate() - 1)),
@@ -274,7 +274,7 @@ const updateChecksTTL = async (teamId, ttl) => {
   }
 };
 
-module.exports = {
+export {
   createCheck,
   getChecksCount,
   getChecks,

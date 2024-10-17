@@ -1,7 +1,4 @@
-const exp = require("constants");
-const joi = require("joi");
-const { normalize } = require("path");
-const { start } = require("repl");
+import joi from "joi";
 
 //****************************************
 // Custom Validators
@@ -143,7 +140,7 @@ const inviteBodyValidation = joi.object({
   teamId: joi.string().required(),
 });
 
-const inviteVerifciationBodyValidation = joi.object({
+const inviteVerificationBodyValidation = joi.object({
   token: joi.string().required(),
 });
 
@@ -427,7 +424,7 @@ const updateAppSettingsBodyValidation = joi.object({
   systemEmailPassword: joi.string().allow(""),
 });
 
-module.exports = {
+export {
   roleValidatior,
   loginValidation,
   registrationBodyValidation,
@@ -436,7 +433,7 @@ module.exports = {
   newPasswordValidation,
   inviteRoleValidation,
   inviteBodyValidation,
-  inviteVerificationBodyValidation: inviteVerifciationBodyValidation,
+  inviteVerificationBodyValidation,
   createMonitorBodyValidation,
   getMonitorByIdParamValidation,
   getMonitorByIdQueryValidation,

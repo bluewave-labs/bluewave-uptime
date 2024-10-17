@@ -1,4 +1,4 @@
-const PageSpeedCheck = require("../../models/PageSpeedCheck");
+import PageSpeedCheck from "../../models/PageSpeedCheck.js";
 const SERVICE_NAME = "pageSpeedCheckModule";
 /**
  * Create a PageSpeed check for a monitor
@@ -63,7 +63,7 @@ const deletePageSpeedChecksByMonitorId = async (monitorId) => {
   }
 };
 
-module.exports = {
+export {
   createPageSpeedCheck,
   getPageSpeedChecks,
   deletePageSpeedChecksByMonitorId,

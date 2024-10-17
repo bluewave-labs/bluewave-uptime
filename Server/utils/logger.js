@@ -1,8 +1,8 @@
-const winston = require('winston');
+import winston from "winston";
 /**
  * @module
  * @example
- * logger.info("Registered a new user!") 
+ * logger.info("Registered a new user!")
  * logger.warn("User not found!")
  * logger.error("Cannot save")
  * @example
@@ -12,15 +12,15 @@ const winston = require('winston');
  * logger.error("User not found!",{"service":"Auth"})
  */
 const logger = winston.createLogger({
-  level: 'info',
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-    ),
-    transports: [
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'app.log' }),
+    new winston.transports.File({ filename: "app.log" }),
   ],
 });
 
-module.exports = logger;
+export default logger;

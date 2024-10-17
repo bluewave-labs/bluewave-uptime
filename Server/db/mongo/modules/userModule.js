@@ -1,11 +1,11 @@
-const UserModel = require("../../models/User");
-const TeamModel = require("../../models/Team");
-const { errorMessages } = require("../../../utils/messages");
-const { GenerateAvatarImage } = require("../../../utils/imageProcessing");
+import UserModel from "../../models/User.js";
+import TeamModel from "../../models/Team.js";
+import { errorMessages } from "../../../utils/messages.js";
+import { GenerateAvatarImage } from "../../../utils/imageProcessing.js";
 
 const DUPLICATE_KEY_CODE = 11000; // MongoDB error code for duplicate key
-const { ParseBoolean } = require("../../../utils/utils");
-SERVICE_NAME = "userModule";
+import { ParseBoolean } from "../../../utils/utils.js";
+const SERVICE_NAME = "userModule";
 
 /**
  * Insert a User
@@ -208,7 +208,7 @@ const logoutUser = async (userId) => {
   }
 };
 
-module.exports = {
+export {
   insertUser,
   getUserByEmail,
   updateUser,

@@ -1,26 +1,35 @@
-const router = require("express").Router();
-const monitorController = require("../controllers/monitorController");
-const { isAllowed } = require("../middleware/isAllowed");
+import { Router } from "express";
+import {
+  getAllMonitors,
+  getMonitorStatsById,
+  getMonitorCertificate,
+  getMonitorById,
+  getMonitorsAndSummaryByTeamId,
+  getMonitorsByTeamId,
+  createMonitor,
+  deleteMonitor,
+  deleteAllMonitors,
+  editMonitor,
+  pauseMonitor,
+  addDemoMonitors,
+} from "../controllers/monitorController.js";
+import { isAllowed } from "../middleware/isAllowed.js";
+import { fetchMonitorCertificate } from "../controllers/controllerUtils.js";
 
-router.get("/", monitorController.getAllMonitors);
-router.get("/stats/:monitorId", monitorController.getMonitorStatsById);
-router.get("/certificate/:monitorId", monitorController.getMonitorCertificate);
-router.get("/:monitorId", monitorController.getMonitorById);
-router.get(
-  "/team/summary/:teamId",
-  monitorController.getMonitorsAndSummaryByTeamId
-);
-router.get("/team/:teamId", monitorController.getMonitorsByTeamId);
+const router = Router();
 
-router.post(
-  "/",
-  isAllowed(["admin", "superadmin"]),
-  monitorController.createMonitor
-);
+router.get("/", getAllMonitors);
+router.get("/stats/:monitorId", getMonitorStatsById);
+router.get("/certificate/:monitorId", (req, res, next) => {
+  getMonitorCertificate(req, res, next, fetchMonitorCertificate);
+});
+router.get("/:monitorId", getMonitorById);
+router.get("/team/summary/:teamId", getMonitorsAndSummaryByTeamId);
+router.get("/team/:teamId", getMonitorsByTeamId);
 
 router.get(
   "/resolution/url",
-  isAllowed(["admin", "superadmin"]), 
+  isAllowed(["admin", "superadmin"]),
   monitorController.checkEndpointResolution
 )
 
@@ -30,28 +39,16 @@ router.delete(
   monitorController.deleteMonitor
 );
 
-router.put(
-  "/:monitorId",
-  isAllowed(["admin", "superadmin"]),
-  monitorController.editMonitor
-);
+router.post("/", isAllowed(["admin", "superadmin"]), createMonitor);
 
-router.delete(
-  "/",
-  isAllowed(["superadmin"]),
-  monitorController.deleteAllMonitors
-);
+router.delete("/:monitorId", isAllowed(["admin", "superadmin"]), deleteMonitor);
 
-router.post(
-  "/pause/:monitorId",
-  isAllowed(["admin", "superadmin"]),
-  monitorController.pauseMonitor
-);
+router.put("/:monitorId", isAllowed(["admin", "superadmin"]), editMonitor);
 
-router.post(
-  "/demo",
-  isAllowed(["admin", "superadmin"]),
-  monitorController.addDemoMonitors
-);
+router.delete("/", isAllowed(["superadmin"]), deleteAllMonitors);
 
-module.exports = router;
+router.post("/pause/:monitorId", isAllowed(["admin", "superadmin"]), pauseMonitor);
+
+router.post("/demo", isAllowed(["admin", "superadmin"]), addDemoMonitors);
+
+export default router;

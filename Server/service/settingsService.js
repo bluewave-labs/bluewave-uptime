@@ -1,16 +1,17 @@
-const { env } = require("process");
-const AppSettings = require("../db/models/AppSettings");
+import AppSettings from "../db/models/AppSettings.js";
 const SERVICE_NAME = "SettingsService";
 const envConfig = {
   logLevel: undefined,
   apiBaseUrl: undefined,
   clientHost: process.env.CLIENT_HOST,
   jwtSecret: process.env.JWT_SECRET,
+  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
   dbType: process.env.DB_TYPE,
   dbConnectionString: process.env.DB_CONNECTION_STRING,
   redisHost: process.env.REDIS_HOST,
   redisPort: process.env.REDIS_PORT,
   jwtTTL: process.env.TOKEN_TTL,
+  refreshTokenTTL: process.env.REFRESH_TOKEN_TTL,
   pagespeedApiKey: process.env.PAGESPEED_API_KEY,
   systemEmailHost: process.env.SYSTEM_EMAIL_HOST,
   systemEmailPort: process.env.SYSTEM_EMAIL_PORT,
@@ -81,4 +82,4 @@ class SettingsService {
   }
 }
 
-module.exports = SettingsService;
+export default SettingsService;
