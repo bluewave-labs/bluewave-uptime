@@ -11,7 +11,7 @@ import logger from "../utils/logger.js";
 import dotenv from "dotenv";
 import { errorMessages, successMessages } from "../utils/messages.js";
 import jwt from "jsonwebtoken";
-import { getTokenFromHeaders } from "../utils/utils.js";
+import { getTokenFromHeaders, tokenType } from "../utils/utils.js";
 import crypto from "crypto";
 import { handleValidationError, handleError } from "./controllerUtils.js";
 const SERVICE_NAME = "authController";
@@ -21,14 +21,24 @@ dotenv.config();
  * Creates and returns JWT token with an arbitrary payload
  * @function
  * @param {Object} payload
+ * @param {tokenType} typeOfToken - Whether to generate refresh token with long TTL or access token with short TTL.
  * @param {Object} appSettings
  * @returns {String}
  * @throws {Error}
  */
-const issueToken = (payload, appSettings) => {
+const issueToken = (payload, typeOfToken, appSettings) => {
 	try {
-		const tokenTTL = appSettings.jwtTTL ? appSettings.jwtTTL : "2h";
-		return jwt.sign(payload, appSettings.jwtSecret, { expiresIn: tokenTTL });
+		const tokenTTL =
+			typeOfToken === tokenType.REFRESH_TOKEN
+				? (appSettings?.refreshTokenTTL ?? "7d")
+				: (appSettings?.jwtTTL ?? "2h");
+		const tokenSecret =
+			typeOfToken === tokenType.REFRESH_TOKEN
+				? appSettings?.refreshTokenSecret
+				: appSettings?.jwtSecret;
+		const payloadData = typeOfToken === tokenType.REFRESH_TOKEN ? {} : payload;
+
+		return jwt.sign(payloadData, tokenSecret, { expiresIn: tokenTTL });
 	} catch (error) {
 		throw handleError(error, SERVICE_NAME, "issueToken");
 	}
@@ -81,7 +91,8 @@ const registerUser = async (req, res, next) => {
 
 		const appSettings = await req.settingsService.getSettings();
 
-		const token = issueToken(userForToken, appSettings);
+		const token = issueToken(userForToken, tokenType.ACCESS_TOKEN, appSettings);
+		const refreshToken = issueToken({}, tokenType.REFRESH_TOKEN, appSettings);
 
 		req.emailService
 			.buildAndSendEmail(
@@ -100,9 +111,10 @@ const registerUser = async (req, res, next) => {
 		return res.status(200).json({
 			success: true,
 			msg: successMessages.AUTH_CREATE_USER,
-			data: { user: newUser, token: token },
+			data: { user: newUser, token: token, refreshToken: refreshToken },
 		});
 	} catch (error) {
+		console.log("ERROR", error);
 		next(handleError(error, SERVICE_NAME, "registerController"));
 	}
 };
@@ -147,14 +159,15 @@ const loginUser = async (req, res, next) => {
 
 		// Happy path, return token
 		const appSettings = await req.settingsService.getSettings();
-		const token = issueToken(userWithoutPassword, appSettings);
+		const token = issueToken(userWithoutPassword, tokenType.ACCESS_TOKEN, appSettings);
+		const refreshToken = issueToken({}, tokenType.REFRESH_TOKEN, appSettings);
 		// reset avatar image
 		userWithoutPassword.avatarImage = user.avatarImage;
 
 		return res.status(200).json({
 			success: true,
 			msg: successMessages.AUTH_LOGIN_USER,
-			data: { user: userWithoutPassword, token: token },
+			data: { user: userWithoutPassword, token: token, refreshToken: refreshToken },
 		});
 	} catch (error) {
 		next(handleError(error, SERVICE_NAME, "loginUser"));
@@ -361,7 +374,7 @@ const resetPassword = async (req, res, next) => {
 		const user = await req.db.resetPassword(req, res);
 
 		const appSettings = await req.settingsService.getSettings();
-		const token = issueToken(user._doc, appSettings);
+		const token = issueToken(user._doc, tokenType.ACCESS_TOKEN, appSettings);
 		res.status(200).json({
 			success: true,
 			msg: successMessages.AUTH_RESET_PASSWORD,
