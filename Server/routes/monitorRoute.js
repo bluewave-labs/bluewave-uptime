@@ -42,8 +42,6 @@ router.delete(
 
 router.post("/", isAllowed(["admin", "superadmin"]), createMonitor);
 
-router.delete("/:monitorId", isAllowed(["admin", "superadmin"]), deleteMonitor);
-
 router.put("/:monitorId", isAllowed(["admin", "superadmin"]), editMonitor);
 
 router.delete("/", isAllowed(["superadmin"]), deleteAllMonitors);
