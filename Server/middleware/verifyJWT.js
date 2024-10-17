@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import { errorMessages } from "../utils/messages.js";
-import { handleError } from "../controllers/controllerUtils.js";
 
 const SERVICE_NAME = "verifyJWT";
 const TOKEN_PREFIX = "Bearer ";
@@ -20,7 +19,7 @@ const verifyJWT = (req, res, next) => {
     const error = new Error(errorMessages.NO_AUTH_TOKEN);
     error.status = 401;
     error.service = SERVICE_NAME;
-    next(handleError(error));
+    next(error);
     return;
   }
   // Make sure it is properly formatted
@@ -29,7 +28,7 @@ const verifyJWT = (req, res, next) => {
     error.status = 400;
     error.service = SERVICE_NAME;
     error.method = "verifyJWT";
-    next(handleError(error));
+    next(error);
     return;
   }
 
@@ -66,7 +65,7 @@ function handleExpiredJwtToken(req, res, next) {
     error.status = 401;
     error.service = SERVICE_NAME;
     error.method = "handleExpiredJwtToken";
-    return next(handleError(error));
+    return next(error);
   }
 
   // Verify refresh token
@@ -81,7 +80,7 @@ function handleExpiredJwtToken(req, res, next) {
       const error = new Error(errorMessage);
       error.status = 401;
       error.service = SERVICE_NAME;
-      return next(handleError(error));
+      return next(error);
     }
 
     // Refresh token is valid and unexpired, request for new access token
@@ -93,4 +92,3 @@ function handleExpiredJwtToken(req, res, next) {
 }
 
 export { verifyJWT };
-
