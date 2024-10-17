@@ -1,4 +1,4 @@
-const sharp = require("sharp");
+import sharp from "sharp";
 /**
  * Generates a 64 * 64 pixel image from a given image
  * @param {} file
@@ -22,6 +22,4 @@ const GenerateAvatarImage = async (file) => {
   }
 };
 
-module.exports = {
-  GenerateAvatarImage,
-};
+export { GenerateAvatarImage };

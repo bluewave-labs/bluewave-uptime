@@ -1,10 +1,15 @@
-const fs = require("fs");
-const path = require("path");
-const nodemailer = require("nodemailer");
-const { compile } = require("handlebars");
-const mjml2html = require("mjml");
+import fs from "fs";
+import path from "path";
+import nodemailer from "nodemailer";
+import pkg from "handlebars";
+const { compile } = pkg;
+import mjml2html from "mjml";
+import logger from "../utils/logger.js";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const SERVICE_NAME = "EmailService";
-const logger = require("../utils/logger");
 
 /**
  * Represents an email service that can load templates, build, and send emails.
@@ -134,5 +139,4 @@ class EmailService {
     }
   };
 }
-
-module.exports = EmailService;
+export default EmailService;

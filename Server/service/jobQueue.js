@@ -1,9 +1,9 @@
-const { Queue, Worker, Job } = require("bullmq");
+import { Queue, Worker, Job } from "bullmq";
 const QUEUE_NAME = "monitors";
 
 const JOBS_PER_WORKER = 5;
-const logger = require("../utils/logger");
-const { errorMessages, successMessages } = require("../utils/messages");
+import logger from "../utils/logger.js";
+import { errorMessages, successMessages } from "../utils/messages.js";
 const SERVICE_NAME = "JobQueue";
 /**
  * JobQueue
@@ -360,4 +360,4 @@ class JobQueue {
   }
 }
 
-module.exports = JobQueue;
+export default JobQueue;

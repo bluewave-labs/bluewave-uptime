@@ -1,4 +1,4 @@
-const MaintenanceWindow = require("../../models/MaintenanceWindow");
+import MaintenanceWindow from "../../models/MaintenanceWindow.js";
 const SERVICE_NAME = "maintenanceWindowModule";
 
 /**
@@ -220,7 +220,7 @@ const editMaintenanceWindowById = async (
   }
 };
 
-module.exports = {
+export {
   createMaintenanceWindow,
   getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,

@@ -1,4 +1,4 @@
-const {
+import {
   createMaintenanceWindowBodyValidation,
   editMaintenanceWindowByIdParamValidation,
   editMaintenanceByIdWindowBodyValidation,
@@ -6,11 +6,12 @@ const {
   getMaintenanceWindowsByMonitorIdParamValidation,
   getMaintenanceWindowsByTeamIdQueryValidation,
   deleteMaintenanceWindowByIdParamValidation,
-} = require("../validation/joi");
-const jwt = require("jsonwebtoken");
-const { getTokenFromHeaders } = require("../utils/utils");
-const { successMessages } = require("../utils/messages");
-const { handleValidationError, handleError } = require("./controllerUtils");
+} from "../validation/joi.js";
+import jwt from "jsonwebtoken";
+import { getTokenFromHeaders } from "../utils/utils.js";
+import { successMessages } from "../utils/messages.js";
+import { handleValidationError, handleError } from "./controllerUtils.js";
+
 const SERVICE_NAME = "maintenanceWindowController";
 
 const createMaintenanceWindows = async (req, res, next) => {
@@ -160,7 +161,7 @@ const editMaintenanceWindow = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export {
   createMaintenanceWindows,
   getMaintenanceWindowById,
   getMaintenanceWindowsByTeamId,

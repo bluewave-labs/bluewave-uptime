@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const InviteTokenSchema = mongoose.Schema(
   {
     email: {
@@ -32,4 +31,4 @@ const InviteTokenSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("InviteToken", InviteTokenSchema);
+export default mongoose.model("InviteToken", InviteTokenSchema);

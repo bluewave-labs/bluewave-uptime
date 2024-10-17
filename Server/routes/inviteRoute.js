@@ -1,11 +1,12 @@
-const router = require("express").Router();
-const { verifyJWT } = require("../middleware/verifyJWT");
-const { isAllowed } = require("../middleware/isAllowed");
-
-const {
+import { Router } from "express";
+import { verifyJWT } from "../middleware/verifyJWT.js";
+import { isAllowed } from "../middleware/isAllowed.js";
+import {
   issueInvitation,
   inviteVerifyController,
-} = require("../controllers/inviteController");
+} from "../controllers/inviteController.js";
+
+const router = Router();
 
 router.post(
   "/",
@@ -15,4 +16,4 @@ router.post(
 );
 router.post("/verify", issueInvitation);
 
-module.exports = router;
+export default router;

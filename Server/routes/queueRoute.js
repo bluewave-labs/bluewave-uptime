@@ -1,15 +1,21 @@
-const router = require("express").Router();
-const queueController = require("../controllers/queueController");
+import { Router } from "express";
+import {
+  getMetrics,
+  getJobs,
+  addJob,
+  obliterateQueue,
+} from "../controllers/queueController.js";
 
-router.get("/metrics", queueController.getMetrics);
+const router = Router();
+router.get("/metrics", getMetrics);
 
 // Get Jobs
-router.get("/jobs", queueController.getJobs);
+router.get("/jobs", getJobs);
 
 // Add Job
-router.post("/jobs", queueController.addJob);
+router.post("/jobs", addJob);
 
 // Obliterate Queue
-router.post("/obliterate", queueController.obliterateQueue);
+router.post("/obliterate", obliterateQueue);
 
-module.exports = router;
+export default router;

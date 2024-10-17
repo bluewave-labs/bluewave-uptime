@@ -45,6 +45,4 @@ const NormalizeData = (checks, rangeMin, rangeMax) => {
   }
 };
 
-module.exports = {
-  NormalizeData,
-};
+export { NormalizeData };

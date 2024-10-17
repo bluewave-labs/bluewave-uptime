@@ -1,14 +1,17 @@
-const {
+import {
   inviteRoleValidation,
   inviteBodyValidation,
   inviteVerificationBodyValidation,
-} = require("../validation/joi");
-const logger = require("../utils/logger");
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const { handleError, handleValidationError } = require("./controllerUtils");
+} from "../validation/joi.js";
+import logger from "../utils/logger.js";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { handleError, handleValidationError } from "./controllerUtils.js";
+import { getTokenFromHeaders } from "../utils/utils.js";
+
+dotenv.config();
+
 const SERVICE_NAME = "inviteController";
-const { getTokenFromHeaders } = require("../utils/utils");
 
 /**
  * Issues an invitation to a new user. Only admins can invite new users. An invitation token is created and sent via email.
@@ -82,7 +85,4 @@ const inviteVerifyController = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  issueInvitation,
-  inviteVerifyController,
-};
+export { issueInvitation, inviteVerifyController };

@@ -114,7 +114,4 @@ const successMessages = {
   UPDATE_APP_SETTINGS: "Updated app settings successfully",
 };
 
-module.exports = {
-  errorMessages,
-  successMessages,
-};
+export { errorMessages, successMessages };
