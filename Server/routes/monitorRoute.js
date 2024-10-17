@@ -7,6 +7,7 @@ import {
   getMonitorsAndSummaryByTeamId,
   getMonitorsByTeamId,
   createMonitor,
+  checkEndpointResolution,
   deleteMonitor,
   deleteAllMonitors,
   editMonitor,
@@ -30,13 +31,13 @@ router.get("/team/:teamId", getMonitorsByTeamId);
 router.get(
   "/resolution/url",
   isAllowed(["admin", "superadmin"]),
-  monitorController.checkEndpointResolution
+  checkEndpointResolution
 )
 
 router.delete(
   "/:monitorId",
   isAllowed(["admin", "superadmin"]),
-  monitorController.deleteMonitor
+  deleteMonitor
 );
 
 router.post("/", isAllowed(["admin", "superadmin"]), createMonitor);

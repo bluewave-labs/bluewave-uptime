@@ -6,6 +6,7 @@ import {
 	getMonitorsAndSummaryByTeamId,
 	getMonitorsByTeamId,
 	createMonitor,
+	checkEndpointResolution,
 	deleteMonitor,
 	deleteAllMonitors,
 	editMonitor,
@@ -461,53 +462,53 @@ describe("Monitor Controller - createMonitor", () => {
 });
 
 describe('checkEndpointResolution', () => {
-  let dnsResolveStub;
-  beforeEach(() => {
-    req = { query: { monitorURL: 'https://example.com' } };
-    res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
-    next = sinon.stub();
-    dnsResolveStub = sinon.stub(dns, 'resolve');
-  });
-  afterEach(() => {
-    dnsResolveStub.restore();
-  });
-  it('should resolve the URL successfully', async () => {
-    dnsResolveStub.callsFake((hostname, callback) => callback(null));
-    await checkEndpointResolution(req, res, next);
-    expect(res.status.calledWith(200)).to.be.true;
-    expect(res.json.calledWith({
-      success: true,
-      msg: 'URL resolved successfully',
-    })).to.be.true;
-    expect(next.called).to.be.false;
-  });
-  it("should return a 400 error message if DNS resolution fails", async () => {
-    const dnsError = new Error("DNS resolution failed");
-    dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
-    await checkEndpointResolution(req, res, next);
-    expect(res.status.calledOnceWith(400)).to.be.true;
-    expect(res.json.calledOnceWith({
-      success: false,
-      msg: "DNS resolution failed",
-    })).to.be.true;
-    expect(next.notCalled).to.be.true;
-  });
-  it('should call next with an error for invalid monitorURL', async () => {
-    req.query.monitorURL = 'invalid-url';
-    await checkEndpointResolution(req, res, next);
-    expect(next.calledOnce).to.be.true;
-    const error = next.getCall(0).args[0];
-    expect(error).to.be.an.instanceOf(Error);
-    expect(error.message).to.include('Invalid URL');
-  });
-  it('should handle an edge case where monitorURL is not provided', async () => {
-    req.query = {};
-    await checkEndpointResolution(req, res, next);
-    expect(next.calledOnce).to.be.true;
-    const error = next.getCall(0).args[0];
-    expect(error).to.be.an.instanceOf(Error);
-    expect(error.message).to.include('Invalid URL');
-  });
+	let req, res, next, dnsResolveStub;
+	beforeEach(() => {
+		req = { query: { monitorURL: 'https://example.com' } };
+		res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
+		next = sinon.stub();
+		dnsResolveStub = sinon.stub(dns, 'resolve');
+	});
+	afterEach(() => {
+		dnsResolveStub.restore();
+	});
+	it('should resolve the URL successfully', async () => {
+		dnsResolveStub.callsFake((hostname, callback) => callback(null));
+		await checkEndpointResolution(req, res, next);
+		expect(res.status.calledWith(200)).to.be.true;
+		expect(res.json.calledWith({
+			success: true,
+			msg: 'URL resolved successfully',
+		})).to.be.true;
+		expect(next.called).to.be.false;
+	});
+	it("should return a 400 error message if DNS resolution fails", async () => {
+		const dnsError = new Error("DNS resolution failed");
+		dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
+		await checkEndpointResolution(req, res, next);
+		expect(res.status.calledOnceWith(400)).to.be.true;
+		expect(res.json.calledOnceWith({
+			success: false,
+			msg: "DNS resolution failed",
+		})).to.be.true;
+		expect(next.notCalled).to.be.true;
+	});
+	it('should call next with an error for invalid monitorURL', async () => {
+		req.query.monitorURL = 'invalid-url';
+		await checkEndpointResolution(req, res, next);
+		expect(next.calledOnce).to.be.true;
+		const error = next.getCall(0).args[0];
+		expect(error).to.be.an.instanceOf(Error);
+		expect(error.message).to.include('Invalid URL');
+	});
+	it('should handle an edge case where monitorURL is not provided', async () => {
+		req.query = {};
+		await checkEndpointResolution(req, res, next);
+		expect(next.calledOnce).to.be.true;
+		const error = next.getCall(0).args[0];
+		expect(error).to.be.an.instanceOf(Error);
+		expect(error.message).to.include('Invalid URL');
+	});
 });
 
 describe("Monitor Controller - deleteMonitor", () => {

@@ -514,6 +514,7 @@ export {
 	getMonitorsAndSummaryByTeamId,
 	getMonitorsByTeamId,
 	createMonitor,
+  checkEndpointResolution,
 	deleteMonitor,
 	deleteAllMonitors,
 	editMonitor,
