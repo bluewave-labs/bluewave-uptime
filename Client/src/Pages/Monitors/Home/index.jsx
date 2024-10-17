@@ -53,6 +53,7 @@ const Monitors = ({ isAdmin }) => {
 					justifyContent="space-between"
 					alignItems="center"
 					mt={theme.spacing(5)}
+					gap={theme.spacing(6)}
 				>
 					<Greeting type="uptime" />
 					{canCreateMonitor && (
