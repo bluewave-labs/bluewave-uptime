@@ -3,6 +3,7 @@ import {
 	getMonitorByIdQueryValidation,
 	getMonitorsByTeamIdValidation,
 	createMonitorBodyValidation,
+  getMonitorURLByQueryValidation,
 	editMonitorBodyValidation,
 	getMonitorsAndSummaryByTeamIdParamValidation,
 	getMonitorsAndSummaryByTeamIdQueryValidation,
@@ -14,16 +15,17 @@ import {
 } from "../validation/joi.js";
 import * as tls from "tls";
 
-const SERVICE_NAME = "monitorController";
 import { errorMessages, successMessages } from "../utils/messages.js";
 import jwt from "jsonwebtoken";
 import { getTokenFromHeaders } from "../utils/utils.js";
 import logger from "../utils/logger.js";
 import {
-	handleError,
+  handleError,
 	handleValidationError,
-	fetchMonitorCertificate,
 } from "./controllerUtils.js";
+import dns from "dns";
+
+const SERVICE_NAME = "monitorController";
 
 /**
  * Returns all monitors
@@ -262,6 +264,44 @@ const createMonitor = async (req, res, next) => {
 };
 
 /**
+ * Checks if the endpoint can be resolved
+ * @async
+ * @param {Object} req - The Express request object.
+ * @property {Object} req.query - The query parameters of the request.
+ * @param {Object} res - The Express response object.
+ * @param {function} next - The next middleware function.
+ * @returns {Object} The response object with a success status, a message, and the resolution result.
+ * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
+ */
+const checkEndpointResolution = async (req, res, next) => {
+  try {
+		await getMonitorURLByQueryValidation.validateAsync(req.query);
+	} catch (error) {
+		next(handleValidationError(error, SERVICE_NAME));
+		return;
+	}
+
+  try {
+    let { monitorURL } = req.query;
+    monitorURL = new URL(monitorURL);
+    await new Promise((resolve, reject) => {
+      dns.resolve(monitorURL.hostname, (error) => {
+        if (error) {
+          reject(error);
+        }
+        resolve();
+      });
+    });
+    return res.status(200).json({
+      success: true,
+      msg: `URL resolved successfully`,
+    });
+  } catch (error) {
+    next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
+  }
+}
+
+/**
  * Deletes a monitor by its ID and also deletes associated checks, alerts, and notifications.
  * @async
  * @param {Object} req - The Express request object.
@@ -481,6 +521,7 @@ export {
 	getMonitorsAndSummaryByTeamId,
 	getMonitorsByTeamId,
 	createMonitor,
+  checkEndpointResolution,
 	deleteMonitor,
 	deleteAllMonitors,
 	editMonitor,

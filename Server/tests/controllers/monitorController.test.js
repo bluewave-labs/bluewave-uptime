@@ -6,6 +6,7 @@ import {
 	getMonitorsAndSummaryByTeamId,
 	getMonitorsByTeamId,
 	createMonitor,
+	checkEndpointResolution,
 	deleteMonitor,
 	deleteAllMonitors,
 	editMonitor,
@@ -16,9 +17,7 @@ import jwt from "jsonwebtoken";
 import sinon from "sinon";
 import { successMessages } from "../../utils/messages.js";
 import logger from "../../utils/logger.js";
-import * as monitorController from "../../controllers/monitorController.js";
-import { fetchMonitorCertificate } from "../../controllers/controllerUtils.js";
-
+import dns from "dns";
 const SERVICE_NAME = "monitorController";
 
 describe("Monitor Controller - getAllMonitors", () => {
@@ -457,6 +456,50 @@ describe("Monitor Controller - createMonitor", () => {
 				data: monitor,
 			})
 		).to.be.true;
+	});
+});
+
+describe("Monitor Controllor - checkEndpointResolution", () => {
+	let req, res, next, dnsResolveStub;
+	beforeEach(() => {
+		req = { query: { monitorURL: 'https://example.com' } };
+		res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
+		next = sinon.stub();
+		dnsResolveStub = sinon.stub(dns, 'resolve');
+	});
+	afterEach(() => {
+		dnsResolveStub.restore();
+	});
+	it('should resolve the URL successfully', async () => {
+		dnsResolveStub.callsFake((hostname, callback) => callback(null));
+		await checkEndpointResolution(req, res, next);
+		expect(res.status.calledWith(200)).to.be.true;
+		expect(res.json.calledWith({
+			success: true,
+			msg: 'URL resolved successfully',
+		})).to.be.true;
+		expect(next.called).to.be.false;
+	});
+	it("should return an error if DNS resolution fails", async () => {
+		const dnsError = new Error("DNS resolution failed");
+		dnsError.code = 'ENOTFOUND';
+		dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
+		await checkEndpointResolution(req, res, next);
+		expect(next.calledOnce).to.be.true;
+  		const errorPassedToNext = next.getCall(0).args[0];
+  		expect(errorPassedToNext).to.be.an.instanceOf(Error);
+		expect(errorPassedToNext.message).to.include('DNS resolution failed');
+		expect(errorPassedToNext.code).to.equal('ENOTFOUND');
+		expect(errorPassedToNext.status).to.equal(500);
+	});
+	it('should reject with an error if query validation fails', async () => {
+		req.query.monitorURL = 'invalid-url';
+		await checkEndpointResolution(req, res, next);
+		expect(next.calledOnce).to.be.true;
+		const error = next.getCall(0).args[0];
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].status).to.equal(422);
+		expect(error.message).to.equal('"monitorURL" must be a valid uri');
 	});
 });
 

@@ -3,6 +3,7 @@ import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
@@ -42,6 +43,7 @@ const CreateMonitor = () => {
   });
   const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
+  const [isCheckingEndpoint, setIsCheckingEndpoint] = useState(false);
 
   useEffect(() => {
     const fetchMonitor = async () => {
@@ -124,6 +126,7 @@ const CreateMonitor = () => {
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
+    setIsCheckingEndpoint(true);
     //obj to submit
     let form = {
       url:
@@ -148,6 +151,19 @@ const CreateMonitor = () => {
       setErrors(newErrors);
       createToast({ body: "Error validation data." });
     } else {
+      if (monitor.type === "http") {
+        const checkEndpointAction = await dispatch(
+          checkEndpointResolution({ authToken, monitorURL: form.url })
+        )
+        if (checkEndpointAction.meta.requestStatus === "rejected") {
+          createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
+          setErrors({ url: "The entered URL is not reachable." });
+          setIsCheckingEndpoint(false);
+          return;
+        }
+        setIsCheckingEndpoint(false);
+      }
+
       form = {
         ...form,
         description: form.name,
@@ -375,7 +391,7 @@ const CreateMonitor = () => {
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           >
-            Create monitor
+            { isCheckingEndpoint ? "Checking endpoint" : "Create monitor" }
           </Button>
         </Stack>
       </Stack>

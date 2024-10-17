@@ -5,6 +5,7 @@ import { monitorValidation } from "../../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
@@ -39,6 +40,7 @@ const CreatePageSpeed = () => {
   });
   const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
+  const [isCheckingEndpoint, setIsCheckingEndpoint] = useState(false);
 
   const handleChange = (event, name) => {
     const { value, id } = event.target;
@@ -91,6 +93,7 @@ const CreatePageSpeed = () => {
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
+    setIsCheckingEndpoint(true);
     //obj to submit
     let form = {
       url: `http${https ? "s" : ""}://` + monitor.url,
@@ -111,6 +114,17 @@ const CreatePageSpeed = () => {
       setErrors(newErrors);
       createToast({ body: "Error validation data." });
     } else {
+      const checkEndpointAction = await dispatch(
+        checkEndpointResolution({ authToken, monitorURL: form.url })
+      )
+      if (checkEndpointAction.meta.requestStatus === "rejected") {
+        createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
+        setErrors({ url: "The entered URL is not reachable." });
+        setIsCheckingEndpoint(false);
+        return;
+      }
+      setIsCheckingEndpoint(false);
+
       form = {
         ...form,
         description: form.name,
@@ -333,7 +347,7 @@ const CreatePageSpeed = () => {
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
           >
-            Create monitor
+            { isCheckingEndpoint ? "Checking endpoint" : "Create monitor" }
           </Button>
         </Stack>
       </Stack>
