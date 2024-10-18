@@ -175,7 +175,7 @@ const loginUser = async (req, res, next) => {
 
 /**
  * Generates new auth token if the refresh token is valid
- * @function
+ * @async
  * @param {Express.Request} req - The Express request object.
  * @property {Object} req.headers - The parameter of the request.
  * @param {Express.Response} res - The Express response object.
@@ -183,7 +183,7 @@ const loginUser = async (req, res, next) => {
  * @returns {Object} The response object with a success status, a message indicating new auth token is generated.
  * @throws {Error} If there is an error during the process such as any of the token is not received
  */
-const refreshAuthToken = (req, res, next) => {
+const refreshAuthToken = async (req, res, next) => {
   try {
     // check for refreshToken 
     const refreshToken = req.headers["x-refresh-token"];
@@ -198,8 +198,8 @@ const refreshAuthToken = (req, res, next) => {
     }
 
     // Verify refresh token
-    const { refreshTokenSecret } = req.settingsService.getSettings();
-    jwt.verify(refreshToken, refreshTokenSecret, (refreshErr, refreshDecoded) => {
+    const { refreshTokenSecret } = await req.settingsService.getSettings();
+    jwt.verify(refreshToken, refreshTokenSecret, async (refreshErr, refreshDecoded) => {
       if (refreshErr) {
         // Invalid or expired refresh token, trigger logout
         const errorMessage =
@@ -214,7 +214,7 @@ const refreshAuthToken = (req, res, next) => {
 
       // Refresh token is valid and unexpired, generate new access token
       const oldAuthToken = getTokenFromHeaders(req.headers);
-      const { jwtSecret } = req.settingsService.getSettings();
+      const { jwtSecret } = await req.settingsService.getSettings();
 
       const payloadData = jwt.verify(oldAuthToken, jwtSecret, { ignoreExpiration: true });
       // delete old token related data
@@ -233,7 +233,6 @@ const refreshAuthToken = (req, res, next) => {
     next(handleError(error, SERVICE_NAME, "refreshAuthToken"));
   }
 };
-
 
 /**
  * Edits a user's information. If the user wants to change their password, the current password is checked before updating to the new password.
