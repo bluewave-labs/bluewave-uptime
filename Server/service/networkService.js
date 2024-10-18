@@ -138,10 +138,13 @@ class NetworkService {
 	async handlePing(job) {
 		let isAlive;
 
+		const operation = async () => {
+			const response = await this.ping.promise.probe(job.data.url);
+			return response;
+		};
+
 		try {
-			const { responseTime, response } = await this.measureResponseTime(
-				this.ping.promise.probe(job.data.url)
-			);
+			const { responseTime, response } = await this.measureResponseTime(operation);
 			isAlive = response.alive;
 			const checkData = {
 				monitorId: job.data._id,
@@ -206,6 +209,7 @@ class NetworkService {
 				responseTime: error.responseTime,
 				message,
 			};
+			await this.logAndStoreCheck(checkData, this.db.createCheck);
 		} finally {
 			this.handleStatusUpdate(job, isAlive);
 		}
