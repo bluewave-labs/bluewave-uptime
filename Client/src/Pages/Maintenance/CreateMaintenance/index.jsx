@@ -28,6 +28,7 @@ import {
 	MS_PER_WEEK,
 } from "../../../Utils/timeUtils";
 import { useNavigate, useParams } from "react-router-dom";
+import { buildErrors, hasValidationErrors } from "../../../Validation/error";
 
 const getDurationAndUnit = (durationInMs) => {
 	if (durationInMs % MS_PER_DAY === 0) {
@@ -145,46 +146,36 @@ const CreateMaintenance = () => {
 					return;
 				}
 
-				const res = await networkService.getMaintenanceWindowById({
-					authToken: authToken,
-					maintenanceWindowId: maintenanceWindowId,
-				});
-				const maintenanceWindow = res.data.data;
-				const { name, start, end, repeat, monitorId } = maintenanceWindow;
-				const startTime = dayjs(start);
-				const endTime = dayjs(end);
-				const durationInMs = endTime.diff(startTime, "milliseconds").toString();
-				const { duration, durationUnit } = getDurationAndUnit(durationInMs);
-				const monitor = monitors.find((monitor) => monitor._id === monitorId);
-				setForm({
-					...form,
-					name,
-					repeat: REVERSE_REPEAT_LOOKUP[repeat],
-					startDate: startTime,
-					startTime,
-					duration,
-					durationUnit,
-					monitors: monitor ? [monitor] : [],
-				});
-			} catch (error) {
-				createToast({ body: "Failed to fetch data" });
-				logger.error("Failed to fetch monitors", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-		fetchMonitors();
-	}, [authToken, user]);
-
-	const buildErrors = (prev, id, error) => {
-		const updatedErrors = { ...prev };
-		if (error) {
-			updatedErrors[id] = error.details[0].message;
-		} else {
-			delete updatedErrors[id];
-		}
-		return updatedErrors;
-	};
+        const res = await networkService.getMaintenanceWindowById({
+          authToken: authToken,
+          maintenanceWindowId: maintenanceWindowId,
+        });
+        const maintenanceWindow = res.data.data;
+        const { name, start, end, repeat, monitorId } = maintenanceWindow;
+        const startTime = dayjs(start);
+        const endTime = dayjs(end);
+        const durationInMs = endTime.diff(startTime, "milliseconds").toString();
+        const { duration, durationUnit } = getDurationAndUnit(durationInMs);
+        const monitor = monitors.find((monitor) => monitor._id === monitorId);
+        setForm({
+          ...form,
+          name,
+          repeat: REVERSE_REPEAT_LOOKUP[repeat],
+          startDate: startTime,
+          startTime,
+          duration,
+          durationUnit,
+          monitors: monitor ? [monitor] : [],
+        });
+      } catch (error) {
+        createToast({ body: "Failed to fetch data" });
+        logger.error("Failed to fetch monitors", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMonitors();
+  }, [authToken, user]);
 
 	const handleSearch = (value) => {
 		setSearch(value);
@@ -223,29 +214,17 @@ const CreateMaintenance = () => {
 		});
 	};
 
-	const handleSubmit = async () => {
-		const { error } = maintenanceWindowValidation.validate(form, {
-			abortEarly: false,
-		});
-
-		// If errors, return early
-		if (error) {
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
-			logger.error(error);
-			return;
-		}
-		// Build timestamp for maintenance window from startDate and startTime
-		const start = dayjs(form.startDate)
-			.set("hour", form.startTime.hour())
-			.set("minute", form.startTime.minute());
-		// Build end timestamp for maintenance window
-		const MS_MULTIPLIER = MS_LOOKUP[form.durationUnit];
-		const durationInMs = form.duration * MS_MULTIPLIER;
-		const end = start.add(durationInMs);
+  const handleSubmit = async () => {
+    if(hasValidationErrors(form, maintenanceWindowValidation, setErrors))
+      return;
+    // Build timestamp for maintenance window from startDate and startTime
+    const start = dayjs(form.startDate)
+      .set("hour", form.startTime.hour())
+      .set("minute", form.startTime.minute());
+    // Build end timestamp for maintenance window
+    const MS_MULTIPLIER = MS_LOOKUP[form.durationUnit];
+    const durationInMs = form.duration * MS_MULTIPLIER;
+    const end = start.add(durationInMs);
 
 		// Get repeat value in milliseconds
 		const repeat = REPEAT_LOOKUP[form.repeat];
