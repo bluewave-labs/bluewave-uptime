@@ -1,4 +1,4 @@
-const PageSpeedCheck = require("../../models/PageSpeedCheck");
+import PageSpeedCheck from "../../models/PageSpeedCheck.js";
 const SERVICE_NAME = "pageSpeedCheckModule";
 /**
  * Create a PageSpeed check for a monitor
@@ -13,16 +13,16 @@ const SERVICE_NAME = "pageSpeedCheckModule";
  * @throws {Error}
  */
 const createPageSpeedCheck = async (pageSpeedCheckData) => {
-  try {
-    const pageSpeedCheck = await new PageSpeedCheck({
-      ...pageSpeedCheckData,
-    }).save();
-    return pageSpeedCheck;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "createPageSpeedCheck";
-    throw error;
-  }
+	try {
+		const pageSpeedCheck = await new PageSpeedCheck({
+			...pageSpeedCheckData,
+		}).save();
+		return pageSpeedCheck;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "createPageSpeedCheck";
+		throw error;
+	}
 };
 
 /**
@@ -34,14 +34,14 @@ const createPageSpeedCheck = async (pageSpeedCheckData) => {
  */
 
 const getPageSpeedChecks = async (monitorId) => {
-  try {
-    const pageSpeedChecks = await PageSpeedCheck.find({ monitorId });
-    return pageSpeedChecks;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getPageSpeedChecks";
-    throw error;
-  }
+	try {
+		const pageSpeedChecks = await PageSpeedCheck.find({ monitorId });
+		return pageSpeedChecks;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getPageSpeedChecks";
+		throw error;
+	}
 };
 
 /**
@@ -53,18 +53,14 @@ const getPageSpeedChecks = async (monitorId) => {
  */
 
 const deletePageSpeedChecksByMonitorId = async (monitorId) => {
-  try {
-    const result = await PageSpeedCheck.deleteMany({ monitorId });
-    return result.deletedCount;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deletePageSpeedChecksByMonitorId";
-    throw error;
-  }
+	try {
+		const result = await PageSpeedCheck.deleteMany({ monitorId });
+		return result.deletedCount;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "deletePageSpeedChecksByMonitorId";
+		throw error;
+	}
 };
 
-module.exports = {
-  createPageSpeedCheck,
-  getPageSpeedChecks,
-  deletePageSpeedChecksByMonitorId,
-};
+export { createPageSpeedCheck, getPageSpeedChecks, deletePageSpeedChecksByMonitorId };

@@ -21,67 +21,71 @@ import "./index.css";
  */
 
 const Fallback = ({ title, checks, link = "/", isAdmin }) => {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const mode = useSelector((state) => state.ui.mode);
+	const theme = useTheme();
+	const navigate = useNavigate();
+	const mode = useSelector((state) => state.ui.mode);
 
-  return (
-    <Stack
-      className={`fallback__${title.trim().split(" ")[0]}`}
-      alignItems="center"
-      gap={theme.spacing(20)}
-    >
-      {mode === "light" ? (
-        <Skeleton style={{ zIndex: 1 }} />
-      ) : (
-        <SkeletonDark style={{ zIndex: 1 }} />
-      )}
-      <Box
-        className="background-pattern-svg"
-        sx={{
-          "& svg g g:last-of-type path": {
-            stroke: theme.palette.border.light,
-          },
-        }}
-      >
-        <Background style={{ width: "100%" }} />
-      </Box>
-      <Stack gap={theme.spacing(4)} maxWidth={"275px"} zIndex={1}>
-        <Typography
-          component="h1"
-          marginY={theme.spacing(4)}
-          color={theme.palette.text.tertiary}
-        >
-          A {title} is used to:
-        </Typography>
-        {checks.map((check, index) => (
-          <Check
-            text={check}
-            key={`${title.trim().split(" ")[0]}-${index}`}
-            outlined={true}
-          />
-        ))}
-      </Stack>
-      {/* TODO - display a different fallback if user is not an admin*/}
-      {isAdmin && (
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ alignSelf: "center" }}
-          onClick={() => navigate(link)}
-        >
-          Let's create your {title}
-        </Button>
-      )}
-    </Stack>
-  );
+	return (
+		<Stack
+			className={`fallback__${title.trim().split(" ")[0]}`}
+			alignItems="center"
+			gap={theme.spacing(20)}
+		>
+			{mode === "light" ? (
+				<Skeleton style={{ zIndex: 1 }} />
+			) : (
+				<SkeletonDark style={{ zIndex: 1 }} />
+			)}
+			<Box
+				className="background-pattern-svg"
+				sx={{
+					"& svg g g:last-of-type path": {
+						stroke: theme.palette.border.light,
+					},
+				}}
+			>
+				<Background style={{ width: "100%" }} />
+			</Box>
+			<Stack
+				gap={theme.spacing(4)}
+				maxWidth={"275px"}
+				zIndex={1}
+			>
+				<Typography
+					component="h1"
+					marginY={theme.spacing(4)}
+					color={theme.palette.text.tertiary}
+				>
+					A {title} is used to:
+				</Typography>
+				{checks.map((check, index) => (
+					<Check
+						text={check}
+						key={`${title.trim().split(" ")[0]}-${index}`}
+						outlined={true}
+					/>
+				))}
+			</Stack>
+			{/* TODO - display a different fallback if user is not an admin*/}
+			{isAdmin && (
+				<Button
+					variant="contained"
+					color="primary"
+					sx={{ alignSelf: "center" }}
+					onClick={() => navigate(link)}
+				>
+					Let's create your {title}
+				</Button>
+			)}
+		</Stack>
+	);
 };
 
 Fallback.propTypes = {
-  title: PropTypes.string.isRequired,
-  checks: PropTypes.arrayOf(PropTypes.string).isRequired,
-  link: PropTypes.string,
-  isAdmin: PropTypes.bool,
+	title: PropTypes.string.isRequired,
+	checks: PropTypes.arrayOf(PropTypes.string).isRequired,
+	link: PropTypes.string,
+	isAdmin: PropTypes.bool,
 };
 
 export default Fallback;

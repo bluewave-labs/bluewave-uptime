@@ -14,17 +14,20 @@ import PropTypes from "prop-types";
  */
 
 const ProtectedRoute = ({ Component, ...rest }) => {
-  const authState = useSelector((state) => state.auth);
+	const authState = useSelector((state) => state.auth);
 
-  return authState.authToken ? (
-    <Component {...rest} />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+	return authState.authToken ? (
+		<Component {...rest} />
+	) : (
+		<Navigate
+			to="/login"
+			replace
+		/>
+	);
 };
 
 ProtectedRoute.propTypes = {
-  Component: PropTypes.elementType.isRequired,
+	Component: PropTypes.elementType.isRequired,
 };
 
 export default ProtectedRoute;

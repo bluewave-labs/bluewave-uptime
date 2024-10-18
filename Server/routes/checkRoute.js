@@ -1,33 +1,26 @@
-const router = require("express").Router();
-const checkController = require("../controllers/checkController");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
-const { isAllowed } = require("../middleware/isAllowed");
-const Monitor = require("../db/models/Monitor");
+import { Router } from "express";
+import {
+	createCheck,
+	getChecks,
+	deleteChecks,
+	getTeamChecks,
+	deleteChecksByTeamId,
+	updateChecksTTL,
+} from "../controllers/checkController.js";
+import { verifyOwnership } from "../middleware/verifyOwnership.js";
+import { isAllowed } from "../middleware/isAllowed.js";
+import Monitor from "../db/models/Monitor.js";
 
-router.get("/:monitorId", checkController.getChecks);
-router.post(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  checkController.createCheck
-);
-router.delete(
-  "/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  checkController.deleteChecks
-);
+const router = Router();
 
-router.get("/team/:teamId", checkController.getTeamChecks);
+router.get("/:monitorId", getChecks);
+router.post("/:monitorId", verifyOwnership(Monitor, "monitorId"), createCheck);
+router.delete("/:monitorId", verifyOwnership(Monitor, "monitorId"), deleteChecks);
 
-router.delete(
-  "/team/:teamId",
-  isAllowed(["admin", "superadmin"]),
-  checkController.deleteChecksByTeamId
-);
+router.get("/team/:teamId", getTeamChecks);
 
-router.put(
-  "/team/ttl",
-  isAllowed(["admin", "superadmin"]),
-  checkController.updateChecksTTL
-);
+router.delete("/team/:teamId", isAllowed(["admin", "superadmin"]), deleteChecksByTeamId);
 
-module.exports = router;
+router.put("/team/ttl", isAllowed(["admin", "superadmin"]), updateChecksTTL);
+
+export default router;

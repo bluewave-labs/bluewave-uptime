@@ -9,45 +9,41 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore, createTransform } from "redux-persist";
 
 const authTransform = createTransform(
-  (inboundState) => {
-    const { profileImage, ...rest } = inboundState;
-    return rest;
-  },
-  // No transformation on rehydration
-  null,
-  // Only applies to auth
-  { whitelist: ["auth"] }
+	(inboundState) => {
+		const { profileImage, ...rest } = inboundState;
+		return rest;
+	},
+	// No transformation on rehydration
+	null,
+	// Only applies to auth
+	{ whitelist: ["auth"] }
 );
 
 const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["auth", "monitors", "pageSpeed", "ui", "settings"],
-  transforms: [authTransform],
+	key: "root",
+	storage,
+	whitelist: ["auth", "monitors", "pageSpeed", "ui", "settings"],
+	transforms: [authTransform],
 };
 
 const rootReducer = combineReducers({
-  uptimeMonitors: uptimeMonitorsReducer,
-  auth: authReducer,
-  pageSpeedMonitors: pageSpeedMonitorReducer,
-  ui: uiReducer,
-  settings: settingsReducer,
+	uptimeMonitors: uptimeMonitorsReducer,
+	auth: authReducer,
+	pageSpeedMonitors: pageSpeedMonitorReducer,
+	ui: uiReducer,
+	settings: settingsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          "persist/PERSIST",
-          "persist/REHYDRATE",
-          "persist/REGISTER",
-        ],
-      },
-    }),
+	reducer: persistedReducer,
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: {
+				ignoredActions: ["persist/PERSIST", "persist/REHYDRATE", "persist/REGISTER"],
+			},
+		}),
 });
 
 export const persistor = persistStore(store);

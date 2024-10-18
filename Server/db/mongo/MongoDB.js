@@ -1,198 +1,195 @@
-const mongoose = require("mongoose");
-const UserModel = require("../models/User");
-const AppSettings = require("../models/AppSettings");
+import mongoose from "mongoose";
+import UserModel from "../models/User.js";
+import AppSettings from "../models/AppSettings.js";
 
 //****************************************
 // DB Connection
 //****************************************
 
 const connect = async () => {
-  try {
-    const connectionString =
-      process.env.DB_CONNECTION_STRING || "mongodb://localhost:27017/uptime_db";
-    await mongoose.connect(connectionString);
-    // If there are no AppSettings, create one
-    let appSettings = await AppSettings.find();
-    if (appSettings.length === 0) {
-      appSettings = new AppSettings({});
-      await appSettings.save();
-    }
+	try {
+		const connectionString =
+			process.env.DB_CONNECTION_STRING || "mongodb://localhost:27017/uptime_db";
+		await mongoose.connect(connectionString);
+		// If there are no AppSettings, create one
+		let appSettings = await AppSettings.find();
+		if (appSettings.length === 0) {
+			appSettings = new AppSettings({});
+			await appSettings.save();
+		}
 
-    console.log("Connected to MongoDB");
-  } catch (error) {
-    console.error("Failed to connect to MongoDB");
-    throw error;
-  }
+		console.log("Connected to MongoDB");
+	} catch (error) {
+		console.error("Failed to connect to MongoDB");
+		throw error;
+	}
 };
 
 const checkSuperadmin = async (req, res) => {
-  try {
-    const superAdmin = await UserModel.findOne({ role: "superadmin" });
-    if (superAdmin !== null) {
-      return true;
-    }
-    return false;
-  } catch (error) {
-    throw error;
-  }
+	try {
+		const superAdmin = await UserModel.findOne({ role: "superadmin" });
+		if (superAdmin !== null) {
+			return true;
+		}
+		return false;
+	} catch (error) {
+		throw error;
+	}
 };
 
 //****************************************
 // User Operations
 //****************************************
 
-const {
-  insertUser,
-  getUserByEmail,
-  updateUser,
-  deleteUser,
-  deleteTeam,
-  deleteAllOtherUsers,
-  getAllUsers,
-  logoutUser,
-} = require("./modules/userModule");
+import {
+	insertUser,
+	getUserByEmail,
+	updateUser,
+	deleteUser,
+	deleteTeam,
+	deleteAllOtherUsers,
+	getAllUsers,
+	logoutUser,
+} from "./modules/userModule.js";
 
 //****************************************
 // Invite Token Operations
 //****************************************
 
-const {
-  requestInviteToken,
-  getInviteToken,
-  getInviteTokenAndDelete,
-} = require("./modules/inviteModule");
+import {
+	requestInviteToken,
+	getInviteToken,
+	getInviteTokenAndDelete,
+} from "./modules/inviteModule.js";
 
 //****************************************
 // Recovery Operations
 //****************************************
-const {
-  requestRecoveryToken,
-  validateRecoveryToken,
-  resetPassword,
-} = require("./modules/recoveryModule");
+import {
+	requestRecoveryToken,
+	validateRecoveryToken,
+	resetPassword,
+} from "./modules/recoveryModule.js";
 
 //****************************************
 //  Monitors
 //****************************************
 
-const {
-  getAllMonitors,
-  getMonitorStatsById,
-  getMonitorById,
-  getMonitorsAndSummaryByTeamId,
-  getMonitorsByTeamId,
-  createMonitor,
-  deleteMonitor,
-  deleteAllMonitors,
-  deleteMonitorsByUserId,
-  editMonitor,
-  addDemoMonitors,
-} = require("./modules/monitorModule");
+import {
+	getAllMonitors,
+	getMonitorStatsById,
+	getMonitorById,
+	getMonitorsAndSummaryByTeamId,
+	getMonitorsByTeamId,
+	createMonitor,
+	deleteMonitor,
+	deleteAllMonitors,
+	deleteMonitorsByUserId,
+	editMonitor,
+	addDemoMonitors,
+} from "./modules/monitorModule.js";
 
 //****************************************
 // Page Speed Checks
 //****************************************
 
-const {
-  createPageSpeedCheck,
-  getPageSpeedChecks,
-  deletePageSpeedChecksByMonitorId,
-} = require("./modules/pageSpeedCheckModule");
+import {
+	createPageSpeedCheck,
+	getPageSpeedChecks,
+	deletePageSpeedChecksByMonitorId,
+} from "./modules/pageSpeedCheckModule.js";
 
 //****************************************
 // Checks
 //****************************************
 
-const {
-  createCheck,
-  getChecksCount,
-  getChecks,
-  getTeamChecks,
-  deleteChecks,
-  deleteChecksByTeamId,
-  updateChecksTTL,
-} = require("./modules/checkModule");
+import {
+	createCheck,
+	getChecksCount,
+	getChecks,
+	getTeamChecks,
+	deleteChecks,
+	deleteChecksByTeamId,
+	updateChecksTTL,
+} from "./modules/checkModule.js";
 
 //****************************************
 // Maintenance Window
 //****************************************
-const {
-  createMaintenanceWindow,
-  getMaintenanceWindowById,
-  getMaintenanceWindowsByTeamId,
-  getMaintenanceWindowsByMonitorId,
-  deleteMaintenanceWindowById,
-  deleteMaintenanceWindowByMonitorId,
-  deleteMaintenanceWindowByUserId,
-  editMaintenanceWindowById,
-} = require("./modules/maintenanceWindowModule");
+import {
+	createMaintenanceWindow,
+	getMaintenanceWindowById,
+	getMaintenanceWindowsByTeamId,
+	getMaintenanceWindowsByMonitorId,
+	deleteMaintenanceWindowById,
+	deleteMaintenanceWindowByMonitorId,
+	deleteMaintenanceWindowByUserId,
+	editMaintenanceWindowById,
+} from "./modules/maintenanceWindowModule.js";
 
 //****************************************
 // Notifications
 //****************************************
-const {
-  createNotification,
-  getNotificationsByMonitorId,
-  deleteNotificationsByMonitorId,
-} = require("./modules/notificationModule");
+import {
+	createNotification,
+	getNotificationsByMonitorId,
+	deleteNotificationsByMonitorId,
+} from "./modules/notificationModule.js";
 
 //****************************************
 // AppSettings
 //****************************************
-const {
-  getAppSettings,
-  updateAppSettings,
-} = require("./modules/settingsModule");
+import { getAppSettings, updateAppSettings } from "./modules/settingsModule.js";
 
-module.exports = {
-  connect,
-  insertUser,
-  getUserByEmail,
-  updateUser,
-  deleteUser,
-  deleteTeam,
-  deleteAllOtherUsers,
-  getAllUsers,
-  logoutUser,
-  requestInviteToken,
-  getInviteToken,
-  getInviteTokenAndDelete,
-  requestRecoveryToken,
-  validateRecoveryToken,
-  resetPassword,
-  checkSuperadmin,
-  getAllMonitors,
-  getMonitorStatsById,
-  getMonitorById,
-  getMonitorsAndSummaryByTeamId,
-  getMonitorsByTeamId,
-  createMonitor,
-  deleteMonitor,
-  deleteAllMonitors,
-  editMonitor,
-  addDemoMonitors,
-  createCheck,
-  getChecksCount,
-  getChecks,
-  getTeamChecks,
-  deleteChecks,
-  deleteChecksByTeamId,
-  updateChecksTTL,
-  deleteMonitorsByUserId,
-  createPageSpeedCheck,
-  getPageSpeedChecks,
-  deletePageSpeedChecksByMonitorId,
-  createMaintenanceWindow,
-  getMaintenanceWindowsByTeamId,
-  getMaintenanceWindowById,
-  getMaintenanceWindowsByMonitorId,
-  deleteMaintenanceWindowById,
-  deleteMaintenanceWindowByMonitorId,
-  deleteMaintenanceWindowByUserId,
-  editMaintenanceWindowById,
-  createNotification,
-  getNotificationsByMonitorId,
-  deleteNotificationsByMonitorId,
-  getAppSettings,
-  updateAppSettings,
+export default {
+	connect,
+	insertUser,
+	getUserByEmail,
+	updateUser,
+	deleteUser,
+	deleteTeam,
+	deleteAllOtherUsers,
+	getAllUsers,
+	logoutUser,
+	requestInviteToken,
+	getInviteToken,
+	getInviteTokenAndDelete,
+	requestRecoveryToken,
+	validateRecoveryToken,
+	resetPassword,
+	checkSuperadmin,
+	getAllMonitors,
+	getMonitorStatsById,
+	getMonitorById,
+	getMonitorsAndSummaryByTeamId,
+	getMonitorsByTeamId,
+	createMonitor,
+	deleteMonitor,
+	deleteAllMonitors,
+	editMonitor,
+	addDemoMonitors,
+	createCheck,
+	getChecksCount,
+	getChecks,
+	getTeamChecks,
+	deleteChecks,
+	deleteChecksByTeamId,
+	updateChecksTTL,
+	deleteMonitorsByUserId,
+	createPageSpeedCheck,
+	getPageSpeedChecks,
+	deletePageSpeedChecksByMonitorId,
+	createMaintenanceWindow,
+	getMaintenanceWindowsByTeamId,
+	getMaintenanceWindowById,
+	getMaintenanceWindowsByMonitorId,
+	deleteMaintenanceWindowById,
+	deleteMaintenanceWindowByMonitorId,
+	deleteMaintenanceWindowByUserId,
+	editMaintenanceWindowById,
+	createNotification,
+	getNotificationsByMonitorId,
+	deleteNotificationsByMonitorId,
+	getAppSettings,
+	updateAppSettings,
 };

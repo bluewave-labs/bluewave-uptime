@@ -1,22 +1,31 @@
-const router = require("express").Router();
-const maintenanceWindowController = require("../controllers/maintenanceWindowController");
-const { verifyOwnership } = require("../middleware/verifyOwnership");
-const Monitor = require("../db/models/Monitor");
+import { Router } from "express";
+import {
+	createMaintenanceWindows,
+	getMaintenanceWindowById,
+	getMaintenanceWindowsByTeamId,
+	getMaintenanceWindowsByMonitorId,
+	deleteMaintenanceWindow,
+	editMaintenanceWindow,
+} from "../controllers/maintenanceWindowController.js";
+import { verifyOwnership } from "../middleware/verifyOwnership.js";
+import Monitor from "../db/models/Monitor.js";
 
-router.post("/", maintenanceWindowController.createMaintenanceWindows);
+const router = Router();
+
+router.post("/", createMaintenanceWindows);
 
 router.get(
-  "/monitor/:monitorId",
-  verifyOwnership(Monitor, "monitorId"),
-  maintenanceWindowController.getMaintenanceWindowsByMonitorId
+	"/monitor/:monitorId",
+	verifyOwnership(Monitor, "monitorId"),
+	getMaintenanceWindowsByMonitorId
 );
 
-router.get("/team/", maintenanceWindowController.getMaintenanceWindowsByTeamId);
+router.get("/team/", getMaintenanceWindowsByTeamId);
 
-router.get("/:id", maintenanceWindowController.getMaintenanceWindowById);
+router.get("/:id", getMaintenanceWindowById);
 
-router.put("/:id", maintenanceWindowController.editMaintenanceWindow);
+router.put("/:id", editMaintenanceWindow);
 
-router.delete("/:id", maintenanceWindowController.deleteMaintenanceWindow);
+router.delete("/:id", deleteMaintenanceWindow);
 
-module.exports = router;
+export default router;

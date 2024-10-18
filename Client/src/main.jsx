@@ -10,13 +10,16 @@ import { networkService } from "./Utils/NetworkService";
 export { networkService };
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <Router>
-        <NetworkServiceProvider>
-          <App />
-        </NetworkServiceProvider>
-      </Router>
-    </PersistGate>
-  </Provider>
+	<Provider store={store}>
+		<PersistGate
+			loading={null}
+			persistor={persistor}
+		>
+			<Router>
+				<NetworkServiceProvider>
+					<App />
+				</NetworkServiceProvider>
+			</Router>
+		</PersistGate>
+	</Provider>
 );
