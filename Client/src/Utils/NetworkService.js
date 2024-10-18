@@ -3,7 +3,6 @@ const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 const FALLBACK_BASE_URL = "http://localhost:5000/api/v1";
 import { clearAuthState } from "../Features/Auth/authSlice";
 import { clearUptimeMonitorState } from "../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { logger } from "./Logger";
 class NetworkService {
 	constructor(store, dispatch, navigate) {
 		this.store = store;
@@ -88,22 +87,48 @@ class NetworkService {
 			},
 		});
 	}
+	
+  /**
+   *
+   * ************************************
+   * Check the endpoint resolution
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {Object} config.monitorURL - The monitor url to be sent in the request body.
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
+    async checkEndpointResolution(config) {
+      const { authToken, monitorURL } = config;
+      const params = new URLSearchParams();
+  
+      if (monitorURL) params.append("monitorURL", monitorURL);
 
-	/**
-	 *
-	 * ************************************
-	 * Gets monitors and summary of stats by TeamID
-	 * ************************************
-	 *
-	 * @async
-	 * @param {Object} config - The configuration object.
-	 * @param {string} config.authToken - The authorization token to be used in the request header.
-	 * @param {string} config.teamId - Team ID
-	 * @param {Array<string>} config.types - Array of monitor types
-	 * @returns {Promise<AxiosResponse>} The response from the axios POST request.
-	 */
-	async getMonitorsAndSummaryByTeamId(config) {
-		const params = new URLSearchParams();
+      return this.axiosInstance.get(`/monitors/resolution/url?${params.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        }
+      })
+    }
+
+  /**
+   *
+   * ************************************
+   * Gets monitors and summary of stats by TeamID
+   * ************************************
+   *
+   * @async
+   * @param {Object} config - The configuration object.
+   * @param {string} config.authToken - The authorization token to be used in the request header.
+   * @param {string} config.teamId - Team ID
+   * @param {Array<string>} config.types - Array of monitor types
+   * @returns {Promise<AxiosResponse>} The response from the axios POST request.
+   */
+  async getMonitorsAndSummaryByTeamId(config) {
+    const params = new URLSearchParams();
 
 		if (config.types) {
 			config.types.forEach((type) => {

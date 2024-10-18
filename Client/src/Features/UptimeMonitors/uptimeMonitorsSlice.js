@@ -31,6 +31,30 @@ export const createUptimeMonitor = createAsyncThunk(
 	}
 );
 
+export const checkEndpointResolution = createAsyncThunk(
+	"monitors/checkEndpoint",
+	async (data, thunkApi) => {
+		try {
+			const { authToken, monitorURL } = data;
+
+			const res = await networkService.checkEndpointResolution({
+				authToken: authToken,
+				monitorURL: monitorURL,
+			})
+			return res.data;
+		} catch (error) {
+			if (error.response && error.response.data) {
+				return thunkApi.rejectWithValue(error.response.data);
+			}
+			const payload = {
+				status: false,
+				msg: error.message ? error.message : "Unknown error",
+			};
+			return thunkApi.rejectWithValue(payload);
+		}
+	}
+)
+
 export const getUptimeMonitorById = createAsyncThunk(
 	"monitors/getMonitorById",
 	async (data, thunkApi) => {
@@ -269,6 +293,24 @@ const uptimeMonitorsSlice = createSlice({
 				state.msg = action.payload
 					? action.payload.msg
 					: "Failed to create uptime monitor";
+			})
+			// *****************************************************
+			// Resolve Endpoint
+			// *****************************************************
+			.addCase(checkEndpointResolution.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(checkEndpointResolution.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.success = action.payload.success;
+				state.msg = action.payload.msg;
+			})
+			.addCase(checkEndpointResolution.rejected, (state, action) => {
+				state.isLoading = false;
+				state.success = false;
+				state.msg = action.payload
+					? action.payload.msg
+					: "Failed to check endpoint resolution";
 			})
 			// *****************************************************
 			// Get Monitor By Id
