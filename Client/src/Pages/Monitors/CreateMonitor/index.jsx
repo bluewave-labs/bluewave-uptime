@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
@@ -20,7 +21,7 @@ import "./index.css";
 const CreateMonitor = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors } = useSelector((state) => state.uptimeMonitors);
+  const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -43,7 +44,6 @@ const CreateMonitor = () => {
   });
   const [https, setHttps] = useState(true);
   const [errors, setErrors] = useState({});
-  const [isCheckingEndpoint, setIsCheckingEndpoint] = useState(false);
 
   useEffect(() => {
     const fetchMonitor = async () => {
@@ -126,7 +126,6 @@ const CreateMonitor = () => {
 
   const handleCreateMonitor = async (event) => {
     event.preventDefault();
-    setIsCheckingEndpoint(true);
     //obj to submit
     let form = {
       url:
@@ -158,10 +157,8 @@ const CreateMonitor = () => {
         if (checkEndpointAction.meta.requestStatus === "rejected") {
           createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
           setErrors({ url: "The entered URL is not reachable." });
-          setIsCheckingEndpoint(false);
           return;
         }
-        setIsCheckingEndpoint(false);
       }
 
       form = {
@@ -385,14 +382,15 @@ const CreateMonitor = () => {
           </Stack>
         </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
-          <Button
+          <LoadingButton 
             variant="contained"
             color="primary"
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
+            loading={isLoading}
           >
-            { isCheckingEndpoint ? "Checking endpoint" : "Create monitor" }
-          </Button>
+            Create monitor
+          </LoadingButton>
         </Stack>
       </Stack>
     </Box>
