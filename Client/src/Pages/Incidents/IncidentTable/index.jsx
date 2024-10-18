@@ -170,6 +170,12 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                     "YYYY-MM-DD HH:mm:ss A",
                     uiTimezone
                   );
+                  const getGenericStatus = (status) => {
+                      if (typeof status === 'number' && status >= 100 && status < 600) {
+                        return Math.floor(status / 100) * 100;
+                      }
+                      return "cannot resolve"
+                  }
 
                   return (
                     <TableRow key={check._id}>
@@ -183,7 +189,12 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                       </TableCell>
                       <TableCell>{formattedDate}</TableCell>
                       <TableCell>
-                        {check.statusCode ? check.statusCode : "N/A"}
+                        <StatusLabel
+                          status={getGenericStatus(check.statusCode)}
+                          text={String(check.statusCode || "N/A")}
+                          hasDot={false}
+                          customStyles={{ textTransform: "capitalize" }}
+                        />
                       </TableCell>
                       <TableCell>{check.message}</TableCell>
                     </TableRow>
