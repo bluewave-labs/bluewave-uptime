@@ -20,7 +20,12 @@ import { fileURLToPath } from "url";
 import { connectDbAndRunServer } from "./configs/db.js";
 import queueRouter from "./routes/queueRoute.js";
 import JobQueue from "./service/jobQueue.js";
+
+//Network service and dependencies
 import NetworkService from "./service/networkService.js";
+import axios from "axios";
+import ping from "ping";
+import http from "http";
 
 // Email service and dependencies
 import EmailService from "./service/emailService.js";
@@ -149,7 +154,7 @@ const startApp = async () => {
 		nodemailer,
 		logger
 	);
-	const networkService = new NetworkService(db, emailService);
+	const networkService = new NetworkService(db, emailService, axios, ping, logger, http);
 	const jobQueue = await JobQueue.createJobQueue(db, networkService, settingsService);
 
 	const cleanup = async () => {

@@ -98,7 +98,7 @@ class JobQueue {
 					}, false);
 
 					if (!maintenanceWindowActive) {
-						const res = await this.networkService.getStatus(job);
+						await this.networkService.getStatus(job);
 					} else {
 						logger.info(`Monitor ${monitorId} is in maintenance window`, {
 							service: SERVICE_NAME,
