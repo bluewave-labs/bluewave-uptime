@@ -1,18 +1,16 @@
-const errorMessages = {
-	// General Errors:
-	FRIENDLY_ERROR: "Something went wrong...",
-	UNKNOWN_ERROR: "An unknown error occurred",
+  //Error handling middleware
+  UNKNOWN_SERVICE: "Unknown service",
+  NO_AUTH_TOKEN: "No auth token provided",
+  INVALID_AUTH_TOKEN: "Invalid auth token",
+  EXPIRED_AUTH_TOKEN: "Token expired",
+  NO_REFRESH_TOKEN: "No refresh token provided",
+  INVALID_REFRESH_TOKEN: "Invalid refresh token",
+  EXPIRED_REFRESH_TOKEN: "Refresh token expired",
+  REQUEST_NEW_ACCESS_TOKEN: "Request new access token",
 
-	// Auth Controller
-	UNAUTHORIZED: "Unauthorized access",
-	AUTH_ADMIN_EXISTS: "Admin already exists",
-	AUTH_INVITE_NOT_FOUND: "Invite not found",
+  //Payload
+  INVALID_PAYLOAD: "Invalid payload",
 
-	//Error handling middleware
-	UNKNOWN_SERVICE: "Unknown service",
-	NO_AUTH_TOKEN: "No auth token provided",
-	INVALID_AUTH_TOKEN: "Invalid auth token",
-	EXPIRED_AUTH_TOKEN: "Token expired",
 
 	//Ownership Middleware
 	VERIFY_OWNER_NOT_FOUND: "Document not found",

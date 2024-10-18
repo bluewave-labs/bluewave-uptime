@@ -3,19 +3,19 @@
 .settings span.MuiTypography-root,
 .settings button,
 .settings p.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
+	font-size: var(--env-var-font-size-medium);
 }
 .settings h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large);
+	font-size: var(--env-var-font-size-large);
 }
 .settings h1.MuiTypography-root,
 .settings h2.MuiTypography-root {
-  font-weight: 600;
+	font-weight: 600;
 }
 .settings button {
-  height: 34px;
+	height: 34px;
 }
 .settings span.MuiTypography-root {
-  opacity: 0.6;
-  margin-right: 4px;
+	opacity: 0.6;
+	margin-right: 4px;
 }

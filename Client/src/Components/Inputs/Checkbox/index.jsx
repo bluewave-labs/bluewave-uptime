@@ -29,68 +29,68 @@ import "./index.css";
  */
 
 const Checkbox = ({
-  id,
-  label,
-  size = "medium",
-  isChecked,
-  value,
-  onChange,
-  isDisabled,
+	id,
+	label,
+	size = "medium",
+	isChecked,
+	value,
+	onChange,
+	isDisabled,
 }) => {
-  const sizes = { small: "14px", medium: "16px", large: "18px" };
-  const theme = useTheme();
+	const sizes = { small: "14px", medium: "16px", large: "18px" };
+	const theme = useTheme();
 
-  return (
-    <FormControlLabel
-      className="checkbox-wrapper"
-      control={
-        <MuiCheckbox
-          checked={isDisabled ? false : isChecked}
-          value={value}
-          onChange={onChange}
-          icon={<CheckboxOutline />}
-          checkedIcon={<CheckboxFilled />}
-          inputProps={{
-            "aria-label": "controlled checkbox",
-            id: id,
-          }}
-          sx={{
-            "&:hover": { backgroundColor: "transparent" },
-            "& svg": { width: sizes[size], height: sizes[size] },
-          }}
-        />
-      }
-      label={label}
-      disabled={isDisabled}
-      sx={{
-        borderRadius: theme.shape.borderRadius,
-        p: theme.spacing(2.5),
-        m: theme.spacing(-2.5),
-        "& .MuiButtonBase-root": {
-          width: theme.spacing(10),
-          p: 0,
-          mr: theme.spacing(6),
-        },
-        "&:not(:has(.Mui-disabled)):hover": {
-          backgroundColor: theme.palette.background.accent,
-        },
-        "& span.MuiTypography-root": {
-          fontSize: 13,
-          color: theme.palette.text.tertiary,
-        },
-      }}
-    />
-  );
+	return (
+		<FormControlLabel
+			className="checkbox-wrapper"
+			control={
+				<MuiCheckbox
+					checked={isDisabled ? false : isChecked}
+					value={value}
+					onChange={onChange}
+					icon={<CheckboxOutline />}
+					checkedIcon={<CheckboxFilled />}
+					inputProps={{
+						"aria-label": "controlled checkbox",
+						id: id,
+					}}
+					sx={{
+						"&:hover": { backgroundColor: "transparent" },
+						"& svg": { width: sizes[size], height: sizes[size] },
+					}}
+				/>
+			}
+			label={label}
+			disabled={isDisabled}
+			sx={{
+				borderRadius: theme.shape.borderRadius,
+				p: theme.spacing(2.5),
+				m: theme.spacing(-2.5),
+				"& .MuiButtonBase-root": {
+					width: theme.spacing(10),
+					p: 0,
+					mr: theme.spacing(6),
+				},
+				"&:not(:has(.Mui-disabled)):hover": {
+					backgroundColor: theme.palette.background.accent,
+				},
+				"& span.MuiTypography-root": {
+					fontSize: 13,
+					color: theme.palette.text.tertiary,
+				},
+			}}
+		/>
+	);
 };
 
 Checkbox.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  size: PropTypes.oneOf(["small", "medium", "large"]),
-  isChecked: PropTypes.bool.isRequired,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  isDisabled: PropTypes.bool,
+	id: PropTypes.string.isRequired,
+	label: PropTypes.string.isRequired,
+	size: PropTypes.oneOf(["small", "medium", "large"]),
+	isChecked: PropTypes.bool.isRequired,
+	value: PropTypes.string,
+	onChange: PropTypes.func,
+	isDisabled: PropTypes.bool,
 };
 
 export default Checkbox;
