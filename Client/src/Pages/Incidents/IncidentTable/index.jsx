@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
 import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Pagination,
-  PaginationItem,
-  Paper,
-  Typography,
-  Box,
+	TableContainer,
+	Table,
+	TableHead,
+	TableRow,
+	TableCell,
+	TableBody,
+	Pagination,
+	PaginationItem,
+	Paper,
+	Typography,
+	Box,
 } from "@mui/material";
 
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
@@ -26,183 +26,193 @@ import PlaceholderLight from "../../../assets/Images/data_placeholder.svg?react"
 import PlaceholderDark from "../../../assets/Images/data_placeholder_dark.svg?react";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
-  const uiTimezone = useSelector((state) => state.ui.timezone);
+	const uiTimezone = useSelector((state) => state.ui.timezone);
 
-  const theme = useTheme();
-  const { authToken, user } = useSelector((state) => state.auth);
-  const mode = useSelector((state) => state.ui.mode);
-  const [checks, setChecks] = useState([]);
-  const [checksCount, setChecksCount] = useState(0);
-  const [paginationController, setPaginationController] = useState({
-    page: 0,
-    rowsPerPage: 14,
-  });
+	const theme = useTheme();
+	const { authToken, user } = useSelector((state) => state.auth);
+	const mode = useSelector((state) => state.ui.mode);
+	const [checks, setChecks] = useState([]);
+	const [checksCount, setChecksCount] = useState(0);
+	const [paginationController, setPaginationController] = useState({
+		page: 0,
+		rowsPerPage: 14,
+	});
 
-  useEffect(() => {
-    setPaginationController((prevPaginationController) => ({
-      ...prevPaginationController,
-      page: 0,
-    }));
-  }, [filter, selectedMonitor]);
+	useEffect(() => {
+		setPaginationController((prevPaginationController) => ({
+			...prevPaginationController,
+			page: 0,
+		}));
+	}, [filter, selectedMonitor]);
 
-  useEffect(() => {
-    const fetchPage = async () => {
-      if (!monitors || Object.keys(monitors).length === 0) {
-        return;
-      }
-      try {
-        let res;
-        if (selectedMonitor === "0") {
-          res = await networkService.getChecksByTeam({
-            authToken: authToken,
-            teamId: user.teamId,
-            sortOrder: "desc",
-            limit: null,
-            dateRange: null,
-            filter: filter,
-            page: paginationController.page,
-            rowsPerPage: paginationController.rowsPerPage,
-          });
-        } else {
-          res = await networkService.getChecksByMonitor({
-            authToken: authToken,
-            monitorId: selectedMonitor,
-            sortOrder: "desc",
-            limit: null,
-            dateRange: null,
-            sitler: filter,
-            page: paginationController.page,
-            rowsPerPage: paginationController.rowsPerPage,
-          });
-        }
-        setChecks(res.data.data.checks);
-        setChecksCount(res.data.data.checksCount);
-      } catch (error) {
-        logger.error(error);
-      }
-    };
-    fetchPage();
-  }, [
-    authToken,
-    user,
-    monitors,
-    selectedMonitor,
-    filter,
-    paginationController.page,
-    paginationController.rowsPerPage,
-  ]);
+	useEffect(() => {
+		const fetchPage = async () => {
+			if (!monitors || Object.keys(monitors).length === 0) {
+				return;
+			}
+			try {
+				let res;
+				if (selectedMonitor === "0") {
+					res = await networkService.getChecksByTeam({
+						authToken: authToken,
+						teamId: user.teamId,
+						sortOrder: "desc",
+						limit: null,
+						dateRange: null,
+						filter: filter,
+						page: paginationController.page,
+						rowsPerPage: paginationController.rowsPerPage,
+					});
+				} else {
+					res = await networkService.getChecksByMonitor({
+						authToken: authToken,
+						monitorId: selectedMonitor,
+						sortOrder: "desc",
+						limit: null,
+						dateRange: null,
+						sitler: filter,
+						page: paginationController.page,
+						rowsPerPage: paginationController.rowsPerPage,
+					});
+				}
+				setChecks(res.data.data.checks);
+				setChecksCount(res.data.data.checksCount);
+			} catch (error) {
+				logger.error(error);
+			}
+		};
+		fetchPage();
+	}, [
+		authToken,
+		user,
+		monitors,
+		selectedMonitor,
+		filter,
+		paginationController.page,
+		paginationController.rowsPerPage,
+	]);
 
-  const handlePageChange = (_, newPage) => {
-    setPaginationController({
-      ...paginationController,
-      page: newPage - 1, // 0-indexed
-    });
-  };
+	const handlePageChange = (_, newPage) => {
+		setPaginationController({
+			...paginationController,
+			page: newPage - 1, // 0-indexed
+		});
+	};
 
-  let paginationComponent = <></>;
-  if (checksCount > paginationController.rowsPerPage) {
-    paginationComponent = (
-      <Pagination
-        count={Math.ceil(checksCount / paginationController.rowsPerPage)}
-        page={paginationController.page + 1} //0-indexed
-        onChange={handlePageChange}
-        shape="rounded"
-        renderItem={(item) => (
-          <PaginationItem
-            slots={{
-              previous: ArrowBackRoundedIcon,
-              next: ArrowForwardRoundedIcon,
-            }}
-            {...item}
-          />
-        )}
-        sx={{ mt: "auto" }}
-      />
-    );
-  }
+	let paginationComponent = <></>;
+	if (checksCount > paginationController.rowsPerPage) {
+		paginationComponent = (
+			<Pagination
+				count={Math.ceil(checksCount / paginationController.rowsPerPage)}
+				page={paginationController.page + 1} //0-indexed
+				onChange={handlePageChange}
+				shape="rounded"
+				renderItem={(item) => (
+					<PaginationItem
+						slots={{
+							previous: ArrowBackRoundedIcon,
+							next: ArrowForwardRoundedIcon,
+						}}
+						{...item}
+					/>
+				)}
+				sx={{ mt: "auto" }}
+			/>
+		);
+	}
 
-  let sharedStyles = {
-    border: 1,
-    borderColor: theme.palette.border.light,
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.main,
-    p: theme.spacing(30),
-  };
+	let sharedStyles = {
+		border: 1,
+		borderColor: theme.palette.border.light,
+		borderRadius: theme.shape.borderRadius,
+		backgroundColor: theme.palette.background.main,
+		p: theme.spacing(30),
+	};
 
-  return (
-    <>
-      {checks?.length === 0 && selectedMonitor === "0" ? (
-        <Box sx={{ ...sharedStyles }}>
-          <Box textAlign="center" pb={theme.spacing(20)}>
-            {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-          </Box>
-          <Typography textAlign="center" color={theme.palette.text.secondary}>
-            No incidents recorded yet.
-          </Typography>
-        </Box>
-      ) : checks?.length === 0 ? (
-        <Box sx={{ ...sharedStyles }}>
-          <Box textAlign="center" pb={theme.spacing(20)}>
-            {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-          </Box>
-          <Typography textAlign="center" color={theme.palette.text.secondary}>
-            The monitor you have selected has no recorded incidents yet.
-          </Typography>
-        </Box>
-      ) : (
-        <>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Monitor Name</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Date & Time</TableCell>
-                  <TableCell>Status Code</TableCell>
-                  <TableCell>Message</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {checks.map((check) => {
-                  const status = check.status === true ? "up" : "down";
-                  const formattedDate = formatDateWithTz(
-                    check.createdAt,
-                    "YYYY-MM-DD HH:mm:ss A",
-                    uiTimezone
-                  );
+	return (
+		<>
+			{checks?.length === 0 && selectedMonitor === "0" ? (
+				<Box sx={{ ...sharedStyles }}>
+					<Box
+						textAlign="center"
+						pb={theme.spacing(20)}
+					>
+						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
+					</Box>
+					<Typography
+						textAlign="center"
+						color={theme.palette.text.secondary}
+					>
+						No incidents recorded yet.
+					</Typography>
+				</Box>
+			) : checks?.length === 0 ? (
+				<Box sx={{ ...sharedStyles }}>
+					<Box
+						textAlign="center"
+						pb={theme.spacing(20)}
+					>
+						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
+					</Box>
+					<Typography
+						textAlign="center"
+						color={theme.palette.text.secondary}
+					>
+						The monitor you have selected has no recorded incidents yet.
+					</Typography>
+				</Box>
+			) : (
+				<>
+					<TableContainer component={Paper}>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>Monitor Name</TableCell>
+									<TableCell>Status</TableCell>
+									<TableCell>Date & Time</TableCell>
+									<TableCell>Status Code</TableCell>
+									<TableCell>Message</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{checks.map((check) => {
+									const status = check.status === true ? "up" : "down";
+									const formattedDate = formatDateWithTz(
+										check.createdAt,
+										"YYYY-MM-DD HH:mm:ss A",
+										uiTimezone
+									);
 
-                  return (
-                    <TableRow key={check._id}>
-                      <TableCell>{monitors[check.monitorId]?.name}</TableCell>
-                      <TableCell>
-                        <StatusLabel
-                          status={status}
-                          text={status}
-                          customStyles={{ textTransform: "capitalize" }}
-                        />
-                      </TableCell>
-                      <TableCell>{formattedDate}</TableCell>
-                      <TableCell>
-                        {check.statusCode ? check.statusCode : "N/A"}
-                      </TableCell>
-                      <TableCell>{check.message}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {paginationComponent}
-        </>
-      )}
-    </>
-  );
+									return (
+										<TableRow key={check._id}>
+											<TableCell>{monitors[check.monitorId]?.name}</TableCell>
+											<TableCell>
+												<StatusLabel
+													status={status}
+													text={status}
+													customStyles={{ textTransform: "capitalize" }}
+												/>
+											</TableCell>
+											<TableCell>{formattedDate}</TableCell>
+											<TableCell>{check.statusCode ? check.statusCode : "N/A"}</TableCell>
+											<TableCell>{check.message}</TableCell>
+										</TableRow>
+									);
+								})}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					{paginationComponent}
+				</>
+			)}
+		</>
+	);
 };
 
 IncidentTable.propTypes = {
-  monitors: PropTypes.object.isRequired,
-  selectedMonitor: PropTypes.string.isRequired,
-  filter: PropTypes.string.isRequired,
+	monitors: PropTypes.object.isRequired,
+	selectedMonitor: PropTypes.string.isRequired,
+	filter: PropTypes.string.isRequired,
 };
 
 export default IncidentTable;

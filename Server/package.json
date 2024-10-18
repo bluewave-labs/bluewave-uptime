@@ -30,16 +30,17 @@
 		"nodemailer": "^6.9.14",
 		"ping": "0.4.4",
 		"sharp": "0.33.4",
+		"ssl-checker": "2.0.10",
 		"swagger-ui-express": "5.0.1",
 		"winston": "^3.13.0"
 	},
 	"devDependencies": {
-		"prettier": "^3.3.3",
-		"chai": "5.1.1",
-		"mocha": "10.7.3",
 		"c8": "10.1.2",
+		"chai": "5.1.1",
 		"esm": "3.2.25",
+		"mocha": "10.7.3",
 		"nodemon": "3.1.0",
+		"prettier": "^3.3.3",
 		"sinon": "19.0.2"
 	}
 }

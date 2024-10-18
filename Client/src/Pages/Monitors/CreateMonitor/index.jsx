@@ -144,7 +144,7 @@ const CreateMonitor = () => {
 				newErrors[err.path[0]] = err.message;
 			});
 			setErrors(newErrors);
-			createToast({ body: "Please check your input for errors and try again" });
+			createToast({ body: "Error validation data." });
 		} else {
 			form = {
 				...form,

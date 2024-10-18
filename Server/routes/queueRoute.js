@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  getMetrics,
-  getJobs,
-  addJob,
-  obliterateQueue,
+	getMetrics,
+	getJobs,
+	addJob,
+	obliterateQueue,
 } from "../controllers/queueController.js";
 
 const router = Router();

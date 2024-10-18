@@ -12,18 +12,14 @@ import {
 	getMonitorStatsByIdQueryValidation,
 	getCertificateParamValidation,
 } from "../validation/joi.js";
-import * as tls from "tls";
+import sslChecker from "ssl-checker";
 
 const SERVICE_NAME = "monitorController";
 import { errorMessages, successMessages } from "../utils/messages.js";
 import jwt from "jsonwebtoken";
 import { getTokenFromHeaders } from "../utils/utils.js";
 import logger from "../utils/logger.js";
-import {
-	handleError,
-	handleValidationError,
-	fetchMonitorCertificate,
-} from "./controllerUtils.js";
+import { handleError, handleValidationError } from "./controllerUtils.js";
 
 /**
  * Returns all monitors
@@ -87,7 +83,7 @@ const getMonitorCertificate = async (req, res, next, fetchMonitorCertificate) =>
 	try {
 		const { monitorId } = req.params;
 		const monitor = await req.db.getMonitorById(monitorId);
-		const certificate = await fetchMonitorCertificate(tls, monitor);
+		const certificate = await fetchMonitorCertificate(sslChecker, monitor);
 		if (certificate && certificate.validTo) {
 			return res.status(200).json({
 				success: true,

@@ -1,8 +1,8 @@
 {
-  "all": true,
-  "include": ["controllers/*.js"],
-  "exclude": ["**/*.test.js"],
-  "reporter": ["html", "text", "lcov"],
-  "sourceMap": false,
-  "instrument": true
+	"all": true,
+	"include": ["controllers/*.js", "utils/*.js"],
+	"exclude": ["**/*.test.js"],
+	"reporter": ["html", "text", "lcov"],
+	"sourceMap": false,
+	"instrument": true
 }
