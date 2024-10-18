@@ -109,7 +109,7 @@ TablePaginationActions.propTypes = {
 	onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin, filter, setLoading, isSearching }) => {
+const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -162,15 +162,25 @@ const MonitorTable = ({ isAdmin, filter, setLoading, isSearching }) => {
 			});
 			setMonitors(res?.data?.data?.monitors ?? []);
 			setMonitorCount(res?.data?.data?.monitorCount ?? 0);
-			setLoading(false);
 		} catch (error) {
 			logger.error(error);
+		} finally {
+			setIsSearching(false);
 		}
-	}, [authState, page, rowsPerPage, filter, sort, setLoading]);
+	}, [authState, page, rowsPerPage, filter, sort, setIsSearching]);
 
 	useEffect(() => {
 		fetchPage();
-	}, [updateTrigger, authState, page, rowsPerPage, filter, sort, setLoading, fetchPage]);
+	}, [
+		updateTrigger,
+		authState,
+		page,
+		rowsPerPage,
+		filter,
+		sort,
+		setIsSearching,
+		fetchPage,
+	]);
 
 	// Listen for changes in filter, if new value reset the page
 	useEffect(() => {
@@ -459,7 +469,7 @@ const MonitorTable = ({ isAdmin, filter, setLoading, isSearching }) => {
 MonitorTable.propTypes = {
 	isAdmin: PropTypes.bool,
 	filter: PropTypes.string,
-	setLoading: PropTypes.func,
+	setIsSearching: PropTypes.func,
 	isSearching: PropTypes.bool,
 };
 
