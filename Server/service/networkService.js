@@ -1,7 +1,3 @@
-import axios from "axios";
-import ping from "ping";
-import logger from "../utils/logger.js";
-import http from "http";
 import { errorMessages, successMessages } from "../utils/messages.js";
 
 /**
@@ -12,7 +8,17 @@ import { errorMessages, successMessages } from "../utils/messages.js";
  */
 
 class NetworkService {
-	constructor(db, emailService) {
+	/**
+	 * Creates an instance of NetworkService.
+	 *
+	 * @param {Object} db - The database service.
+	 * @param {Object} emailService - The email service.
+	 * @param {Object} axios - The axios HTTP client.
+	 * @param {Object} ping - The ping service.
+	 * @param {Object} logger - The logging service.
+	 * @param {Object} http - The HTTP service.
+	 */
+	constructor(db, emailService, axios, ping, logger, http) {
 		this.db = db;
 		this.emailService = emailService;
 		this.TYPE_PING = "ping";
@@ -20,9 +26,19 @@ class NetworkService {
 		this.TYPE_PAGESPEED = "pagespeed";
 		this.SERVICE_NAME = "NetworkService";
 		this.NETWORK_ERROR = 5000;
+		this.axios = axios;
+		this.ping = ping;
+		this.logger = logger;
+		this.http = http;
 	}
 
-	async handleNotification(monitor, isAlive) {
+	/**
+	 * Handles the notification process for a monitor.
+	 *
+	 * @param {Object} monitor - The monitor object containing monitor details.
+	 * @param {boolean} isAlive - The status of the monitor (true if up, false if down).
+	 * @returns {Promise<void>}
+	 */ async handleNotification(monitor, isAlive) {
 		try {
 			let template = isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
 			let status = isAlive === true ? "up" : "down";
@@ -47,6 +63,13 @@ class NetworkService {
 		}
 	}
 
+	/**
+	 * Handles the status update for a monitor job.
+	 *
+	 * @param {Object} job - The job object containing job details.
+	 * @param {boolean} isAlive - The status of the monitor (true if up, false if down).
+	 * @returns {Promise<void>}
+	 */
 	async handleStatusUpdate(job, isAlive) {
 		let monitor;
 		// Look up the monitor, if it doesn't exist, it's probably been removed, return
@@ -113,7 +136,7 @@ class NetworkService {
 	 */
 	async handlePing(job) {
 		const operation = async () => {
-			const response = await ping.promise.probe(job.data.url);
+			const response = await this.ping.promise.probe(job.data.url);
 			return response;
 		};
 
@@ -153,7 +176,7 @@ class NetworkService {
 	async handleHttp(job) {
 		// Define operation for timing
 		const operation = async () => {
-			const response = await axios.get(job.data.url);
+			const response = await this.axios.get(job.data.url);
 			return response;
 		};
 
@@ -171,12 +194,12 @@ class NetworkService {
 				status: isAlive,
 				responseTime,
 				statusCode: response.status,
-				message: http.STATUS_CODES[response.status],
+				message: this.http.STATUS_CODES[response.status],
 			};
 			return await this.logAndStoreCheck(checkData, this.db.createCheck);
 		} catch (error) {
 			const statusCode = error.response?.status || this.NETWORK_ERROR;
-			let message = http.STATUS_CODES[statusCode] || "Network Error";
+			let message = this.http.STATUS_CODES[statusCode] || "Network Error";
 			isAlive = false;
 			const checkData = {
 				monitorId: job.data._id,
@@ -210,7 +233,7 @@ class NetworkService {
 		let isAlive;
 		try {
 			const url = job.data.url;
-			const response = await axios.get(
+			const response = await this.axios.get(
 				`https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
 			);
 			const pageSpeedResults = response.data;
@@ -236,7 +259,7 @@ class NetworkService {
 				monitorId: job.data._id,
 				status: isAlive,
 				statusCode: response.status,
-				message: http.STATUS_CODES[response.status],
+				message: this.http.STATUS_CODES[response.status],
 				accessibility: (categories.accessibility?.score || 0) * 100,
 				bestPractices: (categories["best-practices"]?.score || 0) * 100,
 				seo: (categories.seo?.score || 0) * 100,
@@ -254,7 +277,7 @@ class NetworkService {
 		} catch (error) {
 			isAlive = false;
 			const statusCode = error.response?.status || this.NETWORK_ERROR;
-			const message = http.STATUS_CODES[statusCode] || "Network Error";
+			const message = this.http.STATUS_CODES[statusCode] || "Network Error";
 			const checkData = {
 				monitorId: job.data._id,
 				status: isAlive,
@@ -287,7 +310,7 @@ class NetworkService {
 			case this.TYPE_PAGESPEED:
 				return await this.handlePagespeed(job);
 			default:
-				logger.error(`Unsupported type: ${job.data.type}`, {
+				this.logger.error(`Unsupported type: ${job.data.type}`, {
 					service: this.SERVICE_NAME,
 					method: "getStatus",
 					jobId: job.id,
@@ -312,7 +335,7 @@ class NetworkService {
 				return insertedCheck.status;
 			}
 		} catch (error) {
-			logger.error(`Error wrtiting check for ${data.monitorId}`, {
+			this.logger.error(`Error wrtiting check for ${data.monitorId}`, {
 				service: this.SERVICE_NAME,
 				method: "logAndStoreCheck",
 				monitorId: data.monitorId,
