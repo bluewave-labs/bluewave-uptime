@@ -18,17 +18,17 @@ const SERVICE_NAME = "inviteModule";
  * @throws {Error} If there is an error.
  */
 const requestInviteToken = async (userData) => {
-  try {
-    await InviteToken.deleteMany({ email: userData.email });
-    userData.token = crypto.randomBytes(32).toString("hex");
-    let inviteToken = new InviteToken(userData);
-    await inviteToken.save();
-    return inviteToken;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "requestInviteToken";
-    throw error;
-  }
+	try {
+		await InviteToken.deleteMany({ email: userData.email });
+		userData.token = crypto.randomBytes(32).toString("hex");
+		let inviteToken = new InviteToken(userData);
+		await inviteToken.save();
+		return inviteToken;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "requestInviteToken";
+		throw error;
+	}
 };
 
 /**
@@ -42,19 +42,19 @@ const requestInviteToken = async (userData) => {
  * @throws {Error} If the invite token is not found or there is another error.
  */
 const getInviteToken = async (token) => {
-  try {
-    const invite = await InviteToken.findOne({
-      token,
-    });
-    if (invite === null) {
-      throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
-    }
-    return invite;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getInviteToken";
-    throw error;
-  }
+	try {
+		const invite = await InviteToken.findOne({
+			token,
+		});
+		if (invite === null) {
+			throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
+		}
+		return invite;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getInviteToken";
+		throw error;
+	}
 };
 
 /**
@@ -68,19 +68,19 @@ const getInviteToken = async (token) => {
  * @throws {Error} If the invite token is not found or there is another error.
  */
 const getInviteTokenAndDelete = async (token) => {
-  try {
-    const invite = await InviteToken.findOneAndDelete({
-      token,
-    });
-    if (invite === null) {
-      throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
-    }
-    return invite;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getInviteToken";
-    throw error;
-  }
+	try {
+		const invite = await InviteToken.findOneAndDelete({
+			token,
+		});
+		if (invite === null) {
+			throw new Error(errorMessages.AUTH_INVITE_NOT_FOUND);
+		}
+		return invite;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getInviteToken";
+		throw error;
+	}
 };
 
 export { requestInviteToken, getInviteToken, getInviteTokenAndDelete };

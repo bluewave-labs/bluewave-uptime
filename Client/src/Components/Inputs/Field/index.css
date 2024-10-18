@@ -1,31 +1,31 @@
 .field {
-  min-width: 250px;
+	min-width: 250px;
 }
 .field h3.MuiTypography-root,
 .field h5.MuiTypography-root,
 .field input,
 .field textarea,
 .field .input-error {
-  font-size: var(--env-var-font-size-medium);
+	font-size: var(--env-var-font-size-medium);
 }
 .field h5.MuiTypography-root {
-  position: relative;
-  opacity: 0.8;
-  padding-right: var(--env-var-spacing-1-minus);
+	position: relative;
+	opacity: 0.8;
+	padding-right: var(--env-var-spacing-1-minus);
 }
 .field .MuiInputBase-root:has(input) {
-  height: 34px;
+	height: 34px;
 }
 .field .MuiInputBase-root:has(.MuiInputAdornment-root) {
-  padding-right: var(--env-var-spacing-1-minus);
+	padding-right: var(--env-var-spacing-1-minus);
 }
 
 .field input {
-  height: 100%;
-  padding: 0 var(--env-var-spacing-1-minus);
+	height: 100%;
+	padding: 0 var(--env-var-spacing-1-minus);
 }
 .field .MuiInputBase-root:has(textarea) {
-  padding: var(--env-var-spacing-1-minus);
+	padding: var(--env-var-spacing-1-minus);
 }
 
 .register-page .field .MuiOutlinedInput-root fieldset,
@@ -36,5 +36,5 @@
 .forgot-password-page .field input,
 .set-new-password-page .field .MuiOutlinedInput-root fieldset,
 .set-new-password-page .field input {
-  border-radius: var(--env-var-radius-2);
+	border-radius: var(--env-var-radius-2);
 }

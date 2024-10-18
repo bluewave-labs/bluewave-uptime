@@ -25,86 +25,86 @@ const CreatePageSpeed = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const idMap = {
-    "monitor-url": "url",
-    "monitor-name": "name",
-    "monitor-checks-http": "type",
-    "monitor-checks-ping": "type",
-    "notify-email-default": "notification-email",
-  };
+	const idMap = {
+		"monitor-url": "url",
+		"monitor-name": "name",
+		"monitor-checks-http": "type",
+		"monitor-checks-ping": "type",
+		"notify-email-default": "notification-email",
+	};
 
-  const [monitor, setMonitor] = useState({
-    url: "",
-    name: "",
-    type: "pagespeed",
-    notifications: [],
-    interval: 3,
-  });
-  const [https, setHttps] = useState(true);
-  const [errors, setErrors] = useState({});
+	const [monitor, setMonitor] = useState({
+		url: "",
+		name: "",
+		type: "pagespeed",
+		notifications: [],
+		interval: 3,
+	});
+	const [https, setHttps] = useState(true);
+	const [errors, setErrors] = useState({});
 
-  const handleChange = (event, name) => {
-    const { value, id } = event.target;
-    if (!name) name = idMap[id];
+	const handleChange = (event, name) => {
+		const { value, id } = event.target;
+		if (!name) name = idMap[id];
 
-    if (name.includes("notification-")) {
-      name = name.replace("notification-", "");
-      let hasNotif = monitor.notifications.some(
-        (notification) => notification.type === name
-      );
-      setMonitor((prev) => {
-        const notifs = [...prev.notifications];
-        if (hasNotif) {
-          return {
-            ...prev,
-            notifications: notifs.filter((notif) => notif.type !== name),
-          };
-        } else {
-          return {
-            ...prev,
-            notifications: [
-              ...notifs,
-              name === "email"
-                ? { type: name, address: value }
-                : // TODO - phone number
-                  { type: name, phone: value },
-            ],
-          };
-        }
-      });
-    } else {
-      setMonitor((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+		if (name.includes("notification-")) {
+			name = name.replace("notification-", "");
+			let hasNotif = monitor.notifications.some(
+				(notification) => notification.type === name
+			);
+			setMonitor((prev) => {
+				const notifs = [...prev.notifications];
+				if (hasNotif) {
+					return {
+						...prev,
+						notifications: notifs.filter((notif) => notif.type !== name),
+					};
+				} else {
+					return {
+						...prev,
+						notifications: [
+							...notifs,
+							name === "email"
+								? { type: name, address: value }
+								: // TODO - phone number
+									{ type: name, phone: value },
+						],
+					};
+				}
+			});
+		} else {
+			setMonitor((prev) => ({
+				...prev,
+				[name]: value,
+			}));
 
-      const { error } = monitorValidation.validate(
-        { [name]: value },
-        { abortEarly: false }
-      );
+			const { error } = monitorValidation.validate(
+				{ [name]: value },
+				{ abortEarly: false }
+			);
 
-      setErrors((prev) => {
-        const updatedErrors = { ...prev };
-        if (error) updatedErrors[name] = error.details[0].message;
-        else delete updatedErrors[name];
-        return updatedErrors;
-      });
-    }
-  };
+			setErrors((prev) => {
+				const updatedErrors = { ...prev };
+				if (error) updatedErrors[name] = error.details[0].message;
+				else delete updatedErrors[name];
+				return updatedErrors;
+			});
+		}
+	};
 
-  const handleCreateMonitor = async (event) => {
-    event.preventDefault();
-    //obj to submit
-    let form = {
-      url: `http${https ? "s" : ""}://` + monitor.url,
-      name: monitor.name === "" ? monitor.url : monitor.name,
-      type: monitor.type,
-      interval: monitor.interval * MS_PER_MINUTE,
-    };
+	const handleCreateMonitor = async (event) => {
+		event.preventDefault();
+		//obj to submit
+		let form = {
+			url: `http${https ? "s" : ""}://` + monitor.url,
+			name: monitor.name === "" ? monitor.url : monitor.name,
+			type: monitor.type,
+			interval: monitor.interval * MS_PER_MINUTE,
+		};
 
-    const { error } = monitorValidation.validate(form, {
-      abortEarly: false,
-    });
+		const { error } = monitorValidation.validate(form, {
+			abortEarly: false,
+		});
 
     if (error) {
       const newErrors = {};

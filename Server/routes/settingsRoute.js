@@ -1,8 +1,5 @@
 import { Router } from "express";
-import {
-  getAppSettings,
-  updateAppSettings,
-} from "../controllers/settingsController.js";
+import { getAppSettings, updateAppSettings } from "../controllers/settingsController.js";
 import { isAllowed } from "../middleware/isAllowed.js";
 
 const router = Router();

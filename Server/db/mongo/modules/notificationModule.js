@@ -11,14 +11,14 @@ const SERVICE_NAME = "notificationModule";
  * @throws Will throw an error if the notification cannot be created.
  */
 const createNotification = async (notificationData) => {
-  try {
-    const notification = await new Notification({ ...notificationData }).save();
-    return notification;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "createNotification";
-    throw error;
-  }
+	try {
+		const notification = await new Notification({ ...notificationData }).save();
+		return notification;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "createNotification";
+		throw error;
+	}
 };
 
 /**
@@ -28,29 +28,29 @@ const createNotification = async (notificationData) => {
  * @throws Will throw an error if the notifications cannot be retrieved.
  */
 const getNotificationsByMonitorId = async (monitorId) => {
-  try {
-    const notifications = await Notification.find({ monitorId });
-    return notifications;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getNotificationsByMonitorId";
-    throw error;
-  }
+	try {
+		const notifications = await Notification.find({ monitorId });
+		return notifications;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getNotificationsByMonitorId";
+		throw error;
+	}
 };
 
 const deleteNotificationsByMonitorId = async (monitorId) => {
-  try {
-    const result = await Notification.deleteMany({ monitorId });
-    return result.deletedCount;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deleteNotificationsByMonitorId";
-    throw error;
-  }
+	try {
+		const result = await Notification.deleteMany({ monitorId });
+		return result.deletedCount;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "deleteNotificationsByMonitorId";
+		throw error;
+	}
 };
 
 export {
-  createNotification,
-  getNotificationsByMonitorId,
-  deleteNotificationsByMonitorId,
+	createNotification,
+	getNotificationsByMonitorId,
+	deleteNotificationsByMonitorId,
 };
