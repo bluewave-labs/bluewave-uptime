@@ -12,32 +12,15 @@ const handleError = (error, serviceName, method, status = 500) => {
 	return error;
 };
 
-const fetchMonitorCertificate = async (tls, monitor) => {
-	return new Promise((resolve, reject) => {
+const fetchMonitorCertificate = async (sslChecker, monitor) => {
+	try {
 		const monitorUrl = new URL(monitor.url);
 		const hostname = monitorUrl.hostname;
-		try {
-			let socket = tls.connect(
-				{
-					port: 443,
-					host: hostname,
-					servername: hostname, // this is required in case the server enabled SNI
-				},
-				() => {
-					try {
-						let x509Certificate = socket.getPeerX509Certificate();
-						resolve(x509Certificate);
-					} catch (error) {
-						reject(error);
-					} finally {
-						socket.end();
-					}
-				}
-			);
-		} catch (error) {
-			reject(error);
-		}
-	});
+		const cert = await sslChecker(hostname);
+		return cert;
+	} catch (error) {
+		throw error;
+	}
 };
 
 export { handleValidationError, handleError, fetchMonitorCertificate };

@@ -21,50 +21,49 @@ import { useTheme } from "@emotion/react";
  * @returns {React.Element} The `Check` component with a check icon and a label, defined by the `text` prop.
  */
 const Check = ({ text, variant = "info", outlined = false }) => {
-  const theme = useTheme();
-  const colors = {
-    success: theme.palette.success.main,
-    error: theme.palette.error.text,
-    info: theme.palette.info.border,
-  };
+	const theme = useTheme();
+	const colors = {
+		success: theme.palette.success.main,
+		error: theme.palette.error.text,
+		info: theme.palette.info.border,
+	};
 
-  return (
-    <Stack
-      direction="row"
-      className="check"
-      gap={outlined ? theme.spacing(6) : theme.spacing(4)}
-      alignItems="center"
-    >
-      {outlined ? (
-        <CheckOutlined alt="check" />
-      ) : (
-        <Box
-          lineHeight={0}
-          sx={{
-            "& svg > path": { fill: colors[variant] },
-          }}
-        >
-          <CheckGrey alt="form checks" />
-        </Box>
-      )}
-      <Typography
-        component="span"
-        sx={{
-          color:
-            variant === "info" ? theme.palette.text.tertiary : colors[variant],
-          opacity: 0.8,
-        }}
-      >
-        {text}
-      </Typography>
-    </Stack>
-  );
+	return (
+		<Stack
+			direction="row"
+			className="check"
+			gap={outlined ? theme.spacing(6) : theme.spacing(4)}
+			alignItems="center"
+		>
+			{outlined ? (
+				<CheckOutlined alt="check" />
+			) : (
+				<Box
+					lineHeight={0}
+					sx={{
+						"& svg > path": { fill: colors[variant] },
+					}}
+				>
+					<CheckGrey alt="form checks" />
+				</Box>
+			)}
+			<Typography
+				component="span"
+				sx={{
+					color: variant === "info" ? theme.palette.text.tertiary : colors[variant],
+					opacity: 0.8,
+				}}
+			>
+				{text}
+			</Typography>
+		</Stack>
+	);
 };
 
 Check.propTypes = {
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-  variant: PropTypes.oneOf(["info", "error", "success"]),
-  outlined: PropTypes.bool,
+	text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+	variant: PropTypes.oneOf(["info", "error", "success"]),
+	outlined: PropTypes.bool,
 };
 
 export default Check;

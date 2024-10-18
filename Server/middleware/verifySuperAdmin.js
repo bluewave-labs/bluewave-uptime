@@ -12,49 +12,47 @@ const { errorMessages } = require("../utils/messages");
  * @returns {express.Response}
  */
 const verifySuperAdmin = (req, res, next) => {
-  const token = req.headers["authorization"];
-  // Make sure a token is provided
-  if (!token) {
-    const error = new Error(errorMessages.NO_AUTH_TOKEN);
-    error.status = 401;
-    error.service = SERVICE_NAME;
-    next(error);
-    return;
-  }
-  // Make sure it is properly formatted
-  if (!token.startsWith(TOKEN_PREFIX)) {
-    const error = new Error(errorMessages.INVALID_AUTH_TOKEN); // Instantiate a new Error object for improperly formatted token
-    error.status = 400;
-    error.service = SERVICE_NAME;
-    error.method = "verifySuperAdmin";
-    next(error);
-    return;
-  }
+	const token = req.headers["authorization"];
+	// Make sure a token is provided
+	if (!token) {
+		const error = new Error(errorMessages.NO_AUTH_TOKEN);
+		error.status = 401;
+		error.service = SERVICE_NAME;
+		next(error);
+		return;
+	}
+	// Make sure it is properly formatted
+	if (!token.startsWith(TOKEN_PREFIX)) {
+		const error = new Error(errorMessages.INVALID_AUTH_TOKEN); // Instantiate a new Error object for improperly formatted token
+		error.status = 400;
+		error.service = SERVICE_NAME;
+		error.method = "verifySuperAdmin";
+		next(error);
+		return;
+	}
 
-  const parsedToken = token.slice(TOKEN_PREFIX.length, token.length);
-  // verify admin role is present
-  const { jwtSecret } = req.settingsService.getSettings();
+	const parsedToken = token.slice(TOKEN_PREFIX.length, token.length);
+	// verify admin role is present
+	const { jwtSecret } = req.settingsService.getSettings();
 
-  jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
-    if (err) {
-      logger.error(errorMessages.INVALID_AUTH_TOKEN, {
-        service: SERVICE_NAME,
-      });
-      return res
-        .status(401)
-        .json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
-    }
+	jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
+		if (err) {
+			logger.error(errorMessages.INVALID_AUTH_TOKEN, {
+				service: SERVICE_NAME,
+			});
+			return res
+				.status(401)
+				.json({ success: false, msg: errorMessages.INVALID_AUTH_TOKEN });
+		}
 
-    if (decoded.role.includes("superadmin") === false) {
-      logger.error(errorMessages.INVALID_AUTH_TOKEN, {
-        service: SERVICE_NAME,
-      });
-      return res
-        .status(401)
-        .json({ success: false, msg: errorMessages.UNAUTHORIZED });
-    }
-    next();
-  });
+		if (decoded.role.includes("superadmin") === false) {
+			logger.error(errorMessages.INVALID_AUTH_TOKEN, {
+				service: SERVICE_NAME,
+			});
+			return res.status(401).json({ success: false, msg: errorMessages.UNAUTHORIZED });
+		}
+		next();
+	});
 };
 
 module.exports = { verifySuperAdmin };
