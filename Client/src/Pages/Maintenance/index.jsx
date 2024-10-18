@@ -45,7 +45,7 @@ const Maintenance = ({ isAdmin }) => {
 
 	return (
 		<Box
-			className="maintenance"
+			className="maintenance table-container"
 			sx={{
 				':has(> [class*="fallback__"])': {
 					position: "relative",

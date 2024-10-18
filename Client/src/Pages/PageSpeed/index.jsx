@@ -59,7 +59,6 @@ const PageSpeed = ({ isAdmin }) => {
 	// will show skeletons only on initial load
 	// since monitor state is being added to redux persist, there's no reason to display skeletons on every render
 	let isActuallyLoading = isLoading && monitors?.length === 0;
-	console.log({ isActuallyLoading });
 	return (
 		<Box
 			className="page-speed"
@@ -75,42 +74,43 @@ const PageSpeed = ({ isAdmin }) => {
 				},
 			}}
 		>
-			<Box mb={theme.spacing(12)}>
-				<Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-					alignItems="center"
-					mt={theme.spacing(5)}
-					gap={theme.spacing(6)}
-				>
-					<Greeting type="pagespeed" />
-					{isAdmin && (
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={() => navigate("/pagespeed/create")}
-							sx={{ whiteSpace: "nowrap" }}
-						>
-							Create new
-						</Button>
-					)}
-				</Stack>
-			</Box>
 			{isActuallyLoading ? (
 				<SkeletonLayout />
 			) : monitors?.length !== 0 ? (
-				<Grid
-					container
-					spacing={theme.spacing(12)}
-				>
-					{monitors?.map((monitor) => (
-						<Card
-							monitor={monitor}
-							key={monitor._id}
-						/>
-					))}
-				</Grid>
+				<Box>
+					<Box mb={theme.spacing(12)}>
+						<Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
+						<Stack
+							direction="row"
+							justifyContent="space-between"
+							alignItems="center"
+							mt={theme.spacing(5)}
+						>
+							<Greeting type="pagespeed" />
+							{isAdmin && (
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={() => navigate("/pagespeed/create")}
+									sx={{ whiteSpace: "nowrap" }}
+								>
+									Create new
+								</Button>
+							)}
+						</Stack>
+					</Box>
+					<Grid
+						container
+						spacing={theme.spacing(12)}
+					>
+						{monitors?.map((monitor) => (
+							<Card
+								monitor={monitor}
+								key={monitor._id}
+							/>
+						))}
+					</Grid>
+				</Box>
 			) : (
 				<Fallback
 					title="pagespeed monitor"

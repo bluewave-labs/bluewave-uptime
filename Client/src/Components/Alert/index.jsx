@@ -13,9 +13,9 @@ import "./index.css";
  */
 
 const icons = {
-  info: <InfoOutlinedIcon />,
-  error: <ErrorOutlineOutlinedIcon />,
-  warning: <WarningAmberOutlinedIcon />,
+	info: <InfoOutlinedIcon />,
+	error: <ErrorOutlineOutlinedIcon />,
+	warning: <WarningAmberOutlinedIcon />,
 };
 
 /**
@@ -30,94 +30,92 @@ const icons = {
  */
 
 const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
-  const theme = useTheme();
-  const { text, bg, border } = theme.palette[variant];
-  const icon = icons[variant];
+	const theme = useTheme();
+	const { text, bg, border } = theme.palette[variant];
+	const icon = icons[variant];
 
-  return (
-    <Stack
-      direction="row"
-      justifyContent="flex-start"
-      alignItems={hasIcon ? "" : "center"}
-      className="alert row-stack"
-      gap={theme.spacing(8)}
-      sx={{
-        padding: hasIcon
-          ? theme.spacing(8)
-          : `${theme.spacing(4)} ${theme.spacing(8)}`,
-        backgroundColor: bg,
-        border: `solid 1px ${border}`,
-        borderRadius: theme.shape.borderRadius,
-      }}
-    >
-      {hasIcon && <Box sx={{ color: text }}>{icon}</Box>}
-      <Stack direction="column" gap="2px" sx={{ flex: 1 }}>
-        {title && (
-          <Typography sx={{ fontWeight: "700", color: `${text}` }}>
-            {title}
-          </Typography>
-        )}
-        {body && (
-          <Typography sx={{ fontWeight: "400", color: `${text}` }}>
-            {body}
-          </Typography>
-        )}
-        {hasIcon && isToast && (
-          <Button
-            variant="text"
-            color="info"
-            onClick={onClick}
-            sx={{
-              fontWeight: "600",
-              width: "fit-content",
-              mt: theme.spacing(4),
-              padding: 0,
-              minWidth: 0,
-            }}
-          >
-            Dismiss
-          </Button>
-        )}
-      </Stack>
-      {isToast && (
-        <IconButton
-          onClick={onClick}
-          sx={{
-            alignSelf: "flex-start",
-            ml: "auto",
-            mr: "-5px",
-            mt: hasIcon ? "-5px" : 0,
-            padding: "5px",
-            "&:focus": {
-              outline: "none",
-            },
-          }}
-        >
-          <CloseIcon
-            sx={{
-              fontSize: "20px",
-            }}
-          />
-        </IconButton>
-      )}
-    </Stack>
-  );
+	return (
+		<Stack
+			direction="row"
+			justifyContent="flex-start"
+			alignItems={hasIcon ? "" : "center"}
+			className="alert row-stack"
+			gap={theme.spacing(8)}
+			sx={{
+				padding: hasIcon ? theme.spacing(8) : `${theme.spacing(4)} ${theme.spacing(8)}`,
+				backgroundColor: bg,
+				border: `solid 1px ${border}`,
+				borderRadius: theme.shape.borderRadius,
+			}}
+		>
+			{hasIcon && <Box sx={{ color: text }}>{icon}</Box>}
+			<Stack
+				direction="column"
+				gap="2px"
+				sx={{ flex: 1 }}
+			>
+				{title && (
+					<Typography sx={{ fontWeight: "700", color: `${text}` }}>{title}</Typography>
+				)}
+				{body && (
+					<Typography sx={{ fontWeight: "400", color: `${text}` }}>{body}</Typography>
+				)}
+				{hasIcon && isToast && (
+					<Button
+						variant="text"
+						color="info"
+						onClick={onClick}
+						sx={{
+							fontWeight: "600",
+							width: "fit-content",
+							mt: theme.spacing(4),
+							padding: 0,
+							minWidth: 0,
+						}}
+					>
+						Dismiss
+					</Button>
+				)}
+			</Stack>
+			{isToast && (
+				<IconButton
+					onClick={onClick}
+					sx={{
+						alignSelf: "flex-start",
+						ml: "auto",
+						mr: "-5px",
+						mt: hasIcon ? "-5px" : 0,
+						padding: "5px",
+						"&:focus": {
+							outline: "none",
+						},
+					}}
+				>
+					<CloseIcon
+						sx={{
+							fontSize: "20px",
+						}}
+					/>
+				</IconButton>
+			)}
+		</Stack>
+	);
 };
 
 Alert.propTypes = {
-  variant: PropTypes.oneOf(["info", "error", "warning"]).isRequired,
-  title: PropTypes.string,
-  body: PropTypes.string,
-  isToast: PropTypes.bool,
-  hasIcon: PropTypes.bool,
-  onClick: function (props, propName, componentName) {
-    if (props.isToast && !props[propName]) {
-      return new Error(
-        `Prop '${propName}' is required when 'isToast' is true in '${componentName}'.`
-      );
-    }
-    return null;
-  },
+	variant: PropTypes.oneOf(["info", "error", "warning"]).isRequired,
+	title: PropTypes.string,
+	body: PropTypes.string,
+	isToast: PropTypes.bool,
+	hasIcon: PropTypes.bool,
+	onClick: function (props, propName, componentName) {
+		if (props.isToast && !props[propName]) {
+			return new Error(
+				`Prop '${propName}' is required when 'isToast' is true in '${componentName}'.`
+			);
+		}
+		return null;
+	},
 };
 
 export default Alert;
