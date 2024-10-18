@@ -12,6 +12,7 @@ import {
 	Stack,
 	Typography,
 	Button,
+	CircularProgress,
 } from "@mui/material";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
@@ -34,6 +35,7 @@ import RightArrow from "../../../../assets/icons/right-arrow.svg?react";
 import SelectorVertical from "../../../../assets/icons/selector-vertical.svg?react";
 import ActionsMenu from "../actionsMenu";
 import useUtils from "../../utils";
+import { TableBodySkeleton } from "./Skeleton";
 
 /**
  * Component for pagination actions (first, previous, next, last).
@@ -107,17 +109,17 @@ TablePaginationActions.propTypes = {
 	onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin, filter, setLoading }) => {
+const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { determineState } = useUtils();
 
 	const { rowsPerPage } = useSelector((state) => state.ui.monitors);
+	const authState = useSelector((state) => state.auth);
 	const [page, setPage] = useState(0);
 	const [monitors, setMonitors] = useState([]);
 	const [monitorCount, setMonitorCount] = useState(0);
-	const authState = useSelector((state) => state.auth);
 	const [updateTrigger, setUpdateTrigger] = useState(false);
 	const [sort, setSort] = useState({});
 	const prevFilter = useRef(filter);
@@ -160,15 +162,25 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 			});
 			setMonitors(res?.data?.data?.monitors ?? []);
 			setMonitorCount(res?.data?.data?.monitorCount ?? 0);
-			setLoading(false);
 		} catch (error) {
 			logger.error(error);
+		} finally {
+			setIsSearching(false);
 		}
-	}, [authState, page, rowsPerPage, filter, sort, setLoading]);
+	}, [authState, page, rowsPerPage, filter, sort, setIsSearching]);
 
 	useEffect(() => {
 		fetchPage();
-	}, [updateTrigger, authState, page, rowsPerPage, filter, sort, setLoading, fetchPage]);
+	}, [
+		updateTrigger,
+		authState,
+		page,
+		rowsPerPage,
+		filter,
+		sort,
+		setIsSearching,
+		fetchPage,
+	]);
 
 	// Listen for changes in filter, if new value reset the page
 	useEffect(() => {
@@ -220,7 +232,37 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 	};
 
 	return (
-		<>
+		<Box position="relative">
+			{isSearching && (
+				<>
+					<Box
+						width="100%"
+						height="100%"
+						position="absolute"
+						sx={{
+							backgroundColor: theme.palette.background.main,
+							opacity: 0.8,
+							zIndex: 100,
+						}}
+					/>
+					<Box
+						height="100%"
+						position="absolute"
+						top="20%"
+						left="50%"
+						sx={{
+							transform: "translateX(-50%)",
+							zIndex: 101,
+						}}
+					>
+						<CircularProgress
+							sx={{
+								color: theme.palette.other.icon,
+							}}
+						/>
+					</Box>
+				</>
+			)}
 			<TableContainer component={Paper}>
 				<Table>
 					<TableHead>
@@ -271,77 +313,82 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{monitors.map((monitor) => {
-							let uptimePercentage = "";
-							let percentageColor = theme.palette.percentage.uptimeExcellent;
+						{/* TODO add empty state. Check if is searching, and empty => skeleton. Is empty, not searching => skeleton */}
+						{monitors.length > 0 ? (
+							monitors.map((monitor) => {
+								let uptimePercentage = "";
+								let percentageColor = theme.palette.percentage.uptimeExcellent;
 
-							// Determine uptime percentage and color based on the monitor's uptimePercentage value
-							if (monitor.uptimePercentage !== undefined) {
-								uptimePercentage =
-									monitor.uptimePercentage === 0
-										? "0"
-										: (monitor.uptimePercentage * 100).toFixed(2);
+								// Determine uptime percentage and color based on the monitor's uptimePercentage value
+								if (monitor.uptimePercentage !== undefined) {
+									uptimePercentage =
+										monitor.uptimePercentage === 0
+											? "0"
+											: (monitor.uptimePercentage * 100).toFixed(2);
 
-								percentageColor =
-									monitor.uptimePercentage < 0.25
-										? theme.palette.percentage.uptimePoor
-										: monitor.uptimePercentage < 0.5
-											? theme.palette.percentage.uptimeFair
-											: monitor.uptimePercentage < 0.75
-												? theme.palette.percentage.uptimeGood
-												: theme.palette.percentage.uptimeExcellent;
-							}
+									percentageColor =
+										monitor.uptimePercentage < 0.25
+											? theme.palette.percentage.uptimePoor
+											: monitor.uptimePercentage < 0.5
+												? theme.palette.percentage.uptimeFair
+												: monitor.uptimePercentage < 0.75
+													? theme.palette.percentage.uptimeGood
+													: theme.palette.percentage.uptimeExcellent;
+								}
 
-							const params = {
-								url: monitor.url,
-								title: monitor.name,
-								percentage: uptimePercentage,
-								percentageColor,
-								status: determineState(monitor),
-							};
+								const params = {
+									url: monitor.url,
+									title: monitor.name,
+									percentage: uptimePercentage,
+									percentageColor,
+									status: determineState(monitor),
+								};
 
-							return (
-								<TableRow
-									key={monitor._id}
-									sx={{
-										cursor: "pointer",
-										"&:hover": {
-											backgroundColor: theme.palette.background.accent,
-										},
-									}}
-									onClick={() => {
-										navigate(`/monitors/${monitor._id}`);
-									}}
-								>
-									<TableCell>
-										<Host
-											key={monitor._id}
-											params={params}
-										/>
-									</TableCell>
-									<TableCell>
-										<StatusLabel
-											status={params.status}
-											text={params.status}
-											customStyles={{ textTransform: "capitalize" }}
-										/>
-									</TableCell>
-									<TableCell>
-										<BarChart checks={monitor.checks.slice().reverse()} />
-									</TableCell>
-									<TableCell>
-										<span style={{ textTransform: "uppercase" }}>{monitor.type}</span>
-									</TableCell>
-									<TableCell>
-										<ActionsMenu
-											monitor={monitor}
-											isAdmin={isAdmin}
-											updateCallback={handleActionMenuDelete}
-										/>
-									</TableCell>
-								</TableRow>
-							);
-						})}
+								return (
+									<TableRow
+										key={monitor._id}
+										sx={{
+											cursor: "pointer",
+											"&:hover": {
+												backgroundColor: theme.palette.background.accent,
+											},
+										}}
+										onClick={() => {
+											navigate(`/monitors/${monitor._id}`);
+										}}
+									>
+										<TableCell>
+											<Host
+												key={monitor._id}
+												params={params}
+											/>
+										</TableCell>
+										<TableCell>
+											<StatusLabel
+												status={params.status}
+												text={params.status}
+												customStyles={{ textTransform: "capitalize" }}
+											/>
+										</TableCell>
+										<TableCell>
+											<BarChart checks={monitor.checks.slice().reverse()} />
+										</TableCell>
+										<TableCell>
+											<span style={{ textTransform: "uppercase" }}>{monitor.type}</span>
+										</TableCell>
+										<TableCell>
+											<ActionsMenu
+												monitor={monitor}
+												isAdmin={isAdmin}
+												updateCallback={handleActionMenuDelete}
+											/>
+										</TableCell>
+									</TableRow>
+								);
+							})
+						) : (
+							<TableBodySkeleton />
+						)}
 					</TableBody>
 				</Table>
 			</TableContainer>
@@ -415,14 +462,15 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 					}}
 				/>
 			</Stack>
-		</>
+		</Box>
 	);
 };
 
 MonitorTable.propTypes = {
 	isAdmin: PropTypes.bool,
 	filter: PropTypes.string,
-	setLoading: PropTypes.func,
+	setIsSearching: PropTypes.func,
+	isSearching: PropTypes.bool,
 };
 
 const MemoizedMonitorTable = memo(MonitorTable);
