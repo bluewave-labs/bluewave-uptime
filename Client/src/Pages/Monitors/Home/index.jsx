@@ -20,9 +20,11 @@ const Monitors = ({ isAdmin }) => {
 	const navigate = useNavigate();
 	const monitorState = useSelector((state) => state.uptimeMonitors);
 	const authState = useSelector((state) => state.auth);
+	const dispatch = useDispatch({});
+
+	//TODO create components, and lower these states.
 	const [search, setSearch] = useState("");
 	const [isSearching, setIsSearching] = useState(false);
-	const dispatch = useDispatch({});
 	const debouncedFilter = useDebounce(search, 500);
 
 	const handleSearch = (value) => {
@@ -34,13 +36,17 @@ const Monitors = ({ isAdmin }) => {
 		dispatch(getUptimeMonitorsByTeamId(authState.authToken));
 	}, [authState.authToken, dispatch]);
 
-	console.log(monitorState);
-	const loading = true;
-	/* monitorState?.isLoading &&
-    monitorState?.monitorsSummary?.monitors?.length === 0; */
-	const canCreateMonitor =
-		isAdmin && monitorState?.monitorsSummary?.monitors?.length !== 0;
+	//Why are we tying loading to monitors length?
+	const loading =
+		monitorState?.isLoading; /* && monitorState?.monitorsSummary?.monitors?.length === 0 */
 
+	const hasMonitors = monitorState?.monitorsSummary?.monitors?.length !== 0;
+	const noMonitors = monitorState?.monitorsSummary?.monitors?.length === 0;
+	const canAddMonitor = isAdmin && hasMonitors;
+	const needsAdmin = !isAdmin && noMonitors;
+
+	/* console.log({ loading });
+	console.log({ monitorState }); */
 	return (
 		<Stack
 			className="monitors"
@@ -56,7 +62,7 @@ const Monitors = ({ isAdmin }) => {
 					gap={theme.spacing(6)}
 				>
 					<Greeting type="uptime" />
-					{canCreateMonitor && (
+					{canAddMonitor && (
 						<Button
 							variant="contained"
 							color="primary"
@@ -70,15 +76,13 @@ const Monitors = ({ isAdmin }) => {
 					)}
 				</Stack>
 			</Box>
+			{noMonitors && <Fallback isAdmin={isAdmin} />}
+			{needsAdmin && <p>Wait for an admin to add some monitors!</p>}
 			{loading ? (
 				<SkeletonLayout />
 			) : (
 				<>
-					{isAdmin && monitorState?.monitorsSummary?.monitors?.length === 0 && (
-						<Fallback isAdmin={isAdmin} />
-					)}
-
-					{monitorState?.monitorsSummary?.monitors?.length !== 0 && (
+					{hasMonitors && (
 						<>
 							<Stack
 								gap={theme.spacing(8)}
@@ -127,6 +131,7 @@ const Monitors = ({ isAdmin }) => {
 										borderColor={theme.palette.border.light}
 										backgroundColor={theme.palette.background.accent}
 									>
+										{/* TODO maybe we dont need the conditional here, since we already check for monitors before */}
 										{monitorState?.monitorsSummary?.monitorCounts?.total || 0}
 									</Box>
 									<Box
