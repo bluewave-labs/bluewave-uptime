@@ -193,7 +193,7 @@ const refreshAuthToken = (req, res, next) => {
       const error = new Error(errorMessages.NO_REFRESH_TOKEN);
       error.status = 401;
       error.service = SERVICE_NAME;
-      error.method = "handleExpiredJwtToken";
+      error.method = "refreshAuthToken";
       return next(error);
     }
 
