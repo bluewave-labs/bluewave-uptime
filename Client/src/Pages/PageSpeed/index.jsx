@@ -82,6 +82,7 @@ const PageSpeed = ({ isAdmin }) => {
 					justifyContent="space-between"
 					alignItems="center"
 					mt={theme.spacing(5)}
+					gap={theme.spacing(6)}
 				>
 					<Greeting type="pagespeed" />
 					{isAdmin && (
@@ -99,19 +100,17 @@ const PageSpeed = ({ isAdmin }) => {
 			{isActuallyLoading ? (
 				<SkeletonLayout />
 			) : monitors?.length !== 0 ? (
-				<Box>
-					<Grid
-						container
-						spacing={theme.spacing(12)}
-					>
-						{monitors?.map((monitor) => (
-							<Card
-								monitor={monitor}
-								key={monitor._id}
-							/>
-						))}
-					</Grid>
-				</Box>
+				<Grid
+					container
+					spacing={theme.spacing(12)}
+				>
+					{monitors?.map((monitor) => (
+						<Card
+							monitor={monitor}
+							key={monitor._id}
+						/>
+					))}
+				</Grid>
 			) : (
 				<Fallback
 					title="pagespeed monitor"
