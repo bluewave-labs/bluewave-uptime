@@ -12,6 +12,7 @@ import {
 	Stack,
 	Typography,
 	Button,
+	CircularProgress,
 } from "@mui/material";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
@@ -108,7 +109,7 @@ TablePaginationActions.propTypes = {
 	onPageChange: PropTypes.func.isRequired,
 };
 
-const MonitorTable = ({ isAdmin, filter, setLoading }) => {
+const MonitorTable = ({ isAdmin, filter, setLoading, isSearching }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -221,7 +222,37 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 	};
 
 	return (
-		<>
+		<Box position="relative">
+			{isSearching && (
+				<>
+					<Box
+						width="100%"
+						height="100%"
+						position="absolute"
+						sx={{
+							backgroundColor: theme.palette.background.main,
+							opacity: 0.8,
+							zIndex: 100,
+						}}
+					/>
+					<Box
+						height="100%"
+						position="absolute"
+						top="20%"
+						left="50%"
+						sx={{
+							transform: "translateX(-50%)",
+							zIndex: 101,
+						}}
+					>
+						<CircularProgress
+							sx={{
+								color: theme.palette.other.icon,
+							}}
+						/>
+					</Box>
+				</>
+			)}
 			<TableContainer component={Paper}>
 				<Table>
 					<TableHead>
@@ -271,9 +302,10 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 							<TableCell>Actions</TableCell>
 						</TableRow>
 					</TableHead>
-					{monitors.length > 0 ? (
-						<TableBody>
-							{monitors.map((monitor) => {
+					<TableBody>
+						{/* TODO add empty state. Check if is searching, and empty => skeleton. Is empty, not searching => skeleton */}
+						{monitors.length > 0 ? (
+							monitors.map((monitor) => {
 								let uptimePercentage = "";
 								let percentageColor = theme.palette.percentage.uptimeExcellent;
 
@@ -343,11 +375,11 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 										</TableCell>
 									</TableRow>
 								);
-							})}
-						</TableBody>
-					) : (
-						<TableBodySkeleton />
-					)}
+							})
+						) : (
+							<TableBodySkeleton />
+						)}
+					</TableBody>
 				</Table>
 			</TableContainer>
 			<Stack
@@ -420,7 +452,7 @@ const MonitorTable = ({ isAdmin, filter, setLoading }) => {
 					}}
 				/>
 			</Stack>
-		</>
+		</Box>
 	);
 };
 
@@ -428,6 +460,7 @@ MonitorTable.propTypes = {
 	isAdmin: PropTypes.bool,
 	filter: PropTypes.string,
 	setLoading: PropTypes.func,
+	isSearching: PropTypes.bool,
 };
 
 const MemoizedMonitorTable = memo(MonitorTable);
