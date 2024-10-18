@@ -1,218 +1,207 @@
 import PropTypes from "prop-types";
-import {
-	TableContainer,
-	Table,
-	TableHead,
-	TableRow,
-	TableCell,
-	TableBody,
-	Pagination,
-	PaginationItem,
-	Paper,
-	Typography,
-	Box,
-} from "@mui/material";
+import { Box } from "@mui/material";
+import { useTheme } from "@mui/material";
+import "./index.css";
 
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { networkService } from "../../../main";
-import { StatusLabel } from "../../../Components/Label";
-import { logger } from "../../../Utils/Logger";
-import { useTheme } from "@emotion/react";
-import { formatDateWithTz } from "../../../Utils/timeUtils";
-import PlaceholderLight from "../../../assets/Images/data_placeholder.svg?react";
-import PlaceholderDark from "../../../assets/Images/data_placeholder_dark.svg?react";
+/**
+ * @typedef {Object} Styles
+ * @param {string} [color] - The text color
+ * @param {string} [backgroundColor] - The background color
+ * @param {string} [borderColor] - The border color
+ */
 
-const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
-	const uiTimezone = useSelector((state) => state.ui.timezone);
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.label - The label of the label
+ * @param {Styles} props.styles - CSS Styles passed from parent component
+ * @param {React.ReactNode} children - Children passed from parent component
+ * @returns {JSX.Element}
+ */
 
+const BaseLabel = ({ label, styles, children }) => {
 	const theme = useTheme();
-	const { authToken, user } = useSelector((state) => state.auth);
-	const mode = useSelector((state) => state.ui.mode);
-	const [checks, setChecks] = useState([]);
-	const [checksCount, setChecksCount] = useState(0);
-	const [paginationController, setPaginationController] = useState({
-		page: 0,
-		rowsPerPage: 14,
-	});
-
-	useEffect(() => {
-		setPaginationController((prevPaginationController) => ({
-			...prevPaginationController,
-			page: 0,
-		}));
-	}, [filter, selectedMonitor]);
-
-	useEffect(() => {
-		const fetchPage = async () => {
-			if (!monitors || Object.keys(monitors).length === 0) {
-				return;
-			}
-			try {
-				let res;
-				if (selectedMonitor === "0") {
-					res = await networkService.getChecksByTeam({
-						authToken: authToken,
-						teamId: user.teamId,
-						sortOrder: "desc",
-						limit: null,
-						dateRange: null,
-						filter: filter,
-						page: paginationController.page,
-						rowsPerPage: paginationController.rowsPerPage,
-					});
-				} else {
-					res = await networkService.getChecksByMonitor({
-						authToken: authToken,
-						monitorId: selectedMonitor,
-						sortOrder: "desc",
-						limit: null,
-						dateRange: null,
-						sitler: filter,
-						page: paginationController.page,
-						rowsPerPage: paginationController.rowsPerPage,
-					});
-				}
-				setChecks(res.data.data.checks);
-				setChecksCount(res.data.data.checksCount);
-			} catch (error) {
-				logger.error(error);
-			}
-		};
-		fetchPage();
-	}, [
-		authToken,
-		user,
-		monitors,
-		selectedMonitor,
-		filter,
-		paginationController.page,
-		paginationController.rowsPerPage,
-	]);
-
-	const handlePageChange = (_, newPage) => {
-		setPaginationController({
-			...paginationController,
-			page: newPage - 1, // 0-indexed
-		});
-	};
-
-	let paginationComponent = <></>;
-	if (checksCount > paginationController.rowsPerPage) {
-		paginationComponent = (
-			<Pagination
-				count={Math.ceil(checksCount / paginationController.rowsPerPage)}
-				page={paginationController.page + 1} //0-indexed
-				onChange={handlePageChange}
-				shape="rounded"
-				renderItem={(item) => (
-					<PaginationItem
-						slots={{
-							previous: ArrowBackRoundedIcon,
-							next: ArrowForwardRoundedIcon,
-						}}
-						{...item}
-					/>
-				)}
-				sx={{ mt: "auto" }}
-			/>
-		);
-	}
-
-	let sharedStyles = {
-		border: 1,
-		borderColor: theme.palette.border.light,
-		borderRadius: theme.shape.borderRadius,
-		backgroundColor: theme.palette.background.main,
-		p: theme.spacing(30),
-	};
+	// Grab the default borderRadius from the theme to match button style
+	const { borderRadius } = theme.shape;
+	// Calculate padding for the label to mimic button.  Appears to scale correctly, not 100% sure though.
+	const padding = theme.spacing(1 * 0.75, 2);
 
 	return (
-		<>
-			{checks?.length === 0 && selectedMonitor === "0" ? (
-				<Box sx={{ ...sharedStyles }}>
-					<Box
-						textAlign="center"
-						pb={theme.spacing(20)}
-					>
-						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-					</Box>
-					<Typography
-						textAlign="center"
-						color={theme.palette.text.secondary}
-					>
-						No incidents recorded yet.
-					</Typography>
-				</Box>
-			) : checks?.length === 0 ? (
-				<Box sx={{ ...sharedStyles }}>
-					<Box
-						textAlign="center"
-						pb={theme.spacing(20)}
-					>
-						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-					</Box>
-					<Typography
-						textAlign="center"
-						color={theme.palette.text.secondary}
-					>
-						The monitor you have selected has no recorded incidents yet.
-					</Typography>
-				</Box>
-			) : (
-				<>
-					<TableContainer component={Paper}>
-						<Table>
-							<TableHead>
-								<TableRow>
-									<TableCell>Monitor Name</TableCell>
-									<TableCell>Status</TableCell>
-									<TableCell>Date & Time</TableCell>
-									<TableCell>Status Code</TableCell>
-									<TableCell>Message</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{checks.map((check) => {
-									const status = check.status === true ? "up" : "down";
-									const formattedDate = formatDateWithTz(
-										check.createdAt,
-										"YYYY-MM-DD HH:mm:ss A",
-										uiTimezone
-									);
-
-									return (
-										<TableRow key={check._id}>
-											<TableCell>{monitors[check.monitorId]?.name}</TableCell>
-											<TableCell>
-												<StatusLabel
-													status={status}
-													text={status}
-													customStyles={{ textTransform: "capitalize" }}
-												/>
-											</TableCell>
-											<TableCell>{formattedDate}</TableCell>
-											<TableCell>{check.statusCode ? check.statusCode : "N/A"}</TableCell>
-											<TableCell>{check.message}</TableCell>
-										</TableRow>
-									);
-								})}
-							</TableBody>
-						</Table>
-					</TableContainer>
-					{paginationComponent}
-				</>
-			)}
-		</>
+		<Box
+			className="label"
+			sx={{
+				borderRadius: borderRadius,
+				borderColor: theme.palette.text.tertiary,
+				color: theme.palette.text.tertiary,
+				padding: padding,
+				...styles,
+			}}
+		>
+			{children}
+			{label}
+		</Box>
 	);
 };
 
-IncidentTable.propTypes = {
-	monitors: PropTypes.object.isRequired,
-	selectedMonitor: PropTypes.string.isRequired,
-	filter: PropTypes.string.isRequired,
+BaseLabel.propTypes = {
+	label: PropTypes.string.isRequired,
+	styles: PropTypes.shape({
+		color: PropTypes.string,
+		backgroundColor: PropTypes.string,
+	}),
+	children: PropTypes.node,
 };
 
-export default IncidentTable;
+// Produces a lighter color based on a hex color and a percent
+// lightenColor("#067647", 20) will produce a color 20% lighter than #067647
+const lightenColor = (color, percent) => {
+	let r = parseInt(color.substring(1, 3), 16);
+	let g = parseInt(color.substring(3, 5), 16);
+	let b = parseInt(color.substring(5, 7), 16);
+
+	const amt = Math.round((255 * percent) / 100);
+
+	r = r + amt <= 255 ? r + amt : 255;
+	g = g + amt <= 255 ? g + amt : 255;
+	b = b + amt <= 255 ? b + amt : 255;
+
+	r = r.toString(16).padStart(2, "0");
+	g = g.toString(16).padStart(2, "0");
+	b = b.toString(16).padStart(2, "0");
+
+	return `#${r}${g}${b}`;
+};
+
+/**
+ * @component
+ * @param {Object} props
+ * @param {string} props.label - The label of the label
+ * @param {string} props.color - The color of the label, specified in #RRGGBB format
+ * @returns {JSX.Element}
+ * @example
+ * // Render a red label
+ * <ColoredLabel label="Label" color="#FF0000" />
+ */
+
+const ColoredLabel = ({ label, color }) => {
+	const theme = useTheme();
+	// If an invalid color is passed, default to the labelGray color
+	if (typeof color !== "string" || !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(color)) {
+		color = theme.palette.border.light;
+	}
+
+	// Calculate lighter shades for border and bg
+	const borderColor = lightenColor(color, 20);
+	const bgColor = lightenColor(color, 75);
+
+	return (
+		<BaseLabel
+			label={label}
+			styles={{
+				color: color,
+				borderColor: borderColor,
+				backgroundColor: bgColor,
+			}}
+		></BaseLabel>
+	);
+};
+
+ColoredLabel.propTypes = {
+	label: PropTypes.string.isRequired,
+	color: PropTypes.string.isRequired,
+};
+
+/**
+ * @component
+ * @param {Object} props
+ * @param { 'up' | 'down' | 'cannot resolve'} props.status - The status for the label
+ * @param {string} props.text - The text of the label
+ * @param {boolean} props.hasDot - Whether to show a dot or not
+ * @returns {JSX.Element}
+ * @example
+ * // Render an active label
+ * <StatusLabel status="up" text="Active" />
+ */
+
+const StatusLabel = ({ status, text, customStyles, hasDot }) => {
+	const theme = useTheme();
+	const colors = {
+		up: {
+			dotColor: theme.palette.success.main,
+			bgColor: theme.palette.success.bg,
+			borderColor: theme.palette.success.light,
+		},
+		down: {
+			dotColor: theme.palette.error.text,
+			bgColor: theme.palette.error.bg,
+			borderColor: theme.palette.error.light,
+		},
+		paused: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		pending: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		400: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		500: {
+			dotColor: theme.palette.error.main,
+			bgColor: theme.palette.error.bg,
+			borderColor: theme.palette.error.light,
+		},
+		"cannot resolve": {
+			dotColor: theme.palette.unresolved.main,
+			bgColor: theme.palette.unresolved.bg,
+			borderColor: theme.palette.unresolved.light,
+		},
+	};
+
+	// Look up the color for the status
+	const { borderColor, bgColor, dotColor } = colors[status];
+
+	return (
+		<BaseLabel
+			label={text}
+			styles={{
+				color: dotColor,
+				backgroundColor: bgColor,
+				borderColor: borderColor,
+				...customStyles,
+			}}
+		>
+			{hasDot && (
+				<Box
+					width={7}
+					height={7}
+					bgcolor={dotColor}
+					borderRadius="50%"
+					marginRight="5px"
+				/>
+			)}
+		</BaseLabel>
+	);
+};
+
+StatusLabel.propTypes = {
+	status: PropTypes.oneOf([
+		"up",
+		"down",
+		"paused",
+		"pending",
+		"400",
+		"500",
+		"cannot resolve",
+	]),
+	text: PropTypes.string,
+	customStyles: PropTypes.object,
+	hasDot: PropTypes.bool,
+};
+
+export { ColoredLabel, StatusLabel };
