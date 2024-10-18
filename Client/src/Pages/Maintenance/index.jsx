@@ -20,7 +20,6 @@ const Maintenance = ({ isAdmin }) => {
 	const [page, setPage] = useState(0);
 	const [sort, setSort] = useState({});
 	const [updateTrigger, setUpdateTrigger] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
 
 	const handleActionMenuDelete = () => {
 		setUpdateTrigger((prev) => !prev);
@@ -29,7 +28,6 @@ const Maintenance = ({ isAdmin }) => {
 	useEffect(() => {
 		const fetchMaintenanceWindows = async () => {
 			try {
-				setIsLoading(true);
 				const response = await networkService.getMaintenanceWindowsByTeamId({
 					authToken: authToken,
 					page: page,
@@ -40,14 +38,11 @@ const Maintenance = ({ isAdmin }) => {
 				setMaintenanceWindowCount(maintenanceWindowCount);
 			} catch (error) {
 				console.log(error);
-			} finally {
-				setIsLoading(false);
 			}
 		};
 		fetchMaintenanceWindows();
 	}, [authToken, page, rowsPerPage, updateTrigger]);
 
-	const isActuallyLoading = isLoading && maintenanceWindows?.length === 0;
 	return (
 		<Box
 			className="maintenance"
