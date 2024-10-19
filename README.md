@@ -48,9 +48,9 @@ We are actively developing **infrastructure monitoring** features for Uptime Man
 
 **Roadmap (long term):**
 
-- [ ] DNS monitoring
-- [ ] SSL monitoring
-- [ ] Status pages
+- DNS monitoring
+- SSL monitoring
+- Status pages
 
 ## Tech stack
 
