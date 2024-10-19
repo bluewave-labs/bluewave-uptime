@@ -20,7 +20,7 @@ import "./index.css";
 const CreatePageSpeed = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
-  const { isLoading } = useSelector((state) => state.uptimeMonitors);
+  const { isLoading } = useSelector((state) => state.pageSpeedMonitors);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
