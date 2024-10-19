@@ -15,7 +15,7 @@ declare -A services=(
 for service in "${!services[@]}"; do
   docker build -f "${services[$service]}" -t "$service" .
   
-  # Check if the build succeeded
+  ## Check if the build succeeded
   if [ $? -ne 0 ]; then
     echo "Error building $service image. Exiting..."
     exit 1
