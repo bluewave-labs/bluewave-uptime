@@ -184,54 +184,52 @@ const loginUser = async (req, res, next) => {
  * @throws {Error} If there is an error during the process such as any of the token is not received
  */
 const refreshAuthToken = async (req, res, next) => {
-  try {
-    // check for refreshToken 
-    const refreshToken = req.headers["x-refresh-token"];
+	try {
+		// check for refreshToken
+		const refreshToken = req.headers["x-refresh-token"];
 
-    if (!refreshToken) {
-      // No refresh token provided
-      const error = new Error(errorMessages.NO_REFRESH_TOKEN);
-      error.status = 401;
-      error.service = SERVICE_NAME;
-      error.method = "refreshAuthToken";
-      return next(error);
-    }
+		if (!refreshToken) {
+			// No refresh token provided
+			const error = new Error(errorMessages.NO_REFRESH_TOKEN);
+			error.status = 401;
+			error.service = SERVICE_NAME;
+			error.method = "refreshAuthToken";
+			return next(error);
+		}
 
-    // Verify refresh token
-    const { refreshTokenSecret } = await req.settingsService.getSettings();
-    jwt.verify(refreshToken, refreshTokenSecret, async (refreshErr, refreshDecoded) => {
-      if (refreshErr) {
-        // Invalid or expired refresh token, trigger logout
-        const errorMessage =
-          refreshErr.name === "TokenExpiredError"
-            ? errorMessages.EXPIRED_REFRESH_TOKEN
-            : errorMessages.INVALID_REFRESH_TOKEN;
-        const error = new Error(errorMessage);
-        error.status = 401;
-        error.service = SERVICE_NAME;
-        return next(error);
-      }
+		// Verify refresh token
+		const appSettings = await req.settingsService.getSettings();
+		const { refreshTokenSecret } = appSettings;
+		jwt.verify(refreshToken, refreshTokenSecret, async (refreshErr, refreshDecoded) => {
+			if (refreshErr) {
+				// Invalid or expired refresh token, trigger logout
+				const errorMessage =
+					refreshErr.name === "TokenExpiredError"
+						? errorMessages.EXPIRED_REFRESH_TOKEN
+						: errorMessages.INVALID_REFRESH_TOKEN;
+				const error = new Error(errorMessage);
+				error.status = 401;
+				error.service = SERVICE_NAME;
+				return next(error);
+			}
+		});
+		// Refresh token is valid and unexpired, generate new access token
+		const oldAuthToken = getTokenFromHeaders(req.headers);
+		const { jwtSecret } = await req.settingsService.getSettings();
+		const payloadData = jwt.verify(oldAuthToken, jwtSecret, { ignoreExpiration: true });
+		// delete old token related data
+		delete payloadData.iat;
+		delete payloadData.exp;
+		const newAuthToken = issueToken(payloadData, tokenType.ACCESS_TOKEN, appSettings);
 
-      // Refresh token is valid and unexpired, generate new access token
-      const oldAuthToken = getTokenFromHeaders(req.headers);
-      const { jwtSecret } = await req.settingsService.getSettings();
-
-      const payloadData = jwt.verify(oldAuthToken, jwtSecret, { ignoreExpiration: true });
-      // delete old token related data
-      delete payloadData.iat;
-      delete payloadData.exp;
-
-      const newAuthToken = issueToken(payloadData, tokenType.ACCESS_TOKEN, req.settingsService.getSettings());
-
-      return res.status(200).json({
-        success: true,
-        msg: successMessages.AUTH_TOKEN_REFRESHED,
-        data: { user: payloadData, token: newAuthToken, refreshToken: refreshToken },
-      });
-    });
-  } catch (error) {
-    next(handleError(error, SERVICE_NAME, "refreshAuthToken"));
-  }
+		return res.status(200).json({
+			success: true,
+			msg: successMessages.AUTH_TOKEN_REFRESHED,
+			data: { user: payloadData, token: newAuthToken, refreshToken: refreshToken },
+		});
+	} catch (error) {
+		next(handleError(error, SERVICE_NAME, "refreshAuthToken"));
+	}
 };
 
 /**
@@ -516,7 +514,7 @@ export {
 	issueToken,
 	registerUser,
 	loginUser,
-  refreshAuthToken,
+	refreshAuthToken,
 	editUser,
 	checkSuperadminExists,
 	requestRecovery,

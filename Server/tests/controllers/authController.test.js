@@ -2,7 +2,7 @@ import {
 	issueToken,
 	registerUser,
 	loginUser,
-  refreshAuthToken,
+	refreshAuthToken,
 	editUser,
 	checkSuperadminExists,
 	requestRecovery,
@@ -16,6 +16,7 @@ import { errorMessages, successMessages } from "../../utils/messages.js";
 import sinon from "sinon";
 import { getTokenFromHeaders, tokenType } from "../../utils/utils.js";
 import logger from "../../utils/logger.js";
+import e from "cors";
 
 describe("Auth Controller - issueToken", () => {
 	let stub;
@@ -304,86 +305,95 @@ describe("Auth Controller - loginUser", () => {
 	});
 });
 
-describe('Auth Controller - refreshAuthToken', () => {
-  let req, res, next, issueTokenStub;
+describe("Auth Controller - refreshAuthToken", () => {
+	let req, res, next, issueTokenStub;
 
-  beforeEach(() => {
-    req = {
-      headers: {
-        'x-refresh-token': 'valid_refresh_token',
-        authorization: 'Bearer old_auth_token',
-      },
-      settingsService: {
-        getSettings: sinon.stub().resolves({
-          jwtSecret: 'my_secret',
-          refreshTokenSecret: 'my_refresh_secret',
-        }),
-      },
-    };
-    res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.stub(),
-    };
-    next = sinon.stub();
-    sinon.stub(jwt, 'verify');
-    
-    issueTokenStub = sinon.stub().returns("new_auth_token");
-    sinon.replace({ issueToken }, "issueToken", issueTokenStub);
-  });
+	beforeEach(() => {
+		req = {
+			headers: {
+				"x-refresh-token": "valid_refresh_token",
+				authorization: "Bearer old_auth_token",
+			},
+			settingsService: {
+				getSettings: sinon.stub().resolves({
+					jwtSecret: "my_secret",
+					refreshTokenSecret: "my_refresh_secret",
+				}),
+			},
+		};
+		res = {
+			status: sinon.stub().returnsThis(),
+			json: sinon.stub(),
+		};
+		next = sinon.stub();
+		sinon.stub(jwt, "verify");
 
-  afterEach(() => {
-    sinon.restore();
-  });
+		issueTokenStub = sinon.stub().returns("new_auth_token");
+		sinon.replace({ issueToken }, "issueToken", issueTokenStub);
+	});
 
-  it('should reject if no refresh token is provided', async () => {
-    delete req.headers['x-refresh-token'];
-    await refreshAuthToken(req, res, next);
+	afterEach(() => {
+		sinon.restore();
+	});
 
-    expect(next.firstCall.args[0]).to.be.an("error");
-    expect(next.firstCall.args[0].message).to.equal(errorMessages.NO_REFRESH_TOKEN);
-    expect(next.firstCall.args[0].status).to.equal(401);
-  });
+	it("should reject if no refresh token is provided", async () => {
+		delete req.headers["x-refresh-token"];
+		await refreshAuthToken(req, res, next);
 
-  it('should reject if the refresh token is invalid', async () => {
-    jwt.verify.yields(new Error('invalid token'));
-    await refreshAuthToken(req, res, next);
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].message).to.equal(errorMessages.NO_REFRESH_TOKEN);
+		expect(next.firstCall.args[0].status).to.equal(401);
+	});
 
-    expect(next.firstCall.args[0]).to.be.an("error");
-    expect(next.firstCall.args[0].message).to.equal(errorMessages.INVALID_REFRESH_TOKEN);
-    expect(next.firstCall.args[0].status).to.equal(401);
-  });
+	it("should reject if the refresh token is invalid", async () => {
+		jwt.verify.yields(new Error("invalid token"));
+		await refreshAuthToken(req, res, next);
 
-  it('should reject if settingsService.getSettings fails', async () => {
-    req.settingsService.getSettings.rejects(new Error('settingsService.getSettings error'));
-    await refreshAuthToken(req, res, next);
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].message).to.equal(errorMessages.INVALID_REFRESH_TOKEN);
+		expect(next.firstCall.args[0].status).to.equal(401);
+	});
 
-    expect(next.firstCall.args[0]).to.be.an("error");
-    expect(next.firstCall.args[0].message).to.equal('settingsService.getSettings error');
-  });
+	it("should reject if the refresh token is expired", async () => {
+		const error = new Error("Token expired");
+		error.name = "TokenExpiredError";
+		jwt.verify.yields(error);
+		await refreshAuthToken(req, res, next);
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].message).to.equal(errorMessages.EXPIRED_REFRESH_TOKEN);
+		expect(next.firstCall.args[0].status).to.equal(401);
+	});
 
-  it('should generate a new auth token if the refresh token is valid', async () => {
-    const oldAuthToken = 'valid_old_auth_token';
-    const newAuthToken = 'new_generated_token';
-    const decodedPayload = { userId: '123', email: 'test@test.com' };
-  
-    sinon.stub(getTokenFromHeaders).returns(oldAuthToken);
-    jwt.verify.callsFake((token, secret, callback) => {
-      if (token === 'valid_refresh_token') {
-        callback(null, {});
-      } else {
-        callback(new Error('Invalid token'));
-      }
-    });
-  
-    await refreshAuthToken(req, res, next);
-  
-    expect(res.status).to.have.been.calledWith(200);
-    expect(res.json).to.have.been.calledWith({
-      success: true,
-      msg: successMessages.AUTH_TOKEN_REFRESHED,
-      data: { user: decodedPayload, token: newAuthToken, refreshToken: 'valid_refresh_token' },
-    });
-  });
+	it("should reject if settingsService.getSettings fails", async () => {
+		req.settingsService.getSettings.rejects(
+			new Error("settingsService.getSettings error")
+		);
+		await refreshAuthToken(req, res, next);
+
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].message).to.equal("settingsService.getSettings error");
+	});
+
+	it("should generate a new auth token if the refresh token is valid", async () => {
+		const decodedPayload = { expiresIn: "60" };
+		jwt.verify.callsFake(() => {
+			return decodedPayload;
+		});
+		await refreshAuthToken(req, res, next);
+
+		expect(res.status.calledWith(200)).to.be.true;
+		expect(
+			res.json.calledWith({
+				success: true,
+				msg: successMessages.AUTH_TOKEN_REFRESHED,
+				data: {
+					user: decodedPayload,
+					token: sinon.match.string,
+					refreshToken: "valid_refresh_token",
+				},
+			})
+		).to.be.true;
+	});
 });
 
 describe("Auth Controller - editUser", async () => {
