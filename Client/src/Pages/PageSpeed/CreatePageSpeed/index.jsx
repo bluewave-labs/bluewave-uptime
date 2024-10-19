@@ -5,8 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
-import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
+import { createPageSpeed, checkEndpointResolution } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
