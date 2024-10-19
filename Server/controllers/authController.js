@@ -85,9 +85,7 @@ const registerUser = async (req, res, next) => {
 			userId: newUser._id,
 		});
 
-		const userForToken = { ...newUser._doc };
-		delete userForToken.profileImage;
-		delete userForToken.avatarImage;
+		const { password, avatarImage, ...userWithoutPassword } = user._doc;
 
 		const appSettings = await req.settingsService.getSettings();
 
@@ -208,6 +206,7 @@ const editUser = async (req, res, next) => {
 
 	try {
 		// Change Password check
+		const { email } = jwt.verify(token, (await req.settingsService.getSettings()).jwtSecret);
 		if (req.body.password && req.body.newPassword) {
 			// Get token from headers
 			const token = getTokenFromHeaders(req.headers);
@@ -215,7 +214,17 @@ const editUser = async (req, res, next) => {
 			const { jwtSecret } = req.settingsService.getSettings();
 			const { email } = jwt.verify(token, jwtSecret);
 			// Add user email to body for DB operation
+			const monitors = teamMonitors?.monitors ?? [];
+			await Promise.all(
+				monitors.map(async (monitor) => {
+					await req.jobQueue.deleteJob(monitor);
+					await req.db.deleteChecks(monitor._id);
+					await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
+					await req.db.deleteNotificationsByMonitorId(monitor._id);
+				})
+			);
 			req.body.email = email;
+
 			// Get user
 			const user = await req.db.getUserByEmail(email);
 			// Compare passwords
@@ -397,9 +406,6 @@ const deleteUser = async (req, res, next) => {
 	try {
 		const token = getTokenFromHeaders(req.headers);
 		const decodedToken = jwt.decode(token);
-		const { email } = decodedToken;
-
-		// Check if the user exists
 		const user = await req.db.getUserByEmail(email);
 		if (!user) {
 			next(new Error(errorMessages.DB_USER_NOT_FOUND));
