@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Change directory to root Server directory for correct Docker Context
+cd "$(dirname "$0")"
 cd ../..
 
 # Define an array of services and their Dockerfiles
