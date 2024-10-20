@@ -1,9 +1,10 @@
 ## Describe your changes
 
-## Issue Number if applicable
+## Issue number if applicable
 
-## Checklist before requesting a review
+## Fill the checklist before requesting a review
 
 - [ ] I have performed a self-review of my code
-- [ ] I have inlcuded the issue # in the PR if applicable
+- [ ] I have included the issue # in the PR (if applicable)
 - [ ] I have labelled the PR correctly
+- [ ] My PR is granular and targeted to one specific feature only
