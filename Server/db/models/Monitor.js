@@ -29,7 +29,7 @@ const MonitorSchema = mongoose.Schema(
 		type: {
 			type: String,
 			required: true,
-			enum: ["http", "ping", "pagespeed"],
+			enum: ["http", "ping", "pagespeed", "hardware"],
 		},
 		url: {
 			type: String,
