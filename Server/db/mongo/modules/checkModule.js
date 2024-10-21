@@ -157,7 +157,7 @@ const getTeamChecks = async (req) => {
 	// Default sort order is newest -> oldest
 	sortOrder = sortOrder === "asc" ? 1 : -1;
 
-	checksQuery = { monitorId: { $in: userMonitors } };
+	const checksQuery = { monitorId: { $in: userMonitors } };
 
 	if (filter !== undefined) {
 		checksQuery.status = false;
