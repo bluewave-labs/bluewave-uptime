@@ -100,6 +100,11 @@ import {
 } from "./modules/pageSpeedCheckModule.js";
 
 //****************************************
+// Hardware Checks
+//****************************************
+import { createHardwareCheck } from "./modules/hardwareCheckModule.js";
+
+//****************************************
 // Checks
 //****************************************
 
@@ -179,6 +184,7 @@ export default {
 	createPageSpeedCheck,
 	getPageSpeedChecks,
 	deletePageSpeedChecksByMonitorId,
+	createHardwareCheck,
 	createMaintenanceWindow,
 	getMaintenanceWindowsByTeamId,
 	getMaintenanceWindowById,
