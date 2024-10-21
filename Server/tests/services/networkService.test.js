@@ -625,6 +625,132 @@ describe("networkService - handlePagespeed", () => {
 	});
 });
 
+describe("networkService - handleHardware", () => {
+	let dbMock,
+		axiosMock,
+		jobMock,
+		emailServiceMock,
+		pingMock,
+		loggerMock,
+		httpMock,
+		networkService,
+		logAndStoreCheckStub,
+		handleStatusUpdateStub;
+	beforeEach(() => {
+		jobMock = {
+			data: {
+				_id: "12345",
+				url: "http://example.com",
+			},
+		};
+		dbMock = { getMonitorById: sinon.stub() };
+		axiosMock = { get: sinon.stub() };
+
+		emailServiceMock = sinon.stub();
+		pingMock = { promise: { probe: sinon.stub() } };
+		loggerMock = { error: sinon.stub() };
+		httpMock = {
+			STATUS_CODES: {
+				200: "OK",
+				500: "Internal Server Error",
+			},
+		};
+		networkService = new NetworkService(
+			dbMock,
+			emailServiceMock,
+			axiosMock,
+			pingMock,
+			loggerMock,
+			httpMock
+		);
+		logAndStoreCheckStub = sinon.stub(networkService, "logAndStoreCheck").resolves();
+		handleStatusUpdateStub = sinon.stub(networkService, "handleStatusUpdate").resolves();
+	});
+
+	afterEach(() => {
+		sinon.restore();
+	});
+
+	it("should handle a successful Hardware response", async () => {
+		const responseMock = {
+			monitorId: jobMock.data._id,
+			cpu: {
+				physical_core: 1,
+				logical_core: 1,
+				frequency: 266,
+				temperature: null,
+				free_percent: null,
+				usage_percent: null,
+			},
+			memory: {
+				total_bytes: 4,
+				available_bytes: 4,
+				used_bytes: 2,
+				usage_percent: 0.5,
+			},
+			disk: {
+				read_speed_bytes: 3,
+				write_speed_bytes: 3,
+				total_bytes: 10,
+				free_bytes: 2,
+				usage_percent: 0.8,
+			},
+			host: {
+				os: "Linux",
+				platform: "Ubuntu",
+				kernel_version: "24.04",
+			},
+		};
+		axiosMock.get.resolves(responseMock);
+
+		await networkService.handleHardware(jobMock);
+		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
+		const hardwareData = networkService.logAndStoreCheck.getCall(0).args[0];
+		expect(hardwareData.cpu).to.include({
+			...responseMock.cpu,
+		});
+		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, true)).to.be.true;
+	});
+
+	it("should handle an error Hardware response", async () => {
+		logAndStoreCheckStub.throws(new Error("Hardware error"));
+		await networkService.handleHardware(jobMock);
+		const nullData = {
+			monitorId: job.data._id,
+			cpu: {
+				physical_core: 0,
+				logical_core: 0,
+				frequency: 0,
+				temperature: 0,
+				free_percent: 0,
+				usage_percent: 0,
+			},
+			memory: {
+				total_bytes: 0,
+				available_bytes: 0,
+				used_bytes: 0,
+				usage_percent: 0,
+			},
+			disk: {
+				read_speed_bytes: 0,
+				write_speed_bytes: 0,
+				total_bytes: 0,
+				free_bytes: 0,
+				usage_percent: 0,
+			},
+			host: {
+				os: "",
+				platform: "",
+				kernel_version: "",
+			},
+		};
+
+		expect(
+			logAndStoreCheckStub.calledWith(nullData, networkService.db.createHardwareCheck)
+		).to.be.true;
+	});
+});
+
 describe("NetworkService - getStatus", () => {
 	let dbMock, emailServiceMock, axiosMock, pingMock, loggerMock, httpMock, networkService;
 
@@ -682,6 +808,18 @@ describe("NetworkService - getStatus", () => {
 	it("should return false if the job type is pagespeed and handlePagespeed is not successful", async () => {
 		const job = { data: { type: networkService.TYPE_PAGESPEED } };
 		sinon.stub(networkService, "handlePagespeed").resolves(false);
+		const result = await networkService.getStatus(job);
+		expect(result).to.be.false;
+	});
+	it("should return true if the job type is hardware and handleHardware is successful", async () => {
+		const job = { data: { type: networkService.TYPE_HARDWARE } };
+		sinon.stub(networkService, "handleHardware").resolves(true);
+		const result = await networkService.getStatus(job);
+		expect(result).to.be.true;
+	});
+	it("should return false if the job type is hardware and handleHardware is not successful", async () => {
+		const job = { data: { type: networkService.TYPE_HARDWARE } };
+		sinon.stub(networkService, "handleHardware").resolves(false);
 		const result = await networkService.getStatus(job);
 		expect(result).to.be.false;
 	});

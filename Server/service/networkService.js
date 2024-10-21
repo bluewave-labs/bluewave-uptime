@@ -24,6 +24,7 @@ class NetworkService {
 		this.TYPE_PING = "ping";
 		this.TYPE_HTTP = "http";
 		this.TYPE_PAGESPEED = "pagespeed";
+		this.TYPE_HARDWARE = "hardware";
 		this.SERVICE_NAME = "NetworkService";
 		this.NETWORK_ERROR = 5000;
 		this.axios = axios;
@@ -293,6 +294,81 @@ class NetworkService {
 		}
 	}
 
+	async handleHardware(job) {
+		const url = job.data.url;
+		let isAlive;
+		//TODO Fetch hardware data
+		//For now, fake hardware data:
+
+		const hardwareData = {
+			monitorId: job.data._id,
+			cpu: {
+				physical_core: 1,
+				logical_core: 1,
+				frequency: 266,
+				temperature: null,
+				free_percent: null,
+				usage_percent: null,
+			},
+			memory: {
+				total_bytes: 4,
+				available_bytes: 4,
+				used_bytes: 2,
+				usage_percent: 0.5,
+			},
+			disk: {
+				read_speed_bytes: 3,
+				write_speed_bytes: 3,
+				total_bytes: 10,
+				free_bytes: 2,
+				usage_percent: 0.8,
+			},
+			host: {
+				os: "Linux",
+				platform: "Ubuntu",
+				kernel_version: "24.04",
+			},
+		};
+		try {
+			isAlive = true;
+			this.logAndStoreCheck(hardwareData, this.db.createHardwareCheck);
+		} catch (error) {
+			isAlive = false;
+			const nullData = {
+				monitorId: job.data._id,
+				cpu: {
+					physical_core: 0,
+					logical_core: 0,
+					frequency: 0,
+					temperature: 0,
+					free_percent: 0,
+					usage_percent: 0,
+				},
+				memory: {
+					total_bytes: 0,
+					available_bytes: 0,
+					used_bytes: 0,
+					usage_percent: 0,
+				},
+				disk: {
+					read_speed_bytes: 0,
+					write_speed_bytes: 0,
+					total_bytes: 0,
+					free_bytes: 0,
+					usage_percent: 0,
+				},
+				host: {
+					os: "",
+					platform: "",
+					kernel_version: "",
+				},
+			};
+			this.logAndStoreCheck(nullData, this.db.createHardwareCheck);
+		} finally {
+			this.handleStatusUpdate(job, isAlive);
+		}
+	}
+
 	/**
 	 * Retrieves the status of a given job based on its type.
 	 * For unsupported job types, it logs an error and returns false.
@@ -308,6 +384,8 @@ class NetworkService {
 				return await this.handleHttp(job);
 			case this.TYPE_PAGESPEED:
 				return await this.handlePagespeed(job);
+			case this.TYPE_HARDWARE:
+				return await this.handleHardware(job);
 			default:
 				this.logger.error(`Unsupported type: ${job.data.type}`, {
 					service: this.SERVICE_NAME,
