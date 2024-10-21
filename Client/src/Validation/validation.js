@@ -133,7 +133,7 @@ const advancedSettingsValidation = joi.object({
 		"string.empty": "API base url is required.",
 		"string.uri": "The URL you provided is not valid.",
 	}),
-	logLevel: joi.string(),
+	logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
 	systemEmailHost: joi.string().allow(''),
 	systemEmailPort: joi.string().allow(''),
 	systemEmailAddress: joi

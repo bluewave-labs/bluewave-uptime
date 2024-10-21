@@ -1,7 +1,7 @@
 const buildErrors = (prev, id, error) => {
 	const updatedErrors = { ...prev };
 	if (error) {
-		updatedErrors[id] = error.details[0].message;
+		updatedErrors[id] = error.details[0].message?? "Validation error";
 	} else {
 		delete updatedErrors[id];
 	}
@@ -15,7 +15,7 @@ const hasValidationErrors = (form, validation, setErrors) => {
 	if (error) {
 		const newErrors = {};
 		error.details.forEach((err) => {
-			newErrors[err.path[0]] = err.message;
+			newErrors[err.path[0]] = err.message?? "Validation error";
 		});
 		setErrors(newErrors);
 		return true;
