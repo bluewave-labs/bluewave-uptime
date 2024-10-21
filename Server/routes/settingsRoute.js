@@ -1,13 +1,10 @@
-const router = require("express").Router();
-const settingsController = require("../controllers/settingsController");
-const { isAllowed } = require("../middleware/isAllowed");
-const Monitor = require("../db/models/Monitor");
+import { Router } from "express";
+import { getAppSettings, updateAppSettings } from "../controllers/settingsController.js";
+import { isAllowed } from "../middleware/isAllowed.js";
 
-router.get("/", settingsController.getAppSettings);
-router.put(
-  "/",
-  isAllowed(["superadmin"]),
-  settingsController.updateAppSettings
-);
+const router = Router();
 
-module.exports = router;
+router.get("/", getAppSettings);
+router.put("/", isAllowed(["superadmin"]), updateAppSettings);
+
+export default router;

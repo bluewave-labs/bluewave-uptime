@@ -1,4 +1,4 @@
-const MaintenanceWindow = require("../../models/MaintenanceWindow");
+import MaintenanceWindow from "../../models/MaintenanceWindow.js";
 const SERVICE_NAME = "maintenanceWindowModule";
 
 /**
@@ -27,35 +27,35 @@ const SERVICE_NAME = "maintenanceWindowModule";
  *   .catch(error => console.error(error));
  */
 const createMaintenanceWindow = async (maintenanceWindowData) => {
-  try {
-    const maintenanceWindow = new MaintenanceWindow({
-      ...maintenanceWindowData,
-    });
+	try {
+		const maintenanceWindow = new MaintenanceWindow({
+			...maintenanceWindowData,
+		});
 
-    // If the maintenance window is a one time window, set the expiry to the end date
-    if (maintenanceWindowData.oneTime) {
-      maintenanceWindow.expiry = maintenanceWindowData.end;
-    }
-    const result = await maintenanceWindow.save();
-    return result;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "createMaintenanceWindow";
-    throw error;
-  }
+		// If the maintenance window is a one time window, set the expiry to the end date
+		if (maintenanceWindowData.oneTime) {
+			maintenanceWindow.expiry = maintenanceWindowData.end;
+		}
+		const result = await maintenanceWindow.save();
+		return result;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "createMaintenanceWindow";
+		throw error;
+	}
 };
 
 const getMaintenanceWindowById = async (maintenanceWindowId) => {
-  try {
-    const maintenanceWindow = await MaintenanceWindow.findById({
-      _id: maintenanceWindowId,
-    });
-    return maintenanceWindow;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getMaintenanceWindowById";
-    throw error;
-  }
+	try {
+		const maintenanceWindow = await MaintenanceWindow.findById({
+			_id: maintenanceWindowId,
+		});
+		return maintenanceWindow;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getMaintenanceWindowById";
+		throw error;
+	}
 };
 
 /**
@@ -72,38 +72,38 @@ const getMaintenanceWindowById = async (maintenanceWindowId) => {
  *   .catch(error => console.error(error));
  */
 const getMaintenanceWindowsByTeamId = async (teamId, query) => {
-  try {
-    let { active, page, rowsPerPage, field, order } = query || {};
-    const maintenanceQuery = { teamId };
+	try {
+		let { active, page, rowsPerPage, field, order } = query || {};
+		const maintenanceQuery = { teamId };
 
-    if (active !== undefined) maintenanceQuery.active = active;
+		if (active !== undefined) maintenanceQuery.active = active;
 
-    const maintenanceWindowCount =
-      await MaintenanceWindow.countDocuments(maintenanceQuery);
+		const maintenanceWindowCount =
+			await MaintenanceWindow.countDocuments(maintenanceQuery);
 
-    // Pagination
-    let skip = 0;
-    if (page && rowsPerPage) {
-      skip = page * rowsPerPage;
-    }
+		// Pagination
+		let skip = 0;
+		if (page && rowsPerPage) {
+			skip = page * rowsPerPage;
+		}
 
-    // Sorting
-    let sort = {};
-    if (field !== undefined && order !== undefined) {
-      sort[field] = order === "asc" ? 1 : -1;
-    }
+		// Sorting
+		let sort = {};
+		if (field !== undefined && order !== undefined) {
+			sort[field] = order === "asc" ? 1 : -1;
+		}
 
-    const maintenanceWindows = await MaintenanceWindow.find(maintenanceQuery)
-      .skip(skip)
-      .limit(rowsPerPage)
-      .sort(sort);
+		const maintenanceWindows = await MaintenanceWindow.find(maintenanceQuery)
+			.skip(skip)
+			.limit(rowsPerPage)
+			.sort(sort);
 
-    return { maintenanceWindows, maintenanceWindowCount };
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getMaintenanceWindowByUserId";
-    throw error;
-  }
+		return { maintenanceWindows, maintenanceWindowCount };
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getMaintenanceWindowByUserId";
+		throw error;
+	}
 };
 
 /**
@@ -119,16 +119,16 @@ const getMaintenanceWindowsByTeamId = async (teamId, query) => {
  *   .catch(error => console.error(error));
  */
 const getMaintenanceWindowsByMonitorId = async (monitorId) => {
-  try {
-    const maintenanceWindows = await MaintenanceWindow.find({
-      monitorId: monitorId,
-    });
-    return maintenanceWindows;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "getMaintenanceWindowsByMonitorId";
-    throw error;
-  }
+	try {
+		const maintenanceWindows = await MaintenanceWindow.find({
+			monitorId: monitorId,
+		});
+		return maintenanceWindows;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getMaintenanceWindowsByMonitorId";
+		throw error;
+	}
 };
 
 /**
@@ -144,15 +144,15 @@ const getMaintenanceWindowsByMonitorId = async (monitorId) => {
  *   .catch(error => console.error(error));
  */
 const deleteMaintenanceWindowById = async (maintenanceWindowId) => {
-  try {
-    const maintenanceWindow =
-      await MaintenanceWindow.findByIdAndDelete(maintenanceWindowId);
-    return maintenanceWindow;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deleteMaintenanceWindowById";
-    throw error;
-  }
+	try {
+		const maintenanceWindow =
+			await MaintenanceWindow.findByIdAndDelete(maintenanceWindowId);
+		return maintenanceWindow;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "deleteMaintenanceWindowById";
+		throw error;
+	}
 };
 
 /**
@@ -168,14 +168,14 @@ const deleteMaintenanceWindowById = async (maintenanceWindowId) => {
  *   .catch(error => console.error(error));
  */
 const deleteMaintenanceWindowByMonitorId = async (monitorId) => {
-  try {
-    const result = await MaintenanceWindow.deleteMany({ monitorId: monitorId });
-    return result;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deleteMaintenanceWindowByMonitorId";
-    throw error;
-  }
+	try {
+		const result = await MaintenanceWindow.deleteMany({ monitorId: monitorId });
+		return result;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "deleteMaintenanceWindowByMonitorId";
+		throw error;
+	}
 };
 
 /**
@@ -191,42 +191,39 @@ const deleteMaintenanceWindowByMonitorId = async (monitorId) => {
  *   .catch(error => console.error(error));
  */
 const deleteMaintenanceWindowByUserId = async (userId) => {
-  try {
-    const result = await MaintenanceWindow.deleteMany({ userId: userId });
-    return result;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "deleteMaintenanceWindowByUserId";
-    throw error;
-  }
+	try {
+		const result = await MaintenanceWindow.deleteMany({ userId: userId });
+		return result;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "deleteMaintenanceWindowByUserId";
+		throw error;
+	}
 };
 
-const editMaintenanceWindowById = async (
-  maintenanceWindowId,
-  maintenanceWindowData
-) => {
-  console.log(maintenanceWindowData);
-  try {
-    const editedMaintenanceWindow = MaintenanceWindow.findByIdAndUpdate(
-      maintenanceWindowId,
-      maintenanceWindowData,
-      { new: true }
-    );
-    return editedMaintenanceWindow;
-  } catch (error) {
-    error.service = SERVICE_NAME;
-    error.method = "editMaintenanceWindowById";
-    throw error;
-  }
+const editMaintenanceWindowById = async (maintenanceWindowId, maintenanceWindowData) => {
+	console.log(maintenanceWindowData);
+	try {
+		const editedMaintenanceWindow = MaintenanceWindow.findByIdAndUpdate(
+			maintenanceWindowId,
+			maintenanceWindowData,
+			{ new: true }
+		);
+		return editedMaintenanceWindow;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "editMaintenanceWindowById";
+		throw error;
+	}
 };
 
-module.exports = {
-  createMaintenanceWindow,
-  getMaintenanceWindowById,
-  getMaintenanceWindowsByTeamId,
-  getMaintenanceWindowsByMonitorId,
-  deleteMaintenanceWindowById,
-  deleteMaintenanceWindowByMonitorId,
-  deleteMaintenanceWindowByUserId,
-  editMaintenanceWindowById,
+export {
+	createMaintenanceWindow,
+	getMaintenanceWindowById,
+	getMaintenanceWindowsByTeamId,
+	getMaintenanceWindowsByMonitorId,
+	deleteMaintenanceWindowById,
+	deleteMaintenanceWindowByMonitorId,
+	deleteMaintenanceWindowByUserId,
+	editMaintenanceWindowById,
 };
