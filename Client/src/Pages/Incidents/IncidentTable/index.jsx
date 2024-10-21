@@ -129,97 +129,97 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 		p: theme.spacing(30),
 	};
 
-  return (
-    <>
-      {checks?.length === 0 && selectedMonitor === "0" ? (
-        <Box sx={{ ...sharedStyles }}>
-          <Box
-            textAlign="center"
-            pb={theme.spacing(20)}
-          >
-            {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-          </Box>
-          <Typography
-            textAlign="center"
-            color={theme.palette.text.secondary}
-          >
-            No incidents recorded yet.
-          </Typography>
-        </Box>
-      ) : checks?.length === 0 ? (
-        <Box sx={{ ...sharedStyles }}>
-          <Box
-            textAlign="center"
-            pb={theme.spacing(20)}
-          >
-            {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-          </Box>
-          <Typography
-            textAlign="center"
-            color={theme.palette.text.secondary}
-          >
-            The monitor you have selected has no recorded incidents yet.
-          </Typography>
-        </Box>
-      ) : (
-        <>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Monitor Name</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Date & Time</TableCell>
-                  <TableCell>Status Code</TableCell>
-                  <TableCell>Message</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {checks.map((check) => {
-                  const status = check.status === true ? "up" : "down";
-                  const formattedDate = formatDateWithTz(
-                    check.createdAt,
-                    "YYYY-MM-DD HH:mm:ss A",
-                    uiTimezone
-                  );
-                  const getGenericStatus = (status) => {
-                    if (typeof status === "number" && status >= 100 && status < 600) {
-                      return Math.floor(status / 100) * 100;
-                    }
-                    return "cannot resolve";
-                  };
+	return (
+		<>
+			{checks?.length === 0 && selectedMonitor === "0" ? (
+				<Box sx={{ ...sharedStyles }}>
+					<Box
+						textAlign="center"
+						pb={theme.spacing(20)}
+					>
+						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
+					</Box>
+					<Typography
+						textAlign="center"
+						color={theme.palette.text.secondary}
+					>
+						No incidents recorded yet.
+					</Typography>
+				</Box>
+			) : checks?.length === 0 ? (
+				<Box sx={{ ...sharedStyles }}>
+					<Box
+						textAlign="center"
+						pb={theme.spacing(20)}
+					>
+						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
+					</Box>
+					<Typography
+						textAlign="center"
+						color={theme.palette.text.secondary}
+					>
+						The monitor you have selected has no recorded incidents yet.
+					</Typography>
+				</Box>
+			) : (
+				<>
+					<TableContainer component={Paper}>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>Monitor Name</TableCell>
+									<TableCell>Status</TableCell>
+									<TableCell>Date & Time</TableCell>
+									<TableCell>Status Code</TableCell>
+									<TableCell>Message</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{checks.map((check) => {
+									const status = check.status === true ? "up" : "down";
+									const formattedDate = formatDateWithTz(
+										check.createdAt,
+										"YYYY-MM-DD HH:mm:ss A",
+										uiTimezone
+									);
+									const getGenericStatus = (status) => {
+										if (typeof status === "number" && status >= 100 && status < 600) {
+											return Math.floor(status / 100) * 100;
+										}
+										return "cannot resolve";
+									};
 
-                  return (
-                    <TableRow key={check._id}>
-                      <TableCell>{monitors[check.monitorId]?.name}</TableCell>
-                      <TableCell>
-                        <StatusLabel
-                          status={status}
-                          text={status}
-                          customStyles={{ textTransform: "capitalize" }}
-                        />
-                      </TableCell>
-                      <TableCell>{formattedDate}</TableCell>
-                      <TableCell>
-                        <StatusLabel
-                          status={getGenericStatus(check.statusCode)}
-                          text={String(check.statusCode || "N/A")}
-                          hasDot={false}
-                          customStyles={{ textTransform: "capitalize" }}
-                        />
-                      </TableCell>
-                      <TableCell>{check.message}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {paginationComponent}
-        </>
-      )}
-    </>
-  );
+									return (
+										<TableRow key={check._id}>
+											<TableCell>{monitors[check.monitorId]?.name}</TableCell>
+											<TableCell>
+												<StatusLabel
+													status={status}
+													text={status}
+													customStyles={{ textTransform: "capitalize" }}
+												/>
+											</TableCell>
+											<TableCell>{formattedDate}</TableCell>
+											<TableCell>
+												<StatusLabel
+													status={getGenericStatus(check.statusCode)}
+													text={String(check.statusCode || "N/A")}
+													hasDot={false}
+													customStyles={{ textTransform: "capitalize" }}
+												/>
+											</TableCell>
+											<TableCell>{check.message}</TableCell>
+										</TableRow>
+									);
+								})}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					{paginationComponent}
+				</>
+			)}
+		</>
+	);
 };
 
 IncidentTable.propTypes = {

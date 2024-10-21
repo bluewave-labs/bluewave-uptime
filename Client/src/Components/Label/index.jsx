@@ -124,84 +124,84 @@ ColoredLabel.propTypes = {
  */
 
 const StatusLabel = ({ status, text, hasDot = true, customStyles }) => {
-  const theme = useTheme();
-  const colors = {
-    up: {
-      dotColor: theme.palette.success.main,
-      bgColor: theme.palette.success.bg,
-      borderColor: theme.palette.success.light,
-    },
-    down: {
-      dotColor: theme.palette.error.text,
-      bgColor: theme.palette.error.bg,
-      borderColor: theme.palette.error.light,
-    },
-    paused: {
-      dotColor: theme.palette.warning.main,
-      bgColor: theme.palette.warning.bg,
-      borderColor: theme.palette.warning.light,
-    },
-    pending: {
-      dotColor: theme.palette.warning.main,
-      bgColor: theme.palette.warning.bg,
-      borderColor: theme.palette.warning.light,
-    },
-    400: {
-      dotColor: theme.palette.warning.main,
-      bgColor: theme.palette.warning.bg,
-      borderColor: theme.palette.warning.light,
-    },
-    500: {
-      dotColor: theme.palette.warning.main,
-      bgColor: theme.palette.warning.bg,
-      borderColor: theme.palette.warning.light,
-    },
-    "cannot resolve": {
-      dotColor: theme.palette.unresolved.main,
-      bgColor: theme.palette.unresolved.bg,
-      borderColor: theme.palette.unresolved.light,
-    },
-  };
+	const theme = useTheme();
+	const colors = {
+		up: {
+			dotColor: theme.palette.success.main,
+			bgColor: theme.palette.success.bg,
+			borderColor: theme.palette.success.light,
+		},
+		down: {
+			dotColor: theme.palette.error.text,
+			bgColor: theme.palette.error.bg,
+			borderColor: theme.palette.error.light,
+		},
+		paused: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		pending: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		400: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		500: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		"cannot resolve": {
+			dotColor: theme.palette.unresolved.main,
+			bgColor: theme.palette.unresolved.bg,
+			borderColor: theme.palette.unresolved.light,
+		},
+	};
 
-  // Look up the color for the status
-  const { borderColor, bgColor, dotColor } = colors[status] || colors["cannot resolve"];
+	// Look up the color for the status
+	const { borderColor, bgColor, dotColor } = colors[status] || colors["cannot resolve"];
 
-  return (
-    <BaseLabel
-      label={text}
-      styles={{
-        color: dotColor,
-        backgroundColor: bgColor,
-        borderColor: borderColor,
-        ...customStyles,
-      }}
-    >
-      {hasDot && (
-        <Box
-          width={7}
-          height={7}
-          bgcolor={dotColor}
-          borderRadius="50%"
-          marginRight="5px"
-        />
-      )}
-    </BaseLabel>
-  );
+	return (
+		<BaseLabel
+			label={text}
+			styles={{
+				color: dotColor,
+				backgroundColor: bgColor,
+				borderColor: borderColor,
+				...customStyles,
+			}}
+		>
+			{hasDot && (
+				<Box
+					width={7}
+					height={7}
+					bgcolor={dotColor}
+					borderRadius="50%"
+					marginRight="5px"
+				/>
+			)}
+		</BaseLabel>
+	);
 };
 
 StatusLabel.propTypes = {
-  status: PropTypes.oneOf([
-    "up",
-    "down",
-    "paused",
-    "pending",
-    "400",
-    "500",
-    "cannot resolve",
-  ]),
-  text: PropTypes.string,
-  hasDot: PropTypes.bool,
-  customStyles: PropTypes.object,
+	status: PropTypes.oneOf([
+		"up",
+		"down",
+		"paused",
+		"pending",
+		"400",
+		"500",
+		"cannot resolve",
+	]),
+	text: PropTypes.string,
+	hasDot: PropTypes.bool,
+	customStyles: PropTypes.object,
 };
 
 export { ColoredLabel, StatusLabel };
