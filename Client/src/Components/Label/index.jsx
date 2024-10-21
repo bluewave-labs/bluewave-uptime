@@ -58,7 +58,7 @@ const lightenColor = (color, percent) => {
   let r = parseInt(color.substring(1, 3), 16);
   let g = parseInt(color.substring(3, 5), 16);
   let b = parseInt(color.substring(5, 7), 16);
-
+  
   const amt = Math.round((255 * percent) / 100);
 
   r = r + amt <= 255 ? r + amt : 255;
@@ -86,10 +86,7 @@ const lightenColor = (color, percent) => {
 const ColoredLabel = ({ label, color }) => {
   const theme = useTheme();
   // If an invalid color is passed, default to the labelGray color
-  if (
-    typeof color !== "string" ||
-    !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(color)
-  ) {
+  if (typeof color !== "string" || !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(color)) {
     color = theme.palette.border.light;
   }
 
@@ -119,13 +116,14 @@ ColoredLabel.propTypes = {
  * @param {Object} props
  * @param { 'up' | 'down' | 'cannot resolve'} props.status - The status for the label
  * @param {string} props.text - The text of the label
+ * @param {boolean} props.hasDot - Whether to show a dot or not
  * @returns {JSX.Element}
  * @example
  * // Render an active label
  * <StatusLabel status="up" text="Active" />
  */
 
-const StatusLabel = ({ status, text, customStyles }) => {
+const StatusLabel = ({ status, text, hasDot = true, customStyles }) => {
   const theme = useTheme();
   const colors = {
     up: {
@@ -148,6 +146,16 @@ const StatusLabel = ({ status, text, customStyles }) => {
       bgColor: theme.palette.warning.bg,
       borderColor: theme.palette.warning.light,
     },
+    400: {
+      dotColor: theme.palette.warning.main,
+      bgColor: theme.palette.warning.bg,
+      borderColor: theme.palette.warning.light,
+    },
+    500: {
+      dotColor: theme.palette.warning.main,
+      bgColor: theme.palette.warning.bg,
+      borderColor: theme.palette.warning.light,
+    },
     "cannot resolve": {
       dotColor: theme.palette.unresolved.main,
       bgColor: theme.palette.unresolved.bg,
@@ -156,7 +164,7 @@ const StatusLabel = ({ status, text, customStyles }) => {
   };
 
   // Look up the color for the status
-  const { borderColor, bgColor, dotColor } = colors[status];
+  const { borderColor, bgColor, dotColor } = colors[status] || colors["cannot resolve"];
 
   return (
     <BaseLabel
@@ -168,13 +176,15 @@ const StatusLabel = ({ status, text, customStyles }) => {
         ...customStyles,
       }}
     >
-      <Box
-        width={7}
-        height={7}
-        bgcolor={dotColor}
-        borderRadius="50%"
-        marginRight="5px"
-      />
+      {hasDot && (
+        <Box
+          width={7}
+          height={7}
+          bgcolor={dotColor}
+          borderRadius="50%"
+          marginRight="5px"
+        />
+      )}
     </BaseLabel>
   );
 };
@@ -185,9 +195,12 @@ StatusLabel.propTypes = {
     "down",
     "paused",
     "pending",
+    "400",
+    "500",
     "cannot resolve",
   ]),
   text: PropTypes.string,
+  hasDot: PropTypes.bool,
   customStyles: PropTypes.object,
 };
 

@@ -133,19 +133,31 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
     <>
       {checks?.length === 0 && selectedMonitor === "0" ? (
         <Box sx={{ ...sharedStyles }}>
-          <Box textAlign="center" pb={theme.spacing(20)}>
+          <Box
+            textAlign="center"
+            pb={theme.spacing(20)}
+          >
             {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
           </Box>
-          <Typography textAlign="center" color={theme.palette.text.secondary}>
+          <Typography
+            textAlign="center"
+            color={theme.palette.text.secondary}
+          >
             No incidents recorded yet.
           </Typography>
         </Box>
       ) : checks?.length === 0 ? (
         <Box sx={{ ...sharedStyles }}>
-          <Box textAlign="center" pb={theme.spacing(20)}>
+          <Box
+            textAlign="center"
+            pb={theme.spacing(20)}
+          >
             {mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
           </Box>
-          <Typography textAlign="center" color={theme.palette.text.secondary}>
+          <Typography
+            textAlign="center"
+            color={theme.palette.text.secondary}
+          >
             The monitor you have selected has no recorded incidents yet.
           </Typography>
         </Box>
@@ -170,6 +182,12 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                     "YYYY-MM-DD HH:mm:ss A",
                     uiTimezone
                   );
+                  const getGenericStatus = (status) => {
+                    if (typeof status === "number" && status >= 100 && status < 600) {
+                      return Math.floor(status / 100) * 100;
+                    }
+                    return "cannot resolve";
+                  };
 
                   return (
                     <TableRow key={check._id}>
@@ -183,7 +201,12 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
                       </TableCell>
                       <TableCell>{formattedDate}</TableCell>
                       <TableCell>
-                        {check.statusCode ? check.statusCode : "N/A"}
+                        <StatusLabel
+                          status={getGenericStatus(check.statusCode)}
+                          text={String(check.statusCode || "N/A")}
+                          hasDot={false}
+                          customStyles={{ textTransform: "capitalize" }}
+                        />
                       </TableCell>
                       <TableCell>{check.message}</TableCell>
                     </TableRow>
