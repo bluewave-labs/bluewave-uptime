@@ -29,11 +29,10 @@ const Monitors = ({ isAdmin }) => {
 	const loading = monitorState?.isLoading;
 
 	const totalMonitors = monitorState?.monitorsSummary?.monitorCounts?.total;
-	const isTotalMonitorsUndefined = totalMonitors === undefined;
-	const hasMonitors = !isTotalMonitorsUndefined && totalMonitors !== 0;
-	const noMonitors = isTotalMonitorsUndefined || totalMonitors === 0;
+
+	const hasMonitors = totalMonitors > 0;
+	const noMonitors = !hasMonitors;
 	const canAddMonitor = isAdmin && hasMonitors;
-	const needsAdmin = !isAdmin && noMonitors;
 
 	return (
 		<Stack
@@ -65,7 +64,6 @@ const Monitors = ({ isAdmin }) => {
 				</Stack>
 			</Box>
 			{noMonitors && <Fallback isAdmin={isAdmin} />}
-			{needsAdmin && <p>Wait for an admin to add some monitors!</p>}
 			{loading ? (
 				<SkeletonLayout />
 			) : (
