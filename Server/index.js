@@ -34,9 +34,11 @@ import pkg from "handlebars";
 const { compile } = pkg;
 import mjml2html from "mjml";
 
+// Settings Service and dependencies
 import SettingsService from "./service/settingsService.js";
+import AppSettings from "../db/models/AppSettings.js";
+
 import db from "./db/mongo/MongoDB.js";
-import { fetchMonitorCertificate } from "./controllers/controllerUtils.js";
 const SERVICE_NAME = "Server";
 
 let cleaningUp = false;
@@ -142,7 +144,7 @@ const startApp = async () => {
 
 	// Create services
 	await connectDbAndRunServer(app, db);
-	const settingsService = new SettingsService();
+	const settingsService = new SettingsService(AppSettings);
 
 	await settingsService.loadSettings();
 	const emailService = new EmailService(
