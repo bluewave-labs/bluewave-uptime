@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box, Button, ButtonGroup, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import BasicTable from "../../BasicTable";
 import Select from "../../Inputs/Select";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { GenericDialog } from "../../Dialog/genericDialog";
 
 /**
  * TeamPanel component manages the organization and team members,
@@ -31,10 +32,10 @@ const TeamPanel = () => {
 
 	const { authToken, user } = useSelector((state) => state.auth);
 	//TODO
-	const [orgStates, setOrgStates] = useState({
-		name: "Bluewave Labs",
-		isEdit: false,
-	});
+	// const [orgStates, setOrgStates] = useState({
+	// 	name: "Bluewave Labs",
+	// 	isEdit: false,
+	// });
 	const [toInvite, setToInvite] = useState({
 		email: "",
 		role: ["0"],
@@ -134,10 +135,10 @@ const TeamPanel = () => {
 	}, [errors, toInvite.email]);
 
 	// RENAME ORGANIZATION
-	const toggleEdit = () => {
-		setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
-	};
-	const handleRename = () => {};
+	// const toggleEdit = () => {
+	// 	setOrgStates((prev) => ({ ...prev, isEdit: !prev.isEdit }));
+	// };
+	// const handleRename = () => {};
 
 	// INVITE MEMBER
 	const [isOpen, setIsOpen] = useState(false);
@@ -327,100 +328,82 @@ const TeamPanel = () => {
 					table={"team"}
 				/>
 			</Stack>
-			<Modal
-				aria-labelledby="modal-invite-member"
-				aria-describedby="invite-member-to-team"
+
+			<GenericDialog
+				title={"modal-invite-member"}
+				description={"invite-member-to-team"}
 				open={isOpen}
-				onClose={closeInviteModal}
+				close={closeInviteModal}
+				theme={theme}
 			>
-				<Stack
-					gap={theme.spacing(5)}
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						width: 450,
-						bgcolor: theme.palette.background.main,
-						border: 1,
-						borderColor: theme.palette.border.light,
-						borderRadius: theme.shape.borderRadius,
-						boxShadow: theme.shape.boxShadow,
-						p: theme.spacing(15),
-						"&:focus": {
-							outline: "none",
-						},
-					}}
-				>
-					<Box>
-						<Typography
-							id="modal-invite-member"
-							component="h1"
-							fontWeight={600}
-							fontColor={theme.palette.text.secondary}
-						>
-							Invite new team member
-						</Typography>
-						<Typography
-							id="invite-member-to-team"
-							component="p"
-							fontSize={13}
-							color={theme.palette.text.accent}
-							sx={{ mt: theme.spacing(1), mb: theme.spacing(4) }}
-						>
-							When you add a new team member, they will get access to all monitors.
-						</Typography>
-					</Box>
-					<Field
-						type="email"
-						id="input-team-member"
-						placeholder="Email"
-						value={toInvite.email}
-						onChange={handleChange}
-						error={errors.email}
-					/>
-					<Select
-						id="team-member-role"
-						placeholder="Select role"
-						isHidden={true}
-						value={toInvite.role[0]}
-						onChange={(event) =>
-							setToInvite((prev) => ({
-								...prev,
-								role: [event.target.value],
-							}))
-						}
-						items={[
-							{ _id: "admin", name: "Admin" },
-							{ _id: "user", name: "User" },
-						]}
-					/>
-					<Stack
-						direction="row"
-						gap={theme.spacing(4)}
-						mt={theme.spacing(8)}
-						justifyContent="flex-end"
+				<Box>
+					<Typography
+						id="modal-invite-member"
+						component="h1"
+						fontWeight={600}
+						fontColor={theme.palette.text.secondary}
 					>
-						<LoadingButton
-							loading={isSendingInvite}
-							variant="text"
-							color="info"
-							onClick={closeInviteModal}
-						>
-							Cancel
-						</LoadingButton>
-						<LoadingButton
-							variant="contained"
-							color="primary"
-							onClick={handleInviteMember}
-							loading={isSendingInvite}
-							disabled={isDisabled}
-						>
-							Send invite
-						</LoadingButton>
-					</Stack>
+						Invite new team member
+					</Typography>
+					<Typography
+						id="invite-member-to-team"
+						component="p"
+						fontSize={13}
+						color={theme.palette.text.accent}
+						sx={{ mt: theme.spacing(1), mb: theme.spacing(4) }}
+					>
+						When you add a new team member, they will get access to all monitors.
+					</Typography>
+				</Box>
+				<Field
+					type="email"
+					id="input-team-member"
+					placeholder="Email"
+					value={toInvite.email}
+					onChange={handleChange}
+					error={errors.email}
+				/>
+				<Select
+					id="team-member-role"
+					placeholder="Select role"
+					isHidden={true}
+					value={toInvite.role[0]}
+					onChange={(event) =>
+						setToInvite((prev) => ({
+							...prev,
+							role: [event.target.value],
+						}))
+					}
+					items={[
+						{ _id: "admin", name: "Admin" },
+						{ _id: "user", name: "User" },
+					]}
+				/>
+				<Stack
+					direction="row"
+					gap={theme.spacing(4)}
+					mt={theme.spacing(8)}
+					justifyContent="flex-end"
+				>
+					<LoadingButton
+						loading={isSendingInvite}
+						variant="text"
+						color="info"
+						onClick={closeInviteModal}
+					>
+						Cancel
+					</LoadingButton>
+					<LoadingButton
+						variant="contained"
+						color="primary"
+						onClick={handleInviteMember}
+						loading={isSendingInvite}
+						disabled={isDisabled}
+					>
+						Send invite
+					</LoadingButton>
 				</Stack>
-			</Modal>
+			</GenericDialog>
 		</TabPanel>
 	);
 };
