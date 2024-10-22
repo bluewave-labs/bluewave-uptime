@@ -166,5 +166,5 @@ export {
 	monitorValidation,
 	settingsValidation,
 	maintenanceWindowValidation,
-	advancedSettingsValidation,
+	advancedSettingsValidation
 };

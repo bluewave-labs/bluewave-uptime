@@ -24,6 +24,8 @@ import { useTheme } from "@emotion/react";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
 import PlaceholderLight from "../../../assets/Images/data_placeholder.svg?react";
 import PlaceholderDark from "../../../assets/Images/data_placeholder_dark.svg?react";
+import { Empty } from "./Empty/Empty";
+import { IncidentSkeleton } from "./Skeleton/Skeleton";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 	const uiTimezone = useSelector((state) => state.ui.timezone);
@@ -37,6 +39,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 		page: 0,
 		rowsPerPage: 14,
 	});
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		setPaginationController((prevPaginationController) => ({
@@ -51,6 +54,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 				return;
 			}
 			try {
+				setIsLoading(true);
 				let res;
 				if (selectedMonitor === "0") {
 					res = await networkService.getChecksByTeam({
@@ -79,6 +83,8 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 				setChecksCount(res.data.data.checksCount);
 			} catch (error) {
 				logger.error(error);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 		fetchPage();
@@ -129,24 +135,20 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 		p: theme.spacing(30),
 	};
 
+	const hasChecks = checks?.length === 0;
+	const noIncidentsRecordedYet = hasChecks && selectedMonitor === "0";
+	const noIncidentsForThatMonitor = hasChecks && selectedMonitor !== "0";
+
 	return (
 		<>
-			{checks?.length === 0 && selectedMonitor === "0" ? (
-				<Box sx={{ ...sharedStyles }}>
-					<Box
-						textAlign="center"
-						pb={theme.spacing(20)}
-					>
-						{mode === "light" ? <PlaceholderLight /> : <PlaceholderDark />}
-					</Box>
-					<Typography
-						textAlign="center"
-						color={theme.palette.text.secondary}
-					>
-						No incidents recorded yet.
-					</Typography>
-				</Box>
-			) : checks?.length === 0 ? (
+			{isLoading ? (
+				<IncidentSkeleton />
+			) : noIncidentsRecordedYet ? (
+				<Empty
+					mode={mode}
+					styles={sharedStyles}
+				/>
+			) : noIncidentsForThatMonitor ? (
 				<Box sx={{ ...sharedStyles }}>
 					<Box
 						textAlign="center"
