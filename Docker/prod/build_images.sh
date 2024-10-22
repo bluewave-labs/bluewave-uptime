@@ -1,24 +1,26 @@
-
 #!/bin/bash
 
 # Change directory to root directory for correct Docker Context
+cd "$(dirname "$0")"
 cd ../..
 
-#Client
-client="./Docker/prod/client.Dockerfile"
+# Define an array of services and their Dockerfiles
+declare -A services=(
+  ["uptime_client"]="./Docker/prod/client.Dockerfile"
+  ["uptime_database_mongo"]="./Docker/prod/mongoDB.Dockerfile"
+  ["uptime_redis"]="./Docker/prod/redis.Dockerfile"
+  ["uptime_server"]="./Docker/prod/server.Dockerfile"
+)
 
-# MongoDB
-mongoDB="./Docker/prod/mongoDB.Dockerfile"
+# Loop through each service and build the corresponding image
+for service in "${!services[@]}"; do
+  docker build -f "${services[$service]}" -t "$service" .
+  
+  # Check if the build succeeded
+  if [ $? -ne 0 ]; then
+    echo "Error building $service image. Exiting..."
+    exit 1
+  fi
+done
 
-# Redis
-redis="./Docker/prod/redis.Dockerfile"
-
-# Server
-server="./Docker/prod/server.Dockerfile"
-
-docker build -f $client -t uptime_client .
-docker build -f $mongoDB -t uptime_database_mongo .
-docker build -f $redis -t uptime_redis .
-docker build -f $server -t uptime_server .
-
-echo "All images built"
+echo "All images built successfully"
