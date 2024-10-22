@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -25,6 +25,7 @@ import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineR
 import SkeletonLayout from "./skeleton";
 import useUtils from "../../Monitors/utils";
 import "./index.css";
+import { GenericDialog } from "../../../Components/Dialog/genericDialog";
 
 const PageSpeedConfigure = () => {
 	const theme = useTheme();
@@ -428,69 +429,49 @@ const PageSpeedConfigure = () => {
 					</Stack>
 				</>
 			)}
-			<Modal
-				aria-labelledby="modal-delete-pagespeed-monitor"
-				aria-describedby="delete-pagespeed-monitor-confirmation"
+			<GenericDialog
+				title={"modal-delete-pagespeed-monitor"}
+				description={"delete-pagespeed-monitor-confirmation"}
 				open={isOpen}
-				onClose={() => setIsOpen(false)}
-				disablePortal
+				close={() => setIsOpen(false)}
+				theme={theme}
 			>
-				<Stack
-					gap={theme.spacing(2)}
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						width: 400,
-						bgcolor: theme.palette.background.main,
-						border: 1,
-						borderColor: theme.palette.border.light,
-						borderRadius: theme.shape.borderRadius,
-						boxShadow: 24,
-						p: theme.spacing(15),
-						"&:focus": {
-							outline: "none",
-						},
-					}}
+				<Typography
+					id="modal-delete-pagespeed-monitor"
+					component="h2"
+					variant="h2"
+					fontWeight={500}
 				>
-					<Typography
-						id="modal-delete-pagespeed-monitor"
-						component="h2"
-						variant="h2"
-						fontWeight={500}
+					Do you really want to delete this monitor?
+				</Typography>
+				<Typography
+					id="delete-pagespeed-monitor-confirmation"
+					variant="body1"
+				>
+					Once deleted, this monitor cannot be retrieved.
+				</Typography>
+				<Stack
+					direction="row"
+					gap={theme.spacing(4)}
+					mt={theme.spacing(12)}
+					justifyContent="flex-end"
+				>
+					<Button
+						variant="text"
+						color="info"
+						onClick={() => setIsOpen(false)}
 					>
-						Do you really want to delete this monitor?
-					</Typography>
-					<Typography
-						id="delete-pagespeed-monitor-confirmation"
-						variant="body1"
+						Cancel
+					</Button>
+					<Button
+						variant="contained"
+						color="error"
+						onClick={handleRemove}
 					>
-						Once deleted, this monitor cannot be retrieved.
-					</Typography>
-					<Stack
-						direction="row"
-						gap={theme.spacing(4)}
-						mt={theme.spacing(12)}
-						justifyContent="flex-end"
-					>
-						<Button
-							variant="text"
-							color="info"
-							onClick={() => setIsOpen(false)}
-						>
-							Cancel
-						</Button>
-						<Button
-							variant="contained"
-							color="error"
-							onClick={handleRemove}
-						>
-							Delete
-						</Button>
-					</Stack>
+						Delete
+					</Button>
 				</Stack>
-			</Modal>
+			</GenericDialog>
 		</Stack>
 	);
 };
