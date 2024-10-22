@@ -38,6 +38,7 @@ const SearchAdornment = () => {
 	);
 };
 
+//TODO keep search state inside of component
 const Search = ({
 	id,
 	options,

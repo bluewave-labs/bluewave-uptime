@@ -19,7 +19,7 @@ const PageSpeed = ({ isAdmin }) => {
 	const navigate = useNavigate();
 
 	const { user, authToken } = useSelector((state) => state.auth);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [monitors, setMonitors] = useState([]);
 	useEffect(() => {
 		dispatch(getPageSpeedByTeamId(authToken));
