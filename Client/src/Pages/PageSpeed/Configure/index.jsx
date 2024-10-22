@@ -443,7 +443,6 @@ const PageSpeedConfigure = () => {
 				onConfirm={handleRemove}
 				isLoading={buttonLoading}
 			/>
-			<Dialog />
 		</Stack>
 	);
 };
