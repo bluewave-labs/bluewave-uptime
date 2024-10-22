@@ -152,8 +152,8 @@ const advancedSettingsValidation = joi.object({
 		"string.empty": "Redis host is required",
 	}),
 	redisPort: joi.string().allow('').custom((value, helpers) => {
-		if(value && isNaN(parseInt(value))){
-			return helpers.message("Redit port must be a number")
+		if(value && Number.isNaN(parseInt(value))){
+			return helpers.message("Redis port must be a number")
 		}		
 		return value
 	}),
