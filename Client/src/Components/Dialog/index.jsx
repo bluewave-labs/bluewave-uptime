@@ -7,7 +7,6 @@ const Dialog = ({
 	title,
 	description,
 	open,
-	onClose,
 	theme,
 	onCancel,
 	confirmationButtonLabel,
@@ -19,7 +18,7 @@ const Dialog = ({
 			title={title}
 			description={description}
 			open={open}
-			onClose={onClose}
+			onClose={onCancel}
 			theme={theme}
 		>
 			<Stack

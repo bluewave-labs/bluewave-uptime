@@ -374,7 +374,6 @@ const ProfilePanel = () => {
 
 			<Dialog
 				open={isModalOpen("delete")}
-				onClose={() => setIsOpen("")}
 				theme={theme}
 				title={"Really delete this account?"}
 				description={

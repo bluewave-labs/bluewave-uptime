@@ -264,7 +264,6 @@ const Settings = ({ isAdmin }) => {
 						</Stack>
 						<Dialog
 							open={isOpen.deleteStats}
-							onClose={() => setIsOpen(deleteStatsMonitorsInitState)}
 							theme={theme}
 							title="Do you want to clear all stats?"
 							description="Once deleted, this monitor cannot be retrieved."
@@ -313,7 +312,6 @@ const Settings = ({ isAdmin }) => {
 						</Stack>
 						<Dialog
 							open={isOpen.deleteMonitors}
-							onClose={() => setIsOpen(deleteStatsMonitorsInitState)}
 							theme={theme}
 							title="Do you want to remove all monitors?"
 							onCancel={() => setIsOpen(deleteStatsMonitorsInitState)}

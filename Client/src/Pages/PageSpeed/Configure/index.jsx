@@ -434,7 +434,6 @@ const PageSpeedConfigure = () => {
 			)}
 			<Dialog
 				open={isOpen}
-				onClose={() => setIsOpen(false)}
 				theme={theme}
 				title={"Do you really want to delete this monitor?"}
 				description={"Once deleted, this monitor cannot be retrieved."}

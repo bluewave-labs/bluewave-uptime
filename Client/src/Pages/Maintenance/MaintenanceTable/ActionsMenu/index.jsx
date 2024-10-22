@@ -150,10 +150,6 @@ const ActionsMenu = ({ /* isAdmin, */ maintenanceWindow, updateCallback }) => {
 			</Menu>
 			<Dialog
 				open={isOpen}
-				onClose={(e) => {
-					e.stopPropagation();
-					setIsOpen(false);
-				}}
 				theme={theme}
 				title={"Do you really want to remove this maintenance window?"}
 				onCancel={(e) => {
