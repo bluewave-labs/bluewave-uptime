@@ -151,7 +151,7 @@ const advancedSettingsValidation = joi.object({
 			const found = value.match(regex);
 			if (!found) {
 				return helpers.message(
-					"JWT TTL should start with a non zero number and ends with 'd' or 'h'"
+					"JWT TTL should start with a non zero number and ends with 'd' or 'h'."
 				);
 			}
 			return value;
