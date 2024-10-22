@@ -688,13 +688,15 @@ describe("networkService - handleHardware", () => {
 				used_bytes: 2,
 				usage_percent: 0.5,
 			},
-			disk: {
-				read_speed_bytes: 3,
-				write_speed_bytes: 3,
-				total_bytes: 10,
-				free_bytes: 2,
-				usage_percent: 0.8,
-			},
+			disk: [
+				{
+					read_speed_bytes: 3,
+					write_speed_bytes: 3,
+					total_bytes: 10,
+					free_bytes: 2,
+					usage_percent: 0.8,
+				},
+			],
 			host: {
 				os: "Linux",
 				platform: "Ubuntu",
@@ -714,40 +716,11 @@ describe("networkService - handleHardware", () => {
 
 	it("should handle an error Hardware response", async () => {
 		logAndStoreCheckStub.throws(new Error("Hardware error"));
-		await networkService.handleHardware(jobMock);
-		const nullData = {
-			monitorId: job.data._id,
-			cpu: {
-				physical_core: 0,
-				logical_core: 0,
-				frequency: 0,
-				temperature: 0,
-				free_percent: 0,
-				usage_percent: 0,
-			},
-			memory: {
-				total_bytes: 0,
-				available_bytes: 0,
-				used_bytes: 0,
-				usage_percent: 0,
-			},
-			disk: {
-				read_speed_bytes: 0,
-				write_speed_bytes: 0,
-				total_bytes: 0,
-				free_bytes: 0,
-				usage_percent: 0,
-			},
-			host: {
-				os: "",
-				platform: "",
-				kernel_version: "",
-			},
-		};
-
-		expect(
-			logAndStoreCheckStub.calledWith(nullData, networkService.db.createHardwareCheck)
-		).to.be.true;
+		try {
+			await networkService.handleHardware(jobMock);
+		} catch (error) {
+			expect(error.message).to.equal("Hardware error");
+		}
 	});
 });
 

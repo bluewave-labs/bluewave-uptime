@@ -316,13 +316,15 @@ class NetworkService {
 				used_bytes: 2,
 				usage_percent: 0.5,
 			},
-			disk: {
-				read_speed_bytes: 3,
-				write_speed_bytes: 3,
-				total_bytes: 10,
-				free_bytes: 2,
-				usage_percent: 0.8,
-			},
+			disk: [
+				{
+					read_speed_bytes: 3,
+					write_speed_bytes: 3,
+					total_bytes: 10,
+					free_bytes: 2,
+					usage_percent: 0.8,
+				},
+			],
 			host: {
 				os: "Linux",
 				platform: "Ubuntu",
@@ -350,13 +352,15 @@ class NetworkService {
 					used_bytes: 0,
 					usage_percent: 0,
 				},
-				disk: {
-					read_speed_bytes: 0,
-					write_speed_bytes: 0,
-					total_bytes: 0,
-					free_bytes: 0,
-					usage_percent: 0,
-				},
+				disk: [
+					{
+						read_speed_bytes: 0,
+						write_speed_bytes: 0,
+						total_bytes: 0,
+						free_bytes: 0,
+						usage_percent: 0,
+					},
+				],
 				host: {
 					os: "",
 					platform: "",
