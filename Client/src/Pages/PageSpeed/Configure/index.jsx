@@ -445,26 +445,13 @@ const PageSpeedConfigure = () => {
 				isLoading={buttonLoading}
 			/>
 			<GenericDialog
-				title={"modal-delete-pagespeed-monitor"}
-				description={"delete-pagespeed-monitor-confirmation"}
+				title={"Do you really want to delete this monitor?"}
+				description={"Once deleted, this monitor cannot be retrieved."}
 				open={isOpen}
 				onClose={() => setIsOpen(false)}
 				theme={theme}
 			>
-				<Typography
-					id="modal-delete-pagespeed-monitor"
-					component="h2"
-					variant="h2"
-					fontWeight={500}
-				>
-					Do you really want to delete this monitor?
-				</Typography>
-				<Typography
-					id="delete-pagespeed-monitor-confirmation"
-					variant="body1"
-				>
-					Once deleted, this monitor cannot be retrieved.
-				</Typography>
+				{/* Make it dialog? */}
 				<Stack
 					direction="row"
 					gap={theme.spacing(4)}

@@ -387,19 +387,11 @@ const ProfilePanel = () => {
 			/>
 
 			<GenericDialog
-				title={"modal-update-picture"}
-				description={"update-profile-picture"}
+				title={"Upload Image"}
 				open={isModalOpen("picture")}
 				onClose={closePictureModal}
 				theme={theme}
 			>
-				<Typography
-					id="modal-update-picture"
-					component="h1"
-					color={theme.palette.text.secondary}
-				>
-					Upload Image
-				</Typography>
 				<ImageField
 					id="update-profile-picture"
 					src={

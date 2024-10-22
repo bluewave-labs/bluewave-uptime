@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
+import { Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Field from "../../Inputs/Field";
 import { credentials } from "../../../Validation/validation";
@@ -330,31 +330,14 @@ const TeamPanel = () => {
 			</Stack>
 
 			<GenericDialog
-				title={"modal-invite-member"}
-				description={"invite-member-to-team"}
+				title={"Invite new team member"}
+				description={
+					"When you add a new team member, they will get access to all monitors."
+				}
 				open={isOpen}
 				onClose={closeInviteModal}
 				theme={theme}
 			>
-				<Box>
-					<Typography
-						id="modal-invite-member"
-						component="h1"
-						fontWeight={600}
-						fontColor={theme.palette.text.secondary}
-					>
-						Invite new team member
-					</Typography>
-					<Typography
-						id="invite-member-to-team"
-						component="p"
-						fontSize={13}
-						color={theme.palette.text.accent}
-						sx={{ mt: theme.spacing(1), mb: theme.spacing(4) }}
-					>
-						When you add a new team member, they will get access to all monitors.
-					</Typography>
-				</Box>
 				<Field
 					type="email"
 					id="input-team-member"

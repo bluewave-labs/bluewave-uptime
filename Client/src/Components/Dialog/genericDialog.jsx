@@ -1,10 +1,15 @@
-import { Modal, Stack } from "@mui/material";
+import { useId } from "react";
 import PropTypes from "prop-types";
+import { Modal, Stack, Typography } from "@mui/material";
+
 const GenericDialog = ({ title, description, open, onClose, theme, children }) => {
+	const titleId = useId();
+	const descriptionId = useId();
+	const ariaDescribedBy = description?.length > 0 ? descriptionId : "";
 	return (
 		<Modal
-			aria-labelledby={title}
-			aria-describedby={description}
+			aria-labelledby={titleId}
+			aria-describedby={ariaDescribedBy}
 			open={open}
 			onClose={onClose}
 		>
@@ -27,6 +32,23 @@ const GenericDialog = ({ title, description, open, onClose, theme, children }) =
 					},
 				}}
 			>
+				<Typography
+					id={titleId}
+					component="h2"
+					fontSize={16}
+					color={theme.palette.text.primary}
+					fontWeight={600}
+				>
+					{title}
+				</Typography>
+				{description && (
+					<Typography
+						id={descriptionId}
+						color={theme.palette.text.tertiary}
+					>
+						{description}
+					</Typography>
+				)}
 				{children}
 			</Stack>
 		</Modal>
@@ -35,7 +57,7 @@ const GenericDialog = ({ title, description, open, onClose, theme, children }) =
 
 GenericDialog.propTypes = {
 	title: PropTypes.string.isRequired,
-	description: PropTypes.string.isRequired,
+	description: PropTypes.string,
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
 	theme: PropTypes.object.isRequired,
