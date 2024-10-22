@@ -46,8 +46,8 @@ const HardwareCheckSchema = mongoose.Schema(
 			default: () => ({}),
 		},
 		disk: {
-			type: discSchema,
-			default: () => ({}),
+			type: [discSchema],
+			default: () => [],
 		},
 		host: {
 			type: hostSchema,
