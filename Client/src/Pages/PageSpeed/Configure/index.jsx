@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -25,7 +25,6 @@ import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineR
 import SkeletonLayout from "./skeleton";
 import useUtils from "../../Monitors/utils";
 import "./index.css";
-import { GenericDialog } from "../../../Components/Dialog/genericDialog";
 import Dialog from "../../../Components/Dialog";
 
 const PageSpeedConfigure = () => {
@@ -444,36 +443,7 @@ const PageSpeedConfigure = () => {
 				onConfirm={handleRemove}
 				isLoading={buttonLoading}
 			/>
-			<GenericDialog
-				title={"Do you really want to delete this monitor?"}
-				description={"Once deleted, this monitor cannot be retrieved."}
-				open={isOpen}
-				onClose={() => setIsOpen(false)}
-				theme={theme}
-			>
-				{/* Make it dialog? */}
-				<Stack
-					direction="row"
-					gap={theme.spacing(4)}
-					mt={theme.spacing(12)}
-					justifyContent="flex-end"
-				>
-					<Button
-						variant="text"
-						color="info"
-						onClick={() => setIsOpen(false)}
-					>
-						Cancel
-					</Button>
-					<Button
-						variant="contained"
-						color="error"
-						onClick={handleRemove}
-					>
-						Delete
-					</Button>
-				</Stack>
-			</GenericDialog>
+			<Dialog />
 		</Stack>
 	);
 };
