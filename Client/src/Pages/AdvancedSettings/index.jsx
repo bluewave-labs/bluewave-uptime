@@ -12,6 +12,8 @@ import { useNavigate } from "react-router";
 import { getAppSettings, updateAppSettings } from "../../Features/Settings/settingsSlice";
 import { useState, useEffect } from "react";
 import Select from "../../Components/Inputs/Select";
+import { advancedSettingsValidation } from "../../Validation/validation";
+import { buildErrors, hasValidationErrors } from "../../Validation/error";
 
 const AdvancedSettings = ({ isAdmin }) => {
 	const navigate = useNavigate();
@@ -21,7 +23,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 			navigate("/");
 		}
 	}, [navigate, isAdmin]);
-
+	const [errors, setErrors] = useState({});
 	const theme = useTheme();
 	const { authToken } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
@@ -75,9 +77,20 @@ const AdvancedSettings = ({ isAdmin }) => {
 	const handleChange = (event) => {
 		const { value, id } = event.target;
 		setLocalSettings({ ...localSettings, [id]: value });
+		const { error } = advancedSettingsValidation.validate(
+			{ [id]: value },
+			{
+				abortEarly: false,
+			}
+		);
+		setErrors((prev) => {
+			return buildErrors(prev, id, error);
+		});    
 	};
 
 	const handleSave = async () => {
+		if (hasValidationErrors(localSettings, advancedSettingsValidation, setErrors))
+			return;
 		const action = await dispatch(
 			updateAppSettings({ settings: localSettings, authToken })
 		);
@@ -118,6 +131,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							label="API URL Host"
 							value={localSettings.apiBaseUrl}
 							onChange={handleChange}
+							error={errors.apiBaseUrl}
 						/>
 						<Select
 							id="logLevel"
@@ -126,6 +140,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							items={logItems}
 							value={logItemLookup[localSettings.logLevel]}
 							onChange={handleLogLevel}
+							error={errors.logLevel}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -145,6 +160,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailHost"
 							value={localSettings.systemEmailHost}
 							onChange={handleChange}
+							error={errors.systemEmailHost}
 						/>
 						<Field
 							type="number"
@@ -153,6 +169,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailPort"
 							value={localSettings.systemEmailPort.toString()}
 							onChange={handleChange}
+							error={errors.systemEmailPort}
 						/>
 						<Field
 							type="email"
@@ -161,6 +178,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailAddress"
 							value={localSettings.systemEmailAddress}
 							onChange={handleChange}
+							error={errors.systemEmailAddress}
 						/>
 						<Field
 							type="text"
@@ -169,6 +187,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailPassword"
 							value={localSettings.systemEmailPassword}
 							onChange={handleChange}
+							error={errors.systemEmailPassword}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -187,6 +206,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="jwtTTL"
 							value={localSettings.jwtTTL}
 							onChange={handleChange}
+							error={errors.jwtTTL}
 						/>
 						<Field
 							type="text"
@@ -195,6 +215,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="dbType"
 							value={localSettings.dbType}
 							onChange={handleChange}
+							error={errors.dbType}
 						/>
 						<Field
 							type="text"
@@ -203,6 +224,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="redisHost"
 							value={localSettings.redisHost}
 							onChange={handleChange}
+							error={errors.redisHost}
 						/>
 						<Field
 							type="number"
@@ -211,6 +233,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="redisPort"
 							value={localSettings.redisPort.toString()}
 							onChange={handleChange}
+							error={errors.redisPort}
 						/>
 						<Field
 							type="text"
@@ -219,6 +242,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="pagespeedApiKey"
 							value={localSettings.pagespeedApiKey}
 							onChange={handleChange}
+							error={errors.pagespeedApiKey}
 						/>
 					</Stack>
 				</ConfigBox>

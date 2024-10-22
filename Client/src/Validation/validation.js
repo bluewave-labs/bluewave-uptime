@@ -134,30 +134,44 @@ const advancedSettingsValidation = joi.object({
 		"string.uri": "The URL you provided is not valid.",
 	}),
 	logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
-	systemEmailHost: joi.string().allow(''),
-	systemEmailPort: joi.string().allow(''),
-	systemEmailAddress: joi
-		.string().allow(''),
-	systemEmailPassword: joi.string().allow(''),
+	systemEmailHost: joi.string().allow(""),
+	systemEmailPort: joi.string().allow(""),
+	systemEmailAddress: joi.string().allow(""),
+	systemEmailPassword: joi.string().allow(""),
 	jwtTTL: joi
 		.string()
 		.trim()
 		.messages({
-			"string.empty": "JWT TTL is required."			
+			"string.empty": "JWT TTL is required.",
+		})
+		.custom((value, helpers) => {
+			// test against regx start with a number followed by number or .,
+			//ends with d or h
+			const regex = /^[1-9]+\d*(.)*(d|h)$/;
+			const found = value.match(regex);
+			if (!found) {
+				return helpers.message(
+					"JWT TTL should start with a non zero number and ends with 'd' or 'h'"
+				);
+			}
+			return value;
 		}),
 	dbType: joi.string().trim().messages({
-		"string.empty": "DB type is required",
+		"string.empty": "DB type is required.",
 	}),
 	redisHost: joi.string().trim().messages({
-		"string.empty": "Redis host is required",
+		"string.empty": "Redis host is required.",
 	}),
-	redisPort: joi.string().allow('').custom((value, helpers) => {
-		if(value && Number.isNaN(parseInt(value))){
-			return helpers.message("Redis port must be a number")
-		}		
-		return value
-	}),
-	pagespeedApiKey: joi.string().allow('')
+	redisPort: joi
+		.string()
+		.allow("")
+		.custom((value, helpers) => {
+			if (value && Number.isNaN(parseInt(value))) {
+				return helpers.message("Redis port must be a number.");
+			}
+			return value;
+		}),
+	pagespeedApiKey: joi.string().allow(""),
 });
 
 export {
