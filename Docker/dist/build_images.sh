@@ -1,24 +1,26 @@
-
 #!/bin/bash
 
 # Change directory to root Server directory for correct Docker Context
+cd "$(dirname "$0")"
 cd ../..
 
-#Client
-client="./Docker/dist/client.Dockerfile"
+# Define an array of services and their Dockerfiles
+declare -A services=(
+  ["bluewave/uptime_client"]="./Docker/dist/client.Dockerfile"
+  ["bluewave/database_mongo"]="./Docker/dist/mongoDB.Dockerfile"
+  ["bluewave/uptime_redis"]="./Docker/dist/redis.Dockerfile"
+  ["bluewave/uptime_server"]="./Docker/dist/server.Dockerfile"
+)
 
-# MongoDB
-mongoDB="./Docker/dist/mongoDB.Dockerfile"
+# Loop through each service and build the corresponding image
+for service in "${!services[@]}"; do
+  docker build -f "${services[$service]}" -t "$service" .
+  
+  # Check if the build succeeded
+  if [ $? -ne 0 ]; then
+    echo "Error building $service image. Exiting..."
+    exit 1
+  fi
+done
 
-# Redis
-redis="./Docker/dist/redis.Dockerfile"
-
-# Server
-server="./Docker/dist/server.Dockerfile"
-
-docker build -f $client -t dist_uptime_client .
-docker build -f $mongoDB -t dist_uptime_database_mongo .
-docker build -f $redis -t dist_uptime_redis .
-docker build -f $server -t dist_uptime_server .
-
-echo "All images built"
+echo "All images built successfully"

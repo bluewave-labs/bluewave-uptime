@@ -1,11 +1,11 @@
 .incidents h1.MuiTypography-root {
-  font-size: var(--env-var-font-size-large);
-  font-weight: 600;
+	font-size: var(--env-var-font-size-large);
+	font-weight: 600;
 }
 .incidents button.MuiButtonBase-root,
 .incidents p.MuiTypography-root {
-  font-size: var(--env-var-font-size-medium);
+	font-size: var(--env-var-font-size-medium);
 }
 .incidents button.MuiButtonBase-root {
-  height: 34px;
+	height: 34px;
 }

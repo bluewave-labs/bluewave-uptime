@@ -1,6 +1,6 @@
 {
 	"all": true,
-	"include": ["controllers/*.js", "utils/*.js"],
+	"include": ["controllers/*.js", "utils/*.js", "service/*.js"],
 	"exclude": ["**/*.test.js"],
 	"reporter": ["html", "text", "lcov"],
 	"sourceMap": false,

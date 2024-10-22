@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
-import { createPageSpeed } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
+import { createPageSpeed, checkEndpointResolution } from "../../../Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
@@ -18,90 +19,91 @@ import "./index.css";
 const CreatePageSpeed = () => {
   const MS_PER_MINUTE = 60000;
   const { user, authToken } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.pageSpeedMonitors);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const idMap = {
-    "monitor-url": "url",
-    "monitor-name": "name",
-    "monitor-checks-http": "type",
-    "monitor-checks-ping": "type",
-    "notify-email-default": "notification-email",
-  };
+	const idMap = {
+		"monitor-url": "url",
+		"monitor-name": "name",
+		"monitor-checks-http": "type",
+		"monitor-checks-ping": "type",
+		"notify-email-default": "notification-email",
+	};
 
-  const [monitor, setMonitor] = useState({
-    url: "",
-    name: "",
-    type: "pagespeed",
-    notifications: [],
-    interval: 3,
-  });
-  const [https, setHttps] = useState(true);
-  const [errors, setErrors] = useState({});
+	const [monitor, setMonitor] = useState({
+		url: "",
+		name: "",
+		type: "pagespeed",
+		notifications: [],
+		interval: 3,
+	});
+	const [https, setHttps] = useState(true);
+	const [errors, setErrors] = useState({});
 
-  const handleChange = (event, name) => {
-    const { value, id } = event.target;
-    if (!name) name = idMap[id];
+	const handleChange = (event, name) => {
+		const { value, id } = event.target;
+		if (!name) name = idMap[id];
 
-    if (name.includes("notification-")) {
-      name = name.replace("notification-", "");
-      let hasNotif = monitor.notifications.some(
-        (notification) => notification.type === name
-      );
-      setMonitor((prev) => {
-        const notifs = [...prev.notifications];
-        if (hasNotif) {
-          return {
-            ...prev,
-            notifications: notifs.filter((notif) => notif.type !== name),
-          };
-        } else {
-          return {
-            ...prev,
-            notifications: [
-              ...notifs,
-              name === "email"
-                ? { type: name, address: value }
-                : // TODO - phone number
-                  { type: name, phone: value },
-            ],
-          };
-        }
-      });
-    } else {
-      setMonitor((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+		if (name.includes("notification-")) {
+			name = name.replace("notification-", "");
+			let hasNotif = monitor.notifications.some(
+				(notification) => notification.type === name
+			);
+			setMonitor((prev) => {
+				const notifs = [...prev.notifications];
+				if (hasNotif) {
+					return {
+						...prev,
+						notifications: notifs.filter((notif) => notif.type !== name),
+					};
+				} else {
+					return {
+						...prev,
+						notifications: [
+							...notifs,
+							name === "email"
+								? { type: name, address: value }
+								: // TODO - phone number
+									{ type: name, phone: value },
+						],
+					};
+				}
+			});
+		} else {
+			setMonitor((prev) => ({
+				...prev,
+				[name]: value,
+			}));
 
-      const { error } = monitorValidation.validate(
-        { [name]: value },
-        { abortEarly: false }
-      );
+			const { error } = monitorValidation.validate(
+				{ [name]: value },
+				{ abortEarly: false }
+			);
 
-      setErrors((prev) => {
-        const updatedErrors = { ...prev };
-        if (error) updatedErrors[name] = error.details[0].message;
-        else delete updatedErrors[name];
-        return updatedErrors;
-      });
-    }
-  };
+			setErrors((prev) => {
+				const updatedErrors = { ...prev };
+				if (error) updatedErrors[name] = error.details[0].message;
+				else delete updatedErrors[name];
+				return updatedErrors;
+			});
+		}
+	};
 
-  const handleCreateMonitor = async (event) => {
-    event.preventDefault();
-    //obj to submit
-    let form = {
-      url: `http${https ? "s" : ""}://` + monitor.url,
-      name: monitor.name === "" ? monitor.url : monitor.name,
-      type: monitor.type,
-      interval: monitor.interval * MS_PER_MINUTE,
-    };
+	const handleCreateMonitor = async (event) => {
+		event.preventDefault();
+		//obj to submit
+		let form = {
+			url: `http${https ? "s" : ""}://` + monitor.url,
+			name: monitor.name === "" ? monitor.url : monitor.name,
+			type: monitor.type,
+			interval: monitor.interval * MS_PER_MINUTE,
+		};
 
-    const { error } = monitorValidation.validate(form, {
-      abortEarly: false,
-    });
+		const { error } = monitorValidation.validate(form, {
+			abortEarly: false,
+		});
 
     if (error) {
       const newErrors = {};
@@ -111,6 +113,15 @@ const CreatePageSpeed = () => {
       setErrors(newErrors);
       createToast({ body: "Error validation data." });
     } else {
+      const checkEndpointAction = await dispatch(
+        checkEndpointResolution({ authToken, monitorURL: form.url })
+      )
+      if (checkEndpointAction.meta.requestStatus === "rejected") {
+        createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
+        setErrors({ url: "The entered URL is not reachable." });
+        return;
+      }
+
       form = {
         ...form,
         description: form.name,
@@ -327,14 +338,15 @@ const CreatePageSpeed = () => {
           </Stack>
         </ConfigBox>
         <Stack direction="row" justifyContent="flex-end">
-          <Button
+        <LoadingButton 
             variant="contained"
             color="primary"
             onClick={handleCreateMonitor}
             disabled={Object.keys(errors).length !== 0 && true}
+            loading={isLoading}
           >
             Create monitor
-          </Button>
+          </LoadingButton>
         </Stack>
       </Stack>
     </Box>

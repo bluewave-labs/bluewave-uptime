@@ -1,11 +1,6 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
-import {
-  MenuItem,
-  Select as MuiSelect,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { MenuItem, Select as MuiSelect, Stack, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import "./index.css";
@@ -44,105 +39,108 @@ import "./index.css";
  */
 
 const Select = ({
-  id,
-  label,
-  placeholder,
-  isHidden,
-  value,
-  items,
-  onChange,
-  sx,
-  name = "",
+	id,
+	label,
+	placeholder,
+	isHidden,
+	value,
+	items,
+	onChange,
+	sx,
+	name = "",
 }) => {
-  const theme = useTheme();
-  const itemStyles = {
-    fontSize: "var(--env-var-font-size-medium)",
-    color: theme.palette.text.tertiary,
-    borderRadius: theme.shape.borderRadius,
-    margin: theme.spacing(2),
-  };
+	const theme = useTheme();
+	const itemStyles = {
+		fontSize: "var(--env-var-font-size-medium)",
+		color: theme.palette.text.tertiary,
+		borderRadius: theme.shape.borderRadius,
+		margin: theme.spacing(2),
+	};
 
-  return (
-    <Stack gap={theme.spacing(2)} className="select-wrapper">
-      {label && (
-        <Typography
-          component="h3"
-          color={theme.palette.text.secondary}
-          fontWeight={500}
-          fontSize={13}
-        >
-          {label}
-        </Typography>
-      )}
-      <MuiSelect
-        className="select-component"
-        value={value}
-        onChange={onChange}
-        displayEmpty
-        name={name}
-        inputProps={{ id: id }}
-        IconComponent={KeyboardArrowDownIcon}
-        MenuProps={{ disableScrollLock: true }}
-        sx={{
-          fontSize: 13,
-          minWidth: "125px",
-          "& fieldset": {
-            borderRadius: theme.shape.borderRadius,
-            borderColor: theme.palette.border.dark,
-          },
-          "&:not(.Mui-focused):hover fieldset": {
-            borderColor: theme.palette.border.dark,
-          },
-          "& svg path": {
-            fill: theme.palette.other.icon,
-          },
-          ...sx,
-        }}
-      >
-        {placeholder && (
-          <MenuItem
-            className="select-placeholder"
-            value="0"
-            sx={{
-              display: isHidden ? "none" : "flex",
-              visibility: isHidden ? "none" : "visible",
-              ...itemStyles,
-            }}
-          >
-            {placeholder}
-          </MenuItem>
-        )}
-        {items.map((item) => (
-          <MenuItem
-            value={item._id}
-            key={`${id}-${item._id}`}
-            sx={{
-              ...itemStyles,
-            }}
-          >
-            {item.name}
-          </MenuItem>
-        ))}
-      </MuiSelect>
-    </Stack>
-  );
+	return (
+		<Stack
+			gap={theme.spacing(2)}
+			className="select-wrapper"
+		>
+			{label && (
+				<Typography
+					component="h3"
+					color={theme.palette.text.secondary}
+					fontWeight={500}
+					fontSize={13}
+				>
+					{label}
+				</Typography>
+			)}
+			<MuiSelect
+				className="select-component"
+				value={value}
+				onChange={onChange}
+				displayEmpty
+				name={name}
+				inputProps={{ id: id }}
+				IconComponent={KeyboardArrowDownIcon}
+				MenuProps={{ disableScrollLock: true }}
+				sx={{
+					fontSize: 13,
+					minWidth: "125px",
+					"& fieldset": {
+						borderRadius: theme.shape.borderRadius,
+						borderColor: theme.palette.border.dark,
+					},
+					"&:not(.Mui-focused):hover fieldset": {
+						borderColor: theme.palette.border.dark,
+					},
+					"& svg path": {
+						fill: theme.palette.other.icon,
+					},
+					...sx,
+				}}
+			>
+				{placeholder && (
+					<MenuItem
+						className="select-placeholder"
+						value="0"
+						sx={{
+							display: isHidden ? "none" : "flex",
+							visibility: isHidden ? "none" : "visible",
+							...itemStyles,
+						}}
+					>
+						{placeholder}
+					</MenuItem>
+				)}
+				{items.map((item) => (
+					<MenuItem
+						value={item._id}
+						key={`${id}-${item._id}`}
+						sx={{
+							...itemStyles,
+						}}
+					>
+						{item.name}
+					</MenuItem>
+				))}
+			</MuiSelect>
+		</Stack>
+	);
 };
 
 Select.propTypes = {
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  isHidden: PropTypes.bool,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      name: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onChange: PropTypes.func.isRequired,
-  sx: PropTypes.object,
+	id: PropTypes.string.isRequired,
+	name: PropTypes.string,
+	label: PropTypes.string,
+	placeholder: PropTypes.string,
+	isHidden: PropTypes.bool,
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+	items: PropTypes.arrayOf(
+		PropTypes.shape({
+			_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+			name: PropTypes.string.isRequired,
+		})
+	).isRequired,
+	onChange: PropTypes.func.isRequired,
+	sx: PropTypes.object,
 };
 
 export default Select;

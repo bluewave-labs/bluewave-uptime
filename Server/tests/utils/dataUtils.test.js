@@ -62,7 +62,6 @@ describe("calculatePercentile", () => {
 		const percentile = 100;
 		const result = calculatePercentile(checks, percentile);
 		const expected = 50;
-		console.log(result);
 		expect(result).to.equal(expected);
 	});
 });

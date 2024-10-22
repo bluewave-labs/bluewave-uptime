@@ -20,11 +20,25 @@ import { fileURLToPath } from "url";
 import { connectDbAndRunServer } from "./configs/db.js";
 import queueRouter from "./routes/queueRoute.js";
 import JobQueue from "./service/jobQueue.js";
+
+//Network service and dependencies
 import NetworkService from "./service/networkService.js";
+import axios from "axios";
+import ping from "ping";
+import http from "http";
+
+// Email service and dependencies
 import EmailService from "./service/emailService.js";
+import nodemailer from "nodemailer";
+import pkg from "handlebars";
+const { compile } = pkg;
+import mjml2html from "mjml";
+
+// Settings Service and dependencies
 import SettingsService from "./service/settingsService.js";
+import AppSettings from "../db/models/AppSettings.js";
+
 import db from "./db/mongo/MongoDB.js";
-import { fetchMonitorCertificate } from "./controllers/controllerUtils.js";
 const SERVICE_NAME = "Server";
 
 let cleaningUp = false;
@@ -130,11 +144,19 @@ const startApp = async () => {
 
 	// Create services
 	await connectDbAndRunServer(app, db);
-	const settingsService = new SettingsService();
+	const settingsService = new SettingsService(AppSettings);
 
 	await settingsService.loadSettings();
-	const emailService = new EmailService(settingsService);
-	const networkService = new NetworkService(db, emailService);
+	const emailService = new EmailService(
+		settingsService,
+		fs,
+		path,
+		compile,
+		mjml2html,
+		nodemailer,
+		logger
+	);
+	const networkService = new NetworkService(db, emailService, axios, ping, logger, http);
 	const jobQueue = await JobQueue.createJobQueue(db, networkService, settingsService);
 
 	const cleanup = async () => {

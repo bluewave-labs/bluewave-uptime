@@ -6,6 +6,9 @@ import {
 	fetchMonitorCertificate,
 } from "../../controllers/controllerUtils.js";
 import { expect } from "chai";
+import sslChecker from "ssl-checker";
+import { afterEach } from "node:test";
+import exp from "constants";
 
 describe("controllerUtils - handleValidationError", () => {
 	it("should set status to 422", () => {
@@ -109,102 +112,40 @@ describe("controllerUtils - handleError", () => {
 });
 
 describe("controllerUtils - fetchMonitorCertificate", () => {
-	const originalTls = {
-		connect: sinon.stub().callsFake((options, callback) => {
-			// Create socket stub with sinon stubs for all methods
-			socket = {
-				getPeerX509Certificate: sinon.stub().returns({
-					subject: "CN=fake-cert",
-					validTo: "Dec 31 23:59:59 2023 GMT",
-				}),
-				end: sinon.stub(),
-				on: sinon.stub(),
-			};
-
-			// Use process.nextTick to ensure async behavior
-			process.nextTick(() => {
-				callback.call(socket); // Ensure correct 'this' binding
-			});
-
-			return socket;
-		}),
-	};
-
-	let tls, monitor, socket;
+	let sslChecker, monitor;
 	beforeEach(() => {
-		monitor = { url: "https://www.google.com" };
-		tls = {
-			connect: sinon.stub().callsFake((options, callback) => {
-				// Create socket stub with sinon stubs for all methods
-				socket = {
-					getPeerX509Certificate: sinon.stub().returns({
-						subject: "CN=fake-cert",
-						validTo: "Dec 31 23:59:59 2023 GMT",
-					}),
-					end: sinon.stub(),
-					on: sinon.stub(),
-				};
-
-				// Use process.nextTick to ensure async behavior
-				process.nextTick(() => {
-					callback.call(socket); // Ensure correct 'this' binding
-				});
-
-				return socket;
-			}),
+		monitor = {
+			url: "https://www.google.com",
 		};
+		sslChecker = sinon.stub();
 	});
 
 	afterEach(() => {
-		tls = { ...originalTls };
 		sinon.restore();
 	});
 
-	it("should resolve with the certificate when the connection is successful", async () => {
-		const certificate = await fetchMonitorCertificate(tls, monitor);
-		expect(certificate.validTo).to.equal("Dec 31 23:59:59 2023 GMT");
-		expect(socket.end.calledOnce).to.be.true;
-	});
-
-	it("should reject with an error when the connection fails", async () => {
-		tls.connect = sinon.stub().throws(new Error("Connection error"));
+	it("should reject with an error if a URL does not parse", async () => {
+		monitor.url = "invalidurl";
 		try {
-			await fetchMonitorCertificate(tls, monitor);
+			await fetchMonitorCertificate(sslChecker, monitor);
 		} catch (error) {
-			expect(error.message).to.equal("Connection error");
-		}
-	});
-
-	it("should reject with an error if monitorURL is invalid", async () => {
-		monitor.url = "invalid-url";
-		try {
-			await fetchMonitorCertificate(tls, monitor);
-		} catch (error) {
+			expect(error).to.be.an("error");
 			expect(error.message).to.equal("Invalid URL");
 		}
 	});
-	it("should do a thing", async () => {
-		tls = {
-			connect: sinon.stub().callsFake((options, callback) => {
-				// Create socket stub with sinon stubs for all methods
-				socket = {
-					getPeerX509Certificate: sinon.stub().throws(new Error("Certificate error")),
-					end: sinon.stub(),
-					on: sinon.stub(),
-				};
 
-				// Use process.nextTick to ensure async behavior
-				process.nextTick(() => {
-					callback.call(socket); // Ensure correct 'this' binding
-				});
-
-				return socket;
-			}),
-		};
+	it("should reject with an error if sslChecker throws an error", async () => {
+		sslChecker.rejects(new Error("Test error"));
 		try {
-			await fetchMonitorCertificate(tls, monitor);
+			await fetchMonitorCertificate(sslChecker, monitor);
 		} catch (error) {
-			expect(error.message).to.equal("Certificate error");
+			expect(error).to.be.an("error");
+			expect(error.message).to.equal("Test error");
 		}
+	});
+	it("should return a certificate if sslChecker resolves", async () => {
+		sslChecker.resolves({ validTo: "2022-01-01" });
+		const result = await fetchMonitorCertificate(sslChecker, monitor);
+		expect(result).to.deep.equal({ validTo: "2022-01-01" });
 	});
 });
