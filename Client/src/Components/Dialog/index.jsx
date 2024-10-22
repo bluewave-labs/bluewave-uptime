@@ -1,6 +1,7 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Button, Modal, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
+import { GenericDialog } from "./genericDialog";
 const Dialog = ({
 	modelTitle,
 	modelDescription,
@@ -16,72 +17,53 @@ const Dialog = ({
 	description,
 }) => {
 	return (
-		<Modal
-			aria-labelledby={modelTitle}
-			aria-describedby={modelDescription}
+		<GenericDialog
+			title={modelTitle}
+			description={modelDescription}
 			open={open}
-			onClose={onClose}
+			close={onClose}
+			theme={theme}
 		>
-			<Stack
-				gap={theme.spacing(2)}
-				sx={{
-					position: "absolute",
-					top: "50%",
-					left: "50%",
-					transform: "translate(-50%, -50%)",
-					width: 400,
-					bgcolor: theme.palette.background.main,
-					border: 1,
-					borderColor: theme.palette.border.light,
-					borderRadius: theme.shape.borderRadius,
-					boxShadow: 24,
-					p: theme.spacing(15),
-					"&:focus": {
-						outline: "none",
-					},
-				}}
+			<Typography
+				id={modelTitle}
+				component="h2"
+				fontSize={16}
+				color={theme.palette.text.primary}
+				fontWeight={600}
 			>
+				{title}
+			</Typography>
+			{description && (
 				<Typography
-					id={modelTitle}
-					component="h2"
-					fontSize={16}
-					color={theme.palette.text.primary}
-					fontWeight={600}
+					id={modelDescription}
+					color={theme.palette.text.tertiary}
 				>
-					{title}
+					{description}
 				</Typography>
-				{description && (
-					<Typography
-						id={modelDescription}
-						color={theme.palette.text.tertiary}
-					>
-						{description}
-					</Typography>
-				)}
-				<Stack
-					direction="row"
-					gap={theme.spacing(4)}
-					mt={theme.spacing(12)}
-					justifyContent="flex-end"
+			)}
+			<Stack
+				direction="row"
+				gap={theme.spacing(4)}
+				mt={theme.spacing(12)}
+				justifyContent="flex-end"
+			>
+				<Button
+					variant="text"
+					color="info"
+					onClick={cancelBtnOnClick}
 				>
-					<Button
-						variant="text"
-						color="info"
-						onClick={cancelBtnOnClick}
-					>
-						{cancelBtnLbl}
-					</Button>
-					<LoadingButton
-						variant="contained"
-						color="error"
-						loading={isLoading}
-						onClick={confirmationBtnOnClick}
-					>
-						{confirmationBtnLbl}
-					</LoadingButton>
-				</Stack>
+					{cancelBtnLbl}
+				</Button>
+				<LoadingButton
+					variant="contained"
+					color="error"
+					loading={isLoading}
+					onClick={confirmationBtnOnClick}
+				>
+					{confirmationBtnLbl}
+				</LoadingButton>
 			</Stack>
-		</Modal>
+		</GenericDialog>
 	);
 };
 
