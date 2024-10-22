@@ -333,7 +333,7 @@ const TeamPanel = () => {
 				title={"modal-invite-member"}
 				description={"invite-member-to-team"}
 				open={isOpen}
-				close={closeInviteModal}
+				onClose={closeInviteModal}
 				theme={theme}
 			>
 				<Box>

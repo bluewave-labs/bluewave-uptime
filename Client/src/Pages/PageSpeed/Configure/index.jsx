@@ -26,6 +26,7 @@ import SkeletonLayout from "./skeleton";
 import useUtils from "../../Monitors/utils";
 import "./index.css";
 import { GenericDialog } from "../../../Components/Dialog/genericDialog";
+import Dialog from "../../../Components/Dialog";
 
 const PageSpeedConfigure = () => {
 	const theme = useTheme();
@@ -38,6 +39,7 @@ const PageSpeedConfigure = () => {
 	const [monitor, setMonitor] = useState({});
 	const [errors, setErrors] = useState({});
 	const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
+	const [buttonLoading, setButtonLoading] = useState(false);
 	const idMap = {
 		"monitor-url": "url",
 		"monitor-name": "name",
@@ -157,12 +159,14 @@ const PageSpeedConfigure = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const handleRemove = async (event) => {
 		event.preventDefault();
+		setButtonLoading(true);
 		const action = await dispatch(deletePageSpeed({ authToken, monitor }));
 		if (action.meta.requestStatus === "fulfilled") {
 			navigate("/pagespeed");
 		} else {
 			createToast({ body: "Failed to delete monitor." });
 		}
+		setButtonLoading(false);
 	};
 
 	return (
@@ -429,11 +433,22 @@ const PageSpeedConfigure = () => {
 					</Stack>
 				</>
 			)}
+			<Dialog
+				open={isOpen}
+				onClose={() => setIsOpen(false)}
+				theme={theme}
+				title={"Do you really want to delete this monitor?"}
+				description={"Once deleted, this monitor cannot be retrieved."}
+				onCancel={() => setIsOpen(false)}
+				confirmationButtonLabel={"Delete"}
+				onConfirm={handleRemove}
+				isLoading={buttonLoading}
+			/>
 			<GenericDialog
 				title={"modal-delete-pagespeed-monitor"}
 				description={"delete-pagespeed-monitor-confirmation"}
 				open={isOpen}
-				close={() => setIsOpen(false)}
+				onClose={() => setIsOpen(false)}
 				theme={theme}
 			>
 				<Typography

@@ -188,25 +188,26 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
 				)}
 			</Menu>
 			<Dialog
-				modelTitle="modal-delete-monitor"
-				modelDescription="delete-monitor-confirmation"
 				open={isOpen}
 				onClose={() => setIsOpen(false)}
+				theme={theme}
 				title="Do you really want to delete this monitor?"
-				confirmationBtnLbl="Delete"
-				confirmationBtnOnClick={(e) => {
-					e.stopPropagation();
-					handleRemove(e);
-				}}
-				cancelBtnLbl="Cancel"
-				cancelBtnOnClick={(e) => {
+				description="Once deleted, this monitor cannot be retrieved."
+				/* Do we need stop propagation? */
+				onCancel={(e) => {
 					e.stopPropagation();
 					setIsOpen(false);
 				}}
-				theme={theme}
+				confirmationButtonLabel="Delete"
+				/* Do we need stop propagation? */
+				onConfirm={(e) => {
+					e.stopPropagation();
+					handleRemove(e);
+				}}
 				isLoading={isLoading}
-				description="Once deleted, this monitor cannot be retrieved."
-			></Dialog>
+				modelTitle="modal-delete-monitor"
+				modelDescription="delete-monitor-confirmation"
+			/>
 		</>
 	);
 };

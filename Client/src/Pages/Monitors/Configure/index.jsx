@@ -453,20 +453,18 @@ const Configure = () => {
 					</Stack>
 				</>
 			)}
+
 			<Dialog
-				modelTitle="modal-delete-monitor"
-				modelDescription="delete-monitor-confirmation"
 				open={isOpen}
 				onClose={() => setIsOpen(false)}
-				title="Do you really want to delete this monitor?"
-				confirmationBtnLbl="Delete"
-				confirmationBtnOnClick={handleRemove}
-				cancelBtnLbl="Cancel"
-				cancelBtnOnClick={() => setIsOpen(false)}
 				theme={theme}
-				isLoading={isLoading}
+				title="Do you really want to delete this monitor?"
 				description="Once deleted, this monitor cannot be retrieved."
-			></Dialog>
+				onCancel={() => setIsOpen(false)}
+				confirmationButtonLabel="Delete"
+				onConfirm={handleRemove}
+				isLoading={isLoading}
+			/>
 		</Stack>
 	);
 };

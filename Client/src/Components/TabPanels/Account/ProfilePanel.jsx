@@ -16,6 +16,7 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { GenericDialog } from "../../Dialog/genericDialog";
+import Dialog from "../../Dialog";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -370,56 +371,26 @@ const ProfilePanel = () => {
 				</Box>
 			)}
 			{/* TODO - Update ModalPopup Component with @mui for reusability */}
-			<GenericDialog
-				title={"modal-delete-account"}
-				description={"delete-account-confirmation"}
+
+			<Dialog
 				open={isModalOpen("delete")}
-				close={() => setIsOpen("")}
+				onClose={() => setIsOpen("")}
 				theme={theme}
-				/* disablePortal ? */
-			>
-				<Typography
-					id="modal-delete-account"
-					component="h1"
-				>
-					Really delete this account?
-				</Typography>
-				<Typography
-					id="delete-account-confirmation"
-					component="p"
-				>
-					If you delete your account, you will no longer be able to sign in, and all of
-					your data will be deleted. Deleting your account is permanent and
-					non-recoverable action.
-				</Typography>
-				<Stack
-					direction="row"
-					gap={theme.spacing(5)}
-					mt={theme.spacing(5)}
-					justifyContent="flex-end"
-				>
-					<Button
-						variant="text"
-						color="info"
-						onClick={() => setIsOpen("")}
-					>
-						Cancel
-					</Button>
-					<LoadingButton
-						variant="contained"
-						color="error"
-						onClick={handleDeleteAccount}
-						loading={isLoading}
-					>
-						Delete account
-					</LoadingButton>
-				</Stack>
-			</GenericDialog>
+				title={"Really delete this account?"}
+				description={
+					"If you delete your account, you will no longer be able to sign in, and all of your data will be deleted. Deleting your account is permanent and non-recoverable action."
+				}
+				onCancel={() => setIsOpen("")}
+				confirmationButtonLabel={"Delete account"}
+				onConfirm={handleDeleteAccount}
+				isLoading={isLoading}
+			/>
+
 			<GenericDialog
 				title={"modal-update-picture"}
 				description={"update-profile-picture"}
 				open={isModalOpen("picture")}
-				close={closePictureModal}
+				onClose={closePictureModal}
 				theme={theme}
 			>
 				<Typography

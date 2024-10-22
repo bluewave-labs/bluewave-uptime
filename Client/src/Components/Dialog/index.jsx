@@ -2,30 +2,30 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Button, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { GenericDialog } from "./genericDialog";
+import { useId } from "react";
 const Dialog = ({
-	modelTitle,
-	modelDescription,
 	open,
 	onClose,
-	title,
-	confirmationBtnLbl,
-	confirmationBtnOnClick,
-	cancelBtnLbl,
-	cancelBtnOnClick,
 	theme,
-	isLoading,
+	title,
 	description,
+	onCancel,
+	confirmationButtonLabel,
+	onConfirm,
+	isLoading,
 }) => {
+	const titleId = useId();
+	const descriptionId = useId();
 	return (
 		<GenericDialog
-			title={modelTitle}
-			description={modelDescription}
+			title={titleId}
+			description={descriptionId}
 			open={open}
-			close={onClose}
+			onClose={onClose}
 			theme={theme}
 		>
 			<Typography
-				id={modelTitle}
+				id={titleId}
 				component="h2"
 				fontSize={16}
 				color={theme.palette.text.primary}
@@ -35,7 +35,7 @@ const Dialog = ({
 			</Typography>
 			{description && (
 				<Typography
-					id={modelDescription}
+					id={descriptionId}
 					color={theme.palette.text.tertiary}
 				>
 					{description}
@@ -50,17 +50,17 @@ const Dialog = ({
 				<Button
 					variant="text"
 					color="info"
-					onClick={cancelBtnOnClick}
+					onClick={onCancel}
 				>
-					{cancelBtnLbl}
+					Cancel
 				</Button>
 				<LoadingButton
 					variant="contained"
 					color="error"
 					loading={isLoading}
-					onClick={confirmationBtnOnClick}
+					onClick={onConfirm}
 				>
-					{confirmationBtnLbl}
+					{confirmationButtonLabel}
 				</LoadingButton>
 			</Stack>
 		</GenericDialog>
@@ -68,18 +68,15 @@ const Dialog = ({
 };
 
 Dialog.propTypes = {
-	modelTitle: PropTypes.string.isRequired,
-	modelDescription: PropTypes.string.isRequired,
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
-	title: PropTypes.string.isRequired,
-	confirmationBtnLbl: PropTypes.string.isRequired,
-	confirmationBtnOnClick: PropTypes.func.isRequired,
-	cancelBtnLbl: PropTypes.string.isRequired,
-	cancelBtnOnClick: PropTypes.func.isRequired,
 	theme: PropTypes.object.isRequired,
-	isLoading: PropTypes.bool.isRequired,
+	title: PropTypes.string.isRequired,
 	description: PropTypes.string,
+	onCancel: PropTypes.func.isRequired,
+	confirmationButtonLabel: PropTypes.string.isRequired,
+	onConfirm: PropTypes.func.isRequired,
+	isLoading: PropTypes.bool.isRequired,
 };
 
 export default Dialog;

@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Button, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import { logger } from "../../../../Utils/Logger";
 import Settings from "../../../../assets/icons/settings-bold.svg?react";
 import PropTypes from "prop-types";
 import { networkService } from "../../../../main";
 import { createToast } from "../../../../Utils/toastUtils";
-import { GenericDialog } from "../../../../Components/Dialog/genericDialog";
+
+import Dialog from "../../../../Components/Dialog";
 
 const ActionsMenu = ({ /* isAdmin, */ maintenanceWindow, updateCallback }) => {
 	maintenanceWindow;
@@ -148,52 +148,25 @@ const ActionsMenu = ({ /* isAdmin, */ maintenanceWindow, updateCallback }) => {
 					Remove
 				</MenuItem>
 			</Menu>
-			<GenericDialog
-				title={"modal-delete-monitor"}
-				description={"delete-monitor-confirmation"}
+			<Dialog
 				open={isOpen}
-				close={(e) => {
+				onClose={(e) => {
 					e.stopPropagation();
 					setIsOpen(false);
 				}}
 				theme={theme}
-			>
-				<Typography
-					id="modal-delete-maintenance"
-					component="h2"
-					variant="h2"
-				>
-					Do you really want to remove this maintenance window?
-				</Typography>
-				<Stack
-					direction="row"
-					gap={theme.spacing(4)}
-					mt={theme.spacing(12)}
-					justifyContent="flex-end"
-				>
-					<Button
-						variant="text"
-						color="info"
-						onClick={(e) => {
-							e.stopPropagation();
-							setIsOpen(false);
-						}}
-					>
-						Cancel
-					</Button>
-					<LoadingButton
-						loading={isLoading}
-						variant="contained"
-						color="error"
-						onClick={(e) => {
-							e.stopPropagation(e);
-							handleRemove(e);
-						}}
-					>
-						Delete
-					</LoadingButton>
-				</Stack>
-			</GenericDialog>
+				title={"Do you really want to remove this maintenance window?"}
+				onCancel={(e) => {
+					e.stopPropagation();
+					setIsOpen(false);
+				}}
+				confirmationButtonLabel={"Delete"}
+				onConfirm={(e) => {
+					e.stopPropagation(e);
+					handleRemove(e);
+				}}
+				isLoading={isLoading}
+			/>
 		</>
 	);
 };
