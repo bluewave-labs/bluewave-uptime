@@ -36,7 +36,7 @@ import mjml2html from "mjml";
 
 // Settings Service and dependencies
 import SettingsService from "./service/settingsService.js";
-import AppSettings from "../db/models/AppSettings.js";
+import AppSettings from "./db/models/AppSettings.js";
 
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
