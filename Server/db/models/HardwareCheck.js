@@ -16,7 +16,7 @@ const memorySchema = mongoose.Schema({
 	usage_percent: { type: Number, default: 0 },
 });
 
-const discSchema = mongoose.Schema({
+const diskSchema = mongoose.Schema({
 	read_speed_bytes: { type: Number, default: 0 },
 	write_speed_bytes: { type: Number, default: 0 },
 	total_bytes: { type: Number, default: 0 },
@@ -46,7 +46,7 @@ const HardwareCheckSchema = mongoose.Schema(
 			default: () => ({}),
 		},
 		disk: {
-			type: [discSchema],
+			type: [diskSchema],
 			default: () => [],
 		},
 		host: {
