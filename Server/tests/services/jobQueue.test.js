@@ -14,6 +14,12 @@ class QueueStub {
 		this.jobs.push(job);
 	}
 
+	removeRepeatable(id) {
+		const removedJob = this.jobs.find((job) => job.data._id === id);
+		this.jobs = this.jobs.filter((job) => job.data._id !== id);
+		return removedJob;
+	}
+
 	getRepeatableJobs() {
 		return this.jobs;
 	}
@@ -200,7 +206,7 @@ describe("JobQueue", () => {
 		});
 	});
 	describe("getWorkerStats", () => {
-		it("should return worker stats", async () => {
+		it("should throw an error if getRepeatable Jobs fails", async () => {
 			const jobQueue = await JobQueue.createJobQueue(
 				db,
 				networkService,
@@ -217,6 +223,28 @@ describe("JobQueue", () => {
 			} catch (error) {
 				expect(error.service).to.equal("JobQueue");
 				expect(error.method).to.equal("getWorkerStats");
+			}
+		});
+		it("should throw an error if getRepeatable Jobs fails but respect existing error data", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.getRepeatableJobs = async () => {
+				const error = new Error("Existing Error");
+				error.service = "otherService";
+				error.method = "otherMethod";
+				throw error;
+			};
+			try {
+				await jobQueue.getWorkerStats();
+			} catch (error) {
+				expect(error.service).to.equal("otherService");
+				expect(error.method).to.equal("otherMethod");
 			}
 		});
 	});
@@ -341,6 +369,29 @@ describe("JobQueue", () => {
 				expect(error.method).to.equal("getJobs");
 			}
 		});
+		it("should throw an error if getRepeatableJobs fails but respect existing error data", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			try {
+				jobQueue.queue.getRepeatableJobs = async () => {
+					const error = new Error("Existing error");
+					error.service = "otherService";
+					error.method = "otherMethod";
+					throw error;
+				};
+
+				await jobQueue.getJobs(true);
+			} catch (error) {
+				expect(error.service).to.equal("otherService");
+				expect(error.method).to.equal("otherMethod");
+			}
+		});
 	});
 
 	describe("getJobStats", async () => {
@@ -401,6 +452,36 @@ describe("JobQueue", () => {
 				expect(error.method).to.equal("getJobStats");
 			}
 		});
+		it("should reject with an error if mapping jobs fails but respect existing error data", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.getJobs = async () => {
+				return [
+					{
+						data: { url: "test" },
+						getState: async () => {
+							const error = new Error("Mapping Error");
+							error.service = "otherService";
+							error.method = "otherMethod";
+							throw error;
+						},
+					},
+				];
+			};
+			try {
+				await jobQueue.getJobStats();
+			} catch (error) {
+				expect(error.message).to.equal("Mapping Error");
+				expect(error.service).to.equal("otherService");
+				expect(error.method).to.equal("otherMethod");
+			}
+		});
 	});
 
 	describe("addJob", async () => {
@@ -434,6 +515,222 @@ describe("JobQueue", () => {
 				expect(error.message).to.equal("Error adding job");
 				expect(error.service).to.equal("JobQueue");
 				expect(error.method).to.equal("addJob");
+			}
+		});
+		it("should reject with an error if adding fails but respect existing error data", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.add = async () => {
+				const error = new Error("Error adding job");
+				error.service = "otherService";
+				error.method = "otherMethod";
+				throw error;
+			};
+			try {
+				await jobQueue.addJob("test", { url: "test" });
+			} catch (error) {
+				expect(error.message).to.equal("Error adding job");
+				expect(error.service).to.equal("otherService");
+				expect(error.method).to.equal("otherMethod");
+			}
+		});
+	});
+	describe("deleteJob", async () => {
+		it("should delete a job from the queue", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.getWorkerStats = sinon.stub().returns({ load: 1, jobs: [{}] });
+			jobQueue.scaleWorkers = sinon.stub();
+			const monitor = { _id: 1 };
+			const job = { data: monitor };
+			jobQueue.queue.jobs = [job];
+			await jobQueue.deleteJob(monitor);
+			expect(jobQueue.queue.jobs.length).to.equal(0);
+			expect(logger.info.calledOnce).to.be.true;
+			expect(jobQueue.getWorkerStats.calledOnce).to.be.true;
+			expect(jobQueue.scaleWorkers.calledOnce).to.be.true;
+		});
+		it("should log an error if job is not found", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.getWorkerStats = sinon.stub().returns({ load: 1, jobs: [{}] });
+			jobQueue.scaleWorkers = sinon.stub();
+			const monitor = { _id: 1 };
+			const job = { data: monitor };
+			jobQueue.queue.jobs = [job];
+			await jobQueue.deleteJob({ id_: 2 });
+			expect(logger.error.calledOnce).to.be.true;
+		});
+		it("should reject with an error if removeRepeatable fails", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.removeRepeatable = async () => {
+				const error = new Error("removeRepeatable error");
+				throw error;
+			};
+
+			try {
+				await jobQueue.deleteJob({ _id: 1 });
+			} catch (error) {
+				expect(error.message).to.equal("removeRepeatable error");
+				expect(error.service).to.equal("JobQueue");
+				expect(error.method).to.equal("deleteJob");
+			}
+		});
+		it("should reject with an error if removeRepeatable fails but respect existing error data", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.removeRepeatable = async () => {
+				const error = new Error("removeRepeatable error");
+				error.service = "otherService";
+				error.method = "otherMethod";
+				throw error;
+			};
+
+			try {
+				await jobQueue.deleteJob({ _id: 1 });
+			} catch (error) {
+				expect(error.message).to.equal("removeRepeatable error");
+				expect(error.service).to.equal("otherService");
+				expect(error.method).to.equal("otherMethod");
+			}
+		});
+	});
+	describe("getMetrics", () => {
+		it("should return metrics for the job queue", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.getWaitingCount = async () => 1;
+			jobQueue.queue.getActiveCount = async () => 2;
+			jobQueue.queue.getCompletedCount = async () => 3;
+			jobQueue.queue.getFailedCount = async () => 4;
+			jobQueue.queue.getDelayedCount = async () => 5;
+			jobQueue.queue.getRepeatableJobs = async () => [1, 2, 3];
+			const metrics = await jobQueue.getMetrics();
+			expect(metrics).to.deep.equal({
+				waiting: 1,
+				active: 2,
+				completed: 3,
+				failed: 4,
+				delayed: 5,
+				repeatableJobs: 3,
+			});
+		});
+		it("should log an error if metrics operations fail", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.getWaitingCount = async () => {
+				throw new Error("Error");
+			};
+			await jobQueue.getMetrics();
+			expect(logger.error.calledOnce).to.be.true;
+			expect(logger.error.calledWith("Failed to retrieve job queue metrics")).to.be.true;
+		});
+	});
+
+	describe("obliterate", () => {
+		it("should return true if obliteration is successful", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+			jobQueue.queue.pause = async () => true;
+			jobQueue.getJobs = async () => [{ key: 1, id: 1 }];
+			jobQueue.queue.removeRepeatableByKey = async () => true;
+			jobQueue.queue.remove = async () => true;
+			jobQueue.queue.obliterate = async () => true;
+			const obliteration = await jobQueue.obliterate();
+			expect(obliteration).to.be.true;
+		});
+		it("should throw an error if obliteration fails", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+
+			jobQueue.getMetrics = async () => {
+				throw new Error("Error");
+			};
+
+			try {
+				await jobQueue.obliterate();
+			} catch (error) {
+				expect(error.service).to.equal("JobQueue");
+				expect(error.method).to.equal("obliterate");
+			}
+		});
+		it("should throw an error if obliteration fails but respect existing error data", async () => {
+			const jobQueue = await JobQueue.createJobQueue(
+				db,
+				networkService,
+				settingsService,
+				logger,
+				QueueStub,
+				WorkerStub
+			);
+
+			jobQueue.getMetrics = async () => {
+				const error = new Error("Error");
+				error.service = "otherService";
+				error.method = "otherMethod";
+				throw error;
+			};
+
+			try {
+				await jobQueue.obliterate();
+			} catch (error) {
+				expect(error.service).to.equal("otherService");
+				expect(error.method).to.equal("otherMethod");
 			}
 		});
 	});
