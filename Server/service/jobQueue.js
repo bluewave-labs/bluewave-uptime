@@ -315,6 +315,7 @@ class JobQueue {
 				delayed: await this.queue.getDelayedCount(),
 				repeatableJobs: (await this.queue.getRepeatableJobs()).length,
 			};
+			console.log(metrics);
 			return metrics;
 		} catch (error) {
 			this.logger.error("Failed to retrieve job queue metrics", {
@@ -348,7 +349,7 @@ class JobQueue {
 			await this.queue.obliterate();
 			metrics = await this.getMetrics();
 			console.log(metrics);
-			logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
+			this.logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
 				service: SERVICE_NAME,
 			});
 			return true;
