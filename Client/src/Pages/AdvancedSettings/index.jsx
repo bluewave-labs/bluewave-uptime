@@ -74,18 +74,23 @@ const AdvancedSettings = ({ isAdmin }) => {
 		setLocalSettings({ ...localSettings, logLevel: newLogLevel });
 	};
 
-	const handleChange = (event) => {
+	const handleBlur = (event) => {
 		const { value, id } = event.target;
-		setLocalSettings({ ...localSettings, [id]: value });
 		const { error } = advancedSettingsValidation.validate(
 			{ [id]: value },
 			{
 				abortEarly: false,
 			}
 		);
-		setErrors((prev) => {
-			return buildErrors(prev, id, error);
-		});    
+		if (error) {
+			setErrors((prev) => {
+				return buildErrors(prev, id, error);
+			});
+		}
+	};
+	const handleChange = (event) => {
+		const { value, id } = event.target;
+		setLocalSettings({ ...localSettings, [id]: value });		
 	};
 
 	const handleSave = async () => {
@@ -131,6 +136,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							label="API URL Host"
 							value={localSettings.apiBaseUrl}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.apiBaseUrl}
 						/>
 						<Select
@@ -140,6 +146,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							items={logItems}
 							value={logItemLookup[localSettings.logLevel]}
 							onChange={handleLogLevel}
+							onBlur={handleBlur}
 							error={errors.logLevel}
 						/>
 					</Stack>
@@ -160,6 +167,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailHost"
 							value={localSettings.systemEmailHost}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.systemEmailHost}
 						/>
 						<Field
@@ -169,6 +177,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailPort"
 							value={localSettings.systemEmailPort.toString()}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.systemEmailPort}
 						/>
 						<Field
@@ -187,6 +196,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailPassword"
 							value={localSettings.systemEmailPassword}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.systemEmailPassword}
 						/>
 					</Stack>
@@ -206,6 +216,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="jwtTTL"
 							value={localSettings.jwtTTL}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.jwtTTL}
 						/>
 						<Field
@@ -215,6 +226,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="dbType"
 							value={localSettings.dbType}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.dbType}
 						/>
 						<Field
@@ -224,6 +236,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="redisHost"
 							value={localSettings.redisHost}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.redisHost}
 						/>
 						<Field
@@ -233,6 +246,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="redisPort"
 							value={localSettings.redisPort.toString()}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.redisPort}
 						/>
 						<Field
@@ -242,6 +256,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="pagespeedApiKey"
 							value={localSettings.pagespeedApiKey}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors.pagespeedApiKey}
 						/>
 					</Stack>

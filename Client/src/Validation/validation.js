@@ -147,7 +147,7 @@ const advancedSettingsValidation = joi.object({
 		.custom((value, helpers) => {
 			// test against regx start with a number followed by number or .,
 			//ends with d or h
-			const regex = /^[1-9]+\d*(.)*(d|h)$/;
+			const regex = /^[1-9]+\d*(d|h)$/;
 			const found = value.match(regex);
 			if (!found) {
 				return helpers.message(
