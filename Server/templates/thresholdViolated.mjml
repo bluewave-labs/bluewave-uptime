@@ -1,0 +1,40 @@
+<mjml>
+  <mj-head>
+    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,500"></mj-font>
+    <mj-attributes>
+      <mj-all font-family="Roboto, Helvetica, sans-serif"></mj-all>
+      <mj-text font-weight="300" font-size="16px" color="#616161" line-height="24px"></mj-text>
+      <mj-section padding="0px"></mj-section>
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section padding="20px 0">
+      <mj-column width="100%">
+        <mj-text align="left" font-size="10px">
+          Message from BlueWave Uptime Service
+        </mj-text>
+      </mj-column>
+      <mj-column width="45%" padding-top="20px">
+        <mj-text font-weight="500" padding="0px" font-size="18px">
+          {{message}}
+        </mj-text>
+        <mj-text font-weight="500" padding="0px" font-size="18px">
+          {{#if cpu}}
+            {{cpu}}
+          {{/if}}
+        </mj-text>
+        <mj-text font-weight="500" padding="0px" font-size="18px">
+          {{#if disk}}
+            {{disk}}
+          {{/if}}
+        </mj-text>
+        <mj-text font-weight="500" padding="0px" font-size="18px">
+          {{#if memory}}
+            {{memory}}
+          {{/if}}
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
