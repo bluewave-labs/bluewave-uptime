@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -21,6 +21,9 @@ const SetNewPassword = () => {
 	const dispatch = useDispatch();
 	const theme = useTheme();
 
+	const passwordId = useId();
+	const confirmPasswordId = useId();
+
 	const [errors, setErrors] = useState({});
 	const [form, setForm] = useState({
 		password: "",
@@ -36,11 +39,10 @@ const SetNewPassword = () => {
 		const passwordForm = { ...form };
 		const { error } = credentials.validate(passwordForm, {
 			abortEarly: false,
-			/* context: { password: form.password }, */
+			context: { password: form.password },
 		});
 
 		if (error) {
-			// validation errors
 			const newErrors = {};
 			error.details.forEach((err) => {
 				newErrors[err.path[0]] = err.message;
@@ -77,45 +79,42 @@ const SetNewPassword = () => {
 	};
 
 	const handleChange = (event) => {
-		//TODO Change from id to name
 		const { value, name } = event.target;
-		setForm((prev) => ({
-			...prev,
-			[name]: value,
-		}));
+		setForm((prev) => ({ ...prev, [name]: value }));
 
-		const { error } = credentials.validate(
-			{ [name]: value },
-			{
-				abortEarly: false,
-				context: { password: form.password },
-			}
-		);
+		const validateValue = { [name]: value };
+		const validateOptions = { abortEarly: false, context: { password: form.password } };
+		const { error } = credentials.validate(validateValue, validateOptions);
 
-		const errors = error.details.map((error) => error.message);
-
+		const errors = error?.details.map((error) => error.message);
 		setErrors((prev) => ({ ...prev, [name]: errors }));
 	};
 
-	console.log(errors);
+	const getFeedbackStatus = (field, criteria) => {
+		const fieldErrors = errors[field];
+		const isFieldEmpty = form[field].length === 0;
+		const hasError = fieldErrors?.includes(criteria) || fieldErrors?.includes("empty");
+		const isCorrect = !isFieldEmpty && !hasError;
 
-	/* 	function getCheckStatus() */
+		if (isCorrect) {
+			return "success";
+		} else if (hasError) {
+			return "error";
+		} else {
+			return "info";
+		}
+	};
 
 	const feedbacks = {
-		length: "info" /* !errors.password
-			? "info"
-			: errors.password === "length" || errors.password === "empty"
-				? "error"
-				: "success", */,
-		special: "info" /* !errors
-			? "info"
-			: errors.password === "length" || errors.password === "empty"
-				? "error"
-				: "success", */,
-		number: "info",
-		upper: "success",
-		lower: "error",
+		length: getFeedbackStatus("password", "length"),
+		special: getFeedbackStatus("password", "special"),
+		number: getFeedbackStatus("password", "number"),
+		uppercase: getFeedbackStatus("password", "uppercase"),
+		lowercase: getFeedbackStatus("password", "lowercase"),
+		confirm: getFeedbackStatus("confirm", "different"),
 	};
+
+	console.log({ feedbacks });
 
 	return (
 		<Stack
@@ -203,6 +202,7 @@ const SetNewPassword = () => {
 							onSubmit={handleSubmit}
 						>
 							<Field
+								id={passwordId}
 								type="password"
 								name="password"
 								label="Password"
@@ -210,7 +210,7 @@ const SetNewPassword = () => {
 								placeholder="••••••••"
 								value={form.password}
 								onChange={handleChange}
-								error={errors.password}
+								/* error={errors.password} */
 							/>
 						</Box>
 						<Box
@@ -220,6 +220,7 @@ const SetNewPassword = () => {
 							onSubmit={handleSubmit}
 						>
 							<Field
+								id={confirmPasswordId}
 								type="password"
 								name="confirm"
 								label="Confirm password"
@@ -227,7 +228,7 @@ const SetNewPassword = () => {
 								placeholder="••••••••"
 								value={form.confirm}
 								onChange={handleChange}
-								error={errors.confirm}
+								/* error={errors.confirm} */
 							/>
 						</Box>
 						<Stack
@@ -268,7 +269,7 @@ const SetNewPassword = () => {
 										upper character
 									</>
 								}
-								variant={feedbacks.upper}
+								variant={feedbacks.uppercase}
 							/>
 							<Check
 								text={
@@ -277,7 +278,18 @@ const SetNewPassword = () => {
 										lower character
 									</>
 								}
-								variant={feedbacks.lower}
+								variant={feedbacks.lowercase}
+							/>
+							<Check
+								text={
+									<>
+										<Typography component="span">
+											Confirm password and password
+										</Typography>{" "}
+										must match
+									</>
+								}
+								variant={feedbacks.confirm}
 							/>
 						</Stack>
 					</Box>

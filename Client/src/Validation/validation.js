@@ -39,7 +39,7 @@ const passwordSchema = joi
 		return value;
 	})
 	.custom((value, helpers) => {
-		if (!/[!@#$%^&*]/.test(value)) {
+		if (!/[!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/]/.test(value)) {
 			return helpers.message("special");
 		}
 		return value;
