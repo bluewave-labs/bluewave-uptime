@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+// import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-// import "./App.css";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register/Register";
@@ -21,21 +24,18 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import Details from "./Pages/Monitors/Details";
 import AdvancedSettings from "./Pages/AdvancedSettings";
 import Maintenance from "./Pages/Maintenance";
-import withAdminCheck from "./HOC/withAdminCheck";
-import withAdminProp from "./HOC/withAdminProp";
 import Configure from "./Pages/Monitors/Configure";
 import PageSpeed from "./Pages/PageSpeed";
 import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
+import withAdminCheck from "./HOC/withAdminCheck";
+import withAdminProp from "./HOC/withAdminProp";
 import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
-import { useSelector } from "react-redux";
 import { CssBaseline } from "@mui/material";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
@@ -181,16 +181,18 @@ function App() {
 					path="/register"
 					element={<AdminCheckedRegister />}
 				/>
+
 				<Route
 					exact
 					path="/register/:token"
 					element={<Register />}
 				/>
-				{/* <Route path="/toast" element={<ToastComponent />} /> */}
+
 				<Route
 					path="*"
 					element={<NotFound />}
 				/>
+
 				<Route
 					path="/forgot-password"
 					element={<ForgotPassword />}

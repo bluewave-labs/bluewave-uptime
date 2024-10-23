@@ -1,20 +1,20 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import { Box, Stack, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { setNewPassword } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
-import { Box, Stack, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { useParams } from "react-router-dom";
-import { useState } from "react";
 import { credentials } from "../../Validation/validation";
-import { useNavigate } from "react-router-dom";
 import Check from "../../Components/Check/Check";
 import Field from "../../Components/Inputs/Field";
-import LockIcon from "../../assets/icons/lock.svg?react";
-import Background from "../../assets/Images/background-grid.svg?react";
-import Logo from "../../assets/icons/bwu-icon.svg?react";
-import LoadingButton from "@mui/lab/LoadingButton";
-import "./index.css";
 import { IconBox } from "./styled";
+import LockIcon from "../../assets/icons/lock.svg?react";
+import Logo from "../../assets/icons/bwu-icon.svg?react";
+import Background from "../../assets/Images/background-grid.svg?react";
+import "./index.css";
 
 const SetNewPassword = () => {
 	const navigate = useNavigate();
@@ -27,11 +27,6 @@ const SetNewPassword = () => {
 		confirm: "",
 	});
 
-	const idMap = {
-		"register-password-input": "password",
-		"confirm-password-input": "confirm",
-	};
-
 	const { isLoading } = useSelector((state) => state.auth);
 	const { token } = useParams();
 
@@ -41,7 +36,7 @@ const SetNewPassword = () => {
 		const passwordForm = { ...form };
 		const { error } = credentials.validate(passwordForm, {
 			abortEarly: false,
-			context: { password: form.password },
+			/* context: { password: form.password }, */
 		});
 
 		if (error) {
@@ -82,8 +77,8 @@ const SetNewPassword = () => {
 	};
 
 	const handleChange = (event) => {
-		const { value, id } = event.target;
-		const name = idMap[id];
+		//TODO Change from id to name
+		const { value, name } = event.target;
 		setForm((prev) => ({
 			...prev,
 			[name]: value,
@@ -91,15 +86,35 @@ const SetNewPassword = () => {
 
 		const { error } = credentials.validate(
 			{ [name]: value },
-			{ abortEarly: false, context: { password: form.password } }
+			{
+				abortEarly: false,
+				context: { password: form.password },
+			}
 		);
 
-		setErrors((prev) => {
-			const prevErrors = { ...prev };
-			if (error) prevErrors[name] = error.details[0].message;
-			else delete prevErrors[name];
-			return prevErrors;
-		});
+		const errors = error.details.map((error) => error.message);
+
+		setErrors((prev) => ({ ...prev, [name]: errors }));
+	};
+
+	console.log(errors);
+
+	/* 	function getCheckStatus() */
+
+	const feedbacks = {
+		length: "info" /* !errors.password
+			? "info"
+			: errors.password === "length" || errors.password === "empty"
+				? "error"
+				: "success", */,
+		special: "info" /* !errors
+			? "info"
+			: errors.password === "length" || errors.password === "empty"
+				? "error"
+				: "success", */,
+		number: "info",
+		upper: "success",
+		lower: "error",
 	};
 
 	return (
@@ -189,7 +204,7 @@ const SetNewPassword = () => {
 						>
 							<Field
 								type="password"
-								id="register-password-input"
+								name="password"
 								label="Password"
 								isRequired={true}
 								placeholder="••••••••"
@@ -206,7 +221,7 @@ const SetNewPassword = () => {
 						>
 							<Field
 								type="password"
-								id="confirm-password-input"
+								name="confirm"
 								label="Confirm password"
 								isRequired={true}
 								placeholder="••••••••"
@@ -226,49 +241,43 @@ const SetNewPassword = () => {
 										characters long
 									</>
 								}
-								variant={
-									errors?.password === "Password is required"
-										? "error"
-										: form.password === ""
-											? "info"
-											: form.password.length < 8
-												? "error"
-												: "success"
-								}
-							/>
-							<Check
-								text={
-									<>
-										<Typography component="span">Must contain</Typography> one special
-										character and a number
-									</>
-								}
-								variant={
-									errors?.password === "Password is required"
-										? "error"
-										: form.password === ""
-											? "info"
-											: !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(form.password)
-												? "error"
-												: "success"
-								}
+								variant={feedbacks.length}
 							/>
 							<Check
 								text={
 									<>
 										<Typography component="span">Must contain at least</Typography> one
-										upper and lower character
+										special character
 									</>
 								}
-								variant={
-									errors?.password === "Password is required"
-										? "error"
-										: form.password === ""
-											? "info"
-											: !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
-												? "error"
-												: "success"
+								variant={feedbacks.special}
+							/>
+							<Check
+								text={
+									<>
+										<Typography component="span">Must contain at least</Typography> one
+										one number
+									</>
 								}
+								variant={feedbacks.number}
+							/>
+							<Check
+								text={
+									<>
+										<Typography component="span">Must contain at least</Typography> one
+										upper character
+									</>
+								}
+								variant={feedbacks.upper}
+							/>
+							<Check
+								text={
+									<>
+										<Typography component="span">Must contain at least</Typography> one
+										lower character
+									</>
+								}
+								variant={feedbacks.lower}
 							/>
 						</Stack>
 					</Box>

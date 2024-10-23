@@ -17,26 +17,33 @@ const passwordSchema = joi
 	.trim()
 	.min(8)
 	.messages({
-		"string.empty": "Password is required",
-		"string.min": "Password must be at least 8 characters long",
+		"string.empty": "empty",
+		"string.min": "length",
 	})
 	.custom((value, helpers) => {
 		if (!/[A-Z]/.test(value)) {
-			return helpers.message("Password must contain at least one uppercase letter");
+			return helpers.message("uppercase");
 		}
+		return value;
+	})
+	.custom((value, helpers) => {
 		if (!/[a-z]/.test(value)) {
-			return helpers.message("Password must contain at least one lowercase letter");
+			return helpers.message("lowercase");
 		}
+		return value;
+	})
+	.custom((value, helpers) => {
 		if (!/\d/.test(value)) {
-			return helpers.message("Password must contain at least one number");
+			return helpers.message("number");
 		}
+		return value;
+	})
+	.custom((value, helpers) => {
 		if (!/[!@#$%^&*]/.test(value)) {
-			return helpers.message("Password must contain at least one special character");
+			return helpers.message("special");
 		}
-
 		return value;
 	});
-
 const credentials = joi.object({
 	firstName: nameSchema,
 	lastName: nameSchema,
@@ -61,12 +68,12 @@ const credentials = joi.object({
 		.string()
 		.trim()
 		.messages({
-			"string.empty": "Password confirmation is required",
+			"string.empty": "empty",
 		})
 		.custom((value, helpers) => {
 			const { password } = helpers.prefs.context;
 			if (value !== password) {
-				return helpers.message("Passwords do not match");
+				return helpers.message("different");
 			}
 			return value;
 		}),
