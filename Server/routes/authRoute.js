@@ -11,6 +11,7 @@ const upload = multer();
 import {
 	registerUser,
 	loginUser,
+  refreshAuthToken,
 	editUser,
 	requestRecovery,
 	validateRecovery,
@@ -23,6 +24,7 @@ import {
 //Auth routes
 router.post("/register", upload.single("profileImage"), registerUser);
 router.post("/login", loginUser);
+router.post("/refresh", refreshAuthToken);
 router.put("/user/:userId", upload.single("profileImage"), verifyJWT, editUser);
 router.get("/users/superadmin", checkSuperadminExists);
 router.get("/users", verifyJWT, isAllowed(["admin", "superadmin"]), getAllUsers);
