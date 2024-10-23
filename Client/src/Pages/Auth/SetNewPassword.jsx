@@ -114,8 +114,6 @@ const SetNewPassword = () => {
 		confirm: getFeedbackStatus("confirm", "different"),
 	};
 
-	console.log({ feedbacks });
-
 	return (
 		<Stack
 			className="set-new-password-page auth"
@@ -236,59 +234,33 @@ const SetNewPassword = () => {
 							mb={theme.spacing(12)}
 						>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must be at least</Typography> 8
-										characters long
-									</>
-								}
+								noHighlightText={"Must be at least"}
+								text={"8 characters long"}
 								variant={feedbacks.length}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must contain at least</Typography> one
-										special character
-									</>
-								}
+								noHighlightText={"Must contain at least"}
+								text={"one special character"}
 								variant={feedbacks.special}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must contain at least</Typography> one
-										one number
-									</>
-								}
+								noHighlightText={"Must contain at least"}
+								text={"one number"}
 								variant={feedbacks.number}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must contain at least</Typography> one
-										upper character
-									</>
-								}
+								noHighlightText={"Must contain at least"}
+								text={"one upper character"}
 								variant={feedbacks.uppercase}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must contain at least</Typography> one
-										lower character
-									</>
-								}
+								noHighlightText={"Must contain at least"}
+								text={"one lower character"}
 								variant={feedbacks.lowercase}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">
-											Confirm password and password
-										</Typography>{" "}
-										must match
-									</>
-								}
+								noHighlightText={"Confirm password and password"}
+								text={"must match"}
 								variant={feedbacks.confirm}
 							/>
 						</Stack>
