@@ -7,6 +7,7 @@ const cpuSchema = mongoose.Schema({
 	temperature: { type: Number, default: 0 },
 	free_percent: { type: Number, default: 0 },
 	usage_percent: { type: Number, default: 0 },
+	usage_threshold: { type: Number, default: 0 },
 });
 
 const memorySchema = mongoose.Schema({
@@ -14,6 +15,7 @@ const memorySchema = mongoose.Schema({
 	available_bytes: { type: Number, default: 0 },
 	used_bytes: { type: Number, default: 0 },
 	usage_percent: { type: Number, default: 0 },
+	usage_threshold: { type: Number, default: 0 },
 });
 
 const discSchema = mongoose.Schema({
@@ -22,6 +24,7 @@ const discSchema = mongoose.Schema({
 	total_bytes: { type: Number, default: 0 },
 	free_bytes: { type: Number, default: 0 },
 	usage_percent: { type: Number, default: 0 },
+	usage_threshold: { type: Number, default: 0 },
 });
 
 const hostSchema = mongoose.Schema({
