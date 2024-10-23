@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Box, Button, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -25,6 +25,7 @@ import PlayCircleOutlineRoundedIcon from "@mui/icons-material/PlayCircleOutlineR
 import SkeletonLayout from "./skeleton";
 import useUtils from "../../Monitors/utils";
 import "./index.css";
+import Dialog from "../../../Components/Dialog";
 
 const PageSpeedConfigure = () => {
 	const theme = useTheme();
@@ -37,6 +38,7 @@ const PageSpeedConfigure = () => {
 	const [monitor, setMonitor] = useState({});
 	const [errors, setErrors] = useState({});
 	const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
+	const [buttonLoading, setButtonLoading] = useState(false);
 	const idMap = {
 		"monitor-url": "url",
 		"monitor-name": "name",
@@ -156,12 +158,14 @@ const PageSpeedConfigure = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const handleRemove = async (event) => {
 		event.preventDefault();
+		setButtonLoading(true);
 		const action = await dispatch(deletePageSpeed({ authToken, monitor }));
 		if (action.meta.requestStatus === "fulfilled") {
 			navigate("/pagespeed");
 		} else {
 			createToast({ body: "Failed to delete monitor." });
 		}
+		setButtonLoading(false);
 	};
 
 	return (
@@ -428,69 +432,16 @@ const PageSpeedConfigure = () => {
 					</Stack>
 				</>
 			)}
-			<Modal
-				aria-labelledby="modal-delete-pagespeed-monitor"
-				aria-describedby="delete-pagespeed-monitor-confirmation"
+			<Dialog
 				open={isOpen}
-				onClose={() => setIsOpen(false)}
-				disablePortal
-			>
-				<Stack
-					gap={theme.spacing(2)}
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						width: 400,
-						bgcolor: theme.palette.background.main,
-						border: 1,
-						borderColor: theme.palette.border.light,
-						borderRadius: theme.shape.borderRadius,
-						boxShadow: 24,
-						p: theme.spacing(15),
-						"&:focus": {
-							outline: "none",
-						},
-					}}
-				>
-					<Typography
-						id="modal-delete-pagespeed-monitor"
-						component="h2"
-						variant="h2"
-						fontWeight={500}
-					>
-						Do you really want to delete this monitor?
-					</Typography>
-					<Typography
-						id="delete-pagespeed-monitor-confirmation"
-						variant="body1"
-					>
-						Once deleted, this monitor cannot be retrieved.
-					</Typography>
-					<Stack
-						direction="row"
-						gap={theme.spacing(4)}
-						mt={theme.spacing(12)}
-						justifyContent="flex-end"
-					>
-						<Button
-							variant="text"
-							color="info"
-							onClick={() => setIsOpen(false)}
-						>
-							Cancel
-						</Button>
-						<Button
-							variant="contained"
-							color="error"
-							onClick={handleRemove}
-						>
-							Delete
-						</Button>
-					</Stack>
-				</Stack>
-			</Modal>
+				theme={theme}
+				title={"Do you really want to delete this monitor?"}
+				description={"Once deleted, this monitor cannot be retrieved."}
+				onCancel={() => setIsOpen(false)}
+				confirmationButtonLabel={"Delete"}
+				onConfirm={handleRemove}
+				isLoading={buttonLoading}
+			/>
 		</Stack>
 	);
 };
