@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import logger from "../../utils/logger.js";
 const AuditSchema = mongoose.Schema({
 	id: { type: String, required: true },
 	title: { type: String, required: true },
@@ -90,19 +91,22 @@ PageSpeedCheck.pre("save", async function (next) {
 		const monitor = await mongoose.model("Monitor").findById(this.monitorId);
 		if (monitor && monitor.status !== this.status) {
 			if (monitor.status === true && this.status === false) {
-				// TODO issue alert
-				console.log("Monitor went down");
+				logger.info({ message: "Monitor went down", monitorId: monitor._id });
 			}
 
 			if (monitor.status === false && this.status === true) {
-				// TODO issue alert
-				console.log("Monitor went up");
+				logger.info({ message: "Monitor went up", monitorId: monitor._id });
 			}
 			monitor.status = this.status;
 			await monitor.save();
 		}
 	} catch (error) {
-		console.log(error);
+		logger.error({
+			message: error.message,
+			service: "PageSpeedCheck",
+			method: "pre-save",
+			stack: error.stack,
+		});
 	} finally {
 		next();
 	}

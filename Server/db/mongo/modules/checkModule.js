@@ -30,9 +30,11 @@ const createCheck = async (checkData) => {
 		const monitor = await Monitor.findById(monitorId);
 
 		if (!monitor) {
-			logger.error("Monitor not found", {
+			logger.error({
+				message: "Monitor not found",
 				service: SERVICE_NAME,
-				monitorId,
+				method: "createCheck",
+				details: `monitor ID: ${monitorId}`,
 			});
 			return;
 		}
@@ -77,7 +79,11 @@ const getChecksCount = async (req) => {
 				checksQuery.statusCode = 5000;
 				break;
 			default:
-				console.log("default");
+				logger.warn({
+					message: "invalid filter",
+					service: SERVICE_NAME,
+					method: "getChecksCount",
+				});
 				break;
 		}
 	}
@@ -110,7 +116,7 @@ const getChecks = async (req) => {
 		if (dateRange !== undefined) {
 			checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
 		}
-		// Fitler checks by status
+		// Filter checks by status
 		if (filter !== undefined) {
 			checksQuery.status = false;
 			switch (filter) {
@@ -122,7 +128,11 @@ const getChecks = async (req) => {
 					checksQuery.statusCode = 5000;
 					break;
 				default:
-					console.log("default");
+					logger.warn({
+						message: "invalid filter",
+						service: SERVICE_NAME,
+						method: "getChecks",
+					});
 					break;
 			}
 		}
@@ -170,7 +180,11 @@ const getTeamChecks = async (req) => {
 				checksQuery.statusCode = 5000;
 				break;
 			default:
-				console.log("default");
+				logger.warn({
+					message: "invalid filter",
+					service: SERVICE_NAME,
+					method: "getTeamChecks",
+				});
 				break;
 		}
 	}
@@ -248,9 +262,11 @@ const updateChecksTTL = async (teamId, ttl) => {
 	try {
 		await Check.collection.dropIndex("expiry_1");
 	} catch (error) {
-		logger.error("Failed to drop index", {
+		logger.error({
+			message: error.message,
 			service: SERVICE_NAME,
 			method: "updateChecksTTL",
+			stack: error.stack,
 		});
 	}
 

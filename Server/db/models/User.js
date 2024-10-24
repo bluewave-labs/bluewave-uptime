@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import logger from "../../utils/logger.js";
 
 const UserSchema = mongoose.Schema(
 	{
@@ -81,7 +82,9 @@ UserSchema.methods.comparePassword = async function (submittedPassword) {
 const User = mongoose.model("User", UserSchema);
 
 User.init().then(() => {
-	console.log("User model initialized");
+	logger.info({
+		message: "User model initialized",
+	});
 });
 
 export default mongoose.model("User", UserSchema);

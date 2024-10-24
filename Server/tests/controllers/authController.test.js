@@ -182,7 +182,7 @@ describe("Auth Controller - registerUser", () => {
 		req.emailService.buildAndSendEmail.rejects(new Error("emailService error"));
 		await registerUser(req, res, next);
 		expect(logger.error.calledOnce).to.be.true;
-		expect(logger.error.firstCall.args[1].error).to.equal("emailService error");
+		expect(logger.error.firstCall.args[0].message).to.equal("emailService error");
 	});
 	it("should return a success message and data if all operations are successful", async () => {
 		const user = { _id: "123" };

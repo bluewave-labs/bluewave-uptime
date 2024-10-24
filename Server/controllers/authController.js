@@ -79,10 +79,10 @@ const registerUser = async (req, res, next) => {
 		}
 
 		const newUser = await req.db.insertUser({ ...req.body }, req.file);
-
-		logger.info(successMessages.AUTH_CREATE_USER, {
+		logger.info({
+			message: successMessages.AUTH_CREATE_USER,
 			service: SERVICE_NAME,
-			userId: newUser._id,
+			details: newUser._id,
 		});
 
 		const userForToken = { ...newUser._doc };
@@ -102,9 +102,11 @@ const registerUser = async (req, res, next) => {
 				"Welcome to Uptime Monitor"
 			)
 			.catch((error) => {
-				logger.error("Error sending welcome email", {
+				logger.error({
+					message: error.message,
 					service: SERVICE_NAME,
-					error: error.message,
+					method: "registerUser",
+					stack: error.stack,
 				});
 			});
 

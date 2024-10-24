@@ -53,9 +53,11 @@ const issueInvitation = async (req, res, next) => {
 				"Welcome to Uptime Monitor"
 			)
 			.catch((error) => {
-				logger.error("Error sending invite email", {
+				logger.error({
+					message: error.message,
 					service: SERVICE_NAME,
-					error: error.message,
+					method: "issueInvitation",
+					stack: error.stack,
 				});
 			});
 

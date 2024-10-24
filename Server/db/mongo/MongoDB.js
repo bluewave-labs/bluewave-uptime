@@ -19,11 +19,13 @@ const connect = async () => {
 			appSettings = new AppSettings({});
 			await appSettings.save();
 		}
-		logger.info("Connected to MongoDB", { service: SERVICE_NAME, method: "connect" });
+		logger.info({ message: "Connected to MongoDB" });
 	} catch (error) {
-		logger.error("failed to connect to MongoDB", {
+		logger.error({
+			message: error.message,
 			service: SERVICE_NAME,
 			method: "connect",
+			stack: error.stack,
 		});
 		throw error;
 	}
@@ -31,14 +33,16 @@ const connect = async () => {
 
 const disconnect = async () => {
 	try {
-		logger.info("Disconnecting from MongoDB", { service: SERVICE_NAME });
+		logger.info({ message: "Disconnecting from MongoDB" });
 		await mongoose.disconnect();
-		logger.info("Disconnected from MongoDB", { service: SERVICE_NAME });
+		logger.info({ message: "Disconnected from MongoDB" });
 		return;
 	} catch (error) {
-		logger.error("failed to disconnect from MongoDB", {
+		logger.error({
+			message: error.message,
 			service: SERVICE_NAME,
-			errorMsg: error.message,
+			method: "disconnect",
+			stack: error.stack,
 		});
 	}
 };

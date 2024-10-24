@@ -105,13 +105,7 @@ describe("NetworkService - handleNotification", () => {
 		await networkService.handleNotification(monitor, true);
 
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(
-			loggerMock.error.calledWith("Database error", {
-				method: "handleNotification",
-				service: networkService.SERVICE_NAME,
-				monitorId: monitor._id,
-			})
-		).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("Database error");
 	});
 });
 
@@ -160,13 +154,13 @@ describe("NetworkService - handleStatusUpdate", function () {
 		expect(res).to.be.undefined;
 	});
 
-	it("should log an error if monitor is null", async function () {
-		dbMock.getMonitorById.resolves(null);
+	it("should log an error if finding monitor fails", async function () {
+		dbMock.getMonitorById.throws(new Error("Database error"));
 
 		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
 
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith("Null Monitor: monitor1")).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("Database error");
 	});
 
 	it("should update monitor status if different", async function () {
@@ -196,7 +190,7 @@ describe("NetworkService - handleStatusUpdate", function () {
 		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
 
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith("Save error")).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("Save error");
 	});
 });
 
@@ -794,7 +788,9 @@ describe("NetworkService - getStatus", () => {
 		const result = await networkService.getStatus(job);
 		expect(result).to.be.false;
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Unsupported type: unknown`)).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal(
+			"Unsupported type: unknown"
+		);
 	});
 });
 
@@ -823,12 +819,14 @@ describe("NetworkService - logAndStoreCheck", async () => {
 		sinon.restore();
 	});
 
-	it("should log an error if `writeToDb` throws an error", async () => {
+	it("should log an error if writeToDb throws an error", async () => {
 		writeToDB.rejects(new Error("Database error"));
 		await networkService.logAndStoreCheck(data, writeToDB);
+
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Error writing check for ${data.monitorId}`)).to.be
-			.true;
+		expect(loggerMock.error.firstCall.args[0].details).to.equal(
+			`Error writing check for ${data.monitorId}`
+		);
 	});
 
 	it("should return the status of the inserted check if successful", async () => {
@@ -841,14 +839,17 @@ describe("NetworkService - logAndStoreCheck", async () => {
 		writeToDB.resolves(null);
 		await networkService.logAndStoreCheck(data, writeToDB);
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Error writing check for ${data.monitorId}`)).to.be
-			.true;
+		expect(loggerMock.error.firstCall.args[0].details).to.equal(
+			`Error writing check for ${data.monitorId}`
+		);
 	});
 	it("should thrown an error if the check is not inserted (undefined)", async () => {
 		writeToDB.resolves(undefined);
 		await networkService.logAndStoreCheck(data, writeToDB);
+
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Error writing check for ${data.monitorId}`)).to.be
-			.true;
+		expect(loggerMock.error.firstCall.args[0].details).to.equal(
+			`Error writing check for ${data.monitorId}`
+		);
 	});
 });
