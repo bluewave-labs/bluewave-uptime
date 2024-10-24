@@ -138,24 +138,18 @@ const advancedSettingsValidation = joi.object({
 	systemEmailPort: joi.string().allow(""),
 	systemEmailAddress: joi.string().allow(""),
 	systemEmailPassword: joi.string().allow(""),
-	jwtTTL: joi
+	jwtTTL: joi.string().trim().messages({
+		"string.empty": "JWT TTL is required.",
+	}),
+	jwtTTLUnits: joi
 		.string()
 		.trim()
-		.messages({
-			"string.empty": "JWT TTL is required.",
-		})
 		.custom((value, helpers) => {
-			// test against regx start with a number followed by number or .,
-			//ends with d or h
-			const regex = /^[1-9]+\d*(d|h)$/;
-			const found = value.match(regex);
-			if (!found) {
-				return helpers.message(
-					"JWT TTL should start with a non zero number and ends with 'd' or 'h'."
-				);
+			if (value == 0) {
+				return helpers.message("JWT TTL unit is required.");
 			}
 			return value;
-		}),
+	}),
 	dbType: joi.string().trim().messages({
 		"string.empty": "DB type is required.",
 	}),

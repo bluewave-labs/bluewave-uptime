@@ -36,6 +36,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 		systemEmailAddress: "",
 		systemEmailPassword: "",
 		jwtTTL: "",
+		jwtTTLUnits: "days",
 		dbType: "",
 		redisHost: "",
 		redisPort: "",
@@ -68,11 +69,29 @@ const AdvancedSettings = ({ isAdmin }) => {
 		warn: 4,
 	};
 
+	const unitItems = [
+		{ _id: 1, name: "days" },
+		{ _id: 2, name: "weeks" },
+		{ _id: 3, name: "months" }
+	];
+
+	const unitItemLookup = {
+		days: 1,
+		weeks: 2,
+		months: 3,
+	};
+
 	const handleLogLevel = (e) => {
 		const id = e.target.value;
 		const newLogLevel = logItems.find((item) => item._id === id).name;
 		setLocalSettings({ ...localSettings, logLevel: newLogLevel });
 	};
+
+	const handleJWTTTLUnits = (e) => {
+		const id = e.target.value;
+		const newUnits = unitItems.find((item) => item._id === id).name;
+		setLocalSettings({ ...localSettings, jwtTTLUnits: newUnits });
+	};	
 
 	const handleBlur = (event) => {
 		const { value, id } = event.target;
@@ -82,11 +101,9 @@ const AdvancedSettings = ({ isAdmin }) => {
 				abortEarly: false,
 			}
 		);
-		if (error) {
-			setErrors((prev) => {
-				return buildErrors(prev, id, error);
-			});
-		}
+		setErrors((prev) => {
+			return buildErrors(prev, id, error);
+		});
 	};
 	const handleChange = (event) => {
 		const { value, id } = event.target;
@@ -209,8 +226,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(20)}>
-						<Field
-							type="text"
+						<Stack direction="row" gap={theme.spacing(10)} ><Field
+							type="number"
 							id="jwtTTL"
 							label="JWT time to live"
 							name="jwtTTL"
@@ -219,6 +236,18 @@ const AdvancedSettings = ({ isAdmin }) => {
 							onBlur={handleBlur}
 							error={errors.jwtTTL}
 						/>
+						<Select
+							id="jwtTTLUnits"
+							label="JWT TTL Units"
+							name="jwtTTLUnits"
+							placeholder="Select time"
+							isHidden={true}
+							items={unitItems}
+							value={unitItemLookup[localSettings.jwtTTLUnits]}
+							onChange={handleJWTTTLUnits}
+							onBlur={handleBlur}
+							error={errors.jwtttlUnits}
+						/></Stack>				
 						<Field
 							type="text"
 							id="dbType"
