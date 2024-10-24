@@ -821,20 +821,11 @@ describe("Monitor Controller - editMonitor", () => {
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].message).to.equal("Add Job error");
 	});
-	it("should return success message with data if all operations succeed and empty notifications", async () => {
+	it("should fail validation with empty notifications", async () => {
 		req.body.notifications = [];
-		const monitor = { _id: "123" };
-		req.db.getMonitorById.returns({ teamId: "123" });
-		req.db.editMonitor.returns(monitor);
 		await editMonitor(req, res, next);
-		expect(res.status.firstCall.args[0]).to.equal(200);
-		expect(
-			res.json.calledOnceWith({
-				success: true,
-				msg: successMessages.MONITOR_EDIT,
-				data: monitor,
-			})
-		).to.be.true;
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].status).to.equal(422);
 	});
 	it("should return success message with data if all operations succeed", async () => {
 		const monitor = { _id: "123" };
