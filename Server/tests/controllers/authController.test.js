@@ -467,7 +467,7 @@ describe("Auth Controller - editUser", async () => {
 		});
 		await editUser(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
-		expect(next.firstCall.args[0].status).to.equal(403);
+		expect(next.firstCall.args[0].status).to.equal(401);
 		expect(next.firstCall.args[0].message).to.equal(
 			errorMessages.AUTH_INCORRECT_PASSWORD
 		);
