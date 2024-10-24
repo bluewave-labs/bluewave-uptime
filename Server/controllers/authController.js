@@ -346,32 +346,27 @@ const requestRecovery = async (req, res, next) => {
 	try {
 		const { email } = req.body;
 		const user = await req.db.getUserByEmail(email);
-		if (user) {
-			const recoveryToken = await req.db.requestRecoveryToken(req, res);
-			const name = user.firstName;
-			const email = req.body.email;
-			const { clientHost } = req.settingsService.getSettings();
-			const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
+		const recoveryToken = await req.db.requestRecoveryToken(req, res);
+		const name = user.firstName;
+		const { clientHost } = req.settingsService.getSettings();
+		const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
 
-			const msgId = await req.emailService.buildAndSendEmail(
-				"passwordResetTemplate",
-				{
-					name,
-					email,
-					url,
-				},
+		const msgId = await req.emailService.buildAndSendEmail(
+			"passwordResetTemplate",
+			{
+				name,
 				email,
-				"Bluewave Uptime Password Reset"
-			);
+				url,
+			},
+			email,
+			"Bluewave Uptime Password Reset"
+		);
 
-			return res.status(200).json({
-				success: true,
-				msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
-				data: msgId,
-			});
-		} else {
-			throw new Error(errorMessages.FRIENDLY_ERROR);
-		}
+		return res.status(200).json({
+			success: true,
+			msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
+			data: msgId,
+		});
 	} catch (error) {
 		next(handleError(error, SERVICE_NAME, "recoveryRequestController"));
 	}
