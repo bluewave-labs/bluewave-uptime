@@ -219,7 +219,9 @@ describe("Monitor Controller - getMonitorById", () => {
 		expect(next.firstCall.args[0].message).to.equal("DB error");
 	});
 	it("should return 404 if a monitor is not found", async () => {
-		req.db.getMonitorById.returns(null);
+		const error = new Error("Monitor not found");
+		error.status = 404;
+		req.db.getMonitorById.throws(error);
 		await getMonitorById(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].status).to.equal(404);
@@ -417,19 +419,11 @@ describe("Monitor Controller - createMonitor", () => {
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].message).to.equal("Job error");
 	});
-	it("should return success message and data if all operations succeed with empty notifications", async () => {
+	it("should fail validation with empty notifications", async () => {
 		req.body.notifications = [];
-		const monitor = { _id: "123", save: sinon.stub() };
-		req.db.createMonitor.returns(monitor);
 		await createMonitor(req, res, next);
-		expect(res.status.firstCall.args[0]).to.equal(201);
-		expect(
-			res.json.calledOnceWith({
-				success: true,
-				msg: successMessages.MONITOR_CREATE,
-				data: monitor,
-			})
-		).to.be.true;
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].status).to.equal(422);
 	});
 	it("should return success message and data if all operations succeed", async () => {
 		const monitor = { _id: "123", save: sinon.stub() };
