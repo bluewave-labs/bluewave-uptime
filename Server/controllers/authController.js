@@ -279,10 +279,10 @@ const editUser = async (req, res, next) => {
 			const user = await req.db.getUserByEmail(email);
 			// Compare passwords
 			const match = await user.comparePassword(req.body.password);
-			// If not a match, throw a 403
+			// If not a match, throw a 401
 			if (!match) {
 				const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
-				error.status = 403;
+				error.status = 401;
 				next(error);
 				return;
 			}
@@ -346,32 +346,26 @@ const requestRecovery = async (req, res, next) => {
 	try {
 		const { email } = req.body;
 		const user = await req.db.getUserByEmail(email);
-		if (user) {
-			const recoveryToken = await req.db.requestRecoveryToken(req, res);
-			const name = user.firstName;
-			const email = req.body.email;
-			const { clientHost } = req.settingsService.getSettings();
-			const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
-
-			const msgId = await req.emailService.buildAndSendEmail(
-				"passwordResetTemplate",
-				{
-					name,
-					email,
-					url,
-				},
+		const recoveryToken = await req.db.requestRecoveryToken(req, res);
+		const name = user.firstName;
+		const { clientHost } = req.settingsService.getSettings();
+		const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
+		const msgId = await req.emailService.buildAndSendEmail(
+			"passwordResetTemplate",
+			{
+				name,
 				email,
-				"Bluewave Uptime Password Reset"
-			);
+				url,
+			},
+			email,
+			"Bluewave Uptime Password Reset"
+		);
 
-			return res.status(200).json({
-				success: true,
-				msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
-				data: msgId,
-			});
-		} else {
-			throw new Error(errorMessages.FRIENDLY_ERROR);
-		}
+		return res.status(200).json({
+			success: true,
+			msg: successMessages.AUTH_CREATE_RECOVERY_TOKEN,
+			data: msgId,
+		});
 	} catch (error) {
 		next(handleError(error, SERVICE_NAME, "recoveryRequestController"));
 	}
@@ -430,7 +424,6 @@ const resetPassword = async (req, res, next) => {
 	}
 	try {
 		const user = await req.db.resetPassword(req, res);
-
 		const appSettings = await req.settingsService.getSettings();
 		const token = issueToken(user._doc, tokenType.ACCESS_TOKEN, appSettings);
 		res.status(200).json({
@@ -460,11 +453,6 @@ const deleteUser = async (req, res, next) => {
 
 		// Check if the user exists
 		const user = await req.db.getUserByEmail(email);
-		if (!user) {
-			next(new Error(errorMessages.DB_USER_NOT_FOUND));
-			return;
-		}
-
 		// 1. Find all the monitors associated with the team ID if superadmin
 
 		const result = await req.db.getMonitorsByTeamId({
