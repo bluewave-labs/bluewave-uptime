@@ -1,5 +1,6 @@
 import sinon from "sinon";
 import JobQueue from "../../service/jobQueue.js";
+import { log } from "console";
 
 class QueueStub {
 	constructor(queueName, options) {
@@ -202,7 +203,7 @@ describe("JobQueue", () => {
 			);
 			const worker = jobQueue.createWorker();
 			await worker.workerTask();
-			// expect(networkService.getStatus.calledOnce).to.be.false;
+			expect(networkService.getStatus.calledOnce).to.be.true;
 		});
 	});
 	describe("getWorkerStats", () => {
