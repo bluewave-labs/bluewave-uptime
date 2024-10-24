@@ -350,7 +350,6 @@ const requestRecovery = async (req, res, next) => {
 		const name = user.firstName;
 		const { clientHost } = req.settingsService.getSettings();
 		const url = `${clientHost}/set-new-password/${recoveryToken.token}`;
-
 		const msgId = await req.emailService.buildAndSendEmail(
 			"passwordResetTemplate",
 			{
@@ -425,7 +424,6 @@ const resetPassword = async (req, res, next) => {
 	}
 	try {
 		const user = await req.db.resetPassword(req, res);
-
 		const appSettings = await req.settingsService.getSettings();
 		const token = issueToken(user._doc, tokenType.ACCESS_TOKEN, appSettings);
 		res.status(200).json({
@@ -455,11 +453,6 @@ const deleteUser = async (req, res, next) => {
 
 		// Check if the user exists
 		const user = await req.db.getUserByEmail(email);
-		if (!user) {
-			next(new Error(errorMessages.DB_USER_NOT_FOUND));
-			return;
-		}
-
 		// 1. Find all the monitors associated with the team ID if superadmin
 
 		const result = await req.db.getMonitorsByTeamId({
