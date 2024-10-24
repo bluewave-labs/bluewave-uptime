@@ -116,13 +116,14 @@ ColoredLabel.propTypes = {
  * @param {Object} props
  * @param { 'up' | 'down' | 'cannot resolve'} props.status - The status for the label
  * @param {string} props.text - The text of the label
+ * @param {boolean} props.hasDot - Whether to show a dot or not
  * @returns {JSX.Element}
  * @example
  * // Render an active label
  * <StatusLabel status="up" text="Active" />
  */
 
-const StatusLabel = ({ status, text, customStyles }) => {
+const StatusLabel = ({ status, text, hasDot = true, customStyles }) => {
 	const theme = useTheme();
 	const colors = {
 		up: {
@@ -145,6 +146,16 @@ const StatusLabel = ({ status, text, customStyles }) => {
 			bgColor: theme.palette.warning.bg,
 			borderColor: theme.palette.warning.light,
 		},
+		400: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
+		500: {
+			dotColor: theme.palette.warning.main,
+			bgColor: theme.palette.warning.bg,
+			borderColor: theme.palette.warning.light,
+		},
 		"cannot resolve": {
 			dotColor: theme.palette.unresolved.main,
 			bgColor: theme.palette.unresolved.bg,
@@ -153,7 +164,7 @@ const StatusLabel = ({ status, text, customStyles }) => {
 	};
 
 	// Look up the color for the status
-	const { borderColor, bgColor, dotColor } = colors[status];
+	const { borderColor, bgColor, dotColor } = colors[status] || colors["cannot resolve"];
 
 	return (
 		<BaseLabel
@@ -165,20 +176,31 @@ const StatusLabel = ({ status, text, customStyles }) => {
 				...customStyles,
 			}}
 		>
-			<Box
-				width={7}
-				height={7}
-				bgcolor={dotColor}
-				borderRadius="50%"
-				marginRight="5px"
-			/>
+			{hasDot && (
+				<Box
+					width={7}
+					height={7}
+					bgcolor={dotColor}
+					borderRadius="50%"
+					marginRight="5px"
+				/>
+			)}
 		</BaseLabel>
 	);
 };
 
 StatusLabel.propTypes = {
-	status: PropTypes.oneOf(["up", "down", "paused", "pending", "cannot resolve"]),
+	status: PropTypes.oneOf([
+		"up",
+		"down",
+		"paused",
+		"pending",
+		"400",
+		"500",
+		"cannot resolve",
+	]),
 	text: PropTypes.string,
+	hasDot: PropTypes.bool,
 	customStyles: PropTypes.object,
 };
 
