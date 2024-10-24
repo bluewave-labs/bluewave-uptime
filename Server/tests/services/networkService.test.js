@@ -308,43 +308,36 @@ describe("networkService - handlePing", () => {
 		sinon.restore();
 	});
 
-	it("should handle a successful ping response", async function () {
+	it("should handle a successful ping response", async () => {
 		const response = { alive: true };
 		const responseTime = 0;
-		pingMock.promise.probe.resolves(response);
+		pingMock.promise.probe.returns(response);
 		logAndStoreCheckStub.resolves();
 		await networkService.handlePing(job);
 		expect(
-			logAndStoreCheckStub.calledOnceWith(
-				{
-					monitorId: job.data._id,
-					status: true,
-					responseTime,
-					message: successMessages.PING_SUCCESS,
-				},
-				networkService.db.createCheck
-			)
+			logAndStoreCheckStub.calledOnceWith({
+				monitorId: job.data._id,
+				status: response.alive,
+				responseTime,
+				message: successMessages.PING_SUCCESS,
+			})
 		).to.be.true;
 		expect(handleStatusUpdateStub.calledOnceWith(job, true)).to.be.true;
 	});
-	it("should handle a successful ping response and isAlive === false", async function () {
+	it("should handle a successful response and isAlive === false", async function () {
 		const response = { alive: false };
 		const responseTime = 0;
 		pingMock.promise.probe.resolves(response);
 		logAndStoreCheckStub.resolves();
 
 		await networkService.handlePing(job);
-		console.log(logAndStoreCheckStub.getCall(0).args[0]);
 		expect(
-			logAndStoreCheckStub.calledOnceWith(
-				{
-					monitorId: job.data._id,
-					status: false,
-					responseTime,
-					message: errorMessages.PING_CANNOT_RESOLVE,
-				},
-				networkService.db.createCheck
-			)
+			logAndStoreCheckStub.calledOnceWith({
+				monitorId: job.data._id,
+				status: false,
+				responseTime,
+				message: errorMessages.PING_CANNOT_RESOLVE,
+			})
 		).to.be.true;
 		expect(handleStatusUpdateStub.calledOnceWith(job, false)).to.be.true;
 	});

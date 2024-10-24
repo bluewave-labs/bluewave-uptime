@@ -263,18 +263,15 @@ const Settings = ({ isAdmin }) => {
 							</Box>
 						</Stack>
 						<Dialog
-							modelTitle="model-clear-stats"
-							modelDescription="clear-stats-confirmation"
 							open={isOpen.deleteStats}
-							onClose={() => setIsOpen(deleteStatsMonitorsInitState)}
-							title="Do you want to clear all stats?"
-							confirmationBtnLbl="Yes, clear all stats"
-							confirmationBtnOnClick={handleClearStats}
-							cancelBtnLbl="Cancel"
-							cancelBtnOnClick={() => setIsOpen(deleteStatsMonitorsInitState)}
 							theme={theme}
+							title="Do you want to clear all stats?"
+							description="Once deleted, this monitor cannot be retrieved."
+							onCancel={() => setIsOpen(deleteStatsMonitorsInitState)}
+							confirmationButtonLabel="Yes, clear all stats"
+							onConfirm={handleClearStats}
 							isLoading={isLoading || authIsLoading || checksIsLoading}
-						></Dialog>
+						/>
 					</ConfigBox>
 				)}
 				{isAdmin && (
@@ -314,18 +311,14 @@ const Settings = ({ isAdmin }) => {
 							</Box>
 						</Stack>
 						<Dialog
-							modelTitle="model-delete-all-monitors"
-							modelDescription="delete-all-monitors-confirmation"
 							open={isOpen.deleteMonitors}
-							onClose={() => setIsOpen(deleteStatsMonitorsInitState)}
-							title="Do you want to remove all monitors?"
-							confirmationBtnLbl="Yes, clear all monitors"
-							confirmationBtnOnClick={handleDeleteAllMonitors}
-							cancelBtnLbl="Cancel"
-							cancelBtnOnClick={() => setIsOpen(deleteStatsMonitorsInitState)}
 							theme={theme}
+							title="Do you want to remove all monitors?"
+							onCancel={() => setIsOpen(deleteStatsMonitorsInitState)}
+							confirmationButtonLabel="Yes, clear all monitors"
+							onConfirm={handleDeleteAllMonitors}
 							isLoading={isLoading || authIsLoading || checksIsLoading}
-						></Dialog>
+						/>
 					</ConfigBox>
 				)}
 				{isAdmin && (

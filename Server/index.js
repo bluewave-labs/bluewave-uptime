@@ -19,7 +19,10 @@ import { fileURLToPath } from "url";
 
 import { connectDbAndRunServer } from "./configs/db.js";
 import queueRouter from "./routes/queueRoute.js";
+
+//JobQueue service and dependencies
 import JobQueue from "./service/jobQueue.js";
+import { Queue, Worker } from "bullmq";
 
 //Network service and dependencies
 import NetworkService from "./service/networkService.js";
@@ -36,7 +39,7 @@ import mjml2html from "mjml";
 
 // Settings Service and dependencies
 import SettingsService from "./service/settingsService.js";
-import AppSettings from "../db/models/AppSettings.js";
+import AppSettings from "./db/models/AppSettings.js";
 
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
@@ -157,7 +160,14 @@ const startApp = async () => {
 		logger
 	);
 	const networkService = new NetworkService(db, emailService, axios, ping, logger, http);
-	const jobQueue = await JobQueue.createJobQueue(db, networkService, settingsService);
+	const jobQueue = await JobQueue.createJobQueue(
+		db,
+		networkService,
+		settingsService,
+		logger,
+		Queue,
+		Worker
+	);
 
 	const cleanup = async () => {
 		if (cleaningUp) {

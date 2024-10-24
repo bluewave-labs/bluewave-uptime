@@ -1,103 +1,62 @@
-import LoadingButton from "@mui/lab/LoadingButton";
-import { Button, Modal, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { Button, Stack } from "@mui/material";
+import { GenericDialog } from "./genericDialog";
+
 const Dialog = ({
-	modelTitle,
-	modelDescription,
-	open,
-	onClose,
 	title,
-	confirmationBtnLbl,
-	confirmationBtnOnClick,
-	cancelBtnLbl,
-	cancelBtnOnClick,
-	theme,
-	isLoading,
 	description,
+	open,
+	theme,
+	onCancel,
+	confirmationButtonLabel,
+	onConfirm,
+	isLoading,
 }) => {
 	return (
-		<Modal
-			aria-labelledby={modelTitle}
-			aria-describedby={modelDescription}
+		<GenericDialog
+			title={title}
+			description={description}
 			open={open}
-			onClose={onClose}
+			onClose={onCancel}
+			theme={theme}
 		>
 			<Stack
-				gap={theme.spacing(2)}
-				sx={{
-					position: "absolute",
-					top: "50%",
-					left: "50%",
-					transform: "translate(-50%, -50%)",
-					width: 400,
-					bgcolor: theme.palette.background.main,
-					border: 1,
-					borderColor: theme.palette.border.light,
-					borderRadius: theme.shape.borderRadius,
-					boxShadow: 24,
-					p: theme.spacing(15),
-					"&:focus": {
-						outline: "none",
-					},
-				}}
+				direction="row"
+				gap={theme.spacing(4)}
+				mt={theme.spacing(12)}
+				justifyContent="flex-end"
 			>
-				<Typography
-					id={modelTitle}
-					component="h2"
-					fontSize={16}
-					color={theme.palette.text.primary}
-					fontWeight={600}
+				<Button
+					variant="text"
+					color="info"
+					onClick={onCancel}
 				>
-					{title}
-				</Typography>
-				{description && (
-					<Typography
-						id={modelDescription}
-						color={theme.palette.text.tertiary}
-					>
-						{description}
-					</Typography>
-				)}
-				<Stack
-					direction="row"
-					gap={theme.spacing(4)}
-					mt={theme.spacing(12)}
-					justifyContent="flex-end"
+					Cancel
+				</Button>
+				<LoadingButton
+					variant="contained"
+					color="error"
+					loading={isLoading}
+					onClick={onConfirm}
 				>
-					<Button
-						variant="text"
-						color="info"
-						onClick={cancelBtnOnClick}
-					>
-						{cancelBtnLbl}
-					</Button>
-					<LoadingButton
-						variant="contained"
-						color="error"
-						loading={isLoading}
-						onClick={confirmationBtnOnClick}
-					>
-						{confirmationBtnLbl}
-					</LoadingButton>
-				</Stack>
+					{confirmationButtonLabel}
+				</LoadingButton>
 			</Stack>
-		</Modal>
+		</GenericDialog>
 	);
 };
 
 Dialog.propTypes = {
-	modelTitle: PropTypes.string.isRequired,
-	modelDescription: PropTypes.string.isRequired,
+	title: PropTypes.string.isRequired,
+	description: PropTypes.string,
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
-	title: PropTypes.string.isRequired,
-	confirmationBtnLbl: PropTypes.string.isRequired,
-	confirmationBtnOnClick: PropTypes.func.isRequired,
-	cancelBtnLbl: PropTypes.string.isRequired,
-	cancelBtnOnClick: PropTypes.func.isRequired,
 	theme: PropTypes.object.isRequired,
+	onCancel: PropTypes.func.isRequired,
+	confirmationButtonLabel: PropTypes.string.isRequired,
+	onConfirm: PropTypes.func.isRequired,
 	isLoading: PropTypes.bool.isRequired,
-	description: PropTypes.string,
 };
 
 export default Dialog;
