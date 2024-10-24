@@ -444,11 +444,10 @@ const pauseMonitor = async (req, res, next) => {
 
 	try {
 		const monitor = await req.db.getMonitorById(req.params.monitorId);
-		if (monitor.isActive) {
-			await req.jobQueue.deleteJob(monitor);
-		} else {
-			await req.jobQueue.addJob(monitor._id, monitor);
-		}
+		monitor.isActive === true
+			? await req.jobQueue.deleteJob(monitor)
+			: await req.jobQueue.addJob(monitor._id, monitor);
+
 		monitor.isActive = !monitor.isActive;
 		monitor.status = undefined;
 		monitor.save();
