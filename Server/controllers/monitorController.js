@@ -3,7 +3,7 @@ import {
 	getMonitorByIdQueryValidation,
 	getMonitorsByTeamIdValidation,
 	createMonitorBodyValidation,
-  getMonitorURLByQueryValidation,
+	getMonitorURLByQueryValidation,
 	editMonitorBodyValidation,
 	getMonitorsAndSummaryByTeamIdParamValidation,
 	getMonitorsAndSummaryByTeamIdQueryValidation,
@@ -86,21 +86,14 @@ const getMonitorCertificate = async (req, res, next, fetchMonitorCertificate) =>
 		const { monitorId } = req.params;
 		const monitor = await req.db.getMonitorById(monitorId);
 		const certificate = await fetchMonitorCertificate(sslChecker, monitor);
-		if (certificate && certificate.validTo) {
-			return res.status(200).json({
-				success: true,
-				msg: successMessages.MONITOR_CERTIFICATE,
-				data: {
-					certificateDate: new Date(certificate.validTo),
-				},
-			});
-		} else {
-			return res.status(200).json({
-				success: true,
-				msg: successMessages.MONITOR_CERTIFICATE,
-				data: { certificateDate: "N/A" },
-			});
-		}
+
+		return res.status(200).json({
+			success: true,
+			msg: successMessages.MONITOR_CERTIFICATE,
+			data: {
+				certificateDate: new Date(certificate.validTo),
+			},
+		});
 	} catch (error) {
 		next(handleError(error, SERVICE_NAME, "getMonitorCertificate"));
 	}
@@ -270,32 +263,32 @@ const createMonitor = async (req, res, next) => {
  * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const checkEndpointResolution = async (req, res, next) => {
-  try {
+	try {
 		await getMonitorURLByQueryValidation.validateAsync(req.query);
 	} catch (error) {
 		next(handleValidationError(error, SERVICE_NAME));
 		return;
 	}
 
-  try {
-    let { monitorURL } = req.query;
-    monitorURL = new URL(monitorURL);
-    await new Promise((resolve, reject) => {
-      dns.resolve(monitorURL.hostname, (error) => {
-        if (error) {
-          reject(error);
-        }
-        resolve();
-      });
-    });
-    return res.status(200).json({
-      success: true,
-      msg: `URL resolved successfully`,
-    });
-  } catch (error) {
-    next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
-  }
-}
+	try {
+		let { monitorURL } = req.query;
+		monitorURL = new URL(monitorURL);
+		await new Promise((resolve, reject) => {
+			dns.resolve(monitorURL.hostname, (error) => {
+				if (error) {
+					reject(error);
+				}
+				resolve();
+			});
+		});
+		return res.status(200).json({
+			success: true,
+			msg: `URL resolved successfully`,
+		});
+	} catch (error) {
+		next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
+	}
+};
 
 /**
  * Deletes a monitor by its ID and also deletes associated checks, alerts, and notifications.
@@ -517,7 +510,7 @@ export {
 	getMonitorsAndSummaryByTeamId,
 	getMonitorsByTeamId,
 	createMonitor,
-  checkEndpointResolution,
+	checkEndpointResolution,
 	deleteMonitor,
 	deleteAllMonitors,
 	editMonitor,
