@@ -19,7 +19,10 @@ import { fileURLToPath } from "url";
 
 import { connectDbAndRunServer } from "./configs/db.js";
 import queueRouter from "./routes/queueRoute.js";
+
+//JobQueue service and dependencies
 import JobQueue from "./service/jobQueue.js";
+import { Queue, Worker } from "bullmq";
 
 //Network service and dependencies
 import NetworkService from "./service/networkService.js";
@@ -157,7 +160,14 @@ const startApp = async () => {
 		logger
 	);
 	const networkService = new NetworkService(db, emailService, axios, ping, logger, http);
-	const jobQueue = await JobQueue.createJobQueue(db, networkService, settingsService);
+	const jobQueue = await JobQueue.createJobQueue(
+		db,
+		networkService,
+		settingsService,
+		logger,
+		Queue,
+		Worker
+	);
 
 	const cleanup = async () => {
 		if (cleaningUp) {
