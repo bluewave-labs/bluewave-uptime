@@ -81,15 +81,14 @@ const AdvancedSettings = ({ isAdmin }) => {
 		warn: 4,
 	};
 
-	const unitItems = [
-		{ _id: "d", name: "days" },
-		{ _id: "h", name: "hours" }
-	];
-
 	const unitItemLookup = {
 		days: "d",
 		hours: "h",
 	};
+	const unitItems = Object.keys(unitItemLookup).map((key) => ({
+		_id: unitItemLookup[key],
+		name: key,
+	}));
 
 	const handleLogLevel = (e) => {
 		const id = e.target.value;
