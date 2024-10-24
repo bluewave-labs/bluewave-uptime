@@ -138,18 +138,20 @@ const advancedSettingsValidation = joi.object({
 	systemEmailPort: joi.string().allow(""),
 	systemEmailAddress: joi.string().allow(""),
 	systemEmailPassword: joi.string().allow(""),
-	jwtTTL: joi.string().trim().messages({
-		"string.empty": "JWT TTL is required.",
-	}),
+	jwtTTLNum: joi
+		.number()
+		.messages({
+			"any.required": "JWT TTL is required.",
+	}),	
 	jwtTTLUnits: joi
 		.string()
 		.trim()
 		.custom((value, helpers) => {
-			if (value == 0) {
+			if( !["days", "hours"].includes(value)) {
 				return helpers.message("JWT TTL unit is required.");
 			}
 			return value;
-	}),
+	}),	
 	dbType: joi.string().trim().messages({
 		"string.empty": "DB type is required.",
 	}),

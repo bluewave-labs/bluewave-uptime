@@ -35,18 +35,30 @@ const AdvancedSettings = ({ isAdmin }) => {
 		systemEmailPort: "",
 		systemEmailAddress: "",
 		systemEmailPassword: "",
-		jwtTTL: "",
+		jwtTTLNum: 99,
 		jwtTTLUnits: "days",
+		jwtTTL: "99d",
 		dbType: "",
 		redisHost: "",
 		redisPort: "",
 		pagespeedApiKey: "",
 	});
 
+	const parseJWTTTL = (data) => {
+		if (data.jwtTTL) {
+			const len = data.jwtTTL.length;
+			data.jwtTTLNum = data.jwtTTL.substring(0, len - 1);
+			data.jwtTTLUnits = unitItems.filter(
+				(itm) => itm._id == data.jwtTTL.substring(len - 1)
+			)[0].name;
+		}
+	};
+
 	useEffect(() => {
 		const getSettings = async () => {
 			const action = await dispatch(getAppSettings({ authToken }));
 			if (action.payload.success) {
+				parseJWTTTL(action.payload.data)
 				setLocalSettings(action.payload.data);
 			} else {
 				createToast({ body: "Failed to get settings" });
@@ -70,15 +82,13 @@ const AdvancedSettings = ({ isAdmin }) => {
 	};
 
 	const unitItems = [
-		{ _id: 1, name: "days" },
-		{ _id: 2, name: "weeks" },
-		{ _id: 3, name: "months" }
+		{ _id: "d", name: "days" },
+		{ _id: "h", name: "hours" }
 	];
 
 	const unitItemLookup = {
-		days: 1,
-		weeks: 2,
-		months: 3,
+		days: "d",
+		hours: "h",
 	};
 
 	const handleLogLevel = (e) => {
@@ -111,14 +121,17 @@ const AdvancedSettings = ({ isAdmin }) => {
 	};
 
 	const handleSave = async () => {
-		if (hasValidationErrors(localSettings, advancedSettingsValidation, setErrors))
+		localSettings.jwtTTL =
+			localSettings.jwtTTLNum + unitItemLookup[localSettings.jwtTTLUnits];
+		if (hasValidationErrors(localSettings, advancedSettingsValidation, setErrors)) {
 			return;
-		const action = await dispatch(
+		}
+		const action = await dispatch(			
 			updateAppSettings({ settings: localSettings, authToken })
 		);
 		let body = "";
 		if (action.payload.success) {
-			console.log(action.payload.data);
+			parseJWTTTL(action.payload.data)
 			setLocalSettings(action.payload.data);
 			body = "Settings saved successfully";
 		} else {
@@ -228,13 +241,13 @@ const AdvancedSettings = ({ isAdmin }) => {
 					<Stack gap={theme.spacing(20)}>
 						<Stack direction="row" gap={theme.spacing(10)} ><Field
 							type="number"
-							id="jwtTTL"
+							id="jwtTTLNum"
 							label="JWT time to live"
-							name="jwtTTL"
-							value={localSettings.jwtTTL}
+							name="jwtTTLNum"
+							value={localSettings.jwtTTLNum.toString()}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.jwtTTL}
+							error={errors.jwtTTLNum}
 						/>
 						<Select
 							id="jwtTTLUnits"
@@ -246,7 +259,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={unitItemLookup[localSettings.jwtTTLUnits]}
 							onChange={handleJWTTTLUnits}
 							onBlur={handleBlur}
-							error={errors.jwtttlUnits}
+							error={errors.jwtTTLUnits}
 						/></Stack>				
 						<Field
 							type="text"

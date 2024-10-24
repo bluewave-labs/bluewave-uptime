@@ -15,10 +15,22 @@ const hasValidationErrors = (form, validation, setErrors) => {
 	if (error) {
 		const newErrors = {};
 		error.details.forEach((err) => {
-			newErrors[err.path[0]] = err.message?? "Validation error";
+			if (
+				![
+					"clientHost",
+					"refreshTokenSecret",
+					"dbConnectionString",
+					"refreshTokenTTL",
+					"jwtTTL",
+				].includes(err.path[0])
+			) {
+				newErrors[err.path[0]] = err.message ?? "Validation error";
+			}
 		});
-		setErrors(newErrors);
-		return true;
+		if (Object.keys(newErrors).length > 0) {
+			setErrors(newErrors);
+			return true;
+		} else return false;
 	}
 	return false;
 };
