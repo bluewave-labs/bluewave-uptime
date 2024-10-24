@@ -225,15 +225,15 @@ const createMonitor = async (req, res, next) => {
 		const notifications = req.body.notifications;
 		const monitor = await req.db.createMonitor(req, res);
 
-		if (notifications && notifications.length !== 0) {
-			monitor.notifications = await Promise.all(
+		monitor.notifications =
+			notifications &&
+			(await Promise.all(
 				notifications.map(async (notification) => {
 					notification.monitorId = monitor._id;
 					await req.db.createNotification(notification);
 				})
-			);
-			await monitor.save();
-		}
+			));
+		await monitor.save();
 		// Add monitor to job queue
 		req.jobQueue.addJob(monitor._id, monitor);
 		return res.status(201).json({
