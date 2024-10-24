@@ -37,8 +37,12 @@ const verifySuperAdmin = (req, res, next) => {
 
 	jwt.verify(parsedToken, jwtSecret, (err, decoded) => {
 		if (err) {
-			logger.error(errorMessages.INVALID_AUTH_TOKEN, {
+			logger.error({
+				message: err.message,
 				service: SERVICE_NAME,
+				method: "verifySuperAdmin",
+				stack: err.stack,
+				details: errorMessages.INVALID_AUTH_TOKEN,
 			});
 			return res
 				.status(401)
@@ -46,8 +50,11 @@ const verifySuperAdmin = (req, res, next) => {
 		}
 
 		if (decoded.role.includes("superadmin") === false) {
-			logger.error(errorMessages.INVALID_AUTH_TOKEN, {
+			logger.error({
+				message: errorMessages.INVALID_AUTH_TOKEN,
 				service: SERVICE_NAME,
+				method: "verifySuperAdmin",
+				stack: err.stack,
 			});
 			return res.status(401).json({ success: false, msg: errorMessages.UNAUTHORIZED });
 		}

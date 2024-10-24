@@ -107,16 +107,19 @@ class JobQueue {
 					if (!maintenanceWindowActive) {
 						await this.networkService.getStatus(job);
 					} else {
-						this.logger.info(`Monitor ${monitorId} is in maintenance window`, {
+						this.logger.info({
+							message: `Monitor ${monitorId} is in maintenance window`,
 							service: SERVICE_NAME,
-							monitorId,
+							method: "createWorker",
 						});
 					}
 				} catch (error) {
-					this.logger.error(`Error processing job ${job.id}: ${error.message}`, {
+					this.logger.error({
+						message: error.message,
 						service: SERVICE_NAME,
-						jobId: job.id,
-						error: error,
+						method: "createWorker",
+						details: `Error processing job ${job.id}: ${error.message}`,
+						stack: error.stack,
 					});
 				}
 			},
@@ -197,14 +200,15 @@ class JobQueue {
 			while (workersToRemove > 0 && this.workers.length > 5) {
 				const worker = this.workers.pop();
 				workersToRemove--;
-				try {
-					await worker.close();
-				} catch (error) {
+				await worker.close().catch((error) => {
 					// Catch the error instead of throwing it
-					this.logger.error(errorMessages.JOB_QUEUE_WORKER_CLOSE, {
+					this.logger.error({
+						message: error.message,
 						service: SERVICE_NAME,
+						method: "scaleWorkers",
+						stack: error.stack,
 					});
-				}
+				});
 			}
 			return true;
 		}
@@ -282,20 +286,24 @@ class JobQueue {
 	 */
 	async deleteJob(monitor) {
 		try {
-			const deleted = await this.queue.removeRepeatable(monitor._id, {
+			const wasDeleted = await this.queue.removeRepeatable(monitor._id, {
 				every: monitor.interval,
 			});
-			if (deleted) {
-				this.logger.info(successMessages.JOB_QUEUE_DELETE_JOB, {
+			if (wasDeleted === true) {
+				this.logger.info({
+					message: successMessages.JOB_QUEUE_DELETE_JOB,
 					service: SERVICE_NAME,
-					jobId: monitor.id,
+					method: "deleteJob",
+					details: `Deleted job ${monitor._id}`,
 				});
 				const workerStats = await this.getWorkerStats();
 				await this.scaleWorkers(workerStats);
 			} else {
-				this.logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
+				this.logger.error({
+					message: errorMessages.JOB_QUEUE_DELETE_JOB,
 					service: SERVICE_NAME,
-					jobId: monitor.id,
+					method: "deleteJob",
+					details: `Failed to delete job ${monitor._id}`,
 				});
 			}
 		} catch (error) {
@@ -315,12 +323,16 @@ class JobQueue {
 				delayed: await this.queue.getDelayedCount(),
 				repeatableJobs: (await this.queue.getRepeatableJobs()).length,
 			};
-			console.log(metrics);
+			this.logger.info({
+				message: metrics,
+			});
 			return metrics;
 		} catch (error) {
-			this.logger.error("Failed to retrieve job queue metrics", {
+			this.logger.error({
+				message: error.message,
 				service: SERVICE_NAME,
-				errorMsg: error.message,
+				method: "getMetrics",
+				stack: error.stack,
 			});
 		}
 	}
@@ -332,7 +344,7 @@ class JobQueue {
 	async obliterate() {
 		try {
 			let metrics = await this.getMetrics();
-			console.log(metrics);
+			this.logger.info({ message: metrics });
 			await this.queue.pause();
 			const jobs = await this.getJobs();
 
@@ -348,10 +360,8 @@ class JobQueue {
 
 			await this.queue.obliterate();
 			metrics = await this.getMetrics();
-			console.log(metrics);
-			this.logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
-				service: SERVICE_NAME,
-			});
+			this.logger.info({ message: metrics });
+			this.logger.info({ message: successMessages.JOB_QUEUE_OBLITERATE });
 			return true;
 		} catch (error) {
 			error.service === undefined ? (error.service = SERVICE_NAME) : null;

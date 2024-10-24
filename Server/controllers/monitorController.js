@@ -3,7 +3,7 @@ import {
 	getMonitorByIdQueryValidation,
 	getMonitorsByTeamIdValidation,
 	createMonitorBodyValidation,
-  getMonitorURLByQueryValidation,
+	getMonitorURLByQueryValidation,
 	editMonitorBodyValidation,
 	getMonitorsAndSummaryByTeamIdParamValidation,
 	getMonitorsAndSummaryByTeamIdQueryValidation,
@@ -270,32 +270,32 @@ const createMonitor = async (req, res, next) => {
  * @throws {Error} If there is an error during the process, especially if there is a validation error (422).
  */
 const checkEndpointResolution = async (req, res, next) => {
-  try {
+	try {
 		await getMonitorURLByQueryValidation.validateAsync(req.query);
 	} catch (error) {
 		next(handleValidationError(error, SERVICE_NAME));
 		return;
 	}
 
-  try {
-    let { monitorURL } = req.query;
-    monitorURL = new URL(monitorURL);
-    await new Promise((resolve, reject) => {
-      dns.resolve(monitorURL.hostname, (error) => {
-        if (error) {
-          reject(error);
-        }
-        resolve();
-      });
-    });
-    return res.status(200).json({
-      success: true,
-      msg: `URL resolved successfully`,
-    });
-  } catch (error) {
-    next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
-  }
-}
+	try {
+		let { monitorURL } = req.query;
+		monitorURL = new URL(monitorURL);
+		await new Promise((resolve, reject) => {
+			dns.resolve(monitorURL.hostname, (error) => {
+				if (error) {
+					reject(error);
+				}
+				resolve();
+			});
+		});
+		return res.status(200).json({
+			success: true,
+			msg: `URL resolved successfully`,
+		});
+	} catch (error) {
+		next(handleError(error, SERVICE_NAME, "checkEndpointResolution"));
+	}
+};
 
 /**
  * Deletes a monitor by its ID and also deletes associated checks, alerts, and notifications.
@@ -325,14 +325,12 @@ const deleteMonitor = async (req, res, next) => {
 			await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
 			await req.db.deleteNotificationsByMonitorId(monitor._id);
 		} catch (error) {
-			logger.error(
-				`Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
-				{
-					method: "deleteMonitor",
-					service: SERVICE_NAME,
-					error: error.message,
-				}
-			);
+			logger.error({
+				message: `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+				service: SERVICE_NAME,
+				method: "deleteMonitor",
+				stack: error.stack,
+			});
 		}
 		return res.status(200).json({ success: true, msg: successMessages.MONITOR_DELETE });
 	} catch (error) {
@@ -365,12 +363,12 @@ const deleteAllMonitors = async (req, res, next) => {
 					await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
 					await req.db.deleteNotificationsByMonitorId(monitor._id);
 				} catch (error) {
-					logger.error(
-						`Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
-						{
-							method: "deleteAllMonitors",
-						}
-					);
+					logger.error({
+						message: `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+						service: SERVICE_NAME,
+						method: "deleteAllMonitors",
+						stack: error.stack,
+					});
 				}
 			})
 		);
@@ -517,7 +515,7 @@ export {
 	getMonitorsAndSummaryByTeamId,
 	getMonitorsByTeamId,
 	createMonitor,
-  checkEndpointResolution,
+	checkEndpointResolution,
 	deleteMonitor,
 	deleteAllMonitors,
 	editMonitor,

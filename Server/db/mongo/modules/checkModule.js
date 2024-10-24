@@ -30,9 +30,11 @@ const createCheck = async (checkData) => {
 		const monitor = await Monitor.findById(monitorId);
 
 		if (!monitor) {
-			logger.error("Monitor not found", {
+			logger.error({
+				message: "Monitor not found",
 				service: SERVICE_NAME,
-				monitorId,
+				method: "createCheck",
+				details: `monitor ID: ${monitorId}`,
 			});
 			return;
 		}
@@ -248,9 +250,11 @@ const updateChecksTTL = async (teamId, ttl) => {
 	try {
 		await Check.collection.dropIndex("expiry_1");
 	} catch (error) {
-		logger.error("Failed to drop index", {
+		logger.error({
+			message: error.message,
 			service: SERVICE_NAME,
 			method: "updateChecksTTL",
+			stack: error.stack,
 		});
 	}
 
