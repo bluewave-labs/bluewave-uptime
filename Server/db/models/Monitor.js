@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Notification from "./Notification.js";
 
 const MonitorSchema = mongoose.Schema(
 	{
@@ -47,6 +46,14 @@ const MonitorSchema = mongoose.Schema(
 		uptimePercentage: {
 			type: Number,
 			default: undefined,
+		},
+		thresholds: {
+			type: {
+				usage_cpu: { type: Number },
+				usage_memory: { type: Number },
+				usage_disk: { type: Number },
+			},
+			_id: false,
 		},
 		notifications: [
 			{
