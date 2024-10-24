@@ -279,10 +279,10 @@ const editUser = async (req, res, next) => {
 			const user = await req.db.getUserByEmail(email);
 			// Compare passwords
 			const match = await user.comparePassword(req.body.password);
-			// If not a match, throw a 403
+			// If not a match, throw a 401
 			if (!match) {
 				const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
-				error.status = 403;
+				error.status = 401;
 				next(error);
 				return;
 			}
