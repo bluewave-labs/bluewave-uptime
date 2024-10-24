@@ -260,7 +260,7 @@ class JobQueue {
 	 */
 	async addJob(jobName, payload) {
 		try {
-			console.log("Adding job", payload?.url ?? "No URL");
+			this.logger.info({ message: `Adding job ${payload?.url ?? "No URL"}` });
 			// Execute job immediately
 			await this.queue.add(jobName, payload);
 			await this.queue.add(jobName, payload, {

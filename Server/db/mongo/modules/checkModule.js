@@ -79,7 +79,11 @@ const getChecksCount = async (req) => {
 				checksQuery.statusCode = 5000;
 				break;
 			default:
-				console.log("default");
+				logger.warn({
+					message: "invalid filter",
+					service: SERVICE_NAME,
+					method: "getChecksCount",
+				});
 				break;
 		}
 	}
@@ -112,7 +116,7 @@ const getChecks = async (req) => {
 		if (dateRange !== undefined) {
 			checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
 		}
-		// Fitler checks by status
+		// Filter checks by status
 		if (filter !== undefined) {
 			checksQuery.status = false;
 			switch (filter) {
@@ -124,7 +128,11 @@ const getChecks = async (req) => {
 					checksQuery.statusCode = 5000;
 					break;
 				default:
-					console.log("default");
+					logger.warn({
+						message: "invalid filter",
+						service: SERVICE_NAME,
+						method: "getChecks",
+					});
 					break;
 			}
 		}
@@ -172,7 +180,11 @@ const getTeamChecks = async (req) => {
 				checksQuery.statusCode = 5000;
 				break;
 			default:
-				console.log("default");
+				logger.warn({
+					message: "invalid filter",
+					service: SERVICE_NAME,
+					method: "getTeamChecks",
+				});
 				break;
 		}
 	}
