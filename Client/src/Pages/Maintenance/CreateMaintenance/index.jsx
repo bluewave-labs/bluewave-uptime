@@ -28,6 +28,7 @@ import {
 	MS_PER_WEEK,
 } from "../../../Utils/timeUtils";
 import { useNavigate, useParams } from "react-router-dom";
+import { buildErrors, hasValidationErrors } from "../../../Validation/error";
 
 const getDurationAndUnit = (durationInMs) => {
 	if (durationInMs % MS_PER_DAY === 0) {
@@ -176,16 +177,6 @@ const CreateMaintenance = () => {
 		fetchMonitors();
 	}, [authToken, user]);
 
-	const buildErrors = (prev, id, error) => {
-		const updatedErrors = { ...prev };
-		if (error) {
-			updatedErrors[id] = error.details[0].message;
-		} else {
-			delete updatedErrors[id];
-		}
-		return updatedErrors;
-	};
-
 	const handleSearch = (value) => {
 		setSearch(value);
 	};
@@ -224,20 +215,8 @@ const CreateMaintenance = () => {
 	};
 
 	const handleSubmit = async () => {
-		const { error } = maintenanceWindowValidation.validate(form, {
-			abortEarly: false,
-		});
-
-		// If errors, return early
-		if (error) {
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
-			logger.error(error);
-			return;
-		}
+		if (hasValidationErrors(form, maintenanceWindowValidation, setErrors))
+			return;		
 		// Build timestamp for maintenance window from startDate and startTime
 		const start = dayjs(form.startDate)
 			.set("hour", form.startTime.hour())

@@ -41,6 +41,7 @@ const Field = forwardRef(
 			placeholder,
 			value,
 			onChange,
+			onBlur,
 			onInput,
 			error,
 			disabled,
@@ -115,6 +116,7 @@ const Field = forwardRef(
 					value={value}
 					onInput={onInput}
 					onChange={onChange}
+					onBlur={onBlur}
 					disabled={disabled}
 					inputRef={ref}
 					inputProps={{
@@ -216,6 +218,7 @@ Field.propTypes = {
 	placeholder: PropTypes.string,
 	value: PropTypes.string.isRequired,
 	onChange: PropTypes.func,
+	onBlur: PropTypes.func,
 	onInput: PropTypes.func,
 	error: PropTypes.string,
 	disabled: PropTypes.bool,
