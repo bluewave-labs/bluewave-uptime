@@ -467,7 +467,7 @@ describe("Auth Controller - editUser", async () => {
 		});
 		await editUser(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
-		expect(next.firstCall.args[0].status).to.equal(403);
+		expect(next.firstCall.args[0].status).to.equal(401);
 		expect(next.firstCall.args[0].message).to.equal(
 			errorMessages.AUTH_INCORRECT_PASSWORD
 		);
@@ -812,9 +812,9 @@ describe("Auth Controller - deleteUser", () => {
 	afterEach(() => {
 		sinon.restore();
 	});
-	it("should return 404 if user is not found", async () => {
+	it("should throw an error if user is not found", async () => {
 		jwt.decode.returns({ email: "test@example.com" });
-		req.db.getUserByEmail.resolves(null);
+		req.db.getUserByEmail.throws(new Error(errorMessages.DB_USER_NOT_FOUND));
 
 		await deleteUser(req, res, next);
 

@@ -148,4 +148,11 @@ describe("controllerUtils - fetchMonitorCertificate", () => {
 		const result = await fetchMonitorCertificate(sslChecker, monitor);
 		expect(result).to.deep.equal({ validTo: "2022-01-01" });
 	});
+	it("should throw an error if a ssl-checker returns null", async () => {
+		sslChecker.returns(null);
+		await fetchMonitorCertificate(sslChecker, monitor).catch((error) => {
+			expect(error).to.be.an("error");
+			expect(error.message).to.equal("Certificate not found");
+		});
+	});
 });

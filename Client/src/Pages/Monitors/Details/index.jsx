@@ -95,6 +95,7 @@ const DetailsPage = ({ isAdmin }) => {
 					setCertificateExpiry(formatDateWithTz(date, dateFormat, uiTimezone) ?? "N/A");
 				}
 			} catch (error) {
+				setCertificateExpiry("N/A");
 				console.error(error);
 			}
 		};
