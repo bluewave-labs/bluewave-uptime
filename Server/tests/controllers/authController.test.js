@@ -812,9 +812,9 @@ describe("Auth Controller - deleteUser", () => {
 	afterEach(() => {
 		sinon.restore();
 	});
-	it("should return 404 if user is not found", async () => {
+	it("should throw an error if user is not found", async () => {
 		jwt.decode.returns({ email: "test@example.com" });
-		req.db.getUserByEmail.resolves(null);
+		req.db.getUserByEmail.throws(new Error(errorMessages.DB_USER_NOT_FOUND));
 
 		await deleteUser(req, res, next);
 
