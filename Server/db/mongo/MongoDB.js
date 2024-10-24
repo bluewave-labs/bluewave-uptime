@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import UserModel from "../models/User.js";
 import AppSettings from "../models/AppSettings.js";
+import logger from "../../utils/logger.js";
+const SERVICE_NAME = "MongoDB";
 
 //****************************************
 // DB Connection
@@ -17,11 +19,27 @@ const connect = async () => {
 			appSettings = new AppSettings({});
 			await appSettings.save();
 		}
-
-		console.log("Connected to MongoDB");
+		logger.info("Connected to MongoDB", { service: SERVICE_NAME, method: "connect" });
 	} catch (error) {
-		console.error("Failed to connect to MongoDB");
+		logger.error("failed to connect to MongoDB", {
+			service: SERVICE_NAME,
+			method: "connect",
+		});
 		throw error;
+	}
+};
+
+const disconnect = async () => {
+	try {
+		logger.info("Disconnecting from MongoDB", { service: SERVICE_NAME });
+		await mongoose.disconnect();
+		logger.info("Disconnected from MongoDB", { service: SERVICE_NAME });
+		return;
+	} catch (error) {
+		logger.error("failed to disconnect from MongoDB", {
+			service: SERVICE_NAME,
+			errorMsg: error.message,
+		});
 	}
 };
 
@@ -148,6 +166,7 @@ import { getAppSettings, updateAppSettings } from "./modules/settingsModule.js";
 
 export default {
 	connect,
+	disconnect,
 	insertUser,
 	getUserByEmail,
 	updateUser,
