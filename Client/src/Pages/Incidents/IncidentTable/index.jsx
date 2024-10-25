@@ -24,6 +24,7 @@ import { useTheme } from "@emotion/react";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
 import PlaceholderLight from "../../../assets/Images/data_placeholder.svg?react";
 import PlaceholderDark from "../../../assets/Images/data_placeholder_dark.svg?react";
+import { HttpStatusLabel } from "../../../Components/HttpStatusLabel";
 
 const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 	const uiTimezone = useSelector((state) => state.ui.timezone);
@@ -182,13 +183,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 										"YYYY-MM-DD HH:mm:ss A",
 										uiTimezone
 									);
-									const getGenericStatus = (status) => {
-										if (typeof status === "number" && status >= 100 && status < 600) {
-											return Math.floor(status / 100) * 100;
-										}
-										return "cannot resolve";
-									};
-
+					
 									return (
 										<TableRow key={check._id}>
 											<TableCell>{monitors[check.monitorId]?.name}</TableCell>
@@ -201,12 +196,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 											</TableCell>
 											<TableCell>{formattedDate}</TableCell>
 											<TableCell>
-												<StatusLabel
-													status={getGenericStatus(check.statusCode)}
-													text={String(check.statusCode || "N/A")}
-													hasDot={false}
-													customStyles={{ textTransform: "capitalize" }}
-												/>
+												<HttpStatusLabel status={check.statusCode || "N/A"} />
 											</TableCell>
 											<TableCell>{check.message}</TableCell>
 										</TableRow>

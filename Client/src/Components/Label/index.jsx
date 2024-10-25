@@ -116,14 +116,13 @@ ColoredLabel.propTypes = {
  * @param {Object} props
  * @param { 'up' | 'down' | 'cannot resolve'} props.status - The status for the label
  * @param {string} props.text - The text of the label
- * @param {boolean} props.hasDot - Whether to show a dot or not
  * @returns {JSX.Element}
  * @example
  * // Render an active label
  * <StatusLabel status="up" text="Active" />
  */
 
-const StatusLabel = ({ status, text, hasDot = true, customStyles }) => {
+const StatusLabel = ({ status, text, customStyles }) => {
 	const theme = useTheme();
 	const colors = {
 		up: {
@@ -176,32 +175,21 @@ const StatusLabel = ({ status, text, hasDot = true, customStyles }) => {
 				...customStyles,
 			}}
 		>
-			{hasDot && (
-				<Box
-					width={7}
-					height={7}
-					bgcolor={dotColor}
-					borderRadius="50%"
-					marginRight="5px"
-				/>
-			)}
+			<Box
+				width={7}
+				height={7}
+				bgcolor={dotColor}
+				borderRadius="50%"
+				marginRight="5px"
+			/>
 		</BaseLabel>
 	);
 };
 
 StatusLabel.propTypes = {
-	status: PropTypes.oneOf([
-		"up",
-		"down",
-		"paused",
-		"pending",
-		"400",
-		"500",
-		"cannot resolve",
-	]),
+	status: PropTypes.oneOf(["up", "down", "paused", "pending", "cannot resolve"]),
 	text: PropTypes.string,
-	hasDot: PropTypes.bool,
 	customStyles: PropTypes.object,
 };
 
-export { ColoredLabel, StatusLabel };
+export { BaseLabel, ColoredLabel, StatusLabel };
