@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import UserModel from "../models/User.js";
 import AppSettings from "../models/AppSettings.js";
+import logger from "../../utils/logger.js";
+const SERVICE_NAME = "MongoDB";
 
 //****************************************
 // DB Connection
@@ -17,11 +19,31 @@ const connect = async () => {
 			appSettings = new AppSettings({});
 			await appSettings.save();
 		}
-
-		console.log("Connected to MongoDB");
+		logger.info({ message: "Connected to MongoDB" });
 	} catch (error) {
-		console.error("Failed to connect to MongoDB");
+		logger.error({
+			message: error.message,
+			service: SERVICE_NAME,
+			method: "connect",
+			stack: error.stack,
+		});
 		throw error;
+	}
+};
+
+const disconnect = async () => {
+	try {
+		logger.info({ message: "Disconnecting from MongoDB" });
+		await mongoose.disconnect();
+		logger.info({ message: "Disconnected from MongoDB" });
+		return;
+	} catch (error) {
+		logger.error({
+			message: error.message,
+			service: SERVICE_NAME,
+			method: "disconnect",
+			stack: error.stack,
+		});
 	}
 };
 
@@ -100,6 +122,11 @@ import {
 } from "./modules/pageSpeedCheckModule.js";
 
 //****************************************
+// Hardware Checks
+//****************************************
+import { createHardwareCheck } from "./modules/hardwareCheckModule.js";
+
+//****************************************
 // Checks
 //****************************************
 
@@ -143,6 +170,7 @@ import { getAppSettings, updateAppSettings } from "./modules/settingsModule.js";
 
 export default {
 	connect,
+	disconnect,
 	insertUser,
 	getUserByEmail,
 	updateUser,
@@ -179,6 +207,7 @@ export default {
 	createPageSpeedCheck,
 	getPageSpeedChecks,
 	deletePageSpeedChecksByMonitorId,
+	createHardwareCheck,
 	createMaintenanceWindow,
 	getMaintenanceWindowsByTeamId,
 	getMaintenanceWindowById,

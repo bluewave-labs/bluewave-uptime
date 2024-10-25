@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react";
 import { useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box, Button, Divider, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import Avatar from "../../Avatar";
 import Field from "../../Inputs/Field";
 import ImageField from "../../Inputs/Image";
@@ -15,6 +15,8 @@ import { clearUptimeMonitorState } from "../../../Features/UptimeMonitors/uptime
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { GenericDialog } from "../../Dialog/genericDialog";
+import Dialog from "../../Dialog";
 
 /**
  * ProfilePanel component displays a form for editing user profile information
@@ -369,158 +371,82 @@ const ProfilePanel = () => {
 				</Box>
 			)}
 			{/* TODO - Update ModalPopup Component with @mui for reusability */}
-			<Modal
-				aria-labelledby="modal-delete-account"
-				aria-describedby="delete-account-confirmation"
+
+			<Dialog
 				open={isModalOpen("delete")}
-				onClose={() => setIsOpen("")}
-				disablePortal
-			>
-				<Stack
-					gap={theme.spacing(5)}
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						width: 500,
-						bgcolor: theme.palette.background.main,
-						border: 1,
-						borderColor: theme.palette.border.light,
-						borderRadius: theme.shape.borderRadius,
-						boxShadow: 24,
-						p: theme.spacing(15),
-						"&:focus": {
-							outline: "none",
-						},
-					}}
-				>
-					<Typography
-						id="modal-delete-account"
-						component="h1"
-					>
-						Really delete this account?
-					</Typography>
-					<Typography
-						id="delete-account-confirmation"
-						component="p"
-					>
-						If you delete your account, you will no longer be able to sign in, and all of
-						your data will be deleted. Deleting your account is permanent and
-						non-recoverable action.
-					</Typography>
-					<Stack
-						direction="row"
-						gap={theme.spacing(5)}
-						mt={theme.spacing(5)}
-						justifyContent="flex-end"
-					>
-						<Button
-							variant="text"
-							color="info"
-							onClick={() => setIsOpen("")}
-						>
-							Cancel
-						</Button>
-						<LoadingButton
-							variant="contained"
-							color="error"
-							onClick={handleDeleteAccount}
-							loading={isLoading}
-						>
-							Delete account
-						</LoadingButton>
-					</Stack>
-				</Stack>
-			</Modal>
-			<Modal
-				aria-labelledby="modal-update-picture"
-				aria-describedby="update-profile-picture"
+				theme={theme}
+				title={"Really delete this account?"}
+				description={
+					"If you delete your account, you will no longer be able to sign in, and all of your data will be deleted. Deleting your account is permanent and non-recoverable action."
+				}
+				onCancel={() => setIsOpen("")}
+				confirmationButtonLabel={"Delete account"}
+				onConfirm={handleDeleteAccount}
+				isLoading={isLoading}
+			/>
+
+			<GenericDialog
+				title={"Upload Image"}
 				open={isModalOpen("picture")}
 				onClose={closePictureModal}
+				theme={theme}
 			>
-				<Stack
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						width: 475,
-						bgcolor: theme.palette.background.main,
-						border: 1,
-						borderColor: theme.palette.border.light,
-						borderRadius: theme.shape.borderRadius,
-						boxShadow: theme.shape.boxShadow,
-						p: theme.spacing(15),
-						"&:focus": {
-							outline: "none",
-						},
-					}}
-				>
-					<Typography
-						id="modal-update-picture"
-						component="h1"
-						color={theme.palette.text.secondary}
-					>
-						Upload Image
-					</Typography>
-					<ImageField
-						id="update-profile-picture"
-						src={
-							file?.delete
-								? ""
-								: file?.src
-									? file.src
-									: localData?.file
-										? localData.file
-										: user?.avatarImage
-											? `data:image/png;base64,${user.avatarImage}`
-											: ""
-						}
-						loading={progress.isLoading && progress.value !== 100}
-						onChange={handlePicture}
+				<ImageField
+					id="update-profile-picture"
+					src={
+						file?.delete
+							? ""
+							: file?.src
+								? file.src
+								: localData?.file
+									? localData.file
+									: user?.avatarImage
+										? `data:image/png;base64,${user.avatarImage}`
+										: ""
+					}
+					loading={progress.isLoading && progress.value !== 100}
+					onChange={handlePicture}
+				/>
+				{progress.isLoading || progress.value !== 0 || errors["picture"] ? (
+					<ProgressUpload
+						icon={<ImageIcon />}
+						label={file?.name}
+						size={file?.size}
+						progress={progress.value}
+						onClick={removePicture}
+						error={errors["picture"]}
 					/>
-					{progress.isLoading || progress.value !== 0 || errors["picture"] ? (
-						<ProgressUpload
-							icon={<ImageIcon />}
-							label={file?.name}
-							size={file?.size}
-							progress={progress.value}
-							onClick={removePicture}
-							error={errors["picture"]}
-						/>
-					) : (
-						""
-					)}
-					<Stack
-						direction="row"
-						mt={theme.spacing(10)}
-						gap={theme.spacing(5)}
-						justifyContent="flex-end"
+				) : (
+					""
+				)}
+				<Stack
+					direction="row"
+					mt={theme.spacing(10)}
+					gap={theme.spacing(5)}
+					justifyContent="flex-end"
+				>
+					<Button
+						variant="text"
+						color="info"
+						onClick={removePicture}
 					>
-						<Button
-							variant="text"
-							color="info"
-							onClick={removePicture}
-						>
-							Remove
-						</Button>
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={handleUpdatePicture}
-							disabled={
-								(Object.keys(errors).length !== 0 && errors?.picture) ||
-								progress.value !== 100
-									? true
-									: false
-							}
-						>
-							Update
-						</Button>
-					</Stack>
+						Remove
+					</Button>
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={handleUpdatePicture}
+						disabled={
+							(Object.keys(errors).length !== 0 && errors?.picture) ||
+							progress.value !== 100
+								? true
+								: false
+						}
+					>
+						Update
+					</Button>
 				</Stack>
-			</Modal>
+			</GenericDialog>
 		</TabPanel>
 	);
 };

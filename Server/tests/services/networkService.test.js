@@ -105,13 +105,7 @@ describe("NetworkService - handleNotification", () => {
 		await networkService.handleNotification(monitor, true);
 
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(
-			loggerMock.error.calledWith("Database error", {
-				method: "handleNotification",
-				service: networkService.SERVICE_NAME,
-				monitorId: monitor._id,
-			})
-		).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("Database error");
 	});
 });
 
@@ -160,13 +154,13 @@ describe("NetworkService - handleStatusUpdate", function () {
 		expect(res).to.be.undefined;
 	});
 
-	it("should log an error if monitor is null", async function () {
-		dbMock.getMonitorById.resolves(null);
+	it("should log an error if finding monitor fails", async function () {
+		dbMock.getMonitorById.throws(new Error("Database error"));
 
 		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
 
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith("Null Monitor: monitor1")).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("Database error");
 	});
 
 	it("should update monitor status if different", async function () {
@@ -196,7 +190,7 @@ describe("NetworkService - handleStatusUpdate", function () {
 		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
 
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith("Save error")).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("Save error");
 	});
 });
 
@@ -308,43 +302,36 @@ describe("networkService - handlePing", () => {
 		sinon.restore();
 	});
 
-	it("should handle a successful ping response", async function () {
+	it("should handle a successful ping response", async () => {
 		const response = { alive: true };
 		const responseTime = 0;
-		pingMock.promise.probe.resolves(response);
+		pingMock.promise.probe.returns(response);
 		logAndStoreCheckStub.resolves();
 		await networkService.handlePing(job);
 		expect(
-			logAndStoreCheckStub.calledOnceWith(
-				{
-					monitorId: job.data._id,
-					status: true,
-					responseTime,
-					message: successMessages.PING_SUCCESS,
-				},
-				networkService.db.createCheck
-			)
+			logAndStoreCheckStub.calledOnceWith({
+				monitorId: job.data._id,
+				status: response.alive,
+				responseTime,
+				message: successMessages.PING_SUCCESS,
+			})
 		).to.be.true;
 		expect(handleStatusUpdateStub.calledOnceWith(job, true)).to.be.true;
 	});
-	it("should handle a successful ping response and isAlive === false", async function () {
+	it("should handle a successful response and isAlive === false", async function () {
 		const response = { alive: false };
 		const responseTime = 0;
 		pingMock.promise.probe.resolves(response);
 		logAndStoreCheckStub.resolves();
 
 		await networkService.handlePing(job);
-		console.log(logAndStoreCheckStub.getCall(0).args[0]);
 		expect(
-			logAndStoreCheckStub.calledOnceWith(
-				{
-					monitorId: job.data._id,
-					status: false,
-					responseTime,
-					message: errorMessages.PING_CANNOT_RESOLVE,
-				},
-				networkService.db.createCheck
-			)
+			logAndStoreCheckStub.calledOnceWith({
+				monitorId: job.data._id,
+				status: false,
+				responseTime,
+				message: errorMessages.PING_CANNOT_RESOLVE,
+			})
 		).to.be.true;
 		expect(handleStatusUpdateStub.calledOnceWith(job, false)).to.be.true;
 	});
@@ -625,6 +612,105 @@ describe("networkService - handlePagespeed", () => {
 	});
 });
 
+describe("networkService - handleHardware", () => {
+	let dbMock,
+		axiosMock,
+		jobMock,
+		emailServiceMock,
+		pingMock,
+		loggerMock,
+		httpMock,
+		networkService,
+		logAndStoreCheckStub,
+		handleStatusUpdateStub;
+	beforeEach(() => {
+		jobMock = {
+			data: {
+				_id: "12345",
+				url: "http://example.com",
+			},
+		};
+		dbMock = { getMonitorById: sinon.stub() };
+		axiosMock = { get: sinon.stub() };
+
+		emailServiceMock = sinon.stub();
+		pingMock = { promise: { probe: sinon.stub() } };
+		loggerMock = { error: sinon.stub() };
+		httpMock = {
+			STATUS_CODES: {
+				200: "OK",
+				500: "Internal Server Error",
+			},
+		};
+		networkService = new NetworkService(
+			dbMock,
+			emailServiceMock,
+			axiosMock,
+			pingMock,
+			loggerMock,
+			httpMock
+		);
+		logAndStoreCheckStub = sinon.stub(networkService, "logAndStoreCheck").resolves();
+		handleStatusUpdateStub = sinon.stub(networkService, "handleStatusUpdate").resolves();
+	});
+
+	afterEach(() => {
+		sinon.restore();
+	});
+
+	it("should handle a successful Hardware response", async () => {
+		const responseMock = {
+			monitorId: jobMock.data._id,
+			cpu: {
+				physical_core: 1,
+				logical_core: 1,
+				frequency: 266,
+				temperature: null,
+				free_percent: null,
+				usage_percent: null,
+			},
+			memory: {
+				total_bytes: 4,
+				available_bytes: 4,
+				used_bytes: 2,
+				usage_percent: 0.5,
+			},
+			disk: [
+				{
+					read_speed_bytes: 3,
+					write_speed_bytes: 3,
+					total_bytes: 10,
+					free_bytes: 2,
+					usage_percent: 0.8,
+				},
+			],
+			host: {
+				os: "Linux",
+				platform: "Ubuntu",
+				kernel_version: "24.04",
+			},
+		};
+		axiosMock.get.resolves(responseMock);
+
+		await networkService.handleHardware(jobMock);
+		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
+		const hardwareData = networkService.logAndStoreCheck.getCall(0).args[0];
+		expect(hardwareData.cpu).to.include({
+			...responseMock.cpu,
+		});
+		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, true)).to.be.true;
+	});
+
+	it("should handle an error Hardware response", async () => {
+		logAndStoreCheckStub.throws(new Error("Hardware error"));
+		try {
+			await networkService.handleHardware(jobMock);
+		} catch (error) {
+			expect(error.message).to.equal("Hardware error");
+		}
+	});
+});
+
 describe("NetworkService - getStatus", () => {
 	let dbMock, emailServiceMock, axiosMock, pingMock, loggerMock, httpMock, networkService;
 
@@ -685,12 +771,26 @@ describe("NetworkService - getStatus", () => {
 		const result = await networkService.getStatus(job);
 		expect(result).to.be.false;
 	});
+	it("should return true if the job type is hardware and handleHardware is successful", async () => {
+		const job = { data: { type: networkService.TYPE_HARDWARE } };
+		sinon.stub(networkService, "handleHardware").resolves(true);
+		const result = await networkService.getStatus(job);
+		expect(result).to.be.true;
+	});
+	it("should return false if the job type is hardware and handleHardware is not successful", async () => {
+		const job = { data: { type: networkService.TYPE_HARDWARE } };
+		sinon.stub(networkService, "handleHardware").resolves(false);
+		const result = await networkService.getStatus(job);
+		expect(result).to.be.false;
+	});
 	it("should log an error and return false if the job type is unknown", async () => {
 		const job = { data: { type: "unknown" } };
 		const result = await networkService.getStatus(job);
 		expect(result).to.be.false;
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Unsupported type: unknown`)).to.be.true;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal(
+			"Unsupported type: unknown"
+		);
 	});
 });
 
@@ -719,12 +819,14 @@ describe("NetworkService - logAndStoreCheck", async () => {
 		sinon.restore();
 	});
 
-	it("should log an error if `writeToDb` throws an error", async () => {
+	it("should log an error if writeToDb throws an error", async () => {
 		writeToDB.rejects(new Error("Database error"));
 		await networkService.logAndStoreCheck(data, writeToDB);
+
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Error writing check for ${data.monitorId}`)).to.be
-			.true;
+		expect(loggerMock.error.firstCall.args[0].details).to.equal(
+			`Error writing check for ${data.monitorId}`
+		);
 	});
 
 	it("should return the status of the inserted check if successful", async () => {
@@ -737,14 +839,17 @@ describe("NetworkService - logAndStoreCheck", async () => {
 		writeToDB.resolves(null);
 		await networkService.logAndStoreCheck(data, writeToDB);
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Error writing check for ${data.monitorId}`)).to.be
-			.true;
+		expect(loggerMock.error.firstCall.args[0].details).to.equal(
+			`Error writing check for ${data.monitorId}`
+		);
 	});
 	it("should thrown an error if the check is not inserted (undefined)", async () => {
 		writeToDB.resolves(undefined);
 		await networkService.logAndStoreCheck(data, writeToDB);
+
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.calledWith(`Error writing check for ${data.monitorId}`)).to.be
-			.true;
+		expect(loggerMock.error.firstCall.args[0].details).to.equal(
+			`Error writing check for ${data.monitorId}`
+		);
 	});
 });

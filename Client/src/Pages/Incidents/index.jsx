@@ -17,56 +17,62 @@ const Incidents = () => {
 
 	const [monitors, setMonitors] = useState({});
 	const [selectedMonitor, setSelectedMonitor] = useState("0");
-	const [loading, setLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	// TODO do something with these filters
 	const [filter, setFilter] = useState("all");
 
 	useEffect(() => {
 		const fetchMonitors = async () => {
-			setLoading(true);
-			const res = await networkService.getMonitorsByTeamId({
-				authToken: authState.authToken,
-				teamId: authState.user.teamId,
-				limit: -1,
-				types: null,
-				status: null,
-				checkOrder: null,
-				normalize: null,
-				page: null,
-				rowsPerPage: null,
-				filter: null,
-				field: null,
-				order: null,
-			});
-			// Reduce to a lookup object for 0(1) lookup
-			if (res?.data?.data?.monitors?.length > 0) {
-				const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
-					acc[monitor._id] = monitor;
-					return acc;
-				}, {});
-				setMonitors(monitorLookup);
-				monitorId !== undefined && setSelectedMonitor(monitorId);
+			try {
+				setIsLoading(true);
+				const res = await networkService.getMonitorsByTeamId({
+					authToken: authState.authToken,
+					teamId: authState.user.teamId,
+					limit: -1,
+					types: null,
+					status: null,
+					checkOrder: null,
+					normalize: null,
+					page: null,
+					rowsPerPage: null,
+					filter: null,
+					field: null,
+					order: null,
+				});
+				// Reduce to a lookup object for 0(1) lookup
+				if (res?.data?.data?.monitors?.length > 0) {
+					const monitorLookup = res.data.data.monitors.reduce((acc, monitor) => {
+						acc[monitor._id] = monitor;
+						return acc;
+					}, {});
+					setMonitors(monitorLookup);
+					monitorId !== undefined && setSelectedMonitor(monitorId);
+				}
+			} catch (error) {
+				console.info(error);
+			} finally {
+				setIsLoading(false);
 			}
-			setLoading(false);
 		};
-
 		fetchMonitors();
 	}, [authState]);
 
-	useEffect(() => {}, []);
+	useEffect(() => {}, [monitors]);
 
 	const handleSelect = (event) => {
 		setSelectedMonitor(event.target.value);
 	};
 
+	const isActuallyLoading = isLoading && Object.keys(monitors)?.length === 0;
+
 	return (
 		<Stack
-			className="incidents table-container"
+			className="incidents"
 			pt={theme.spacing(6)}
 			gap={theme.spacing(12)}
 		>
-			{loading ? (
+			{isActuallyLoading ? (
 				<SkeletonLayout />
 			) : (
 				<>

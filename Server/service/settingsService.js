@@ -1,4 +1,3 @@
-import AppSettings from "../db/models/AppSettings.js";
 const SERVICE_NAME = "SettingsService";
 const envConfig = {
 	logLevel: undefined,
@@ -30,7 +29,8 @@ class SettingsService {
 	 * Constructs a new SettingsService
 	 * @constructor
 	 * @throws {Error}
-	 */ constructor() {
+	 */ constructor(appSettings) {
+		this.appSettings = appSettings;
 		this.settings = { ...envConfig };
 	}
 	/**
@@ -40,7 +40,7 @@ class SettingsService {
 	 * @throws Will throw an error if settings are not found in the database or if settings have not been loaded.
 	 */ async loadSettings() {
 		try {
-			const dbSettings = await AppSettings.findOne();
+			const dbSettings = await this.appSettings.findOne();
 			if (!this.settings) {
 				throw new Error("Settings not found");
 			}
@@ -50,10 +50,6 @@ class SettingsService {
 				if (envConfig[key] === undefined && dbSettings[key] !== undefined) {
 					this.settings[key] = dbSettings[key];
 				}
-			}
-
-			if (!this.settings) {
-				throw new Error("Settings not found");
 			}
 			return this.settings;
 		} catch (error) {

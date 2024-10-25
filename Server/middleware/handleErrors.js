@@ -5,9 +5,11 @@ const handleErrors = (error, req, res, next) => {
 	const status = error.status || 500;
 	const message = error.message || errorMessages.FRIENDLY_ERROR;
 	const service = error.service || errorMessages.UNKNOWN_SERVICE;
-	logger.error(error.message, {
+	logger.error({
+		message: message,
 		service: service,
 		method: error.method,
+		stack: error.stack,
 	});
 	res.status(status).json({ success: false, msg: message });
 };
