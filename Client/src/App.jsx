@@ -39,6 +39,14 @@ import { useDispatch } from "react-redux";
 import { getAppSettings, updateAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
+import { setMode } from "./Features/UI/uiSlice";
+
+const getPreferredTheme = () => {
+	if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		return 'dark';
+	}
+	return 'light';
+}
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -57,6 +65,11 @@ function App() {
 			dispatch(getAppSettings({ authToken }));
 		}
 	}, [dispatch, authToken]);
+
+	useEffect(() => {
+		const theme = getPreferredTheme();
+		dispatch(setMode(theme));
+	},[dispatch]);
 
 	// Cleanup
 	useEffect(() => {
