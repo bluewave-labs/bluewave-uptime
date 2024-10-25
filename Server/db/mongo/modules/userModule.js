@@ -68,7 +68,7 @@ const insertUser = async (userData, imageFile) => {
 const getUserByEmail = async (email) => {
 	try {
 		// Need the password to be able to compare, removed .select()
-		// We can strip the hash before returing the user
+		// We can strip the hash before returning the user
 		const user = await UserModel.findOne({ email: email }).select("-profileImage");
 		if (user) {
 			return user;
