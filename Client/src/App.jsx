@@ -42,11 +42,14 @@ import { networkService } from "./main";
 import { setMode } from "./Features/UI/uiSlice";
 
 const getPreferredTheme = () => {
-	if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-		return 'dark';
+	try {
+		return window?.matchMedia?.('(prefers-color-scheme: dark)')?.matches? 'dark': 'light';
 	}
-	return 'light';
+	catch {
+		return 'light';
+	}
 }
+
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -69,6 +72,17 @@ function App() {
 	useEffect(() => {
 		const theme = getPreferredTheme();
 		dispatch(setMode(theme));
+
+		const mediaQuery = window?.matchMedia?.('(prefers-color-scheme: dark)');
+		const handleThemeChange = (e) => {
+	    	dispatch(setMode(e.matches ? 'dark' : 'light'));
+	 	};
+	 
+	  	mediaQuery?.addEventListener?.('change', handleThemeChange);
+	  
+	  	return () => {
+	    	mediaQuery?.removeEventListener?.('change', handleThemeChange);
+	  	};
 	},[dispatch]);
 
 	// Cleanup
