@@ -20,8 +20,8 @@ const CurrentMonitoring = ({ totalMonitors, monitors, isAdmin }) => {
 			flex={1}
 			px={theme.spacing(10)}
 			py={theme.spacing(8)}
-			border={1}
-			borderColor={theme.palette.border.light}
+			// border={1}
+			// borderColor={theme.palette.border.light}
 			borderRadius={theme.shape.borderRadius}
 			backgroundColor={theme.palette.background.main}
 		>
