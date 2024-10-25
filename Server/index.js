@@ -89,10 +89,15 @@ const startApp = async () => {
 	//health check
 	app.use("/api/v1/healthy", (req, res) => {
 		try {
-			logger.info("Checking Health of the server.");
+			logger.info({ message: "Checking Health of the server." });
 			return res.status(200).json({ message: "Healthy" });
 		} catch (error) {
-			logger.error(error.message);
+			logger.error({
+				message: error.message,
+				service: SERVICE_NAME,
+				method: "healthCheck",
+				stack: error.stack,
+			});
 			return res.status(500).json({ message: error.message });
 		}
 	});
@@ -106,7 +111,7 @@ const startApp = async () => {
 	// Create services
 	await db.connect();
 	app.listen(PORT, () => {
-		console.log(`server started on port:${PORT}`);
+		logger.info({ message: `server started on port:${PORT}` });
 	});
 	const settingsService = new SettingsService(AppSettings);
 
@@ -132,19 +137,21 @@ const startApp = async () => {
 
 	const cleanup = async () => {
 		if (cleaningUp) {
-			console.log("Already cleaning up");
+			logger.warn({ message: "Already cleaning up" });
 			return;
 		}
 		cleaningUp = true;
 		try {
-			console.log("Shutting down gracefully");
+			logger.info({ message: "shutting down gracefully" });
 			await jobQueue.obliterate();
 			await db.disconnect();
-			console.log("Finished cleanup");
+			logger.info({ message: "shut down gracefully" });
 		} catch (error) {
-			logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
+			logger.error({
+				message: error.message,
 				service: SERVICE_NAME,
-				errorMsg: error.message,
+				method: "cleanup",
+				stack: error.stack,
 			});
 		}
 		process.exit(0);
@@ -155,8 +162,11 @@ const startApp = async () => {
 };
 
 startApp().catch((error) => {
-	logger.error(error.message, {
+	logger.error({
+		message: error.message,
 		service: SERVICE_NAME,
+		method: "startApp",
+		stack: error.stack,
 	});
 	process.exit(1);
 });
