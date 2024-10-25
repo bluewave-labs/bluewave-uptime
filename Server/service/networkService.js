@@ -104,8 +104,7 @@ class NetworkService {
 						monitor: monitor,
 						template: isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate",
 						context: { monitorName: monitor.name, monitorUrl: monitor.url },
-						subject:
-							(subject = `Monitor ${monitor.name} is ${isAlive === true ? "up" : "down"}`),
+						subject: `Monitor ${monitor.name} is ${isAlive === true ? "up" : "down"}`,
 					};
 					this.handleNotification(config);
 				}
