@@ -202,7 +202,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 						<Field
 							type="number"
 							id="systemEmailPort"
-							label="System email address"
+							label="System email port"
 							name="systemEmailPort"
 							value={localSettings.systemEmailPort.toString()}
 							onChange={handleChange}
