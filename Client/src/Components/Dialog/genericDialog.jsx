@@ -12,6 +12,7 @@ const GenericDialog = ({ title, description, open, onClose, theme, children }) =
 			aria-describedby={ariaDescribedBy}
 			open={open}
 			onClose={onClose}
+			onClick={(e)=>e.stopPropagation()}
 		>
 			<Stack
 				gap={theme.spacing(2)}

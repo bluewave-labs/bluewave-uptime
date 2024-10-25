@@ -17,7 +17,6 @@ import maintenanceWindowRouter from "./routes/maintenanceWindowRoute.js";
 import settingsRouter from "./routes/settingsRoute.js";
 import { fileURLToPath } from "url";
 
-import { connectDbAndRunServer } from "./configs/db.js";
 import queueRouter from "./routes/queueRoute.js";
 
 //JobQueue service and dependencies
@@ -51,31 +50,11 @@ const __dirname = path.dirname(__filename);
 const openApiSpec = JSON.parse(
 	fs.readFileSync(path.join(__dirname, "openapi.json"), "utf8")
 );
+
+const PORT = 5000;
+
 // Need to wrap server setup in a function to handle async nature of JobQueue
 const startApp = async () => {
-	// **************************
-	// Here is where we can swap out DBs easily.  Spin up a mongoDB instance and try it out.
-	// Simply comment out the FakeDB and uncomment the MongoDB or vice versa.
-	// We can easily swap between any type of data source as long as the methods are implemented
-	//
-	// FakeDB
-	// const db = require("./db/FakeDb");
-	//
-	// MongoDB
-	// const db = require("./db/MongoDB");
-	//
-	// **************************
-	// const DB_TYPE = {
-	//   MongoDB: async () => (await import("./db/mongo/MongoDB.js")).default,
-	//   FakedDB: async () => (await import("./db/FakeDb.js")).default,
-	// };
-
-	// const db = DB_TYPE[process.env.DB_TYPE]
-	//   ? DB_TYPE[process.env.DB_TYPE]()
-	//   : require("./db/FakeDb");
-
-	// const db = DB_TYPE.MongoDB();
-
 	const app = express();
 
 	// middlewares
@@ -85,12 +64,8 @@ const startApp = async () => {
 	);
 	app.use(express.json());
 	app.use(helmet());
-	// **************************
-	// Make DB accessible anywhere we have a Request object
-	// By adding the DB to the request object, we can access it in any route
-	// Thus we do not need to import it in every route file, and we can easily swap out DBs as there is only one place to change it
-	// Same applies for JobQueue and emailService
-	// **************************
+
+	// Add db, jobQueue, emailService, and settingsService to request object for easy access
 	app.use((req, res, next) => {
 		req.db = db;
 		req.jobQueue = jobQueue;
@@ -114,27 +89,15 @@ const startApp = async () => {
 	//health check
 	app.use("/api/v1/healthy", (req, res) => {
 		try {
-			logger.info("Checking Health of the server.");
+			logger.info({ message: "Checking Health of the server." });
 			return res.status(200).json({ message: "Healthy" });
 		} catch (error) {
-			logger.error(error.message);
-			return res.status(500).json({ message: error.message });
-		}
-	});
-
-	app.use("/api/v1/mail", async (req, res) => {
-		try {
-			const id = await req.emailService.buildAndSendEmail(
-				"welcomeEmailTemplate",
-				{
-					name: "Alex",
-				},
-				"ajhollid@gmail.com",
-				"Welcome"
-			);
-			res.status(200).json({ success: true, msg: "Email sent", data: id });
-		} catch (error) {
-			logger.error(error.message);
+			logger.error({
+				message: error.message,
+				service: SERVICE_NAME,
+				method: "healthCheck",
+				stack: error.stack,
+			});
 			return res.status(500).json({ message: error.message });
 		}
 	});
@@ -146,7 +109,10 @@ const startApp = async () => {
 	app.use(handleErrors);
 
 	// Create services
-	await connectDbAndRunServer(app, db);
+	await db.connect();
+	app.listen(PORT, () => {
+		logger.info({ message: `server started on port:${PORT}` });
+	});
 	const settingsService = new SettingsService(AppSettings);
 
 	await settingsService.loadSettings();
@@ -171,18 +137,21 @@ const startApp = async () => {
 
 	const cleanup = async () => {
 		if (cleaningUp) {
-			console.log("Already cleaning up");
+			logger.warn({ message: "Already cleaning up" });
 			return;
 		}
 		cleaningUp = true;
 		try {
-			console.log("Shutting down gracefully");
+			logger.info({ message: "shutting down gracefully" });
 			await jobQueue.obliterate();
-			console.log("Finished cleanup");
+			await db.disconnect();
+			logger.info({ message: "shut down gracefully" });
 		} catch (error) {
-			logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
+			logger.error({
+				message: error.message,
 				service: SERVICE_NAME,
-				errorMsg: error.message,
+				method: "cleanup",
+				stack: error.stack,
 			});
 		}
 		process.exit(0);
@@ -193,5 +162,11 @@ const startApp = async () => {
 };
 
 startApp().catch((error) => {
-	console.log(error);
+	logger.error({
+		message: error.message,
+		service: SERVICE_NAME,
+		method: "startApp",
+		stack: error.stack,
+	});
+	process.exit(1);
 });

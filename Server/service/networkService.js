@@ -56,10 +56,12 @@ class NetworkService {
 				}
 			}
 		} catch (error) {
-			this.logger.error(error.message, {
-				method: "handleNotification",
+			this.logger.error({
+				message: error.message,
 				service: this.SERVICE_NAME,
-				monitorId: monitor._id,
+				method: "handleNotification",
+				details: `notification error for monitor: ${monitor._id}`,
+				stack: error.stack,
 			});
 		}
 	}
@@ -79,19 +81,18 @@ class NetworkService {
 		try {
 			monitor = await this.db.getMonitorById(_id);
 		} catch (error) {
+			this.logger.error({
+				message: error.message,
+				service: this.SERVICE_NAME,
+				method: "handleStatusUpdate",
+				stack: error.stack,
+				details: `monitor lookup error for monitor: ${_id}`,
+			});
 			return;
 		}
 
 		// Otherwise, try to update monitor status
 		try {
-			if (monitor === null || monitor === undefined) {
-				this.logger.error(`Null Monitor: ${_id}`, {
-					method: "handleStatusUpdate",
-					service: this.SERVICE_NAME,
-					jobId: job.id,
-				});
-				return;
-			}
 			if (monitor.status === undefined || monitor.status !== isAlive) {
 				const oldStatus = monitor.status;
 				monitor.status = isAlive;
@@ -102,10 +103,12 @@ class NetworkService {
 				}
 			}
 		} catch (error) {
-			this.logger.error(error.message, {
-				method: "handleStatusUpdate",
+			this.logger.error({
+				message: error.message,
 				service: this.SERVICE_NAME,
-				jobId: job.id,
+				method: "handleStatusUpdate",
+				stack: error.stack,
+				details: `status update error for monitor: ${_id}`,
 			});
 		}
 	}
@@ -391,11 +394,12 @@ class NetworkService {
 			case this.TYPE_HARDWARE:
 				return await this.handleHardware(job);
 			default:
-				this.logger.error(`Unsupported type: ${job.data.type}`, {
+				this.logger.error({
+					message: `Unsupported type: ${job.data.type}`,
 					service: this.SERVICE_NAME,
 					method: "getStatus",
-					jobId: job.id,
 				});
+
 				return false;
 		}
 	}
@@ -417,11 +421,12 @@ class NetworkService {
 			}
 			throw new Error();
 		} catch (error) {
-			this.logger.error(`Error writing check for ${data.monitorId}`, {
+			this.logger.error({
+				message: error.message,
 				service: this.SERVICE_NAME,
 				method: "logAndStoreCheck",
-				monitorId: data.monitorId,
-				error: error,
+				details: `Error writing check for ${data.monitorId}`,
+				stack: error.stack,
 			});
 		}
 	}
