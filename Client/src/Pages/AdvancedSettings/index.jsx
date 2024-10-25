@@ -204,7 +204,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							id="systemEmailPort"
 							label="System email port"
 							name="systemEmailPort"
-							value={localSettings.systemEmailPort.toString()}
+							value={localSettings.systemEmailPort?.toString()}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							error={errors.systemEmailPort}
@@ -285,7 +285,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							id="redisPort"
 							label="Redis port"
 							name="redisPort"
-							value={localSettings.redisPort.toString()}
+							value={localSettings.redisPort?.toString()}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							error={errors.redisPort}
