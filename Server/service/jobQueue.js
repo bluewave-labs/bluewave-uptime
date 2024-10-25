@@ -1,8 +1,5 @@
-import { Queue, Worker, Job } from "bullmq";
 const QUEUE_NAME = "monitors";
-
 const JOBS_PER_WORKER = 5;
-import logger from "../utils/logger.js";
 import { errorMessages, successMessages } from "../utils/messages.js";
 const SERVICE_NAME = "JobQueue";
 /**
@@ -19,11 +16,13 @@ class JobQueue {
 	 * @param {SettingsService} settingsService - The settings service
 	 * @throws {Error}
 	 */
-	constructor(settingsService) {
-		const { redisHost, redisPort } = settingsService.getSettings();
+	constructor(settingsService, logger, Queue, Worker) {
+		const settings = settingsService.getSettings() || {};
+
+		const { redisHost = "127.0.0.1", redisPort = 6379 } = settings;
 		const connection = {
-			host: redisHost || "127.0.0.1",
-			port: redisPort || 6379,
+			host: redisHost,
+			port: redisPort,
 		};
 		this.connection = connection;
 		this.queue = new Queue(QUEUE_NAME, {
@@ -33,6 +32,8 @@ class JobQueue {
 		this.db = null;
 		this.networkService = null;
 		this.settingsService = settingsService;
+		this.logger = logger;
+		this.Worker = Worker;
 	}
 
 	/**
@@ -42,8 +43,15 @@ class JobQueue {
 	 * @returns {Promise<JobQueue>} - Returns a new JobQueue
 	 *
 	 */
-	static async createJobQueue(db, networkService, settingsService) {
-		const queue = new JobQueue(settingsService);
+	static async createJobQueue(
+		db,
+		networkService,
+		settingsService,
+		logger,
+		Queue,
+		Worker
+	) {
+		const queue = new JobQueue(settingsService, logger, Queue, Worker);
 		try {
 			queue.db = db;
 			queue.networkService = networkService;
@@ -69,7 +77,7 @@ class JobQueue {
 	 * @returns {Worker} The newly created worker
 	 */
 	createWorker() {
-		const worker = new Worker(
+		const worker = new this.Worker(
 			QUEUE_NAME,
 			async (job) => {
 				try {
@@ -96,17 +104,16 @@ class JobQueue {
 						}
 						return acc;
 					}, false);
-
 					if (!maintenanceWindowActive) {
 						await this.networkService.getStatus(job);
 					} else {
-						logger.info(`Monitor ${monitorId} is in maintenance window`, {
+						this.logger.info(`Monitor ${monitorId} is in maintenance window`, {
 							service: SERVICE_NAME,
 							monitorId,
 						});
 					}
 				} catch (error) {
-					logger.error(`Error processing job ${job.id}: ${error.message}`, {
+					this.logger.error(`Error processing job ${job.id}: ${error.message}`, {
 						service: SERVICE_NAME,
 						jobId: job.id,
 						error: error,
@@ -169,11 +176,9 @@ class JobQueue {
 			}
 			return true;
 		}
-
 		if (workerStats.load > JOBS_PER_WORKER) {
 			// Find out how many more jobs we have than current workers can handle
 			const excessJobs = workerStats.jobs.length - this.workers.length * JOBS_PER_WORKER;
-
 			// Divide by jobs/worker to find out how many workers to add
 			const workersToAdd = Math.ceil(excessJobs / JOBS_PER_WORKER);
 			for (let i = 0; i < workersToAdd; i++) {
@@ -188,18 +193,17 @@ class JobQueue {
 			const workerCapacity = this.workers.length * JOBS_PER_WORKER;
 			const excessCapacity = workerCapacity - workerStats.jobs.length;
 			// Calculate how many workers to remove
-			const workersToRemove = Math.floor(excessCapacity / JOBS_PER_WORKER);
-			if (this.workers.length > 5) {
-				for (let i = 0; i < workersToRemove; i++) {
-					const worker = this.workers.pop();
-					try {
-						await worker.close();
-					} catch (error) {
-						// Catch the error instead of throwing it
-						logger.error(errorMessages.JOB_QUEUE_WORKER_CLOSE, {
-							service: SERVICE_NAME,
-						});
-					}
+			let workersToRemove = Math.floor(excessCapacity / JOBS_PER_WORKER); // Make sure there are always at least 5
+			while (workersToRemove > 0 && this.workers.length > 5) {
+				const worker = this.workers.pop();
+				workersToRemove--;
+				try {
+					await worker.close();
+				} catch (error) {
+					// Catch the error instead of throwing it
+					this.logger.error(errorMessages.JOB_QUEUE_WORKER_CLOSE, {
+						service: SERVICE_NAME,
+					});
 				}
 			}
 			return true;
@@ -282,14 +286,14 @@ class JobQueue {
 				every: monitor.interval,
 			});
 			if (deleted) {
-				logger.info(successMessages.JOB_QUEUE_DELETE_JOB, {
+				this.logger.info(successMessages.JOB_QUEUE_DELETE_JOB, {
 					service: SERVICE_NAME,
 					jobId: monitor.id,
 				});
 				const workerStats = await this.getWorkerStats();
 				await this.scaleWorkers(workerStats);
 			} else {
-				logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
+				this.logger.error(errorMessages.JOB_QUEUE_DELETE_JOB, {
 					service: SERVICE_NAME,
 					jobId: monitor.id,
 				});
@@ -311,9 +315,10 @@ class JobQueue {
 				delayed: await this.queue.getDelayedCount(),
 				repeatableJobs: (await this.queue.getRepeatableJobs()).length,
 			};
+			console.log(metrics);
 			return metrics;
 		} catch (error) {
-			logger.error("Failed to retrieve job queue metrics", {
+			this.logger.error("Failed to retrieve job queue metrics", {
 				service: SERVICE_NAME,
 				errorMsg: error.message,
 			});
@@ -344,7 +349,7 @@ class JobQueue {
 			await this.queue.obliterate();
 			metrics = await this.getMetrics();
 			console.log(metrics);
-			logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
+			this.logger.info(successMessages.JOB_QUEUE_OBLITERATE, {
 				service: SERVICE_NAME,
 			});
 			return true;

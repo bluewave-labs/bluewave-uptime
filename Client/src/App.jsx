@@ -36,7 +36,7 @@ import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
 import { CssBaseline } from "@mui/material";
-import { getAppSettings } from "./Features/Settings/settingsSlice";
+import { getAppSettings, updateAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 function App() {
@@ -65,6 +65,21 @@ function App() {
 			networkService.cleanup();
 		};
 	}, []);
+
+	useEffect(() => {
+		const thing = async () => {
+			const action = await dispatch(
+				updateAppSettings({ authToken, settings: { apiBaseUrl: "test" } })
+			);
+
+			if (action.payload.success) {
+				console.log(action.payload.data);
+			} else {
+				console.log(action);
+			}
+		};
+		thing();
+	}, [dispatch, authToken]);
 
 	return (
 		<ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
