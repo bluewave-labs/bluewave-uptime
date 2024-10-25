@@ -135,7 +135,7 @@ const advancedSettingsValidation = joi.object({
 	}),
 	logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
 	systemEmailHost: joi.string().allow(""),
-	systemEmailPort: joi.string().allow(""),
+	systemEmailPort: joi.number().allow(null, ""),
 	systemEmailAddress: joi.string().allow(""),
 	systemEmailPassword: joi.string().allow(""),
 	jwtTTLNum: joi.number().messages({
@@ -156,15 +156,7 @@ const advancedSettingsValidation = joi.object({
 	redisHost: joi.string().trim().messages({
 		"string.empty": "Redis host is required.",
 	}),
-	redisPort: joi
-		.string()
-		.allow("")
-		.custom((value, helpers) => {
-			if (value && Number.isNaN(parseInt(value))) {
-				return helpers.message("Redis port must be a number.");
-			}
-			return value;
-		}),
+	redisPort: joi.number().allow(null, ""),
 	pagespeedApiKey: joi.string().allow(""),
 });
 
