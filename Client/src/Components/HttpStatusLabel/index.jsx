@@ -10,7 +10,7 @@ import { BaseLabel } from "../Label";
  * @returns {JSX.Element}
  * @example
  * // Render a http status label
- * <HttpStatusLabel status="404" />
+ * <HttpStatusLabel status={404} />
  */
 
 const getRoundedStatusCode = (status) => {

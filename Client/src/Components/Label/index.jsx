@@ -145,16 +145,6 @@ const StatusLabel = ({ status, text, customStyles }) => {
 			bgColor: theme.palette.warning.bg,
 			borderColor: theme.palette.warning.light,
 		},
-		400: {
-			dotColor: theme.palette.warning.main,
-			bgColor: theme.palette.warning.bg,
-			borderColor: theme.palette.warning.light,
-		},
-		500: {
-			dotColor: theme.palette.warning.main,
-			bgColor: theme.palette.warning.bg,
-			borderColor: theme.palette.warning.light,
-		},
 		"cannot resolve": {
 			dotColor: theme.palette.unresolved.main,
 			bgColor: theme.palette.unresolved.bg,
@@ -163,7 +153,7 @@ const StatusLabel = ({ status, text, customStyles }) => {
 	};
 
 	// Look up the color for the status
-	const { borderColor, bgColor, dotColor } = colors[status] || colors["cannot resolve"];
+	const { borderColor, bgColor, dotColor } = colors[status];
 
 	return (
 		<BaseLabel
