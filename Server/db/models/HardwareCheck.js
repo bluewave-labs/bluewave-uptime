@@ -37,6 +37,10 @@ const HardwareCheckSchema = mongoose.Schema(
 			ref: "Monitor",
 			immutable: true,
 		},
+		status: {
+			type: Boolean,
+			index: true,
+		},
 		cpu: {
 			type: cpuSchema,
 			default: () => ({}),
