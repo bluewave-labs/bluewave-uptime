@@ -84,7 +84,6 @@ describe("SettingsService", () => {
 			try {
 				await settingsService.loadSettings();
 			} catch (error) {
-				console.log(error);
 				expect(error.message).to.equal("Test error");
 				expect(error.service).to.equal("OTHER_SERVICE");
 				expect(error.method).to.equal("otherMethod");

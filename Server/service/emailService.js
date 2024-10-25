@@ -44,9 +44,11 @@ class EmailService {
 				const templateContent = this.fs.readFileSync(templatePath, "utf8");
 				return this.compile(templateContent);
 			} catch (error) {
-				this.logger.error("Error loading Email templates", {
-					error,
-					service: this.SERVICE_NAME,
+				this.logger.error({
+					message: error.message,
+					service: SERVICE_NAME,
+					method: "loadTemplate",
+					stack: error.stack,
 				});
 			}
 		};
@@ -103,9 +105,11 @@ class EmailService {
 				const html = await this.mjml2html(mjml);
 				return html.html;
 			} catch (error) {
-				this.logger.error("Error building Email HTML", {
-					error,
+				this.logger.error({
+					message: error.message,
 					service: SERVICE_NAME,
+					method: "buildAndSendEmail",
+					stack: error.stack,
 				});
 			}
 		};
@@ -119,9 +123,11 @@ class EmailService {
 				});
 				return info;
 			} catch (error) {
-				this.logger.error("Error sending Email", {
-					error,
+				this.logger.error({
+					message: error.message,
 					service: SERVICE_NAME,
+					method: "sendEmail",
+					stack: error.stack,
 				});
 			}
 		};

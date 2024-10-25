@@ -182,7 +182,7 @@ describe("Auth Controller - registerUser", () => {
 		req.emailService.buildAndSendEmail.rejects(new Error("emailService error"));
 		await registerUser(req, res, next);
 		expect(logger.error.calledOnce).to.be.true;
-		expect(logger.error.firstCall.args[1].error).to.equal("emailService error");
+		expect(logger.error.firstCall.args[0].message).to.equal("emailService error");
 	});
 	it("should return a success message and data if all operations are successful", async () => {
 		const user = { _id: "123" };
@@ -467,7 +467,7 @@ describe("Auth Controller - editUser", async () => {
 		});
 		await editUser(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
-		expect(next.firstCall.args[0].status).to.equal(403);
+		expect(next.firstCall.args[0].status).to.equal(401);
 		expect(next.firstCall.args[0].message).to.equal(
 			errorMessages.AUTH_INCORRECT_PASSWORD
 		);
@@ -812,9 +812,9 @@ describe("Auth Controller - deleteUser", () => {
 	afterEach(() => {
 		sinon.restore();
 	});
-	it("should return 404 if user is not found", async () => {
+	it("should throw an error if user is not found", async () => {
 		jwt.decode.returns({ email: "test@example.com" });
-		req.db.getUserByEmail.resolves(null);
+		req.db.getUserByEmail.throws(new Error(errorMessages.DB_USER_NOT_FOUND));
 
 		await deleteUser(req, res, next);
 
