@@ -49,7 +49,6 @@ export const updateAppSettings = createAsyncThunk(
 				systemEmailAddress: settings.systemEmailAddress,
 				systemEmailPassword: settings.systemEmailPassword,
 			};
-			console.log(parsedSettings);
 			const res = await networkService.updateAppSettings({
 				settings: parsedSettings,
 				authToken,
