@@ -58,7 +58,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 		const getSettings = async () => {
 			const action = await dispatch(getAppSettings({ authToken }));
 			if (action.payload.success) {
-				parseJWTTTL(action.payload.data)
+				parseJWTTTL(action.payload.data);
 				setLocalSettings(action.payload.data);
 			} else {
 				createToast({ body: "Failed to get settings" });
@@ -100,7 +100,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 		const id = e.target.value;
 		const newUnits = unitItems.find((item) => item._id === id).name;
 		setLocalSettings({ ...localSettings, jwtTTLUnits: newUnits });
-	};	
+	};
 
 	const handleBlur = (event) => {
 		const { value, id } = event.target;
@@ -116,7 +116,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 	};
 	const handleChange = (event) => {
 		const { value, id } = event.target;
-		setLocalSettings({ ...localSettings, [id]: value });		
+		setLocalSettings({ ...localSettings, [id]: value });
 	};
 
 	const handleSave = async () => {
@@ -125,12 +125,12 @@ const AdvancedSettings = ({ isAdmin }) => {
 		if (hasValidationErrors(localSettings, advancedSettingsValidation, setErrors)) {
 			return;
 		}
-		const action = await dispatch(			
+		const action = await dispatch(
 			updateAppSettings({ settings: localSettings, authToken })
 		);
 		let body = "";
 		if (action.payload.success) {
-			parseJWTTTL(action.payload.data)
+			parseJWTTTL(action.payload.data);
 			setLocalSettings(action.payload.data);
 			body = "Settings saved successfully";
 		} else {
@@ -192,7 +192,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 						<Field
 							type="text"
 							id="systemEmailHost"
-							label="Email host"
+							label="System email host"
 							name="systemEmailHost"
 							value={localSettings.systemEmailHost}
 							onChange={handleChange}
@@ -238,28 +238,33 @@ const AdvancedSettings = ({ isAdmin }) => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(20)}>
-						<Stack direction="row" gap={theme.spacing(10)} ><Field
-							type="number"
-							id="jwtTTLNum"
-							label="JWT time to live"
-							name="jwtTTLNum"
-							value={localSettings.jwtTTLNum.toString()}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							error={errors.jwtTTLNum}
-						/>
-						<Select
-							id="jwtTTLUnits"
-							label="JWT TTL Units"
-							name="jwtTTLUnits"
-							placeholder="Select time"
-							isHidden={true}
-							items={unitItems}
-							value={unitItemLookup[localSettings.jwtTTLUnits]}
-							onChange={handleJWTTTLUnits}
-							onBlur={handleBlur}
-							error={errors.jwtTTLUnits}
-						/></Stack>				
+						<Stack
+							direction="row"
+							gap={theme.spacing(10)}
+						>
+							<Field
+								type="number"
+								id="jwtTTLNum"
+								label="JWT time to live"
+								name="jwtTTLNum"
+								value={localSettings.jwtTTLNum.toString()}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								error={errors.jwtTTLNum}
+							/>
+							<Select
+								id="jwtTTLUnits"
+								label="JWT TTL Units"
+								name="jwtTTLUnits"
+								placeholder="Select time"
+								isHidden={true}
+								items={unitItems}
+								value={unitItemLookup[localSettings.jwtTTLUnits]}
+								onChange={handleJWTTTLUnits}
+								onBlur={handleBlur}
+								error={errors.jwtTTLUnits}
+							/>
+						</Stack>
 						<Field
 							type="text"
 							id="dbType"
