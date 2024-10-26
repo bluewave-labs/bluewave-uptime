@@ -128,10 +128,43 @@ const maintenanceWindowValidation = joi.object({
 	monitors: joi.array().min(1),
 });
 
+const advancedSettingsValidation = joi.object({
+	apiBaseUrl: joi.string().uri({ allowRelative: true }).trim().messages({
+		"string.empty": "API base url is required.",
+		"string.uri": "The URL you provided is not valid.",
+	}),
+	logLevel: joi.string().valid("debug", "none", "error", "warn").allow(""),
+	systemEmailHost: joi.string().allow(""),
+	systemEmailPort: joi.number().allow(null, ""),
+	systemEmailAddress: joi.string().allow(""),
+	systemEmailPassword: joi.string().allow(""),
+	jwtTTLNum: joi.number().messages({
+		"number.base": "JWT TTL is required.",
+	}),
+	jwtTTLUnits: joi
+		.string()
+		.trim()
+		.custom((value, helpers) => {
+			if (!["days", "hours"].includes(value)) {
+				return helpers.message("JWT TTL unit is required.");
+			}
+			return value;
+		}),
+	dbType: joi.string().trim().messages({
+		"string.empty": "DB type is required.",
+	}),
+	redisHost: joi.string().trim().messages({
+		"string.empty": "Redis host is required.",
+	}),
+	redisPort: joi.number().allow(null, ""),
+	pagespeedApiKey: joi.string().allow(""),
+});
+
 export {
 	credentials,
 	imageValidation,
 	monitorValidation,
 	settingsValidation,
 	maintenanceWindowValidation,
+	advancedSettingsValidation
 };
