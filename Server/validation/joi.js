@@ -227,7 +227,7 @@ const createMonitorBodyValidation = joi.object({
 		usage_memory: joi.number(),
 		usage_disk: joi.number(),
 	}),
-	notifications: joi.array().items(joi.object()).min(1),
+	notifications: joi.array().items(joi.object()),
 });
 
 const editMonitorBodyValidation = joi.object({
