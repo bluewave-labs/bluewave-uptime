@@ -222,14 +222,14 @@ const createMonitorBodyValidation = joi.object({
 	url: joi.string().required(),
 	isActive: joi.boolean(),
 	interval: joi.number(),
-	notifications: joi.array().items(joi.object()),
+	notifications: joi.array().items(joi.object()).min(1),
 });
 
 const editMonitorBodyValidation = joi.object({
 	name: joi.string(),
 	description: joi.string(),
 	interval: joi.number(),
-	notifications: joi.array().items(joi.object()),
+	notifications: joi.array().items(joi.object()).min(1),
 });
 
 const pauseMonitorParamValidation = joi.object({
