@@ -36,7 +36,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAppSettings } from "./Features/Settings/settingsSlice";
+import { getAppSettings, updateAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 function App() {

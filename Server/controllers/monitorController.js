@@ -312,14 +312,12 @@ const deleteMonitor = async (req, res, next) => {
 			await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
 			await req.db.deleteNotificationsByMonitorId(monitor._id);
 		} catch (error) {
-			logger.error(
-				`Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
-				{
-					method: "deleteMonitor",
-					service: SERVICE_NAME,
-					error: error.message,
-				}
-			);
+			logger.error({
+				message: `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+				service: SERVICE_NAME,
+				method: "deleteMonitor",
+				stack: error.stack,
+			});
 		}
 		return res.status(200).json({ success: true, msg: successMessages.MONITOR_DELETE });
 	} catch (error) {
@@ -352,12 +350,12 @@ const deleteAllMonitors = async (req, res, next) => {
 					await req.db.deletePageSpeedChecksByMonitorId(monitor._id);
 					await req.db.deleteNotificationsByMonitorId(monitor._id);
 				} catch (error) {
-					logger.error(
-						`Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
-						{
-							method: "deleteAllMonitors",
-						}
-					);
+					logger.error({
+						message: `Error deleting associated records for monitor ${monitor._id} with name ${monitor.name}`,
+						service: SERVICE_NAME,
+						method: "deleteAllMonitors",
+						stack: error.stack,
+					});
 				}
 			})
 		);

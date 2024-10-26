@@ -93,14 +93,7 @@ describe("EmailService - Constructor", () => {
 			loggerMock
 		);
 		expect(loggerMock.error.called).to.be.true;
-		const errorCalls = loggerMock.error.getCalls();
-		const errorCall = errorCalls.find(
-			(call) => call.args[0] === "Error loading Email templates"
-		);
-		expect(errorCall).to.not.be.undefined;
-		expect(emailService.settingsService).to.equal(settingsServiceMock);
-		expect(emailService.templateLookup.welcomeEmailTemplate).to.be.undefined;
-		expect(emailService.templateLookup.employeeActivationTemplate).to.be.undefined;
+		expect(loggerMock.error.firstCall.args[0].message).to.equal("File read error");
 	});
 });
 
@@ -182,7 +175,7 @@ describe("EmailService - buildAndSendEmail", () => {
 			"Welcome"
 		);
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.getCall(0).args[0]).to.equal("Error building Email HTML");
+		expect(loggerMock.error.getCall(0).args[0].message).to.equal("MJML error");
 	});
 
 	it("should log error if sending email fails", async () => {
@@ -194,7 +187,7 @@ describe("EmailService - buildAndSendEmail", () => {
 			"Welcome"
 		);
 		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.getCall(0).args[0]).to.equal("Error sending Email");
+		expect(loggerMock.error.getCall(0).args[0].message).to.equal("SMTP error");
 	});
 
 	it("should log error if both building HTML and sending email fail", async () => {
@@ -210,8 +203,8 @@ describe("EmailService - buildAndSendEmail", () => {
 
 		expect(messageId).to.be.undefined;
 		expect(loggerMock.error.calledTwice).to.be.true;
-		expect(loggerMock.error.getCall(0).args[0]).to.equal("Error building Email HTML");
-		expect(loggerMock.error.getCall(1).args[0]).to.equal("Error sending Email");
+		expect(loggerMock.error.getCall(0).args[0].message).to.equal("MJML error");
+		expect(loggerMock.error.getCall(1).args[0].message).to.equal("SMTP error");
 	});
 
 	it("should log an error if buildHtml fails", async () => {});

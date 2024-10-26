@@ -46,6 +46,7 @@ const Select = ({
 	value,
 	items,
 	onChange,
+	onBlur,
 	sx,
 	name = "",
 }) => {
@@ -76,6 +77,7 @@ const Select = ({
 				className="select-component"
 				value={value}
 				onChange={onChange}
+				onBlur={onBlur}
 				displayEmpty
 				name={name}
 				inputProps={{ id: id }}
@@ -140,6 +142,7 @@ Select.propTypes = {
 		})
 	).isRequired,
 	onChange: PropTypes.func.isRequired,
+	onBlur: PropTypes.func,
 	sx: PropTypes.object,
 };
 

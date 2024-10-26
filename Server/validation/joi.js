@@ -222,6 +222,11 @@ const createMonitorBodyValidation = joi.object({
 	url: joi.string().required(),
 	isActive: joi.boolean(),
 	interval: joi.number(),
+	thresholds: joi.object().keys({
+		usage_cpu: joi.number(),
+		usage_memory: joi.number(),
+		usage_disk: joi.number(),
+	}),
 	notifications: joi.array().items(joi.object()).min(1),
 });
 
