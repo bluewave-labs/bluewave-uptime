@@ -34,24 +34,24 @@ class NetworkService {
 	}
 
 	/**
-	 * Handles the notification process for a monitor.
+	 * Handles notifications for a given monitor configuration.
 	 *
-	 * @param {Object} monitor - The monitor object containing monitor details.
-	 * @param {boolean} isAlive - The status of the monitor (true if up, false if down).
-	 * @returns {Promise<void>}
-	 */ async handleNotification(monitor, isAlive) {
+	 * @param {Object} config - The configuration object for the notification.
+	 * @param {Object} config.monitor - The monitor object containing the monitor ID.
+	 * @param {string} config.template - The email template to be used.
+	 * @param {Object} config.context - The context for the email template.
+	 * @param {string} config.subject - The subject of the email.
+	 */
+	async handleNotification(config) {
 		try {
-			let template = isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
-			let status = isAlive === true ? "up" : "down";
-
-			const notifications = await this.db.getNotificationsByMonitorId(monitor._id);
+			const notifications = await this.db.getNotificationsByMonitorId(config.monitor._id);
 			for (const notification of notifications) {
 				if (notification.type === "email") {
 					await this.emailService.buildAndSendEmail(
-						template,
-						{ monitorName: monitor.name, monitorUrl: monitor.url },
+						config.template,
+						config.context,
 						notification.address,
-						`Monitor ${monitor.name} is ${status}`
+						config.subject
 					);
 				}
 			}
@@ -71,9 +71,10 @@ class NetworkService {
 	 *
 	 * @param {Object} job - The job object containing job details.
 	 * @param {boolean} isAlive - The status of the monitor (true if up, false if down).
+	 * @param {Object} [hardwareData] - The hardware data for the monitor.
 	 * @returns {Promise<void>}
 	 */
-	async handleStatusUpdate(job, isAlive) {
+	async handleStatusUpdate(job, isAlive, hardwareData) {
 		let monitor;
 		const { _id } = job.data;
 
@@ -99,8 +100,17 @@ class NetworkService {
 				await monitor.save();
 
 				if (oldStatus !== undefined && oldStatus !== isAlive) {
-					this.handleNotification(monitor, isAlive);
+					const config = {
+						monitor: monitor,
+						template: isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate",
+						context: { monitorName: monitor.name, monitorUrl: monitor.url },
+						subject: `Monitor ${monitor.name} is ${isAlive === true ? "up" : "down"}`,
+					};
+					this.handleNotification(config);
 				}
+			}
+			if (monitor.type === this.TYPE_HARDWARE) {
+				this.handleHardwareUpdate(monitor, hardwareData);
 			}
 		} catch (error) {
 			this.logger.error({
@@ -111,6 +121,55 @@ class NetworkService {
 				details: `status update error for monitor: ${_id}`,
 			});
 		}
+	}
+
+	async handleHardwareUpdate(monitor, hardwareData) {
+		//Get Thresholds
+		const thresholds = monitor?.thresholds;
+		if (thresholds === undefined) {
+			return;
+		}
+		//Get Values
+		const cpuUsage = hardwareData?.cpu?.usage_percent;
+		const memoryUsage = hardwareData?.memory?.usage_percent;
+		const diskUsage = hardwareData?.disk[0]?.usage_percent;
+
+		// Return early if no values
+		if (cpuUsage === undefined && memoryUsage === undefined && diskUsage === undefined) {
+			return;
+		}
+
+		// Return early if all values are below thresholds
+		if (
+			cpuUsage < thresholds.usage_cpu &&
+			memoryUsage < thresholds.usage_memory &&
+			diskUsage < thresholds.usage_disk
+		) {
+			return;
+		}
+
+		let context = {
+			message: "Threshold(s) exceeded:",
+		};
+		if (cpuUsage > thresholds.usage_cpu) {
+			context.cpu = `CPU USAGE: ${cpuUsage * 100}% > ${thresholds.usage_cpu * 100}%`;
+		}
+
+		if (memoryUsage > thresholds.usage_memory) {
+			context.memory = `MEMORY USAGE: ${memoryUsage * 100}% > ${thresholds.usage_memory * 100}%`;
+		}
+
+		if (diskUsage > thresholds.usage_disk) {
+			context.disk = `DISK USAGE: ${diskUsage * 100}% > ${thresholds.usage_disk * 100}%`;
+		}
+
+		const config = {
+			monitor: monitor,
+			template: "thresholdViolatedTemplate",
+			context: context,
+			subject: `Threshold Violated for ${monitor.name}`,
+		};
+		this.handleNotification(config);
 	}
 
 	/**
@@ -311,13 +370,13 @@ class NetworkService {
 				frequency: 266,
 				temperature: null,
 				free_percent: null,
-				usage_percent: null,
+				usage_percent: 1,
 			},
 			memory: {
 				total_bytes: 4,
 				available_bytes: 4,
 				used_bytes: 2,
-				usage_percent: 0.5,
+				usage_percent: 1,
 			},
 			disk: [
 				{
@@ -325,7 +384,7 @@ class NetworkService {
 					write_speed_bytes: 3,
 					total_bytes: 10,
 					free_bytes: 2,
-					usage_percent: 0.8,
+					usage_percent: 1,
 				},
 			],
 			host: {
@@ -372,7 +431,7 @@ class NetworkService {
 			};
 			this.logAndStoreCheck(nullData, this.db.createHardwareCheck);
 		} finally {
-			this.handleStatusUpdate(job, isAlive);
+			this.handleStatusUpdate(job, isAlive, hardwareData);
 		}
 	}
 
