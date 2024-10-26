@@ -79,15 +79,35 @@ const SetNewPassword = () => {
 	};
 
 	const handleChange = (event) => {
+		//update form state
 		const { value, name } = event.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
 
+		//validate
 		const validateValue = { [name]: value };
 		const validateOptions = { abortEarly: false, context: { password: form.password } };
+		if (name === "password" && form.confirm.length > 0) {
+			validateValue.confirm = form.confirm;
+			validateOptions.context = value;
+		}
 		const { error } = credentials.validate(validateValue, validateOptions);
 
-		const errors = error?.details.map((error) => error.message);
-		setErrors((prev) => ({ ...prev, [name]: errors }));
+		//update errors
+		//fazer o map com path e message
+		const errors = error?.details.map((error) => ({
+			message: error.message,
+			path: error.path[0],
+		}));
+		const errorsByPath = errors
+			? errors.reduce((acc, { path, message }) => {
+					if (!acc[path]) {
+						acc[path] = [];
+					}
+					acc[path].push(message);
+					return acc;
+				}, {})
+			: { [name]: [] };
+		setErrors((prev) => ({ ...prev, ...errorsByPath }));
 	};
 
 	const getFeedbackStatus = (field, criteria) => {
