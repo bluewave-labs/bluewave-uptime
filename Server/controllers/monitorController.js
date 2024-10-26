@@ -86,21 +86,14 @@ const getMonitorCertificate = async (req, res, next, fetchMonitorCertificate) =>
 		const { monitorId } = req.params;
 		const monitor = await req.db.getMonitorById(monitorId);
 		const certificate = await fetchMonitorCertificate(sslChecker, monitor);
-		if (certificate && certificate.validTo) {
-			return res.status(200).json({
-				success: true,
-				msg: successMessages.MONITOR_CERTIFICATE,
-				data: {
-					certificateDate: new Date(certificate.validTo),
-				},
-			});
-		} else {
-			return res.status(200).json({
-				success: true,
-				msg: successMessages.MONITOR_CERTIFICATE,
-				data: { certificateDate: "N/A" },
-			});
-		}
+
+		return res.status(200).json({
+			success: true,
+			msg: successMessages.MONITOR_CERTIFICATE,
+			data: {
+				certificateDate: new Date(certificate.validTo),
+			},
+		});
 	} catch (error) {
 		next(handleError(error, SERVICE_NAME, "getMonitorCertificate"));
 	}
@@ -128,12 +121,6 @@ const getMonitorById = async (req, res, next) => {
 
 	try {
 		const monitor = await req.db.getMonitorById(req.params.monitorId);
-		if (!monitor) {
-			const error = new Error(errorMessages.MONITOR_GET_BY_ID);
-			error.status = 404;
-			throw error;
-		}
-
 		return res.status(200).json({
 			success: true,
 			msg: successMessages.MONITOR_GET_BY_ID,
@@ -238,15 +225,15 @@ const createMonitor = async (req, res, next) => {
 		const notifications = req.body.notifications;
 		const monitor = await req.db.createMonitor(req, res);
 
-		if (notifications && notifications.length !== 0) {
-			monitor.notifications = await Promise.all(
+		monitor.notifications =
+			notifications &&
+			(await Promise.all(
 				notifications.map(async (notification) => {
 					notification.monitorId = monitor._id;
 					await req.db.createNotification(notification);
 				})
-			);
-			await monitor.save();
-		}
+			));
+		await monitor.save();
 		// Add monitor to job queue
 		req.jobQueue.addJob(monitor._id, monitor);
 		return res.status(201).json({
@@ -413,14 +400,13 @@ const editMonitor = async (req, res, next) => {
 
 		await req.db.deleteNotificationsByMonitorId(editedMonitor._id);
 
-		if (notifications && notifications.length !== 0) {
-			await Promise.all(
+		await Promise.all(
+			notifications &&
 				notifications.map(async (notification) => {
 					notification.monitorId = editedMonitor._id;
 					await req.db.createNotification(notification);
 				})
-			);
-		}
+		);
 
 		// Delete the old job(editedMonitor has the same ID as the old monitor)
 		await req.jobQueue.deleteJob(monitorBeforeEdit);
@@ -456,11 +442,10 @@ const pauseMonitor = async (req, res, next) => {
 
 	try {
 		const monitor = await req.db.getMonitorById(req.params.monitorId);
-		if (monitor.isActive) {
-			await req.jobQueue.deleteJob(monitor);
-		} else {
-			await req.jobQueue.addJob(monitor._id, monitor);
-		}
+		monitor.isActive === true
+			? await req.jobQueue.deleteJob(monitor)
+			: await req.jobQueue.addJob(monitor._id, monitor);
+
 		monitor.isActive = !monitor.isActive;
 		monitor.status = undefined;
 		monitor.save();
