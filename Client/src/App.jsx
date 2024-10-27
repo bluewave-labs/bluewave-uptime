@@ -39,17 +39,6 @@ import { useDispatch } from "react-redux";
 import { getAppSettings, updateAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
-import { setMode } from "./Features/UI/uiSlice";
-
-const getPreferredTheme = () => {
-	try {
-		return window?.matchMedia?.('(prefers-color-scheme: dark)')?.matches? 'dark': 'light';
-	}
-	catch {
-		return 'light';
-	}
-}
-
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -68,22 +57,6 @@ function App() {
 			dispatch(getAppSettings({ authToken }));
 		}
 	}, [dispatch, authToken]);
-
-	useEffect(() => {
-		const theme = getPreferredTheme();
-		dispatch(setMode(theme));
-
-		const mediaQuery = window?.matchMedia?.('(prefers-color-scheme: dark)');
-		const handleThemeChange = (e) => {
-	    	dispatch(setMode(e.matches ? 'dark' : 'light'));
-	 	};
-	 
-	  	mediaQuery?.addEventListener?.('change', handleThemeChange);
-	  
-	  	return () => {
-	    	mediaQuery?.removeEventListener?.('change', handleThemeChange);
-	  	};
-	},[dispatch]);
 
 	// Cleanup
 	useEffect(() => {

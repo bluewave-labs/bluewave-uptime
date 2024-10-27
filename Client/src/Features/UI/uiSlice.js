@@ -15,7 +15,7 @@ const initialState = {
 	sidebar: {
 		collapsed: false,
 	},
-	mode: "light",
+	mode: window?.matchMedia?.('(prefers-color-scheme: dark)')?.matches? "dark": "light",
 	greeting: { index: 0, lastUpdate: null },
 	timezone: "America/Toronto",
 };
