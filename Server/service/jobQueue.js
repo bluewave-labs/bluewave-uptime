@@ -11,10 +11,15 @@ const SERVICE_NAME = "JobQueue";
  */
 class JobQueue {
 	/**
-	 * Constructs a new JobQueue
-	 * @constructor
-	 * @param {SettingsService} settingsService - The settings service
-	 * @throws {Error}
+	 * @class JobQueue
+	 * @classdesc Manages job queue and workers.
+	 *
+	 * @param {Object} statusService - Service for handling status updates.
+	 * @param {Object} notificationService - Service for handling notifications.
+	 * @param {Object} settingsService - Service for retrieving settings.
+	 * @param {Object} logger - Logger for logging information.
+	 * @param {Function} Queue - Queue constructor.
+	 * @param {Function} Worker - Worker constructor.
 	 */
 	constructor(
 		statusService,
@@ -46,11 +51,18 @@ class JobQueue {
 	}
 
 	/**
-	 * Static factory method to create a JobQueue
-	 * @static
-	 * @async
-	 * @returns {Promise<JobQueue>} - Returns a new JobQueue
+	 * Creates and initializes a JobQueue instance.
 	 *
+	 * @param {Object} db - Database service for accessing monitors.
+	 * @param {Object} networkService - Service for network operations.
+	 * @param {Object} statusService - Service for handling status updates.
+	 * @param {Object} notificationService - Service for handling notifications.
+	 * @param {Object} settingsService - Service for retrieving settings.
+	 * @param {Object} logger - Logger for logging information.
+	 * @param {Function} Queue - Queue constructor.
+	 * @param {Function} Worker - Worker constructor.
+	 * @returns {Promise<JobQueue>} - The initialized JobQueue instance.
+	 * @throws {Error} - Throws an error if initialization fails.
 	 */
 	static async createJobQueue(
 		db,
@@ -89,6 +101,13 @@ class JobQueue {
 		}
 	}
 
+	/**
+	 * Checks if the given monitor is in a maintenance window.
+	 *
+	 * @param {string} monitorId - The ID of the monitor to check.
+	 * @returns {Promise<boolean>} - Returns true if the monitor is in a maintenance window, otherwise false.
+	 * @throws {Error} - Throws an error if the database query fails.
+	 */
 	async isInMaintenanceWindow(monitorId) {
 		const maintenanceWindows = await this.db.getMaintenanceWindowsByMonitorId(monitorId);
 		// Check for active maintenance window:
@@ -286,6 +305,12 @@ class JobQueue {
 		}
 	}
 
+	/**
+	 * Retrieves the statistics of jobs and workers.
+	 *
+	 * @returns {Promise<Object>} - An object containing job statistics and the number of workers.
+	 * @throws {Error} - Throws an error if the job statistics retrieval fails.
+	 */
 	async getJobStats() {
 		try {
 			const jobs = await this.queue.getJobs();
@@ -366,6 +391,12 @@ class JobQueue {
 		}
 	}
 
+	/**
+	 * Retrieves the metrics of the job queue.
+	 *
+	 * @returns {Promise<Object>} - An object containing various job queue metrics.
+	 * @throws {Error} - Throws an error if the metrics retrieval fails.
+	 */
 	async getMetrics() {
 		try {
 			const metrics = {
