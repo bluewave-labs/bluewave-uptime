@@ -526,7 +526,7 @@ describe("JobQueue", () => {
 		});
 	});
 
-	describe("getJobs", async () => {
+	describe("getJobs", () => {
 		it("should return jobs", async () => {
 			const jobQueue = await JobQueue.createJobQueue(
 				db,
@@ -590,7 +590,7 @@ describe("JobQueue", () => {
 		});
 	});
 
-	describe("getJobStats", async () => {
+	describe("getJobStats", () => {
 		it("should return job stats for no jobs", async () => {
 			const jobStats = await jobQueue.getJobStats();
 			expect(jobStats).to.deep.equal({ jobs: [], workers: 5 });
