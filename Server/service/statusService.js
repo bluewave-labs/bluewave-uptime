@@ -41,7 +41,7 @@ class StatusService {
 
 			const prevStatus = monitor.status;
 			monitor.status = status;
-			monitor.save();
+			await monitor.save();
 
 			return {
 				monitor,
