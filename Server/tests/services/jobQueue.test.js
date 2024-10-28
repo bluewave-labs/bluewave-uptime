@@ -648,7 +648,7 @@ describe("JobQueue", () => {
 		});
 	});
 
-	describe("addJob", async () => {
+	describe("addJob", () => {
 		it("should add a job to the queue", async () => {
 			jobQueue.addJob("test", { url: "test" });
 			expect(jobQueue.queue.jobs.length).to.equal(1);
@@ -681,7 +681,7 @@ describe("JobQueue", () => {
 			}
 		});
 	});
-	describe("deleteJob", async () => {
+	describe("deleteJob", () => {
 		it("should delete a job from the queue", async () => {
 			jobQueue.getWorkerStats = sinon.stub().returns({ load: 1, jobs: [{}] });
 			jobQueue.scaleWorkers = sinon.stub();
