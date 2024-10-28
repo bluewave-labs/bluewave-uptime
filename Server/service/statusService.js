@@ -8,7 +8,7 @@ class StatusService {
 	constructor(db, logger) {
 		this.db = db;
 		this.logger = logger;
-		this.SERVICE_NAME + "StatusService";
+		this.SERVICE_NAME = "StatusService";
 	}
 
 	/**
