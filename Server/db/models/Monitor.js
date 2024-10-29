@@ -61,6 +61,9 @@ const MonitorSchema = mongoose.Schema(
 				ref: "Notification",
 			},
 		],
+		secret: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,
