@@ -74,7 +74,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 						sortOrder: "desc",
 						limit: null,
 						dateRange: null,
-						sitler: filter,
+						filter: filter,
 						page: paginationController.page,
 						rowsPerPage: paginationController.rowsPerPage,
 					});
