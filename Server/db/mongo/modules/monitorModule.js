@@ -296,9 +296,12 @@ const getMonitorById = async (monitorId) => {
 		const notifications = await Notification.find({
 			monitorId: monitorId,
 		});
-		monitor.notifications = notifications;
-		const monitorWithNotifications = await monitor.save();
-		return monitorWithNotifications;
+		const updatedMonitor = await Monitor.findByIdAndUpdate(
+			monitorId,
+			{ notifications },
+			{ new: true }
+		).populate("notifications");
+		return updatedMonitor;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "getMonitorById";
