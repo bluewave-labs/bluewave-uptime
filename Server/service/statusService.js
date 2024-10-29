@@ -101,10 +101,10 @@ class StatusService {
 		}
 
 		if (type === "hardware") {
-			check.cpu = payload.cpu;
-			check.memory = payload.memory;
-			check.disk = payload.disk;
-			check.host = payload.host;
+			check.cpu = payload?.cpu ?? {};
+			check.memory = payload?.memory ?? {};
+			check.disk = payload?.disk ?? {};
+			check.host = payload?.host ?? {};
 		}
 		return check;
 	};
