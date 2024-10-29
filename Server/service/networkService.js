@@ -126,7 +126,6 @@ class NetworkService {
 			httpResponse.code = code;
 			httpResponse.status = false;
 			httpResponse.message = this.http.STATUS_CODES[code] || "Network Error";
-
 			return httpResponse;
 		}
 		httpResponse.status = true;
@@ -153,31 +152,10 @@ class NetworkService {
 	 */
 	async requestPagespeed(job) {
 		const url = job.data.url;
-		const { response, responseTime, error } = await this.timeRequest(() =>
-			this.axios.get(
-				`https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
-			)
-		);
-
-		const pagespeedResponse = {
-			monitorId: job.data._id,
-			type: job.data.type,
-			responseTime,
-			payload: response?.data,
-		};
-
-		if (error) {
-			const code = error.response?.status || this.NETWORK_ERROR;
-			pagespeedResponse.code = code;
-			pagespeedResponse.status = false;
-			pagespeedResponse.message = this.http.STATUS_CODES[code] || "Network Error";
-			return pagespeedResponse;
-		}
-
-		pagespeedResponse.status = true;
-		pagespeedResponse.code = response.status;
-		pagespeedResponse.message = this.http.STATUS_CODES[response.status];
-		return pagespeedResponse;
+		const updatedJob = { ...job };
+		const pagespeedUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`;
+		updatedJob.data.url = pagespeedUrl;
+		return this.requestHttp(updatedJob);
 	}
 
 	async requestHardware(job) {
