@@ -168,7 +168,7 @@ class JobQueue {
 					await this.statusService.updateStatus(networkResponse);
 
 				//If status hasn't changed, we're done
-				if (statusChanged == false) return;
+				if (statusChanged === false) return;
 
 				// if prevStatus is undefined, monitor is resuming, we're done
 				if (prevStatus === undefined) return;
