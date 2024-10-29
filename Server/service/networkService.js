@@ -1,5 +1,4 @@
 import { errorMessages, successMessages } from "../utils/messages.js";
-
 /**
  * Constructs a new NetworkService instance.
  *
@@ -94,6 +93,7 @@ class NetworkService {
 	 * @param {Object} job.data - The data object within the job.
 	 * @param {string} job.data.url - The URL to send the HTTP GET request to.
 	 * @param {string} job.data._id - The monitor ID for the HTTP request.
+	 * @param {string} [job.data.secret] - Secret for authorization if provided.
 	 * @returns {Promise<Object>} An object containing the HTTP response details.
 	 * @property {string} monitorId - The monitor ID for the HTTP request.
 	 * @property {string} type - The type of request, which is "http".
@@ -105,13 +105,18 @@ class NetworkService {
 	 */
 	async requestHttp(job) {
 		const url = job.data.url;
+		const config = {};
+
+		job.data.secret !== undefined &&
+			(config.headers = { Authorization: `Bearer ${job.data.secret}` });
+
 		const { response, responseTime, error } = await this.timeRequest(() =>
-			this.axios.get(url)
+			this.axios.get(url, config)
 		);
 
 		const httpResponse = {
 			monitorId: job.data._id,
-			type: "http",
+			type: job.data.type,
 			responseTime,
 			payload: response?.data,
 		};
@@ -121,6 +126,7 @@ class NetworkService {
 			httpResponse.code = code;
 			httpResponse.status = false;
 			httpResponse.message = this.http.STATUS_CODES[code] || "Network Error";
+
 			return httpResponse;
 		}
 		httpResponse.status = true;
@@ -155,7 +161,7 @@ class NetworkService {
 
 		const pagespeedResponse = {
 			monitorId: job.data._id,
-			type: "pagespeed",
+			type: job.data.type,
 			responseTime,
 			payload: response?.data,
 		};
@@ -174,7 +180,9 @@ class NetworkService {
 		return pagespeedResponse;
 	}
 
-	async requestHandleHardware(job) {}
+	async requestHardware(job) {
+		return this.requestHttp(job);
+	}
 
 	/**
 	 * Gets the status of a job based on its type and returns the appropriate response.
@@ -194,7 +202,7 @@ class NetworkService {
 			case this.TYPE_PAGESPEED:
 				return await this.requestPagespeed(job);
 			case this.TYPE_HARDWARE:
-				return await this.requestHandleHardware(job);
+				return await this.requestHardware(job);
 			default:
 				this.logger.error({
 					message: `Unsupported type: ${job.data.type}`,

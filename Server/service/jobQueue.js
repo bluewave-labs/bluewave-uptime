@@ -163,7 +163,6 @@ class JobQueue {
 				// Get the current status
 				const networkResponse = await this.networkService.getStatus(job);
 				// Handle status change
-
 				const { monitor, statusChanged, prevStatus } =
 					await this.statusService.updateStatus(networkResponse);
 
