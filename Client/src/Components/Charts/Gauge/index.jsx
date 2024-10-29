@@ -10,7 +10,8 @@ const Gauge = ({ progressValue, displayText, theme }) => {
 	const getStyles = (theme) => ({
 		text: {
 			...BASE_TEXT_STYLE,
-			style: { fontSize: "12px", fill: theme.palette.text.tertiary },
+			style: { fontSize: "11px", fontWeight: 400, fill: theme.palette.text.tertiary				
+			 },
 		},
 	});
 	const data = [{ value: 100 }];
@@ -36,8 +37,8 @@ const Gauge = ({ progressValue, displayText, theme }) => {
 			>
 				<RadialBar
 					{...commonRadialBarProps}
-					fill="#8884d8"
-					background={{ fill: "#bed2ea" }}
+					fill="#1570EF"
+					background={{ fill: "#CDE2FF" }}
 					data={[{ value: progressValue }]}
 				/>
 				<RadialBar
@@ -61,6 +62,7 @@ const Gauge = ({ progressValue, displayText, theme }) => {
 					x="50%"
 					y="55%"
 					{...getStyles(theme).text}
+					style={{fontSize: 9 }}
 				>
 					{`${displayText}`}
 				</text>
