@@ -12,6 +12,15 @@ icon: sign-posts-wrench
 
 ---
 
+## Quickstart for users (remote server) <a href="#user-quickstart" id="user-quickstart"></a>
+
+1. Download our [Docker compose file](https://github.com/bluewave-labs/bluewave-uptime/blob/develop/Docker/dist/docker-compose.yaml)
+2. Edit the `UPTIME_APP_API_BASE_URL` variable in the docker-compose file to point to your remote server.
+3. Run `docker compose up` to start the application
+4. Now the application is running at `http://<remote_server_ip>`
+
+---
+
 ## Quickstart for developers <a href="#dev-quickstart" id="dev-quickstart"></a>
 
 {% hint style="info" %}

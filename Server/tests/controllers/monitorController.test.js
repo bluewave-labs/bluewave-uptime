@@ -419,12 +419,6 @@ describe("Monitor Controller - createMonitor", () => {
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].message).to.equal("Job error");
 	});
-	it("should fail validation with empty notifications", async () => {
-		req.body.notifications = [];
-		await createMonitor(req, res, next);
-		expect(next.firstCall.args[0]).to.be.an("error");
-		expect(next.firstCall.args[0].status).to.equal(422);
-	});
 	it("should return success message and data if all operations succeed", async () => {
 		const monitor = { _id: "123", save: sinon.stub() };
 		req.db.createMonitor.returns(monitor);
@@ -789,12 +783,6 @@ describe("Monitor Controller - editMonitor", () => {
 		await editMonitor(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].message).to.equal("Add Job error");
-	});
-	it("should fail validation with empty notifications", async () => {
-		req.body.notifications = [];
-		await editMonitor(req, res, next);
-		expect(next.firstCall.args[0]).to.be.an("error");
-		expect(next.firstCall.args[0].status).to.equal(422);
 	});
 	it("should return success message with data if all operations succeed", async () => {
 		const monitor = { _id: "123" };

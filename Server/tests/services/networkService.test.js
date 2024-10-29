@@ -1,855 +1,194 @@
 import sinon from "sinon";
 import NetworkService from "../../service/networkService.js";
-import { errorMessages, successMessages } from "../../utils/messages.js";
+import { expect } from "chai";
+import http from "http";
 import exp from "constants";
-describe("NetworkService - Constructor", function () {
-	let dbMock, emailServiceMock, axiosMock, pingMock, loggerMock, httpMock;
-
-	beforeEach(function () {
-		dbMock = sinon.stub();
-		emailServiceMock = sinon.stub();
-		axiosMock = sinon.stub();
-		pingMock = sinon.stub();
-		loggerMock = sinon.stub();
-		httpMock = sinon.stub();
-	});
-
-	it("should correctly initialize properties", function () {
-		const networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-
-		expect(networkService.db).to.equal(dbMock);
-		expect(networkService.emailService).to.equal(emailServiceMock);
-		expect(networkService.TYPE_PING).to.equal("ping");
-		expect(networkService.TYPE_HTTP).to.equal("http");
-		expect(networkService.TYPE_PAGESPEED).to.equal("pagespeed");
-		expect(networkService.SERVICE_NAME).to.equal("NetworkService");
-		expect(networkService.NETWORK_ERROR).to.equal(5000);
-		expect(networkService.axios).to.equal(axiosMock);
-		expect(networkService.ping).to.equal(pingMock);
-		expect(networkService.logger).to.equal(loggerMock);
-		expect(networkService.http).to.equal(httpMock);
-	});
-});
-
-describe("NetworkService - handleNotification", () => {
-	let dbMock, emailServiceMock, loggerMock, networkService;
-
-	beforeEach(function () {
-		dbMock = {
-			getNotificationsByMonitorId: sinon.stub(),
-		};
-		emailServiceMock = {
-			buildAndSendEmail: sinon.stub().resolves(),
-		};
-		loggerMock = {
-			error: sinon.stub(),
-		};
-
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			null,
-			null,
-			loggerMock,
-			null
-		);
-	});
-
-	it("should send email notifications when monitor is down", async function () {
-		const monitor = { _id: "monitor1", name: "Test Monitor", url: "http://test.com" };
-		const notifications = [{ type: "email", address: "test@example.com" }];
-		dbMock.getNotificationsByMonitorId.resolves(notifications);
-
-		await networkService.handleNotification(monitor, false);
-
-		expect(emailServiceMock.buildAndSendEmail.calledOnce).to.be.true;
-		expect(
-			emailServiceMock.buildAndSendEmail.calledWith(
-				"serverIsDownTemplate",
-				{ monitorName: monitor.name, monitorUrl: monitor.url },
-				"test@example.com",
-				"Monitor Test Monitor is down"
-			)
-		).to.be.true;
-	});
-
-	it("should send email notifications when monitor is up", async function () {
-		const monitor = { _id: "monitor1", name: "Test Monitor", url: "http://test.com" };
-		const notifications = [{ type: "email", address: "test@example.com" }];
-		dbMock.getNotificationsByMonitorId.resolves(notifications);
-
-		await networkService.handleNotification(monitor, true);
-
-		expect(emailServiceMock.buildAndSendEmail.calledOnce).to.be.true;
-		expect(
-			emailServiceMock.buildAndSendEmail.calledWith(
-				"serverIsUpTemplate",
-				{ monitorName: monitor.name, monitorUrl: monitor.url },
-				"test@example.com",
-				"Monitor Test Monitor is up"
-			)
-		).to.be.true;
-	});
-
-	it("should log an error if an exception is thrown", async function () {
-		const monitor = { _id: "monitor1", name: "Test Monitor", url: "http://test.com" };
-		dbMock.getNotificationsByMonitorId.rejects(new Error("Database error"));
-
-		await networkService.handleNotification(monitor, true);
-
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].message).to.equal("Database error");
-	});
-});
-
-describe("NetworkService - handleStatusUpdate", function () {
-	let dbMock,
-		emailServiceMock,
-		axiosMock,
-		pingMock,
-		loggerMock,
-		httpMock,
-		networkService,
-		monitorMock;
-
-	beforeEach(function () {
-		dbMock = { getMonitorById: sinon.stub() };
-		emailServiceMock = sinon.stub();
-		axiosMock = sinon.stub();
-		pingMock = sinon.stub();
-		loggerMock = { error: sinon.stub() };
-		httpMock = sinon.stub();
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-		monitorMock = {
-			status: sinon.stub(),
-			save: sinon.stub(),
-		};
-	});
-
-	afterEach(function () {
-		sinon.restore();
-	});
-
-	it("should return if getMonitorById throws an error", async function () {
-		dbMock.getMonitorById.throws(new Error("Database error"));
-
-		const res = await networkService.handleStatusUpdate(
-			{ data: { _id: "monitor1" } },
-			true
-		);
-		expect(res).to.be.undefined;
-	});
-
-	it("should log an error if finding monitor fails", async function () {
-		dbMock.getMonitorById.throws(new Error("Database error"));
-
-		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
-
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].message).to.equal("Database error");
-	});
-
-	it("should update monitor status if different", async function () {
-		monitorMock.status = false;
-		dbMock.getMonitorById.resolves(monitorMock);
-
-		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
-
-		expect(monitorMock.save.calledOnce).to.be.true;
-		expect(monitorMock.status).to.be.true;
-	});
-
-	it("should not update monitor status if same", async function () {
-		monitorMock.status = true;
-		dbMock.getMonitorById.resolves(monitorMock);
-
-		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
-
-		expect(monitorMock.save.called).to.be.false;
-	});
-
-	it("should log an error if exception is thrown during status update", async function () {
-		monitorMock.status = false;
-		dbMock.getMonitorById.resolves(monitorMock);
-		monitorMock.save.rejects(new Error("Save error"));
-
-		await networkService.handleStatusUpdate({ data: { _id: "monitor1" } }, true);
-
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].message).to.equal("Save error");
-	});
-});
-
-describe("NetworkService - measureResponseTime", () => {
-	let mockOperation,
-		dbMock,
-		emailServiceMock,
-		axiosMock,
-		pingMock,
-		loggerMock,
-		httpMock,
-		networkService;
+describe("Network Service", () => {
+	let axios, ping, logger, networkService;
 
 	beforeEach(() => {
-		mockOperation = sinon.stub();
-		dbMock = { getMonitorById: sinon.stub() };
-		emailServiceMock = sinon.stub();
-		axiosMock = sinon.stub();
-		pingMock = sinon.stub();
-		loggerMock = { error: sinon.stub() };
-		httpMock = sinon.stub();
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-	});
-
-	afterEach(() => {
-		sinon.restore();
-	});
-
-	it("should return response time and response on successful operation", async () => {
-		const fakeResponse = { data: "test" };
-		mockOperation.resolves(fakeResponse);
-
-		const result = await networkService.measureResponseTime(mockOperation);
-		expect(result).to.have.property("responseTime").that.is.a("number");
-		expect(result).to.have.property("response").that.deep.equals(fakeResponse);
-	});
-
-	it("should throw an error with response time and additional properties on operation failure", async () => {
-		const fakeError = new Error("Operation failed");
-		mockOperation.rejects(fakeError);
-
-		try {
-			await networkService.measureResponseTime(mockOperation);
-		} catch (error) {
-			expect(error).to.have.property("responseTime").that.is.a("number");
-			expect(error).to.have.property("service", networkService.SERVICE_NAME);
-			expect(error).to.have.property("method", "measureResponseTime");
-			expect(error.message).to.equal("Operation failed");
-		}
-	});
-	it("should throw an error with response time set properties on operation failure", async () => {
-		const fakeError = new Error("Operation failed");
-		fakeError.service = "test";
-		fakeError.method = "testMethod";
-		mockOperation.rejects(fakeError);
-
-		try {
-			await networkService.measureResponseTime(mockOperation);
-		} catch (error) {
-			expect(error).to.have.property("responseTime").that.is.a("number");
-			expect(error).to.have.property("service", "test");
-			expect(error).to.have.property("method", "testMethod");
-			expect(error.message).to.equal("Operation failed");
-		}
-	});
-});
-
-describe("networkService - handlePing", () => {
-	let job,
-		dbMock,
-		pingMock,
-		loggerMock,
-		httpMock,
-		networkService,
-		logAndStoreCheckStub,
-		handleStatusUpdateStub;
-	beforeEach(function () {
-		job = {
-			data: {
-				url: "http://example.com",
-				_id: "12345",
+		axios = {
+			get: sinon.stub().resolves({
+				data: { foo: "bar" },
+				status: 200,
+			}),
+		};
+		ping = {
+			promise: {
+				probe: sinon
+					.stub()
+					.resolves({ response: { alive: true }, responseTime: 100, alive: true }),
 			},
 		};
-
-		dbMock = { getMonitorById: sinon.stub() };
-		pingMock = { promise: { probe: sinon.stub() } };
-		loggerMock = { error: sinon.stub() };
-		httpMock = sinon.stub();
-		networkService = new NetworkService(
-			dbMock,
-			null,
-			null,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-		logAndStoreCheckStub = sinon.stub(networkService, "logAndStoreCheck");
-		handleStatusUpdateStub = sinon.stub(networkService, "handleStatusUpdate");
+		logger = { error: sinon.stub() };
+		networkService = new NetworkService(axios, ping, logger, http);
 	});
-
-	afterEach(function () {
-		sinon.restore();
-	});
-
-	it("should handle a successful ping response", async () => {
-		const response = { alive: true };
-		const responseTime = 0;
-		pingMock.promise.probe.returns(response);
-		logAndStoreCheckStub.resolves();
-		await networkService.handlePing(job);
-		expect(
-			logAndStoreCheckStub.calledOnceWith({
-				monitorId: job.data._id,
-				status: response.alive,
-				responseTime,
-				message: successMessages.PING_SUCCESS,
-			})
-		).to.be.true;
-		expect(handleStatusUpdateStub.calledOnceWith(job, true)).to.be.true;
-	});
-	it("should handle a successful response and isAlive === false", async function () {
-		const response = { alive: false };
-		const responseTime = 0;
-		pingMock.promise.probe.resolves(response);
-		logAndStoreCheckStub.resolves();
-
-		await networkService.handlePing(job);
-		expect(
-			logAndStoreCheckStub.calledOnceWith({
-				monitorId: job.data._id,
-				status: false,
-				responseTime,
-				message: errorMessages.PING_CANNOT_RESOLVE,
-			})
-		).to.be.true;
-		expect(handleStatusUpdateStub.calledOnceWith(job, false)).to.be.true;
-	});
-
-	it("should handle a failed ping response", async function () {
-		const error = new Error("Ping failed");
-		error.responseTime = 0;
-
-		pingMock.promise.probe.rejects(error);
-
-		await networkService.handlePing(job);
-
-		expect(handleStatusUpdateStub.calledOnceWith(job, false)).to.be.true;
-	});
-});
-
-describe("NetworkService - handleHttp", () => {
-	let networkService,
-		axiosMock,
-		dbMock,
-		httpMock,
-		jobMock,
-		loggerMock,
-		logAndStoreCheckStub,
-		handleStatusUpdateStub;
-
-	beforeEach(() => {
-		axiosMock = {
-			get: sinon.stub(),
-		};
-		dbMock = {
-			createCheck: sinon.stub().resolves(),
-		};
-		httpMock = {
-			STATUS_CODES: {
-				200: "OK",
-				500: "Internal Server Error",
-			},
-		};
-		loggerMock = {
-			error: sinon.stub(),
-		};
-		networkService = new NetworkService(
-			dbMock,
-			null,
-			axiosMock,
-			null,
-			loggerMock,
-			httpMock
-		);
-		jobMock = {
-			data: {
-				url: "http://example.com",
-				_id: "monitorId123",
-			},
-		};
-		sinon.stub(networkService, "measureResponseTime").callsFake(async (operation) => {
-			const response = await operation();
-			return { responseTime: 100, response };
+	describe("constructor", () => {
+		it("should create a new NetworkService instance", () => {
+			const networkService = new NetworkService();
+			expect(networkService).to.be.an.instanceOf(NetworkService);
 		});
-		logAndStoreCheckStub = sinon.stub(networkService, "logAndStoreCheck").resolves();
-		handleStatusUpdateStub = sinon.stub(networkService, "handleStatusUpdate").resolves();
 	});
 
-	afterEach(() => {
-		sinon.restore();
-	});
-
-	it("should handle a successful HTTP response", async () => {
-		const responseMock = { status: 200 };
-		axiosMock.get.resolves(responseMock);
-
-		await networkService.handleHttp(jobMock);
-
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: true,
-			statusCode: 200,
-			message: "OK",
+	describe("timeRequest", () => {
+		it("should time an asynchronous operation", async () => {
+			const operation = sinon.stub().resolves("success");
+			const { response, responseTime } = await networkService.timeRequest(operation);
+			expect(response).to.equal("success");
+			expect(responseTime).to.be.a("number");
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, true)).to.be.true;
-	});
-
-	it("should handle an HTTP error response", async () => {
-		const errorMock = { response: { status: 500 }, responseTime: 200 };
-		axiosMock.get.rejects(errorMock);
-
-		await networkService.handleHttp(jobMock);
-
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: false,
-			statusCode: 500,
-			message: "Internal Server Error",
+		it("should handle errors if operation throws error", async () => {
+			const error = new Error("Test error");
+			const operation = sinon.stub().throws(error);
+			const { response, responseTime } = await networkService.timeRequest(operation);
+			expect(response).to.be.null;
+			expect(responseTime).to.be.a("number");
+			expect(error.message).to.equal("Test error");
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, false)).to.be.true;
 	});
-	it("should handle an HTTP error response with undefined status", async () => {
-		const errorMock = { response: { status: undefined }, responseTime: 200 };
-		axiosMock.get.rejects(errorMock);
 
-		await networkService.handleHttp(jobMock);
-
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: false,
-			statusCode: 5000,
-			message: "Network Error",
+	describe("requestPing", () => {
+		it("should return a response object if ping successful", async () => {
+			const pingResult = await networkService.requestPing({
+				data: { url: "http://test.com", _id: "123" },
+			});
+			expect(pingResult.monitorId).to.equal("123");
+			expect(pingResult.type).to.equal("ping");
+			expect(pingResult.responseTime).to.be.a("number");
+			expect(pingResult.status).to.be.true;
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, false)).to.be.true;
-	});
-});
-
-describe("networkService - handlePagespeed", () => {
-	let dbMock,
-		axiosMock,
-		jobMock,
-		emailServiceMock,
-		pingMock,
-		loggerMock,
-		httpMock,
-		networkService,
-		logAndStoreCheckStub,
-		handleStatusUpdateStub;
-	beforeEach(() => {
-		jobMock = {
-			data: {
-				_id: "12345",
-				url: "http://example.com",
-			},
-		};
-		dbMock = { getMonitorById: sinon.stub() };
-		axiosMock = { get: sinon.stub() };
-
-		emailServiceMock = sinon.stub();
-		pingMock = { promise: { probe: sinon.stub() } };
-		loggerMock = { error: sinon.stub() };
-		httpMock = {
-			STATUS_CODES: {
-				200: "OK",
-				500: "Internal Server Error",
-			},
-		};
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-		logAndStoreCheckStub = sinon.stub(networkService, "logAndStoreCheck").resolves();
-		handleStatusUpdateStub = sinon.stub(networkService, "handleStatusUpdate").resolves();
-	});
-
-	afterEach(() => {
-		sinon.restore();
-	});
-
-	it("should handle a successful PageSpeed response", async () => {
-		const responseMock = {
-			status: 200,
-			data: {
-				lighthouseResult: {
-					categories: {
-						accessibility: { score: 0.9 },
-						"best-practices": { score: 0.8 },
-						seo: { score: 0.7 },
-						performance: { score: 0.6 },
-					},
-					audits: {
-						"cumulative-layout-shift": { score: 0.1 },
-						"speed-index": { score: 0.2 },
-						"first-contentful-paint": { score: 0.3 },
-						"largest-contentful-paint": { score: 0.4 },
-						"total-blocking-time": { score: 0.5 },
-					},
-				},
-			},
-		};
-		axiosMock.get.resolves(responseMock);
-
-		await networkService.handlePagespeed(jobMock);
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: true,
-			statusCode: 200,
-			message: "OK",
-			accessibility: 90,
-			bestPractices: 80,
-			seo: 70,
-			performance: 60,
+		it("should return a response object if ping unsuccessful", async () => {
+			const error = new Error("Test error");
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const pingResult = await networkService.requestPing({
+				data: { url: "http://test.com", _id: "123" },
+			});
+			expect(pingResult.monitorId).to.equal("123");
+			expect(pingResult.type).to.equal("ping");
+			expect(pingResult.responseTime).to.be.a("number");
+			expect(pingResult.status).to.be.false;
+			expect(pingResult.code).to.equal(networkService.PING_ERROR);
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, true)).to.be.true;
 	});
-
-	it("should handle a successful PageSpeed response with missing data", async () => {
-		const responseMock = {
-			status: 200,
-			data: {
-				lighthouseResult: {
-					categories: {},
-					audits: {
-						"cumulative-layout-shift": { score: 0.1 },
-						"speed-index": { score: 0.2 },
-						"first-contentful-paint": { score: 0.3 },
-						"largest-contentful-paint": { score: 0.4 },
-						"total-blocking-time": { score: 0.5 },
-					},
-				},
-			},
-		};
-		axiosMock.get.resolves(responseMock);
-
-		await networkService.handlePagespeed(jobMock);
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: true,
-			statusCode: 200,
-			message: "OK",
-			accessibility: 0,
-			bestPractices: 0,
-			seo: 0,
-			performance: 0,
+	describe("requestHttp", () => {
+		it("should return a response object if http successful", async () => {
+			const job = { data: { url: "http://test.com", _id: "123" } };
+			const httpResult = await networkService.requestHttp(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("http");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.true;
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, true)).to.be.true;
-	});
-
-	it("should handle an error PageSpeed response", async () => {
-		const errorMock = { response: { status: 500 } };
-		axiosMock.get.rejects(errorMock);
-
-		await networkService.handlePagespeed(jobMock);
-
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: false,
-			statusCode: 500,
-			message: "Internal Server Error",
-			accessibility: 0,
-			bestPractices: 0,
-			seo: 0,
-			performance: 0,
+		it("should return a response object if http unsuccessful", async () => {
+			const error = new Error("Test error");
+			error.response = { status: 404 };
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const job = { data: { url: "http://test.com", _id: "123" } };
+			const httpResult = await networkService.requestHttp(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("http");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.false;
+			expect(httpResult.code).to.equal(404);
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, false)).to.be.true;
-	});
-	it("should handle an error PageSpeed response with unknown status", async () => {
-		const errorMock = { response: { status: undefined } };
-		axiosMock.get.rejects(errorMock);
-
-		await networkService.handlePagespeed(jobMock);
-
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const checkData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(checkData).to.include({
-			monitorId: jobMock.data._id,
-			status: false,
-			statusCode: 5000,
-			message: "Network Error",
-			accessibility: 0,
-			bestPractices: 0,
-			seo: 0,
-			performance: 0,
+		it("should return a response object if http unsuccessful with unknown code", async () => {
+			const error = new Error("Test error");
+			error.response = {};
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const job = { data: { url: "http://test.com", _id: "123" } };
+			const httpResult = await networkService.requestHttp(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("http");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.false;
+			expect(httpResult.code).to.equal(networkService.NETWORK_ERROR);
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, false)).to.be.true;
-	});
-});
-
-describe("networkService - handleHardware", () => {
-	let dbMock,
-		axiosMock,
-		jobMock,
-		emailServiceMock,
-		pingMock,
-		loggerMock,
-		httpMock,
-		networkService,
-		logAndStoreCheckStub,
-		handleStatusUpdateStub;
-	beforeEach(() => {
-		jobMock = {
-			data: {
-				_id: "12345",
-				url: "http://example.com",
-			},
-		};
-		dbMock = { getMonitorById: sinon.stub() };
-		axiosMock = { get: sinon.stub() };
-
-		emailServiceMock = sinon.stub();
-		pingMock = { promise: { probe: sinon.stub() } };
-		loggerMock = { error: sinon.stub() };
-		httpMock = {
-			STATUS_CODES: {
-				200: "OK",
-				500: "Internal Server Error",
-			},
-		};
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-		logAndStoreCheckStub = sinon.stub(networkService, "logAndStoreCheck").resolves();
-		handleStatusUpdateStub = sinon.stub(networkService, "handleStatusUpdate").resolves();
 	});
 
-	afterEach(() => {
-		sinon.restore();
-	});
-
-	it("should handle a successful Hardware response", async () => {
-		const responseMock = {
-			monitorId: jobMock.data._id,
-			cpu: {
-				physical_core: 1,
-				logical_core: 1,
-				frequency: 266,
-				temperature: null,
-				free_percent: null,
-				usage_percent: null,
-			},
-			memory: {
-				total_bytes: 4,
-				available_bytes: 4,
-				used_bytes: 2,
-				usage_percent: 0.5,
-			},
-			disk: [
-				{
-					read_speed_bytes: 3,
-					write_speed_bytes: 3,
-					total_bytes: 10,
-					free_bytes: 2,
-					usage_percent: 0.8,
-				},
-			],
-			host: {
-				os: "Linux",
-				platform: "Ubuntu",
-				kernel_version: "24.04",
-			},
-		};
-		axiosMock.get.resolves(responseMock);
-
-		await networkService.handleHardware(jobMock);
-		expect(networkService.logAndStoreCheck.calledOnce).to.be.true;
-		const hardwareData = networkService.logAndStoreCheck.getCall(0).args[0];
-		expect(hardwareData.cpu).to.include({
-			...responseMock.cpu,
+	describe("requestPagespeed", () => {
+		it("should return a response object if pagespeed successful", async () => {
+			const job = { data: { url: "http://test.com", _id: "123" } };
+			const pagespeedResult = await networkService.requestPagespeed(job);
+			expect(pagespeedResult.monitorId).to.equal("123");
+			expect(pagespeedResult.type).to.equal("pagespeed");
+			expect(pagespeedResult.responseTime).to.be.a("number");
+			expect(pagespeedResult.status).to.be.true;
 		});
-		expect(networkService.handleStatusUpdate.calledOnceWith(jobMock, true)).to.be.true;
+		it("should return a response object if pagespeed unsuccessful", async () => {
+			const error = new Error("Test error");
+			error.response = { status: 404 };
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const job = { data: { url: "http://test.com", _id: "123" } };
+			const pagespeedResult = await networkService.requestPagespeed(job);
+			expect(pagespeedResult.monitorId).to.equal("123");
+			expect(pagespeedResult.type).to.equal("pagespeed");
+			expect(pagespeedResult.responseTime).to.be.a("number");
+			expect(pagespeedResult.status).to.be.false;
+			expect(pagespeedResult.code).to.equal(404);
+		});
+		it("should return a response object if pagespeed unsuccessful with an unknown code", async () => {
+			const error = new Error("Test error");
+			error.response = {};
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const job = { data: { url: "http://test.com", _id: "123" } };
+			const pagespeedResult = await networkService.requestPagespeed(job);
+			expect(pagespeedResult.monitorId).to.equal("123");
+			expect(pagespeedResult.type).to.equal("pagespeed");
+			expect(pagespeedResult.responseTime).to.be.a("number");
+			expect(pagespeedResult.status).to.be.false;
+			expect(pagespeedResult.code).to.equal(networkService.NETWORK_ERROR);
+		});
 	});
 
-	it("should handle an error Hardware response", async () => {
-		logAndStoreCheckStub.throws(new Error("Hardware error"));
-		try {
-			await networkService.handleHardware(jobMock);
-		} catch (error) {
-			expect(error.message).to.equal("Hardware error");
-		}
-	});
-});
+	describe("getStatus", () => {
+		beforeEach(() => {
+			networkService.requestPing = sinon.stub();
+			networkService.requestHttp = sinon.stub();
+			networkService.requestPagespeed = sinon.stub();
+			networkService.requestHardware = sinon.stub();
+		});
 
-describe("NetworkService - getStatus", () => {
-	let dbMock, emailServiceMock, axiosMock, pingMock, loggerMock, httpMock, networkService;
-
-	beforeEach(() => {
-		dbMock = { getMonitorById: sinon.stub() };
-		emailServiceMock = sinon.stub();
-		axiosMock = sinon.stub();
-		pingMock = sinon.stub();
-		loggerMock = { error: sinon.stub() };
-		httpMock = sinon.stub();
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-	});
-
-	afterEach(() => {
-		sinon.restore();
-	});
-
-	it("should return true if the job type is ping and handlePing is successful", async () => {
-		const job = { data: { type: networkService.TYPE_PING } };
-		sinon.stub(networkService, "handlePing").resolves(true);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.true;
-	});
-	it("should return false if the job type is ping and handlePing is not successful", async () => {
-		const job = { data: { type: networkService.TYPE_PING } };
-		sinon.stub(networkService, "handlePing").resolves(false);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.false;
-	});
-	it("should return true if the job type is http and handleHttp is successful", async () => {
-		const job = { data: { type: networkService.TYPE_HTTP } };
-		sinon.stub(networkService, "handleHttp").resolves(true);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.true;
-	});
-	it("should return false if the job type is http and handleHttp is not successful", async () => {
-		const job = { data: { type: networkService.TYPE_HTTP } };
-		sinon.stub(networkService, "handleHttp").resolves(false);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.false;
-	});
-	it("should return true if the job type is pagespeed and handlePagespeed is successful", async () => {
-		const job = { data: { type: networkService.TYPE_PAGESPEED } };
-		sinon.stub(networkService, "handlePagespeed").resolves(true);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.true;
-	});
-	it("should return false if the job type is pagespeed and handlePagespeed is not successful", async () => {
-		const job = { data: { type: networkService.TYPE_PAGESPEED } };
-		sinon.stub(networkService, "handlePagespeed").resolves(false);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.false;
-	});
-	it("should return true if the job type is hardware and handleHardware is successful", async () => {
-		const job = { data: { type: networkService.TYPE_HARDWARE } };
-		sinon.stub(networkService, "handleHardware").resolves(true);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.true;
-	});
-	it("should return false if the job type is hardware and handleHardware is not successful", async () => {
-		const job = { data: { type: networkService.TYPE_HARDWARE } };
-		sinon.stub(networkService, "handleHardware").resolves(false);
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.false;
-	});
-	it("should log an error and return false if the job type is unknown", async () => {
-		const job = { data: { type: "unknown" } };
-		const result = await networkService.getStatus(job);
-		expect(result).to.be.false;
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].message).to.equal(
-			"Unsupported type: unknown"
-		);
-	});
-});
-
-describe("NetworkService - logAndStoreCheck", async () => {
-	let dbMock, emailServiceMock, axiosMock, pingMock, loggerMock, httpMock, networkService;
-
-	beforeEach(() => {
-		dbMock = { getMonitorById: sinon.stub() };
-		emailServiceMock = sinon.stub();
-		axiosMock = sinon.stub();
-		pingMock = sinon.stub();
-		loggerMock = { error: sinon.stub() };
-		httpMock = sinon.stub();
-		networkService = new NetworkService(
-			dbMock,
-			emailServiceMock,
-			axiosMock,
-			pingMock,
-			loggerMock,
-			httpMock
-		);
-	});
-	const data = { monitorId: "12345" };
-	const writeToDB = sinon.stub();
-	afterEach(() => {
-		sinon.restore();
-	});
-
-	it("should log an error if writeToDb throws an error", async () => {
-		writeToDB.rejects(new Error("Database error"));
-		await networkService.logAndStoreCheck(data, writeToDB);
-
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].details).to.equal(
-			`Error writing check for ${data.monitorId}`
-		);
-	});
-
-	it("should return the status of the inserted check if successful", async () => {
-		writeToDB.resolves({ status: true });
-		const result = await networkService.logAndStoreCheck(data, writeToDB);
-		expect(result).to.be.true;
-	});
-
-	it("should thrown an error if the check is not inserted (null)", async () => {
-		writeToDB.resolves(null);
-		await networkService.logAndStoreCheck(data, writeToDB);
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].details).to.equal(
-			`Error writing check for ${data.monitorId}`
-		);
-	});
-	it("should thrown an error if the check is not inserted (undefined)", async () => {
-		writeToDB.resolves(undefined);
-		await networkService.logAndStoreCheck(data, writeToDB);
-
-		expect(loggerMock.error.calledOnce).to.be.true;
-		expect(loggerMock.error.firstCall.args[0].details).to.equal(
-			`Error writing check for ${data.monitorId}`
-		);
+		afterEach(() => {
+			sinon.restore();
+		});
+		it("should call requestPing if type is ping", () => {
+			networkService.getStatus({ data: { type: "ping" } });
+			expect(networkService.requestPing.calledOnce).to.be.true;
+			expect(networkService.requestHttp.notCalled).to.be.true;
+			expect(networkService.requestPagespeed.notCalled).to.be.true;
+		});
+		it("should call requestHttp if type is http", () => {
+			networkService.getStatus({ data: { type: "http" } });
+			expect(networkService.requestPing.notCalled).to.be.true;
+			expect(networkService.requestHttp.calledOnce).to.be.true;
+			expect(networkService.requestPagespeed.notCalled).to.be.true;
+		});
+		it("should call requestPagespeed if type is pagespeed", () => {
+			networkService.getStatus({ data: { type: "pagespeed" } });
+			expect(networkService.requestPing.notCalled).to.be.true;
+			expect(networkService.requestHttp.notCalled).to.be.true;
+			expect(networkService.requestPagespeed.calledOnce).to.be.true;
+		});
+		it("should call requestHandleHardware if type is hardware", () => {
+			networkService.getStatus({ data: { type: "hardware" } });
+			expect(networkService.requestPing.notCalled).to.be.true;
+			expect(networkService.requestHttp.notCalled).to.be.true;
+			expect(networkService.requestPagespeed.notCalled).to.be.true;
+		});
+		it("should log an error if an unknown type is provided", () => {
+			networkService.getStatus({ data: { type: "unknown" } });
+			expect(logger.error.calledOnce).to.be.true;
+			expect(logger.error.args[0][0].message).to.equal("Unsupported type: unknown");
+		});
 	});
 });

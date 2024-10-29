@@ -8,7 +8,7 @@ RUN npm install
 
 COPY ../../Client .
 
-RUN npm run build
+RUN npm run build-dev
 
 RUN npm install -g serve
 
