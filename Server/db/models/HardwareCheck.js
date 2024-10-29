@@ -36,10 +36,30 @@ const HardwareCheckSchema = mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Monitor",
 			immutable: true,
+			index: true,
 		},
+
 		status: {
 			type: Boolean,
 			index: true,
+		},
+
+		responseTime: {
+			type: Number,
+		},
+
+		statusCode: {
+			type: Number,
+			index: true,
+		},
+
+		message: {
+			type: String,
+		},
+		expiry: {
+			type: Date,
+			default: Date.now,
+			expires: 60 * 60 * 24 * 30, // 30 days
 		},
 		cpu: {
 			type: cpuSchema,
