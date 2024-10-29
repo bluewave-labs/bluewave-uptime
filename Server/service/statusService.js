@@ -99,6 +99,13 @@ class StatusService {
 			check.performance = (categories.performance?.score || 0) * 100;
 			check.audits = { cls, si, fcp, lcp, tbt };
 		}
+
+		if (type === "hardware") {
+			check.cpu = payload.cpu;
+			check.memory = payload.memory;
+			check.disk = payload.disk;
+			check.host = payload.host;
+		}
 		return check;
 	};
 
@@ -121,6 +128,7 @@ class StatusService {
 				http: this.db.createCheck,
 				ping: this.db.createCheck,
 				pagespeed: this.db.createPageSpeedCheck,
+				hardware: this.db.createHardwareCheck,
 			};
 			const operation = operationMap[networkResponse.type];
 			const check = this.buildCheck(networkResponse);
@@ -130,7 +138,7 @@ class StatusService {
 				message: error.message,
 				service: this.SERVICE_NAME,
 				method: "insertCheck",
-				details: `Error inserting check for monitor: ${networkResponse.monitorId}`,
+				details: `Error inserting check for monitor: ${networkResponse?.monitorId}`,
 				stack: error.stack,
 			});
 		}
