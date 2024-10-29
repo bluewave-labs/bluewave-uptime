@@ -234,7 +234,7 @@ const editMonitorBodyValidation = joi.object({
 	name: joi.string(),
 	description: joi.string(),
 	interval: joi.number(),
-	notifications: joi.array().items(joi.object()).min(1),
+	notifications: joi.array().items(joi.object()),
 });
 
 const pauseMonitorParamValidation = joi.object({
