@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { BaseCheckSchema } from "./Check.js";
 const cpuSchema = mongoose.Schema({
 	physical_core: { type: Number, default: 0 },
 	logical_core: { type: Number, default: 0 },
@@ -32,35 +32,7 @@ const hostSchema = mongoose.Schema({
 
 const HardwareCheckSchema = mongoose.Schema(
 	{
-		monitorId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Monitor",
-			immutable: true,
-			index: true,
-		},
-
-		status: {
-			type: Boolean,
-			index: true,
-		},
-
-		responseTime: {
-			type: Number,
-		},
-
-		statusCode: {
-			type: Number,
-			index: true,
-		},
-
-		message: {
-			type: String,
-		},
-		expiry: {
-			type: Date,
-			default: Date.now,
-			expires: 60 * 60 * 24 * 30, // 30 days
-		},
+		...BaseCheckSchema.obj,
 		cpu: {
 			type: cpuSchema,
 			default: () => ({}),
@@ -80,5 +52,7 @@ const HardwareCheckSchema = mongoose.Schema(
 	},
 	{ timestamps: true }
 );
+
+HardwareCheckSchema.index({ createdAt: 1 });
 
 export default mongoose.model("HardwareCheck", HardwareCheckSchema);
