@@ -4,35 +4,35 @@
 .account button,
 .account td,
 .account .MuiSelect-select {
-  font-size: var(--env-var-font-size-medium);
+	font-size: var(--env-var-font-size-medium);
 }
 .account h1.MuiTypography-root {
-  font-weight: 600;
+	font-weight: 600;
 }
 .account .MuiTabPanel-root {
-  padding: 0;
-  margin-top: 50px;
+	padding: 0;
+	margin-top: 50px;
 }
 .account button:not(.MuiIconButton-root) {
-  height: 34px;
+	height: 34px;
 }
 .account .field {
-  flex: 1;
+	flex: 1;
 }
 #modal-delete-account,
 #modal-edit-org-name,
 #modal-invite-member {
-  font-size: var(--env-var-font-size-large);
+	font-size: var(--env-var-font-size-large);
 }
 
 .account .MuiStack-root:has(span.MuiTypography-root.input-error) {
-  position: relative;
+	position: relative;
 }
 .account:not(:has(#modal-invite-member)) span.MuiTypography-root.input-error {
-  position: absolute;
-  top: 100%;
+	position: absolute;
+	top: 100%;
 }
 
 .account .MuiTableBody-root .MuiTableCell-root {
-  padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
+	padding: var(--env-var-spacing-1-plus) var(--env-var-spacing-2);
 }

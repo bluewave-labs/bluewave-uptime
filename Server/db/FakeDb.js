@@ -28,111 +28,111 @@ let FAKE_MONITOR_DATA = [];
 const USERS = [];
 
 const connect = async () => {
-  try {
-    await console.log("Connected to FakeDB");
-  } catch (error) {
-    console.error(error);
-  }
+	try {
+		await console.log("Connected to FakeDB");
+	} catch (error) {
+		console.error(error);
+	}
 };
 
 const insertUser = async (req, res) => {
-  try {
-    const newUser = new UserModel({ ...req.body });
-    const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
-    newUser.password = await bcrypt.hash(newUser.password, salt); // hash is also async, need to eitehr await or use hashSync
-    USERS.push(newUser);
-    const userToReturn = { ...newUser._doc };
-    delete userToReturn.password;
-    return userToReturn;
-  } catch (error) {
-    throw error;
-  }
+	try {
+		const newUser = new UserModel({ ...req.body });
+		const salt = await bcrypt.genSalt(10); //genSalt is asynchronous, need to wait
+		newUser.password = await bcrypt.hash(newUser.password, salt); // hash is also async, need to eitehr await or use hashSync
+		USERS.push(newUser);
+		const userToReturn = { ...newUser._doc };
+		delete userToReturn.password;
+		return userToReturn;
+	} catch (error) {
+		throw error;
+	}
 };
 
 const getUserByEmail = async (req, res) => {
-  const email = req.body.email;
-  try {
-    const idx = USERS.findIndex((user) => {
-      return user.email === email;
-    });
-    if (idx === -1) {
-      return null;
-    }
-    return USERS[idx];
-  } catch (error) {
-    throw new Error(`User with email ${email} not found`);
-  }
+	const email = req.body.email;
+	try {
+		const idx = USERS.findIndex((user) => {
+			return user.email === email;
+		});
+		if (idx === -1) {
+			return null;
+		}
+		return USERS[idx];
+	} catch (error) {
+		throw new Error(`User with email ${email} not found`);
+	}
 };
 
 const getAllMonitors = async () => {
-  return FAKE_MONITOR_DATA;
+	return FAKE_MONITOR_DATA;
 };
 
 const getMonitorById = async (monitorId) => {
-  const idx = FAKE_MONITOR_DATA.findIndex((monitor) => {
-    return monitor.id === monitorId;
-  });
-  if (idx === -1) {
-    throw new Error(`Monitor with id ${monitorId} not found`);
-  }
-  return FAKE_MONITOR_DATA[idx];
+	const idx = FAKE_MONITOR_DATA.findIndex((monitor) => {
+		return monitor.id === monitorId;
+	});
+	if (idx === -1) {
+		throw new Error(`Monitor with id ${monitorId} not found`);
+	}
+	return FAKE_MONITOR_DATA[idx];
 };
 
 const getMonitorsByUserId = async (userId) => {
-  const userMonitors = FAKE_MONITOR_DATA.filter((monitor) => {
-    return monitor.userId === userId;
-  });
+	const userMonitors = FAKE_MONITOR_DATA.filter((monitor) => {
+		return monitor.userId === userId;
+	});
 
-  if (userMonitors.length === 0) {
-    throw new Error(`Monitors for user ${userId} not found`);
-  }
-  return userMonitors;
+	if (userMonitors.length === 0) {
+		throw new Error(`Monitors for user ${userId} not found`);
+	}
+	return userMonitors;
 };
 
 const createMonitor = async (req, res) => {
-  const monitor = new Monitor(req.body);
-  monitor.createdAt = Date.now();
-  monitor.updatedAt = Date.now();
-  FAKE_MONITOR_DATA.push(monitor);
-  return monitor;
+	const monitor = new Monitor(req.body);
+	monitor.createdAt = Date.now();
+	monitor.updatedAt = Date.now();
+	FAKE_MONITOR_DATA.push(monitor);
+	return monitor;
 };
 
 const deleteMonitor = async (req, res) => {
-  const monitorId = req.params.monitorId;
-  try {
-    const monitor = getMonitorById(monitorId);
-    FAKE_MONITOR_DATA = FAKE_MONITOR_DATA.filter((monitor) => {
-      return monitor.id !== monitorId;
-    });
-    return monitor;
-  } catch (error) {
-    throw error;
-  }
+	const monitorId = req.params.monitorId;
+	try {
+		const monitor = getMonitorById(monitorId);
+		FAKE_MONITOR_DATA = FAKE_MONITOR_DATA.filter((monitor) => {
+			return monitor.id !== monitorId;
+		});
+		return monitor;
+	} catch (error) {
+		throw error;
+	}
 };
 
 const editMonitor = async (req, res) => {
-  const monitorId = req.params.monitorId;
-  const idx = FAKE_MONITOR_DATA.findIndex((monitor) => {
-    return monitor._id.toString() === monitorId;
-  });
-  const oldMonitor = FAKE_MONITOR_DATA[idx];
-  const editedMonitor = new Monitor({ ...req.body });
-  editedMonitor._id = oldMonitor._id;
-  editedMonitor.userId = oldMonitor.userId;
-  editedMonitor.updatedAt = Date.now();
-  editedMonitor.createdAt = oldMonitor.createdAt;
-  FAKE_MONITOR_DATA[idx] = editedMonitor;
-  return FAKE_MONITOR_DATA[idx];
+	const monitorId = req.params.monitorId;
+	const idx = FAKE_MONITOR_DATA.findIndex((monitor) => {
+		return monitor._id.toString() === monitorId;
+	});
+	const oldMonitor = FAKE_MONITOR_DATA[idx];
+	const editedMonitor = new Monitor({ ...req.body });
+	editedMonitor._id = oldMonitor._id;
+	editedMonitor.userId = oldMonitor.userId;
+	editedMonitor.updatedAt = Date.now();
+	editedMonitor.createdAt = oldMonitor.createdAt;
+	FAKE_MONITOR_DATA[idx] = editedMonitor;
+	return FAKE_MONITOR_DATA[idx];
 };
 
 module.exports = {
-  connect,
-  insertUser,
-  getUserByEmail,
-  getAllMonitors,
-  getMonitorById,
-  getMonitorsByUserId,
-  createMonitor,
-  deleteMonitor,
-  editMonitor,
+	connect,
+	insertUser,
+	getUserByEmail,
+	getAllMonitors,
+	getMonitorById,
+	getMonitorsByUserId,
+	createMonitor,
+	deleteMonitor,
+	editMonitor,
 };

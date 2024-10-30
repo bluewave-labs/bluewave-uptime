@@ -26,28 +26,16 @@
         <mj-text>
           <p>Hello {{name}}!</p>
           <p>
-            We detected an incident on one of your monitors. Your service is
-            currently down. We'll send a message to you once it is up again.
+            We detected an incident on one of your monitors. Your service is currently
+            down. We'll send a message to you once it is up again.
           </p>
-          <p>
-            <b>Monitor name:</b> {{monitor}}
-          </p>
-          <p>
-            <b>URL:</b> {{url}}
-          </p>
-          <p>
-            <b>Problem:</b> {{problem}}
-          </p>
-          <p>
-            <b>Start date:</b> {{startDate}}
-          </p>
+          <p><b>Monitor name:</b> {{monitor}}</p>
+          <p><b>URL:</b> {{url}}</p>
         </mj-text>
       </mj-column>
       <mj-column width="100%">
         <mj-divider border-width="1px" border-color="#E0E0E0"></mj-divider>
-        <mj-button background-color="#1570EF">
-          View incident details
-        </mj-button>
+        <mj-button background-color="#1570EF"> View incident details </mj-button>
         <mj-text font-size="12px">
           <p>This email was sent by BlueWave Uptime.</p>
         </mj-text>

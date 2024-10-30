@@ -10,8 +10,8 @@ import { useTheme } from "@emotion/react";
  * So That why we're using JavaScript default parameters instead.
  */
 const DefaultValue = {
-  title: "Oh no! You dropped your sushi!",
-  desc: "Either the URL doesn’t exist, or you don’t have access to it.",
+	title: "Oh no! You dropped your sushi!",
+	desc: "Either the URL doesn’t exist, or you don’t have access to it.",
 };
 
 /**
@@ -31,33 +31,47 @@ const DefaultValue = {
  * @returns {JSX.Element} The rendered error page component.
  */
 const NotFound = ({ title = DefaultValue.title, desc = DefaultValue.desc }) => {
-  const navigate = useNavigate();
-  const theme = useTheme();
+	const navigate = useNavigate();
+	const theme = useTheme();
 
-  return (
-    <Stack height="100vh" justifyContent="center">
-      <Stack gap={theme.spacing(2)} alignItems="center">
-        <img src={NotFoundSvg} alt="404" style={{ maxHeight: "25rem" }} />
-        <Typography component="h1" variant="h1" fontSize={16}>
-          {title}
-        </Typography>
-        <Typography variant="body1">{desc}</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: theme.spacing(10) }}
-          onClick={() => navigate("/")}
-        >
-          Go to the main dashboard
-        </Button>
-      </Stack>
-    </Stack>
-  );
+	return (
+		<Stack
+			height="100vh"
+			justifyContent="center"
+		>
+			<Stack
+				gap={theme.spacing(2)}
+				alignItems="center"
+			>
+				<img
+					src={NotFoundSvg}
+					alt="404"
+					style={{ maxHeight: "25rem" }}
+				/>
+				<Typography
+					component="h1"
+					variant="h1"
+					fontSize={16}
+				>
+					{title}
+				</Typography>
+				<Typography variant="body1">{desc}</Typography>
+				<Button
+					variant="contained"
+					color="primary"
+					sx={{ mt: theme.spacing(10) }}
+					onClick={() => navigate("/")}
+				>
+					Go to the main dashboard
+				</Button>
+			</Stack>
+		</Stack>
+	);
 };
 
 NotFound.propTypes = {
-  title: PropTypes.string,
-  desc: PropTypes.string,
+	title: PropTypes.string,
+	desc: PropTypes.string,
 };
 
 export default NotFound;

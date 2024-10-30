@@ -1,9 +1,14 @@
 ## Describe your changes
 
-## Issue Number if applicable
+Provide a brief description of the changes you’ve made and their purpose.
 
-## Checklist before requesting a review
+## Issue number
 
-- [ ] I have performed a self-review of my code
-- [ ] I have inlcuded the issue # in the PR if applicable
-- [ ] I have labelled the PR correctly
+Mention the issue number(s) this PR addresses (e.g., #123).
+
+## Please ensure all items are checked off before requesting a review:
+
+- [ ] I have performed a self-review of my code.
+- [ ] I have included the issue # in the PR.
+- [ ] I have labelled the PR correctly.
+- [ ] My PR is granular and targeted to one specific feature only.

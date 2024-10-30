@@ -33,25 +33,24 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 ## Features
 
-- [x] Completely open source, deployable on your servers
-- [x] Website monitoring
-- [x] Port monitoring
-- [x] Ping monitoring
-- [x] Incidents at a glance
-- [x] Page speed monitoring
-- [x] E-mail notifications
-- [ ] Scheduled maintenance (in the works)
+- Completely open source, deployable on your servers
+- Website monitoring
+- Port monitoring
+- Ping monitoring
+- Incidents at a glance
+- Page speed monitoring
+- E-mail notifications
+- Scheduled maintenance
 
 **Roadmap (short term):**
 
-- [ ] Memory, disk and CPU monitoring
-- [ ] 3rd party integrations
-- [ ] DNS monitoring
-- [ ] SSL monitoring
+We are actively developing **infrastructure monitoring** features for Uptime Manager, which will include comprehensive monitoring of memory, disk usage, and CPU performance. Our goal is to build a lightweight agent that runs on Linux servers, continuously collecting and transmitting health metrics to Uptime Manager, where the data will be visualized for real-time insights.
 
 **Roadmap (long term):**
 
-- [ ] Status pages
+- DNS monitoring
+- SSL monitoring
+- Status pages
 
 ## Tech stack
 

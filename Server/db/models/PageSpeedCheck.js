@@ -1,37 +1,37 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
+import logger from "../../utils/logger.js";
 const AuditSchema = mongoose.Schema({
-  id: { type: String, required: true },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  score: { type: Number, required: true },
-  scoreDisplayMode: { type: String, required: true },
-  displayValue: { type: String, required: true },
-  numericValue: { type: Number, required: true },
-  numericUnit: { type: String, required: true },
+	id: { type: String, required: true },
+	title: { type: String, required: true },
+	description: { type: String, required: true },
+	score: { type: Number, required: true },
+	scoreDisplayMode: { type: String, required: true },
+	displayValue: { type: String, required: true },
+	numericValue: { type: Number, required: true },
+	numericUnit: { type: String, required: true },
 });
 
 const AuditsSchema = mongoose.Schema({
-  cls: {
-    type: AuditSchema,
-    required: true,
-  },
-  si: {
-    type: AuditSchema,
-    required: true,
-  },
-  fcp: {
-    type: AuditSchema,
-    required: true,
-  },
-  lcp: {
-    type: AuditSchema,
-    required: true,
-  },
-  tbt: {
-    type: AuditSchema,
-    required: true,
-  },
+	cls: {
+		type: AuditSchema,
+		required: true,
+	},
+	si: {
+		type: AuditSchema,
+		required: true,
+	},
+	fcp: {
+		type: AuditSchema,
+		required: true,
+	},
+	lcp: {
+		type: AuditSchema,
+		required: true,
+	},
+	tbt: {
+		type: AuditSchema,
+		required: true,
+	},
 });
 
 /**
@@ -45,40 +45,40 @@ const AuditsSchema = mongoose.Schema({
  */
 
 const PageSpeedCheck = mongoose.Schema(
-  {
-    monitorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Monitor",
-      immutable: true,
-    },
-    status: {
-      type: Boolean,
-      required: true,
-    },
-    accessibility: {
-      type: Number,
-      required: true,
-    },
-    bestPractices: {
-      type: Number,
-      required: true,
-    },
-    seo: {
-      type: Number,
-      required: true,
-    },
-    performance: {
-      type: Number,
-      required: true,
-    },
-    audits: {
-      type: AuditsSchema,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
+	{
+		monitorId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Monitor",
+			immutable: true,
+		},
+		status: {
+			type: Boolean,
+			required: true,
+		},
+		accessibility: {
+			type: Number,
+			required: true,
+		},
+		bestPractices: {
+			type: Number,
+			required: true,
+		},
+		seo: {
+			type: Number,
+			required: true,
+		},
+		performance: {
+			type: Number,
+			required: true,
+		},
+		audits: {
+			type: AuditsSchema,
+			required: true,
+		},
+	},
+	{
+		timestamps: true,
+	}
 );
 
 /**
@@ -87,26 +87,29 @@ const PageSpeedCheck = mongoose.Schema(
  */
 
 PageSpeedCheck.pre("save", async function (next) {
-  try {
-    const monitor = await mongoose.model("Monitor").findById(this.monitorId);
-    if (monitor && monitor.status !== this.status) {
-      if (monitor.status === true && this.status === false) {
-        // TODO issue alert
-        console.log("Monitor went down");
-      }
+	try {
+		const monitor = await mongoose.model("Monitor").findById(this.monitorId);
+		if (monitor && monitor.status !== this.status) {
+			if (monitor.status === true && this.status === false) {
+				logger.info({ message: "Monitor went down", monitorId: monitor._id });
+			}
 
-      if (monitor.status === false && this.status === true) {
-        // TODO issue alert
-        console.log("Monitor went up");
-      }
-      monitor.status = this.status;
-      await monitor.save();
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    next();
-  }
+			if (monitor.status === false && this.status === true) {
+				logger.info({ message: "Monitor went up", monitorId: monitor._id });
+			}
+			monitor.status = this.status;
+			await monitor.save();
+		}
+	} catch (error) {
+		logger.error({
+			message: error.message,
+			service: "PageSpeedCheck",
+			method: "pre-save",
+			stack: error.stack,
+		});
+	} finally {
+		next();
+	}
 });
 
-module.exports = mongoose.model("PageSpeedCheck", PageSpeedCheck);
+export default mongoose.model("PageSpeedCheck", PageSpeedCheck);
