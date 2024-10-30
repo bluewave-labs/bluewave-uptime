@@ -158,7 +158,7 @@ describe("Network Service", () => {
 			expect(httpResult.responseTime).to.be.a("number");
 			expect(httpResult.status).to.be.true;
 		});
-		it("should return a response object if hardware successful and job jas a secret", async () => {
+		it("should return a response object if hardware successful and job has a secret", async () => {
 			const job = {
 				data: {
 					url: "http://test.com",
