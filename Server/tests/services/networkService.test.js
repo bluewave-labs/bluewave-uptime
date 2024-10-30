@@ -2,7 +2,6 @@ import sinon from "sinon";
 import NetworkService from "../../service/networkService.js";
 import { expect } from "chai";
 import http from "http";
-import exp from "constants";
 describe("Network Service", () => {
 	let axios, ping, logger, networkService;
 
@@ -74,7 +73,7 @@ describe("Network Service", () => {
 	});
 	describe("requestHttp", () => {
 		it("should return a response object if http successful", async () => {
-			const job = { data: { url: "http://test.com", _id: "123" } };
+			const job = { data: { url: "http://test.com", _id: "123", type: "http" } };
 			const httpResult = await networkService.requestHttp(job);
 			expect(httpResult.monitorId).to.equal("123");
 			expect(httpResult.type).to.equal("http");
@@ -87,7 +86,7 @@ describe("Network Service", () => {
 			networkService.timeRequest = sinon
 				.stub()
 				.resolves({ response: null, responseTime: 1, error });
-			const job = { data: { url: "http://test.com", _id: "123" } };
+			const job = { data: { url: "http://test.com", _id: "123", type: "http" } };
 			const httpResult = await networkService.requestHttp(job);
 			expect(httpResult.monitorId).to.equal("123");
 			expect(httpResult.type).to.equal("http");
@@ -101,7 +100,7 @@ describe("Network Service", () => {
 			networkService.timeRequest = sinon
 				.stub()
 				.resolves({ response: null, responseTime: 1, error });
-			const job = { data: { url: "http://test.com", _id: "123" } };
+			const job = { data: { url: "http://test.com", _id: "123", type: "http" } };
 			const httpResult = await networkService.requestHttp(job);
 			expect(httpResult.monitorId).to.equal("123");
 			expect(httpResult.type).to.equal("http");
@@ -113,7 +112,7 @@ describe("Network Service", () => {
 
 	describe("requestPagespeed", () => {
 		it("should return a response object if pagespeed successful", async () => {
-			const job = { data: { url: "http://test.com", _id: "123" } };
+			const job = { data: { url: "http://test.com", _id: "123", type: "pagespeed" } };
 			const pagespeedResult = await networkService.requestPagespeed(job);
 			expect(pagespeedResult.monitorId).to.equal("123");
 			expect(pagespeedResult.type).to.equal("pagespeed");
@@ -126,7 +125,7 @@ describe("Network Service", () => {
 			networkService.timeRequest = sinon
 				.stub()
 				.resolves({ response: null, responseTime: 1, error });
-			const job = { data: { url: "http://test.com", _id: "123" } };
+			const job = { data: { url: "http://test.com", _id: "123", type: "pagespeed" } };
 			const pagespeedResult = await networkService.requestPagespeed(job);
 			expect(pagespeedResult.monitorId).to.equal("123");
 			expect(pagespeedResult.type).to.equal("pagespeed");
@@ -140,13 +139,67 @@ describe("Network Service", () => {
 			networkService.timeRequest = sinon
 				.stub()
 				.resolves({ response: null, responseTime: 1, error });
-			const job = { data: { url: "http://test.com", _id: "123" } };
+			const job = { data: { url: "http://test.com", _id: "123", type: "pagespeed" } };
 			const pagespeedResult = await networkService.requestPagespeed(job);
 			expect(pagespeedResult.monitorId).to.equal("123");
 			expect(pagespeedResult.type).to.equal("pagespeed");
 			expect(pagespeedResult.responseTime).to.be.a("number");
 			expect(pagespeedResult.status).to.be.false;
 			expect(pagespeedResult.code).to.equal(networkService.NETWORK_ERROR);
+		});
+	});
+
+	describe("requestHardware", () => {
+		it("should return a response object if hardware successful", async () => {
+			const job = { data: { url: "http://test.com", _id: "123", type: "hardware" } };
+			const httpResult = await networkService.requestHardware(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("hardware");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.true;
+		});
+		it("should return a response object if hardware successful and job has a secret", async () => {
+			const job = {
+				data: {
+					url: "http://test.com",
+					_id: "123",
+					type: "hardware",
+					secret: "my_secret",
+				},
+			};
+			const httpResult = await networkService.requestHardware(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("hardware");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.true;
+		});
+		it("should return a response object if hardware unsuccessful", async () => {
+			const error = new Error("Test error");
+			error.response = { status: 404 };
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const job = { data: { url: "http://test.com", _id: "123", type: "hardware" } };
+			const httpResult = await networkService.requestHardware(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("hardware");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.false;
+			expect(httpResult.code).to.equal(404);
+		});
+		it("should return a response object if hardware unsuccessful with unknown code", async () => {
+			const error = new Error("Test error");
+			error.response = {};
+			networkService.timeRequest = sinon
+				.stub()
+				.resolves({ response: null, responseTime: 1, error });
+			const job = { data: { url: "http://test.com", _id: "123", type: "hardware" } };
+			const httpResult = await networkService.requestHardware(job);
+			expect(httpResult.monitorId).to.equal("123");
+			expect(httpResult.type).to.equal("hardware");
+			expect(httpResult.responseTime).to.be.a("number");
+			expect(httpResult.status).to.be.false;
+			expect(httpResult.code).to.equal(networkService.NETWORK_ERROR);
 		});
 	});
 
@@ -179,10 +232,10 @@ describe("Network Service", () => {
 			expect(networkService.requestHttp.notCalled).to.be.true;
 			expect(networkService.requestPagespeed.calledOnce).to.be.true;
 		});
-		it("should call requestHandleHardware if type is hardware", () => {
+		it("should call requestHardware if type is hardware", () => {
 			networkService.getStatus({ data: { type: "hardware" } });
+			expect(networkService.requestHardware.calledOnce).to.be.true;
 			expect(networkService.requestPing.notCalled).to.be.true;
-			expect(networkService.requestHttp.notCalled).to.be.true;
 			expect(networkService.requestPagespeed.notCalled).to.be.true;
 		});
 		it("should log an error if an unknown type is provided", () => {
