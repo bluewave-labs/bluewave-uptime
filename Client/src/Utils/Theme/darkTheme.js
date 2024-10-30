@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { gaugeText } from "./lightTheme"
 
 const text = {
 	primary: "#fafafa",
@@ -34,6 +35,14 @@ const darkTheme = createTheme({
 		primary: { main: "#1570ef" },
 		secondary: { main: "#2D2D33" },
 		text: text,
+		gaugePercentageText: {
+			...gaugeText,
+			fontSize: "11px"			
+		},
+		gaugeDisplayText: {
+			...gaugeText,
+			fontSize: "9px"
+		},
 		background: background,
 		border: border,
 		info: {

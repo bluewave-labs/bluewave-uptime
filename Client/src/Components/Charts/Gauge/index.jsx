@@ -2,30 +2,17 @@ import React from "react";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
 
+const data = [{ value: 100 }];
+const commonRadialBarProps = {
+	minAngle: 15,
+	clockWise: true,
+	dataKey: "value",
+	cornerRadius: 0
+};
+
 const Gauge = ({ progressValue, displayText, theme }) => {
-	const BASE_TEXT_STYLE = {
-		textAnchor: "middle",
-		dominantBaseline: "middle",
-	};
-	const getStyles = (theme) => ({
-		text: {
-			...BASE_TEXT_STYLE,
-			style: { fontSize: "11px", fontWeight: 400, fill: theme.palette.text.tertiary				
-			 },
-		},
-	});
-	const data = [{ value: 100 }];
-	const commonRadialBarProps = {
-		minAngle: 15,
-		clockWise: true,
-		dataKey: "value",
-		cornerRadius: 0
-	};
 	return (
-		<ResponsiveContainer
-			width="100%"
-			height={150}
-		>
+		<ResponsiveContainer>
 			<RadialBarChart
 				cx="50%"
 				cy="50%"
@@ -37,8 +24,12 @@ const Gauge = ({ progressValue, displayText, theme }) => {
 			>
 				<RadialBar
 					{...commonRadialBarProps}
-					fill="#1570EF"
-					background={{ fill: "#CDE2FF" }}
+					fill={
+						progressValue > 50
+							? theme.palette.primary.main
+							: theme.palette.percentage.uptimePoor
+					}
+					background={{ fill: theme.palette.background.fill }}
 					data={[{ value: progressValue }]}
 				/>
 				<RadialBar
@@ -54,15 +45,14 @@ const Gauge = ({ progressValue, displayText, theme }) => {
 				<text
 					x="50%"
 					y="45%"
-					{...getStyles(theme).text}
+					style={theme.palette.gaugePercentageText}
 				>
 					{`${progressValue}%`}
 				</text>
 				<text
 					x="50%"
 					y="55%"
-					{...getStyles(theme).text}
-					style={{fontSize: 9 }}
+					style={theme.palette.gaugeDisplayText}
 				>
 					{`${displayText}`}
 				</text>

@@ -12,6 +12,14 @@ const background = {
 	fill: "#F4F4F4",
 	accent: "#f9fafb",
 };
+
+export const gaugeText = {
+	fontWeight: 400,
+	fill: text.tertiary,
+	textAnchor: "middle",
+	dominantBaseline: "middle",
+}
+
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
 
 const fontFamilyDefault =
@@ -32,6 +40,14 @@ const lightTheme = createTheme({
 		primary: { main: "#1570EF" },
 		secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
 		text: text,
+		gaugePercentageText: {
+			...gaugeText,
+			fontSize: "11px"			
+		},
+		gaugeDisplayText: {
+			...gaugeText,
+			fontSize: "9px"
+		},
 		background: background,
 		border: border,
 		info: {
