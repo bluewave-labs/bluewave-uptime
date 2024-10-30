@@ -173,6 +173,26 @@ describe("StatusService", () => {
 				tbt: 0,
 			});
 		});
+		it("should build a check for hardware type", () => {
+			const check = statusService.buildCheck({
+				monitorId: "test",
+				type: "hardware",
+				status: true,
+				responseTime: 100,
+				code: 200,
+				message: "Test message",
+				payload: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" },
+			});
+			expect(check.monitorId).to.equal("test");
+			expect(check.status).to.be.true;
+			expect(check.statusCode).to.equal(200);
+			expect(check.responseTime).to.equal(100);
+			expect(check.message).to.equal("Test message");
+			expect(check.cpu).to.equal("cpu");
+			expect(check.memory).to.equal("memory");
+			expect(check.disk).to.equal("disk");
+			expect(check.host).to.equal("host");
+		});
 	});
 	describe("insertCheck", () => {
 		it("should log an error if one is thrown", async () => {

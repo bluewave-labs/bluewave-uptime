@@ -1,5 +1,4 @@
 import { errorMessages, successMessages } from "../utils/messages.js";
-
 /**
  * Constructs a new NetworkService instance.
  *
@@ -94,6 +93,7 @@ class NetworkService {
 	 * @param {Object} job.data - The data object within the job.
 	 * @param {string} job.data.url - The URL to send the HTTP GET request to.
 	 * @param {string} job.data._id - The monitor ID for the HTTP request.
+	 * @param {string} [job.data.secret] - Secret for authorization if provided.
 	 * @returns {Promise<Object>} An object containing the HTTP response details.
 	 * @property {string} monitorId - The monitor ID for the HTTP request.
 	 * @property {string} type - The type of request, which is "http".
@@ -105,13 +105,18 @@ class NetworkService {
 	 */
 	async requestHttp(job) {
 		const url = job.data.url;
+		const config = {};
+
+		job.data.secret !== undefined &&
+			(config.headers = { Authorization: `Bearer ${job.data.secret}` });
+
 		const { response, responseTime, error } = await this.timeRequest(() =>
-			this.axios.get(url)
+			this.axios.get(url, config)
 		);
 
 		const httpResponse = {
 			monitorId: job.data._id,
-			type: "http",
+			type: job.data.type,
 			responseTime,
 			payload: response?.data,
 		};
@@ -147,34 +152,15 @@ class NetworkService {
 	 */
 	async requestPagespeed(job) {
 		const url = job.data.url;
-		const { response, responseTime, error } = await this.timeRequest(() =>
-			this.axios.get(
-				`https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
-			)
-		);
-
-		const pagespeedResponse = {
-			monitorId: job.data._id,
-			type: "pagespeed",
-			responseTime,
-			payload: response?.data,
-		};
-
-		if (error) {
-			const code = error.response?.status || this.NETWORK_ERROR;
-			pagespeedResponse.code = code;
-			pagespeedResponse.status = false;
-			pagespeedResponse.message = this.http.STATUS_CODES[code] || "Network Error";
-			return pagespeedResponse;
-		}
-
-		pagespeedResponse.status = true;
-		pagespeedResponse.code = response.status;
-		pagespeedResponse.message = this.http.STATUS_CODES[response.status];
-		return pagespeedResponse;
+		const updatedJob = { ...job };
+		const pagespeedUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`;
+		updatedJob.data.url = pagespeedUrl;
+		return this.requestHttp(updatedJob);
 	}
 
-	async requestHandleHardware(job) {}
+	async requestHardware(job) {
+		return this.requestHttp(job);
+	}
 
 	/**
 	 * Gets the status of a job based on its type and returns the appropriate response.
@@ -194,7 +180,7 @@ class NetworkService {
 			case this.TYPE_PAGESPEED:
 				return await this.requestPagespeed(job);
 			case this.TYPE_HARDWARE:
-				return await this.requestHandleHardware(job);
+				return await this.requestHardware(job);
 			default:
 				this.logger.error({
 					message: `Unsupported type: ${job.data.type}`,
