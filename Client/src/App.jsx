@@ -36,7 +36,7 @@ import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
 import { CssBaseline } from "@mui/material";
-import { getAppSettings, updateAppSettings } from "./Features/Settings/settingsSlice";
+import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 function App() {
