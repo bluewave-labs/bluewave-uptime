@@ -65,7 +65,7 @@ function StepThree({ onSubmit, onBack }) {
 						autoComplete="current-password"
 						value={form.password}
 						onChange={handleChange}
-						error={errors.password[0]}
+						error={errors.password && errors.password[0]}
 						ref={inputRef}
 					/>
 					<Field
@@ -78,7 +78,7 @@ function StepThree({ onSubmit, onBack }) {
 						autoComplete="current-password"
 						value={form.confirm}
 						onChange={handleChange}
-						error={errors.confirm[0]}
+						error={errors.confirm && errors.confirm[0]}
 					/>
 					<Stack
 						gap={theme.spacing(4)}

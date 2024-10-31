@@ -216,8 +216,6 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 	const navigate = useNavigate();
 	const inputRef = useRef(null);
 
-	console.log({ errors });
-
 	const errorsMap = {
 		length: "Must be at least 8 characters long",
 		uppercase: "Must contain at least one upper character",
