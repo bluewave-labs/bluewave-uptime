@@ -277,15 +277,15 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			// Resolve Endpoint
 			// *****************************************************
-			.addCase(checkEndpointResolution.pending, (state) => {
+			.addCase(checkInfrastructureEndpointResolution.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(checkEndpointResolution.fulfilled, (state, action) => {
+			.addCase(checkInfrastructureEndpointResolution.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.success = action.payload.success;
 				state.msg = action.payload.msg;
 			})
-			.addCase(checkEndpointResolution.rejected, (state, action) => {
+			.addCase(checkInfrastructureEndpointResolution.rejected, (state, action) => {
 				state.isLoading = false;
 				state.success = false;
 				state.msg = action.payload
@@ -348,15 +348,15 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			// Delete Monitor checks by Team ID
 			// *****************************************************
-			.addCase(deleteMonitorChecksByTeamId.pending, (state) => {
+			.addCase(deleteInfrastructureMonitorChecksByTeamId.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteMonitorChecksByTeamId.fulfilled, (state, action) => {
+			.addCase(deleteInfrastructureMonitorChecksByTeamId.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.success = action.payload.success;
 				state.msg = action.payload.msg;
 			})
-			.addCase(deleteMonitorChecksByTeamId.rejected, (state, action) => {
+			.addCase(deleteInfrastructureMonitorChecksByTeamId.rejected, (state, action) => {
 				state.isLoading = false;
 				state.success = false;
 				state.msg = action.payload
