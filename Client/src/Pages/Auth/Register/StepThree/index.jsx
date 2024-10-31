@@ -8,10 +8,7 @@ import Check from "../../../../Components/Check/Check";
 import { useValidatePassword } from "../../hooks/useValidatePassword";
 
 StepThree.propTypes = {
-	form: PropTypes.object,
-	errors: PropTypes.object,
 	onSubmit: PropTypes.func,
-	/* onChange: PropTypes.func, */
 	onBack: PropTypes.func,
 };
 
@@ -19,10 +16,7 @@ StepThree.propTypes = {
  * Renders the third step of the sign up process.
  *
  * @param {Object} props
- * @param {Object} props.form - Form state object.
- * @param {Object} props.errors - Object containing form validation errors.
  * @param {Function} props.onSubmit - Callback function to handle form submission.
- * @param {Function} props.onChange - Callback function to handle form input changes.
  * @param {Function} props.onBack - Callback function to handle "Back" button click.
  * @returns {JSX.Element}
  */
@@ -37,7 +31,6 @@ function StepThree({ onSubmit, onBack }) {
 	}, []);
 
 	const { handleChange, feedbacks, form, errors } = useValidatePassword();
-
 	return (
 		<>
 			<Stack
@@ -72,7 +65,7 @@ function StepThree({ onSubmit, onBack }) {
 						autoComplete="current-password"
 						value={form.password}
 						onChange={handleChange}
-						error={errors.password}
+						error={errors.password[0]}
 						ref={inputRef}
 					/>
 					<Field
@@ -85,7 +78,7 @@ function StepThree({ onSubmit, onBack }) {
 						autoComplete="current-password"
 						value={form.confirm}
 						onChange={handleChange}
-						error={errors.confirm}
+						error={errors.confirm[0]}
 					/>
 					<Stack
 						gap={theme.spacing(4)}
