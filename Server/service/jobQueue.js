@@ -428,19 +428,6 @@ class JobQueue {
 			await this.queue.pause();
 			const jobs = await this.getJobs();
 
-			// Stop currently active jobs
-			const redisClient = await this.queue.client;
-			const activeJobs = await this.queue.getJobs(["active"]);
-			if (activeJobs.length !== 0) {
-				this.logger.info({ message: "Attempting to stop active jobs..." });
-			}
-			await Promise.all(
-				activeJobs.map(async (job) => {
-					await redisClient.del(`${this.queue.toKey(job.id)}:lock`);
-					await job.remove();
-				})
-			);
-
 			// Remove all repeatable jobs
 			for (const job of jobs) {
 				await this.queue.removeRepeatableByKey(job.key);
