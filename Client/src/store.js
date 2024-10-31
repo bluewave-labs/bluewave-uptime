@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
 import uptimeMonitorsReducer from "./Features/UptimeMonitors/uptimeMonitorsSlice";
+import infrastructureMonitorsReducer from "./Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import pageSpeedMonitorReducer from "./Features/PageSpeedMonitor/pageSpeedMonitorSlice";
 import authReducer from "./Features/Auth/authSlice";
 import uiReducer from "./Features/UI/uiSlice";
@@ -28,6 +29,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
 	uptimeMonitors: uptimeMonitorsReducer,
+	infrastructureMonitors: infrastructureMonitorsReducer,
 	auth: authReducer,
 	pageSpeedMonitors: pageSpeedMonitorReducer,
 	ui: uiReducer,
