@@ -44,6 +44,7 @@ import NotificationService from "./service/notificationService.js";
 
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
+const SHUTDOWN_TIMEOUT = 0;
 
 let isShuttingDown = false;
 const __filename = fileURLToPath(import.meta.url);
@@ -154,7 +155,7 @@ const startApp = async () => {
 				method: "shutdown",
 			});
 			process.exit(1);
-		}, 2000);
+		}, SHUTDOWN_TIMEOUT);
 		try {
 			server.close();
 			await jobQueue.obliterate();
