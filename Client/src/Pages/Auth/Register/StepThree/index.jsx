@@ -1,11 +1,10 @@
-import { useEffect, useRef /* , useState */ } from "react";
+import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Field from "../../../../Components/Inputs/Field";
 import Check from "../../../../Components/Check/Check";
-/* import { credentials } from "../../../../Validation/validation"; */
 import { useValidatePassword } from "../../hooks/useValidatePassword";
 
 StepThree.propTypes = {
