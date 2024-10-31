@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialMode = window?.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? "dark" : "light";
+
 // Initial state for UI settings.
 // Add more settings as needed (e.g., theme preferences, user settings)
 const initialState = {
@@ -15,7 +17,7 @@ const initialState = {
 	sidebar: {
 		collapsed: false,
 	},
-	mode: "light",
+	mode: initialMode,
 	greeting: { index: 0, lastUpdate: null },
 	timezone: "America/Toronto",
 };

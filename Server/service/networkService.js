@@ -1,32 +1,21 @@
 import { errorMessages, successMessages } from "../utils/messages.js";
-
 /**
- * NetworkService
+ * Constructs a new NetworkService instance.
  *
- * This service handles all network requests on the back end
- * This includes pings, http requests, and pagespeed checks
+ * @param {Object} axios - The axios instance for HTTP requests.
+ * @param {Object} ping - The ping utility for network checks.
+ * @param {Object} logger - The logger instance for logging.
+ * @param {Object} http - The HTTP utility for network operations.
  */
-
 class NetworkService {
-	/**
-	 * Creates an instance of NetworkService.
-	 *
-	 * @param {Object} db - The database service.
-	 * @param {Object} emailService - The email service.
-	 * @param {Object} axios - The axios HTTP client.
-	 * @param {Object} ping - The ping service.
-	 * @param {Object} logger - The logging service.
-	 * @param {Object} http - The HTTP service.
-	 */
-	constructor(db, emailService, axios, ping, logger, http) {
-		this.db = db;
-		this.emailService = emailService;
+	constructor(axios, ping, logger, http) {
 		this.TYPE_PING = "ping";
 		this.TYPE_HTTP = "http";
 		this.TYPE_PAGESPEED = "pagespeed";
 		this.TYPE_HARDWARE = "hardware";
 		this.SERVICE_NAME = "NetworkService";
 		this.NETWORK_ERROR = 5000;
+		this.PING_ERROR = 5001;
 		this.axios = axios;
 		this.ping = ping;
 		this.logger = logger;
@@ -34,400 +23,171 @@ class NetworkService {
 	}
 
 	/**
-	 * Handles the notification process for a monitor.
+	 * Times the execution of an asynchronous operation.
 	 *
-	 * @param {Object} monitor - The monitor object containing monitor details.
-	 * @param {boolean} isAlive - The status of the monitor (true if up, false if down).
-	 * @returns {Promise<void>}
-	 */ async handleNotification(monitor, isAlive) {
-		try {
-			let template = isAlive === true ? "serverIsUpTemplate" : "serverIsDownTemplate";
-			let status = isAlive === true ? "up" : "down";
-
-			const notifications = await this.db.getNotificationsByMonitorId(monitor._id);
-			for (const notification of notifications) {
-				if (notification.type === "email") {
-					await this.emailService.buildAndSendEmail(
-						template,
-						{ monitorName: monitor.name, monitorUrl: monitor.url },
-						notification.address,
-						`Monitor ${monitor.name} is ${status}`
-					);
-				}
-			}
-		} catch (error) {
-			this.logger.error({
-				message: error.message,
-				service: this.SERVICE_NAME,
-				method: "handleNotification",
-				details: `notification error for monitor: ${monitor._id}`,
-				stack: error.stack,
-			});
-		}
-	}
-
-	/**
-	 * Handles the status update for a monitor job.
-	 *
-	 * @param {Object} job - The job object containing job details.
-	 * @param {boolean} isAlive - The status of the monitor (true if up, false if down).
-	 * @returns {Promise<void>}
+	 * @param {Function} operation - The asynchronous operation to be timed.
+	 * @returns {Promise<Object>} An object containing the response, response time, and optionally an error.
+	 * @property {Object|null} response - The response from the operation, or null if an error occurred.
+	 * @property {number} responseTime - The time taken for the operation to complete, in milliseconds.
+	 * @property {Error} [error] - The error object if an error occurred during the operation.
 	 */
-	async handleStatusUpdate(job, isAlive) {
-		let monitor;
-		const { _id } = job.data;
-
-		// Look up the monitor, if it doesn't exist, it's probably been removed, return
-		try {
-			monitor = await this.db.getMonitorById(_id);
-		} catch (error) {
-			this.logger.error({
-				message: error.message,
-				service: this.SERVICE_NAME,
-				method: "handleStatusUpdate",
-				stack: error.stack,
-				details: `monitor lookup error for monitor: ${_id}`,
-			});
-			return;
-		}
-
-		// Otherwise, try to update monitor status
-		try {
-			if (monitor.status === undefined || monitor.status !== isAlive) {
-				const oldStatus = monitor.status;
-				monitor.status = isAlive;
-				await monitor.save();
-
-				if (oldStatus !== undefined && oldStatus !== isAlive) {
-					this.handleNotification(monitor, isAlive);
-				}
-			}
-		} catch (error) {
-			this.logger.error({
-				message: error.message,
-				service: this.SERVICE_NAME,
-				method: "handleStatusUpdate",
-				stack: error.stack,
-				details: `status update error for monitor: ${_id}`,
-			});
-		}
-	}
-
-	/**
-	 * Measures the response time of an asynchronous operation.
-	 * @param {Function} operation - An asynchronous operation to measure.
-	 * @returns {Promise<{responseTime: number, response: any}>} An object containing the response time in milliseconds and the response from the operation.
-	 * @throws {Error} The error object from the operation, contains response time.
-	 */
-	async measureResponseTime(operation) {
+	async timeRequest(operation) {
 		const startTime = Date.now();
 		try {
 			const response = await operation();
 			const endTime = Date.now();
-			return { responseTime: endTime - startTime, response };
+			const responseTime = endTime - startTime;
+			return { response, responseTime };
 		} catch (error) {
 			const endTime = Date.now();
-			error.responseTime = endTime - startTime;
-			error.service === undefined ? (error.service = this.SERVICE_NAME) : null;
-			error.method === undefined ? (error.method = "measureResponseTime") : null;
-			throw error;
+			const responseTime = endTime - startTime;
+			return { response: null, responseTime, error };
 		}
 	}
 
 	/**
-	 * Handles the ping operation for a given job, measures its response time, and logs the result.
-	 * @param {Object} job - The job object containing data for the ping operation.
-	 * @returns {Promise<{boolean}} The result of logging and storing the check
+	 * Sends a ping request to the specified URL and returns the response.
+	 *
+	 * @param {Object} job - The job object containing the data for the ping request.
+	 * @param {Object} job.data - The data object within the job.
+	 * @param {string} job.data.url - The URL to ping.
+	 * @param {string} job.data._id - The monitor ID for the ping request.
+	 * @returns {Promise<Object>} An object containing the ping response details.
+	 * @property {string} monitorId - The monitor ID for the ping request.
+	 * @property {string} type - The type of request, which is "ping".
+	 * @property {number} responseTime - The time taken for the ping request to complete, in milliseconds.
+	 * @property {Object} payload - The response payload from the ping request.
+	 * @property {boolean} status - The status of the ping request (true if successful, false otherwise).
+	 * @property {number} code - The response code (200 if successful, error code otherwise).
+	 * @property {string} message - The message indicating the result of the ping request.
 	 */
-	async handlePing(job) {
-		let isAlive;
-
-		const operation = async () => {
-			const response = await this.ping.promise.probe(job.data.url);
-			return response;
-		};
-
-		try {
-			const { responseTime, response } = await this.measureResponseTime(operation);
-			isAlive = response.alive;
-			const checkData = {
-				monitorId: job.data._id,
-				status: isAlive,
-				responseTime,
-				message: isAlive
-					? successMessages.PING_SUCCESS
-					: errorMessages.PING_CANNOT_RESOLVE,
-			};
-			await this.logAndStoreCheck(checkData, this.db.createCheck);
-		} catch (error) {
-			isAlive = false;
-			const checkData = {
-				monitorId: job.data._id,
-				status: isAlive,
-				message: errorMessages.PING_CANNOT_RESOLVE,
-				responseTime: error.responseTime,
-			};
-			await this.logAndStoreCheck(checkData, this.db.createCheck);
-		} finally {
-			this.handleStatusUpdate(job, isAlive);
-		}
-	}
-
-	/**
-	 * Handles the http operation for a given job, measures its response time, and logs the result.
-	 * @param {Object} job - The job object containing data for the ping operation.
-	 * @returns {Promise<{boolean}} The result of logging and storing the check
-	 */
-	async handleHttp(job) {
-		// Define operation for timing
-		const operation = async () => {
-			const response = await this.axios.get(job.data.url);
-			return response;
-		};
-
-		let isAlive;
-
-		// attempt connection
-		try {
-			const { responseTime, response } = await this.measureResponseTime(operation);
-			// check if response is in the 200 range, if so, service is up
-			isAlive = response.status >= 200 && response.status < 300;
-
-			//Create a check with relevant data
-			const checkData = {
-				monitorId: job.data._id,
-				status: isAlive,
-				responseTime,
-				statusCode: response.status,
-				message: this.http.STATUS_CODES[response.status],
-			};
-			await this.logAndStoreCheck(checkData, this.db.createCheck);
-		} catch (error) {
-			const statusCode = error.response?.status || this.NETWORK_ERROR;
-			let message = this.http.STATUS_CODES[statusCode] || "Network Error";
-			isAlive = false;
-			const checkData = {
-				monitorId: job.data._id,
-				status: isAlive,
-				statusCode,
-				responseTime: error.responseTime,
-				message,
-			};
-			await this.logAndStoreCheck(checkData, this.db.createCheck);
-		} finally {
-			this.handleStatusUpdate(job, isAlive);
-		}
-	}
-
-	/**
-	 * Handles PageSpeed job types by fetching and processing PageSpeed insights.
-	 *
-	 * This method sends a request to the Google PageSpeed Insights API to get performance metrics
-	 * for the specified URL, then logs and stores the check results.
-	 *
-	 * @param {Object} job - The job object containing data related to the PageSpeed check.
-	 * @param {string} job.data.url - The URL to be analyzed by the PageSpeed Insights API.
-	 * @param {string} job.data._id - The unique identifier for the monitor associated with the check.
-	 *
-	 * @returns {Promise<void>} A promise that resolves when the check results have been logged and stored.
-	 *
-	 * @throws {Error} Throws an error if there is an issue with fetching or processing the PageSpeed insights.
-	 */
-	async handlePagespeed(job) {
-		let isAlive;
-		try {
-			const url = job.data.url;
-
-			const response = await this.axios.get(
-				`https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`
-			);
-			const pageSpeedResults = response.data;
-			const categories = pageSpeedResults.lighthouseResult?.categories;
-			const audits = pageSpeedResults.lighthouseResult?.audits;
-			const {
-				"cumulative-layout-shift": cls,
-				"speed-index": si,
-				"first-contentful-paint": fcp,
-				"largest-contentful-paint": lcp,
-				"total-blocking-time": tbt,
-			} = audits;
-			// Weights
-			// First Contentful Paint	10%
-			// Speed Index	10%
-			// Largest Contentful Paint	25%
-			// Total Blocking Time	30%
-			// Cumulative Layout Shift	25%
-
-			isAlive = true;
-			const checkData = {
-				monitorId: job.data._id,
-				status: isAlive,
-				statusCode: response.status,
-				message: this.http.STATUS_CODES[response.status],
-				accessibility: (categories.accessibility?.score || 0) * 100,
-				bestPractices: (categories["best-practices"]?.score || 0) * 100,
-				seo: (categories.seo?.score || 0) * 100,
-				performance: (categories.performance?.score || 0) * 100,
-				audits: {
-					cls,
-					si,
-					fcp,
-					lcp,
-					tbt,
-				},
-			};
-			this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
-		} catch (error) {
-			isAlive = false;
-			const statusCode = error.response?.status || this.NETWORK_ERROR;
-			const message = this.http.STATUS_CODES[statusCode] || "Network Error";
-			const checkData = {
-				monitorId: job.data._id,
-				status: isAlive,
-				statusCode,
-				message,
-				accessibility: 0,
-				bestPractices: 0,
-				seo: 0,
-				performance: 0,
-			};
-			this.logAndStoreCheck(checkData, this.db.createPageSpeedCheck);
-		} finally {
-			this.handleStatusUpdate(job, isAlive);
-		}
-	}
-
-	async handleHardware(job) {
+	async requestPing(job) {
 		const url = job.data.url;
-		let isAlive;
-		//TODO Fetch hardware data
-		//For now, fake hardware data:
+		const { response, responseTime, error } = await this.timeRequest(() =>
+			this.ping.promise.probe(url)
+		);
 
-		const hardwareData = {
+		const pingResponse = {
 			monitorId: job.data._id,
-			cpu: {
-				physical_core: 1,
-				logical_core: 1,
-				frequency: 266,
-				temperature: null,
-				free_percent: null,
-				usage_percent: null,
-			},
-			memory: {
-				total_bytes: 4,
-				available_bytes: 4,
-				used_bytes: 2,
-				usage_percent: 0.5,
-			},
-			disk: [
-				{
-					read_speed_bytes: 3,
-					write_speed_bytes: 3,
-					total_bytes: 10,
-					free_bytes: 2,
-					usage_percent: 0.8,
-				},
-			],
-			host: {
-				os: "Linux",
-				platform: "Ubuntu",
-				kernel_version: "24.04",
-			},
+			type: "ping",
+			responseTime,
+			payload: response,
 		};
-		try {
-			isAlive = true;
-			this.logAndStoreCheck(hardwareData, this.db.createHardwareCheck);
-		} catch (error) {
-			isAlive = false;
-			const nullData = {
-				monitorId: job.data._id,
-				cpu: {
-					physical_core: 0,
-					logical_core: 0,
-					frequency: 0,
-					temperature: 0,
-					free_percent: 0,
-					usage_percent: 0,
-				},
-				memory: {
-					total_bytes: 0,
-					available_bytes: 0,
-					used_bytes: 0,
-					usage_percent: 0,
-				},
-				disk: [
-					{
-						read_speed_bytes: 0,
-						write_speed_bytes: 0,
-						total_bytes: 0,
-						free_bytes: 0,
-						usage_percent: 0,
-					},
-				],
-				host: {
-					os: "",
-					platform: "",
-					kernel_version: "",
-				},
-			};
-			this.logAndStoreCheck(nullData, this.db.createHardwareCheck);
-		} finally {
-			this.handleStatusUpdate(job, isAlive);
+		if (error) {
+			pingResponse.status = false;
+			pingResponse.code = this.PING_ERROR;
+			pingResponse.message = errorMessages.PING_CANNOT_RESOLVE;
+			return pingResponse;
 		}
+
+		pingResponse.code = 200;
+		pingResponse.status = response.alive;
+		pingResponse.message = successMessages.PING_SUCCESS;
+		return pingResponse;
 	}
 
 	/**
-	 * Retrieves the status of a given job based on its type.
-	 * For unsupported job types, it logs an error and returns false.
+	 * Sends an HTTP GET request to the specified URL and returns the response.
 	 *
-	 * @param {Object} job - The job object containing data necessary for processing.
-	 * @returns {Promise<boolean>} The status of the job if it is supported and processed successfully, otherwise false.
+	 * @param {Object} job - The job object containing the data for the HTTP request.
+	 * @param {Object} job.data - The data object within the job.
+	 * @param {string} job.data.url - The URL to send the HTTP GET request to.
+	 * @param {string} job.data._id - The monitor ID for the HTTP request.
+	 * @param {string} [job.data.secret] - Secret for authorization if provided.
+	 * @returns {Promise<Object>} An object containing the HTTP response details.
+	 * @property {string} monitorId - The monitor ID for the HTTP request.
+	 * @property {string} type - The type of request, which is "http".
+	 * @property {number} responseTime - The time taken for the HTTP request to complete, in milliseconds.
+	 * @property {Object} payload - The response payload from the HTTP request.
+	 * @property {boolean} status - The status of the HTTP request (true if successful, false otherwise).
+	 * @property {number} code - The response code (200 if successful, error code otherwise).
+	 * @property {string} message - The message indicating the result of the HTTP request.
+	 */
+	async requestHttp(job) {
+		const url = job.data.url;
+		const config = {};
+
+		job.data.secret !== undefined &&
+			(config.headers = { Authorization: `Bearer ${job.data.secret}` });
+
+		const { response, responseTime, error } = await this.timeRequest(() =>
+			this.axios.get(url, config)
+		);
+
+		const httpResponse = {
+			monitorId: job.data._id,
+			type: job.data.type,
+			responseTime,
+			payload: response?.data,
+		};
+
+		if (error) {
+			const code = error.response?.status || this.NETWORK_ERROR;
+			httpResponse.code = code;
+			httpResponse.status = false;
+			httpResponse.message = this.http.STATUS_CODES[code] || "Network Error";
+			return httpResponse;
+		}
+		httpResponse.status = true;
+		httpResponse.code = response.status;
+		httpResponse.message = this.http.STATUS_CODES[response.status];
+		return httpResponse;
+	}
+
+	/**
+	 * Sends a request to the Google PageSpeed Insights API for the specified URL and returns the response.
+	 *
+	 * @param {Object} job - The job object containing the data for the PageSpeed request.
+	 * @param {Object} job.data - The data object within the job.
+	 * @param {string} job.data.url - The URL to analyze with PageSpeed Insights.
+	 * @param {string} job.data._id - The monitor ID for the PageSpeed request.
+	 * @returns {Promise<Object>} An object containing the PageSpeed response details.
+	 * @property {string} monitorId - The monitor ID for the PageSpeed request.
+	 * @property {string} type - The type of request, which is "pagespeed".
+	 * @property {number} responseTime - The time taken for the PageSpeed request to complete, in milliseconds.
+	 * @property {Object} payload - The response payload from the PageSpeed request.
+	 * @property {boolean} status - The status of the PageSpeed request (true if successful, false otherwise).
+	 * @property {number} code - The response code (200 if successful, error code otherwise).
+	 * @property {string} message - The message indicating the result of the PageSpeed request.
+	 */
+	async requestPagespeed(job) {
+		const url = job.data.url;
+		const updatedJob = { ...job };
+		const pagespeedUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`;
+		updatedJob.data.url = pagespeedUrl;
+		return this.requestHttp(updatedJob);
+	}
+
+	async requestHardware(job) {
+		return this.requestHttp(job);
+	}
+
+	/**
+	 * Gets the status of a job based on its type and returns the appropriate response.
+	 *
+	 * @param {Object} job - The job object containing the data for the status request.
+	 * @param {Object} job.data - The data object within the job.
+	 * @param {string} job.data.type - The type of the job (e.g., "ping", "http", "pagespeed", "hardware").
+	 * @returns {Promise<Object>} The response object from the appropriate request method.
+	 * @throws {Error} Throws an error if the job type is unsupported.
 	 */
 	async getStatus(job) {
 		switch (job.data.type) {
 			case this.TYPE_PING:
-				return await this.handlePing(job);
+				return await this.requestPing(job);
 			case this.TYPE_HTTP:
-				return await this.handleHttp(job);
+				return await this.requestHttp(job);
 			case this.TYPE_PAGESPEED:
-				return await this.handlePagespeed(job);
+				return await this.requestPagespeed(job);
 			case this.TYPE_HARDWARE:
-				return await this.handleHardware(job);
+				return await this.requestHardware(job);
 			default:
 				this.logger.error({
 					message: `Unsupported type: ${job.data.type}`,
 					service: this.SERVICE_NAME,
 					method: "getStatus",
 				});
-
-				return false;
-		}
-	}
-
-	/**
-	 * Logs and stores the result of a check for a specific job.
-	 *
-	 * @param {Object} data - Data to be written
-	 * @param {function} writeToDB - DB write method
-	 *
-	 * @returns {Promise<boolean>} The status of the inserted check if successful, otherwise false.
-	 */
-
-	async logAndStoreCheck(data, writeToDB) {
-		try {
-			const insertedCheck = await writeToDB(data);
-			if (insertedCheck !== null && insertedCheck !== undefined) {
-				return insertedCheck.status;
-			}
-			throw new Error();
-		} catch (error) {
-			this.logger.error({
-				message: error.message,
-				service: this.SERVICE_NAME,
-				method: "logAndStoreCheck",
-				details: `Error writing check for ${data.monitorId}`,
-				stack: error.stack,
-			});
+				return {};
 		}
 	}
 }

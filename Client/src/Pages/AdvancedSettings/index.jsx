@@ -12,6 +12,8 @@ import { useNavigate } from "react-router";
 import { getAppSettings, updateAppSettings } from "../../Features/Settings/settingsSlice";
 import { useState, useEffect } from "react";
 import Select from "../../Components/Inputs/Select";
+import { advancedSettingsValidation } from "../../Validation/validation";
+import { buildErrors, hasValidationErrors } from "../../Validation/error";
 
 const AdvancedSettings = ({ isAdmin }) => {
 	const navigate = useNavigate();
@@ -21,7 +23,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 			navigate("/");
 		}
 	}, [navigate, isAdmin]);
-
+	const [errors, setErrors] = useState({});
 	const theme = useTheme();
 	const { authToken } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
@@ -33,17 +35,30 @@ const AdvancedSettings = ({ isAdmin }) => {
 		systemEmailPort: "",
 		systemEmailAddress: "",
 		systemEmailPassword: "",
-		jwtTTL: "",
+		jwtTTLNum: 99,
+		jwtTTLUnits: "days",
+		jwtTTL: "99d",
 		dbType: "",
 		redisHost: "",
 		redisPort: "",
 		pagespeedApiKey: "",
 	});
 
+	const parseJWTTTL = (data) => {
+		if (data.jwtTTL) {
+			const len = data.jwtTTL.length;
+			data.jwtTTLNum = data.jwtTTL.substring(0, len - 1);
+			data.jwtTTLUnits = unitItems.filter(
+				(itm) => itm._id == data.jwtTTL.substring(len - 1)
+			)[0].name;
+		}
+	};
+
 	useEffect(() => {
 		const getSettings = async () => {
 			const action = await dispatch(getAppSettings({ authToken }));
 			if (action.payload.success) {
+				parseJWTTTL(action.payload.data);
 				setLocalSettings(action.payload.data);
 			} else {
 				createToast({ body: "Failed to get settings" });
@@ -66,24 +81,56 @@ const AdvancedSettings = ({ isAdmin }) => {
 		warn: 4,
 	};
 
+	const unitItemLookup = {
+		days: "d",
+		hours: "h",
+	};
+	const unitItems = Object.keys(unitItemLookup).map((key) => ({
+		_id: unitItemLookup[key],
+		name: key,
+	}));
+
 	const handleLogLevel = (e) => {
 		const id = e.target.value;
 		const newLogLevel = logItems.find((item) => item._id === id).name;
 		setLocalSettings({ ...localSettings, logLevel: newLogLevel });
 	};
 
+	const handleJWTTTLUnits = (e) => {
+		const id = e.target.value;
+		const newUnits = unitItems.find((item) => item._id === id).name;
+		setLocalSettings({ ...localSettings, jwtTTLUnits: newUnits });
+	};
+
+	const handleBlur = (event) => {
+		const { value, id } = event.target;
+		const { error } = advancedSettingsValidation.validate(
+			{ [id]: value },
+			{
+				abortEarly: false,
+			}
+		);
+		setErrors((prev) => {
+			return buildErrors(prev, id, error);
+		});
+	};
 	const handleChange = (event) => {
 		const { value, id } = event.target;
 		setLocalSettings({ ...localSettings, [id]: value });
 	};
 
 	const handleSave = async () => {
+		localSettings.jwtTTL =
+			localSettings.jwtTTLNum + unitItemLookup[localSettings.jwtTTLUnits];
+		if (hasValidationErrors(localSettings, advancedSettingsValidation, setErrors)) {
+			return;
+		}
 		const action = await dispatch(
 			updateAppSettings({ settings: localSettings, authToken })
 		);
 		let body = "";
 		if (action.payload.success) {
-			console.log(action.payload.data);
+			parseJWTTTL(action.payload.data);
 			setLocalSettings(action.payload.data);
 			body = "Settings saved successfully";
 		} else {
@@ -118,6 +165,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							label="API URL Host"
 							value={localSettings.apiBaseUrl}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.apiBaseUrl}
 						/>
 						<Select
 							id="logLevel"
@@ -126,6 +175,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							items={logItems}
 							value={logItemLookup[localSettings.logLevel]}
 							onChange={handleLogLevel}
+							onBlur={handleBlur}
+							error={errors.logLevel}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -141,18 +192,22 @@ const AdvancedSettings = ({ isAdmin }) => {
 						<Field
 							type="text"
 							id="systemEmailHost"
-							label="Email host"
+							label="System email host"
 							name="systemEmailHost"
 							value={localSettings.systemEmailHost}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.systemEmailHost}
 						/>
 						<Field
 							type="number"
 							id="systemEmailPort"
-							label="System email address"
+							label="System email port"
 							name="systemEmailPort"
-							value={localSettings.systemEmailPort.toString()}
+							value={localSettings.systemEmailPort?.toString()}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.systemEmailPort}
 						/>
 						<Field
 							type="email"
@@ -161,6 +216,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailAddress"
 							value={localSettings.systemEmailAddress}
 							onChange={handleChange}
+							error={errors.systemEmailAddress}
 						/>
 						<Field
 							type="text"
@@ -169,6 +225,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="systemEmailPassword"
 							value={localSettings.systemEmailPassword}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.systemEmailPassword}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -180,14 +238,33 @@ const AdvancedSettings = ({ isAdmin }) => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(20)}>
-						<Field
-							type="text"
-							id="jwtTTL"
-							label="JWT time to live"
-							name="jwtTTL"
-							value={localSettings.jwtTTL}
-							onChange={handleChange}
-						/>
+						<Stack
+							direction="row"
+							gap={theme.spacing(10)}
+						>
+							<Field
+								type="number"
+								id="jwtTTLNum"
+								label="JWT time to live"
+								name="jwtTTLNum"
+								value={localSettings.jwtTTLNum.toString()}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								error={errors.jwtTTLNum}
+							/>
+							<Select
+								id="jwtTTLUnits"
+								label="JWT TTL Units"
+								name="jwtTTLUnits"
+								placeholder="Select time"
+								isHidden={true}
+								items={unitItems}
+								value={unitItemLookup[localSettings.jwtTTLUnits]}
+								onChange={handleJWTTTLUnits}
+								onBlur={handleBlur}
+								error={errors.jwtTTLUnits}
+							/>
+						</Stack>
 						<Field
 							type="text"
 							id="dbType"
@@ -195,6 +272,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="dbType"
 							value={localSettings.dbType}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.dbType}
 						/>
 						<Field
 							type="text"
@@ -203,14 +282,18 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="redisHost"
 							value={localSettings.redisHost}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.redisHost}
 						/>
 						<Field
 							type="number"
 							id="redisPort"
 							label="Redis port"
 							name="redisPort"
-							value={localSettings.redisPort.toString()}
+							value={localSettings.redisPort?.toString()}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.redisPort}
 						/>
 						<Field
 							type="text"
@@ -219,6 +302,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							name="pagespeedApiKey"
 							value={localSettings.pagespeedApiKey}
 							onChange={handleChange}
+							onBlur={handleBlur}
+							error={errors.pagespeedApiKey}
 						/>
 					</Stack>
 				</ConfigBox>

@@ -288,15 +288,20 @@ const getMonitorById = async (monitorId) => {
 	try {
 		const monitor = await Monitor.findById(monitorId);
 		if (monitor === null || monitor === undefined) {
-			throw new Error(errorMessages.DB_FIND_MONITOR_BY_ID(monitorId));
+			const error = new Error(errorMessages.DB_FIND_MONITOR_BY_ID(monitorId));
+			error.status = 404;
+			throw error;
 		}
 		// Get notifications
 		const notifications = await Notification.find({
 			monitorId: monitorId,
 		});
-		monitor.notifications = notifications;
-		const monitorWithNotifications = await monitor.save();
-		return monitorWithNotifications;
+		const updatedMonitor = await Monitor.findByIdAndUpdate(
+			monitorId,
+			{ notifications },
+			{ new: true }
+		).populate("notifications");
+		return updatedMonitor;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "getMonitorById";

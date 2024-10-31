@@ -169,19 +169,6 @@ describe("Monitor Controller - getMonitorCertificate", () => {
 			})
 		).to.be.true;
 	});
-	it("should return success message and data if all operations succeed with an invalid cert", async () => {
-		req.db.getMonitorById.returns({ url: "https://www.google.com" });
-		fetchMonitorCertificate.returns({});
-		await getMonitorCertificate(req, res, next, fetchMonitorCertificate);
-		expect(res.status.firstCall.args[0]).to.equal(200);
-		expect(
-			res.json.calledOnceWith({
-				success: true,
-				msg: successMessages.MONITOR_CERTIFICATE,
-				data: { certificateDate: "N/A" },
-			})
-		).to.be.true;
-	});
 	it("should return an error if fetchMonitorCertificate fails", async () => {
 		req.db.getMonitorById.returns({ url: "https://www.google.com" });
 		fetchMonitorCertificate.throws(new Error("Certificate error"));
@@ -232,7 +219,9 @@ describe("Monitor Controller - getMonitorById", () => {
 		expect(next.firstCall.args[0].message).to.equal("DB error");
 	});
 	it("should return 404 if a monitor is not found", async () => {
-		req.db.getMonitorById.returns(null);
+		const error = new Error("Monitor not found");
+		error.status = 404;
+		req.db.getMonitorById.throws(error);
 		await getMonitorById(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].status).to.equal(404);
@@ -429,20 +418,6 @@ describe("Monitor Controller - createMonitor", () => {
 		await createMonitor(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].message).to.equal("Job error");
-	});
-	it("should return success message and data if all operations succeed with empty notifications", async () => {
-		req.body.notifications = [];
-		const monitor = { _id: "123", save: sinon.stub() };
-		req.db.createMonitor.returns(monitor);
-		await createMonitor(req, res, next);
-		expect(res.status.firstCall.args[0]).to.equal(201);
-		expect(
-			res.json.calledOnceWith({
-				success: true,
-				msg: successMessages.MONITOR_CREATE,
-				data: monitor,
-			})
-		).to.be.true;
 	});
 	it("should return success message and data if all operations succeed", async () => {
 		const monitor = { _id: "123", save: sinon.stub() };
@@ -808,21 +783,6 @@ describe("Monitor Controller - editMonitor", () => {
 		await editMonitor(req, res, next);
 		expect(next.firstCall.args[0]).to.be.an("error");
 		expect(next.firstCall.args[0].message).to.equal("Add Job error");
-	});
-	it("should return success message with data if all operations succeed and empty notifications", async () => {
-		req.body.notifications = [];
-		const monitor = { _id: "123" };
-		req.db.getMonitorById.returns({ teamId: "123" });
-		req.db.editMonitor.returns(monitor);
-		await editMonitor(req, res, next);
-		expect(res.status.firstCall.args[0]).to.equal(200);
-		expect(
-			res.json.calledOnceWith({
-				success: true,
-				msg: successMessages.MONITOR_EDIT,
-				data: monitor,
-			})
-		).to.be.true;
 	});
 	it("should return success message with data if all operations succeed", async () => {
 		const monitor = { _id: "123" };

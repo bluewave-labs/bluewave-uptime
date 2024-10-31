@@ -11,12 +11,24 @@ const SERVICE_NAME = "JobQueue";
  */
 class JobQueue {
 	/**
-	 * Constructs a new JobQueue
-	 * @constructor
-	 * @param {SettingsService} settingsService - The settings service
-	 * @throws {Error}
+	 * @class JobQueue
+	 * @classdesc Manages job queue and workers.
+	 *
+	 * @param {Object} statusService - Service for handling status updates.
+	 * @param {Object} notificationService - Service for handling notifications.
+	 * @param {Object} settingsService - Service for retrieving settings.
+	 * @param {Object} logger - Logger for logging information.
+	 * @param {Function} Queue - Queue constructor.
+	 * @param {Function} Worker - Worker constructor.
 	 */
-	constructor(settingsService, logger, Queue, Worker) {
+	constructor(
+		statusService,
+		notificationService,
+		settingsService,
+		logger,
+		Queue,
+		Worker
+	) {
 		const settings = settingsService.getSettings() || {};
 
 		const { redisHost = "127.0.0.1", redisPort = 6379 } = settings;
@@ -31,27 +43,45 @@ class JobQueue {
 		this.workers = [];
 		this.db = null;
 		this.networkService = null;
+		this.statusService = statusService;
+		this.notificationService = notificationService;
 		this.settingsService = settingsService;
 		this.logger = logger;
 		this.Worker = Worker;
 	}
 
 	/**
-	 * Static factory method to create a JobQueue
-	 * @static
-	 * @async
-	 * @returns {Promise<JobQueue>} - Returns a new JobQueue
+	 * Creates and initializes a JobQueue instance.
 	 *
+	 * @param {Object} db - Database service for accessing monitors.
+	 * @param {Object} networkService - Service for network operations.
+	 * @param {Object} statusService - Service for handling status updates.
+	 * @param {Object} notificationService - Service for handling notifications.
+	 * @param {Object} settingsService - Service for retrieving settings.
+	 * @param {Object} logger - Logger for logging information.
+	 * @param {Function} Queue - Queue constructor.
+	 * @param {Function} Worker - Worker constructor.
+	 * @returns {Promise<JobQueue>} - The initialized JobQueue instance.
+	 * @throws {Error} - Throws an error if initialization fails.
 	 */
 	static async createJobQueue(
 		db,
 		networkService,
+		statusService,
+		notificationService,
 		settingsService,
 		logger,
 		Queue,
 		Worker
 	) {
-		const queue = new JobQueue(settingsService, logger, Queue, Worker);
+		const queue = new JobQueue(
+			statusService,
+			notificationService,
+			settingsService,
+			logger,
+			Queue,
+			Worker
+		);
 		try {
 			queue.db = db;
 			queue.networkService = networkService;
@@ -72,61 +102,102 @@ class JobQueue {
 	}
 
 	/**
+	 * Checks if the given monitor is in a maintenance window.
+	 *
+	 * @param {string} monitorId - The ID of the monitor to check.
+	 * @returns {Promise<boolean>} - Returns true if the monitor is in a maintenance window, otherwise false.
+	 * @throws {Error} - Throws an error if the database query fails.
+	 */
+	async isInMaintenanceWindow(monitorId) {
+		const maintenanceWindows = await this.db.getMaintenanceWindowsByMonitorId(monitorId);
+		// Check for active maintenance window:
+		const maintenanceWindowIsActive = maintenanceWindows.reduce((acc, window) => {
+			if (window.active) {
+				const start = new Date(window.start);
+				const end = new Date(window.end);
+				const now = new Date();
+				const repeatInterval = window.repeat || 0;
+
+				// If start is < now and end > now, we're in maintenance
+				if (start <= now && end >= now) return true;
+
+				// If maintenance window was set in the past with a repeat,
+				// we need to advance start and end to see if we are in range
+
+				while (start < now && repeatInterval !== 0) {
+					start.setTime(start.getTime() + repeatInterval);
+					end.setTime(end.getTime() + repeatInterval);
+					if (start <= now && end >= now) {
+						return true;
+					}
+				}
+				return false;
+			}
+			return acc;
+		}, false);
+		return maintenanceWindowIsActive;
+	}
+
+	/**
+	 * Creates a job handler function for processing jobs.
+	 *
+	 * @returns {Function} An async function that processes a job.
+	 */
+	createJobHandler() {
+		return async (job) => {
+			try {
+				// Get all maintenance windows for this monitor
+				const monitorId = job.data._id;
+				const maintenanceWindowActive = await this.isInMaintenanceWindow(monitorId);
+				// If a maintenance window is active, we're done
+
+				if (maintenanceWindowActive) {
+					this.logger.info({
+						message: `Monitor ${monitorId} is in maintenance window`,
+						service: SERVICE_NAME,
+						method: "createWorker",
+					});
+					return;
+				}
+
+				// Get the current status
+				const networkResponse = await this.networkService.getStatus(job);
+				// Handle status change
+				const { monitor, statusChanged, prevStatus } =
+					await this.statusService.updateStatus(networkResponse);
+
+				//If status hasn't changed, we're done
+				if (statusChanged === false) return;
+
+				// if prevStatus is undefined, monitor is resuming, we're done
+				if (prevStatus === undefined) return;
+
+				this.notificationService.handleNotifications({
+					...networkResponse,
+					monitor,
+					prevStatus,
+				});
+			} catch (error) {
+				this.logger.error({
+					message: error.message,
+					service: SERVICE_NAME,
+					method: "createWorker",
+					details: `Error processing job ${job.id}: ${error.message}`,
+					stack: error.stack,
+				});
+			}
+		};
+	}
+
+	/**
 	 * Creates a worker for the queue
 	 * Operations are carried out in the async callback
 	 * @returns {Worker} The newly created worker
 	 */
 	createWorker() {
-		const worker = new this.Worker(
-			QUEUE_NAME,
-			async (job) => {
-				try {
-					// Get all maintenance windows for this monitor
-					const monitorId = job.data._id;
-					const maintenanceWindows =
-						await this.db.getMaintenanceWindowsByMonitorId(monitorId);
-					// Check for active maintenance window:
-					const maintenanceWindowActive = maintenanceWindows.reduce((acc, window) => {
-						if (window.active) {
-							const start = new Date(window.start);
-							const end = new Date(window.end);
-							const now = new Date();
-							const repeatInterval = window.repeat || 0;
-
-							while ((start < now) & (repeatInterval !== 0)) {
-								start.setTime(start.getTime() + repeatInterval);
-								end.setTime(end.getTime() + repeatInterval);
-							}
-
-							if (start < now && end > now) {
-								return true;
-							}
-						}
-						return acc;
-					}, false);
-					if (!maintenanceWindowActive) {
-						await this.networkService.getStatus(job);
-					} else {
-						this.logger.info({
-							message: `Monitor ${monitorId} is in maintenance window`,
-							service: SERVICE_NAME,
-							method: "createWorker",
-						});
-					}
-				} catch (error) {
-					this.logger.error({
-						message: error.message,
-						service: SERVICE_NAME,
-						method: "createWorker",
-						details: `Error processing job ${job.id}: ${error.message}`,
-						stack: error.stack,
-					});
-				}
-			},
-			{
-				connection: this.connection,
-			}
-		);
+		const worker = new this.Worker(QUEUE_NAME, this.createJobHandler(), {
+			connection: this.connection,
+		});
 		return worker;
 	}
 
@@ -233,6 +304,12 @@ class JobQueue {
 		}
 	}
 
+	/**
+	 * Retrieves the statistics of jobs and workers.
+	 *
+	 * @returns {Promise<Object>} - An object containing job statistics and the number of workers.
+	 * @throws {Error} - Throws an error if the job statistics retrieval fails.
+	 */
 	async getJobStats() {
 		try {
 			const jobs = await this.queue.getJobs();
@@ -313,6 +390,12 @@ class JobQueue {
 		}
 	}
 
+	/**
+	 * Retrieves the metrics of the job queue.
+	 *
+	 * @returns {Promise<Object>} - An object containing various job queue metrics.
+	 * @throws {Error} - Throws an error if the metrics retrieval fails.
+	 */
 	async getMetrics() {
 		try {
 			const metrics = {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { BaseCheckSchema } from "./Check.js";
 const cpuSchema = mongoose.Schema({
 	physical_core: { type: Number, default: 0 },
 	logical_core: { type: Number, default: 0 },
@@ -16,7 +16,7 @@ const memorySchema = mongoose.Schema({
 	usage_percent: { type: Number, default: 0 },
 });
 
-const discSchema = mongoose.Schema({
+const diskSchema = mongoose.Schema({
 	read_speed_bytes: { type: Number, default: 0 },
 	write_speed_bytes: { type: Number, default: 0 },
 	total_bytes: { type: Number, default: 0 },
@@ -32,11 +32,7 @@ const hostSchema = mongoose.Schema({
 
 const HardwareCheckSchema = mongoose.Schema(
 	{
-		monitorId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Monitor",
-			immutable: true,
-		},
+		...BaseCheckSchema.obj,
 		cpu: {
 			type: cpuSchema,
 			default: () => ({}),
@@ -46,7 +42,7 @@ const HardwareCheckSchema = mongoose.Schema(
 			default: () => ({}),
 		},
 		disk: {
-			type: [discSchema],
+			type: [diskSchema],
 			default: () => [],
 		},
 		host: {
@@ -56,5 +52,7 @@ const HardwareCheckSchema = mongoose.Schema(
 	},
 	{ timestamps: true }
 );
+
+HardwareCheckSchema.index({ createdAt: 1 });
 
 export default mongoose.model("HardwareCheck", HardwareCheckSchema);

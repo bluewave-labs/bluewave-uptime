@@ -26,10 +26,12 @@ Here you can setup the following:&#x20;
 
 **Email settings:** Set your host email settings here. These settings are used for sending system emails.
 
-Server settings: Several server settings can be done here. Alternatively, you can add a pagespeed API key to bypass Google's limitations (albeit they are generous about it)
+**Server settings:** Several server settings can be done here. Alternatively, you can add a pagespeed API key to bypass Google's limitations (albeit they are generous about it)
+
+Select a number for jwt TTL and a unit for it (days or hours), the combined result
+would be in vercel/ms time format, e.g "99d", this will be sent to server to persist
 
 
 
 
 
-\

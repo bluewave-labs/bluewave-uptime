@@ -66,21 +66,6 @@ function App() {
 		};
 	}, []);
 
-	useEffect(() => {
-		const thing = async () => {
-			const action = await dispatch(
-				updateAppSettings({ authToken, settings: { apiBaseUrl: "test" } })
-			);
-
-			if (action.payload.success) {
-				console.log(action.payload.data);
-			} else {
-				console.log(action);
-			}
-		};
-		thing();
-	}, [dispatch, authToken]);
-
 	return (
 		<ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
 			<CssBaseline />

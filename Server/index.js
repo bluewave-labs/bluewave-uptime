@@ -40,6 +40,9 @@ import mjml2html from "mjml";
 import SettingsService from "./service/settingsService.js";
 import AppSettings from "./db/models/AppSettings.js";
 
+import StatusService from "./service/statusService.js";
+import NotificationService from "./service/notificationService.js";
+
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
 
@@ -125,10 +128,14 @@ const startApp = async () => {
 		nodemailer,
 		logger
 	);
-	const networkService = new NetworkService(db, emailService, axios, ping, logger, http);
+	const networkService = new NetworkService(axios, ping, logger, http);
+	const statusService = new StatusService(db, logger);
+	const notificationService = new NotificationService(emailService, db, logger);
 	const jobQueue = await JobQueue.createJobQueue(
 		db,
 		networkService,
+		statusService,
+		notificationService,
 		settingsService,
 		logger,
 		Queue,

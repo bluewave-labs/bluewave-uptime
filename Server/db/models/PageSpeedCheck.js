@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
+import { BaseCheckSchema } from "./Check.js";
 import logger from "../../utils/logger.js";
+import { time } from "console";
 const AuditSchema = mongoose.Schema({
 	id: { type: String, required: true },
 	title: { type: String, required: true },
@@ -46,15 +48,7 @@ const AuditsSchema = mongoose.Schema({
 
 const PageSpeedCheck = mongoose.Schema(
 	{
-		monitorId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Monitor",
-			immutable: true,
-		},
-		status: {
-			type: Boolean,
-			required: true,
-		},
+		...BaseCheckSchema.obj,
 		accessibility: {
 			type: Number,
 			required: true,
@@ -76,9 +70,7 @@ const PageSpeedCheck = mongoose.Schema(
 			required: true,
 		},
 	},
-	{
-		timestamps: true,
-	}
+	{ timestamps: true }
 );
 
 /**
@@ -111,5 +103,7 @@ PageSpeedCheck.pre("save", async function (next) {
 		next();
 	}
 });
+
+PageSpeedCheck.index({ createdAt: 1 });
 
 export default mongoose.model("PageSpeedCheck", PageSpeedCheck);
