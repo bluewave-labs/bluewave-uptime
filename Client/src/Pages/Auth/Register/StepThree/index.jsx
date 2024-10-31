@@ -149,7 +149,6 @@ function StepThree({ onSubmit, onBack }) {
 							type="submit"
 							variant="contained"
 							color="primary"
-							/* onClick={onSubmit} */
 							disabled={
 								form.password.length === 0 ||
 								form.confirm.length === 0 ||
