@@ -8,7 +8,6 @@ import cors from "cors";
 import logger from "./utils/logger.js";
 import { verifyJWT } from "./middleware/verifyJWT.js";
 import { handleErrors } from "./middleware/handleErrors.js";
-import { errorMessages } from "./utils/messages.js";
 import authRouter from "./routes/authRoute.js";
 import inviteRouter from "./routes/inviteRoute.js";
 import monitorRouter from "./routes/monitorRoute.js";
@@ -46,7 +45,6 @@ import NotificationService from "./service/notificationService.js";
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
 
-let cleaningUp = false;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -113,11 +111,11 @@ const startApp = async () => {
 
 	// Create services
 	await db.connect();
-	app.listen(PORT, () => {
+	const server = app.listen(PORT, () => {
 		logger.info({ message: `server started on port:${PORT}` });
 	});
-	const settingsService = new SettingsService(AppSettings);
 
+	const settingsService = new SettingsService(AppSettings);
 	await settingsService.loadSettings();
 	const emailService = new EmailService(
 		settingsService,
@@ -142,30 +140,35 @@ const startApp = async () => {
 		Worker
 	);
 
-	const cleanup = async () => {
-		if (cleaningUp) {
-			logger.warn({ message: "Already cleaning up" });
-			return;
-		}
-		cleaningUp = true;
+	const shutdown = async () => {
+		logger.info({ message: "Attempting graceful shutdown" });
+		setTimeout(() => {
+			logger.error({
+				message: "Could not shut down in time, forcing shutdown",
+				service: SERVICE_NAME,
+				method: "shutdown",
+			});
+			process.exit(1);
+		}, 10000);
 		try {
-			logger.info({ message: "shutting down gracefully" });
+			server.close();
 			await jobQueue.obliterate();
 			await db.disconnect();
-			logger.info({ message: "shut down gracefully" });
+			logger.info({ message: "Graceful shutdown complete" });
+			process.exit(0);
 		} catch (error) {
 			logger.error({
 				message: error.message,
 				service: SERVICE_NAME,
-				method: "cleanup",
+				method: "shutdown",
 				stack: error.stack,
 			});
 		}
-		process.exit(0);
 	};
-	process.on("SIGUSR2", cleanup);
-	process.on("SIGINT", cleanup);
-	process.on("SIGTERM", cleanup);
+
+	process.on("SIGUSR2", shutdown);
+	process.on("SIGINT", shutdown);
+	process.on("SIGTERM", shutdown);
 };
 
 startApp().catch((error) => {
