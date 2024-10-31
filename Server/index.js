@@ -45,6 +45,7 @@ import NotificationService from "./service/notificationService.js";
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
 
+let isShuttingDown = false;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -141,6 +142,10 @@ const startApp = async () => {
 	);
 
 	const shutdown = async () => {
+		if (isShuttingDown) {
+			return;
+		}
+		isShuttingDown = true;
 		logger.info({ message: "Attempting graceful shutdown" });
 		setTimeout(() => {
 			logger.error({
@@ -149,7 +154,7 @@ const startApp = async () => {
 				method: "shutdown",
 			});
 			process.exit(1);
-		}, 10000);
+		}, 2000);
 		try {
 			server.close();
 			await jobQueue.obliterate();
