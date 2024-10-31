@@ -1,5 +1,20 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { credentials } from "../../../Validation/validation";
+
+const getFeedbackStatus = (form, errors, field, criteria) => {
+	const fieldErrors = errors[field];
+	const isFieldEmpty = form[field].length === 0;
+	const hasError = fieldErrors?.includes(criteria) || fieldErrors?.includes("empty");
+	const isCorrect = !isFieldEmpty && !hasError;
+
+	if (isCorrect) {
+		return "success";
+	} else if (hasError) {
+		return "error";
+	} else {
+		return "info";
+	}
+};
 
 function useValidatePassword() {
 	const [errors, setErrors] = useState({});
@@ -38,29 +53,17 @@ function useValidatePassword() {
 		setErrors(() => (errorsByPath ? { ...errorsByPath } : {}));
 	};
 
-	const getFeedbackStatus = (field, criteria) => {
-		const fieldErrors = errors[field];
-		const isFieldEmpty = form[field].length === 0;
-		const hasError = fieldErrors?.includes(criteria) || fieldErrors?.includes("empty");
-		const isCorrect = !isFieldEmpty && !hasError;
-
-		if (isCorrect) {
-			return "success";
-		} else if (hasError) {
-			return "error";
-		} else {
-			return "info";
-		}
-	};
-
-	const feedbacks = {
-		length: getFeedbackStatus("password", "length"),
-		special: getFeedbackStatus("password", "special"),
-		number: getFeedbackStatus("password", "number"),
-		uppercase: getFeedbackStatus("password", "uppercase"),
-		lowercase: getFeedbackStatus("password", "lowercase"),
-		confirm: getFeedbackStatus("confirm", "different"),
-	};
+	const feedbacks = useMemo(
+		() => ({
+			length: getFeedbackStatus(form, errors, "password", "length"),
+			special: getFeedbackStatus(form, errors, "password", "special"),
+			number: getFeedbackStatus(form, errors, "password", "number"),
+			uppercase: getFeedbackStatus(form, errors, "password", "uppercase"),
+			lowercase: getFeedbackStatus(form, errors, "password", "lowercase"),
+			confirm: getFeedbackStatus(form, errors, "confirm", "different"),
+		}),
+		[form, errors]
+	);
 
 	return { handleChange, feedbacks, form, errors };
 }

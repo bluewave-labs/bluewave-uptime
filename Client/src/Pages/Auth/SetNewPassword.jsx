@@ -15,6 +15,7 @@ import LockIcon from "../../assets/icons/lock.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Background from "../../assets/Images/background-grid.svg?react";
 import "./index.css";
+import { useValidatePassword } from "./hooks/useValidatePassword";
 
 const SetNewPassword = () => {
 	const navigate = useNavigate();
@@ -24,11 +25,12 @@ const SetNewPassword = () => {
 	const passwordId = useId();
 	const confirmPasswordId = useId();
 
-	const [errors, setErrors] = useState({});
-	const [form, setForm] = useState({
-		password: "",
-		confirm: "",
-	});
+	const { form, errors, handleChange, feedbacks } = useValidatePassword();
+	// const [errors, setErrors] = useState({});
+	// const [form, setForm] = useState({
+	// 	password: "",
+	// 	confirm: "",
+	// });
 
 	const { isLoading } = useSelector((state) => state.auth);
 	const { token } = useParams();
@@ -63,59 +65,59 @@ const SetNewPassword = () => {
 		}
 	};
 
-	const handleChange = (event) => {
-		const { value, name } = event.target;
-		setForm((prev) => ({ ...prev, [name]: value }));
+	// const handleChange = (event) => {
+	// 	const { value, name } = event.target;
+	// 	setForm((prev) => ({ ...prev, [name]: value }));
 
-		const validateValue = { [name]: value };
-		const validateOptions = { abortEarly: false, context: { password: form.password } };
-		if (name === "password" && form.confirm.length > 0) {
-			validateValue.confirm = form.confirm;
-			validateOptions.context = { password: value };
-		} else if (name === "confirm") {
-			validateValue.password = form.password;
-		}
+	// 	const validateValue = { [name]: value };
+	// 	const validateOptions = { abortEarly: false, context: { password: form.password } };
+	// 	if (name === "password" && form.confirm.length > 0) {
+	// 		validateValue.confirm = form.confirm;
+	// 		validateOptions.context = { password: value };
+	// 	} else if (name === "confirm") {
+	// 		validateValue.password = form.password;
+	// 	}
 
-		const { error } = credentials.validate(validateValue, validateOptions);
-		const errors = error?.details.map((error) => ({
-			path: error.path[0],
-			message: error.message,
-		}));
-		const errorsByPath =
-			errors &&
-			errors.reduce((acc, { path, message }) => {
-				if (!acc[path]) {
-					acc[path] = [];
-				}
-				acc[path].push(message);
-				return acc;
-			}, {});
-		setErrors(() => (errorsByPath ? { ...errorsByPath } : {}));
-	};
+	// 	const { error } = credentials.validate(validateValue, validateOptions);
+	// 	const errors = error?.details.map((error) => ({
+	// 		path: error.path[0],
+	// 		message: error.message,
+	// 	}));
+	// 	const errorsByPath =
+	// 		errors &&
+	// 		errors.reduce((acc, { path, message }) => {
+	// 			if (!acc[path]) {
+	// 				acc[path] = [];
+	// 			}
+	// 			acc[path].push(message);
+	// 			return acc;
+	// 		}, {});
+	// 	setErrors(() => (errorsByPath ? { ...errorsByPath } : {}));
+	// };
 
-	const getFeedbackStatus = (field, criteria) => {
-		const fieldErrors = errors[field];
-		const isFieldEmpty = form[field].length === 0;
-		const hasError = fieldErrors?.includes(criteria) || fieldErrors?.includes("empty");
-		const isCorrect = !isFieldEmpty && !hasError;
+	// const getFeedbackStatus = (field, criteria) => {
+	// 	const fieldErrors = errors[field];
+	// 	const isFieldEmpty = form[field].length === 0;
+	// 	const hasError = fieldErrors?.includes(criteria) || fieldErrors?.includes("empty");
+	// 	const isCorrect = !isFieldEmpty && !hasError;
 
-		if (isCorrect) {
-			return "success";
-		} else if (hasError) {
-			return "error";
-		} else {
-			return "info";
-		}
-	};
+	// 	if (isCorrect) {
+	// 		return "success";
+	// 	} else if (hasError) {
+	// 		return "error";
+	// 	} else {
+	// 		return "info";
+	// 	}
+	// };
 
-	const feedbacks = {
-		length: getFeedbackStatus("password", "length"),
-		special: getFeedbackStatus("password", "special"),
-		number: getFeedbackStatus("password", "number"),
-		uppercase: getFeedbackStatus("password", "uppercase"),
-		lowercase: getFeedbackStatus("password", "lowercase"),
-		confirm: getFeedbackStatus("confirm", "different"),
-	};
+	// const feedbacks = {
+	// 	length: getFeedbackStatus("password", "length"),
+	// 	special: getFeedbackStatus("password", "special"),
+	// 	number: getFeedbackStatus("password", "number"),
+	// 	uppercase: getFeedbackStatus("password", "uppercase"),
+	// 	lowercase: getFeedbackStatus("password", "lowercase"),
+	// 	confirm: getFeedbackStatus("confirm", "different"),
+	// };
 
 	return (
 		<Stack

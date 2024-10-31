@@ -136,6 +136,10 @@ function StepThree({ onSubmit, onBack }) {
 								"& svg.MuiSvgIcon-root": {
 									mr: theme.spacing(3),
 								},
+								":focus-visible": {
+									outline: `2px solid ${theme.palette.primary.dark}`,
+									outlineOffset: "4px",
+								},
 							}}
 							props={{ tabIndex: -1 }}
 						>
@@ -147,7 +151,11 @@ function StepThree({ onSubmit, onBack }) {
 							variant="contained"
 							color="primary"
 							/* onClick={onSubmit} */
-							disabled={errors.email && true}
+							disabled={
+								form.password.length === 0 ||
+								form.confirm.length === 0 ||
+								Object.keys(errors).length !== 0
+							}
 							sx={{ width: "30%" }}
 						>
 							Continue

@@ -213,44 +213,42 @@ const Register = ({ isSuperAdmin }) => {
 	const handleStepThree = async (e) => {
 		e.preventDefault();
 		const { password, confirm } = e.target.elements;
-		console.log(password.value);
-		console.log(confirm.value);
-		// let registerForm = {
-		// 	...form,
+		let registerForm = {
+			...form,
+			password: password.value,
+			confirm: confirm.value,
+			role: isSuperAdmin ? ["superadmin"] : form.role,
+			inviteToken: token ? token : "", // Add the token to the request for verification
+		};
+		let error = validateForm(registerForm, {
+			context: { password: registerForm.password },
+		});
+		if (error) {
+			handleError(error);
+			return;
+		}
 
-		// 	role: isSuperAdmin ? ["superadmin"] : form.role,
-		// 	inviteToken: token ? token : "", // Add the token to the request for verification
-		// };
-		// let error = validateForm(registerForm, {
-		// 	context: { password: form.password },
-		// });
-		// if (error) {
-		// 	handleError(error);
-		// 	return;
-		// }
-
-		// delete registerForm.confirm;
-		// const action = await dispatch(register(registerForm));
-		// if (action.payload.success) {
-		// 	const authToken = action.payload.data;
-		// 	localStorage.setItem("token", authToken);
-		// 	navigate("/");
-		// 	createToast({
-		// 		body: "Welcome! Your account was created successfully.",
-		// 	});
-		// } else {
-		// 	if (action.payload) {
-		// 		// dispatch errors
-		// 		createToast({
-		// 			body: action.payload.msg,
-		// 		});
-		// 	} else {
-		// 		// unknown errors
-		// 		createToast({
-		// 			body: "Unknown error.",
-		// 		});
-		// 	}
-		// }
+		delete registerForm.confirm;
+		const action = await dispatch(register(registerForm));
+		if (action.payload.success) {
+			const authToken = action.payload.data;
+			localStorage.setItem("token", authToken);
+			/* navigate("/"); */
+			navigate("/monitors");
+			createToast({
+				body: "Welcome! Your account was created successfully.",
+			});
+		} else {
+			if (action.payload) {
+				createToast({
+					body: action.payload.msg,
+				});
+			} else {
+				createToast({
+					body: "Unknown error.",
+				});
+			}
+		}
 	};
 
 	const handleChange = (event) => {
