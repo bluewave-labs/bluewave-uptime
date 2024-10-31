@@ -3,8 +3,7 @@ import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
-import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { createInfrastructureMonitor, checkInfrastructureEndpointResolution } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice"
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
@@ -122,7 +121,7 @@ const CreateInfrastructureMonitor = () => {
 		} else {
 			if (infrastructureMonitor.type === "http") {
 				const checkEndpointAction = await dispatch(
-					checkEndpointResolution({ authToken, monitorURL: form.url })
+					checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
 				);
 				if (checkEndpointAction.meta.requestStatus === "rejected") {
 					createToast({
@@ -140,10 +139,10 @@ const CreateInfrastructureMonitor = () => {
 				userId: user._id,
 				notifications: infrastructureMonitor.notifications,
 			};
-			const action = await dispatch(createUptimeMonitor({ authToken, monitor: form }));
+			const action = await dispatch(createInfrastructureMonitor({ authToken, monitor: form }));
 			if (action.meta.requestStatus === "fulfilled") {
-				createToast({ body: "Monitor created successfully!" });
-				navigate("/monitors");
+				createToast({ body: "Infrastructure monitor created successfully!" });
+				navigate("/infrastructure-monitors");
 			} else {
 				createToast({ body: "Failed to create monitor." });
 			}
@@ -152,11 +151,12 @@ const CreateInfrastructureMonitor = () => {
 
 	//select values
 	const frequencies = [
-		{ _id: 1, name: "1 minute" },
-		{ _id: 2, name: "2 minutes" },
-		{ _id: 3, name: "3 minutes" },
-		{ _id: 4, name: "4 minutes" },
+		{ _id: 1, name: "15 seconds" },
+		{ _id: 2, name: "30 seconds" },
+		{ _id: 3, name: "1 minute" },
+		{ _id: 4, name: "2 minutes" },
 		{ _id: 5, name: "5 minutes" },
+		{ _id: 6, name: "10 minutes" },
 	];
 
 	return (
