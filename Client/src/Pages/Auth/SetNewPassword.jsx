@@ -35,19 +35,12 @@ const SetNewPassword = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
-		const passwordForm = { ...form };
-		const { error } = credentials.validate(passwordForm, {
+		const { error } = credentials.validate(form, {
 			abortEarly: false,
 			context: { password: form.password },
 		});
 
 		if (error) {
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
 			createToast({
 				body:
 					error.details && error.details.length > 0
@@ -55,59 +48,49 @@ const SetNewPassword = () => {
 						: "Error validating data.",
 			});
 		} else {
-			delete passwordForm.confirm;
-			const action = await dispatch(setNewPassword({ token: token, form: passwordForm }));
+			const action = await dispatch(setNewPassword({ token, form }));
 			if (action.payload.success) {
 				navigate("/new-password-confirmed");
 				createToast({
 					body: "Your password was reset successfully.",
 				});
 			} else {
-				if (action.payload) {
-					// dispatch errors
-					createToast({
-						body: action.payload.msg,
-					});
-				} else {
-					// unknown errors
-					createToast({
-						body: "Unknown error.",
-					});
-				}
+				const errorMessage = action.payload ? action.payload.msg : "Unknown error";
+				createToast({
+					body: errorMessage,
+				});
 			}
 		}
 	};
 
 	const handleChange = (event) => {
-		//update form state
 		const { value, name } = event.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
 
-		//validate
 		const validateValue = { [name]: value };
 		const validateOptions = { abortEarly: false, context: { password: form.password } };
 		if (name === "password" && form.confirm.length > 0) {
 			validateValue.confirm = form.confirm;
-			validateOptions.context = value;
+			validateOptions.context = { password: value };
+		} else if (name === "confirm") {
+			validateValue.password = form.password;
 		}
-		const { error } = credentials.validate(validateValue, validateOptions);
 
-		//update errors
-		//fazer o map com path e message
+		const { error } = credentials.validate(validateValue, validateOptions);
 		const errors = error?.details.map((error) => ({
-			message: error.message,
 			path: error.path[0],
+			message: error.message,
 		}));
-		const errorsByPath = errors
-			? errors.reduce((acc, { path, message }) => {
-					if (!acc[path]) {
-						acc[path] = [];
-					}
-					acc[path].push(message);
-					return acc;
-				}, {})
-			: { [name]: [] };
-		setErrors((prev) => ({ ...prev, ...errorsByPath }));
+		const errorsByPath =
+			errors &&
+			errors.reduce((acc, { path, message }) => {
+				if (!acc[path]) {
+					acc[path] = [];
+				}
+				acc[path].push(message);
+				return acc;
+			}, {});
+		setErrors(() => (errorsByPath ? { ...errorsByPath } : {}));
 	};
 
 	const getFeedbackStatus = (field, criteria) => {
@@ -228,7 +211,7 @@ const SetNewPassword = () => {
 								placeholder="••••••••"
 								value={form.password}
 								onChange={handleChange}
-								/* error={errors.password} */
+								error={errors.password}
 							/>
 						</Box>
 						<Box
@@ -246,7 +229,7 @@ const SetNewPassword = () => {
 								placeholder="••••••••"
 								value={form.confirm}
 								onChange={handleChange}
-								/* error={errors.confirm} */
+								error={errors.confirm}
 							/>
 						</Box>
 						<Stack
@@ -290,7 +273,11 @@ const SetNewPassword = () => {
 						color="primary"
 						loading={isLoading}
 						onClick={handleSubmit}
-						disabled={Object.keys(errors).length !== 0}
+						disabled={
+							form.password.length === 0 ||
+							form.confirm.length === 0 ||
+							Object.keys(errors).length !== 0
+						}
 						sx={{ width: "100%", maxWidth: 400 }}
 					>
 						Reset password
