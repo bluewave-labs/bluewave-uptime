@@ -51,6 +51,10 @@ const LandingPage = ({ onContinue }) => {
 									stroke: theme.palette.other.icon,
 								},
 							},
+							"&:focus-visible": {
+								outline: `2px solid ${theme.palette.primary.main}`,
+								outlineOffset: `2px`,
+							},
 						}}
 					>
 						<Mail />
@@ -137,56 +141,68 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 					<Typography component="h1">Log In</Typography>
 					<Typography>Enter your email address</Typography>
 				</Box>
-				<Box textAlign="left">
-					<form
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-					>
-						<Field
-							type="email"
-							id="login-email-input"
-							label="Email"
-							isRequired={true}
-							placeholder="jordan.ellis@domain.com"
-							autoComplete="email"
-							value={form.email}
-							onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
-							onChange={onChange}
-							error={errors.email}
-							ref={inputRef}
-						/>
-					</form>
-				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
+				<Box
+					textAlign="left"
+					component="form"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
+					display="grid"
+					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
+					<Field
+						type="email"
+						id="login-email-input"
+						label="Email"
+						isRequired={true}
+						placeholder="jordan.ellis@domain.com"
+						autoComplete="email"
+						value={form.email}
+						onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
+						onChange={onChange}
+						error={errors.email}
+						ref={inputRef}
+					/>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
 					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.email && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+							disabled={errors.email && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</Button>
+					</Stack>
+				</Box>
 			</Stack>
 		</>
 	);
@@ -285,8 +301,11 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 								"& svg.MuiSvgIcon-root": {
 									mr: theme.spacing(3),
 								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
 							}}
-							props={{ tabIndex: -1 }}
 						>
 							<ArrowBackRoundedIcon />
 							Back
@@ -294,9 +313,16 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 						<Button
 							variant="contained"
 							color="primary"
-							onClick={onSubmit}
+							type="submit"
 							disabled={errors.password && true}
-							sx={{ width: "30%" }}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
 						>
 							Continue
 						</Button>

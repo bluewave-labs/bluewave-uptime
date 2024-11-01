@@ -47,39 +47,44 @@ function StepThree({ onSubmit, onBack }) {
 					spellCheck={false}
 					onSubmit={onSubmit}
 					textAlign="left"
+					display="grid"
+					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 					sx={{
-						display: "grid",
-						gap: theme.spacing(8),
 						"& .input-error": {
 							display: "none",
 						},
 					}}
 				>
-					<Field
-						type="password"
-						id="register-password-input"
-						name="password"
-						label="Password"
-						isRequired={true}
-						placeholder="Create a password"
-						autoComplete="current-password"
-						value={form.password}
-						onChange={handleChange}
-						error={errors.password && errors.password[0]}
-						ref={inputRef}
-					/>
-					<Field
-						type="password"
-						id="register-confirm-input"
-						name="confirm"
-						label="Confirm password"
-						isRequired={true}
-						placeholder="Confirm your password"
-						autoComplete="current-password"
-						value={form.confirm}
-						onChange={handleChange}
-						error={errors.confirm && errors.confirm[0]}
-					/>
+					<Box
+						display="grid"
+						gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+					>
+						<Field
+							type="password"
+							id="register-password-input"
+							name="password"
+							label="Password"
+							isRequired={true}
+							placeholder="Create a password"
+							autoComplete="current-password"
+							value={form.password}
+							onChange={handleChange}
+							error={errors.password && errors.password[0]}
+							ref={inputRef}
+						/>
+						<Field
+							type="password"
+							id="register-confirm-input"
+							name="confirm"
+							label="Confirm password"
+							isRequired={true}
+							placeholder="Confirm your password"
+							autoComplete="current-password"
+							value={form.confirm}
+							onChange={handleChange}
+							error={errors.confirm && errors.confirm[0]}
+						/>
+					</Box>
 					<Stack
 						gap={theme.spacing(4)}
 						mb={{ xs: theme.spacing(6), sm: theme.spacing(8) }}
@@ -133,7 +138,6 @@ function StepThree({ onSubmit, onBack }) {
 									outlineOffset: "4px",
 								},
 							}}
-							props={{ tabIndex: -1 }}
 						>
 							<ArrowBackRoundedIcon />
 							Back
@@ -147,7 +151,14 @@ function StepThree({ onSubmit, onBack }) {
 								form.confirm.length === 0 ||
 								Object.keys(errors).length !== 0
 							}
-							sx={{ width: "30%" }}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
 						>
 							Continue
 						</Button>

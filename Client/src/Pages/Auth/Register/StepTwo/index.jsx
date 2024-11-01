@@ -44,58 +44,70 @@ function StepTwo({ form, errors, onSubmit, onChange, onBack }) {
 					<Typography component="h1">Sign Up</Typography>
 					<Typography>Enter your email address</Typography>
 				</Box>
-				<Box textAlign="left">
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-						mb={theme.spacing(5)}
-					>
-						<Field
-							type="email"
-							id="register-email-input"
-							label="Email"
-							isRequired={true}
-							placeholder="jordan.ellis@domain.com"
-							autoComplete="email"
-							value={form.email}
-							onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
-							onChange={onChange}
-							error={errors.email}
-							ref={inputRef}
-						/>
-					</Box>
-				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
+
+				<Box
+					component="form"
+					textAlign="left"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
+					mb={theme.spacing(5)}
+					display="grid"
+					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
+					<Field
+						type="email"
+						id="register-email-input"
+						label="Email"
+						isRequired={true}
+						placeholder="jordan.ellis@domain.com"
+						autoComplete="email"
+						value={form.email}
+						onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
+						onChange={onChange}
+						error={errors.email}
+						ref={inputRef}
+					/>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
 					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.email && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={onSubmit}
+							disabled={errors.email && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</Button>
+					</Stack>
+				</Box>
 			</Stack>
 		</>
 	);

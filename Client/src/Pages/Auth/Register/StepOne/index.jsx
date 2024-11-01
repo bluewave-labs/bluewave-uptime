@@ -37,21 +37,28 @@ function StepOne({ form, errors, onSubmit, onChange, onBack }) {
 
 	return (
 		<>
+			{/* TODO this stack should be a component */}
 			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+				gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				textAlign="center"
 			>
 				<Box>
 					<Typography component="h1">Sign Up</Typography>
 					<Typography>Enter your personal details</Typography>
 				</Box>
-				<Box textAlign="left">
+
+				<Box
+					textAlign="left"
+					component="form"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
+					display="grid"
+					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
+				>
 					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-						mb={theme.spacing(10)}
+						display="grid"
+						gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
 					>
 						<Field
 							id="register-firstname-input"
@@ -64,14 +71,6 @@ function StepOne({ form, errors, onSubmit, onChange, onBack }) {
 							error={errors.firstName}
 							ref={inputRef}
 						/>
-					</Box>
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-						mb={theme.spacing(5)}
-					>
 						<Field
 							id="register-lastname-input"
 							label="Surname"
@@ -83,36 +82,48 @@ function StepOne({ form, errors, onSubmit, onChange, onBack }) {
 							error={errors.lastName}
 						/>
 					</Box>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
+					>
+						{/* TODO buttons should be  a component should be a component */}
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+							disabled={(errors.firstName || errors.lastName) && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</Button>
+					</Stack>
 				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={(errors.firstName || errors.lastName) && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
 			</Stack>
 		</>
 	);

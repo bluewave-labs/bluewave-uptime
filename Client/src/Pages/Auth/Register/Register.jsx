@@ -53,6 +53,10 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
 									stroke: theme.palette.other.icon,
 								},
 							},
+							"&:focus-visible": {
+								outline: `2px solid ${theme.palette.primary.main}`,
+								outlineOffset: `2px`,
+							},
 						}}
 					>
 						<Mail />
