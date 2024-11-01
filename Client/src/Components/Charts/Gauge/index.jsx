@@ -7,12 +7,21 @@ const commonRadialBarProps = {
 	minAngle: 15,
 	clockWise: true,
 	dataKey: "value",
-	cornerRadius: 0
+	cornerRadius: 0,
 };
 
-const Gauge = ({ progressValue, displayText, theme }) => {
+const Gauge = ({
+	progressValue,
+	displayText,
+	theme,
+	containerHeight,
+	gaugeHeader,
+	gaugeSubheader,
+}) => {
+	const header = gaugeHeader ?? { fontSize: "11px" };
+	const subheader = gaugeSubheader ?? { fontSize: "9px" };
 	return (
-		<ResponsiveContainer>
+		<ResponsiveContainer height={containerHeight ?? 160}>
 			<RadialBarChart
 				cx="50%"
 				cy="50%"
@@ -45,14 +54,14 @@ const Gauge = ({ progressValue, displayText, theme }) => {
 				<text
 					x="50%"
 					y="45%"
-					style={theme.palette.gaugePercentageText}
+					style={{ ...theme.palette.gaugeHeaderCommon, ...header }}
 				>
 					{`${progressValue}%`}
 				</text>
 				<text
 					x="50%"
 					y="55%"
-					style={theme.palette.gaugeDisplayText}
+					style={{ ...theme.palette.gaugeHeaderCommon, ...subheader }}
 				>
 					{`${displayText}`}
 				</text>
@@ -65,5 +74,8 @@ Gauge.propTypes = {
 	progressValue: PropTypes.number.isRequired,
 	displayText: PropTypes.string.isRequired,
 	theme: PropTypes.object.isRequired,
+	containerHeight: PropTypes.number,
+	gaugeHeader: PropTypes.object,
+	gaugeSubheader: PropTypes.object,
 };
 export default Gauge;

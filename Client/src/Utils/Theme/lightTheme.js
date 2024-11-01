@@ -13,7 +13,7 @@ const background = {
 	accent: "#f9fafb",
 };
 
-export const gaugeText = {
+export const gaugeHeaderCommon = {
 	fontWeight: 400,
 	fill: text.tertiary,
 	textAnchor: "middle",
@@ -40,14 +40,7 @@ const lightTheme = createTheme({
 		primary: { main: "#1570EF" },
 		secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
 		text: text,
-		gaugePercentageText: {
-			...gaugeText,
-			fontSize: "11px"			
-		},
-		gaugeDisplayText: {
-			...gaugeText,
-			fontSize: "9px"
-		},
+		gaugeHeaderCommon: gaugeHeaderCommon,
 		background: background,
 		border: border,
 		info: {
