@@ -3,7 +3,7 @@ import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
 
 const DATA = [{ value: 100 }];
-const PRGRESS_THRESHOLD = 50;
+const PROGRESS_THRESHOLD = 50;
 const DEFAULT_CONTAINER_HEIGHT = 160;
 const DEFAULT_HEADER_FONT = { fontSize: "11px" };
 const DEFAULT_SUBHEADER_FONT = { fontSize: "9px" };
@@ -56,7 +56,7 @@ const Gauge = ({
 				<RadialBar
 					{...COMMON_RADIALBAR_PROPS}
 					fill={
-						progressValue > PRGRESS_THRESHOLD
+						progressValue > PROGRESS_THRESHOLD
 							? theme.palette.primary.main
 							: theme.palette.percentage.uptimePoor
 					}
