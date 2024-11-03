@@ -54,7 +54,8 @@ const Check = ({ text, noHighlightText, variant = "info", outlined = false }) =>
 					opacity: 0.8,
 				}}
 			>
-				<Typography component="span">{noHighlightText}</Typography> {text}
+				{noHighlightText && <Typography component="span">{noHighlightText}</Typography>}{" "}
+				{text}
 			</Typography>
 		</Stack>
 	);

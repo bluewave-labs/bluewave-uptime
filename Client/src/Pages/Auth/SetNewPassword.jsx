@@ -52,7 +52,9 @@ const SetNewPassword = () => {
 					body: "Your password was reset successfully.",
 				});
 			} else {
-				const errorMessage = action.payload ? action.payload.msg : "Unknown error";
+				const errorMessage = action.payload
+					? action.payload.msg
+					: "Unable to reset password. Please try again later or contact support.";
 				createToast({
 					body: errorMessage,
 				});
