@@ -39,15 +39,15 @@ function useValidatePassword() {
 		const { error } = credentials.validate(validateValue, validateOptions);
 		const errors = error?.details.map((error) => ({
 			path: error.path[0],
-			message: error.message,
+			type: error.type,
 		}));
 		const errorsByPath =
 			errors &&
-			errors.reduce((acc, { path, message }) => {
+			errors.reduce((acc, { path, type }) => {
 				if (!acc[path]) {
 					acc[path] = [];
 				}
-				acc[path].push(message);
+				acc[path].push(type);
 				return acc;
 			}, {});
 		setErrors(() => (errorsByPath ? { ...errorsByPath } : {}));
@@ -55,7 +55,7 @@ function useValidatePassword() {
 
 	const feedbacks = useMemo(
 		() => ({
-			length: getFeedbackStatus(form, errors, "password", "length"),
+			length: getFeedbackStatus(form, errors, "password", "string.min"),
 			special: getFeedbackStatus(form, errors, "password", "special"),
 			number: getFeedbackStatus(form, errors, "password", "number"),
 			uppercase: getFeedbackStatus(form, errors, "password", "uppercase"),

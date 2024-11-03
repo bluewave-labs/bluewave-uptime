@@ -29,15 +29,6 @@ const PasswordPanel = () => {
 		"edit-confirm-password": "confirm",
 	};
 
-	const errorsMap = {
-		length: "Must be at least 8 characters long",
-		uppercase: "Must contain at least one upper character",
-		lowercase: "Must contain at least one lower character",
-		number: "Must contain at least one number",
-		special: "Must contain at least one special character",
-		different: "Confirm password and password must match",
-	};
-
 	const [localData, setLocalData] = useState({
 		password: "",
 		newPassword: "",
@@ -151,7 +142,7 @@ const PasswordPanel = () => {
 						autoComplete="current-password"
 						value={localData.password}
 						onChange={handleChange}
-						error={errorsMap[errors[idToName["edit-current-password"]]]}
+						error={errors[idToName["edit-current-password"]]}
 					/>
 				</Stack>
 				<Stack
@@ -174,7 +165,7 @@ const PasswordPanel = () => {
 						autoComplete="new-password"
 						value={localData.newPassword}
 						onChange={handleChange}
-						error={errorsMap[errors[idToName["edit-new-password"]]]}
+						error={errors[idToName["edit-new-password"]]}
 					/>
 				</Stack>
 				<Stack
@@ -197,7 +188,7 @@ const PasswordPanel = () => {
 						autoComplete="new-password"
 						value={localData.confirm}
 						onChange={handleChange}
-						error={errorsMap[errors[idToName["edit-confirm-password"]]]}
+						error={errors[idToName["edit-confirm-password"]]}
 					/>
 				</Stack>
 				{Object.keys(errors).length > 0 && (
@@ -218,7 +209,10 @@ const PasswordPanel = () => {
 						type="submit"
 						loading={isLoading}
 						loadingIndicator="Saving..."
-						disabled={Object.keys(errors).length !== 0 && true}
+						disabled={
+							Object.keys(errors).length !== 0 ||
+							Object.values(localData).filter((value) => value !== "").length === 0
+						}
 						sx={{
 							px: theme.spacing(12),
 							mt: theme.spacing(20),

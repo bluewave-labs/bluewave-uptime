@@ -232,14 +232,6 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 	const navigate = useNavigate();
 	const inputRef = useRef(null);
 
-	const errorsMap = {
-		length: "Must be at least 8 characters long",
-		uppercase: "Must contain at least one upper character",
-		lowercase: "Must contain at least one lower character",
-		number: "Must contain at least one number",
-		special: "Must contain at least one special character",
-	};
-
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
@@ -285,7 +277,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 						autoComplete="current-password"
 						value={form.password}
 						onChange={onChange}
-						error={errorsMap[errors.password]}
+						error={errors.password}
 						ref={inputRef}
 					/>
 					<Stack
