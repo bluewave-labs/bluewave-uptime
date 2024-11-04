@@ -26,6 +26,7 @@ const CreateInfrastructureMonitor = () => {
 	const idMap = {
 		"monitor-url": "url",
 		"monitor-name": "name",
+		"monitor-secret": "secret",
 		"monitor-checks-http": "type",
 		"monitor-checks-ping": "type",
 		"notify-email-default": "notification-email",
@@ -142,7 +143,7 @@ const CreateInfrastructureMonitor = () => {
 			const action = await dispatch(createInfrastructureMonitor({ authToken, monitor: form }));
 			if (action.meta.requestStatus === "fulfilled") {
 				createToast({ body: "Infrastructure monitor created successfully!" });
-				navigate("/infrastructure-monitors");
+				navigate("/infrastructure-monitors/create");
 			} else {
 				createToast({ body: "Failed to create monitor." });
 			}
@@ -204,11 +205,10 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(15)}>
 						<Field
-							type={infrastructureMonitor.type === "http" ? "url" : "text"}
+							type={"text"}
 							id="monitor-url"
-							label="URL to monitor"
-							https={https}
-							placeholder="google.com"
+							label="Server URL"
+							placeholder="https://"
 							value={infrastructureMonitor.url}
 							onChange={handleChange}
 							error={errors["url"]}
@@ -216,13 +216,20 @@ const CreateInfrastructureMonitor = () => {
 						<Field
 							type="text"
 							id="monitor-name"
-							label="Display name"
+							label="Friendly name(optional)"
 							isOptional={true}
-							placeholder="Google"
 							value={infrastructureMonitor.name}
 							onChange={handleChange}
 							error={errors["name"]}
 						/>
+						<Field
+							type="text"
+							id="monitor-secret"
+							label="Authorization secret"
+							value={infrastructureMonitor.secret}
+							onChange={handleChange}
+							error={errors["secret"]}
+						/>						
 					</Stack>
 				</ConfigBox>
 				<ConfigBox>
