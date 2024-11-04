@@ -370,8 +370,6 @@ const ProfilePanel = () => {
 					</Button>
 				</Box>
 			)}
-			{/* TODO - Update ModalPopup Component with @mui for reusability */}
-
 			<Dialog
 				open={isModalOpen("delete")}
 				theme={theme}

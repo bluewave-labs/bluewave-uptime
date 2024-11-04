@@ -12,7 +12,7 @@ const GenericDialog = ({ title, description, open, onClose, theme, children }) =
 			aria-describedby={ariaDescribedBy}
 			open={open}
 			onClose={onClose}
-			onClick={(e)=>e.stopPropagation()}
+			onClick={(e) => e.stopPropagation()}
 		>
 			<Stack
 				gap={theme.spacing(2)}
@@ -62,7 +62,8 @@ GenericDialog.propTypes = {
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
 	theme: PropTypes.object.isRequired,
-	children: PropTypes.element.isRequired,
+	children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
+		.isRequired,
 };
 
 export { GenericDialog };

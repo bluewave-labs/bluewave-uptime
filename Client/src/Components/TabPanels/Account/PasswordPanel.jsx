@@ -35,7 +35,6 @@ const PasswordPanel = () => {
 		confirm: "",
 	});
 	const [errors, setErrors] = useState({});
-
 	const handleChange = (event) => {
 		const { value, id } = event.target;
 		const name = idToName[id];
@@ -110,20 +109,32 @@ const PasswordPanel = () => {
 				onSubmit={handleSubmit}
 				noValidate
 				spellCheck="false"
-				gap={theme.spacing(20)}
+				gap={theme.spacing(26)}
+				maxWidth={"80ch"}
+				marginInline={"auto"}
 			>
-				<Stack direction="row">
-					<Box flex={0.9}>
-						<Typography component="h1">Current password</Typography>
-					</Box>
-					<Field
-						type="text"
-						id="hidden-username"
-						name="username"
-						autoComplete="username"
-						hidden={true}
-						value=""
-					/>
+				<Field
+					type="text"
+					id="hidden-username"
+					name="username"
+					autoComplete="username"
+					hidden={true}
+					value=""
+				/>
+
+				<Stack
+					direction="row"
+					justifyContent={"flex-start"}
+					alignItems={"center"}
+					gap={theme.spacing(8)}
+					flexWrap={"wrap"}
+				>
+					<Typography
+						component="h1"
+						width="20ch"
+					>
+						Current password
+					</Typography>
 					<Field
 						type="password"
 						id="edit-current-password"
@@ -134,10 +145,19 @@ const PasswordPanel = () => {
 						error={errors[idToName["edit-current-password"]]}
 					/>
 				</Stack>
-				<Stack direction="row">
-					<Box flex={0.9}>
-						<Typography component="h1">New password</Typography>
-					</Box>
+				<Stack
+					direction="row"
+					alignItems={"center"}
+					gap={theme.spacing(8)}
+					flexWrap={"wrap"}
+				>
+					<Typography
+						component="h1"
+						width="20ch"
+					>
+						New password
+					</Typography>
+
 					<Field
 						type="password"
 						id="edit-new-password"
@@ -148,10 +168,19 @@ const PasswordPanel = () => {
 						error={errors[idToName["edit-new-password"]]}
 					/>
 				</Stack>
-				<Stack direction="row">
-					<Box flex={0.9}>
-						<Typography component="h1">Confirm new password</Typography>
-					</Box>
+				<Stack
+					direction="row"
+					alignItems={"center"}
+					gap={theme.spacing(8)}
+					flexWrap={"wrap"}
+				>
+					<Typography
+						component="h1"
+						width="20ch"
+					>
+						Confirm new password
+					</Typography>
+
 					<Field
 						type="password"
 						id="edit-confirm-password"
@@ -162,15 +191,14 @@ const PasswordPanel = () => {
 						error={errors[idToName["edit-confirm-password"]]}
 					/>
 				</Stack>
-				<Stack direction="row">
-					<Box flex={0.9}></Box>
-					<Box sx={{ flex: 1 }}>
+				{Object.keys(errors).length > 0 && (
+					<Box sx={{ maxWidth: "70ch" }}>
 						<Alert
 							variant="warning"
-							body="New password must contain at least 8 characters and must have at least one uppercase letter, one number and one symbol."
+							body="New password must contain at least 8 characters and must have at least one uppercase letter, one lowercase letter, one number and one special character."
 						/>
 					</Box>
-				</Stack>
+				)}
 				<Stack
 					direction="row"
 					justifyContent="flex-end"
@@ -178,10 +206,13 @@ const PasswordPanel = () => {
 					<LoadingButton
 						variant="contained"
 						color="primary"
-						onClick={handleSubmit}
+						type="submit"
 						loading={isLoading}
 						loadingIndicator="Saving..."
-						disabled={Object.keys(errors).length !== 0 && true}
+						disabled={
+							Object.keys(errors).length !== 0 ||
+							Object.values(localData).filter((value) => value !== "").length === 0
+						}
 						sx={{
 							px: theme.spacing(12),
 							mt: theme.spacing(20),
