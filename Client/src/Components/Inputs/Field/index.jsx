@@ -166,12 +166,12 @@ const Field = forwardRef(
 								<IconButton
 									aria-label="toggle password visibility"
 									onClick={() => setVisible((show) => !show)}
-									tabIndex={-1}
 									sx={{
 										color: theme.palette.border.dark,
 										padding: theme.spacing(1),
-										"&:focus": {
-											outline: "none",
+										"&:focus-visible": {
+											outline: `2px solid ${theme.palette.primary.main}`,
+											outlineOffset: `2px`,
 										},
 										"& .MuiTouchRipple-root": {
 											pointerEvents: "none",

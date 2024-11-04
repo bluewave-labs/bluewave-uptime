@@ -18,6 +18,9 @@ const roleValidatior = (role) => (value, helpers) => {
 // Auth
 //****************************************
 
+const passwordPattern =
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/])[A-Za-z0-9!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/]+$/;
+
 const loginValidation = joi.object({
 	email: joi
 		.string()
@@ -30,13 +33,7 @@ const loginValidation = joi.object({
 			}
 			return lowercasedValue;
 		}),
-	password: joi
-		.string()
-		.min(8)
-		.required()
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	password: joi.string().min(8).required().pattern(passwordPattern),
 });
 
 const registrationBodyValidation = joi.object({
@@ -59,13 +56,7 @@ const registrationBodyValidation = joi.object({
 			}
 			return lowercasedValue;
 		}),
-	password: joi
-		.string()
-		.min(8)
-		.required()
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	password: joi.string().min(8).required().pattern(passwordPattern),
 	profileImage: joi.any(),
 	role: joi
 		.array()
@@ -84,18 +75,8 @@ const editUserBodyValidation = joi.object({
 	firstName: joi.string().pattern(/^[A-Za-z]+$/),
 	lastName: joi.string().pattern(/^[A-Za-z]+$/),
 	profileImage: joi.any(),
-	newPassword: joi
-		.string()
-		.min(8)
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
-	password: joi
-		.string()
-		.min(8)
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	newPassword: joi.string().min(8).pattern(passwordPattern),
+	password: joi.string().min(8).pattern(passwordPattern),
 	deleteProfileImage: joi.boolean(),
 	role: joi.array(),
 });
@@ -113,13 +94,7 @@ const recoveryTokenValidation = joi.object({
 
 const newPasswordValidation = joi.object({
 	recoveryToken: joi.string().required(),
-	password: joi
-		.string()
-		.min(8)
-		.required()
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	password: joi.string().min(8).required().pattern(passwordPattern),
 	confirm: joi.string(),
 });
 

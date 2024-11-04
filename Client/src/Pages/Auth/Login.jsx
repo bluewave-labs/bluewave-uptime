@@ -51,6 +51,10 @@ const LandingPage = ({ onContinue }) => {
 									stroke: theme.palette.other.icon,
 								},
 							},
+							"&:focus-visible": {
+								outline: `2px solid ${theme.palette.primary.main}`,
+								outlineOffset: `2px`,
+							},
 						}}
 					>
 						<Mail />
@@ -130,7 +134,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 	return (
 		<>
 			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+				gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				textAlign="center"
 			>
 				<Box>
@@ -139,57 +143,66 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 				</Box>
 				<Box
 					textAlign="left"
-					mb={theme.spacing(5)}
+					component="form"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
+					display="grid"
+					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				>
-					<form
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
+					<Field
+						type="email"
+						id="login-email-input"
+						label="Email"
+						isRequired={true}
+						placeholder="jordan.ellis@domain.com"
+						autoComplete="email"
+						value={form.email}
+						onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
+						onChange={onChange}
+						error={errors.email}
+						ref={inputRef}
+					/>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
 					>
-						<Field
-							type="email"
-							id="login-email-input"
-							label="Email"
-							isRequired={true}
-							placeholder="jordan.ellis@domain.com"
-							autoComplete="email"
-							value={form.email}
-							onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
-							onChange={onChange}
-							error={errors.email}
-							ref={inputRef}
-						/>
-					</form>
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+							disabled={errors.email && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</Button>
+					</Stack>
 				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.email && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
 			</Stack>
 		</>
 	);
@@ -235,7 +248,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 	return (
 		<>
 			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+				gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				position="relative"
 				textAlign="center"
 			>
@@ -244,64 +257,76 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 					<Typography>Enter your password</Typography>
 				</Box>
 				<Box
+					component="form"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
 					textAlign="left"
 					mb={theme.spacing(5)}
+					sx={{
+						display: "grid",
+						gap: { xs: theme.spacing(12), sm: theme.spacing(16) },
+					}}
 				>
-					<form
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
+					<Field
+						type="password"
+						id="login-password-input"
+						label="Password"
+						isRequired={true}
+						placeholder="••••••••••"
+						autoComplete="current-password"
+						value={form.password}
+						onChange={onChange}
+						error={errors.password}
+						ref={inputRef}
+					/>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
 					>
-						<Field
-							type="password"
-							id="login-password-input"
-							label="Password"
-							isRequired={true}
-							placeholder="••••••••••"
-							autoComplete="current-password"
-							value={form.password}
-							onChange={onChange}
-							error={errors.password}
-							ref={inputRef}
-						/>
-					</form>
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+							disabled={errors.password && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</Button>
+					</Stack>
 				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.password && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
 				<Box
 					textAlign="center"
 					sx={{
 						position: "absolute",
-						top: "104%",
+						bottom: 0,
 						left: "50%",
-						transform: "translateX(-50%)",
+						transform: `translate(-50%, 150%)`,
 					}}
 				>
 					<Typography

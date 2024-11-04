@@ -16,25 +16,37 @@ const passwordSchema = joi
 	.string()
 	.trim()
 	.min(8)
+	.custom((value, helpers) => {
+		if (!/[A-Z]/.test(value)) {
+			return helpers.error("uppercase");
+		}
+		return value;
+	})
+	.custom((value, helpers) => {
+		if (!/[a-z]/.test(value)) {
+			return helpers.error("lowercase");
+		}
+		return value;
+	})
+	.custom((value, helpers) => {
+		if (!/\d/.test(value)) {
+			return helpers.error("number");
+		}
+		return value;
+	})
+	.custom((value, helpers) => {
+		if (!/[!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/]/.test(value)) {
+			return helpers.error("special");
+		}
+		return value;
+	})
 	.messages({
 		"string.empty": "Password is required",
 		"string.min": "Password must be at least 8 characters long",
-	})
-	.custom((value, helpers) => {
-		if (!/[A-Z]/.test(value)) {
-			return helpers.message("Password must contain at least one uppercase letter");
-		}
-		if (!/[a-z]/.test(value)) {
-			return helpers.message("Password must contain at least one lowercase letter");
-		}
-		if (!/\d/.test(value)) {
-			return helpers.message("Password must contain at least one number");
-		}
-		if (!/[!@#$%^&*]/.test(value)) {
-			return helpers.message("Password must contain at least one special character");
-		}
-
-		return value;
+		uppercase: "Password must contain at least one uppercase letter",
+		lowercase: "Password must contain at least one lowercase letter",
+		number: "Password must contain at least one number",
+		special: "Password must contain at least one special character",
 	});
 
 const credentials = joi.object({
@@ -60,15 +72,16 @@ const credentials = joi.object({
 	confirm: joi
 		.string()
 		.trim()
-		.messages({
-			"string.empty": "Password confirmation is required",
-		})
 		.custom((value, helpers) => {
 			const { password } = helpers.prefs.context;
 			if (value !== password) {
-				return helpers.message("Passwords do not match");
+				return helpers.error("different");
 			}
 			return value;
+		})
+		.messages({
+			"string.empty": "empty",
+			different: "Passwords do not match",
 		}),
 	role: joi.array(),
 	teamId: joi.string().allow("").optional(),
@@ -166,5 +179,5 @@ export {
 	monitorValidation,
 	settingsValidation,
 	maintenanceWindowValidation,
-	advancedSettingsValidation
+	advancedSettingsValidation,
 };
