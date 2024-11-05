@@ -119,7 +119,7 @@ const getAverageResponseTime = (checks) => {
 };
 
 /**
- * Helper function to get precentage 24h uptime
+ * Helper function to get percentage 24h uptime
  * @param {Array} checks Array of check objects.
  * @returns {number} Timestamp of the most recent check.
  */
@@ -194,13 +194,13 @@ const getMonitorChecks = async (monitorId, model, dateRange, sortOrder) => {
  * @param {boolean} normalize - Whether to normalize the data
  * @returns {Array} Processed checks
  */
-const processChecksForDisplay = (checks, numToDisplay, normalize) => {
+const processChecksForDisplay = (normalizeData, checks, numToDisplay, normalize) => {
 	let processedChecks = checks;
 	if (numToDisplay && checks.length > numToDisplay) {
 		const n = Math.ceil(checks.length / numToDisplay);
 		processedChecks = checks.filter((_, index) => index % n === 0);
 	}
-	return normalize ? NormalizeData(processedChecks, 1, 100) : processedChecks;
+	return normalize ? normalizeData(processedChecks, 1, 100) : processedChecks;
 };
 
 /**
@@ -281,7 +281,12 @@ const getMonitorStatsById = async (req) => {
 			latestResponseTime: getLatestResponseTime(checksAll),
 			periodIncidents: getIncidents(checksForDateRange),
 			periodTotalChecks: checksForDateRange.length,
-			checks: processChecksForDisplay(checksForDateRange, numToDisplay, normalize),
+			checks: processChecksForDisplay(
+				NormalizeData,
+				checksForDateRange,
+				numToDisplay,
+				normalize
+			),
 		};
 
 		if (monitor.type === "http" || monitor.type === "ping") {
@@ -601,4 +606,9 @@ export {
 	getAverageResponseTime,
 	getUptimePercentage,
 	getIncidents,
+	getDateRange,
+	getMonitorChecks,
+	processChecksForDisplay,
+	groupChecksByTime,
+	calculateGroupStats,
 };
