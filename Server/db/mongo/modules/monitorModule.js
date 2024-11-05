@@ -52,7 +52,6 @@ const calculateUptimeDuration = (checks) => {
 	if (!checks || checks.length === 0) {
 		return 0;
 	}
-
 	const latestCheck = new Date(checks[0].createdAt);
 	let latestDownCheck = 0;
 
@@ -439,7 +438,6 @@ const getMonitorsByTeamId = async (req, res) => {
 		if (limit === "-1") {
 			return { monitors, monitorCount };
 		}
-
 		// Map each monitor to include its associated checks
 		const monitorsWithChecks = await Promise.all(
 			monitors.map(async (monitor) => {
@@ -488,6 +486,7 @@ const createMonitor = async (req, res) => {
 		// Remove notifications fom monitor as they aren't needed here
 		monitor.notifications = undefined;
 		await monitor.save();
+		console.log(monitor);
 		return monitor;
 	} catch (error) {
 		error.service = SERVICE_NAME;
