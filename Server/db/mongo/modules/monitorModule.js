@@ -107,10 +107,15 @@ const getAverageResponseTime = (checks) => {
 	if (!checks || checks.length === 0) {
 		return 0;
 	}
-	const aggResponseTime = checks.reduce((sum, check) => {
+
+	const validChecks = checks.filter((check) => typeof check.responseTime === "number");
+	if (validChecks.length === 0) {
+		return 0;
+	}
+	const aggResponseTime = validChecks.reduce((sum, check) => {
 		return sum + check.responseTime;
 	}, 0);
-	return aggResponseTime / checks.length;
+	return aggResponseTime / validChecks.length;
 };
 
 /**
