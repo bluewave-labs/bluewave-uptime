@@ -3,7 +3,10 @@ import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
-import { createInfrastructureMonitor, checkInfrastructureEndpointResolution } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice"
+import {
+	createInfrastructureMonitor,
+	checkInfrastructureEndpointResolution,
+} from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
@@ -140,7 +143,9 @@ const CreateInfrastructureMonitor = () => {
 				userId: user._id,
 				notifications: infrastructureMonitor.notifications,
 			};
-			const action = await dispatch(createInfrastructureMonitor({ authToken, monitor: form }));
+			const action = await dispatch(
+				createInfrastructureMonitor({ authToken, monitor: form })
+			);
 			if (action.meta.requestStatus === "fulfilled") {
 				createToast({ body: "Infrastructure monitor created successfully!" });
 				navigate("/infrastructure-monitors/create");
@@ -281,28 +286,60 @@ const CreateInfrastructureMonitor = () => {
 							or percentage.
 						</Typography>
 					</Box>
-					<Stack
-						gap={theme.spacing(6)}
-					>
-						<Stack direction={"row"}
-						 sx={{
-									justifyContent: "space-between",
-									
-								}}
+					<Stack gap={theme.spacing(6)}>
+						<Stack
+							direction={"row"}
+							sx={{
+								justifyContent: "space-between",
+								width: "75%",
+							}}
 						>
 							<Box>
 								<Checkbox
 									id="customize-cpu"
 									label={`CPU`}
-									value={user?.email}
+									value={true}
 									onChange={(event) => handleChange(event)}
 								/>
 							</Box>
 							<Stack
-							direction={"row"}
+								direction={"row"}
 								sx={{
 									justifyContent: "flex-end",
-									alignItems: "center",
+								}}
+							>
+								<Box>
+									<Field type="text"></Field>
+								</Box>
+								<Box>
+									<Typography
+										component="p"
+										m={theme.spacing(3)}
+									>
+										%
+									</Typography>
+								</Box>
+							</Stack>
+						</Stack>
+						<Stack
+							direction={"row"}
+							sx={{
+								width: "75%",
+								justifyContent: "space-between",
+							}}
+						>
+							<Box>
+								<Checkbox
+									id="customize-memory"
+									label={`Memory`}
+									value={true}
+									onChange={(event) => handleChange(event)}
+								/>
+							</Box>
+							<Stack
+								direction={"row"}
+								sx={{
+									justifyContent: "flex-end",
 								}}
 							>
 								<Field type="text"></Field>
@@ -314,41 +351,15 @@ const CreateInfrastructureMonitor = () => {
 								</Typography>
 							</Stack>
 						</Stack>
-						<Stack direction={"row"} 
-						sx={{
-									justifyContent: "space-between",
-									
-								}}>
-						
-							<Box>
-								<Checkbox
-									id="customize-memory"
-									label={`Memory`}
-									value={user?.email}
-									onChange={(event) => handleChange(event)}
-								/>
-							</Box>
-							<Stack
-							direction={"row"}
-								sx={{
-									justifyContent: "flex-end",
-									
-								}}
-							>
-							<Field type="text" sx={{flexGrow:3}}></Field>
-							<Typography
-								component="p"
-								m={theme.spacing(3)}
-							>
-								%
-							</Typography>
-							</Stack>							
-						</Stack>
+
 						<Stack
 							direction={"row"}
-							flexGrow={1}
+							sx={{
+								width: "75%",
+								justifyContent: "space-between",
+							}}
 						>
-							<Box flex={0.1}>
+							<Box>
 								<Checkbox
 									id="customize-disk"
 									label={`Disk`}
@@ -356,16 +367,30 @@ const CreateInfrastructureMonitor = () => {
 									onChange={(event) => handleChange(event)}
 								/>
 							</Box>
-							<Field type="text"></Field>
-							<Typography
-								component="p"
-								m={theme.spacing(3)}
+							<Stack
+								direction={"row"}
+								sx={{
+									justifyContent: "flex-end",
+								}}
 							>
-								%
-							</Typography>
+								<Field type="text"></Field>
+								<Typography
+									component="p"
+									m={theme.spacing(3)}
+								>
+									%
+								</Typography>
+							</Stack>
 						</Stack>
-						<Stack direction={"row"}>
-							<Box flex={0.1}>
+
+						<Stack
+							direction={"row"}
+							sx={{
+								width: "75%",
+								justifyContent: "space-between",
+							}}
+						>
+							<Box>
 								<Checkbox
 									id="customize-temparature"
 									label={`Temparature`}
@@ -373,16 +398,30 @@ const CreateInfrastructureMonitor = () => {
 									onChange={(event) => handleChange(event)}
 								/>
 							</Box>
-							<Field type="text"></Field>
-							<Typography
-								component="p"
-								m={theme.spacing(3)}
+							<Stack
+								direction={"row"}
+								sx={{
+									justifyContent: "flex-end",
+								}}
 							>
-								°C
-							</Typography>
+								<Field type="text"></Field>
+								<Typography
+									component="p"
+									m={theme.spacing(3)}
+								>
+									°C
+								</Typography>
+							</Stack>
 						</Stack>
-						<Stack direction={"row"}>
-							<Box flex={0.1}>
+
+						<Stack
+							direction={"row"}
+							sx={{
+								width: "75%",
+								justifyContent: "space-between",
+							}}
+						>
+							<Box>
 								<Checkbox
 									id="customize-systemload"
 									label={`System load`}
@@ -390,13 +429,20 @@ const CreateInfrastructureMonitor = () => {
 									onChange={(event) => handleChange(event)}
 								/>
 							</Box>
-							<Field type="text"></Field>
-							<Typography
-								component="p"
-								m={theme.spacing(3)}
+							<Stack
+								direction={"row"}
+								sx={{
+									justifyContent: "flex-end",
+								}}
 							>
-								%
-							</Typography>
+								<Field type="text"></Field>
+								<Typography
+									component="p"
+									m={theme.spacing(3)}
+								>
+									%
+								</Typography>
+							</Stack>
 						</Stack>
 					</Stack>
 				</ConfigBox>
