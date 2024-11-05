@@ -94,7 +94,8 @@ const getLatestResponseTime = (checks) => {
 	if (!checks || checks.length === 0) {
 		return 0;
 	}
-	return checks[0].responseTime;
+
+	return checks[0]?.responseTime ?? 0;
 };
 
 /**
@@ -585,4 +586,14 @@ export {
 	deleteMonitorsByUserId,
 	editMonitor,
 	addDemoMonitors,
+};
+
+// Helper functions
+export {
+	calculateUptimeDuration,
+	getLastChecked,
+	getLatestResponseTime,
+	getAverageResponseTime,
+	getUptimePercentage,
+	getIncidents,
 };
