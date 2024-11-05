@@ -211,10 +211,16 @@ const processChecksForDisplay = (normalizeData, checks, numToDisplay, normalize)
  */
 const groupChecksByTime = (checks, dateRange) => {
 	return checks.reduce((acc, check) => {
+		// Validate the date
+		const checkDate = new Date(check.createdAt);
+		if (isNaN(checkDate.getTime()) || checkDate.getTime() === 0) {
+			return acc;
+		}
+
 		const time =
 			dateRange === "day"
-				? new Date(check.createdAt).setMinutes(0, 0, 0)
-				: new Date(check.createdAt).toISOString().split("T")[0];
+				? checkDate.setMinutes(0, 0, 0)
+				: checkDate.toISOString().split("T")[0];
 
 		if (!acc[time]) {
 			acc[time] = { time, checks: [] };
@@ -231,13 +237,21 @@ const groupChecksByTime = (checks, dateRange) => {
  */
 const calculateGroupStats = (group) => {
 	const totalChecks = group.checks.length;
+
+	const checksWithResponseTime = group.checks.filter(
+		(check) => typeof check.responseTime === "number" && !isNaN(check.responseTime)
+	);
+
 	return {
 		time: group.time,
 		uptimePercentage: getUptimePercentage(group.checks),
 		totalChecks,
 		totalIncidents: group.checks.filter((check) => !check.status).length,
 		avgResponseTime:
-			group.checks.reduce((sum, check) => sum + check.responseTime, 0) / totalChecks,
+			checksWithResponseTime.length > 0
+				? checksWithResponseTime.reduce((sum, check) => sum + check.responseTime, 0) /
+					checksWithResponseTime.length
+				: 0,
 	};
 };
 
