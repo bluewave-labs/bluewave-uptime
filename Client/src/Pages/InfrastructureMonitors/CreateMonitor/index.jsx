@@ -229,70 +229,7 @@ const CreateInfrastructureMonitor = () => {
 							value={infrastructureMonitor.secret}
 							onChange={handleChange}
 							error={errors["secret"]}
-						/>						
-					</Stack>
-				</ConfigBox>
-				<ConfigBox>
-					<Box>
-						<Typography component="h2">Checks to perform</Typography>
-						<Typography component="p">
-							You can always add or remove checks after adding your site.
-						</Typography>
-					</Box>
-					<Stack gap={theme.spacing(12)}>
-						<Stack gap={theme.spacing(6)}>
-							<Radio
-								id="monitor-checks-http"
-								title="Website monitoring"
-								desc="Use HTTP(s) to monitor your website or API endpoint."
-								size="small"
-								value="http"
-								checked={infrastructureMonitor.type === "http"}
-								onChange={(event) => handleChange(event)}
-							/>
-							{infrastructureMonitor.type === "http" ? (
-								<ButtonGroup sx={{ ml: theme.spacing(16) }}>
-									<Button
-										variant="group"
-										filled={https.toString()}
-										onClick={() => setHttps(true)}
-									>
-										HTTPS
-									</Button>
-									<Button
-										variant="group"
-										filled={(!https).toString()}
-										onClick={() => setHttps(false)}
-									>
-										HTTP
-									</Button>
-								</ButtonGroup>
-							) : (
-								""
-							)}
-						</Stack>
-						<Radio
-							id="monitor-checks-ping"
-							title="Ping monitoring"
-							desc="Check whether your server is available or not."
-							size="small"
-							value="ping"
-							checked={infrastructureMonitor.type === "ping"}
-							onChange={(event) => handleChange(event)}
 						/>
-						{errors["type"] ? (
-							<Box className="error-container">
-								<Typography
-									component="p"
-									className="input-error"
-									color={theme.palette.error.text}
-								>
-									{errors["type"]}
-								</Typography>
-							</Box>
-						) : (
-							""
-						)}
 					</Stack>
 				</ConfigBox>
 				<ConfigBox>
@@ -304,14 +241,6 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(6)}>
 						<Typography component="p">When there is a new incident,</Typography>
-						<Checkbox
-							id="notify-sms"
-							label="Notify via SMS (coming soon)"
-							isChecked={false}
-							value=""
-							onChange={() => logger.warn("disabled")}
-							isDisabled={true}
-						/>
 						<Checkbox
 							id="notify-email-default"
 							label={`Notify via email (to ${user.email})`}
@@ -329,26 +258,149 @@ const CreateInfrastructureMonitor = () => {
 							onChange={() => logger.warn("disabled")}
 							isDisabled={true}
 						/>
-						{infrastructureMonitor.notifications.some(
-							(notification) => notification.type === "emails"
-						) ? (
-							<Box mx={theme.spacing(16)}>
-								<Field
-									id="notify-email-list"
-									type="text"
-									placeholder="name@gmail.com"
-									value=""
-									onChange={() => logger.warn("disabled")}
-								/>
-								<Typography mt={theme.spacing(4)}>
-									You can separate multiple emails with a comma
-								</Typography>
-							</Box>
-						) : (
-							""
-						)}
+						<Box mx={theme.spacing(16)}>
+							<Field
+								id="notify-email-list"
+								type="text"
+								placeholder="name@gmail.com"
+								value=""
+								onChange={() => logger.warn("disabled")}
+							/>
+							<Typography mt={theme.spacing(4)}>
+								You can separate multiple emails with a comma
+							</Typography>
+						</Box>
 					</Stack>
 				</ConfigBox>
+
+				<ConfigBox>
+					<Box>
+						<Typography component="h2">Customize alerts</Typography>
+						<Typography component="p">
+							Send a notification to user(s) When the theresholds exceed a certain number
+							or percentage.
+						</Typography>
+					</Box>
+					<Stack
+						gap={theme.spacing(6)}
+					>
+						<Stack direction={"row"}
+						 sx={{
+									justifyContent: "space-between",
+									
+								}}
+						>
+							<Box>
+								<Checkbox
+									id="customize-cpu"
+									label={`CPU`}
+									value={user?.email}
+									onChange={(event) => handleChange(event)}
+								/>
+							</Box>
+							<Stack
+							direction={"row"}
+								sx={{
+									justifyContent: "flex-end",
+									alignItems: "center",
+								}}
+							>
+								<Field type="text"></Field>
+								<Typography
+									component="p"
+									m={theme.spacing(3)}
+								>
+									%
+								</Typography>
+							</Stack>
+						</Stack>
+						<Stack direction={"row"} 
+						sx={{
+									justifyContent: "space-between",
+									
+								}}>
+						
+							<Box>
+								<Checkbox
+									id="customize-memory"
+									label={`Memory`}
+									value={user?.email}
+									onChange={(event) => handleChange(event)}
+								/>
+							</Box>
+							<Stack
+							direction={"row"}
+								sx={{
+									justifyContent: "flex-end",
+									
+								}}
+							>
+							<Field type="text" sx={{flexGrow:3}}></Field>
+							<Typography
+								component="p"
+								m={theme.spacing(3)}
+							>
+								%
+							</Typography>
+							</Stack>							
+						</Stack>
+						<Stack
+							direction={"row"}
+							flexGrow={1}
+						>
+							<Box flex={0.1}>
+								<Checkbox
+									id="customize-disk"
+									label={`Disk`}
+									value={user?.email}
+									onChange={(event) => handleChange(event)}
+								/>
+							</Box>
+							<Field type="text"></Field>
+							<Typography
+								component="p"
+								m={theme.spacing(3)}
+							>
+								%
+							</Typography>
+						</Stack>
+						<Stack direction={"row"}>
+							<Box flex={0.1}>
+								<Checkbox
+									id="customize-temparature"
+									label={`Temparature`}
+									value={user?.email}
+									onChange={(event) => handleChange(event)}
+								/>
+							</Box>
+							<Field type="text"></Field>
+							<Typography
+								component="p"
+								m={theme.spacing(3)}
+							>
+								°C
+							</Typography>
+						</Stack>
+						<Stack direction={"row"}>
+							<Box flex={0.1}>
+								<Checkbox
+									id="customize-systemload"
+									label={`System load`}
+									value={user?.email}
+									onChange={(event) => handleChange(event)}
+								/>
+							</Box>
+							<Field type="text"></Field>
+							<Typography
+								component="p"
+								m={theme.spacing(3)}
+							>
+								%
+							</Typography>
+						</Stack>
+					</Stack>
+				</ConfigBox>
+
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">Advanced settings</Typography>
