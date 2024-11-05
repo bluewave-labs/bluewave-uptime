@@ -1,12 +1,14 @@
-import React from "react";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
+import { useTheme } from "@emotion/react";
 
-const DATA = [{ value: 100 }];
+const MINIMUM_VALUE = 0 ;
+const MAXIMUM_VALUE = 100 ;
+const DATA = [{ value: MAXIMUM_VALUE }];
 const PROGRESS_THRESHOLD = 50;
 const DEFAULT_CONTAINER_HEIGHT = 160;
-const DEFAULT_HEADER_FONT = { fontSize: "11px" };
-const DEFAULT_SUBHEADER_FONT = { fontSize: "9px" };
+const DEFAULT_HEADER = { fontSize: "11px" };
+const DEFAULT_SUBHEADER = { fontSize: "9px" };
 const TEXT_POSITIONS = {
 	value: { x: "50%", y: "45%" },
 	label: { x: "50%", y: "55%" },
@@ -37,15 +39,14 @@ const RADIALBAR_OVERLAY_PROPS = {
 const Gauge = ({
 	progressValue,
 	displayText,
-	theme,
 	containerHeight,
 	gaugeHeader,
 	gaugeSubheader,
 }) => {
-	const header = gaugeHeader ?? DEFAULT_HEADER_FONT;
-	const subheader = gaugeSubheader ?? DEFAULT_SUBHEADER_FONT;
-	const myProgressValue =
-		progressValue < 0 ? 0 : progressValue > DATA[0].value ? DATA[0].value : progressValue;
+    const theme = useTheme();
+	const header = gaugeHeader ?? DEFAULT_HEADER;
+	const subheader = gaugeSubheader ?? DEFAULT_SUBHEADER;
+	const myProgressValue = Math.max(MINIMUM_VALUE, Math.min(progressValue, MAXIMUM_VALUE));
 
 	return (
 		<ResponsiveContainer height={containerHeight ?? DEFAULT_CONTAINER_HEIGHT}>
@@ -92,7 +93,6 @@ const Gauge = ({
 Gauge.propTypes = {
 	progressValue: PropTypes.number.isRequired,
 	displayText: PropTypes.string.isRequired,
-	theme: PropTypes.object.isRequired,
 	containerHeight: PropTypes.number,
 	gaugeHeader: PropTypes.object,
 	gaugeSubheader: PropTypes.object,
