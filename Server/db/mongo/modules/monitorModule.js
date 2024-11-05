@@ -56,7 +56,7 @@ const calculateUptimeDuration = (checks) => {
 	const latestCheck = new Date(checks[0].createdAt);
 	let latestDownCheck = 0;
 
-	for (let i = checks.length; i >= 0; i--) {
+	for (let i = checks.length - 1; i >= 0; i--) {
 		if (checks[i].status === false) {
 			latestDownCheck = new Date(checks[i].createdAt);
 			break;
