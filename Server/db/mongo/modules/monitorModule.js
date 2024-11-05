@@ -383,9 +383,11 @@ const getMonitorsByTeamId = async (req, res) => {
 			field,
 			order,
 		} = req.query || {};
+
 		const monitorQuery = { teamId: req.params.teamId };
+
 		if (type !== undefined) {
-			monitorQuery.type = type;
+			monitorQuery.type = Array.isArray(type) ? { $in: type } : type;
 		}
 		// Add filter if provided
 		// $options: "i" makes the search case-insensitive
@@ -395,29 +397,13 @@ const getMonitorsByTeamId = async (req, res) => {
 				{ url: { $regex: filter, $options: "i" } },
 			];
 		}
-		const monitorsCount = await Monitor.countDocuments(monitorQuery);
+		const monitorCount = await Monitor.countDocuments(monitorQuery);
 
 		// Pagination
-		let skip = 0;
-		if (page && rowsPerPage) {
-			skip = page * rowsPerPage;
-		}
+		const skip = page && rowsPerPage ? page * rowsPerPage : 0;
 
-		if (type !== undefined) {
-			const types = Array.isArray(type) ? type : [type];
-			monitorQuery.type = { $in: types };
-		}
-
-		// Default sort order is newest -> oldest
-		if (checkOrder === "asc") {
-			checkOrder = 1;
-		} else checkOrder = -1;
-
-		// Sort order for monitors
-		let sort = {};
-		if (field !== undefined && order !== undefined) {
-			sort[field] = order === "asc" ? 1 : -1;
-		}
+		// Build Sort option
+		const sort = field ? { [field]: order === "asc" ? 1 : -1 } : {};
 
 		const monitors = await Monitor.find(monitorQuery)
 			.skip(skip)
@@ -426,16 +412,12 @@ const getMonitorsByTeamId = async (req, res) => {
 
 		// Early return if limit is set to -1, indicating we don't want any checks
 		if (limit === "-1") {
-			return { monitors, monitorCount: monitorsCount };
+			return { monitors, monitorCount };
 		}
-
-		// This effectively removes limit, returning all checks
-		if (limit === undefined) limit = 0;
 
 		// Map each monitor to include its associated checks
 		const monitorsWithChecks = await Promise.all(
 			monitors.map(async (monitor) => {
-				const checksQuery = { monitorId: monitor._id };
 				if (status !== undefined) {
 					checksQuery.status = status;
 				}
@@ -444,11 +426,13 @@ const getMonitorsByTeamId = async (req, res) => {
 
 				// Checks are order newest -> oldest
 				let checks = await model
-					.find(checksQuery)
-					.sort({
-						createdAt: checkOrder,
+					.find({
+						monitorId: monitor._id,
+						...(status && { status }),
 					})
-					.limit(limit);
+					.sort({ createdAt: checkOrder === "asc" ? 1 : -1 })
+
+					.limit(limit || 0);
 
 				//Normalize checks if requested
 				if (normalize !== undefined) {
@@ -457,7 +441,7 @@ const getMonitorsByTeamId = async (req, res) => {
 				return { ...monitor.toObject(), checks };
 			})
 		);
-		return { monitors: monitorsWithChecks, monitorCount: monitorsCount };
+		return { monitors: monitorsWithChecks, monitorCount };
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "getMonitorsByTeamId";
