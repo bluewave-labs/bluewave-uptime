@@ -56,25 +56,25 @@ const resetPassword = async (req, res) => {
 		const recoveryToken = await validateRecoveryToken(req, res);
 		const user = await UserModel.findOne({ email: recoveryToken.email });
 
+		if (user === null) {
+			throw new Error(errorMessages.DB_USER_NOT_FOUND);
+		}
+
 		const match = await user.comparePassword(newPassword);
 		if (match === true) {
 			throw new Error(errorMessages.DB_RESET_PASSWORD_BAD_MATCH);
 		}
 
-		if (user !== null) {
-			user.password = newPassword;
-			await user.save();
-			await RecoveryToken.deleteMany({ email: recoveryToken.email });
-			// Fetch the user again without the password
-			const userWithoutPassword = await UserModel.findOne({
-				email: recoveryToken.email,
-			})
-				.select("-password")
-				.select("-profileImage");
-			return userWithoutPassword;
-		} else {
-			throw new Error(errorMessages.DB_USER_NOT_FOUND);
-		}
+		user.password = newPassword;
+		await user.save();
+		await RecoveryToken.deleteMany({ email: recoveryToken.email });
+		// Fetch the user again without the password
+		const userWithoutPassword = await UserModel.findOne({
+			email: recoveryToken.email,
+		})
+			.select("-password")
+			.select("-profileImage");
+		return userWithoutPassword;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "resetPassword";

@@ -70,11 +70,10 @@ const getUserByEmail = async (email) => {
 		// Need the password to be able to compare, removed .select()
 		// We can strip the hash before returning the user
 		const user = await UserModel.findOne({ email: email }).select("-profileImage");
-		if (user) {
-			return user;
-		} else {
+		if (!user) {
 			throw new Error(errorMessages.DB_USER_NOT_FOUND);
 		}
+		return user;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "getUserByEmail";
