@@ -1,6 +1,7 @@
 import Monitor from "../../models/Monitor.js";
 import Check from "../../models/Check.js";
 import PageSpeedCheck from "../../models/PageSpeedCheck.js";
+import HardwareCheck from "../../models/HardwareCheck.js";
 import { errorMessages } from "../../../utils/messages.js";
 import Notification from "../../models/Notification.js";
 import { NormalizeData } from "../../../utils/dataUtils.js";
@@ -15,6 +16,13 @@ const demoMonitorsPath = path.resolve(__dirname, "../../../utils/demoMonitors.js
 const demoMonitors = JSON.parse(fs.readFileSync(demoMonitorsPath, "utf8"));
 
 const SERVICE_NAME = "monitorModule";
+
+const CHECK_MODEL_LOOKUP = {
+	http: Check,
+	ping: Check,
+	pageSpeed: PageSpeedCheck,
+	hardware: HardwareCheck,
+};
 
 /**
  * Get all monitors
@@ -163,8 +171,7 @@ const getMonitorStatsById = async (req) => {
 		// Default sort order is newest -> oldest
 		sortOrder = sortOrder === "asc" ? 1 : -1;
 
-		let model =
-			monitor.type === "http" || monitor.type === "ping" ? Check : PageSpeedCheck;
+		let model = CHECK_MODEL_LOOKUP[monitor.type];
 
 		const monitorStats = {
 			...monitor.toObject(),
@@ -325,13 +332,9 @@ const getMonitorsAndSummaryByTeamId = async (teamId, type) => {
 			(acc, monitor) => {
 				if (monitor.status === true) {
 					acc.up += 1;
-				}
-
-				if (monitor.status === false) {
+				} else if (monitor.status === false) {
 					acc.down += 1;
-				}
-
-				if (monitor.isActive === false) {
+				} else if (monitor.isActive === false) {
 					acc.paused += 1;
 				}
 				return acc;
@@ -397,8 +400,6 @@ const getMonitorsByTeamId = async (req, res) => {
 		// Default sort order is newest -> oldest
 		if (checkOrder === "asc") {
 			checkOrder = 1;
-		} else if (checkOrder === "desc") {
-			checkOrder = -1;
 		} else checkOrder = -1;
 
 		// Sort order for monitors
@@ -428,8 +429,7 @@ const getMonitorsByTeamId = async (req, res) => {
 					checksQuery.status = status;
 				}
 
-				let model =
-					monitor.type === "http" || monitor.type === "ping" ? Check : PageSpeedCheck;
+				let model = CHECK_MODEL_LOOKUP[monitor.type];
 
 				// Checks are order newest -> oldest
 				let checks = await model
