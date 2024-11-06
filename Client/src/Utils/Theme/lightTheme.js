@@ -15,9 +15,7 @@ const background = {
 
 export const gaugeHeaderCommon = {
 	fontWeight: 400,
-	fill: text.tertiary,
-	textAnchor: "middle",
-	dominantBaseline: "middle",
+	fill: text.tertiary
 }
 
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
@@ -36,11 +34,20 @@ const lightTheme = createTheme({
 		body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
 		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
 	},
+	chart: {
+		header :{
+			...gaugeHeaderCommon,
+			fontSize: 11,
+		},
+		subheader :{
+			...gaugeHeaderCommon,
+			fontSize: 9
+		}
+	},
 	palette: {
 		primary: { main: "#1570EF" },
 		secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
 		text: text,
-		gaugeHeaderCommon: gaugeHeaderCommon,
 		background: background,
 		border: border,
 		info: {

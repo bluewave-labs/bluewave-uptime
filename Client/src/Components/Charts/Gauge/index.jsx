@@ -7,8 +7,6 @@ const MAXIMUM_VALUE = 100 ;
 const DATA = [{ value: MAXIMUM_VALUE }];
 const PROGRESS_THRESHOLD = 50;
 const DEFAULT_CONTAINER_HEIGHT = 160;
-const DEFAULT_HEADER = { fontSize: "11px" };
-const DEFAULT_SUBHEADER = { fontSize: "9px" };
 const TEXT_POSITIONS = {
 	value: { x: "50%", y: "45%" },
 	label: { x: "50%", y: "55%" },
@@ -36,6 +34,11 @@ const RADIALBAR_OVERLAY_PROPS = {
 	left: "0",
 };
 
+const COMMON_HEADER_PROPS = {
+	textAnchor: "middle",
+	dominantBaseline: "middle",
+};
+
 const Gauge = ({
 	progressValue,
 	displayText,
@@ -44,8 +47,6 @@ const Gauge = ({
 	gaugeSubheader,
 }) => {
     const theme = useTheme();
-	const header = gaugeHeader ?? DEFAULT_HEADER;
-	const subheader = gaugeSubheader ?? DEFAULT_SUBHEADER;
 	const myProgressValue = Math.max(MINIMUM_VALUE, Math.min(progressValue, MAXIMUM_VALUE));
 
 	return (
@@ -73,7 +74,7 @@ const Gauge = ({
 					{...TEXT_POSITIONS.value}
 					role="text"
 					aria-label={`${myProgressValue}%`}
-					style={{ ...theme.palette.gaugeHeaderCommon, ...header }}
+					style={{...COMMON_HEADER_PROPS, ...theme.chart.header, ...gaugeHeader }}
 				>
 					{`${myProgressValue}%`}
 				</text>
@@ -81,7 +82,7 @@ const Gauge = ({
 					{...TEXT_POSITIONS.label}
 					role="text"
 					aria-label={`${displayText}`}
-					style={{ ...theme.palette.gaugeHeaderCommon, ...subheader }}
+					style={{...COMMON_HEADER_PROPS,  ...theme.chart.subheader, ...gaugeSubheader }}
 				>
 					{`${displayText}`}
 				</text>
