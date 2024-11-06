@@ -406,7 +406,7 @@ const getMonitorsByTeamId = async (req, res) => {
 			filter,
 			field,
 			order,
-		} = req.query || {};
+		} = req.query;
 
 		const monitorQuery = { teamId: req.params.teamId };
 
@@ -441,10 +441,6 @@ const getMonitorsByTeamId = async (req, res) => {
 		// Map each monitor to include its associated checks
 		const monitorsWithChecks = await Promise.all(
 			monitors.map(async (monitor) => {
-				if (status !== undefined) {
-					checksQuery.status = status;
-				}
-
 				let model = CHECK_MODEL_LOOKUP[monitor.type];
 
 				// Checks are order newest -> oldest
@@ -486,7 +482,6 @@ const createMonitor = async (req, res) => {
 		// Remove notifications fom monitor as they aren't needed here
 		monitor.notifications = undefined;
 		await monitor.save();
-		console.log(monitor);
 		return monitor;
 	} catch (error) {
 		error.service = SERVICE_NAME;
