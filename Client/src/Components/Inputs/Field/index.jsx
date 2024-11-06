@@ -46,6 +46,7 @@ const Field = forwardRef(
 			error,
 			disabled,
 			hidden,
+			className
 		},
 		ref
 	) => {
@@ -56,7 +57,7 @@ const Field = forwardRef(
 		return (
 			<Stack
 				gap={theme.spacing(2)}
-				className={`field field-${type}`}
+				className={`${className ?? `field field-${type}`}`}
 				sx={{
 					"& fieldset": {
 						borderColor: theme.palette.border.dark,
@@ -223,6 +224,7 @@ Field.propTypes = {
 	error: PropTypes.string,
 	disabled: PropTypes.bool,
 	hidden: PropTypes.bool,
+	className: PropTypes.string
 };
 
 export default Field;

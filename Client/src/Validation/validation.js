@@ -173,6 +173,29 @@ const advancedSettingsValidation = joi.object({
 	pagespeedApiKey: joi.string().allow(""),
 });
 
+const infrastractureMonitorValidation = joi.object({
+	url: joi.string().uri({ allowRelative: true }).trim().messages({
+		"string.empty": "This field is required.",
+		"string.uri": "The URL you provided is not valid.",
+	}),
+	name: joi.string().trim().max(50).allow("").messages({
+		"string.max": "This field should not exceed the 50 characters limit.",
+	}),
+	type: joi.string().trim().messages({ "string.empty": "This field is required." }),
+	usage_cpu: joi.number(),
+	usage_memory: joi.number(),
+	usage_disk: joi.number(),
+	// usage_temperature: joi.number().messages({
+	// 	"number.base": "Temperature must be a number.",
+	// }),
+	// usage_system: joi.number().messages({
+	// 	"number.base": "System load must be a number.",
+	// }),
+	// usage_swap: joi.number().messages({
+	// 	"number.base": "Swap used must be a number.",
+	// }),
+});
+
 export {
 	credentials,
 	imageValidation,
@@ -180,4 +203,5 @@ export {
 	settingsValidation,
 	maintenanceWindowValidation,
 	advancedSettingsValidation,
+	infrastractureMonitorValidation
 };

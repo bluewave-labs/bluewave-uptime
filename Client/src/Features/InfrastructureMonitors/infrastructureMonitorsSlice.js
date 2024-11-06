@@ -86,7 +86,7 @@ export const getInfrastructureMonitorsByTeamId = createAsyncThunk(
 			const res = await networkService.getMonitorsAndSummaryByTeamId({
 				authToken: token,
 				teamId: user.teamId,
-				types: ["http", "ping"],
+				types: ["hardware"],
 			});
 			return res.data;
 		} catch (error) {
@@ -112,6 +112,7 @@ export const updateInfrastructureMonitor = createAsyncThunk(
 				description: monitor.description,
 				interval: monitor.interval,
 				notifications: monitor.notifications,
+				threshold: monitor.threshold
 			};
 			const res = await networkService.updateMonitor({
 				authToken: authToken,

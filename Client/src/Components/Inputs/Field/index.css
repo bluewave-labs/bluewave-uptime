@@ -1,6 +1,15 @@
 .field {
 	min-width: 250px;
 }
+
+.field-infrastructure-alert {
+	max-width: 100px;
+}
+
+.field-infrastructure-alert .MuiInputBase-root:has(input) {
+	height: 34px;
+}
+
 .field h3.MuiTypography-root,
 .field h5.MuiTypography-root,
 .field input,

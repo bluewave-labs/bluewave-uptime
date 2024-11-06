@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
-import { monitorValidation } from "../../../Validation/validation";
+import { infrastractureMonitorValidation } from "../../../Validation/validation";
 import {
 	createInfrastructureMonitor,
 	checkInfrastructureEndpointResolution,
@@ -12,13 +12,63 @@ import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
-import Radio from "../../../Components/Inputs/Radio";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 
 const CreateInfrastructureMonitor = () => {
+	const CustomAlertStack = ({
+		checkboxId,
+		checkboxLabel,
+		checkboxValue,		
+		isChecked,
+		onChange,
+		fieldId,
+		fieldValue,
+		alertUnit,
+	}) => {
+		console.log("fieldValue")
+		console.log(fieldValue)
+		return (
+		<Stack
+			direction={"row"}
+			sx={{
+				width: "50%",
+				justifyContent: "space-between",
+			}}
+		>
+			<Box>
+				<Checkbox
+					id={checkboxId}
+					label={checkboxLabel}
+					value={checkboxValue??""}
+					isChecked= {isChecked??false}
+					onChange={onChange}
+				/>
+			</Box>
+			<Stack
+				direction={"row"}
+				sx={{
+					justifyContent: "flex-end",
+				}}
+			>
+				<Field
+					type="number"
+					className="field-infrastructure-alert"
+					id={fieldId}
+					value={fieldValue}
+				></Field>
+				<Typography
+					component="p"
+					m={theme.spacing(3)}
+				>
+					{alertUnit}
+				</Typography>
+			</Stack>
+		</Stack>
+	);}
+
 	const MS_PER_MINUTE = 60000;
 	const { user, authToken } = useSelector((state) => state.auth);
 	const monitorState = useSelector((state) => state.infrastructureMonitor);
@@ -30,19 +80,16 @@ const CreateInfrastructureMonitor = () => {
 		"monitor-url": "url",
 		"monitor-name": "name",
 		"monitor-secret": "secret",
-		"monitor-checks-http": "type",
-		"monitor-checks-ping": "type",
 		"notify-email-default": "notification-email",
 	};
 
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
 		url: "",
 		name: "",
-		type: "http",
 		notifications: [],
 		interval: 1,
+		threshold: {cpu: "", disk: "", memory: ""}
 	});
-	const [https, setHttps] = useState(true);
 	const [errors, setErrors] = useState({});
 
 	const handleChange = (event, name) => {
@@ -80,7 +127,7 @@ const CreateInfrastructureMonitor = () => {
 				[name]: value,
 			}));
 
-			const { error } = monitorValidation.validate(
+			const { error } = infrastractureMonitorValidation.validate(
 				{ [name]: value },
 				{ abortEarly: false }
 			);
@@ -98,20 +145,15 @@ const CreateInfrastructureMonitor = () => {
 		event.preventDefault();
 		//obj to submit
 		let form = {
-			url:
-				//preprending protocol for url
-				infrastructureMonitor.type === "http"
-					? `http${https ? "s" : ""}://` + infrastructureMonitor.url
-					: infrastructureMonitor.url,
+			url:infrastructureMonitor.url,
 			name:
 				infrastructureMonitor.name === ""
 					? infrastructureMonitor.url
 					: infrastructureMonitor.name,
-			type: infrastructureMonitor.type,
 			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
 		};
 
-		const { error } = monitorValidation.validate(form, {
+		const { error } =infrastractureMonitorValidation.validate(form, {
 			abortEarly: false,
 		});
 
@@ -287,166 +329,75 @@ const CreateInfrastructureMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
-						<Stack
-							direction={"row"}
-							sx={{
-								justifyContent: "space-between",
-								width: "75%",
-							}}
-						>
-							<Box>
-								<Checkbox
-									id="customize-cpu"
-									label={`CPU`}
-									value={true}
-									onChange={(event) => handleChange(event)}
-								/>
-							</Box>
-							<Stack
-								direction={"row"}
-								sx={{
-									justifyContent: "flex-end",
-								}}
-							>
-								<Box>
-									<Field type="text"></Field>
-								</Box>
-								<Box>
-									<Typography
-										component="p"
-										m={theme.spacing(3)}
-									>
-										%
-									</Typography>
-								</Box>
-							</Stack>
-						</Stack>
-						<Stack
-							direction={"row"}
-							sx={{
-								width: "75%",
-								justifyContent: "space-between",
-							}}
-						>
-							<Box>
-								<Checkbox
-									id="customize-memory"
-									label={`Memory`}
-									value={true}
-									onChange={(event) => handleChange(event)}
-								/>
-							</Box>
-							<Stack
-								direction={"row"}
-								sx={{
-									justifyContent: "flex-end",
-								}}
-							>
-								<Field type="text"></Field>
-								<Typography
-									component="p"
-									m={theme.spacing(3)}
-								>
-									%
-								</Typography>
-							</Stack>
-						</Stack>
-
-						<Stack
-							direction={"row"}
-							sx={{
-								width: "75%",
-								justifyContent: "space-between",
-							}}
-						>
-							<Box>
-								<Checkbox
-									id="customize-disk"
-									label={`Disk`}
-									value={user?.email}
-									onChange={(event) => handleChange(event)}
-								/>
-							</Box>
-							<Stack
-								direction={"row"}
-								sx={{
-									justifyContent: "flex-end",
-								}}
-							>
-								<Field type="text"></Field>
-								<Typography
-									component="p"
-									m={theme.spacing(3)}
-								>
-									%
-								</Typography>
-							</Stack>
-						</Stack>
-
-						<Stack
-							direction={"row"}
-							sx={{
-								width: "75%",
-								justifyContent: "space-between",
-							}}
-						>
-							<Box>
-								<Checkbox
-									id="customize-temparature"
-									label={`Temparature`}
-									value={user?.email}
-									onChange={(event) => handleChange(event)}
-								/>
-							</Box>
-							<Stack
-								direction={"row"}
-								sx={{
-									justifyContent: "flex-end",
-								}}
-							>
-								<Field type="text"></Field>
-								<Typography
-									component="p"
-									m={theme.spacing(3)}
-								>
-									°C
-								</Typography>
-							</Stack>
-						</Stack>
-
-						<Stack
-							direction={"row"}
-							sx={{
-								width: "75%",
-								justifyContent: "space-between",
-							}}
-						>
-							<Box>
-								<Checkbox
-									id="customize-systemload"
-									label={`System load`}
-									value={user?.email}
-									onChange={(event) => handleChange(event)}
-								/>
-							</Box>
-							<Stack
-								direction={"row"}
-								sx={{
-									justifyContent: "flex-end",
-								}}
-							>
-								<Field type="text"></Field>
-								<Typography
-									component="p"
-									m={theme.spacing(3)}
-								>
-									%
-								</Typography>
-							</Stack>
-						</Stack>
+						<CustomAlertStack
+							checkboxId="customize-cpu"
+							checkboxLabel="CPU"
+							checkboxValue={""}
+							fieldId={"usage_cpu"}
+							fieldValue={infrastructureMonitor.threshold['cpu']??""}
+							onChange={(event) => handleChange(event)}
+							alertUnit="%"
+						/>
+						<CustomAlertStack
+							checkboxId="customize-memory"
+							checkboxLabel="Memory"
+							checkboxValue={""}
+							fieldId={"usage_memory"}
+							fieldValue={infrastructureMonitor.threshold['memory']??""}
+							onChange={(event) => handleChange(event)}
+							alertUnit="%"
+						/>
+						<CustomAlertStack
+							checkboxId="customize-disk"
+							checkboxLabel="Disk"
+							checkboxValue={""}
+							fieldId={"usage_disk"}
+							fieldValue={infrastructureMonitor.threshold['disk']??""}
+							onChange={(event) => handleChange(event)}
+							alertUnit="%"
+						/>
+						{/* <CustomAlertStack
+							checkboxId="customize-temperature"
+							checkboxLabel="Temperature"
+							checkboxValue={true}
+							onChange={(event) => handleChange(event)}
+							alertUnit="°C"
+						/>
+						<CustomAlertStack
+							checkboxId="customize-systemload"
+							checkboxLabel="System load"
+							checkboxValue={true}
+							onChange={(event) => handleChange(event)}
+							alertUnit="%"
+						/>
+						<CustomAlertStack
+							checkboxId="customize-swap"
+							checkboxLabel="Swap used"
+							checkboxValue={""}
+							onChange={(event) => handleChange(event)}
+							alertUnit="%"
+						/> */}
 					</Stack>
 				</ConfigBox>
-
+				<ConfigBox>
+					<Box>
+						<Typography component="h2">Logging retention</Typography>
+						<Typography component="p">
+							Configure how logn logs are stored. After this period, the Uptime Manager
+							will start deleting oldest data.
+						</Typography>
+					</Box>
+					{/* <Stack gap={theme.spacing(6)}>
+						<CustomAlertStack
+							checkboxId="retain-log"
+							checkboxLabel="Retain data for"
+							checkboxValue={""}
+							fieldId={"retries_max"}
+							onChange={(event) => handleChange(event)}
+							alertUnit="days"
+						/>
+					</Stack> */}
+				</ConfigBox>
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">Advanced settings</Typography>
@@ -459,6 +410,14 @@ const CreateInfrastructureMonitor = () => {
 							onChange={(event) => handleChange(event, "interval")}
 							items={frequencies}
 						/>
+						<Field
+							type={"text"}
+							id="monitor-retries"
+							label="Maximum retries before the service is marked as down"
+							value={infrastructureMonitor.url}
+							onChange={handleChange}
+							error={errors["url"]}
+						/>						
 					</Stack>
 				</ConfigBox>
 				<Stack
