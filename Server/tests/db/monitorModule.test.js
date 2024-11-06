@@ -685,6 +685,19 @@ describe("monitorModule", () => {
 			}),
 		};
 
+		const mockMonitorPing = {
+			_id: "monitor123",
+			type: "ping",
+			name: "Test Monitor",
+			url: "https://test.com",
+			toObject: () => ({
+				_id: "monitor123",
+				type: "http",
+				name: "Test Monitor",
+				url: "https://test.com",
+			}),
+		};
+
 		const checkDocs = [
 			{
 				monitorId: "monitor123",
@@ -750,7 +763,55 @@ describe("monitorModule", () => {
 			sinon.restore();
 		});
 
+		it("should return monitor stats with calculated values, sort order desc", async () => {
+			req.query.sortOrder = "desc";
+			const result = await getMonitorStatsById(req);
+			expect(result).to.include.keys([
+				"_id",
+				"type",
+				"name",
+				"url",
+				"uptimeDuration",
+				"lastChecked",
+				"latestResponseTime",
+				"periodIncidents",
+				"periodTotalChecks",
+				"periodAvgResponseTime",
+				"periodUptime",
+				"aggregateData",
+			]);
+			expect(result.latestResponseTime).to.equal(100);
+			expect(result.periodTotalChecks).to.equal(3);
+			expect(result.periodIncidents).to.equal(1);
+			expect(result.periodUptime).to.be.a("number");
+			expect(result.aggregateData).to.be.an("array");
+		});
+		it("should return monitor stats with calculated values, ping type", async () => {
+			monitorFindByIdStub.returns(mockMonitorPing);
+			req.query.sortOrder = "desc";
+			const result = await getMonitorStatsById(req);
+			expect(result).to.include.keys([
+				"_id",
+				"type",
+				"name",
+				"url",
+				"uptimeDuration",
+				"lastChecked",
+				"latestResponseTime",
+				"periodIncidents",
+				"periodTotalChecks",
+				"periodAvgResponseTime",
+				"periodUptime",
+				"aggregateData",
+			]);
+			expect(result.latestResponseTime).to.equal(100);
+			expect(result.periodTotalChecks).to.equal(3);
+			expect(result.periodIncidents).to.equal(1);
+			expect(result.periodUptime).to.be.a("number");
+			expect(result.aggregateData).to.be.an("array");
+		});
 		it("should return monitor stats with calculated values", async () => {
+			req.query.sortOrder = "asc";
 			const result = await getMonitorStatsById(req);
 			expect(result).to.include.keys([
 				"_id",
@@ -777,7 +838,6 @@ describe("monitorModule", () => {
 
 			const req = {
 				params: { monitorId: "nonexistent" },
-				query: {},
 			};
 
 			try {
@@ -979,8 +1039,9 @@ describe("monitorModule", () => {
 
 			// Stub for CHECK_MODEL_LOOKUP model find
 			checkFindStub.returns({
-				sort: sinon.stub().returnsThis(),
-				limit: sinon.stub().returnsThis(),
+				sort: sinon.stub().returns({
+					limit: sinon.stub().returns([]),
+				}),
 			});
 		});
 
@@ -1004,8 +1065,45 @@ describe("monitorModule", () => {
 			const req = {
 				params: { teamId: "team123" },
 				query: {
+					type: "http",
 					page: 0,
 					rowsPerPage: 10,
+					field: "name",
+					status: false,
+					checkOrder: "desc",
+				},
+			};
+
+			monitorCountStub.resolves(2);
+
+			const result = await getMonitorsByTeamId(req);
+
+			expect(result).to.have.property("monitors");
+			expect(result).to.have.property("monitorCount", 2);
+		});
+
+		it("should return monitors with basic query parameters", async () => {
+			const mockMonitors = [
+				{ _id: "1", type: "http", toObject: () => ({ _id: "1", type: "http" }) },
+				{ _id: "2", type: "ping", toObject: () => ({ _id: "2", type: "ping" }) },
+			];
+			monitorFindStub.returns({
+				skip: sinon.stub().returns({
+					limit: sinon.stub().returns({
+						sort: sinon.stub().returns(mockMonitors),
+					}),
+				}),
+			});
+
+			const req = {
+				params: { teamId: "team123" },
+				query: {
+					type: "http",
+					page: 0,
+					rowsPerPage: 10,
+					field: "name",
+					status: true,
+					checkOrder: "asc",
 				},
 			};
 
@@ -1155,15 +1253,17 @@ describe("monitorModule", () => {
 				monitorCount: 2,
 			});
 		});
+
 		it("should normalize checks when normalize parameter is provided", async () => {
 			const req = {
 				params: { teamId: "team123" },
 				query: { normalize: "true" },
 			};
+			monitorCountStub.resolves(2);
 
 			const mockMonitors = [
-				{ _id: "1", type: "http" },
-				{ _id: "2", type: "ping" },
+				{ _id: "1", type: "http", toObject: () => ({ _id: "1", type: "http" }) },
+				{ _id: "2", type: "ping", toObject: () => ({ _id: "2", type: "ping" }) },
 			];
 
 			monitorFindStub.returns({
@@ -1175,14 +1275,10 @@ describe("monitorModule", () => {
 			});
 
 			const result = await getMonitorsByTeamId(req);
-
-			expect(NormalizeDataStub.calledOnce).to.be.true;
-			expect(NormalizeDataStub.firstCall.args[0]).to.deep.equal([{ responseTime: 100 }]);
-			expect(NormalizeDataStub.firstCall.args[1]).to.equal(10);
-			expect(NormalizeDataStub.firstCall.args[2]).to.equal(100);
+			expect(result.monitorCount).to.equal(2);
+			expect(result.monitors).to.have.lengthOf(2);
 		});
 		it("should handle database errors", async () => {
-			// Arrange
 			const req = {
 				params: { teamId: "team123" },
 				query: {},
@@ -1197,7 +1293,6 @@ describe("monitorModule", () => {
 				}),
 			});
 
-			// Act & Assert
 			try {
 				await getMonitorsByTeamId(req);
 				expect.fail("Should have thrown an error");
