@@ -65,7 +65,7 @@ const Checkbox = ({
 			sx={{
 				borderRadius: theme.shape.borderRadius,
 				p: theme.spacing(2.5),
-				m: theme.spacing(-2.5),
+				//m: theme.spacing(-2.5),
 				"& .MuiButtonBase-root": {
 					width: theme.spacing(10),
 					p: 0,
