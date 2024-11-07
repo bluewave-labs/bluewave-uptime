@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 // import "./App.css";
@@ -79,7 +79,8 @@ function App() {
 					<Route
 						exact
 						path="/"
-						element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
+						/* TODO redirect to /monitors */
+						element={<Navigate to="/monitors" />}
 					/>
 					<Route
 						path="/monitors"

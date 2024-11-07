@@ -114,7 +114,6 @@ function Sidebar() {
 	const [popup, setPopup] = useState();
 	const { user } = useSelector((state) => state.auth);
 
-	// Remove demo password if demo
 	const accountMenuItem = menu.find((item) => item.name === "Account");
 	if (user.role?.includes("demo") && accountMenuItem) {
 		accountMenuItem.nested = accountMenuItem.nested.filter((item) => {
@@ -149,7 +148,7 @@ function Sidebar() {
 		if (matchedKey) {
 			setOpen((prev) => ({ ...prev, [PATH_MAP[matchedKey]]: true }));
 		}
-	}, []);
+	}, [location]);
 
 	return (
 		<Stack
@@ -304,6 +303,7 @@ function Sidebar() {
 							</ListItemButton>
 						</Tooltip>
 					) : collapsed ? (
+						/* TODO Do we ever get here? */
 						<React.Fragment key={item.name}>
 							<Tooltip
 								placement="right"
