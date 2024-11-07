@@ -48,7 +48,6 @@ const createCheck = async (checkData) => {
 		}
 
 		await monitor.save();
-		console.log("check", check);
 		return check;
 	} catch (error) {
 		error.service = SERVICE_NAME;
@@ -105,7 +104,7 @@ const getChecks = async (req) => {
 		const { monitorId } = req.params;
 		let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 		// Default limit to 0 if not provided
-		limit = limit === "undefined" ? 0 : limit;
+		limit = limit === undefined ? 0 : limit;
 
 		// Default sort order is newest -> oldest
 		sortOrder = sortOrder === "asc" ? 1 : -1;
