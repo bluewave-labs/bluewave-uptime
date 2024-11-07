@@ -16,21 +16,40 @@ import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { buildErrors, hasValidationErrors } from "../../../Validation/error";
 
 const CreateInfrastructureMonitor = () => {
+	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
+		url: "",
+		name: "",
+		notifications: [],
+		interval: 1,
+		cpu: false,
+		usage_cpu: "",
+		secret: "",
+	});
+
+	const MS_PER_MINUTE = 60000;
+	const { user, authToken } = useSelector((state) => state.auth);
+	const monitorState = useSelector((state) => state.infrastructureMonitor);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const theme = useTheme();
+
+	const idMap = {
+		"notify-email-default": "notification-email",
+	};
+
+	const [errors, setErrors] = useState({});
+
 	const CustomAlertStack = ({
 		checkboxId,
 		checkboxLabel,
-		checkboxValue,		
-		isChecked,
-		onChange,
 		fieldId,
-		fieldValue,
 		alertUnit,
-	}) => {
-		console.log("fieldValue")
-		console.log(fieldValue)
-		return (
+		onChange,
+		onBlur,
+	}) => (
 		<Stack
 			direction={"row"}
 			sx={{
@@ -42,9 +61,8 @@ const CreateInfrastructureMonitor = () => {
 				<Checkbox
 					id={checkboxId}
 					label={checkboxLabel}
-					value={checkboxValue??""}
-					isChecked= {isChecked??false}
-					onChange={onChange}
+					isChecked={infrastructureMonitor[checkboxId]}
+					onChange={handleCustomAlertCheckChange}
 				/>
 			</Box>
 			<Stack
@@ -57,7 +75,11 @@ const CreateInfrastructureMonitor = () => {
 					type="number"
 					className="field-infrastructure-alert"
 					id={fieldId}
-					value={fieldValue}
+					value={infrastructureMonitor[fieldId]}
+					onBlur={onBlur}
+					onChange={onChange}
+					error={errors[`${fieldId}`]}
+					disabled={!infrastructureMonitor[checkboxId]}
 				></Field>
 				<Typography
 					component="p"
@@ -67,34 +89,43 @@ const CreateInfrastructureMonitor = () => {
 				</Typography>
 			</Stack>
 		</Stack>
-	);}
+	);
 
-	const MS_PER_MINUTE = 60000;
-	const { user, authToken } = useSelector((state) => state.auth);
-	const monitorState = useSelector((state) => state.infrastructureMonitor);
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-	const theme = useTheme();
-
-	const idMap = {
-		"monitor-url": "url",
-		"monitor-name": "name",
-		"monitor-secret": "secret",
-		"notify-email-default": "notification-email",
+	const handleCustomAlertCheckChange = (event) => {
+		const { value, id } = event.target;
+		setInfrastructureMonitor((prev) => {
+			const newState = {
+				[id]: prev[id] == undefined && value == "on" ? true : !prev[id],
+			};
+			return {
+				...prev,
+				...newState,
+				[`usage_${id}`]: newState[id] ? prev[`usage_${id}`] : "",
+			};
+		});
+		// Remove the error if unchecked
+		setErrors((prev) => {
+			return buildErrors(prev, [`usage_${id}`]);
+		});
 	};
 
-	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
-		url: "",
-		name: "",
-		notifications: [],
-		interval: 1,
-		threshold: {cpu: "", disk: "", memory: ""}
-	});
-	const [errors, setErrors] = useState({});
-
-	const handleChange = (event, name) => {
+	const handleBlur = (event) => {
 		const { value, id } = event.target;
-		if (!name) name = idMap[id];
+		const { error } = infrastractureMonitorValidation.validate(
+			{ [id]: value },
+			{
+				abortEarly: false,
+			}
+		);
+		setErrors((prev) => {
+			return buildErrors(prev, id, error);
+		});
+	};
+
+	const handleChange = (event, appendedId) => {
+		event.preventDefault();
+		const { value, id } = event.target;
+		let name = appendedId ?? idMap[id] ?? id;
 
 		if (name.includes("notification-")) {
 			name = name.replace("notification-", "");
@@ -126,67 +157,59 @@ const CreateInfrastructureMonitor = () => {
 				...prev,
 				[name]: value,
 			}));
-
-			const { error } = infrastractureMonitorValidation.validate(
-				{ [name]: value },
-				{ abortEarly: false }
-			);
-			console.log(error);
-			setErrors((prev) => {
-				const updatedErrors = { ...prev };
-				if (error) updatedErrors[name] = error.details[0].message;
-				else delete updatedErrors[name];
-				return updatedErrors;
-			});
 		}
 	};
 
+	const generatePayload = (form) => {
+		let thresholds = {};
+		thresholds.usage_cpu = form.usage_cpu;
+		thresholds.usage_memory = form.usage_memory;
+		thresholds.usage_disk = form.usage_disk;
+
+		delete form.cpu;
+		delete form.memory;
+		delete form.disk;
+
+		delete form.usage_cpu;
+		delete form.usage_memory;
+		delete form.usage_disk;
+		form = {
+			...form,
+			description: form.name,
+			teamId: user.teamId,
+			userId: user._id,
+			type: "hardware",
+			notifications: infrastructureMonitor.notifications,
+			thresholds,
+		};
+		return form;
+	};
 	const handleCreateInfrastructureMonitor = async (event) => {
 		event.preventDefault();
-		//obj to submit
 		let form = {
-			url:infrastructureMonitor.url,
+			...infrastructureMonitor,
 			name:
 				infrastructureMonitor.name === ""
 					? infrastructureMonitor.url
 					: infrastructureMonitor.name,
 			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
 		};
-
-		const { error } =infrastractureMonitorValidation.validate(form, {
-			abortEarly: false,
-		});
-
-		if (error) {
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
-			createToast({ body: "Error validation data." });
+		delete form.notifications;
+		if (hasValidationErrors(form, infrastractureMonitorValidation, setErrors)) {
+			return;
 		} else {
-			if (infrastructureMonitor.type === "http") {
-				const checkEndpointAction = await dispatch(
-					checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
-				);
-				if (checkEndpointAction.meta.requestStatus === "rejected") {
-					createToast({
-						body: "The endpoint you entered doesn't resolve. Check the URL again.",
-					});
-					setErrors({ url: "The entered URL is not reachable." });
-					return;
-				}
+			const checkEndpointAction = await dispatch(
+				checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
+			);
+			if (checkEndpointAction.meta.requestStatus === "rejected") {
+				createToast({
+					body: "The endpoint you entered doesn't resolve. Check the URL again.",
+				});
+				setErrors({ url: "The entered URL is not reachable." });
+				return;
 			}
-
-			form = {
-				...form,
-				description: form.name,
-				teamId: user.teamId,
-				userId: user._id,
-				notifications: infrastructureMonitor.notifications,
-			};
 			const action = await dispatch(
-				createInfrastructureMonitor({ authToken, monitor: form })
+				createInfrastructureMonitor({ authToken, monitor: generatePayload(form) })
 			);
 			if (action.meta.requestStatus === "fulfilled") {
 				createToast({ body: "Infrastructure monitor created successfully!" });
@@ -199,12 +222,12 @@ const CreateInfrastructureMonitor = () => {
 
 	//select values
 	const frequencies = [
-		{ _id: 1, name: "15 seconds" },
-		{ _id: 2, name: "30 seconds" },
-		{ _id: 3, name: "1 minute" },
-		{ _id: 4, name: "2 minutes" },
-		{ _id: 5, name: "5 minutes" },
-		{ _id: 6, name: "10 minutes" },
+		{ _id: 15, name: "15 seconds" },
+		{ _id: 30, name: "30 seconds" },
+		{ _id: 60, name: "1 minute" },
+		{ _id: 120, name: "2 minutes" },
+		{ _id: 300, name: "5 minutes" },
+		{ _id: 600, name: "10 minutes" },
 	];
 
 	return (
@@ -252,28 +275,31 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(15)}>
 						<Field
-							type={"text"}
-							id="monitor-url"
+							type="text"
+							id="url"
 							label="Server URL"
 							placeholder="https://"
 							value={infrastructureMonitor.url}
+							onBlur={handleBlur}
 							onChange={handleChange}
 							error={errors["url"]}
 						/>
 						<Field
 							type="text"
-							id="monitor-name"
+							id="name"
 							label="Friendly name(optional)"
 							isOptional={true}
 							value={infrastructureMonitor.name}
+							onBlur={handleBlur}
 							onChange={handleChange}
 							error={errors["name"]}
 						/>
 						<Field
 							type="text"
-							id="monitor-secret"
+							id="secret"
 							label="Authorization secret"
 							value={infrastructureMonitor.secret}
+							onBlur={handleBlur}
 							onChange={handleChange}
 							error={errors["secret"]}
 						/>
@@ -295,7 +321,8 @@ const CreateInfrastructureMonitor = () => {
 								(notification) => notification.type === "email"
 							)}
 							value={user?.email}
-							onChange={(event) => handleChange(event)}
+							onChange={(e) => handleChange(e)}
+							onBlur={handleBlur}
 						/>
 						<Checkbox
 							id="notify-email"
@@ -303,6 +330,7 @@ const CreateInfrastructureMonitor = () => {
 							isChecked={false}
 							value=""
 							onChange={() => logger.warn("disabled")}
+							onBlur={handleBlur}
 							isDisabled={true}
 						/>
 						<Box mx={theme.spacing(16)}>
@@ -312,6 +340,7 @@ const CreateInfrastructureMonitor = () => {
 								placeholder="name@gmail.com"
 								value=""
 								onChange={() => logger.warn("disabled")}
+								onBlur={handleBlur}
 							/>
 							<Typography mt={theme.spacing(4)}>
 								You can separate multiple emails with a comma
@@ -330,51 +359,57 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(6)}>
 						<CustomAlertStack
-							checkboxId="customize-cpu"
+							checkboxId="cpu"
 							checkboxLabel="CPU"
 							checkboxValue={""}
 							fieldId={"usage_cpu"}
-							fieldValue={infrastructureMonitor.threshold['cpu']??""}
-							onChange={(event) => handleChange(event)}
+							fieldValue={infrastructureMonitor.usage_cpu ?? ""}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="%"
 						/>
-						<CustomAlertStack
-							checkboxId="customize-memory"
+						{/* <CustomAlertStack
+							checkboxId="memory"
 							checkboxLabel="Memory"
 							checkboxValue={""}
 							fieldId={"usage_memory"}
-							fieldValue={infrastructureMonitor.threshold['memory']??""}
-							onChange={(event) => handleChange(event)}
+							fieldValue={infrastructureMonitor.usage_memory??""}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="%"
 						/>
 						<CustomAlertStack
-							checkboxId="customize-disk"
+							checkboxId="disk"
 							checkboxLabel="Disk"
 							checkboxValue={""}
 							fieldId={"usage_disk"}
-							fieldValue={infrastructureMonitor.threshold['disk']??""}
-							onChange={(event) => handleChange(event)}
+							fieldValue={infrastructureMonitor.usage_disk??""}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="%"
-						/>
+						/> */}
 						{/* <CustomAlertStack
 							checkboxId="customize-temperature"
 							checkboxLabel="Temperature"
 							checkboxValue={true}
-							onChange={(event) => handleChange(event)}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="°C"
 						/>
 						<CustomAlertStack
 							checkboxId="customize-systemload"
 							checkboxLabel="System load"
 							checkboxValue={true}
-							onChange={(event) => handleChange(event)}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="%"
 						/>
 						<CustomAlertStack
 							checkboxId="customize-swap"
 							checkboxLabel="Swap used"
-							checkboxValue={""}
-							onChange={(event) => handleChange(event)}
+							checkboxValue={""}							
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="%"
 						/> */}
 					</Stack>
@@ -393,7 +428,8 @@ const CreateInfrastructureMonitor = () => {
 							checkboxLabel="Retain data for"
 							checkboxValue={""}
 							fieldId={"retries_max"}
-							onChange={(event) => handleChange(event)}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							alertUnit="days"
 						/>
 					</Stack> */}
@@ -404,20 +440,22 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(12)}>
 						<Select
-							id="monitor-interval"
+							id="interval"
 							label="Check frequency"
 							value={infrastructureMonitor.interval || 1}
-							onChange={(event) => handleChange(event, "interval")}
+							onChange={(e) => handleChange(e, "interval")}
+							onBlur={handleBlur}
 							items={frequencies}
 						/>
-						<Field
-							type={"text"}
+						{/* <Field
+							type={"number"}
 							id="monitor-retries"
 							label="Maximum retries before the service is marked as down"
 							value={infrastructureMonitor.url}
 							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors["url"]}
-						/>						
+						/>						 */}
 					</Stack>
 				</ConfigBox>
 				<Stack
@@ -428,7 +466,6 @@ const CreateInfrastructureMonitor = () => {
 						variant="contained"
 						color="primary"
 						onClick={handleCreateInfrastructureMonitor}
-						disabled={Object.keys(errors).length !== 0 && true}
 						loading={monitorState?.isLoading}
 					>
 						Create infrastructure monitor

@@ -26,6 +26,10 @@ const hasValidationErrors = (form, validation, setErrors) => {
 			) {
 				newErrors[err.path[0]] = err.message ?? "Validation error";
 			}
+			// Handle conditionally usage number required cases
+			if (!form.cpu || (form.cpu && form.usage_cpu)) {
+				delete newErrors["usage_cpu"];
+			}
 		});
 		if (Object.keys(newErrors).length > 0) {
 			setErrors(newErrors);

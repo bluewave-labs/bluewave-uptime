@@ -181,10 +181,14 @@ const infrastractureMonitorValidation = joi.object({
 	name: joi.string().trim().max(50).allow("").messages({
 		"string.max": "This field should not exceed the 50 characters limit.",
 	}),
-	type: joi.string().trim().messages({ "string.empty": "This field is required." }),
-	usage_cpu: joi.number(),
-	usage_memory: joi.number(),
-	usage_disk: joi.number(),
+	secret: joi.string().trim().messages({ "string.empty": "This field is required." }),		
+	usage_cpu: joi.number().messages({
+		"number.base": "CPU threshold must be a number.",
+		"any.required": "CPU threshold is required.",
+	}),		
+	cpu:joi.boolean(),
+	// usage_memory: joi.number(),
+	// usage_disk: joi.number(),
 	// usage_temperature: joi.number().messages({
 	// 	"number.base": "Temperature must be a number.",
 	// }),
@@ -194,6 +198,10 @@ const infrastractureMonitorValidation = joi.object({
 	// usage_swap: joi.number().messages({
 	// 	"number.base": "Swap used must be a number.",
 	// }),
+	interval: joi.number().messages({
+		"number.base": "Frequency must be a number.",
+		"any.required": "Frequency is required.",
+	}),		
 });
 
 export {
