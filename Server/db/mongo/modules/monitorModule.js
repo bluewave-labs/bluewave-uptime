@@ -212,7 +212,7 @@ const groupChecksByTime = (checks, dateRange) => {
 	return checks.reduce((acc, check) => {
 		// Validate the date
 		const checkDate = new Date(check.createdAt);
-		if (isNaN(checkDate.getTime()) || checkDate.getTime() === 0) {
+		if (Number.isNaN(checkDate.getTime()) || checkDate.getTime() === 0) {
 			return acc;
 		}
 
@@ -238,7 +238,7 @@ const calculateGroupStats = (group) => {
 	const totalChecks = group.checks.length;
 
 	const checksWithResponseTime = group.checks.filter(
-		(check) => typeof check.responseTime === "number" && !isNaN(check.responseTime)
+		(check) => typeof check.responseTime === "number" && !Number.isNaN(check.responseTime)
 	);
 
 	return {
