@@ -12,6 +12,7 @@ const background = {
 	fill: "#F4F4F4",
 	accent: "#f9fafb",
 };
+
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
 
 const fontFamilyDefault =
@@ -27,6 +28,18 @@ const lightTheme = createTheme({
 		h2: { fontSize: 14.5, color: text.secondary, fontWeight: 400 },
 		body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
 		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
+	},
+	chart: {
+		header: {
+			fontWeight: 400,
+			fill: text.tertiary,
+			fontSize: 11,
+		},
+		subheader: {
+			fontWeight: 400,
+			fill: text.tertiary,
+			fontSize: 9,
+		},
 	},
 	palette: {
 		primary: { main: "#1570EF" },
