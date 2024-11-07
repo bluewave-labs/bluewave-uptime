@@ -8,7 +8,6 @@ import { ToastContainer } from "react-toastify";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register/Register";
-import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
@@ -30,8 +29,9 @@ import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
-import withAdminCheck from "./HOC/withAdminCheck";
-import withAdminProp from "./HOC/withAdminProp";
+import HomeLayout from "./Components/Layouts/HomeLayout";
+import withAdminCheck from "./Components/HOC/withAdminCheck";
+import withAdminProp from "./Components/HOC/withAdminProp";
 import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
@@ -39,6 +39,7 @@ import { CssBaseline } from "@mui/material";
 import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
+import { Infrastructure } from "./Pages/Infrastructure";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -97,6 +98,27 @@ function App() {
 						element={<ProtectedRoute Component={Configure} />}
 					/>
 					<Route
+						path="pagespeed"
+						element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
+					/>
+					<Route
+						path="pagespeed/create"
+						element={<ProtectedRoute Component={CreatePageSpeed} />}
+					/>
+					<Route
+						path="pagespeed/:monitorId"
+						element={<ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />}
+					/>
+					<Route
+						path="pagespeed/configure/:monitorId"
+						element={<ProtectedRoute Component={PageSpeedConfigure} />}
+					/>
+					<Route
+						path="infrastructure"
+						element={<ProtectedRoute Component={Infrastructure} />}
+					/>
+
+					<Route
 						path="incidents/:monitorId?"
 						element={<ProtectedRoute Component={Incidents} />}
 					/>
@@ -151,22 +173,6 @@ function App() {
 								open="team"
 							/>
 						}
-					/>
-					<Route
-						path="pagespeed"
-						element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
-					/>
-					<Route
-						path="pagespeed/create"
-						element={<ProtectedRoute Component={CreatePageSpeed} />}
-					/>
-					<Route
-						path="pagespeed/:monitorId"
-						element={<ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />}
-					/>
-					<Route
-						path="pagespeed/configure/:monitorId"
-						element={<ProtectedRoute Component={PageSpeedConfigure} />}
 					/>
 				</Route>
 

@@ -54,6 +54,7 @@ const menu = [
 		nested: [
 			{ name: "Monitors", path: "monitors", icon: <Monitors /> },
 			{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
+			{ name: "Infrastructure", path: "infrastructure", icon: <Integrations /> },
 		],
 	},
 	{ name: "Incidents", path: "incidents", icon: <Incidents /> },
@@ -181,7 +182,13 @@ function Sidebar() {
 					direction="row"
 					alignItems="center"
 					gap={theme.spacing(4)}
-					onClick={() => window.open("https://github.com/bluewave-labs/bluewave-uptime", "_blank", "noreferrer")} 
+					onClick={() =>
+						window.open(
+							"https://github.com/bluewave-labs/bluewave-uptime",
+							"_blank",
+							"noreferrer"
+						)
+					}
 					sx={{ cursor: "pointer" }}
 				>
 					<Stack

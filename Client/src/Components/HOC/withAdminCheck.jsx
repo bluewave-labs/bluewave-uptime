@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { logger } from "../Utils/Logger";
-import { networkService } from "../main";
+import { logger } from "../../Utils/Logger";
+import { networkService } from "../../main";
 
 const withAdminCheck = (WrappedComponent) => {
 	const WithAdminCheck = (props) => {
