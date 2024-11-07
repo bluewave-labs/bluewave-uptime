@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material";
-import { gaugeHeaderCommon } from "./lightTheme"
 
 const text = {
 	primary: "#fafafa",
@@ -31,15 +30,17 @@ const darkTheme = createTheme({
 		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
 	},
 	chart: {
-		header :{
-			...gaugeHeaderCommon,
+		header: {
+			fontWeight: 400,
+			fill: text.tertiary,
 			fontSize: 11,
 		},
-		subheader :{
-			...gaugeHeaderCommon,
-			fontSize: 9
-		}
-	},	
+		subheader: {
+			fontWeight: 400,
+			fill: text.tertiary,
+			fontSize: 9,
+		},
+	},
 	palette: {
 		mode: "dark",
 		primary: { main: "#1570ef" },

@@ -13,11 +13,6 @@ const background = {
 	accent: "#f9fafb",
 };
 
-export const gaugeHeaderCommon = {
-	fontWeight: 400,
-	fill: text.tertiary
-}
-
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
 
 const fontFamilyDefault =
@@ -35,14 +30,16 @@ const lightTheme = createTheme({
 		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
 	},
 	chart: {
-		header :{
-			...gaugeHeaderCommon,
+		header: {
+			fontWeight: 400,
+			fill: text.tertiary,
 			fontSize: 11,
 		},
-		subheader :{
-			...gaugeHeaderCommon,
-			fontSize: 9
-		}
+		subheader: {
+			fontWeight: 400,
+			fill: text.tertiary,
+			fontSize: 9,
+		},
 	},
 	palette: {
 		primary: { main: "#1570EF" },
