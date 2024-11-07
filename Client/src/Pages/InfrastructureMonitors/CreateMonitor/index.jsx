@@ -23,7 +23,7 @@ const CreateInfrastructureMonitor = () => {
 		url: "",
 		name: "",
 		notifications: [],
-		interval: 1,
+		interval: 15,
 		cpu: false,
 		usage_cpu: "",
 		secret: "",
@@ -162,9 +162,9 @@ const CreateInfrastructureMonitor = () => {
 
 	const generatePayload = (form) => {
 		let thresholds = {};
-		thresholds.usage_cpu = form.usage_cpu;
-		thresholds.usage_memory = form.usage_memory;
-		thresholds.usage_disk = form.usage_disk;
+		if (form.usage_cpu) thresholds.usage_cpu = form.usage_cpu;
+		if (form.usage_memory) thresholds.usage_memory = form.usage_memory;
+		if (form.usage_disk) thresholds.usage_disk = form.usage_disk;
 
 		delete form.cpu;
 		delete form.memory;
@@ -442,7 +442,7 @@ const CreateInfrastructureMonitor = () => {
 						<Select
 							id="interval"
 							label="Check frequency"
-							value={infrastructureMonitor.interval || 1}
+							value={infrastructureMonitor.interval || 15}
 							onChange={(e) => handleChange(e, "interval")}
 							onBlur={handleBlur}
 							items={frequencies}
