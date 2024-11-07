@@ -29,6 +29,18 @@ const darkTheme = createTheme({
 		body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
 		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
 	},
+	chart: {
+		header: {
+			fontWeight: 400,
+			fill: text.tertiary,
+			fontSize: 11,
+		},
+		subheader: {
+			fontWeight: 400,
+			fill: text.tertiary,
+			fontSize: 9,
+		},
+	},
 	palette: {
 		mode: "dark",
 		primary: { main: "#1570ef" },
