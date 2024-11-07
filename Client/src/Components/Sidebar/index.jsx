@@ -19,7 +19,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { setMode, toggleSidebar } from "../../Features/UI/uiSlice";
+import { /* setMode, */ toggleSidebar } from "../../Features/UI/uiSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
@@ -29,7 +29,7 @@ import LogoutSvg from "../../assets/icons/logout.svg?react";
 import Support from "../../assets/icons/support.svg?react";
 import Dashboard from "../../assets/icons/dashboard.svg?react";
 import Account from "../../assets/icons/user-edit.svg?react";
-import StatusPages from "../../assets/icons/status-pages.svg?react";
+/* import StatusPages from "../../assets/icons/status-pages.svg?react"; */
 import Maintenance from "../../assets/icons/maintenance.svg?react";
 import Monitors from "../../assets/icons/monitors.svg?react";
 import Incidents from "../../assets/icons/incidents.svg?react";
