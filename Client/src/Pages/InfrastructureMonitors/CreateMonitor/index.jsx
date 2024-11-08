@@ -26,10 +26,15 @@ const CreateInfrastructureMonitor = () => {
 		interval: 15,
 		cpu: false,
 		usage_cpu: "",
+		memory: false,
+		usage_memory: "",		
+		disk: false,
+		usage_disk: "",				
 		secret: "",
 	});
 
 	const MS_PER_MINUTE = 60000;
+	const THRESHOLD_FIELD_PREFIX = "usage_"
 	const { user, authToken } = useSelector((state) => state.auth);
 	const monitorState = useSelector((state) => state.infrastructureMonitor);
 	const dispatch = useDispatch();
@@ -100,12 +105,14 @@ const CreateInfrastructureMonitor = () => {
 			return {
 				...prev,
 				...newState,
-				[`usage_${id}`]: newState[id] ? prev[`usage_${id}`] : "",
+				[`${THRESHOLD_FIELD_PREFIX}${id}`]: newState[id]
+					? prev[`${THRESHOLD_FIELD_PREFIX}${id}`]
+					: "",
 			};
 		});
 		// Remove the error if unchecked
 		setErrors((prev) => {
-			return buildErrors(prev, [`usage_${id}`]);
+			return buildErrors(prev, [`${THRESHOLD_FIELD_PREFIX}${id}`]);
 		});
 	};
 
@@ -162,17 +169,14 @@ const CreateInfrastructureMonitor = () => {
 
 	const generatePayload = (form) => {
 		let thresholds = {};
-		if (form.usage_cpu) thresholds.usage_cpu = form.usage_cpu;
-		if (form.usage_memory) thresholds.usage_memory = form.usage_memory;
-		if (form.usage_disk) thresholds.usage_disk = form.usage_disk;
+		Object.keys(form)
+			.filter((k) => k.startsWith(`${THRESHOLD_FIELD_PREFIX}`))
+			.map((k) => {
+				if (form[k]) thresholds[k] = form[k];
+				delete form[k];
+				delete form[k.substring(`${THRESHOLD_FIELD_PREFIX}`.length)];
+			});	
 
-		delete form.cpu;
-		delete form.memory;
-		delete form.disk;
-
-		delete form.usage_cpu;
-		delete form.usage_memory;
-		delete form.usage_disk;
 		form = {
 			...form,
 			description: form.name,
@@ -362,8 +366,8 @@ const CreateInfrastructureMonitor = () => {
 							checkboxId="cpu"
 							checkboxLabel="CPU"
 							checkboxValue={""}
-							fieldId={"usage_cpu"}
-							fieldValue={infrastructureMonitor.usage_cpu ?? ""}
+							fieldId={`${THRESHOLD_FIELD_PREFIX}cpu`}
+							fieldValue={infrastructureMonitor[`${THRESHOLD_FIELD_PREFIX}cpu`] ?? ""}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
@@ -372,8 +376,8 @@ const CreateInfrastructureMonitor = () => {
 							checkboxId="memory"
 							checkboxLabel="Memory"
 							checkboxValue={""}
-							fieldId={"usage_memory"}
-							fieldValue={infrastructureMonitor.usage_memory??""}
+							fieldId={`${THRESHOLD_FIELD_PREFIX}memory`}
+							fieldValue={infrastructureMonitor[`${THRESHOLD_FIELD_PREFIX}memory`] ?? ""}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
@@ -382,8 +386,8 @@ const CreateInfrastructureMonitor = () => {
 							checkboxId="disk"
 							checkboxLabel="Disk"
 							checkboxValue={""}
-							fieldId={"usage_disk"}
-							fieldValue={infrastructureMonitor.usage_disk??""}
+							fieldId={`${THRESHOLD_FIELD_PREFIX}disk`}
+							fieldValue={infrastructureMonitor[`${THRESHOLD_FIELD_PREFIX}disk`]??""}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
@@ -418,7 +422,7 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">Logging retention</Typography>
 						<Typography component="p">
-							Configure how logn logs are stored. After this period, the Uptime Manager
+							Configure how logs are stored. After this period, the Uptime Manager
 							will start deleting oldest data.
 						</Typography>
 					</Box>
