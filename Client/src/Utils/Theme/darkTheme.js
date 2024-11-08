@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { baseTheme } from "./globalTheme";
 
 const text = {
 	primary: "#fafafa",
@@ -15,20 +16,21 @@ const background = {
 };
 const border = { light: "#27272a", dark: "#36363e" };
 
-const fontFamilyDefault =
-	'"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
+/* const fontFamilyDefault =
+	'"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif'; */
 const shadow =
 	"0px 4px 24px -4px rgba(255, 255, 255, 0.03), 0px 3px 3px -3px rgba(255, 255, 255, 0.01)";
 
 const darkTheme = createTheme({
-	typography: {
-		fontFamily: fontFamilyDefault,
-		fontSize: 13,
-		h1: { fontSize: 22, color: text.primary, fontWeight: 500 },
-		h2: { fontSize: 14.5, color: text.secondary, fontWeight: 400 },
-		body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
-		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
-	},
+	...baseTheme,
+	// typography: {
+	// 	/* 	fontFamily: fontFamilyDefault, */
+	// 	fontSize: 13,
+	// 	h1: { fontSize: 22, color: text.primary, fontWeight: 500 },
+	// 	h2: { fontSize: 16, color: text.secondary, fontWeight: 400 },
+	// 	body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
+	// 	body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
+	// },
 	chart: {
 		header: {
 			fontWeight: 400,

@@ -1,4 +1,6 @@
 import { createTheme } from "@mui/material";
+import { typographyLevels } from "./constants";
+import { baseTheme } from "./globalTheme";
 
 const text = {
 	primary: "#1c2130",
@@ -15,30 +17,34 @@ const background = {
 
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
 
-const fontFamilyDefault =
-	'"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif';
+/* TODO stop using mui for fonts. Create text component based on emotion */
+
+/* const fontFamilyDefault =
+	'"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif'; */
+
 const shadow =
 	"0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
 const lightTheme = createTheme({
-	typography: {
-		fontFamily: fontFamilyDefault,
-		fontSize: 13,
-		h1: { fontSize: 22, color: text.primary, fontWeight: 500 },
-		h2: { fontSize: 14.5, color: text.secondary, fontWeight: 400 },
-		body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
-		body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
-	},
+	...baseTheme,
+	// typography: {
+	// 	/* fontFamily: fontFamilyDefault, */
+	// 	fontSize: typographyLevels.m,
+	// 	h1: { fontSize: typographyLevels.xl, color: text.primary, fontWeight: 500 },
+	// 	h2: { fontSize: typographyLevels.l, color: text.secondary, fontWeight: 400 },
+	// 	body1: { fontSize: typographyLevels.m, color: text.tertiary, fontWeight: 400 },
+	// 	body2: { fontSize: typographyLevels.s, color: text.tertiary, fontWeight: 400 },
+	// },
 	chart: {
 		header: {
 			fontWeight: 400,
 			fill: text.tertiary,
-			fontSize: 11,
+			fontSize: typographyLevels.m,
 		},
 		subheader: {
 			fontWeight: 400,
 			fill: text.tertiary,
-			fontSize: 9,
+			fontSize: typographyLevels.xs,
 		},
 	},
 	palette: {

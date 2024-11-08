@@ -79,7 +79,6 @@ function App() {
 					<Route
 						exact
 						path="/"
-						/* TODO redirect to /monitors */
 						element={<Navigate to="/monitors" />}
 					/>
 					<Route

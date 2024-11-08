@@ -150,6 +150,8 @@ function Sidebar() {
 		}
 	}, [location]);
 
+	/* TODO refactor this, there are a some ternaries and comments in the return  */
+
 	return (
 		<Stack
 			component="aside"

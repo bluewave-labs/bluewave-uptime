@@ -1,10 +1,11 @@
 import { useTheme } from "@emotion/react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Search from "../../../../Components/Inputs/Search";
 import MemoizedMonitorTable from "../MonitorTable";
 import { useState } from "react";
 import useDebounce from "../../../../Utils/debounce";
 import PropTypes from "prop-types";
+import { Heading } from "../../../../Components/Heading";
 
 const CurrentMonitoring = ({ totalMonitors, monitors, isAdmin }) => {
 	const theme = useTheme();
@@ -25,14 +26,8 @@ const CurrentMonitoring = ({ totalMonitors, monitors, isAdmin }) => {
 				alignItems="center"
 				mb={theme.spacing(8)}
 			>
-				<Typography
-					component="h2"
-					variant="h2"
-					fontWeight={500}
-					letterSpacing={-0.2}
-				>
-					Actively monitoring
-				</Typography>
+				<Heading component="h2">Actively monitoring</Heading>
+
 				<Box
 					className="current-monitors-counter"
 					color={theme.palette.text.primary}
