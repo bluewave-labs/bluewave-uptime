@@ -113,21 +113,6 @@ import {
 } from "./modules/monitorModule.js";
 
 //****************************************
-// Page Speed Checks
-//****************************************
-
-import {
-	createPageSpeedCheck,
-	getPageSpeedChecks,
-	deletePageSpeedChecksByMonitorId,
-} from "./modules/pageSpeedCheckModule.js";
-
-//****************************************
-// Hardware Checks
-//****************************************
-import { createHardwareCheck } from "./modules/hardwareCheckModule.js";
-
-//****************************************
 // Checks
 //****************************************
 
@@ -206,10 +191,6 @@ export default {
 	deleteChecksByTeamId,
 	updateChecksTTL,
 	deleteMonitorsByUserId,
-	createPageSpeedCheck,
-	getPageSpeedChecks,
-	deletePageSpeedChecksByMonitorId,
-	createHardwareCheck,
 	createMaintenanceWindow,
 	getMaintenanceWindowsByTeamId,
 	getMaintenanceWindowById,
