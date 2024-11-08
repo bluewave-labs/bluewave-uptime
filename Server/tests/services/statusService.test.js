@@ -98,6 +98,7 @@ describe("StatusService", () => {
 			expect(check.responseTime).to.equal(100);
 			expect(check.message).to.equal("Test message");
 		});
+
 		it("should build a check object for pagespeed type", () => {
 			const check = statusService.buildCheck({
 				monitorId: "test",
@@ -192,6 +193,26 @@ describe("StatusService", () => {
 			expect(check.memory).to.equal("memory");
 			expect(check.disk).to.equal("disk");
 			expect(check.host).to.equal("host");
+		});
+		it("should build a check for hardware type with missing data", () => {
+			const check = statusService.buildCheck({
+				monitorId: "test",
+				type: "hardware",
+				status: true,
+				responseTime: 100,
+				code: 200,
+				message: "Test message",
+				payload: {},
+			});
+			expect(check.monitorId).to.equal("test");
+			expect(check.status).to.be.true;
+			expect(check.statusCode).to.equal(200);
+			expect(check.responseTime).to.equal(100);
+			expect(check.message).to.equal("Test message");
+			expect(check.cpu).to.deep.equal({});
+			expect(check.memory).to.deep.equal({});
+			expect(check.disk).to.deep.equal({});
+			expect(check.host).to.deep.equal({});
 		});
 	});
 	describe("insertCheck", () => {

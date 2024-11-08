@@ -22,16 +22,12 @@
 			"variables": {
 				"PORT": {
 					"description": "API Port",
-					"enum": [
-						"5000"
-					],
+					"enum": ["5000"],
 					"default": "5000"
 				},
 				"API_PATH": {
 					"description": "API Base Path",
-					"enum": [
-						"api/v1"
-					],
+					"enum": ["api/v1"],
 					"default": "api/v1"
 				}
 			}
@@ -42,9 +38,7 @@
 			"variables": {
 				"API_PATH": {
 					"description": "API Base Path",
-					"enum": [
-						"api/v1"
-					],
+					"enum": ["api/v1"],
 					"default": "api/v1"
 				}
 			}
@@ -55,16 +49,12 @@
 			"variables": {
 				"PORT": {
 					"description": "API Port",
-					"enum": [
-						"5000"
-					],
+					"enum": ["5000"],
 					"default": "5000"
 				},
 				"API_PATH": {
 					"description": "API Base Path",
-					"enum": [
-						"api/v1"
-					],
+					"enum": ["api/v1"],
 					"default": "api/v1"
 				}
 			}
@@ -99,9 +89,7 @@
 	"paths": {
 		"/auth/register": {
 			"post": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Register a new user",
 				"requestBody": {
 					"content": {
@@ -137,23 +125,8 @@
 									},
 									"role": {
 										"type": "array",
-										"enum": [
-											[
-												"user"
-											],
-											[
-												"admin"
-											],
-											[
-												"superadmin"
-											],
-											[
-												"Demo"
-											]
-										],
-										"default": [
-											"superadmin"
-										]
+										"enum": [["user"], ["admin"], ["superadmin"], ["Demo"]],
+										"default": ["superadmin"]
 									},
 									"teamId": {
 										"type": "string",
@@ -200,19 +173,14 @@
 		},
 		"/auth/login": {
 			"post": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Login with credentials",
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": [
-									"email",
-									"password"
-								],
+								"required": ["email", "password"],
 								"properties": {
 									"email": {
 										"type": "string",
@@ -263,9 +231,7 @@
 		},
 		"/auth/refresh": {
 			"post": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Generates a new auth token if the refresh token is valid.",
 				"requestBody": {
 					"content": {
@@ -334,9 +300,7 @@
 		},
 		"/auth/user/{userId}": {
 			"put": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Change user information",
 				"parameters": [
 					{
@@ -397,9 +361,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Delete user",
 				"parameters": [
 					{
@@ -452,9 +414,7 @@
 		},
 		"/auth/users/superadmin": {
 			"get": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Checks to see if an admin account exists",
 				"responses": {
 					"200": {
@@ -497,9 +457,7 @@
 		},
 		"/auth/users": {
 			"get": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Get all users",
 				"responses": {
 					"200": {
@@ -542,18 +500,14 @@
 		},
 		"/auth/recovery/request": {
 			"post": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Request a recovery token",
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": [
-									"email"
-								],
+								"required": ["email"],
 								"properties": {
 									"email": {
 										"type": "string",
@@ -600,18 +554,14 @@
 		},
 		"/auth/recovery/validate": {
 			"post": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Validate recovery token",
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": [
-									"recoveryToken"
-								],
+								"required": ["recoveryToken"],
 								"properties": {
 									"recoveryToken": {
 										"type": "string"
@@ -657,19 +607,14 @@
 		},
 		"/auth/recovery/reset": {
 			"post": {
-				"tags": [
-					"auth"
-				],
+				"tags": ["auth"],
 				"description": "Password reset",
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": [
-									"recoveryToken",
-									"password"
-								],
+								"required": ["recoveryToken", "password"],
 								"properties": {
 									"recoveryToken": {
 										"type": "string"
@@ -718,19 +663,14 @@
 		},
 		"/invite": {
 			"post": {
-				"tags": [
-					"invite"
-				],
+				"tags": ["invite"],
 				"description": "Request an invitation",
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": [
-									"email",
-									"role"
-								],
+								"required": ["email", "role"],
 								"properties": {
 									"email": {
 										"type": "string"
@@ -784,18 +724,14 @@
 		},
 		"/invite/verify": {
 			"post": {
-				"tags": [
-					"invite"
-				],
+				"tags": ["invite"],
 				"description": "Request an invitation",
 				"requestBody": {
 					"content": {
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": [
-									"token"
-								],
+								"required": ["token"],
 								"properties": {
 									"token": {
 										"type": "string"
@@ -846,9 +782,7 @@
 		},
 		"/monitors": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Get all monitors",
 				"responses": {
 					"200": {
@@ -889,9 +823,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Create a new monitor",
 				"requestBody": {
 					"content": {
@@ -941,9 +873,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Delete all monitors",
 				"responses": {
 					"200": {
@@ -984,11 +914,42 @@
 				]
 			}
 		},
+		"/monitors/uptime": {
+			"get": {
+				"tags": ["monitors"],
+				"description": "Get all monitors with uptime stats for 1, 7, 30, and 90 days",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SuccessResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
 		"/monitors/resolution/url": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Check DNS resolution for a given URL",
 				"parameters": [
 					{
@@ -1053,9 +1014,7 @@
 		},
 		"/monitors/{monitorId}": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Get monitor by id",
 				"parameters": [
 					{
@@ -1106,9 +1065,7 @@
 				]
 			},
 			"put": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Update monitor by id",
 				"parameters": [
 					{
@@ -1168,9 +1125,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Delete monitor by id",
 				"parameters": [
 					{
@@ -1223,9 +1178,7 @@
 		},
 		"/monitors/stats/{monitorId}": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Get monitor stats",
 				"parameters": [
 					{
@@ -1278,9 +1231,7 @@
 		},
 		"/monitors/certificate/{monitorId}": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Get monitor certificate",
 				"parameters": [
 					{
@@ -1333,9 +1284,7 @@
 		},
 		"/monitors/team/summary/{teamId}": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Get monitors and summary by teamId",
 				"parameters": [
 					{
@@ -1352,11 +1301,7 @@
 						"required": false,
 						"schema": {
 							"type": "array",
-							"enum": [
-								"http",
-								"ping",
-								"pagespeed"
-							]
+							"enum": ["http", "ping", "pagespeed"]
 						}
 					}
 				],
@@ -1401,9 +1346,7 @@
 		},
 		"/monitors/team/{teamId}": {
 			"get": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Get monitors by teamId",
 				"parameters": [
 					{
@@ -1430,10 +1373,7 @@
 						"required": false,
 						"schema": {
 							"type": "string",
-							"enum": [
-								"asc",
-								"desc"
-							]
+							"enum": ["asc", "desc"]
 						}
 					},
 					{
@@ -1452,11 +1392,7 @@
 						"required": false,
 						"schema": {
 							"type": "string",
-							"enum": [
-								"http",
-								"ping",
-								"pagespeed"
-							]
+							"enum": ["http", "ping", "pagespeed"]
 						}
 					},
 					{
@@ -1500,11 +1436,7 @@
 						"required": false,
 						"schema": {
 							"type": "string",
-							"enum": [
-								"http",
-								"ping",
-								"pagespeed"
-							]
+							"enum": ["http", "ping", "pagespeed"]
 						}
 					}
 				],
@@ -1549,9 +1481,7 @@
 		},
 		"/monitors/pause/{monitorId}": {
 			"post": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Pause monitor",
 				"parameters": [
 					{
@@ -1604,9 +1534,7 @@
 		},
 		"/monitors/demo": {
 			"post": {
-				"tags": [
-					"monitors"
-				],
+				"tags": ["monitors"],
 				"description": "Create a demo monitor",
 				"requestBody": {
 					"content": {
@@ -1658,9 +1586,7 @@
 		},
 		"/checks/{monitorId}": {
 			"get": {
-				"tags": [
-					"checks"
-				],
+				"tags": ["checks"],
 				"description": "Get all checks for a monitor",
 				"parameters": [
 					{
@@ -1711,9 +1637,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"checks"
-				],
+				"tags": ["checks"],
 				"description": "Create a new check",
 				"parameters": [
 					{
@@ -1773,9 +1697,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"checks"
-				],
+				"tags": ["checks"],
 				"description": "Delete all checks for a monitor",
 				"parameters": [
 					{
@@ -1828,9 +1750,7 @@
 		},
 		"/checks/team/{teamId}": {
 			"get": {
-				"tags": [
-					"checks"
-				],
+				"tags": ["checks"],
 				"description": "Get all checks for a team",
 				"parameters": [
 					{
@@ -1881,9 +1801,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"checks"
-				],
+				"tags": ["checks"],
 				"description": "Delete all checks for a team",
 				"parameters": [
 					{
@@ -1936,9 +1854,7 @@
 		},
 		"/checks/team/ttl": {
 			"put": {
-				"tags": [
-					"checks"
-				],
+				"tags": ["checks"],
 				"description": "Update check TTL",
 				"requestBody": {
 					"content": {
@@ -1990,9 +1906,7 @@
 		},
 		"/maintenance-window/monitor/{monitorId}": {
 			"get": {
-				"tags": [
-					"maintenance-window"
-				],
+				"tags": ["maintenance-window"],
 				"description": "Get maintenance window for monitor",
 				"parameters": [
 					{
@@ -2043,9 +1957,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"maintenance-window"
-				],
+				"tags": ["maintenance-window"],
 				"description": "Create maintenance window for monitor",
 				"parameters": [
 					{
@@ -2107,9 +2019,7 @@
 		},
 		"/maintenance-window/user/{userId}": {
 			"get": {
-				"tags": [
-					"maintenance-window"
-				],
+				"tags": ["maintenance-window"],
 				"description": "Get maintenance window for user",
 				"parameters": [
 					{
@@ -2162,9 +2072,7 @@
 		},
 		"/queue/jobs": {
 			"get": {
-				"tags": [
-					"queue"
-				],
+				"tags": ["queue"],
 				"description": "Get all jobs in queue",
 				"responses": {
 					"200": {
@@ -2205,9 +2113,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"queue"
-				],
+				"tags": ["queue"],
 				"description": "Create a new job.  Useful for testing scaling workers",
 				"responses": {
 					"200": {
@@ -2250,9 +2156,7 @@
 		},
 		"/queue/metrics": {
 			"get": {
-				"tags": [
-					"queue"
-				],
+				"tags": ["queue"],
 				"description": "Get queue metrics",
 				"responses": {
 					"200": {
@@ -2295,9 +2199,7 @@
 		},
 		"/queue/obliterate": {
 			"post": {
-				"tags": [
-					"queue"
-				],
+				"tags": ["queue"],
 				"description": "Obliterate job queue",
 				"responses": {
 					"200": {
@@ -2377,14 +2279,7 @@
 			},
 			"UserUpdateRequest": {
 				"type": "object",
-				"required": [
-					"firstName",
-					"lastName",
-					"email",
-					"password",
-					"role",
-					"teamId"
-				],
+				"required": ["firstName", "lastName", "email", "password", "role", "teamId"],
 				"properties": {
 					"firstName": {
 						"type": "string"
@@ -2406,23 +2301,8 @@
 					},
 					"role": {
 						"type": "array",
-						"enum": [
-							[
-								"user"
-							],
-							[
-								"admin"
-							],
-							[
-								"superadmin"
-							],
-							[
-								"Demo"
-							]
-						],
-						"default": [
-							"superadmin"
-						]
+						"enum": [["user"], ["admin"], ["superadmin"], ["Demo"]],
+						"default": ["superadmin"]
 					},
 					"deleteProfileImage": {
 						"type": "boolean"
@@ -2431,14 +2311,7 @@
 			},
 			"CreateMonitorBody": {
 				"type": "object",
-				"required": [
-					"userId",
-					"teamId",
-					"name",
-					"description",
-					"type",
-					"url"
-				],
+				"required": ["userId", "teamId", "name", "description", "type", "url"],
 				"properties": {
 					"_id": {
 						"type": "string"
@@ -2457,11 +2330,7 @@
 					},
 					"type": {
 						"type": "string",
-						"enum": [
-							"http",
-							"ping",
-							"pagespeed"
-						]
+						"enum": ["http", "ping", "pagespeed"]
 					},
 					"url": {
 						"type": "string"
@@ -2502,13 +2371,7 @@
 			},
 			"CreateCheckBody": {
 				"type": "object",
-				"required": [
-					"monitorId",
-					"status",
-					"responseTime",
-					"statusCode",
-					"message"
-				],
+				"required": ["monitorId", "status", "responseTime", "statusCode", "message"],
 				"properties": {
 					"monitorId": {
 						"type": "string"
@@ -2529,9 +2392,7 @@
 			},
 			"UpdateCheckTTLBody": {
 				"type": "object",
-				"required": [
-					"ttl"
-				],
+				"required": ["ttl"],
 				"properties": {
 					"ttl": {
 						"type": "integer"
@@ -2540,13 +2401,7 @@
 			},
 			"CreateMaintenanceWindowBody": {
 				"type": "object",
-				"required": [
-					"userId",
-					"active",
-					"oneTime",
-					"start",
-					"end"
-				],
+				"required": ["userId", "active", "oneTime", "start", "end"],
 				"properties": {
 					"userId": {
 						"type": "string"
