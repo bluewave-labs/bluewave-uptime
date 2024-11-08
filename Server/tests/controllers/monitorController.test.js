@@ -1,5 +1,6 @@
 import {
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorCertificate,
 	getMonitorById,
@@ -51,6 +52,47 @@ describe("Monitor Controller - getAllMonitors", () => {
 		const data = [{ monitor: "data" }];
 		req.db.getAllMonitors.returns(data);
 		await getAllMonitors(req, res, next);
+		expect(res.status.firstCall.args[0]).to.equal(200);
+		expect(
+			res.json.calledOnceWith({
+				success: true,
+				msg: successMessages.MONITOR_GET_ALL,
+				data: data,
+			})
+		).to.be.true;
+	});
+});
+describe("Monitor Controller - getAllMonitorsWithUptimeStats", () => {
+	let req, res, next;
+	beforeEach(() => {
+		req = {
+			params: {},
+			query: {},
+			body: {},
+			db: {
+				getAllMonitorsWithUptimeStats: sinon.stub(),
+			},
+		};
+		res = {
+			status: sinon.stub().returnsThis(),
+			json: sinon.stub(),
+		};
+		next = sinon.stub();
+	});
+	afterEach(() => {
+		sinon.restore();
+	});
+	it("should reject with an error if DB operations fail", async () => {
+		req.db.getAllMonitorsWithUptimeStats.throws(new Error("DB error"));
+		await getAllMonitorsWithUptimeStats(req, res, next);
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].message).to.equal("DB error");
+	});
+
+	it("should return success message and data if all operations succeed", async () => {
+		const data = [{ monitor: "data" }];
+		req.db.getAllMonitorsWithUptimeStats.returns(data);
+		await getAllMonitorsWithUptimeStats(req, res, next);
 		expect(res.status.firstCall.args[0]).to.equal(200);
 		expect(
 			res.json.calledOnceWith({

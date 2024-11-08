@@ -6,6 +6,7 @@ import Notification from "../../db/models/Notification.js";
 import { errorMessages } from "../../utils/messages.js";
 import {
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorById,
 	getMonitorsAndSummaryByTeamId,
@@ -22,7 +23,6 @@ import {
 	getAverageResponseTime,
 	getUptimePercentage,
 	getIncidents,
-	getDateRange,
 	getMonitorChecks,
 	processChecksForDisplay,
 	groupChecksByTime,
@@ -88,6 +88,100 @@ describe("monitorModule", () => {
 				expect(err.service).to.equal("monitorModule");
 				expect(err.method).to.equal("getAllMonitors");
 			}
+		});
+	});
+
+	describe("getAllMonitorsWithUptimeStats", () => {
+		it("should return monitors with uptime stats for different time periods", async () => {
+			// Mock data
+			const mockMonitors = [
+				{
+					_id: "monitor1",
+					type: "http",
+					toObject: () => ({
+						_id: "monitor1",
+						type: "http",
+						name: "Test Monitor",
+					}),
+				},
+			];
+
+			const mockChecks = [
+				{ status: true },
+				{ status: true },
+				{ status: false },
+				{ status: true },
+			];
+
+			monitorFindStub.resolves(mockMonitors);
+			checkFindStub.resolves(mockChecks);
+
+			const result = await getAllMonitorsWithUptimeStats();
+
+			expect(result).to.be.an("array");
+			expect(result).to.have.lengthOf(1);
+
+			const monitor = result[0];
+			expect(monitor).to.have.property("_id", "monitor1");
+			expect(monitor).to.have.property("name", "Test Monitor");
+
+			// Check uptime percentages exist for all time periods
+			expect(monitor).to.have.property("1");
+			expect(monitor).to.have.property("7");
+			expect(monitor).to.have.property("30");
+			expect(monitor).to.have.property("90");
+
+			// Verify uptime percentage calculation (3 successful out of 4 = 75%)
+			expect(monitor["1"]).to.equal(75);
+			expect(monitor["7"]).to.equal(75);
+			expect(monitor["30"]).to.equal(75);
+			expect(monitor["90"]).to.equal(75);
+		});
+
+		it("should handle errors appropriately", async () => {
+			// Setup stub to throw error
+			monitorFindStub.rejects(new Error("Database error"));
+
+			try {
+				await getAllMonitorsWithUptimeStats();
+			} catch (error) {
+				expect(error).to.be.an("error");
+				expect(error.message).to.equal("Database error");
+				expect(error.service).to.equal("monitorModule");
+				expect(error.method).to.equal("getAllMonitorsWithUptimeStats");
+			}
+		});
+		it("should handle empty monitor list", async () => {
+			monitorFindStub.resolves([]);
+
+			const result = await getAllMonitorsWithUptimeStats();
+
+			expect(result).to.be.an("array");
+			expect(result).to.have.lengthOf(0);
+		});
+
+		it("should handle monitor with no checks", async () => {
+			const mockMonitors = [
+				{
+					_id: "monitor1",
+					type: "http",
+					toObject: () => ({
+						_id: "monitor1",
+						type: "http",
+						name: "Test Monitor",
+					}),
+				},
+			];
+
+			monitorFindStub.resolves(mockMonitors);
+			checkFindStub.resolves([]);
+
+			const result = await getAllMonitorsWithUptimeStats();
+
+			expect(result[0]).to.have.property("1", 0);
+			expect(result[0]).to.have.property("7", 0);
+			expect(result[0]).to.have.property("30", 0);
+			expect(result[0]).to.have.property("90", 0);
 		});
 	});
 
