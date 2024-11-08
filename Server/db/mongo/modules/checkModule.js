@@ -48,7 +48,6 @@ const createCheck = async (checkData) => {
 		}
 
 		await monitor.save();
-
 		return check;
 	} catch (error) {
 		error.service = SERVICE_NAME;
@@ -105,7 +104,7 @@ const getChecks = async (req) => {
 		const { monitorId } = req.params;
 		let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 		// Default limit to 0 if not provided
-		limit = limit === "undefined" ? 0 : limit;
+		limit = limit === undefined ? 0 : limit;
 
 		// Default sort order is newest -> oldest
 		sortOrder = sortOrder === "asc" ? 1 : -1;
@@ -155,58 +154,64 @@ const getChecks = async (req) => {
 };
 
 const getTeamChecks = async (req) => {
-	const { teamId } = req.params;
-	let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
+	try {
+		const { teamId } = req.params;
+		let { sortOrder, limit, dateRange, filter, page, rowsPerPage } = req.query;
 
-	// Get monitorIDs
-	const userMonitors = await Monitor.find({ teamId: teamId }).select("_id");
+		// Get monitorIDs
+		const userMonitors = await Monitor.find({ teamId: teamId }).select("_id");
 
-	//Build check query
-	// Default limit to 0 if not provided
-	limit = limit === undefined ? 0 : limit;
-	// Default sort order is newest -> oldest
-	sortOrder = sortOrder === "asc" ? 1 : -1;
+		//Build check query
+		// Default limit to 0 if not provided
+		limit = limit === undefined ? 0 : limit;
+		// Default sort order is newest -> oldest
+		sortOrder = sortOrder === "asc" ? 1 : -1;
 
-	const checksQuery = { monitorId: { $in: userMonitors } };
+		const checksQuery = { monitorId: { $in: userMonitors } };
 
-	if (filter !== undefined) {
-		checksQuery.status = false;
-		switch (filter) {
-			case "all":
-				break;
-			case "down":
-				break;
-			case "resolve":
-				checksQuery.statusCode = 5000;
-				break;
-			default:
-				logger.warn({
-					message: "invalid filter",
-					service: SERVICE_NAME,
-					method: "getTeamChecks",
-				});
-				break;
+		if (filter !== undefined) {
+			checksQuery.status = false;
+			switch (filter) {
+				case "all":
+					break;
+				case "down":
+					break;
+				case "resolve":
+					checksQuery.statusCode = 5000;
+					break;
+				default:
+					logger.warn({
+						message: "invalid filter",
+						service: SERVICE_NAME,
+						method: "getTeamChecks",
+					});
+					break;
+			}
 		}
+
+		if (dateRange !== undefined) {
+			checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
+		}
+
+		// Skip and limit for pagination
+		let skip = 0;
+		if (page && rowsPerPage) {
+			skip = page * rowsPerPage;
+		}
+
+		const checksCount = await Check.countDocuments(checksQuery);
+
+		const checks = await Check.find(checksQuery)
+			.skip(skip)
+			.limit(rowsPerPage)
+			.sort({ createdAt: sortOrder })
+			.select(["monitorId", "status", "responseTime", "statusCode", "message"]);
+		return { checksCount, checks };
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "getTeamChecks";
+		throw error;
 	}
-
-	if (dateRange !== undefined) {
-		checksQuery.createdAt = { $gte: dateRangeLookup[dateRange] };
-	}
-
-	// Skip and limit for pagination
-	let skip = 0;
-	if (page && rowsPerPage) {
-		skip = page * rowsPerPage;
-	}
-
-	const checksCount = await Check.countDocuments(checksQuery);
-
-	const checks = await Check.find(checksQuery)
-		.skip(skip)
-		.limit(rowsPerPage)
-		.sort({ createdAt: sortOrder })
-		.select(["monitorId", "status", "responseTime", "statusCode", "message"]);
-	return { checksCount, checks };
 };
 
 /**
