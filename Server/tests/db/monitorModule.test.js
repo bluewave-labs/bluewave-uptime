@@ -1,6 +1,8 @@
 import sinon from "sinon";
 import Monitor from "../../db/models/Monitor.js";
 import Check from "../../db/models/Check.js";
+import PageSpeedCheck from "../../db/models/PageSpeedCheck.js";
+import HardwareCheck from "../../db/models/HardwareCheck.js";
 import Notification from "../../db/models/Notification.js";
 
 import { errorMessages } from "../../utils/messages.js";
@@ -37,7 +39,9 @@ describe("monitorModule", () => {
 		monitorDeleteManyStub,
 		monitorCountStub,
 		monitorInsertManyStub,
-		checkFindStub;
+		checkFindStub,
+		pageSpeedCheckFindStub,
+		hardwareCheckFindStub;
 	beforeEach(() => {
 		monitorFindStub = sinon.stub(Monitor, "find");
 		monitorFindByIdStub = sinon.stub(Monitor, "findById");
@@ -48,6 +52,12 @@ describe("monitorModule", () => {
 
 		monitorInsertManyStub = sinon.stub(Monitor, "insertMany");
 		checkFindStub = sinon.stub(Check, "find").returns({
+			sort: sinon.stub(),
+		});
+		pageSpeedCheckFindStub = sinon.stub(PageSpeedCheck, "find").returns({
+			sort: sinon.stub(),
+		});
+		hardwareCheckFindStub = sinon.stub(HardwareCheck, "find").returns({
 			sort: sinon.stub(),
 		});
 	});
@@ -115,6 +125,96 @@ describe("monitorModule", () => {
 
 			monitorFindStub.resolves(mockMonitors);
 			checkFindStub.resolves(mockChecks);
+
+			const result = await getAllMonitorsWithUptimeStats();
+
+			expect(result).to.be.an("array");
+			expect(result).to.have.lengthOf(1);
+
+			const monitor = result[0];
+			expect(monitor).to.have.property("_id", "monitor1");
+			expect(monitor).to.have.property("name", "Test Monitor");
+
+			// Check uptime percentages exist for all time periods
+			expect(monitor).to.have.property("1");
+			expect(monitor).to.have.property("7");
+			expect(monitor).to.have.property("30");
+			expect(monitor).to.have.property("90");
+
+			// Verify uptime percentage calculation (3 successful out of 4 = 75%)
+			expect(monitor["1"]).to.equal(75);
+			expect(monitor["7"]).to.equal(75);
+			expect(monitor["30"]).to.equal(75);
+			expect(monitor["90"]).to.equal(75);
+		});
+		it("should return monitors with stats for pagespeed type", async () => {
+			// Mock data
+			const mockMonitors = [
+				{
+					_id: "monitor1",
+					type: "pagespeed",
+					toObject: () => ({
+						_id: "monitor1",
+						type: "pagespeed",
+						name: "Test Monitor",
+					}),
+				},
+			];
+
+			const mockChecks = [
+				{ status: true },
+				{ status: true },
+				{ status: false },
+				{ status: true },
+			];
+
+			monitorFindStub.resolves(mockMonitors);
+			pageSpeedCheckFindStub.resolves(mockChecks);
+
+			const result = await getAllMonitorsWithUptimeStats();
+
+			expect(result).to.be.an("array");
+			expect(result).to.have.lengthOf(1);
+
+			const monitor = result[0];
+			expect(monitor).to.have.property("_id", "monitor1");
+			expect(monitor).to.have.property("name", "Test Monitor");
+
+			// Check uptime percentages exist for all time periods
+			expect(monitor).to.have.property("1");
+			expect(monitor).to.have.property("7");
+			expect(monitor).to.have.property("30");
+			expect(monitor).to.have.property("90");
+
+			// Verify uptime percentage calculation (3 successful out of 4 = 75%)
+			expect(monitor["1"]).to.equal(75);
+			expect(monitor["7"]).to.equal(75);
+			expect(monitor["30"]).to.equal(75);
+			expect(monitor["90"]).to.equal(75);
+		});
+		it("should return monitors with stats for hardware type", async () => {
+			// Mock data
+			const mockMonitors = [
+				{
+					_id: "monitor1",
+					type: "hardware",
+					toObject: () => ({
+						_id: "monitor1",
+						type: "hardware",
+						name: "Test Monitor",
+					}),
+				},
+			];
+
+			const mockChecks = [
+				{ status: true },
+				{ status: true },
+				{ status: false },
+				{ status: true },
+			];
+
+			monitorFindStub.resolves(mockMonitors);
+			hardwareCheckFindStub.resolves(mockChecks);
 
 			const result = await getAllMonitorsWithUptimeStats();
 
