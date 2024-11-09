@@ -111,7 +111,7 @@ const BarChart = ({ checks = [] }) => {
 								],
 								sx: {
 									"& .MuiTooltip-tooltip": {
-										backgroundColor: theme.palette.background.main,
+										backgroundColor: theme.palette.secondary.main,
 										border: 1,
 										borderColor: theme.palette.border.dark,
 										borderRadius: theme.shape.borderRadius,

@@ -1,5 +1,6 @@
 import { createTheme } from "@mui/material";
 import { baseTheme } from "./globalTheme";
+import { colors } from "./constants";
 
 const text = {
 	primary: "#fafafa",
@@ -16,35 +17,18 @@ const background = {
 };
 const border = { light: "#27272a", dark: "#36363e" };
 
-/* const fontFamilyDefault =
-	'"Inter","system-ui", "Avenir", "Helvetica", "Arial", sans-serif'; */
-const shadow =
-	"0px 4px 24px -4px rgba(255, 255, 255, 0.03), 0px 3px 3px -3px rgba(255, 255, 255, 0.01)";
+const { gradient } = colors;
+/* const gradient = {
+	color1: "#09090b",
+	color2: "#0c0c0e",
+	color3: "#0f0f11",
+	color4: "#111113",
+	color5: "#131315",
+}; */
 
 const darkTheme = createTheme({
 	...baseTheme,
-	// typography: {
-	// 	/* 	fontFamily: fontFamilyDefault, */
-	// 	fontSize: 13,
-	// 	h1: { fontSize: 22, color: text.primary, fontWeight: 500 },
-	// 	h2: { fontSize: 16, color: text.secondary, fontWeight: 400 },
-	// 	body1: { fontSize: 13, color: text.tertiary, fontWeight: 400 },
-	// 	body2: { fontSize: 12, color: text.tertiary, fontWeight: 400 },
-	// },
-	chart: {
-		header: {
-			fontWeight: 400,
-			fill: text.tertiary,
-			fontSize: 11,
-		},
-		subheader: {
-			fontWeight: 400,
-			fill: text.tertiary,
-			fontSize: 9,
-		},
-	},
 	palette: {
-		mode: "dark",
 		primary: { main: "#1570ef" },
 		secondary: { main: "#2D2D33" },
 		text: text,
@@ -57,6 +41,7 @@ const darkTheme = createTheme({
 			light: background.main,
 			border: border.light,
 		},
+		gradient,
 		success: {
 			text: "#079455",
 			main: "#45bb7a",
@@ -93,176 +78,6 @@ const darkTheme = createTheme({
 			grid: "#454546",
 			autofill: "#2d2d33",
 		},
-	},
-	spacing: 2,
-	components: {
-		MuiCssBaseline: {
-			styleOverrides: {
-				body: {
-					backgroundImage:
-						"radial-gradient(circle, #09090b, #0c0c0e, #0f0f11, #111113, #131315, #131315, #131315, #131315, #111113, #0f0f11, #0c0c0e, #09090b)",
-					lineHeight: "inherit",
-					paddingLeft: "calc(100vw - 100%)",
-				},
-			},
-		},
-		MuiButton: {
-			defaultProps: {
-				disableRipple: true,
-			},
-			styleOverrides: {
-				root: ({ theme }) => ({
-					variants: [
-						{
-							props: (props) => props.variant === "group",
-							style: {
-								color: theme.palette.secondary.contrastText,
-								backgroundColor: theme.palette.background.main,
-								border: 1,
-								borderStyle: "solid",
-								borderColor: theme.palette.border.light,
-							},
-						},
-						{
-							props: (props) => props.variant === "group" && props.filled === "true",
-							style: {
-								backgroundColor: theme.palette.secondary.main,
-							},
-						},
-						{
-							props: (props) =>
-								props.variant === "contained" && props.color === "secondary",
-							style: {
-								border: 1,
-								borderStyle: "solid",
-								borderColor: theme.palette.border.dark,
-							},
-						},
-					],
-					fontWeight: 400,
-					borderRadius: 4,
-					boxShadow: "none",
-					textTransform: "none",
-					"&:focus": {
-						outline: "none",
-					},
-					"&:hover": {
-						boxShadow: "none",
-					},
-				}),
-			},
-		},
-		MuiIconButton: {
-			styleOverrides: {
-				root: {
-					padding: 4,
-					transition: "none",
-					"&:hover": {
-						backgroundColor: border.light,
-					},
-				},
-			},
-		},
-		MuiPaper: {
-			styleOverrides: {
-				root: {
-					marginTop: 4,
-					padding: 0,
-					border: 1,
-					borderStyle: "solid",
-					borderColor: border.light,
-					borderRadius: 4,
-					boxShadow: shadow,
-					backgroundColor: background.main,
-					backgroundImage: "none",
-				},
-			},
-		},
-		MuiList: {
-			styleOverrides: {
-				root: {
-					padding: 0,
-				},
-			},
-		},
-		MuiListItemButton: {
-			styleOverrides: {
-				root: {
-					transition: "none",
-				},
-			},
-		},
-		MuiMenuItem: {
-			styleOverrides: {
-				root: {
-					borderRadius: 4,
-					backgroundColor: "inherit",
-					padding: "4px 6px",
-					color: text.secondary,
-					fontSize: 13,
-					margin: 2,
-					minWidth: 100,
-					"&:hover, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible":
-						{
-							backgroundColor: background.fill,
-						},
-				},
-			},
-		},
-		MuiTableCell: {
-			styleOverrides: {
-				root: {
-					borderBottomColor: border.light,
-				},
-			},
-		},
-		MuiTableHead: {
-			styleOverrides: {
-				root: {
-					backgroundColor: background.accent,
-				},
-			},
-		},
-		MuiPagination: {
-			styleOverrides: {
-				root: {
-					backgroundColor: background.main,
-					border: 1,
-					borderStyle: "solid",
-					borderColor: border.light,
-					"& button": {
-						color: text.tertiary,
-						borderRadius: 4,
-					},
-					"& li:first-of-type button, & li:last-of-type button": {
-						border: 1,
-						borderStyle: "solid",
-						borderColor: border.light,
-					},
-				},
-			},
-		},
-		MuiPaginationItem: {
-			styleOverrides: {
-				root: {
-					"&:not(.MuiPaginationItem-ellipsis):hover, &.Mui-selected": {
-						backgroundColor: background.fill,
-					},
-				},
-			},
-		},
-		MuiSkeleton: {
-			styleOverrides: {
-				root: {
-					backgroundColor: "#151518",
-				},
-			},
-		},
-	},
-	shape: {
-		borderRadius: 2,
-		borderThick: 2,
-		boxShadow: shadow,
 	},
 });
 

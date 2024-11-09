@@ -35,7 +35,7 @@ import withAdminProp from "./Components/HOC/withAdminProp";
 import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, GlobalStyles } from "@mui/material";
 import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
@@ -68,8 +68,19 @@ function App() {
 	}, []);
 
 	return (
+		/* Extract Themeprovider, baseline and global styles to Styles */
 		<ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
 			<CssBaseline />
+			<GlobalStyles
+				styles={({ palette }) => {
+					return {
+						body: {
+							backgroundImage: `radial-gradient(circle, ${palette.gradient.color1}, ${palette.gradient.color2}, ${palette.gradient.color3}, ${palette.gradient.color4}, ${palette.gradient.color5})`,
+						},
+					};
+				}}
+			/>
+			{/* Extract Routes to Routes */}
 			<Routes>
 				<Route
 					exact
