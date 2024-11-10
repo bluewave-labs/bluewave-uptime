@@ -15,52 +15,49 @@ const background = {
 	accent: "#f9fafb",
 };
 
-const { gradient } = colors;
-/* const gradient = {
-	color1: "#fcfcfd",
-	color2: "#fdfcfd",
-	color3: "#fdfdfd",
-	color4: "#fefdfe",
-	color5: "#fefefe",
-}; */
-
 const border = { light: "#eaecf0", dark: "#d0d5dd" };
+
+const {
+	primary,
+	secondary,
+	success,
+	error,
+	warning,
+	gradient: {
+		color1: { light: color1 },
+		color2: { light: color2 },
+		color3: { light: color3 },
+		color4: { light: color4 },
+		color5: { light: color5 },
+	},
+} = colors;
 
 const lightTheme = createTheme({
 	...baseTheme,
 	palette: {
-		primary: { main: "#1570EF" },
-		secondary: { main: "#F4F4F4", dark: "#e3e3e3", contrastText: "#475467" },
-		text: text,
-		background: background,
-		border: border,
-		info: {
-			text: text.primary,
-			main: text.tertiary,
-			bg: background.main,
-			light: background.main,
-			border: border.dark,
+		primary: { main: primary.main.light },
+		secondary: {
+			main: secondary.main.light,
+			dark: secondary.dark.light,
+			contrastText: secondary.constrastText.light,
 		},
-		gradient,
 		success: {
-			text: "#079455",
-			main: "#17b26a",
-			light: "#d4f4e1",
-			bg: "#ecfdf3",
+			main: success.main.light,
+			contrastText: success.contrastText.light,
+			light: success.light.light,
+			dark: success.dark.light,
 		},
 		error: {
-			text: "#f04438",
-			main: "#d32f2f",
-			light: "#fbd1d1",
-			bg: "#f9eced",
-			border: "#f04438",
+			main: error.main.light,
+			contrastText: error.contrastText.light,
+			light: error.light.light,
+			dark: error.dark.light,
 		},
 		warning: {
-			text: "#DC6803",
-			main: "#fdb022",
-			light: "#ffecbc",
-			bg: "#fef8ea",
-			border: "#fec84b",
+			main: warning.main.light,
+			light: warning.light.light,
+			contrastText: warning.contrastText.light,
+			dark: warning.dark.light,
 		},
 		percentage: {
 			uptimePoor: "#d32f2f",
@@ -76,6 +73,23 @@ const lightTheme = createTheme({
 			fill: "#e3e3e3",
 			grid: "#a2a3a3",
 			autofill: "#e8f0fe",
+		},
+		gradient: {
+			color1,
+			color2,
+			color3,
+			color4,
+			color5,
+		},
+		text: text,
+		background: background,
+		border: border,
+		info: {
+			text: text.primary,
+			main: text.tertiary,
+			bg: background.main,
+			light: background.main,
+			border: border.dark,
 		},
 	},
 });

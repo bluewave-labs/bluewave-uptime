@@ -127,22 +127,22 @@ const StatusLabel = ({ status, text, customStyles }) => {
 	const colors = {
 		up: {
 			dotColor: theme.palette.success.main,
-			bgColor: theme.palette.success.bg,
+			bgColor: theme.palette.success.dark,
 			borderColor: theme.palette.success.light,
 		},
 		down: {
-			dotColor: theme.palette.error.text,
-			bgColor: theme.palette.error.bg,
+			dotColor: theme.palette.error.contrastText,
+			bgColor: theme.palette.error.dark,
 			borderColor: theme.palette.error.light,
 		},
 		paused: {
 			dotColor: theme.palette.warning.main,
-			bgColor: theme.palette.warning.bg,
+			bgColor: theme.palette.warning.dark,
 			borderColor: theme.palette.warning.light,
 		},
 		pending: {
 			dotColor: theme.palette.warning.main,
-			bgColor: theme.palette.warning.bg,
+			bgColor: theme.palette.warning.dark,
 			borderColor: theme.palette.warning.light,
 		},
 		"cannot resolve": {

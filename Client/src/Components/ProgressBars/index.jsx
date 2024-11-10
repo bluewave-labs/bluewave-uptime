@@ -34,11 +34,11 @@ const ProgressUpload = ({ icon, label, size, progress = 0, onClick, error }) => 
 				backgroundColor: theme.palette.background.fill,
 				"&:has(.input-error)": {
 					borderColor: theme.palette.error.main,
-					backgroundColor: theme.palette.error.bg,
+					backgroundColor: theme.palette.error.dark,
 					py: theme.spacing(4),
 					px: theme.spacing(8),
 					"& > .MuiStack-root > svg": {
-						fill: theme.palette.error.text,
+						fill: theme.palette.error.contrastText,
 						width: "20px",
 						height: "20px",
 					},
@@ -85,7 +85,7 @@ const ProgressUpload = ({ icon, label, size, progress = 0, onClick, error }) => 
 					<Typography
 						component="p"
 						className="input-error"
-						color={theme.palette.error.text}
+						color={theme.palette.error.contrastText}
 					>
 						{error}
 					</Typography>

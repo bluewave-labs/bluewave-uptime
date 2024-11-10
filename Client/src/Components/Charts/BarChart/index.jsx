@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import "./index.css";
 import { useSelector } from "react-redux";
 
+/* TODO add prop validation and jsdocs */
 const BarChart = ({ checks = [] }) => {
 	const theme = useTheme();
 	const [animate, setAnimate] = useState(false);
@@ -65,7 +66,9 @@ const BarChart = ({ checks = [] }) => {
 										width={theme.spacing(4)}
 										height={theme.spacing(4)}
 										backgroundColor={
-											check.status ? theme.palette.success.main : theme.palette.error.text
+											check.status
+												? theme.palette.success.main
+												: theme.palette.error.contrastText
 										}
 										sx={{ borderRadius: "50%" }}
 									/>
@@ -138,7 +141,7 @@ const BarChart = ({ checks = [] }) => {
 							width="9px"
 							height="100%"
 							backgroundColor={
-								check.status ? theme.palette.success.bg : theme.palette.error.bg
+								check.status ? theme.palette.success.dark : theme.palette.error.dark
 							}
 							sx={{
 								borderRadius: theme.spacing(1.5),
@@ -153,7 +156,9 @@ const BarChart = ({ checks = [] }) => {
 								width="100%"
 								height={`${animate ? check.responseTime : 0}%`}
 								backgroundColor={
-									check.status ? theme.palette.success.main : theme.palette.error.text
+									check.status
+										? theme.palette.success.main
+										: theme.palette.error.contrastText
 								}
 								sx={{
 									borderRadius: theme.spacing(1.5),

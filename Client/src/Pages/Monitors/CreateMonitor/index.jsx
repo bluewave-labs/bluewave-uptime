@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { monitorValidation } from "../../../Validation/validation";
 import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
+import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
@@ -19,12 +19,12 @@ import { getUptimeMonitorById } from "../../../Features/UptimeMonitors/uptimeMon
 import "./index.css";
 
 const CreateMonitor = () => {
-  const MS_PER_MINUTE = 60000;
-  const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const theme = useTheme();
+	const MS_PER_MINUTE = 60000;
+	const { user, authToken } = useSelector((state) => state.auth);
+	const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const theme = useTheme();
 
 	const idMap = {
 		"monitor-url": "url",
@@ -148,16 +148,18 @@ const CreateMonitor = () => {
 			setErrors(newErrors);
 			createToast({ body: "Error validation data." });
 		} else {
-      if (monitor.type === "http") {
-        const checkEndpointAction = await dispatch(
-          checkEndpointResolution({ authToken, monitorURL: form.url })
-        )
-        if (checkEndpointAction.meta.requestStatus === "rejected") {
-          createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
-          setErrors({ url: "The entered URL is not reachable." });
-          return;
-        }
-      }
+			if (monitor.type === "http") {
+				const checkEndpointAction = await dispatch(
+					checkEndpointResolution({ authToken, monitorURL: form.url })
+				);
+				if (checkEndpointAction.meta.requestStatus === "rejected") {
+					createToast({
+						body: "The endpoint you entered doesn't resolve. Check the URL again.",
+					});
+					setErrors({ url: "The entered URL is not reachable." });
+					return;
+				}
+			}
 
 			form = {
 				...form,
@@ -304,7 +306,7 @@ const CreateMonitor = () => {
 								<Typography
 									component="p"
 									className="input-error"
-									color={theme.palette.error.text}
+									color={theme.palette.error.contrastText}
 								>
 									{errors["type"]}
 								</Typography>
@@ -386,15 +388,15 @@ const CreateMonitor = () => {
 					direction="row"
 					justifyContent="flex-end"
 				>
-					<LoadingButton 
-            variant="contained"
-            color="primary"
-            onClick={handleCreateMonitor}
-            disabled={Object.keys(errors).length !== 0 && true}
-            loading={isLoading}
-          >
-            Create monitor
-          </LoadingButton>
+					<LoadingButton
+						variant="contained"
+						color="primary"
+						onClick={handleCreateMonitor}
+						disabled={Object.keys(errors).length !== 0 && true}
+						loading={isLoading}
+					>
+						Create monitor
+					</LoadingButton>
 				</Stack>
 			</Stack>
 		</Box>

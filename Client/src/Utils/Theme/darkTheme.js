@@ -17,51 +17,43 @@ const background = {
 };
 const border = { light: "#27272a", dark: "#36363e" };
 
-const { gradient } = colors;
-/* const gradient = {
-	color1: "#09090b",
-	color2: "#0c0c0e",
-	color3: "#0f0f11",
-	color4: "#111113",
-	color5: "#131315",
-}; */
+const {
+	primary,
+	secondary,
+	success,
+	error,
+	warning,
+	gradient: {
+		color1: { dark: color1 },
+		color2: { dark: color2 },
+		color3: { dark: color3 },
+		color4: { dark: color4 },
+		color5: { dark: color5 },
+	},
+} = colors;
 
 const darkTheme = createTheme({
 	...baseTheme,
 	palette: {
-		primary: { main: "#1570ef" },
-		secondary: { main: "#2D2D33" },
-		text: text,
-		background: background,
-		border: border,
-		info: {
-			text: text.primary,
-			main: text.secondary,
-			bg: background.main,
-			light: background.main,
-			border: border.light,
-		},
-		gradient,
+		primary: { main: primary.main.dark },
+		secondary: { main: secondary.main.dark },
 		success: {
-			text: "#079455",
-			main: "#45bb7a",
-			light: "#1c4428",
-			bg: "#12261e",
+			main: success.main.dark,
+			contrastText: success.contrastText.dark,
+			light: success.light.dark,
+			dark: success.dark.dark,
 		},
 		error: {
-			text: "#f04438",
-			main: "#d32f2f",
-			light: "#542426",
-			bg: "#301a1f",
-			dark: "#932020",
-			border: "#f04438",
+			main: error.main.dark,
+			contrastText: error.contrastText.dark,
+			light: error.light.dark,
+			dark: error.dark.dark,
 		},
 		warning: {
-			text: "#e88c30",
-			main: "#FF9F00",
-			light: "#624711",
-			bg: "#262115",
-			border: "#e88c30",
+			main: warning.main.dark,
+			light: warning.light.dark,
+			contrastText: warning.contrastText.dark,
+			dark: warning.dark.dark,
 		},
 		percentage: {
 			uptimePoor: "#d32f2f",
@@ -77,6 +69,23 @@ const darkTheme = createTheme({
 			fill: "#18181a",
 			grid: "#454546",
 			autofill: "#2d2d33",
+		},
+		gradient: {
+			color1,
+			color2,
+			color3,
+			color4,
+			color5,
+		},
+		text: text,
+		background: background,
+		border: border,
+		info: {
+			text: text.primary,
+			main: text.secondary,
+			bg: background.main,
+			light: background.main,
+			border: border.light,
 		},
 	},
 });
