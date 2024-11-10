@@ -6,11 +6,12 @@ class NotificationService {
 	 * @param {Object} db - The database instance for storing notification data.
 	 * @param {Object} logger - The logger instance for logging activities.
 	 */
-	constructor(emailService, db, logger) {
+	constructor(emailService, db, logger, ntfyService) {
 		this.SERVICE_NAME = "NotificationService";
 		this.emailService = emailService;
 		this.db = db;
 		this.logger = logger;
+		this.ntfyService = ntfyService;
 	}
 
 	/**
@@ -48,6 +49,9 @@ class NotificationService {
 					this.sendEmail(networkResponse, notification.address);
 				}
 				// Handle other types of notifications here
+				else if (notification.type === "ntfy") {
+					await this.ntfyService.sendNtfyNotification(notification.ntfyConfig, networkResponse);
+				}
 			}
 		} catch (error) {
 			this.logger.warn({

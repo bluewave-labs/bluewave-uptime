@@ -25,6 +25,7 @@ import SkeletonLayout from "./skeleton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import "./index.css";
 import Dialog from "../../../Components/Dialog";
+import axios from "axios";
 
 /**
  * Parses a URL string and returns a URL object.
@@ -53,6 +54,9 @@ const Configure = () => {
 	const { isLoading } = useSelector((state) => state.uptimeMonitors);
 	const [monitor, setMonitor] = useState({});
 	const [errors, setErrors] = useState({});
+	const [ntfyLoading, setntfyLoading] = useState(false)
+	const [showNtfySettings, setShowNtfySettings] = useState(false)
+	const [ntfySettings, setNtfySettings] = useState({});
 	const { monitorId } = useParams();
 	const idMap = {
 		"monitor-url": "url",
@@ -61,6 +65,12 @@ const Configure = () => {
 		"monitor-checks-ping": "type",
 		"notify-email-default": "notification-email",
 	};
+
+	const authOptions = [
+		{ _id: 'no-auth', name: 'No auth' },
+		{ _id: 'user-pass', name: 'Username and Password' },
+		{ _id: 'accessToken', name: 'Access Token' }
+	];
 
 	useEffect(() => {
 		const fetchMonitor = async () => {
@@ -80,6 +90,17 @@ const Configure = () => {
 		};
 		fetchMonitor();
 	}, [monitorId, authToken, navigate]);
+
+	useEffect(() => {
+		if (monitor?.notifications?.some(notification => notification.type === "ntfy")) {
+			setShowNtfySettings(true);
+			// Optionally set ntfy settings from existing config
+			const ntfyNotification = monitor.notifications.find(n => n.type === "ntfy");
+			if (ntfyNotification?.ntfyConfig) {
+				setNtfySettings(ntfyNotification.ntfyConfig);
+			}
+		}
+	}, [monitor]);
 
 	const handleChange = (event, name) => {
 		let { value, id } = event.target;
@@ -105,7 +126,7 @@ const Configure = () => {
 							name === "email"
 								? { type: name, address: value }
 								: // TODO - phone number
-									{ type: name, phone: value },
+								{ type: name, phone: value },
 						],
 					};
 				}
@@ -130,6 +151,82 @@ const Configure = () => {
 				if (validation.error) updatedErrors[name] = validation.error.details[0].message;
 				else delete updatedErrors[name];
 				return updatedErrors;
+			});
+		}
+	};
+
+	//Handles changes for ntfy settings
+	const handleChangeNtfy = (field, value) => {
+		setNtfySettings(prev => ({
+			...prev,
+			[field]: value
+		}));
+	};
+
+	// Handler for adding Ntfy notification to monitor
+	const handleChangeForNtfy = () => {
+		setntfyLoading(true);
+		setMonitor((prev) => {
+			const notifs = [...prev.notifications];
+
+			return {
+				...prev,
+				notifications: [
+					...notifs,
+					{ type: "ntfy", ntfyConfig: ntfySettings }
+				],
+			};
+		});
+		createToast({ body: "Ntfy notification added successfully" });
+		setntfyLoading(false);
+	}
+
+	// Handler for Testing Ntfy notification
+	const testNotification = async () => {
+		try {
+			// Set up authorization headers based on authMode
+			let headers = {
+				Title: ntfySettings.friendlyName || `Monitor Alert`,
+				Priority: ntfySettings.priority,
+				Tags: "warning",
+				"Content-Type": "text/plain",
+			};
+
+			if (
+				ntfySettings.authMode === "user-pass" &&
+				ntfySettings.username &&
+				ntfySettings.password
+			) {
+				headers.Authorization =
+					"Basic " +
+					Buffer.from(`${ntfySettings.username}:${ntfySettings.password}`).toString(
+						"base64"
+					);
+			} else if (ntfySettings.authMode === "accessToken" && ntfySettings.accessToken) {
+				headers.Authorization = "Bearer " + ntfySettings.accessToken;
+			}
+
+			// Ensure the server URL does not have a trailing slash
+			const serverUrl = ntfySettings.serverUrl.endsWith("/")
+				? ntfySettings.serverUrl.slice(0, -1)
+				: ntfySettings.serverUrl;
+
+			// Plain text body message
+			const ntfyBody = "This is a test message from your Ntfy setup.";
+
+			// Send the Ntfy notification
+			const response = await axios.post(`${serverUrl}/${ntfySettings.topic}`, ntfyBody, {
+				headers,
+			});
+
+			if (response.status === 200) {
+				createToast({
+					body: "Notification sent successfully",
+				});
+			}
+		} catch (error) {
+			createToast({
+				body: `Failed to send notification with ${error}`,
 			});
 		}
 	};
@@ -393,6 +490,114 @@ const Configure = () => {
 									value={user?.email}
 									onChange={(event) => handleChange(event)}
 								/>
+								<Checkbox
+									id="notify-via-ntfy"
+									label="Notify via ntfy.sh"
+									isChecked={showNtfySettings}
+									onChange={() => setShowNtfySettings(prev => !prev)}
+									value=""
+								/>
+								{/* Ntfy-specific fields: Render when ntfy is selected */}
+								{showNtfySettings === true && (
+									<Box sx={{ mt: 2 }}>
+										<Stack spacing={3}>
+											<Field
+												id="ntfy-friendly-name"
+												type="text"
+												label="Friendly name"
+												placeholder="Enter a friendly name"
+												value={ntfySettings.friendlyName}
+												onChange={(e) => handleChangeNtfy('friendlyName', e.target.value)}
+											/>
+											<Field
+												id="ntfy-topic"
+												type="text"
+												label="Topic"
+												placeholder="Enter ntfy topic"
+												value={ntfySettings.topic}
+												onChange={(e) => handleChangeNtfy('topic', e.target.value)}
+											/>
+											<Field
+												id="ntfy-server-url"
+												type="text"
+												label="Server URL"
+												placeholder="https://ntfy.sh"
+												value={ntfySettings.serverUrl}
+												onChange={(e) => handleChangeNtfy('serverUrl', e.target.value)}
+											/>
+											<Field
+												id="ntfy-priority"
+												type="number"
+												label="Priority"
+												min="1"
+												max="5"
+												placeholder="1-5"
+												value={ntfySettings.priority}
+												onChange={(e) => handleChangeNtfy('priority', e.target.value)}
+											/>
+											<Select
+												id="auth-select"
+												label="Authentication Method"
+												value={ntfySettings.authMode}
+												onChange={(e) => handleChangeNtfy('authMode', e.target.value)}
+												items={authOptions}
+											/>
+											{ntfySettings.authMode === "user-pass" && (
+												<>
+													<Field
+														id="ntfy-username"
+														type="text"
+														label="Username"
+														placeholder="Enter username"
+														value={ntfySettings.username}
+														onChange={(e) => handleChangeNtfy('username', e.target.value)}
+													/>
+													<Field
+														id="ntfy-password"
+														type="password"
+														label="Password"
+														placeholder="Enter password"
+														value={ntfySettings.password}
+														onChange={(e) => handleChangeNtfy('password', e.target.value)}
+													/>
+												</>
+											)}
+											{ntfySettings.authMode === "accessToken" && (
+												<Field
+													id="ntfy-access-token"
+													type="text"
+													label="Access Token"
+													placeholder="Enter access token"
+													value={ntfySettings.accessToken}
+													onChange={(e) => handleChangeNtfy('accessToken', e.target.value)}
+												/>
+											)}
+											<Stack
+												direction="row"
+												spacing={2}
+											>
+												<LoadingButton
+													variant="contained"
+													color="primary"
+													onClick={testNotification}
+													disabled={Object.keys(errors).length !== 0}
+													loading={ntfyLoading}
+												>
+													Test
+												</LoadingButton>
+												<LoadingButton
+													variant="contained"
+													color="primary"
+													onClick={handleChangeForNtfy}
+													disabled={Object.keys(errors).length !== 0}
+													loading={isLoading}
+												>
+													Save
+												</LoadingButton>
+											</Stack>
+										</Stack>
+									</Box>
+								)}
 								<Checkbox
 									id="notify-email"
 									label="Also notify via email to multiple addresses (coming soon)"

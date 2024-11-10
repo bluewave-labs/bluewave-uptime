@@ -44,6 +44,7 @@ import StatusService from "./service/statusService.js";
 import NotificationService from "./service/notificationService.js";
 
 import db from "./db/mongo/MongoDB.js";
+import NtfyService from "./service/ntfyService.js";
 const SERVICE_NAME = "Server";
 
 let cleaningUp = false;
@@ -128,9 +129,10 @@ const startApp = async () => {
 		nodemailer,
 		logger
 	);
+	const ntfyService = new NtfyService(logger);
 	const networkService = new NetworkService(axios, ping, logger, http);
 	const statusService = new StatusService(db, logger);
-	const notificationService = new NotificationService(emailService, db, logger);
+	const notificationService = new NotificationService(emailService, db, logger, ntfyService);
 	const jobQueue = await JobQueue.createJobQueue(
 		db,
 		networkService,
