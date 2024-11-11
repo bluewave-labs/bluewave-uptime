@@ -39,9 +39,15 @@ const getStatusPageByUrl = async (url) => {
 };
 
 const urlIsUnique = async (url) => {
-	const statusPage = await StatusPage.find({ url });
-	if (statusPage.length > 0) return false;
-	return true;
+	try {
+		const statusPage = await StatusPage.find({ url });
+		if (statusPage.length > 0) return false;
+		return true;
+	} catch (error) {
+		error.service = SERVICE_NAME;
+		error.method = "urlIsUnique";
+		throw error;
+	}
 };
 
-export { createStatusPage, getStatusPageByUrl };
+export { createStatusPage, getStatusPageByUrl, urlIsUnique };
