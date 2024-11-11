@@ -9,6 +9,7 @@ const StatusPageSchema = mongoose.Schema(
 		},
 		url: {
 			type: String,
+			unique: true,
 			required: true,
 			default: "",
 		},
