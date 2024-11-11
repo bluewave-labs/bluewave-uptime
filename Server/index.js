@@ -14,6 +14,7 @@ import monitorRouter from "./routes/monitorRoute.js";
 import checkRouter from "./routes/checkRoute.js";
 import maintenanceWindowRouter from "./routes/maintenanceWindowRoute.js";
 import settingsRouter from "./routes/settingsRoute.js";
+import statusPageRouter from "./routes/statusPageRoute.js";
 import { fileURLToPath } from "url";
 
 import queueRouter from "./routes/queueRoute.js";
@@ -88,6 +89,7 @@ const startApp = async () => {
 	app.use("/api/v1/checks", verifyJWT, checkRouter);
 	app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
 	app.use("/api/v1/queue", verifyJWT, queueRouter);
+	app.use("/api/v1/status-page", statusPageRouter);
 
 	//health check
 	app.use("/api/v1/healthy", (req, res) => {
