@@ -187,8 +187,16 @@ const infrastractureMonitorValidation = joi.object({
 		"any.required": "CPU threshold is required.",
 	}),		
 	cpu:joi.boolean(),
-	// usage_memory: joi.number(),
-	// usage_disk: joi.number(),
+	memory:joi.boolean(),
+	disk:joi.boolean(),
+	usage_memory: joi.number().messages({
+		"number.base": "Memory threshold must be a number.",
+		"any.required": "Memory threshold is required.",
+	}),		
+	usage_disk: joi.number().messages({
+		"number.base": "Disk threshold must be a number.",
+		"any.required": "Disk threshold is required.",
+	}),		
 	// usage_temperature: joi.number().messages({
 	// 	"number.base": "Temperature must be a number.",
 	// }),

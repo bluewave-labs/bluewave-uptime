@@ -116,16 +116,18 @@ const CreateInfrastructureMonitor = () => {
 		});
 	};
 
-	const handleBlur = (event) => {
+	const handleBlur = (event, appenedID) => {
+		event.preventDefault();
 		const { value, id } = event.target;
+		if (id?.startsWith("notify-email-")) return;
 		const { error } = infrastractureMonitorValidation.validate(
-			{ [id]: value },
+			{ [id ?? appenedID]: value },
 			{
 				abortEarly: false,
 			}
 		);
 		setErrors((prev) => {
-			return buildErrors(prev, id, error);
+			return buildErrors(prev, id ?? appenedID, error);
 		});
 	};
 
@@ -202,7 +204,7 @@ const CreateInfrastructureMonitor = () => {
 		if (hasValidationErrors(form, infrastractureMonitorValidation, setErrors)) {
 			return;
 		} else {
-			const checkEndpointAction = await dispatch(
+			const checkEndpointAction = dispatch(
 				checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
 			);
 			if (checkEndpointAction.meta.requestStatus === "rejected") {
@@ -212,7 +214,7 @@ const CreateInfrastructureMonitor = () => {
 				setErrors({ url: "The entered URL is not reachable." });
 				return;
 			}
-			const action = await dispatch(
+			const action = dispatch(
 				createInfrastructureMonitor({ authToken, monitor: generatePayload(form) })
 			);
 			if (action.meta.requestStatus === "fulfilled") {
@@ -372,7 +374,7 @@ const CreateInfrastructureMonitor = () => {
 							onBlur={handleBlur}
 							alertUnit="%"
 						/>
-						{/* <CustomAlertStack
+						<CustomAlertStack
 							checkboxId="memory"
 							checkboxLabel="Memory"
 							checkboxValue={""}
@@ -391,7 +393,7 @@ const CreateInfrastructureMonitor = () => {
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
-						/> */}
+						/>
 						{/* <CustomAlertStack
 							checkboxId="customize-temperature"
 							checkboxLabel="Temperature"
@@ -448,7 +450,7 @@ const CreateInfrastructureMonitor = () => {
 							label="Check frequency"
 							value={infrastructureMonitor.interval || 15}
 							onChange={(e) => handleChange(e, "interval")}
-							onBlur={handleBlur}
+							onBlur={(e) => handleBlur(e, "interval")}
 							items={frequencies}
 						/>
 						{/* <Field

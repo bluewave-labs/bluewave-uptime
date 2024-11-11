@@ -22,14 +22,22 @@ const hasValidationErrors = (form, validation, setErrors) => {
 					"dbConnectionString",
 					"refreshTokenTTL",
 					"jwtTTL",
+					"notify-email-list",
 				].includes(err.path[0])
 			) {
 				newErrors[err.path[0]] = err.message ?? "Validation error";
 			}
+
 			// Handle conditionally usage number required cases
 			if (!form.cpu || (form.cpu && form.usage_cpu)) {
 				delete newErrors["usage_cpu"];
-			}
+			}			
+			if (!form.memory || (form.memory && form.usage_memory)) {
+				delete newErrors["usage_memory"];
+			}			
+			if (!form.disk || (form.disk && form.usage_disk)) {
+				delete newErrors["usage_disk"];
+			}						
 		});
 		if (Object.keys(newErrors).length > 0) {
 			setErrors(newErrors);
