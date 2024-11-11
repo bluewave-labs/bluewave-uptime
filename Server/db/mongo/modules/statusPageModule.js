@@ -5,16 +5,15 @@ const SERVICE_NAME = "statusPageModule";
 
 const createStatusPage = async (statusPageData) => {
 	try {
-		const isUnique = await urlIsUnique(statusPageData.url);
-		if (!isUnique) {
-			const error = new Error(errorMessages.STATUS_PAGE_URL_NOT_UNIQUE);
-			error.status = 400;
-			throw error;
-		}
 		const statusPage = new StatusPage({ ...statusPageData });
 		await statusPage.save();
 		return statusPage;
 	} catch (error) {
+		if (error?.code === 11000) {
+			// Handle duplicate URL errors
+			error.status = 400;
+			error.message = errorMessages.STATUS_PAGE_URL_NOT_UNIQUE;
+		}
 		error.service = SERVICE_NAME;
 		error.method = "createStatusPage";
 		throw error;
@@ -38,16 +37,4 @@ const getStatusPageByUrl = async (url) => {
 	}
 };
 
-const urlIsUnique = async (url) => {
-	try {
-		const statusPage = await StatusPage.find({ url });
-		if (statusPage.length > 0) return false;
-		return true;
-	} catch (error) {
-		error.service = SERVICE_NAME;
-		error.method = "urlIsUnique";
-		throw error;
-	}
-};
-
-export { createStatusPage, getStatusPageByUrl, urlIsUnique };
+export { createStatusPage, getStatusPageByUrl };

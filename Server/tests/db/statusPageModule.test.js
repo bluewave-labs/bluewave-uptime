@@ -2,7 +2,6 @@ import sinon from "sinon";
 import {
 	createStatusPage,
 	getStatusPageByUrl,
-	urlIsUnique,
 } from "../../db/mongo/modules/statusPageModule.js";
 import StatusPage from "../../db/models/StatusPage.js";
 import { errorMessages } from "../../utils/messages.js";
@@ -20,12 +19,21 @@ describe("statusPageModule", () => {
 	describe("createStatusPage", () => {
 		it("should throw an error if a non-unique url is provided", async () => {
 			statusPageFindOneStub.resolves(true);
-			statusPageFindStub.resolves([{}]);
 			try {
 				await createStatusPage({ url: "test" });
 			} catch (error) {
 				expect(error.status).to.equal(400);
 				expect(error.message).to.equal(errorMessages.STATUS_PAGE_URL_NOT_UNIQUE);
+			}
+		});
+		it("should handle duplicate URL errors", async () => {
+			const err = new Error("test");
+			err.code = 11000;
+			statusPageSaveStub.rejects(err);
+			try {
+				await createStatusPage({ url: "test" });
+			} catch (error) {
+				expect(error).to.deep.equal(err);
 			}
 		});
 		it("should return a status page if a unique url is provided", async () => {
@@ -54,29 +62,6 @@ describe("statusPageModule", () => {
 			const statusPage = await getStatusPageByUrl(mockStatusPage.url);
 			expect(statusPage).to.exist;
 			expect(statusPage).to.deep.equal(mockStatusPage);
-		});
-	});
-	describe("urlIsUnique", () => {
-		it("should throw an error if an error occurs", async () => {
-			const err = new Error("test");
-			statusPageFindStub.rejects(err);
-			try {
-				await urlIsUnique("test");
-			} catch (error) {
-				expect(error).to.deep.equal(err);
-			}
-		});
-
-		it("should return true if a url is unique", async () => {
-			statusPageFindStub.resolves([]);
-			const isUnique = await urlIsUnique("test");
-			expect(isUnique).to.be.true;
-		});
-
-		it("should return false if a url is not unique", async () => {
-			statusPageFindStub.resolves([{ url: "test" }]);
-			const isUnique = await urlIsUnique("test");
-			expect(isUnique).to.be.false;
 		});
 	});
 });
