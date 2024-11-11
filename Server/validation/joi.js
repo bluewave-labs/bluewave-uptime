@@ -410,6 +410,32 @@ const updateAppSettingsBodyValidation = joi.object({
 	systemEmailPassword: joi.string().allow(""),
 });
 
+//****************************************
+// Status Page Validation
+//****************************************
+
+const getStatusPageParamValidation = joi.object({
+	url: joi.string().required(),
+});
+
+const createStatusPageBodyValidation = joi.object({
+	companyName: joi.string().required(),
+	url: joi.string().required(),
+	timezone: joi.string().required(),
+	color: joi.string().required(),
+	theme: joi.string().required(),
+	monitors: joi
+		.array()
+		.items(joi.string().pattern(/^[0-9a-fA-F]{24}$/))
+		.required()
+		.messages({
+			"string.pattern.base": "Must be a valid monitor ID",
+			"array.base": "Monitors must be an array",
+			"array.empty": "At least one monitor is required",
+			"any.required": "Monitors are required",
+		}),
+});
+
 export {
 	roleValidatior,
 	loginValidation,
@@ -465,4 +491,6 @@ export {
 	editMaintenanceWindowByIdParamValidation,
 	editMaintenanceByIdWindowBodyValidation,
 	updateAppSettingsBodyValidation,
+	createStatusPageBodyValidation,
+	getStatusPageParamValidation,
 };
