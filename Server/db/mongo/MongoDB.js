@@ -99,6 +99,7 @@ import {
 
 import {
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorById,
 	getMonitorsAndSummaryByTeamId,
@@ -187,6 +188,7 @@ export default {
 	resetPassword,
 	checkSuperadmin,
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorById,
 	getMonitorsAndSummaryByTeamId,
