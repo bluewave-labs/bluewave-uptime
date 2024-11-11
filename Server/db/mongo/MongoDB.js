@@ -169,6 +169,11 @@ import {
 //****************************************
 import { getAppSettings, updateAppSettings } from "./modules/settingsModule.js";
 
+//****************************************
+// Status Page
+//****************************************
+import { createStatusPage, getStatusPageByUrl } from "./modules/statusPageModule.js";
+
 export default {
 	connect,
 	disconnect,
@@ -223,4 +228,6 @@ export default {
 	deleteNotificationsByMonitorId,
 	getAppSettings,
 	updateAppSettings,
+	createStatusPage,
+	getStatusPageByUrl,
 };
