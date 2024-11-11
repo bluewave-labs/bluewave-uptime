@@ -84,6 +84,10 @@
 		{
 			"name": "queue",
 			"description": "Queue"
+		},
+		{
+			"name": "status-page",
+			"description": "Status Page"
 		}
 	],
 	"paths": {
@@ -2239,6 +2243,118 @@
 					}
 				]
 			}
+		},
+		"/status-page/{url}": {
+			"get": {
+				"tags": ["status-page"],
+				"description": "Get a status page by URL",
+				"parameters": [
+					{
+						"name": "url",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/SuccessResponse" }
+							}
+						}
+					},
+					"422": {
+						"description": "Unprocessable Content",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["status-page"],
+				"description": "Create a status page",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateStatusPageBody"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SuccessResponse"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Unprocessable Content",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Duplicate URL",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
 		}
 	},
 	"components": {
@@ -2423,6 +2539,21 @@
 					"expiry": {
 						"type": "string",
 						"format": "date-time"
+					}
+				}
+			},
+			"CreateStatusPageBody": {
+				"type": "object",
+				"required": ["companyName", "url", "timezone", "color", "theme", "monitors"],
+				"properties": {
+					"companyName": { "type": "string" },
+					"url": { "type": "string" },
+					"timezone": { "type": "string" },
+					"color": { "type": "string" },
+					"theme": { "type": "string" },
+					"monitors": {
+						"type": "array",
+						"items": { "type": "string" }
 					}
 				}
 			}
