@@ -184,6 +184,7 @@ const deleteTeam = async (teamId) => {
 const deleteAllOtherUsers = async () => {
 	try {
 		await UserModel.deleteMany({ role: { $ne: "superadmin" } });
+		return true;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "deleteAllOtherUsers";
