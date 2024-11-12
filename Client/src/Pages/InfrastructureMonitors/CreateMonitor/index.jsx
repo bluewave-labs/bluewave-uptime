@@ -18,6 +18,7 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { buildErrors, hasValidationErrors } from "../../../Validation/error";
 import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
+import { CustomThreshold } from "../../../Components/CustomThreshold";
 
 const CreateInfrastructureMonitor = () => {
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
@@ -51,55 +52,6 @@ const CreateInfrastructureMonitor = () => {
 
 	const alertErrKeyLen = Object.keys(errors)
 							.filter(k => k.startsWith(THRESHOLD_FIELD_PREFIX)).length
-
-	const CustomAlertStack = ({
-		checkboxId,
-		checkboxLabel,
-		fieldId,
-		alertUnit,
-		onChange,
-		onBlur,
-	}) => (
-		<Stack
-			direction={"row"}
-			sx={{
-				width: "50%",
-				justifyContent: "space-between",
-			}}
-		>
-			<Box>
-				<Checkbox
-					id={checkboxId}
-					label={checkboxLabel}
-					isChecked={infrastructureMonitor[checkboxId]}
-					onChange={handleCustomAlertCheckChange}
-				/>
-			</Box>
-			<Stack
-				direction={"row"}
-				sx={{
-					justifyContent: "flex-end",
-				}}
-			>
-				<Field
-					type="number"
-					className="field-infrastructure-alert"
-					id={fieldId}
-					value={infrastructureMonitor[fieldId]}
-					onBlur={onBlur}
-					onChange={onChange}
-					error={errors[fieldId]}
-					disabled={!infrastructureMonitor[checkboxId]}
-				></Field>
-				<Typography
-					component="p"
-					m={theme.spacing(3)}
-				>
-					{alertUnit}
-				</Typography>
-			</Stack>
-		</Stack>
-	);
 
 	const handleCustomAlertCheckChange = (event) => {
 		const { value, id } = event.target;
@@ -209,7 +161,7 @@ const CreateInfrastructureMonitor = () => {
 		if (hasValidationErrors(form, infrastractureMonitorValidation, setErrors)) {
 			return;
 		} else {
-			const checkEndpointAction = dispatch(
+			const checkEndpointAction = await dispatch(
 				checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
 			);
 			if (checkEndpointAction.meta.requestStatus === "rejected") {
@@ -219,7 +171,7 @@ const CreateInfrastructureMonitor = () => {
 				setErrors({ url: "The entered URL is not reachable." });
 				return;
 			}
-			const action = dispatch(
+			const action = await dispatch(
 				createInfrastructureMonitor({ authToken, monitor: generatePayload(form) })
 			);
 			if (action.meta.requestStatus === "fulfilled") {
@@ -370,18 +322,20 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(6)}>
 						{HARDWARE_MONITOR_TYPES.map((type, idx) => (
-							<CustomAlertStack
+							<CustomThreshold
 								key={idx}
 								checkboxId={type}
 								checkboxLabel={
 									type !== "cpu" ? capitalizeFirstLetter(type) : type.toUpperCase()
 								}
-								checkboxValue={""}
+								onCheckboxChange={handleCustomAlertCheckChange}
 								fieldId={THRESHOLD_FIELD_PREFIX + type}
 								fieldValue={infrastructureMonitor[THRESHOLD_FIELD_PREFIX + type] ?? ""}
-								onChange={handleChange}
-								onBlur={handleBlur}
+								onFieldChange={handleChange}
+								onFieldBlur={handleBlur}
 								alertUnit="%"
+								infrastructureMonitor={infrastructureMonitor}
+								errors={errors}
 							/>
 						))}
 						{alertErrKeyLen > 0 && (
