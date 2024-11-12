@@ -2,21 +2,6 @@ import { createTheme } from "@mui/material";
 import { baseTheme } from "./globalTheme";
 import { colors } from "./constants";
 
-const text = {
-	primary: "#fafafa",
-	secondary: "#e6e6e6",
-	tertiary: "#a1a1aa",
-	accent: "#8e8e8f",
-	disabled: "rgba(172, 172, 172, 0.3)",
-};
-const background = {
-	main: "#151518",
-	alt: "#09090b",
-	fill: "#2D2D33",
-	accent: "#18181a",
-};
-const border = { light: "#27272a", dark: "#36363e" };
-
 const {
 	primary,
 	secondary,
@@ -30,6 +15,11 @@ const {
 		color4: { dark: color4 },
 		color5: { dark: color5 },
 	},
+	background,
+	text,
+	border,
+	unresolved,
+	other,
 } = colors;
 
 const darkTheme = createTheme({
@@ -55,20 +45,25 @@ const darkTheme = createTheme({
 			contrastText: warning.contrastText.dark,
 			dark: warning.dark.dark,
 		},
+		/* From this part on, try to create semantic structure, not feature based structure */
 		percentage: {
-			uptimePoor: "#d32f2f",
-			uptimeFair: "#e88c30",
-			uptimeGood: "#ffd600",
-			uptimeExcellent: "#079455",
+			uptimePoor: error.main.dark,
+			uptimeFair: warning.contrastText.dark,
+			uptimeGood: warning.main.dark /* Change for a success color? ?*/,
+			uptimeExcellent: success.contrastText.light,
 		},
-		unresolved: { main: "#664eff", light: "#3a1bff", bg: "#f2f4f7" },
-		divider: border.light,
+		unresolved: {
+			main: unresolved.main.dark,
+			light: unresolved.light.dark,
+			bg: unresolved.bg.dark,
+		},
+		divider: border.light.dark,
 		other: {
-			icon: "#e6e6e6",
-			line: "#27272a",
-			fill: "#18181a",
-			grid: "#454546",
-			autofill: "#2d2d33",
+			icon: text.secondary.dark,
+			line: border.light.dark,
+			fill: background.accent.dark,
+			grid: other.grid.dark,
+			autofill: secondary.main.dark,
 		},
 		gradient: {
 			color1,
@@ -77,15 +72,28 @@ const darkTheme = createTheme({
 			color4,
 			color5,
 		},
-		text: text,
-		background: background,
-		border: border,
+		text: {
+			primary: text.primary.dark,
+			secondary: text.secondary.dark,
+			tertiary: text.tertiary.dark,
+			accent: text.accent.dark,
+		},
+		background: {
+			main: background.main.dark,
+			alt: background.alt.dark,
+			fill: background.fill.dark,
+			accent: background.accent.dark,
+		},
+		border: {
+			light: border.light.dark,
+			dark: border.dark.dark,
+		},
 		info: {
-			text: text.primary,
-			main: text.secondary,
-			bg: background.main,
-			light: background.main,
-			border: border.light,
+			text: text.primary.dark,
+			main: text.secondary.dark,
+			bg: background.main.dark,
+			light: background.main.dark,
+			border: border.light.dark,
 		},
 	},
 });

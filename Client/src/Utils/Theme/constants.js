@@ -8,7 +8,9 @@ const typographyLevels = {
 	xl: `${(typographyBase + 10) / 16}rem`,
 };
 
-/* This should not be here. INcorporate into color structure */
+/* This should not be here. Incorporate into color structure.
+
+Is is being exported to globalStyle*/
 const paletteLight = {
 	text: {
 		primary: "#1c2130",
@@ -19,7 +21,6 @@ const paletteLight = {
 };
 
 /* TODO Expand this */
-
 const paletteColors = {
 	white: "#FFFFFF",
 	gray50: "#FEFEFE",
@@ -27,18 +28,42 @@ const paletteColors = {
 	gray70: "#FDFDFD",
 	gray80: "#FDFCFD",
 	gray90: "#FCFCFD",
+	gray95: "#FAFAFA",
+	gray97: "#F9FAFB",
 	gray100: "#F4F4F4",
+	gray125: "#F2F4F7",
+	gray150: "#EAECF0",
+	gray180: "#E6E6E6",
 	gray200: "#E3E3E3",
+	gray225: "#D6D9DD",
+	gray250: "#D0D5DD",
+	gray300: "#A2A3A3",
+	gray350: "#A1A1AA",
+	gray450: "#8E8E8F",
+	gray500: "#838C99",
+	gray600: "#454546",
+	gray750: "#36363E",
 	gray800: "#2D2D33",
+	gray815: "#27272A",
 	gray830: "#262115",
+	gray835: "#18181a",
+	gray840: "#151518",
 	gray850: "#131315",
 	gray860: "#111113",
 	gray870: "#0F0F11",
 	gray880: "#0C0C0E",
 	gray890: "#09090B",
 	black: "#000000",
+	blueGray20: "#E8F0FE",
+	blueGray40: "#E2EAF7",
+	blueGray150: "#667085",
+	blueGray200: "#475467",
+	blueGray400: "#344054",
+	blueGray900: "#1c2130",
 	blueBlueWave: "#1570EF",
-	blue700: "#475467",
+	blue700: "#4E5BA6",
+	purple300: "#664EFF",
+	purple400: "#3A1BFF",
 	green20: "#ECFDF3",
 	green50: "#D4F4E1",
 	green150: "#45BB7A",
@@ -54,7 +79,6 @@ const paletteColors = {
 	red800: "#301A1F",
 	orange50: "#FEF8EA",
 	orange100: "#FFECBC",
-	orange200: "#FEC84B",
 	orange300: "#FDB022",
 	orange400: "#FF9F00",
 	orange500: "#E88C30",
@@ -81,7 +105,7 @@ const semanticColors = {
 			//TODO we dont have secondary dark for dark mode
 		},
 		constrastText: {
-			light: paletteColors.blue700,
+			light: paletteColors.blueGray200,
 			//TODO we dont have secondary contrastText for dark mode
 		},
 	},
@@ -114,7 +138,7 @@ const semanticColors = {
 		contrastText: {
 			//TODO contrasttext semantically should be something that contrasts with the main
 			light: paletteColors.red200,
-			dark: paletteColors.red200,
+			dark: paletteColors.red50,
 		},
 		light: {
 			light: paletteColors.red100,
@@ -130,24 +154,20 @@ const semanticColors = {
 			light: paletteColors.orange300,
 			dark: paletteColors.orange400,
 		},
-		text: {
-			light: paletteColors.orange600,
-			dark: paletteColors.orange500,
-		},
 		light: {
 			light: paletteColors.orange100,
 			dark: paletteColors.orange800,
 		},
-		bg: {
+		contrastText: {
+			light: paletteColors.orange600,
+			dark: paletteColors.orange500,
+		},
+		dark: {
 			light: paletteColors.orange50,
 			dark: paletteColors.gray830,
 		},
-		border: {
-			light: paletteColors.orange200,
-			dark: paletteColors.orange500,
-		},
 	},
-
+	/* From this part on, try to create semantic structure, not feature based structure */
 	gradient: {
 		color1: {
 			light: paletteColors.gray90,
@@ -168,6 +188,86 @@ const semanticColors = {
 		color5: {
 			light: paletteColors.gray50,
 			dark: paletteColors.gray850,
+		},
+	},
+	background: {
+		main: {
+			light: paletteColors.white,
+			dark: paletteColors.gray840,
+		},
+		alt: {
+			light: paletteColors.gray90,
+			dark: paletteColors.gray890,
+		},
+		fill: {
+			light: paletteColors.gray100,
+			dark: paletteColors.gray800,
+		},
+		accent: {
+			light: paletteColors.gray97,
+			dark: paletteColors.gray835,
+		},
+	},
+	text: {
+		primary: {
+			light: paletteColors.blueGray900,
+			dark: paletteColors.gray95,
+		},
+		secondary: {
+			light: paletteColors.blueGray400,
+			dark: paletteColors.gray180,
+		},
+		tertiary: {
+			light: paletteColors.blueGray200,
+			dark: paletteColors.gray350,
+		},
+		accent: {
+			light: paletteColors.gray500,
+			dark: paletteColors.gray450,
+		},
+	},
+	border: {
+		light: {
+			light: paletteColors.gray150,
+			dark: paletteColors.gray815,
+		},
+		dark: {
+			light: paletteColors.gray250,
+			dark: paletteColors.gray750,
+		},
+	},
+	percentage: {
+		/* uptimeFair: {
+			light: paletteColors.
+		} */
+	},
+	unresolved: {
+		main: {
+			light: paletteColors.blue700,
+			dark: paletteColors.purple300,
+		},
+		light: {
+			light: paletteColors.blueGray40,
+			dark: paletteColors.purple400,
+		},
+		bg: {
+			light: paletteColors.gray125,
+			dark: paletteColors.gray125,
+		},
+	},
+	other: {
+		icon: {
+			light: paletteColors.blueGray150,
+		},
+		line: {
+			light: paletteColors.gray225,
+		},
+		grid: {
+			light: paletteColors.gray300,
+			dark: paletteColors.gray600,
+		},
+		autofill: {
+			light: paletteColors.blueGray20,
 		},
 	},
 };

@@ -2,20 +2,14 @@ import { createTheme } from "@mui/material";
 import { baseTheme } from "./globalTheme";
 import { colors } from "./constants";
 
-const text = {
-	primary: "#1c2130",
-	secondary: "#344054",
-	tertiary: "#475467",
-	accent: "#838c99",
-};
-const background = {
-	main: "#FFFFFF",
-	alt: "#FCFCFD",
-	fill: "#F4F4F4",
-	accent: "#f9fafb",
-};
+/* 
+Take things from global theme
 
-const border = { light: "#eaecf0", dark: "#d0d5dd" };
+Next step: check if all here are being used.
+
+Discuss colors with Gorkem and rest of the team
+
+*/
 
 const {
 	primary,
@@ -30,6 +24,11 @@ const {
 		color4: { light: color4 },
 		color5: { light: color5 },
 	},
+	background,
+	text,
+	border,
+	unresolved,
+	other,
 } = colors;
 
 const lightTheme = createTheme({
@@ -59,20 +58,25 @@ const lightTheme = createTheme({
 			contrastText: warning.contrastText.light,
 			dark: warning.dark.light,
 		},
+		/* From this part on, try to create semantic structure, not feature based structure */
 		percentage: {
-			uptimePoor: "#d32f2f",
-			uptimeFair: "#ec8013",
-			uptimeGood: "#ffb800",
-			uptimeExcellent: "#079455",
+			uptimePoor: error.main.light,
+			uptimeFair: warning.contrastText.light,
+			uptimeGood: warning.main.light /* Change for a success color? */,
+			uptimeExcellent: success.contrastText.light,
 		},
-		unresolved: { main: "#4e5ba6", light: "#e2eaf7", bg: "#f2f4f7" },
-		divider: border.light,
+		unresolved: {
+			main: unresolved.main.light,
+			light: unresolved.light.light,
+			bg: unresolved.bg.light,
+		},
+		divider: border.light.light,
 		other: {
-			icon: "#667085",
-			line: "#d6d9dd",
-			fill: "#e3e3e3",
-			grid: "#a2a3a3",
-			autofill: "#e8f0fe",
+			icon: other.icon.light,
+			line: other.line.light,
+			fill: secondary.dark.light,
+			grid: other.grid.light,
+			autofill: other.autofill.light,
 		},
 		gradient: {
 			color1,
@@ -81,15 +85,28 @@ const lightTheme = createTheme({
 			color4,
 			color5,
 		},
-		text: text,
-		background: background,
-		border: border,
+		text: {
+			primary: text.primary.light,
+			secondary: text.secondary.light,
+			tertiary: text.tertiary.light,
+			accent: text.accent.light,
+		},
+		background: {
+			main: background.main.light,
+			alt: background.alt.light,
+			fill: background.fill.light,
+			accent: background.accent.light,
+		},
+		border: {
+			light: border.light.light,
+			dark: border.dark.light,
+		},
 		info: {
-			text: text.primary,
-			main: text.tertiary,
-			bg: background.main,
-			light: background.main,
-			border: border.dark,
+			text: text.primary.light,
+			main: text.tertiary.light,
+			bg: background.main.light,
+			light: background.main.light,
+			border: border.dark.light,
 		},
 	},
 });
