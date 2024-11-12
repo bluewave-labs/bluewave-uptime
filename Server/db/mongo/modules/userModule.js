@@ -15,7 +15,7 @@ const SERVICE_NAME = "userModule";
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const insertUser = async (userData, imageFile) => {
+const insertUser = async (userData, imageFile, GenerateAvatarImage) => {
 	try {
 		if (imageFile) {
 			// 1.  Save the full size image
