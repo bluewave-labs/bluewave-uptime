@@ -3,27 +3,11 @@ import { paletteLight, typographyLevels } from "./constants";
 const fontFamilyPrimary = '"Inter" , sans-serif';
 // const fontFamilySecondary = '"Avenir", sans-serif';
 
+/* TODO take the color out from here */
 const shadow =
 	"0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
-const background = {
-	main: "#FFFFFF",
-	alt: "#FCFCFD",
-	fill: "#F4F4F4",
-	accent: "#f9fafb",
-};
-
-const border = { light: "#eaecf0", dark: "#d0d5dd" };
-
-const text = {
-	primary: "#1c2130",
-	secondary: "#344054",
-	tertiary: "#475467",
-	accent: "#838c99",
-};
-
 const baseTheme = {
-	/* TODO colors should not live here */
 	typography: {
 		fontFamily: fontFamilyPrimary,
 		fontSize: 14,
@@ -111,27 +95,29 @@ const baseTheme = {
 		},
 		MuiIconButton: {
 			styleOverrides: {
-				root: {
+				root: ({ theme }) => ({
 					padding: 4,
 					transition: "none",
 					"&:hover": {
-						backgroundColor: background.fill,
+						backgroundColor: theme.palette.background.fill,
 					},
-				},
+				}),
 			},
 		},
 		MuiPaper: {
 			styleOverrides: {
-				root: {
-					marginTop: 4,
-					padding: 0,
-					border: 1,
-					borderStyle: "solid",
-					borderColor: border.light,
-					borderRadius: 4,
-					boxShadow: shadow,
-					backgroundColor: background.main,
-					backgroundImage: "none",
+				root: ({ theme }) => {
+					return {
+						marginTop: 4,
+						padding: 0,
+						border: 1,
+						borderStyle: "solid",
+						borderColor: theme.palette.border.light,
+						borderRadius: 4,
+						boxShadow: shadow,
+						backgroundColor: theme.palette.background.main,
+						backgroundImage: "none",
+					};
 				},
 			},
 		},
@@ -151,61 +137,61 @@ const baseTheme = {
 		},
 		MuiMenuItem: {
 			styleOverrides: {
-				root: {
+				root: ({ theme }) => ({
 					borderRadius: 4,
 					backgroundColor: "inherit",
 					padding: "4px 6px",
-					color: text.secondary,
+					color: theme.palette.text.secondary,
 					fontSize: 13,
 					margin: 2,
 					minWidth: 100,
 					"&:hover, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible":
 						{
-							backgroundColor: background.fill,
+							backgroundColor: theme.palette.background.fill,
 						},
-				},
+				}),
 			},
 		},
 		MuiTableCell: {
 			styleOverrides: {
-				root: {
-					borderBottomColor: border.light,
-				},
+				root: ({ theme }) => ({
+					borderBottomColor: theme.palette.border.light,
+				}),
 			},
 		},
 		MuiTableHead: {
 			styleOverrides: {
-				root: {
-					backgroundColor: background.accent,
-				},
+				root: ({ theme }) => ({
+					backgroundColor: theme.palette.background.accent,
+				}),
 			},
 		},
 		MuiPagination: {
 			styleOverrides: {
-				root: {
-					backgroundColor: background.main,
+				root: ({ theme }) => ({
+					backgroundColor: theme.palette.background.main,
 					border: 1,
 					borderStyle: "solid",
-					borderColor: border.light,
+					borderColor: theme.palette.border.light,
 					"& button": {
-						color: text.tertiary,
+						color: theme.palette.text.tertiary,
 						borderRadius: 4,
 					},
 					"& li:first-of-type button, & li:last-of-type button": {
 						border: 1,
 						borderStyle: "solid",
-						borderColor: border.light,
+						borderColor: theme.palette.border.light,
 					},
-				},
+				}),
 			},
 		},
 		MuiPaginationItem: {
 			styleOverrides: {
-				root: {
+				root: ({ theme }) => ({
 					"&:not(.MuiPaginationItem-ellipsis):hover, &.Mui-selected": {
-						backgroundColor: background.fill,
+						backgroundColor: theme.palette.background.fill,
 					},
-				},
+				}),
 			},
 		},
 		MuiSkeleton: {
