@@ -1,6 +1,9 @@
 import joi from "joi";
 import dayjs from "dayjs";
 
+const THRESHOLD_COMMON_MSG = "Threshold is required.";
+const THRESHOLD_COMMON_BASE_MSG = "Threshold must be a number.";
+
 const nameSchema = joi
 	.string()
 	.max(50)
@@ -181,22 +184,22 @@ const infrastractureMonitorValidation = joi.object({
 	name: joi.string().trim().max(50).allow("").messages({
 		"string.max": "This field should not exceed the 50 characters limit.",
 	}),
-	secret: joi.string().trim().messages({ "string.empty": "This field is required." }),		
+	secret: joi.string().trim().messages({ "string.empty": "This field is required." }),
 	usage_cpu: joi.number().messages({
-		"number.base": "CPU threshold must be a number.",
-		"any.required": "CPU threshold is required.",
-	}),		
-	cpu:joi.boolean(),
-	memory:joi.boolean(),
-	disk:joi.boolean(),
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+		"any.required": THRESHOLD_COMMON_MSG,
+	}),
+	cpu: joi.boolean(),
+	memory: joi.boolean(),
+	disk: joi.boolean(),
 	usage_memory: joi.number().messages({
-		"number.base": "Memory threshold must be a number.",
-		"any.required": "Memory threshold is required.",
-	}),		
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+		"any.required": THRESHOLD_COMMON_MSG,
+	}),
 	usage_disk: joi.number().messages({
-		"number.base": "Disk threshold must be a number.",
-		"any.required": "Disk threshold is required.",
-	}),		
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+		"any.required": THRESHOLD_COMMON_MSG,
+	}),
 	// usage_temperature: joi.number().messages({
 	// 	"number.base": "Temperature must be a number.",
 	// }),
@@ -209,7 +212,7 @@ const infrastractureMonitorValidation = joi.object({
 	interval: joi.number().messages({
 		"number.base": "Frequency must be a number.",
 		"any.required": "Frequency is required.",
-	}),		
+	}),
 });
 
 export {
@@ -219,5 +222,5 @@ export {
 	settingsValidation,
 	maintenanceWindowValidation,
 	advancedSettingsValidation,
-	infrastractureMonitorValidation
+	infrastractureMonitorValidation,
 };

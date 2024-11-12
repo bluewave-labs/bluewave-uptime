@@ -35,6 +35,7 @@ const CreateInfrastructureMonitor = () => {
 
 	const MS_PER_MINUTE = 60000;
 	const THRESHOLD_FIELD_PREFIX = "usage_"
+	const HARDWARE_MONITOR_TYPES = ["cpu","memory","disk"]
 	const { user, authToken } = useSelector((state) => state.auth);
 	const monitorState = useSelector((state) => state.infrastructureMonitor);
 	const dispatch = useDispatch();
@@ -46,6 +47,11 @@ const CreateInfrastructureMonitor = () => {
 	};
 
 	const [errors, setErrors] = useState({});
+
+	const alertErrKeyLen = Object.keys(errors)
+							.filter(k => k.startsWith(THRESHOLD_FIELD_PREFIX)).length
+    console.log("alertErrKeyLen")
+	console.log(alertErrKeyLen)
 
 	const CustomAlertStack = ({
 		checkboxId,
@@ -365,31 +371,43 @@ const CreateInfrastructureMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(6)}>
 						<CustomAlertStack
-							checkboxId="cpu"
+							checkboxId={`${HARDWARE_MONITOR_TYPES[0]}`}
 							checkboxLabel="CPU"
 							checkboxValue={""}
-							fieldId={`${THRESHOLD_FIELD_PREFIX}cpu`}
-							fieldValue={infrastructureMonitor[`${THRESHOLD_FIELD_PREFIX}cpu`] ?? ""}
+							fieldId={`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[0]}`}
+							fieldValue={
+								infrastructureMonitor[
+									`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[0]}`
+								] ?? ""
+							}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
 						/>
 						<CustomAlertStack
-							checkboxId="memory"
+							checkboxId={`${HARDWARE_MONITOR_TYPES[1]}`}
 							checkboxLabel="Memory"
 							checkboxValue={""}
-							fieldId={`${THRESHOLD_FIELD_PREFIX}memory`}
-							fieldValue={infrastructureMonitor[`${THRESHOLD_FIELD_PREFIX}memory`] ?? ""}
+							fieldId={`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[1]}`}
+							fieldValue={
+								infrastructureMonitor[
+									`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[1]}`
+								] ?? ""
+							}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
 						/>
 						<CustomAlertStack
-							checkboxId="disk"
+							checkboxId={`${HARDWARE_MONITOR_TYPES[2]}`}
 							checkboxLabel="Disk"
 							checkboxValue={""}
-							fieldId={`${THRESHOLD_FIELD_PREFIX}disk`}
-							fieldValue={infrastructureMonitor[`${THRESHOLD_FIELD_PREFIX}disk`]??""}
+							fieldId={`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[2]}`}
+							fieldValue={
+								infrastructureMonitor[
+									`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[2]}`
+								] ?? ""
+							}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							alertUnit="%"
@@ -418,14 +436,29 @@ const CreateInfrastructureMonitor = () => {
 							onBlur={handleBlur}
 							alertUnit="%"
 						/> */}
+						{alertErrKeyLen > 0 && (
+							<Typography
+								component="span"
+								className="input-error"
+								color={theme.palette.error.text}
+								mt={theme.spacing(2)}
+								sx={{
+									opacity: 0.8,
+								}}
+							>
+								{errors[`${THRESHOLD_FIELD_PREFIX}cpu`] ??
+									errors[`${THRESHOLD_FIELD_PREFIX}memory`] ??
+									errors[`${THRESHOLD_FIELD_PREFIX}disk`]}
+							</Typography>
+						)}
 					</Stack>
 				</ConfigBox>
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">Logging retention</Typography>
 						<Typography component="p">
-							Configure how logs are stored. After this period, the Uptime Manager
-							will start deleting oldest data.
+							Configure how logs are stored. After this period, the Uptime Manager will
+							start deleting oldest data.
 						</Typography>
 					</Box>
 					{/* <Stack gap={theme.spacing(6)}>

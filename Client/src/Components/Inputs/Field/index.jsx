@@ -186,10 +186,11 @@ const Field = forwardRef(
 						),
 					}}
 				/>
-				{error && (
+				{ error && (
 					<Typography
 						component="span"
 						className="input-error"
+						hidden={className? true: false}						
 						color={theme.palette.error.text}
 						mt={theme.spacing(2)}
 						sx={{
