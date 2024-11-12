@@ -30,6 +30,11 @@ const hostSchema = mongoose.Schema({
 	kernel_version: { type: String, default: "" },
 });
 
+const errorSchema = mongoose.Schema({
+	metric: { type: [String], default: [] },
+	err: { type: String, default: "" },
+});
+
 const HardwareCheckSchema = mongoose.Schema(
 	{
 		...BaseCheckSchema.obj,
@@ -48,6 +53,10 @@ const HardwareCheckSchema = mongoose.Schema(
 		host: {
 			type: hostSchema,
 			default: () => ({}),
+		},
+		errors: {
+			type: [errorSchema],
+			default: () => [],
 		},
 	},
 	{ timestamps: true }
