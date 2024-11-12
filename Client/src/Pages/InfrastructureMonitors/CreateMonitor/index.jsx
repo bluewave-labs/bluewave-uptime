@@ -17,6 +17,7 @@ import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { buildErrors, hasValidationErrors } from "../../../Validation/error";
+import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 
 const CreateInfrastructureMonitor = () => {
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
@@ -50,8 +51,6 @@ const CreateInfrastructureMonitor = () => {
 
 	const alertErrKeyLen = Object.keys(errors)
 							.filter(k => k.startsWith(THRESHOLD_FIELD_PREFIX)).length
-    console.log("alertErrKeyLen")
-	console.log(alertErrKeyLen)
 
 	const CustomAlertStack = ({
 		checkboxId,
@@ -89,7 +88,7 @@ const CreateInfrastructureMonitor = () => {
 					value={infrastructureMonitor[fieldId]}
 					onBlur={onBlur}
 					onChange={onChange}
-					error={errors[`${fieldId}`]}
+					error={errors[fieldId]}
 					disabled={!infrastructureMonitor[checkboxId]}
 				></Field>
 				<Typography
@@ -111,14 +110,14 @@ const CreateInfrastructureMonitor = () => {
 			return {
 				...prev,
 				...newState,
-				[`${THRESHOLD_FIELD_PREFIX}${id}`]: newState[id]
-					? prev[`${THRESHOLD_FIELD_PREFIX}${id}`]
+				[THRESHOLD_FIELD_PREFIX+ id]: newState[id]
+					? prev[THRESHOLD_FIELD_PREFIX+ id]
 					: "",
 			};
 		});
 		// Remove the error if unchecked
 		setErrors((prev) => {
-			return buildErrors(prev, [`${THRESHOLD_FIELD_PREFIX}${id}`]);
+			return buildErrors(prev, [THRESHOLD_FIELD_PREFIX+ id]);
 		});
 	};
 
@@ -178,11 +177,11 @@ const CreateInfrastructureMonitor = () => {
 	const generatePayload = (form) => {
 		let thresholds = {};
 		Object.keys(form)
-			.filter((k) => k.startsWith(`${THRESHOLD_FIELD_PREFIX}`))
+			.filter((k) => k.startsWith(THRESHOLD_FIELD_PREFIX))
 			.map((k) => {
 				if (form[k]) thresholds[k] = form[k];
 				delete form[k];
-				delete form[k.substring(`${THRESHOLD_FIELD_PREFIX}`.length)];
+				delete form[k.substring(THRESHOLD_FIELD_PREFIX.length)];
 			});	
 
 		form = {
@@ -370,72 +369,21 @@ const CreateInfrastructureMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
-						<CustomAlertStack
-							checkboxId={`${HARDWARE_MONITOR_TYPES[0]}`}
-							checkboxLabel="CPU"
-							checkboxValue={""}
-							fieldId={`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[0]}`}
-							fieldValue={
-								infrastructureMonitor[
-									`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[0]}`
-								] ?? ""
-							}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="%"
-						/>
-						<CustomAlertStack
-							checkboxId={`${HARDWARE_MONITOR_TYPES[1]}`}
-							checkboxLabel="Memory"
-							checkboxValue={""}
-							fieldId={`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[1]}`}
-							fieldValue={
-								infrastructureMonitor[
-									`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[1]}`
-								] ?? ""
-							}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="%"
-						/>
-						<CustomAlertStack
-							checkboxId={`${HARDWARE_MONITOR_TYPES[2]}`}
-							checkboxLabel="Disk"
-							checkboxValue={""}
-							fieldId={`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[2]}`}
-							fieldValue={
-								infrastructureMonitor[
-									`${THRESHOLD_FIELD_PREFIX}` + `${HARDWARE_MONITOR_TYPES[2]}`
-								] ?? ""
-							}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="%"
-						/>
-						{/* <CustomAlertStack
-							checkboxId="customize-temperature"
-							checkboxLabel="Temperature"
-							checkboxValue={true}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="°C"
-						/>
-						<CustomAlertStack
-							checkboxId="customize-systemload"
-							checkboxLabel="System load"
-							checkboxValue={true}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="%"
-						/>
-						<CustomAlertStack
-							checkboxId="customize-swap"
-							checkboxLabel="Swap used"
-							checkboxValue={""}							
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="%"
-						/> */}
+						{HARDWARE_MONITOR_TYPES.map((type, idx) => (
+							<CustomAlertStack
+								key={idx}
+								checkboxId={type}
+								checkboxLabel={
+									type !== "cpu" ? capitalizeFirstLetter(type) : type.toUpperCase()
+								}
+								checkboxValue={""}
+								fieldId={THRESHOLD_FIELD_PREFIX + type}
+								fieldValue={infrastructureMonitor[THRESHOLD_FIELD_PREFIX + type] ?? ""}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								alertUnit="%"
+							/>
+						))}
 						{alertErrKeyLen > 0 && (
 							<Typography
 								component="span"
@@ -446,9 +394,14 @@ const CreateInfrastructureMonitor = () => {
 									opacity: 0.8,
 								}}
 							>
-								{errors[`${THRESHOLD_FIELD_PREFIX}cpu`] ??
-									errors[`${THRESHOLD_FIELD_PREFIX}memory`] ??
-									errors[`${THRESHOLD_FIELD_PREFIX}disk`]}
+								{
+									errors[
+										THRESHOLD_FIELD_PREFIX +
+											HARDWARE_MONITOR_TYPES.filter(
+												(type) => errors[THRESHOLD_FIELD_PREFIX + type]
+											)[0]
+									]
+								}
 							</Typography>
 						)}
 					</Stack>
