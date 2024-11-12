@@ -118,7 +118,6 @@ import {
 
 import {
 	createPageSpeedCheck,
-	getPageSpeedChecks,
 	deletePageSpeedChecksByMonitorId,
 } from "./modules/pageSpeedCheckModule.js";
 
@@ -212,7 +211,6 @@ export default {
 	updateChecksTTL,
 	deleteMonitorsByUserId,
 	createPageSpeedCheck,
-	getPageSpeedChecks,
 	deletePageSpeedChecksByMonitorId,
 	createHardwareCheck,
 	createMaintenanceWindow,
