@@ -1,4 +1,9 @@
 const typographyBase = 14;
+
+/* TODO
+Check for px in codebase. All font sizes should be in REM and should live here.
+Rest should be checked on each case
+*/
 const typographyLevels = {
 	base: typographyBase,
 	xs: `${(typographyBase - 4) / 16}rem`,

@@ -4,13 +4,7 @@ import { colors } from "./constants";
 
 /* 
 TODO
-Next step: check if all here are being used.
-*/
-/* TODO
-
-Check for Hex in code base
-
-Check for px in codebase
+Next step: check if all keys here are being used in the codebase. e.g.: Search codebase for palette.primary; also check for destructuring palette ('= theme.palette')
 */
 
 const {
@@ -111,6 +105,7 @@ const palette = {
 	},
 };
 
+/* TODO I figured out we could have just one theme by passing mode as parameter for theme function. Implement later */
 const lightTheme = createTheme({
 	palette,
 	...baseTheme(palette),
