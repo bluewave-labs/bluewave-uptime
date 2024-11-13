@@ -178,7 +178,6 @@ class JobQueue {
 					prevStatus,
 				});
 			} catch (error) {
-				console.log(error.service);
 				this.logger.error({
 					message: error.message,
 					service: error.service ?? SERVICE_NAME,
