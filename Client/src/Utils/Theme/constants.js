@@ -8,18 +8,6 @@ const typographyLevels = {
 	xl: `${(typographyBase + 10) / 16}rem`,
 };
 
-/* This should not be here. Incorporate into color structure.
-
-Is is being exported to globalStyle*/
-const paletteLight = {
-	text: {
-		primary: "#1c2130",
-		secondary: "#344054",
-		tertiary: "#475467",
-		accent: "#838c99",
-	},
-};
-
 /* TODO Expand this */
 const paletteColors = {
 	white: "#FFFFFF",
@@ -28,26 +16,26 @@ const paletteColors = {
 	gray70: "#FDFDFD",
 	gray80: "#FDFCFD",
 	gray90: "#FCFCFD",
-	gray95: "#FAFAFA",
-	gray97: "#F9FAFB",
+	/* gray95: "#FAFAFA",
+	gray97: "#F9FAFB", */
 	gray100: "#F4F4F4",
-	gray125: "#F2F4F7",
+	/* gray125: "#F2F4F7",
 	gray150: "#EAECF0",
-	gray180: "#E6E6E6",
+	gray180: "#E6E6E6", */
 	gray200: "#E3E3E3",
-	gray225: "#D6D9DD",
-	gray250: "#D0D5DD",
+	/* 	gray225: "#D6D9DD",
+	gray250: "#D0D5DD", */
 	gray300: "#A2A3A3",
-	gray350: "#A1A1AA",
-	gray450: "#8E8E8F",
+	/* gray350: "#A1A1AA",
+	gray450: "#8E8E8F", */
 	gray500: "#838C99",
 	gray600: "#454546",
 	gray750: "#36363E",
 	gray800: "#2D2D33",
-	gray815: "#27272A",
+	/* gray815: "#27272A",
 	gray830: "#262115",
 	gray835: "#18181a",
-	gray840: "#151518",
+	gray840: "#151518", */
 	gray850: "#131315",
 	gray860: "#111113",
 	gray870: "#0F0F11",
@@ -137,7 +125,7 @@ const semanticColors = {
 		},
 		contrastText: {
 			//TODO contrasttext semantically should be something that contrasts with the main
-			light: paletteColors.red200,
+			light: paletteColors.gray50,
 			dark: paletteColors.red50,
 		},
 		light: {
@@ -204,14 +192,14 @@ const semanticColors = {
 			dark: paletteColors.gray800,
 		},
 		accent: {
-			light: paletteColors.gray97,
+			light: paletteColors.gray100,
 			dark: paletteColors.gray835,
 		},
 	},
 	text: {
 		primary: {
 			light: paletteColors.blueGray900,
-			dark: paletteColors.gray95,
+			dark: paletteColors.gray100,
 		},
 		secondary: {
 			light: paletteColors.blueGray400,
@@ -271,4 +259,4 @@ const semanticColors = {
 		},
 	},
 };
-export { typographyLevels, paletteLight, semanticColors as colors };
+export { typographyLevels, semanticColors as colors };

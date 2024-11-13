@@ -1,4 +1,4 @@
-import { paletteLight, typographyLevels } from "./constants";
+import { typographyLevels } from "./constants";
 
 const fontFamilyPrimary = '"Inter" , sans-serif';
 // const fontFamilySecondary = '"Avenir", sans-serif';
@@ -7,28 +7,28 @@ const fontFamilyPrimary = '"Inter" , sans-serif';
 const shadow =
 	"0px 4px 24px -4px rgba(16, 24, 40, 0.08), 0px 3px 3px -3px rgba(16, 24, 40, 0.03)";
 
-const baseTheme = {
+const baseTheme = (palette) => ({
 	typography: {
 		fontFamily: fontFamilyPrimary,
 		fontSize: 14,
 		h1: {
 			fontSize: typographyLevels.xl,
-			color: paletteLight.text.primary,
+			color: palette.text.primary,
 			fontWeight: 500,
 		},
 		h2: {
 			fontSize: typographyLevels.l,
-			color: paletteLight.text.secondary,
+			color: palette.text.secondary,
 			fontWeight: 400,
 		},
 		body1: {
 			fontSize: typographyLevels.m,
-			color: paletteLight.text.tertiary,
+			color: palette.text.tertiary,
 			fontWeight: 400,
 		},
 		body2: {
 			fontSize: typographyLevels.s,
-			color: paletteLight.text.tertiary,
+			color: palette.text.tertiary,
 			fontWeight: 400,
 		},
 	},
@@ -36,16 +36,17 @@ const baseTheme = {
 	chart: {
 		header: {
 			fontWeight: 400,
-			fill: paletteLight.text.tertiary,
+			fill: palette.text.tertiary,
 			fontSize: typographyLevels.m,
 		},
 		subheader: {
 			fontWeight: 400,
-			fill: paletteLight.text.tertiary,
+			fill: palette.text.tertiary,
 			fontSize: typographyLevels.xs,
 		},
 	},
 	spacing: 2,
+	/* TODO All these should live inside of a component*/
 	components: {
 		MuiButton: {
 			defaultProps: {
@@ -77,6 +78,13 @@ const baseTheme = {
 								border: 1,
 								borderStyle: "solid",
 								borderColor: theme.palette.border.light,
+							},
+						},
+						{
+							props: (props) => props.variant === "contained" && props.disabled,
+							style: {
+								backgroundColor: `${theme.palette.secondary.main} !important`,
+								color: `${theme.palette.secondary.contrastText} !important`,
 							},
 						},
 					],
@@ -207,6 +215,6 @@ const baseTheme = {
 		borderThick: 2,
 		boxShadow: shadow,
 	},
-};
+});
 
 export { baseTheme };
