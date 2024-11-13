@@ -20,6 +20,7 @@ const SERVICE_NAME = "monitorModule";
 const CHECK_MODEL_LOOKUP = {
 	http: Check,
 	ping: Check,
+	docker: Check,
 	pagespeed: PageSpeedCheck,
 	hardware: HardwareCheck,
 };
