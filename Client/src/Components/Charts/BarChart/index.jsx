@@ -141,7 +141,9 @@ const BarChart = ({ checks = [] }) => {
 							width="9px"
 							height="100%"
 							backgroundColor={
-								check.status ? theme.palette.success.dark : theme.palette.error.dark
+								check.status
+									? theme.palette.success.contrastText
+									: theme.palette.error.dark
 							}
 							sx={{
 								borderRadius: theme.spacing(1.5),

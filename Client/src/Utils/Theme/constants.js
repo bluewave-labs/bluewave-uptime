@@ -8,7 +8,7 @@ const typographyLevels = {
 	xl: `${(typographyBase + 10) / 16}rem`,
 };
 
-/* TODO Expand this */
+/* TODO Review color palette and semantic colors */
 const paletteColors = {
 	white: "#FFFFFF",
 	gray50: "#FEFEFE",
@@ -16,34 +16,19 @@ const paletteColors = {
 	gray70: "#FDFDFD",
 	gray80: "#FDFCFD",
 	gray90: "#FCFCFD",
-	/* gray95: "#FAFAFA",
-	gray97: "#F9FAFB", */
 	gray100: "#F4F4F4",
-	/* gray125: "#F2F4F7",
-	gray150: "#EAECF0",
-	gray180: "#E6E6E6", */
 	gray200: "#E3E3E3",
-	/* 	gray225: "#D6D9DD",
-	gray250: "#D0D5DD", */
 	gray300: "#A2A3A3",
-	/* gray350: "#A1A1AA",
-	gray450: "#8E8E8F", */
 	gray500: "#838C99",
 	gray600: "#454546",
 	gray750: "#36363E",
 	gray800: "#2D2D33",
-	/* gray815: "#27272A",
-	gray830: "#262115",
-	gray835: "#18181a",
-	gray840: "#151518", */
 	gray850: "#131315",
 	gray860: "#111113",
 	gray870: "#0F0F11",
 	gray880: "#0C0C0E",
 	gray890: "#09090B",
-	black: "#000000",
 	blueGray20: "#E8F0FE",
-	blueGray40: "#E2EAF7",
 	blueGray150: "#667085",
 	blueGray200: "#475467",
 	blueGray400: "#344054",
@@ -52,10 +37,8 @@ const paletteColors = {
 	blue700: "#4E5BA6",
 	purple300: "#664EFF",
 	purple400: "#3A1BFF",
-	green20: "#ECFDF3",
 	green50: "#D4F4E1",
 	green150: "#45BB7A",
-	green200: "#17B26A",
 	green400: "#079455",
 	green800: "#1C4428",
 	green900: "#12261E",
@@ -87,34 +70,34 @@ const semanticColors = {
 			light: paletteColors.gray100,
 			dark: paletteColors.gray800,
 		},
-		// TODO we dont have secondary light
-		dark: {
-			light: paletteColors.gray200,
-			//TODO we dont have secondary dark for dark mode
-		},
 		constrastText: {
 			light: paletteColors.blueGray200,
-			//TODO we dont have secondary contrastText for dark mode
+			dark: paletteColors.blueGray200,
+		},
+		light: {
+			light: paletteColors.gray200,
+			dark: paletteColors.gray200,
+		},
+		dark: {
+			light: paletteColors.gray200,
+			dark: paletteColors.gray200,
 		},
 	},
 	success: {
 		main: {
-			light: paletteColors.green200,
-			dark: paletteColors.green150,
-		},
-		contrastText: {
-			//TODO values are equal (confirm)
-			//TODO contrasttext semantically should be something that contrasts with the main
 			light: paletteColors.green400,
 			dark: paletteColors.green400,
 		},
+		contrastText: {
+			light: paletteColors.green50,
+			dark: paletteColors.green900,
+		},
 		light: {
 			light: paletteColors.green50,
-			//TODO dark mode light success is darker than the main success
-			dark: paletteColors.green800,
+			dark: paletteColors.green150,
 		},
 		dark: {
-			light: paletteColors.green20,
+			light: paletteColors.green800,
 			dark: paletteColors.green900,
 		},
 	},
@@ -124,9 +107,8 @@ const semanticColors = {
 			dark: paletteColors.red300,
 		},
 		contrastText: {
-			//TODO contrasttext semantically should be something that contrasts with the main
 			light: paletteColors.gray50,
-			dark: paletteColors.red50,
+			dark: paletteColors.gray50,
 		},
 		light: {
 			light: paletteColors.red100,
@@ -142,17 +124,17 @@ const semanticColors = {
 			light: paletteColors.orange300,
 			dark: paletteColors.orange400,
 		},
-		light: {
-			light: paletteColors.orange100,
-			dark: paletteColors.orange800,
-		},
 		contrastText: {
 			light: paletteColors.orange600,
 			dark: paletteColors.orange500,
 		},
+		light: {
+			light: paletteColors.orange100,
+			dark: paletteColors.orange800,
+		},
 		dark: {
 			light: paletteColors.orange50,
-			dark: paletteColors.gray830,
+			dark: paletteColors.gray800,
 		},
 	},
 	/* From this part on, try to create semantic structure, not feature based structure */
@@ -181,7 +163,7 @@ const semanticColors = {
 	background: {
 		main: {
 			light: paletteColors.white,
-			dark: paletteColors.gray840,
+			dark: paletteColors.gray850,
 		},
 		alt: {
 			light: paletteColors.gray90,
@@ -193,7 +175,7 @@ const semanticColors = {
 		},
 		accent: {
 			light: paletteColors.gray100,
-			dark: paletteColors.gray835,
+			dark: paletteColors.gray850,
 		},
 	},
 	text: {
@@ -203,31 +185,26 @@ const semanticColors = {
 		},
 		secondary: {
 			light: paletteColors.blueGray400,
-			dark: paletteColors.gray180,
+			dark: paletteColors.gray200,
 		},
 		tertiary: {
 			light: paletteColors.blueGray200,
-			dark: paletteColors.gray350,
+			dark: paletteColors.gray300,
 		},
 		accent: {
 			light: paletteColors.gray500,
-			dark: paletteColors.gray450,
+			dark: paletteColors.gray500,
 		},
 	},
 	border: {
 		light: {
-			light: paletteColors.gray150,
-			dark: paletteColors.gray815,
+			light: paletteColors.gray200,
+			dark: paletteColors.gray800,
 		},
 		dark: {
-			light: paletteColors.gray250,
+			light: paletteColors.gray200,
 			dark: paletteColors.gray750,
 		},
-	},
-	percentage: {
-		/* uptimeFair: {
-			light: paletteColors.
-		} */
 	},
 	unresolved: {
 		main: {
@@ -235,12 +212,12 @@ const semanticColors = {
 			dark: paletteColors.purple300,
 		},
 		light: {
-			light: paletteColors.blueGray40,
+			light: paletteColors.blueGray20,
 			dark: paletteColors.purple400,
 		},
 		bg: {
-			light: paletteColors.gray125,
-			dark: paletteColors.gray125,
+			light: paletteColors.gray100,
+			dark: paletteColors.gray100,
 		},
 	},
 	other: {
@@ -248,7 +225,7 @@ const semanticColors = {
 			light: paletteColors.blueGray150,
 		},
 		line: {
-			light: paletteColors.gray225,
+			light: paletteColors.gray200,
 		},
 		grid: {
 			light: paletteColors.gray300,

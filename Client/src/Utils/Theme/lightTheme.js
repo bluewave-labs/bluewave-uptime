@@ -3,7 +3,10 @@ import { baseTheme } from "./globalTheme";
 import { colors } from "./constants";
 
 /* 
+TODO
 Next step: check if all here are being used.
+*/
+/* TODO
 
 Check for Hex in code base
 
@@ -34,8 +37,9 @@ const palette = {
 	primary: { main: primary.main.light },
 	secondary: {
 		main: secondary.main.light,
-		dark: secondary.dark.light,
 		contrastText: secondary.constrastText.light,
+		light: secondary.dark.light,
+		dark: secondary.dark.light,
 	},
 	success: {
 		main: success.main.light,
@@ -60,7 +64,7 @@ const palette = {
 		uptimePoor: error.main.light,
 		uptimeFair: warning.contrastText.light,
 		uptimeGood: warning.main.light /* Change for a success color? */,
-		uptimeExcellent: success.contrastText.light,
+		uptimeExcellent: success.main.light,
 	},
 	unresolved: {
 		main: unresolved.main.light,

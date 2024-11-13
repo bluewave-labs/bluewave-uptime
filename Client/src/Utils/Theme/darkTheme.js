@@ -24,7 +24,12 @@ const {
 
 const palette = {
 	primary: { main: primary.main.dark },
-	secondary: { main: secondary.main.dark },
+	secondary: {
+		main: secondary.main.dark,
+		contrastText: secondary.constrastText.dark,
+		light: secondary.dark.dark,
+		dark: secondary.dark.dark,
+	},
 	success: {
 		main: success.main.dark,
 		contrastText: success.contrastText.dark,
@@ -48,7 +53,7 @@ const palette = {
 		uptimePoor: error.main.dark,
 		uptimeFair: warning.contrastText.dark,
 		uptimeGood: warning.main.dark /* Change for a success color? ?*/,
-		uptimeExcellent: success.contrastText.light,
+		uptimeExcellent: success.main.dark,
 	},
 	unresolved: {
 		main: unresolved.main.dark,

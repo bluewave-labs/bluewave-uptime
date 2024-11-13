@@ -31,7 +31,7 @@ const BaseLabel = ({ label, styles, children }) => {
 			className="label"
 			sx={{
 				borderRadius: borderRadius,
-				borderColor: theme.palette.text.tertiary,
+				border: `1px solid ${theme.palette.text.tertiary}`,
 				color: theme.palette.text.tertiary,
 				padding: padding,
 				...styles,
@@ -127,8 +127,8 @@ const StatusLabel = ({ status, text, customStyles }) => {
 	const colors = {
 		up: {
 			dotColor: theme.palette.success.main,
-			bgColor: theme.palette.success.dark,
-			borderColor: theme.palette.success.light,
+			bgColor: theme.palette.success./* dark */ contrastText,
+			borderColor: theme.palette.success.main /* light */,
 		},
 		down: {
 			dotColor: theme.palette.error.contrastText,
