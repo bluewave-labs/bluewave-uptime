@@ -64,28 +64,34 @@ class NetworkService {
 	 * @property {string} message - The message indicating the result of the ping request.
 	 */
 	async requestPing(job) {
-		const url = job.data.url;
-		const { response, responseTime, error } = await this.timeRequest(() =>
-			this.ping.promise.probe(url)
-		);
+		try {
+			const url = job.data.url;
+			const { response, responseTime, error } = await this.timeRequest(() =>
+				this.ping.promise.probe(url)
+			);
 
-		const pingResponse = {
-			monitorId: job.data._id,
-			type: "ping",
-			responseTime,
-			payload: response,
-		};
-		if (error) {
-			pingResponse.status = false;
-			pingResponse.code = this.PING_ERROR;
-			pingResponse.message = errorMessages.PING_CANNOT_RESOLVE;
+			const pingResponse = {
+				monitorId: job.data._id,
+				type: "ping",
+				responseTime,
+				payload: response,
+			};
+			if (error) {
+				pingResponse.status = false;
+				pingResponse.code = this.PING_ERROR;
+				pingResponse.message = errorMessages.PING_CANNOT_RESOLVE;
+				return pingResponse;
+			}
+
+			pingResponse.code = 200;
+			pingResponse.status = response.alive;
+			pingResponse.message = successMessages.PING_SUCCESS;
 			return pingResponse;
+		} catch (error) {
+			error.service = this.SERVICE_NAME;
+			error.method = "requestPing";
+			throw error;
 		}
-
-		pingResponse.code = 200;
-		pingResponse.status = response.alive;
-		pingResponse.message = successMessages.PING_SUCCESS;
-		return pingResponse;
 	}
 
 	/**
@@ -106,34 +112,40 @@ class NetworkService {
 	 * @property {string} message - The message indicating the result of the HTTP request.
 	 */
 	async requestHttp(job) {
-		const url = job.data.url;
-		const config = {};
+		try {
+			const url = job.data.url;
+			const config = {};
 
-		job.data.secret !== undefined &&
-			(config.headers = { Authorization: `Bearer ${job.data.secret}` });
+			job.data.secret !== undefined &&
+				(config.headers = { Authorization: `Bearer ${job.data.secret}` });
 
-		const { response, responseTime, error } = await this.timeRequest(() =>
-			this.axios.get(url, config)
-		);
+			const { response, responseTime, error } = await this.timeRequest(() =>
+				this.axios.get(url, config)
+			);
 
-		const httpResponse = {
-			monitorId: job.data._id,
-			type: job.data.type,
-			responseTime,
-			payload: response?.data,
-		};
+			const httpResponse = {
+				monitorId: job.data._id,
+				type: job.data.type,
+				responseTime,
+				payload: response?.data,
+			};
 
-		if (error) {
-			const code = error.response?.status || this.NETWORK_ERROR;
-			httpResponse.code = code;
-			httpResponse.status = false;
-			httpResponse.message = this.http.STATUS_CODES[code] || "Network Error";
+			if (error) {
+				const code = error.response?.status || this.NETWORK_ERROR;
+				httpResponse.code = code;
+				httpResponse.status = false;
+				httpResponse.message = this.http.STATUS_CODES[code] || "Network Error";
+				return httpResponse;
+			}
+			httpResponse.status = true;
+			httpResponse.code = response.status;
+			httpResponse.message = this.http.STATUS_CODES[response.status];
 			return httpResponse;
+		} catch (error) {
+			error.service = this.SERVICE_NAME;
+			error.method = "requestHttp";
+			throw error;
 		}
-		httpResponse.status = true;
-		httpResponse.code = response.status;
-		httpResponse.message = this.http.STATUS_CODES[response.status];
-		return httpResponse;
 	}
 
 	/**
@@ -153,11 +165,17 @@ class NetworkService {
 	 * @property {string} message - The message indicating the result of the PageSpeed request.
 	 */
 	async requestPagespeed(job) {
-		const url = job.data.url;
-		const updatedJob = { ...job };
-		const pagespeedUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`;
-		updatedJob.data.url = pagespeedUrl;
-		return this.requestHttp(updatedJob);
+		try {
+			const url = job.data.url;
+			const updatedJob = { ...job };
+			const pagespeedUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&category=seo&category=accessibility&category=best-practices&category=performance`;
+			updatedJob.data.url = pagespeedUrl;
+			return await this.requestHttp(updatedJob);
+		} catch (error) {
+			error.service = this.SERVICE_NAME;
+			error.method = "requestPagespeed";
+			throw error;
+		}
 	}
 
 	/**
@@ -178,7 +196,13 @@ class NetworkService {
 	 * @property {string} message - The message indicating the result of the hardware status request.
 	 */
 	async requestHardware(job) {
-		return this.requestHttp(job);
+		try {
+			return await this.requestHttp(job);
+		} catch (error) {
+			error.service = this.SERVICE_NAME;
+			error.method = "requestHardware";
+			throw error;
+		}
 	}
 
 	/**
@@ -198,29 +222,44 @@ class NetworkService {
 	 * @property {string} message - The message indicating the result of the Docker inspection.
 	 */
 	async requestDocker(job) {
-		const docker = new this.Docker({ socketPath: "/var/run/docker.sock" });
-		const container = docker.getContainer(job.data.url);
+		try {
+			const docker = new this.Docker({
+				socketPath: "/var/run/docker.sock",
+				handleError: true, // Enable error handling
+			});
 
-		const { response, responseTime, error } = await this.timeRequest(() =>
-			container.inspect()
-		);
+			const containers = await docker.listContainers({ all: true });
+			const containerExists = containers.some((c) => c.Id === job.data.url);
+			if (!containerExists) {
+				throw new Error(errorMessages.DOCKER_NOT_FOUND);
+			}
+			const container = docker.getContainer(job.data.url);
 
-		const dockerResponse = {
-			monitorId: job.data._id,
-			type: job.data.type,
-			responseTime,
-		};
+			const { response, responseTime, error } = await this.timeRequest(() =>
+				container.inspect()
+			);
 
-		if (error) {
-			dockerResponse.status = false;
-			dockerResponse.code = error.statusCode || this.NETWORK_ERROR;
-			dockerResponse.message = error.reason || errorMessages.DOCKER_FAIL;
+			const dockerResponse = {
+				monitorId: job.data._id,
+				type: job.data.type,
+				responseTime,
+			};
+
+			if (error) {
+				dockerResponse.status = false;
+				dockerResponse.code = error.statusCode || this.NETWORK_ERROR;
+				dockerResponse.message = error.reason || errorMessages.DOCKER_FAIL;
+				return dockerResponse;
+			}
+			dockerResponse.status = response?.State?.Status === "running" ? true : false;
+			dockerResponse.code = 200;
+			dockerResponse.message = successMessages.DOCKER_SUCCESS;
 			return dockerResponse;
+		} catch (error) {
+			error.service = this.SERVICE_NAME;
+			error.method = "requestDocker";
+			throw error;
 		}
-		dockerResponse.status = response?.State?.Status === "running" ? true : false;
-		dockerResponse.code = 200;
-		dockerResponse.message = successMessages.DOCKER_SUCCESS;
-		return dockerResponse;
 	}
 
 	/**
@@ -246,7 +285,7 @@ class NetworkService {
 	 * @throws {Error} Throws an error if the job type is unsupported.
 	 */
 	async getStatus(job) {
-		const type = job.data?.type ?? "unknown";
+		const type = job?.data?.type ?? "unknown";
 		switch (type) {
 			case this.TYPE_PING:
 				return await this.requestPing(job);
