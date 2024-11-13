@@ -165,9 +165,32 @@ class NetworkService {
 	}
 
 	async requestDocker(job) {
-		var docker = new Docker({ socketPath: "/var/run/docker.sock" });
+		const docker = new this.Docker({ socketPath: "/var/run/docker.sock" });
+		const container = docker.getContainer(job.data.url);
 
-		return {};
+		const { response, responseTime, error } = await this.timeRequest(() =>
+			container.inspect()
+		);
+
+		const containerState = response?.State ?? {};
+
+		const dockerResponse = {
+			monitorId: job.data._id,
+			type: job.data.type,
+			responseTime,
+		};
+
+		if (error) {
+			const code = error.statusCode || this.NETWORK_ERROR;
+			dockerResponse.code = code;
+			dockerResponse.status = false;
+			dockerResponse.message = error.reason || errorMessages.DOCKER_FAIL;
+			return dockerResponse;
+		}
+		dockerResponse.status = containerState.Status === "running" ? true : false;
+		dockerResponse.code = 200;
+		dockerResponse.message = successMessages.DOCKER_SUCCESS;
+		return dockerResponse;
 	}
 
 	/**
