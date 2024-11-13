@@ -3,7 +3,7 @@ import NetworkService from "../../service/networkService.js";
 import { expect } from "chai";
 import http from "http";
 describe("Network Service", () => {
-	let axios, ping, logger, networkService;
+	let axios, ping, Docker, logger, networkService;
 
 	beforeEach(() => {
 		axios = {
@@ -11,6 +11,11 @@ describe("Network Service", () => {
 				data: { foo: "bar" },
 				status: 200,
 			}),
+		};
+		Docker = class {
+			getContainer = sinon.stub().returns({
+				inspect: sinon.stub().resolves({ State: { Status: "running" } }),
+			});
 		};
 		ping = {
 			promise: {
@@ -20,7 +25,7 @@ describe("Network Service", () => {
 			},
 		};
 		logger = { error: sinon.stub() };
-		networkService = new NetworkService(axios, ping, logger, http);
+		networkService = new NetworkService(axios, ping, logger, http, Docker);
 	});
 	describe("constructor", () => {
 		it("should create a new NetworkService instance", () => {
@@ -203,45 +208,140 @@ describe("Network Service", () => {
 		});
 	});
 
+	describe("requestDocker", () => {
+		it("should return a response object if docker successful", async () => {
+			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			const dockerResult = await networkService.requestDocker(job);
+			expect(dockerResult.monitorId).to.equal("123");
+			expect(dockerResult.type).to.equal("docker");
+			expect(dockerResult.responseTime).to.be.a("number");
+			expect(dockerResult.status).to.be.true;
+		});
+
+		it("should return a response object with status false if container not running", async () => {
+			Docker = class {
+				getContainer = sinon.stub().returns({
+					inspect: sinon.stub().resolves({ State: { Status: "stopped" } }),
+				});
+			};
+			networkService = new NetworkService(axios, ping, logger, http, Docker);
+			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			const dockerResult = await networkService.requestDocker(job);
+			expect(dockerResult.status).to.be.false;
+			expect(dockerResult.code).to.equal(200);
+		});
+
+		it("should handle an error when fetching the container", async () => {
+			Docker = class {
+				getContainer = sinon.stub().returns({
+					inspect: sinon.stub().throws(new Error("test error")),
+				});
+			};
+			networkService = new NetworkService(axios, ping, logger, http, Docker);
+			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			const dockerResult = await networkService.requestDocker(job);
+			expect(dockerResult.status).to.be.false;
+			expect(dockerResult.code).to.equal(networkService.NETWORK_ERROR);
+		});
+
+		it("should throw an error if operations fail", async () => {
+			Docker = class {
+				getContainer = sinon.stub().throws(new Error("test error"));
+			};
+			networkService = new NetworkService(axios, ping, logger, http, Docker);
+			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			try {
+				await networkService.requestDocker(job);
+			} catch (error) {
+				expect(error.message).to.equal("test error");
+			}
+		});
+	});
+
 	describe("getStatus", () => {
 		beforeEach(() => {
 			networkService.requestPing = sinon.stub();
 			networkService.requestHttp = sinon.stub();
 			networkService.requestPagespeed = sinon.stub();
 			networkService.requestHardware = sinon.stub();
+			networkService.requestDocker = sinon.stub();
 		});
 
 		afterEach(() => {
 			sinon.restore();
 		});
-		it("should call requestPing if type is ping", () => {
-			networkService.getStatus({ data: { type: "ping" } });
+		it("should call requestPing if type is ping", async () => {
+			await networkService.getStatus({ data: { type: "ping" } });
 			expect(networkService.requestPing.calledOnce).to.be.true;
+			expect(networkService.requestDocker.notCalled).to.be.true;
 			expect(networkService.requestHttp.notCalled).to.be.true;
 			expect(networkService.requestPagespeed.notCalled).to.be.true;
 		});
-		it("should call requestHttp if type is http", () => {
-			networkService.getStatus({ data: { type: "http" } });
+		it("should call requestHttp if type is http", async () => {
+			await networkService.getStatus({ data: { type: "http" } });
 			expect(networkService.requestPing.notCalled).to.be.true;
+			expect(networkService.requestDocker.notCalled).to.be.true;
 			expect(networkService.requestHttp.calledOnce).to.be.true;
 			expect(networkService.requestPagespeed.notCalled).to.be.true;
 		});
-		it("should call requestPagespeed if type is pagespeed", () => {
-			networkService.getStatus({ data: { type: "pagespeed" } });
+		it("should call requestPagespeed if type is pagespeed", async () => {
+			await networkService.getStatus({ data: { type: "pagespeed" } });
 			expect(networkService.requestPing.notCalled).to.be.true;
+			expect(networkService.requestDocker.notCalled).to.be.true;
 			expect(networkService.requestHttp.notCalled).to.be.true;
 			expect(networkService.requestPagespeed.calledOnce).to.be.true;
 		});
-		it("should call requestHardware if type is hardware", () => {
-			networkService.getStatus({ data: { type: "hardware" } });
+		it("should call requestHardware if type is hardware", async () => {
+			await networkService.getStatus({ data: { type: "hardware" } });
 			expect(networkService.requestHardware.calledOnce).to.be.true;
+			expect(networkService.requestDocker.notCalled).to.be.true;
 			expect(networkService.requestPing.notCalled).to.be.true;
 			expect(networkService.requestPagespeed.notCalled).to.be.true;
 		});
-		it("should log an error if an unknown type is provided", () => {
-			networkService.getStatus({ data: { type: "unknown" } });
-			expect(logger.error.calledOnce).to.be.true;
-			expect(logger.error.args[0][0].message).to.equal("Unsupported type: unknown");
+		it("should call requestDocker if type is Docker", async () => {
+			await networkService.getStatus({ data: { type: "docker" } });
+			expect(networkService.requestDocker.calledOnce).to.be.true;
+			expect(networkService.requestHardware.notCalled).to.be.true;
+			expect(networkService.requestPing.notCalled).to.be.true;
+			expect(networkService.requestPagespeed.notCalled).to.be.true;
+		});
+		it("should throw an error if an unknown type is provided", async () => {
+			try {
+				await networkService.getStatus({ data: { type: "unknown" } });
+			} catch (error) {
+				expect(error.service).to.equal("NetworkService");
+				expect(error.method).to.equal("getStatus");
+				expect(error.message).to.equal("Unsupported type: unknown");
+			}
+		});
+		it("should throw an error if job type is undefined", async () => {
+			try {
+				await networkService.getStatus({ data: { type: undefined } });
+			} catch (error) {
+				expect(error.service).to.equal("NetworkService");
+				expect(error.method).to.equal("getStatus");
+				expect(error.message).to.equal("Unsupported type: unknown");
+			}
+		});
+		it("should throw an error if job is empty", async () => {
+			try {
+				await networkService.getStatus({});
+			} catch (error) {
+				console.log(error);
+				expect(error.service).to.equal("NetworkService");
+				expect(error.method).to.equal("getStatus");
+				expect(error.message).to.equal("Unsupported type: unknown");
+			}
+		});
+		it("should throw an error if job is null", async () => {
+			try {
+				await networkService.getStatus(null);
+			} catch (error) {
+				console.log(error);
+				expect(error.service).to.equal("NetworkService");
+				expect(error.method).to.equal("getStatus");
+				expect(error.message).to.equal("Unsupported type: unknown");
+			}
 		});
 	});
 });
