@@ -2,6 +2,7 @@ import sinon from "sinon";
 import NetworkService from "../../service/networkService.js";
 import { expect } from "chai";
 import http from "http";
+import { errorMessages } from "../../utils/messages.js";
 describe("Network Service", () => {
 	let axios, ping, Docker, logger, networkService;
 
@@ -13,6 +14,12 @@ describe("Network Service", () => {
 			}),
 		};
 		Docker = class {
+			listContainers = sinon.stub().resolves([
+				{
+					Names: ["http://test.com"],
+					Id: "http://test.com",
+				},
+			]);
 			getContainer = sinon.stub().returns({
 				inspect: sinon.stub().resolves({ State: { Status: "running" } }),
 			});
@@ -75,6 +82,18 @@ describe("Network Service", () => {
 			expect(pingResult.status).to.be.false;
 			expect(pingResult.code).to.equal(networkService.PING_ERROR);
 		});
+		it("should throw an error if ping cannot resolve", async () => {
+			const error = new Error("test error");
+			networkService.timeRequest = sinon.stub().throws(error);
+			try {
+				await networkService.requestPing({
+					data: { url: "http://test.com", _id: "123" },
+				});
+			} catch (error) {
+				expect(error).to.exist;
+				expect(error.method).to.equal("requestPing");
+			}
+		});
 	});
 	describe("requestHttp", () => {
 		it("should return a response object if http successful", async () => {
@@ -112,6 +131,18 @@ describe("Network Service", () => {
 			expect(httpResult.responseTime).to.be.a("number");
 			expect(httpResult.status).to.be.false;
 			expect(httpResult.code).to.equal(networkService.NETWORK_ERROR);
+		});
+		it("should throw an error if an error occurs", async () => {
+			const error = new Error("test error");
+			networkService.timeRequest = sinon.stub().throws(error);
+			try {
+				await networkService.requestHttp({
+					data: { url: "http://test.com", _id: "123" },
+				});
+			} catch (error) {
+				expect(error).to.exist;
+				expect(error.method).to.equal("requestHttp");
+			}
 		});
 	});
 
@@ -151,6 +182,18 @@ describe("Network Service", () => {
 			expect(pagespeedResult.responseTime).to.be.a("number");
 			expect(pagespeedResult.status).to.be.false;
 			expect(pagespeedResult.code).to.equal(networkService.NETWORK_ERROR);
+		});
+		it("should throw an error if pagespeed cannot resolve", async () => {
+			const error = new Error("test error");
+			networkService.timeRequest = sinon.stub().throws(error);
+			try {
+				await networkService.requestPagespeed({
+					data: { url: "http://test.com", _id: "123" },
+				});
+			} catch (error) {
+				expect(error).to.exist;
+				expect(error.method).to.equal("requestPagespeed");
+			}
 		});
 	});
 
@@ -206,6 +249,18 @@ describe("Network Service", () => {
 			expect(httpResult.status).to.be.false;
 			expect(httpResult.code).to.equal(networkService.NETWORK_ERROR);
 		});
+		it("should throw an error if hardware cannot resolve", async () => {
+			const error = new Error("test error");
+			networkService.timeRequest = sinon.stub().throws(error);
+			try {
+				await networkService.requestHardware({
+					data: { url: "http://test.com", _id: "123" },
+				});
+			} catch (error) {
+				expect(error).to.exist;
+				expect(error.method).to.equal("requestHardware");
+			}
+		});
 	});
 
 	describe("requestDocker", () => {
@@ -220,12 +275,18 @@ describe("Network Service", () => {
 
 		it("should return a response object with status false if container not running", async () => {
 			Docker = class {
+				listContainers = sinon.stub().resolves([
+					{
+						Names: ["/my_container"],
+						Id: "abc123",
+					},
+				]);
 				getContainer = sinon.stub().returns({
 					inspect: sinon.stub().resolves({ State: { Status: "stopped" } }),
 				});
 			};
 			networkService = new NetworkService(axios, ping, logger, http, Docker);
-			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			const job = { data: { url: "abc123", _id: "123", type: "docker" } };
 			const dockerResult = await networkService.requestDocker(job);
 			expect(dockerResult.status).to.be.false;
 			expect(dockerResult.code).to.equal(200);
@@ -233,12 +294,18 @@ describe("Network Service", () => {
 
 		it("should handle an error when fetching the container", async () => {
 			Docker = class {
+				listContainers = sinon.stub().resolves([
+					{
+						Names: ["/my_container"],
+						Id: "abc123",
+					},
+				]);
 				getContainer = sinon.stub().returns({
 					inspect: sinon.stub().throws(new Error("test error")),
 				});
 			};
 			networkService = new NetworkService(axios, ping, logger, http, Docker);
-			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			const job = { data: { url: "abc123", _id: "123", type: "docker" } };
 			const dockerResult = await networkService.requestDocker(job);
 			expect(dockerResult.status).to.be.false;
 			expect(dockerResult.code).to.equal(networkService.NETWORK_ERROR);
@@ -246,14 +313,33 @@ describe("Network Service", () => {
 
 		it("should throw an error if operations fail", async () => {
 			Docker = class {
+				listContainers = sinon.stub().resolves([
+					{
+						Names: ["/my_container"],
+						Id: "abc123",
+					},
+				]);
 				getContainer = sinon.stub().throws(new Error("test error"));
 			};
 			networkService = new NetworkService(axios, ping, logger, http, Docker);
-			const job = { data: { url: "http://test.com", _id: "123", type: "docker" } };
+			const job = { data: { url: "abc123", _id: "123", type: "docker" } };
 			try {
 				await networkService.requestDocker(job);
 			} catch (error) {
 				expect(error.message).to.equal("test error");
+			}
+		});
+		it("should throw an error if no matching images found", async () => {
+			Docker = class {
+				listContainers = sinon.stub().resolves([]);
+				getContainer = sinon.stub().throws(new Error("test error"));
+			};
+			networkService = new NetworkService(axios, ping, logger, http, Docker);
+			const job = { data: { url: "abc123", _id: "123", type: "docker" } };
+			try {
+				await networkService.requestDocker(job);
+			} catch (error) {
+				expect(error.message).to.equal(errorMessages.DOCKER_NOT_FOUND);
 			}
 		});
 	});
@@ -327,8 +413,6 @@ describe("Network Service", () => {
 			try {
 				await networkService.getStatus({});
 			} catch (error) {
-				console.log(error);
-				expect(error.service).to.equal("NetworkService");
 				expect(error.method).to.equal("getStatus");
 				expect(error.message).to.equal("Unsupported type: unknown");
 			}
@@ -337,7 +421,6 @@ describe("Network Service", () => {
 			try {
 				await networkService.getStatus(null);
 			} catch (error) {
-				console.log(error);
 				expect(error.service).to.equal("NetworkService");
 				expect(error.method).to.equal("getStatus");
 				expect(error.message).to.equal("Unsupported type: unknown");
