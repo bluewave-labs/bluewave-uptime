@@ -160,10 +160,43 @@ class NetworkService {
 		return this.requestHttp(updatedJob);
 	}
 
+	/**
+	 * Sends an HTTP request to check hardware status and returns the response.
+	 *
+	 * @param {Object} job - The job object containing the data for the hardware request.
+	 * @param {Object} job.data - The data object within the job.
+	 * @param {string} job.data.url - The URL to send the hardware status request to.
+	 * @param {string} job.data._id - The monitor ID for the hardware request.
+	 * @param {string} job.data.type - The type of request, which is "hardware".
+	 * @returns {Promise<Object>} An object containing the hardware status response details.
+	 * @property {string} monitorId - The monitor ID for the hardware request.
+	 * @property {string} type - The type of request ("hardware").
+	 * @property {number} responseTime - The time taken for the request to complete, in milliseconds.
+	 * @property {Object} payload - The response payload from the hardware status request.
+	 * @property {boolean} status - The status of the request (true if successful, false otherwise).
+	 * @property {number} code - The response code (200 if successful, error code otherwise).
+	 * @property {string} message - The message indicating the result of the hardware status request.
+	 */
 	async requestHardware(job) {
 		return this.requestHttp(job);
 	}
 
+	/**
+	 * Sends a request to inspect a Docker container and returns its status.
+	 *
+	 * @param {Object} job - The job object containing the data for the Docker request.
+	 * @param {Object} job.data - The data object within the job.
+	 * @param {string} job.data.url - The container ID or name to inspect.
+	 * @param {string} job.data._id - The monitor ID for the Docker request.
+	 * @param {string} job.data.type - The type of request, which is "docker".
+	 * @returns {Promise<Object>} An object containing the Docker container status details.
+	 * @property {string} monitorId - The monitor ID for the Docker request.
+	 * @property {string} type - The type of request ("docker").
+	 * @property {number} responseTime - The time taken for the Docker inspection to complete, in milliseconds.
+	 * @property {boolean} status - The status of the container (true if running, false otherwise).
+	 * @property {number} code - The response code (200 if successful, error code otherwise).
+	 * @property {string} message - The message indicating the result of the Docker inspection.
+	 */
 	async requestDocker(job) {
 		const docker = new this.Docker({ socketPath: "/var/run/docker.sock" });
 		const container = docker.getContainer(job.data.url);
@@ -179,9 +212,8 @@ class NetworkService {
 		};
 
 		if (error) {
-			const code = error.statusCode || this.NETWORK_ERROR;
-			dockerResponse.code = code;
 			dockerResponse.status = false;
+			dockerResponse.code = error.statusCode || this.NETWORK_ERROR;
 			dockerResponse.message = error.reason || errorMessages.DOCKER_FAIL;
 			return dockerResponse;
 		}
@@ -189,6 +221,19 @@ class NetworkService {
 		dockerResponse.code = 200;
 		dockerResponse.message = successMessages.DOCKER_SUCCESS;
 		return dockerResponse;
+	}
+
+	/**
+	 * Handles unsupported job types by throwing an error with details.
+	 *
+	 * @param {string} type - The unsupported job type that was provided
+	 * @throws {Error} An error with service name, method name and unsupported type message
+	 */
+	handleUnsupportedType(type) {
+		const err = new Error(`Unsupported type: ${type}`);
+		err.service = this.SERVICE_NAME;
+		err.method = "getStatus";
+		throw err;
 	}
 
 	/**
@@ -201,7 +246,8 @@ class NetworkService {
 	 * @throws {Error} Throws an error if the job type is unsupported.
 	 */
 	async getStatus(job) {
-		switch (job.data.type) {
+		const type = job.data?.type ?? "unknown";
+		switch (type) {
 			case this.TYPE_PING:
 				return await this.requestPing(job);
 			case this.TYPE_HTTP:
@@ -213,10 +259,7 @@ class NetworkService {
 			case this.TYPE_DOCKER:
 				return await this.requestDocker(job);
 			default:
-				const err = new Error(`Unsupported type: ${job.data.type}`);
-				err.service = this.SERVICE_NAME;
-				err.method = "getStatus";
-				throw err;
+				return this.handleUnsupportedType(type);
 		}
 	}
 }
