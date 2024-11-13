@@ -172,8 +172,6 @@ class NetworkService {
 			container.inspect()
 		);
 
-		const containerState = response?.State ?? {};
-
 		const dockerResponse = {
 			monitorId: job.data._id,
 			type: job.data.type,
@@ -187,7 +185,7 @@ class NetworkService {
 			dockerResponse.message = error.reason || errorMessages.DOCKER_FAIL;
 			return dockerResponse;
 		}
-		dockerResponse.status = containerState.Status === "running" ? true : false;
+		dockerResponse.status = response?.State?.Status === "running" ? true : false;
 		dockerResponse.code = 200;
 		dockerResponse.message = successMessages.DOCKER_SUCCESS;
 		return dockerResponse;
