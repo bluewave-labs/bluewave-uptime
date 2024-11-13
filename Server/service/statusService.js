@@ -83,6 +83,7 @@ class StatusService {
 			responseTime,
 			message,
 		};
+
 		if (type === "pagespeed") {
 			const categories = payload.lighthouseResult?.categories;
 			const audits = payload.lighthouseResult?.audits;
@@ -101,10 +102,13 @@ class StatusService {
 		}
 
 		if (type === "hardware") {
-			check.cpu = payload?.cpu ?? {};
-			check.memory = payload?.memory ?? {};
-			check.disk = payload?.disk ?? {};
-			check.host = payload?.host ?? {};
+			const { cpu, memory, disk, host } = payload?.data ?? {};
+			const { errors } = payload;
+			check.cpu = cpu ?? {};
+			check.memory = memory ?? {};
+			check.disk = disk ?? {};
+			check.host = host ?? {};
+			check.errors = errors ?? [];
 		}
 		return check;
 	};
@@ -131,6 +135,7 @@ class StatusService {
 				hardware: this.db.createHardwareCheck,
 			};
 			const operation = operationMap[networkResponse.type];
+
 			const check = this.buildCheck(networkResponse);
 			await operation(check);
 		} catch (error) {

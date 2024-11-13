@@ -7,6 +7,10 @@ class Logger {
 				if (message instanceof Object) {
 					message = JSON.stringify(message, null, 2);
 				}
+
+				if (details instanceof Object) {
+					details = JSON.stringify(details, null, 2);
+				}
 				let msg = `${timestamp} ${level}:`;
 				service && (msg += ` [${service}]`);
 				method && (msg += `(${method})`);
