@@ -229,7 +229,7 @@ class NetworkService {
 			});
 
 			const containers = await docker.listContainers({ all: true });
-			const containerExists = containers.some((c) => c.Id === job.data.url);
+			const containerExists = containers.some((c) => c.Id.startsWith(job.data.url));
 			if (!containerExists) {
 				throw new Error(errorMessages.DOCKER_NOT_FOUND);
 			}
