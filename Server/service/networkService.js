@@ -8,7 +8,7 @@ import { errorMessages, successMessages } from "../utils/messages.js";
  * @param {Object} http - The HTTP utility for network operations.
  */
 class NetworkService {
-	constructor(axios, ping, logger, http) {
+	constructor(axios, ping, logger, http, Docker) {
 		this.TYPE_PING = "ping";
 		this.TYPE_HTTP = "http";
 		this.TYPE_PAGESPEED = "pagespeed";
@@ -21,6 +21,7 @@ class NetworkService {
 		this.ping = ping;
 		this.logger = logger;
 		this.http = http;
+		this.Docker = Docker;
 	}
 
 	/**
@@ -164,7 +165,8 @@ class NetworkService {
 	}
 
 	async requestDocker(job) {
-		console.log(job);
+		var docker = new Docker({ socketPath: "/var/run/docker.sock" });
+
 		return {};
 	}
 
