@@ -55,6 +55,9 @@ const errorMessages = {
 	// Status Page Errors
 	STATUS_PAGE_NOT_FOUND: "Status page not found",
 	STATUS_PAGE_URL_NOT_UNIQUE: "Status page url must be unique",
+
+	// Docker
+	DOCKER_FAIL: "Failed to fetch Docker container information",
 };
 
 const successMessages = {
@@ -123,6 +126,9 @@ const successMessages = {
 	// Status Page
 	STATUS_PAGE_BY_URL: "Got status page by url successfully",
 	STATUS_PAGE_CREATE: "Status page created successfully",
+
+	// Docker
+	DOCKER_SUCCESS: "Docker container status fetched successfully",
 };
 
 export { errorMessages, successMessages };
