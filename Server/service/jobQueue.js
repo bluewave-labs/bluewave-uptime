@@ -178,10 +178,11 @@ class JobQueue {
 					prevStatus,
 				});
 			} catch (error) {
+				console.log(error.service);
 				this.logger.error({
 					message: error.message,
-					service: SERVICE_NAME,
-					method: "createWorker",
+					service: error.service ?? SERVICE_NAME,
+					method: error.method ?? "createJobHandler",
 					details: `Error processing job ${job.id}: ${error.message}`,
 					stack: error.stack,
 				});
