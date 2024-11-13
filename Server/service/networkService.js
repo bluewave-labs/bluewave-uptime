@@ -13,6 +13,7 @@ class NetworkService {
 		this.TYPE_HTTP = "http";
 		this.TYPE_PAGESPEED = "pagespeed";
 		this.TYPE_HARDWARE = "hardware";
+		this.TYPE_DOCKER = "docker";
 		this.SERVICE_NAME = "NetworkService";
 		this.NETWORK_ERROR = 5000;
 		this.PING_ERROR = 5001;
@@ -162,6 +163,11 @@ class NetworkService {
 		return this.requestHttp(job);
 	}
 
+	async requestDocker(job) {
+		console.log(job);
+		return {};
+	}
+
 	/**
 	 * Gets the status of a job based on its type and returns the appropriate response.
 	 *
@@ -181,13 +187,13 @@ class NetworkService {
 				return await this.requestPagespeed(job);
 			case this.TYPE_HARDWARE:
 				return await this.requestHardware(job);
+			case this.TYPE_DOCKER:
+				return await this.requestDocker(job);
 			default:
-				this.logger.error({
-					message: `Unsupported type: ${job.data.type}`,
-					service: this.SERVICE_NAME,
-					method: "getStatus",
-				});
-				return {};
+				const err = new Error(`Unsupported type: ${job.data.type}`);
+				err.service = this.SERVICE_NAME;
+				err.method = "getStatus";
+				throw err;
 		}
 	}
 }
