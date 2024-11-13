@@ -58,6 +58,7 @@ const errorMessages = {
 
 	// Docker
 	DOCKER_FAIL: "Failed to fetch Docker container information",
+	DOCKER_NOT_FOUND: "Docker container not found",
 };
 
 const successMessages = {
