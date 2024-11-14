@@ -75,7 +75,7 @@ const semanticColors = {
 			light: paletteColors.gray100,
 			dark: paletteColors.gray800,
 		},
-		constrastText: {
+		contrastText: {
 			light: paletteColors.blueGray200,
 			dark: paletteColors.blueGray200,
 		},

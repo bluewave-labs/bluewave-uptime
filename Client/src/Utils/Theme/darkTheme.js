@@ -26,7 +26,7 @@ const palette = {
 	primary: { main: primary.main.dark },
 	secondary: {
 		main: secondary.main.dark,
-		contrastText: secondary.constrastText.dark,
+		contrastText: secondary.contrastText.dark,
 		light: secondary.dark.dark,
 		dark: secondary.dark.dark,
 	},
