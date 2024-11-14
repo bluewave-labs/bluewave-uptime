@@ -4,6 +4,25 @@ import Checkbox from "../Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
 import PropTypes from "prop-types";
 
+
+/**
+ * `CustomThreshold` is a functional React component that displays a 
+ * group of CheckBox with a label and its correspondant threshold input field.
+ *
+ * @param {{ checkboxId: any; checkboxLabel: any; onCheckboxChange: any; fieldId: any; onFieldChange: any; onFieldBlur: any; alertUnit: any; infrastructureMonitor: any; errors: any; }} param0
+ * @param {string} param0.checkboxId  - The text is the id of the checkbox.
+ * @param {string} param0.checkboxLabel - The text to be displayed as the label next to the check icon.
+ * @param {func} param0.onCheckboxChange - The function to invoke when checkbox is checked or unchecked.
+ * @param {string} param0.fieldId - The text is the id of the input field.
+ * @param {func} param0.onFieldChange - The function to invoke when input field is changed.
+ * @param {func} param0.onFieldBlur - The function to invoke when input field is losing focus.
+ * @param {string} param0.alertUnit the threshold unit such as usage percentage '%' etc
+ * @param {object} param0.infrastructureMonitor the form object of the create infrastrcuture monitor page
+ * @param {object} param0.errors the object that holds all the errors of the form page
+ * @returns A compound React component that renders the custom threshold alert section
+ * 
+ */
+
 export const CustomThreshold = ({
     checkboxId,
     checkboxLabel,
