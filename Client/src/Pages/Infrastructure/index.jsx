@@ -1,6 +1,13 @@
 import { Box, Button } from "@mui/material";
 import { Heading } from "../../Components/Heading";
 
+/**
+ * This is the Infrastructure monitoring page. This is a work in progress
+ *
+ * @param  - Define params.
+ * @returns {JSX.Element} The infrastructure monitoring page.
+ */
+
 function Infrastructure() {
 	return (
 		<Box component="main">
