@@ -39,6 +39,7 @@ const Checkbox = ({
 }) => {
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
+	const checkBoxPosition = typeof label === "string" ? {} : { pb: "65px" };
 
 	return (
 		<FormControlLabel
@@ -65,11 +66,11 @@ const Checkbox = ({
 			sx={{
 				borderRadius: theme.shape.borderRadius,
 				p: theme.spacing(2.5),
-				//m: theme.spacing(-2.5),
 				"& .MuiButtonBase-root": {
 					width: theme.spacing(10),
 					p: 0,
 					mr: theme.spacing(6),
+					...checkBoxPosition,
 				},
 				"&:not(:has(.Mui-disabled)):hover": {
 					backgroundColor: theme.palette.background.accent,
@@ -85,7 +86,7 @@ const Checkbox = ({
 
 Checkbox.propTypes = {
 	id: PropTypes.string.isRequired,
-	label: PropTypes.string.isRequired,
+	label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
 	size: PropTypes.oneOf(["small", "medium", "large"]),
 	isChecked: PropTypes.bool.isRequired,
 	value: PropTypes.string,

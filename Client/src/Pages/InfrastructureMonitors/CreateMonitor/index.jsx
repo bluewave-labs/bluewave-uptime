@@ -29,15 +29,15 @@ const CreateInfrastructureMonitor = () => {
 		cpu: false,
 		usage_cpu: "",
 		memory: false,
-		usage_memory: "",		
+		usage_memory: "",
 		disk: false,
-		usage_disk: "",				
+		usage_disk: "",
 		secret: "",
 	});
 
 	const MS_PER_MINUTE = 60000;
-	const THRESHOLD_FIELD_PREFIX = "usage_"
-	const HARDWARE_MONITOR_TYPES = ["cpu","memory","disk"]
+	const THRESHOLD_FIELD_PREFIX = "usage_";
+	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk"];
 	const { user, authToken } = useSelector((state) => state.auth);
 	const monitorState = useSelector((state) => state.infrastructureMonitor);
 	const dispatch = useDispatch();
@@ -50,8 +50,9 @@ const CreateInfrastructureMonitor = () => {
 
 	const [errors, setErrors] = useState({});
 
-	const alertErrKeyLen = Object.keys(errors)
-							.filter(k => k.startsWith(THRESHOLD_FIELD_PREFIX)).length
+	const alertErrKeyLen = Object.keys(errors).filter((k) =>
+		k.startsWith(THRESHOLD_FIELD_PREFIX)
+	).length;
 
 	const handleCustomAlertCheckChange = (event) => {
 		const { value, id } = event.target;
@@ -62,14 +63,14 @@ const CreateInfrastructureMonitor = () => {
 			return {
 				...prev,
 				...newState,
-				[THRESHOLD_FIELD_PREFIX+ id]: newState[id]
-					? prev[THRESHOLD_FIELD_PREFIX+ id]
+				[THRESHOLD_FIELD_PREFIX + id]: newState[id]
+					? prev[THRESHOLD_FIELD_PREFIX + id]
 					: "",
 			};
 		});
 		// Remove the error if unchecked
 		setErrors((prev) => {
-			return buildErrors(prev, [THRESHOLD_FIELD_PREFIX+ id]);
+			return buildErrors(prev, [THRESHOLD_FIELD_PREFIX + id]);
 		});
 	};
 
@@ -134,7 +135,7 @@ const CreateInfrastructureMonitor = () => {
 				if (form[k]) thresholds[k] = form[k];
 				delete form[k];
 				delete form[k.substring(THRESHOLD_FIELD_PREFIX.length)];
-			});	
+			});
 
 		form = {
 			...form,
@@ -192,6 +193,25 @@ const CreateInfrastructureMonitor = () => {
 		{ _id: 300, name: "5 minutes" },
 		{ _id: 600, name: "10 minutes" },
 	];
+
+	const NOTIFY_MULTIPLE_EMAIL_LABEL = (
+		<Box>
+			<Typography mb={theme.spacing(4)}>
+				Also notify via email to multiple addresses (coming soon)
+			</Typography>
+			<Field
+				id="notify-email-list"
+				type="text"
+				placeholder="name@gmail.com"
+				value=""
+				onChange={() => logger.warn("disabled")}
+				onBlur={handleBlur}
+			/>
+			<Typography mt={theme.spacing(4)}>
+				You can separate multiple emails with a comma
+			</Typography>
+		</Box>
+	);
 
 	return (
 		<Box className="create-infrastructure-monitor">
@@ -289,26 +309,13 @@ const CreateInfrastructureMonitor = () => {
 						/>
 						<Checkbox
 							id="notify-email"
-							label="Also notify via email to multiple addresses (coming soon)"
+							label={NOTIFY_MULTIPLE_EMAIL_LABEL}
 							isChecked={false}
 							value=""
 							onChange={() => logger.warn("disabled")}
 							onBlur={handleBlur}
 							isDisabled={true}
 						/>
-						<Box mx={theme.spacing(16)}>
-							<Field
-								id="notify-email-list"
-								type="text"
-								placeholder="name@gmail.com"
-								value=""
-								onChange={() => logger.warn("disabled")}
-								onBlur={handleBlur}
-							/>
-							<Typography mt={theme.spacing(4)}>
-								You can separate multiple emails with a comma
-							</Typography>
-						</Box>
 					</Stack>
 				</ConfigBox>
 
