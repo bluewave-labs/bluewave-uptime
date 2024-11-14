@@ -182,7 +182,7 @@ describe("StatusService", () => {
 				responseTime: 100,
 				code: 200,
 				message: "Test message",
-				payload: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" },
+				payload: { data: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" } },
 			});
 			expect(check.monitorId).to.equal("test");
 			expect(check.status).to.be.true;
