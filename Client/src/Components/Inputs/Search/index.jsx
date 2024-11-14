@@ -99,7 +99,7 @@ const Search = ({
 						<Typography
 							component="span"
 							className="input-error"
-							color={theme.palette.error.text}
+							color={theme.palette.error.contrastText}
 							mt={theme.spacing(2)}
 							sx={{
 								opacity: 0.8,

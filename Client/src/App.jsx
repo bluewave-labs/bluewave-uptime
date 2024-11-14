@@ -1,14 +1,12 @@
 import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-// import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import NotFound from "./Pages/NotFound";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register/Register";
-import HomeLayout from "./Layouts/HomeLayout";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
@@ -30,15 +28,17 @@ import CreatePageSpeed from "./Pages/PageSpeed/CreatePageSpeed";
 import CreateNewMaintenanceWindow from "./Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "./Pages/PageSpeed/Details";
 import PageSpeedConfigure from "./Pages/PageSpeed/Configure";
-import withAdminCheck from "./HOC/withAdminCheck";
-import withAdminProp from "./HOC/withAdminProp";
+import HomeLayout from "./Components/Layouts/HomeLayout";
+import withAdminCheck from "./Components/HOC/withAdminCheck";
+import withAdminProp from "./Components/HOC/withAdminProp";
 import { ThemeProvider } from "@emotion/react";
 import lightTheme from "./Utils/Theme/lightTheme";
 import darkTheme from "./Utils/Theme/darkTheme";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, GlobalStyles } from "@mui/material";
 import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
+import { Infrastructure } from "./Pages/Infrastructure";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -67,8 +67,19 @@ function App() {
 	}, []);
 
 	return (
+		/* Extract Themeprovider, baseline and global styles to Styles */
 		<ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
 			<CssBaseline />
+			<GlobalStyles
+				styles={({ palette }) => {
+					return {
+						body: {
+							backgroundImage: `radial-gradient(circle, ${palette.gradient.color1}, ${palette.gradient.color2}, ${palette.gradient.color3}, ${palette.gradient.color4}, ${palette.gradient.color5})`,
+						},
+					};
+				}}
+			/>
+			{/* Extract Routes to Routes */}
 			<Routes>
 				<Route
 					exact
@@ -78,7 +89,7 @@ function App() {
 					<Route
 						exact
 						path="/"
-						element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
+						element={<Navigate to="/monitors" />}
 					/>
 					<Route
 						path="/monitors"
@@ -96,6 +107,27 @@ function App() {
 						path="/monitors/configure/:monitorId/"
 						element={<ProtectedRoute Component={Configure} />}
 					/>
+					<Route
+						path="pagespeed"
+						element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
+					/>
+					<Route
+						path="pagespeed/create"
+						element={<ProtectedRoute Component={CreatePageSpeed} />}
+					/>
+					<Route
+						path="pagespeed/:monitorId"
+						element={<ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />}
+					/>
+					<Route
+						path="pagespeed/configure/:monitorId"
+						element={<ProtectedRoute Component={PageSpeedConfigure} />}
+					/>
+					<Route
+						path="infrastructure"
+						element={<ProtectedRoute Component={Infrastructure} />}
+					/>
+
 					<Route
 						path="incidents/:monitorId?"
 						element={<ProtectedRoute Component={Incidents} />}
@@ -151,22 +183,6 @@ function App() {
 								open="team"
 							/>
 						}
-					/>
-					<Route
-						path="pagespeed"
-						element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
-					/>
-					<Route
-						path="pagespeed/create"
-						element={<ProtectedRoute Component={CreatePageSpeed} />}
-					/>
-					<Route
-						path="pagespeed/:monitorId"
-						element={<ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />}
-					/>
-					<Route
-						path="pagespeed/configure/:monitorId"
-						element={<ProtectedRoute Component={PageSpeedConfigure} />}
 					/>
 				</Route>
 

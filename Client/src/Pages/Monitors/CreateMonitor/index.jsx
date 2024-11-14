@@ -333,7 +333,7 @@ const CreateMonitor = () => {
 								<Typography
 									component="p"
 									className="input-error"
-									color={theme.palette.error.text}
+									color={theme.palette.error.contrastText}
 								>
 									{errors["type"]}
 								</Typography>
