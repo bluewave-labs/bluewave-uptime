@@ -1,4 +1,4 @@
-import Sidebar from "../../Components/Sidebar";
+import Sidebar from "../../Sidebar";
 import { Outlet } from "react-router";
 import { Stack } from "@mui/material";
 

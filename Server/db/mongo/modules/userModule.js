@@ -15,7 +15,11 @@ const SERVICE_NAME = "userModule";
  * @returns {Promise<UserModel>}
  * @throws {Error}
  */
-const insertUser = async (userData, imageFile) => {
+const insertUser = async (
+	userData,
+	imageFile,
+	generateAvatarImage = GenerateAvatarImage
+) => {
 	try {
 		if (imageFile) {
 			// 1.  Save the full size image
@@ -25,7 +29,7 @@ const insertUser = async (userData, imageFile) => {
 			};
 
 			// 2.  Get the avatar sized image
-			const avatar = await GenerateAvatarImage(imageFile);
+			const avatar = await generateAvatarImage(imageFile);
 			userData.avatarImage = avatar;
 		}
 
@@ -90,7 +94,12 @@ const getUserByEmail = async (email) => {
  * @throws {Error}
  */
 
-const updateUser = async (req, res) => {
+const updateUser = async (
+	req,
+	res,
+	parseBoolean = ParseBoolean,
+	generateAvatarImage = GenerateAvatarImage
+) => {
 	const candidateUserId = req.params.userId;
 	try {
 		const candidateUser = { ...req.body };
@@ -98,7 +107,7 @@ const updateUser = async (req, res) => {
 		// Handle profile image
 		// ******************************************
 
-		if (ParseBoolean(candidateUser.deleteProfileImage) === true) {
+		if (parseBoolean(candidateUser.deleteProfileImage) === true) {
 			candidateUser.profileImage = null;
 			candidateUser.avatarImage = null;
 		} else if (req.file) {
@@ -108,8 +117,8 @@ const updateUser = async (req, res) => {
 				contentType: req.file.mimetype,
 			};
 
-			// 2.  Get the avaatar sized image
-			const avatar = await GenerateAvatarImage(req.file);
+			// 2.  Get the avatar sized image
+			const avatar = await generateAvatarImage(req.file);
 			candidateUser.avatarImage = avatar;
 		}
 
@@ -164,6 +173,7 @@ const deleteUser = async (userId) => {
 const deleteTeam = async (teamId) => {
 	try {
 		await TeamModel.findByIdAndDelete(teamId);
+		return true;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "deleteTeam";
@@ -174,6 +184,7 @@ const deleteTeam = async (teamId) => {
 const deleteAllOtherUsers = async () => {
 	try {
 		await UserModel.deleteMany({ role: { $ne: "superadmin" } });
+		return true;
 	} catch (error) {
 		error.service = SERVICE_NAME;
 		error.method = "deleteAllOtherUsers";

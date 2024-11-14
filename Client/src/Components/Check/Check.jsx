@@ -24,7 +24,7 @@ const Check = ({ text, noHighlightText, variant = "info", outlined = false }) =>
 	const theme = useTheme();
 	const colors = {
 		success: theme.palette.success.main,
-		error: theme.palette.error.text,
+		error: theme.palette.error.contrastText,
 		info: theme.palette.info.border,
 	};
 

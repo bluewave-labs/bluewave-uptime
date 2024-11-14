@@ -25,7 +25,7 @@ const StatusBox = ({ title, value }) => {
 			</Box>
 		);
 	} else if (title === "down") {
-		color = theme.palette.error.text;
+		color = theme.palette.error.main;
 		icon = (
 			<Box sx={{ ...sharedStyles, transform: "rotate(180deg)", top: 5 }}>
 				<Arrow />

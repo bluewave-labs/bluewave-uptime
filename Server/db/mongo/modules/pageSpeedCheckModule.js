@@ -26,25 +26,6 @@ const createPageSpeedCheck = async (pageSpeedCheckData) => {
 };
 
 /**
- * Get all PageSpeed checks for a monitor
- * @async
- * @param {string} monitorId
- * @returns {Promise<Array<PageSpeedCheck>>}
- * @throws {Error}
- */
-
-const getPageSpeedChecks = async (monitorId) => {
-	try {
-		const pageSpeedChecks = await PageSpeedCheck.find({ monitorId });
-		return pageSpeedChecks;
-	} catch (error) {
-		error.service = SERVICE_NAME;
-		error.method = "getPageSpeedChecks";
-		throw error;
-	}
-};
-
-/**
  * Delete all PageSpeed checks for a monitor
  * @async
  * @param {string} monitorId
@@ -63,4 +44,4 @@ const deletePageSpeedChecksByMonitorId = async (monitorId) => {
 	}
 };
 
-export { createPageSpeedCheck, getPageSpeedChecks, deletePageSpeedChecksByMonitorId };
+export { createPageSpeedCheck, deletePageSpeedChecksByMonitorId };

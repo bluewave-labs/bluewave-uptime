@@ -31,6 +31,9 @@ const icons = {
 
 const Alert = ({ variant, title, body, isToast, hasIcon = true, onClick }) => {
 	const theme = useTheme();
+	/* TODO 
+	This needs fixing. text bg and border not necessarilly exist. Probably text becomes contrastText. border becomes contrastText. bg becomes dark.
+	Check possible variants, see implementation in light and dark theme, and adjust */
 	const { text, bg, border } = theme.palette[variant];
 	const icon = icons[variant];
 

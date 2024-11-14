@@ -28,6 +28,7 @@ import NetworkService from "./service/networkService.js";
 import axios from "axios";
 import ping from "ping";
 import http from "http";
+import Docker from "dockerode";
 
 // Email service and dependencies
 import EmailService from "./service/emailService.js";
@@ -45,7 +46,7 @@ import NotificationService from "./service/notificationService.js";
 
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
-const SHUTDOWN_TIMEOUT = 0;
+const SHUTDOWN_TIMEOUT = 1000;
 
 let isShuttingDown = false;
 const __filename = fileURLToPath(import.meta.url);
@@ -130,7 +131,7 @@ const startApp = async () => {
 		nodemailer,
 		logger
 	);
-	const networkService = new NetworkService(axios, ping, logger, http);
+	const networkService = new NetworkService(axios, ping, logger, http, Docker);
 	const statusService = new StatusService(db, logger);
 	const notificationService = new NotificationService(emailService, db, logger);
 	const jobQueue = await JobQueue.createJobQueue(

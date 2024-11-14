@@ -144,8 +144,8 @@ const getMonitorsAndSummaryByTeamIdQueryValidation = joi.object({
 	type: joi
 		.alternatives()
 		.try(
-			joi.string().valid("http", "ping", "pagespeed"),
-			joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+			joi.string().valid("http", "ping", "pagespeed", "docker"),
+			joi.array().items(joi.string().valid("http", "ping", "pagespeed", "docker"))
 		),
 });
 
@@ -161,8 +161,8 @@ const getMonitorsByTeamIdQueryValidation = joi.object({
 	type: joi
 		.alternatives()
 		.try(
-			joi.string().valid("http", "ping", "pagespeed"),
-			joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+			joi.string().valid("http", "ping", "pagespeed", "docker"),
+			joi.array().items(joi.string().valid("http", "ping", "pagespeed", "docker"))
 		),
 	page: joi.number(),
 	rowsPerPage: joi.number(),

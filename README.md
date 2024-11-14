@@ -46,6 +46,8 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 We are actively developing **infrastructure monitoring** features for Uptime Manager, which will include comprehensive monitoring of memory, disk usage, and CPU performance. Our goal is to build a lightweight agent that runs on Linux servers, continuously collecting and transmitting health metrics to Uptime Manager, where the data will be visualized for real-time insights.
 
+Additionally, we will introduce **Docker monitoring** to track the performance and health of containerized environments.
+
 **Roadmap (long term):**
 
 - DNS monitoring
