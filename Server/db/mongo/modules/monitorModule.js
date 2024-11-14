@@ -20,6 +20,7 @@ const SERVICE_NAME = "monitorModule";
 const CHECK_MODEL_LOOKUP = {
 	http: Check,
 	ping: Check,
+	docker: Check,
 	pagespeed: PageSpeedCheck,
 	hardware: HardwareCheck,
 };
@@ -349,7 +350,7 @@ const getMonitorStatsById = async (req) => {
 			),
 		};
 
-		if (monitor.type === "http" || monitor.type === "ping") {
+		if (monitor.type === "http" || monitor.type === "ping" || monitor.type === "docker") {
 			// HTTP/PING Specific stats
 			monitorStats.periodAvgResponseTime = getAverageResponseTime(checksForDateRange);
 			monitorStats.periodUptime = getUptimePercentage(checksForDateRange);

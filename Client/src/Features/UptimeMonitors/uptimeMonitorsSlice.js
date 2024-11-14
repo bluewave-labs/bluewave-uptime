@@ -40,7 +40,7 @@ export const checkEndpointResolution = createAsyncThunk(
 			const res = await networkService.checkEndpointResolution({
 				authToken: authToken,
 				monitorURL: monitorURL,
-			})
+			});
 			return res.data;
 		} catch (error) {
 			if (error.response && error.response.data) {
@@ -53,7 +53,7 @@ export const checkEndpointResolution = createAsyncThunk(
 			return thunkApi.rejectWithValue(payload);
 		}
 	}
-)
+);
 
 export const getUptimeMonitorById = createAsyncThunk(
 	"monitors/getMonitorById",
@@ -86,7 +86,7 @@ export const getUptimeMonitorsByTeamId = createAsyncThunk(
 			const res = await networkService.getMonitorsAndSummaryByTeamId({
 				authToken: token,
 				teamId: user.teamId,
-				types: ["http", "ping"],
+				types: ["http", "ping", "docker"],
 			});
 			return res.data;
 		} catch (error) {
