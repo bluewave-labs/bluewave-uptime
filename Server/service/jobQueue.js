@@ -180,8 +180,8 @@ class JobQueue {
 			} catch (error) {
 				this.logger.error({
 					message: error.message,
-					service: SERVICE_NAME,
-					method: "createWorker",
+					service: error.service ?? SERVICE_NAME,
+					method: error.method ?? "createJobHandler",
 					details: `Error processing job ${job.id}: ${error.message}`,
 					stack: error.stack,
 				});
