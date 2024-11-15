@@ -28,17 +28,17 @@ const hasValidationErrors = (form, validation, setErrors) => {
 				newErrors[err.path[0]] = err.message ?? "Validation error";
 			}
 			// Handle conditionally usage number required cases
-			if (!form.cpu || (form.cpu && form.usage_cpu)) {
+			if (!form.cpu || form.usage_cpu) {
 				newErrors["usage_cpu"] = null;
 			}
-			if (!form.memory || (form.memory && form.usage_memory)) {
+			if (!form.memory || form.usage_memory) {
 				newErrors["usage_memory"] = null;
 			}
-			if (!form.disk || (form.disk && form.usage_disk)) {
+			if (!form.disk || form.usage_disk) {
 				newErrors["usage_disk"] = null;
 			}
 		});
-		if (Object.keys(newErrors).length > 0) {
+		if (Object.values(newErrors).some(v=> v)) {
 			setErrors(newErrors);
 			return true;
 		} else {

@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
-import Field from "../Inputs/Field";
-import Checkbox from "../Inputs/Checkbox";
+import Field from "../../../../Components/Inputs/Field";
+import Checkbox from "../../../../Components/Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
 import PropTypes from "prop-types";
 

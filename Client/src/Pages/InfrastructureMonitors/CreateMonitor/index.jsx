@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
-import { infrastractureMonitorValidation } from "../../../Validation/validation";
+import { infrastructureMonitorValidation } from "../../../Validation/validation";
 import {
 	createInfrastructureMonitor,
 	checkInfrastructureEndpointResolution,
@@ -18,7 +18,7 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { buildErrors, hasValidationErrors } from "../../../Validation/error";
 import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
-import { CustomThreshold } from "../../../Components/CustomThreshold";
+import { CustomThreshold } from "../CreateMonitor/CustomThreshold";
 
 const CreateInfrastructureMonitor = () => {
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
@@ -27,15 +27,15 @@ const CreateInfrastructureMonitor = () => {
 		notifications: [],
 		interval: 15,
 		cpu: false,
-		usage_cpu: "",
+		usage_cpu: 0,
 		memory: false,
-		usage_memory: "",
+		usage_memory: 0,
 		disk: false,
-		usage_disk: "",
+		usage_disk: 0,
 		secret: "",
 	});
 
-	const MS_PER_MINUTE = 60000;
+	const MS_PER_SECOND = 1000;
 	const THRESHOLD_FIELD_PREFIX = "usage_";
 	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk"];
 	const { user, authToken } = useSelector((state) => state.auth);
@@ -78,7 +78,7 @@ const CreateInfrastructureMonitor = () => {
 		event.preventDefault();
 		const { value, id } = event.target;
 		if (id?.startsWith("notify-email-")) return;
-		const { error } = infrastractureMonitorValidation.validate(
+		const { error } = infrastructureMonitorValidation.validate(
 			{ [id ?? appenedID]: value },
 			{
 				abortEarly: false,
@@ -156,10 +156,10 @@ const CreateInfrastructureMonitor = () => {
 				infrastructureMonitor.name === ""
 					? infrastructureMonitor.url
 					: infrastructureMonitor.name,
-			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
+			interval: infrastructureMonitor.interval * MS_PER_SECOND,
 		};
 		delete form.notifications;
-		if (hasValidationErrors(form, infrastractureMonitorValidation, setErrors)) {
+		if (hasValidationErrors(form, infrastructureMonitorValidation, setErrors)) {
 			return;
 		} else {
 			const checkEndpointAction = await dispatch(
