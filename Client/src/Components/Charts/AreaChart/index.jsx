@@ -63,6 +63,7 @@ import { useTheme } from "@mui/material";
  */
 const CustomAreaChart = ({
 	data,
+	dataKey,
 	xKey,
 	yKey,
 	xTick,
@@ -105,7 +106,7 @@ const CustomAreaChart = ({
 				/>
 				<Area
 					type="monotone"
-					dataKey="cpu.usage_percent"
+					dataKey={dataKey}
 					stroke={strokeColor}
 					fill={gradient === true ? "url(#colorUv)" : fillColor}
 				/>
@@ -126,6 +127,7 @@ const CustomAreaChart = ({
 
 CustomAreaChart.propTypes = {
 	data: PropTypes.array.isRequired,
+	dataKey: PropTypes.string.isRequired,
 	xTick: PropTypes.object, // Recharts takes an instance of component, so we can't pass the component itself
 	yTick: PropTypes.object, // Recharts takes an instance of component, so we can't pass the component itself
 	xKey: PropTypes.string.isRequired,
