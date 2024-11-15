@@ -37,6 +37,7 @@ const Checkbox = ({
 	onChange,
 	isDisabled,
 }) => {
+	/* TODO move sizes to theme */
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
 
@@ -77,6 +78,10 @@ const Checkbox = ({
 				"& span.MuiTypography-root": {
 					fontSize: 13,
 					color: theme.palette.text.tertiary,
+				},
+				".MuiFormControlLabel-label.Mui-disabled": {
+					color: theme.palette.text.tertiary,
+					opacity: 0.25,
 				},
 			}}
 		/>
