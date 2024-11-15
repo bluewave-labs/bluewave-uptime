@@ -27,11 +27,11 @@ const CreateInfrastructureMonitor = () => {
 		notifications: [],
 		interval: 15,
 		cpu: false,
-		usage_cpu: 0,
+		usage_cpu: "",
 		memory: false,
-		usage_memory: 0,
+		usage_memory: "",
 		disk: false,
-		usage_disk: 0,
+		usage_disk: "",
 		secret: "",
 	});
 
