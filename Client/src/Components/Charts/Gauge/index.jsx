@@ -69,6 +69,7 @@ function Gauge({ progressValue, width = DEFAULT_WIDTH }) {
 		<ResponsiveContainer
 			aspect={1}
 			width={width}
+			style={{ marginInline: "auto" }}
 		>
 			<RadialBarChart
 				{...RADIAL_BAR_CHART_PROPS}
@@ -91,8 +92,8 @@ function Gauge({ progressValue, width = DEFAULT_WIDTH }) {
 								textAnchor="middle"
 								dominantBaseline="middle"
 								style={{
-									...theme.typography.body1,
-									fill: theme.typography.body1.color,
+									...theme.typography.body2,
+									fill: theme.typography.body2.color,
 								}}
 							>
 								{`${myProgressValue}%`}

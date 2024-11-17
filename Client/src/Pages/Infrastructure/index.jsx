@@ -1,12 +1,13 @@
 import {
 	Box,
 	Button,
+	IconButton,
+	Paper,
 	Stack,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
-	TableFooter,
 	TableHead,
 	TablePagination,
 	TableRow,
@@ -17,6 +18,8 @@ import Greeting from "../../Utils/greeting";
 import Breadcrumbs from "../../Components/Breadcrumbs";
 import { StatusLabel } from "../../Components/Label";
 import { Gauge } from "../../Components/Charts/Gauge";
+import GearIcon from "../../Assets/icons/settings-bold.svg?react";
+import CPUChipIcon from "../../Assets/icons/cpu-chip.svg?react";
 
 const mockedData = {
 	ip: "https://192.168.1.30",
@@ -31,51 +34,37 @@ const ROWS = Array.from(Array(20).keys()).map(() => mockedData);
 console.log(ROWS);
 
 const columns = [
-	{
-		label: "Host",
-		/*  id: "name", */
-		/*  minWidth: 170 */
-	},
-	{
-		/* id: "code", */
-		label: "Status",
-		/* minWidth: 100  */
-	},
-	{
-		/* id: "population", */
-		label: "Frequency",
-		/* minWidth: 170,
-		align: "right", */
-		/* format: (value) => value.toLocaleString("en-US"), */
-	},
-	{
-		/* id: "size", */
-		label: "CPU",
-		/* 	minWidth: 170, */
-		/* align: "right", */
-		/* format: (value) => value.toLocaleString("en-US"), */
-	},
-	{
-		/* id: "density", */
-		label: "Mem",
-		/* 	minWidth: 170, */
-		/* 		align: "right",
-		format: (value) => value.toFixed(2), */
-	},
-	{
-		label: "Disk",
-	},
-	{
-		label: "Actions",
-	},
+	{ label: "Host" },
+	{ label: "Status" },
+	{ label: "Frequency" },
+	{ label: "CPU" },
+	{ label: "Mem" },
+	{ label: "Disk" },
+	{ label: "Actions" },
 ];
 
-/* TODO steps
-
-1) Extract Client\src\Pages\Monitors\Home\MonitorTable\index.jsx to reusable component
-
-...
-z) Check error pointed by Shemy on theme
+/* TODO 
+Create reusable table component.
+It should receive as a parameter the following object:
+tableData = [
+	 columns = [
+		{
+	 		id: example,
+			label: Example Extendable,
+			align: "center" | "left" (default)	
+		}
+	 ],
+	 rows: [
+	 	{
+	 		**Number of keys will be equal to number of columns**
+	 		key1: string,
+			key2: number,
+			key3: Component
+		}
+	 ]
+]
+Apply to Monitor Table, and Account/Team.
+Analyze existing BasicTable
 */
 
 /**
@@ -95,7 +84,6 @@ function Infrastructure() {
 			<Breadcrumbs list={[{ name: `infrastructure`, path: "/infrastructure" }]} />
 			<Stack
 				direction="row"
-				/* spacing={8} */
 				sx={{
 					justifyContent: "space-between",
 					alignItems: "center",
@@ -125,7 +113,6 @@ function Infrastructure() {
 			>
 				<Stack
 					direction="row"
-					/* spacing={8} */
 					sx={{
 						alignItems: "center",
 						gap: ".25rem",
@@ -133,7 +120,7 @@ function Infrastructure() {
 					}}
 				>
 					<Heading component="h2">Infrastructure monitors</Heading>
-					{/* TODO Correct the class, messy stuff	 */}
+					{/* TODO Correct the class current-monitors-counter, there are some unnecessary things there	 */}
 					<Box
 						component="span"
 						className="current-monitors-counter"
@@ -145,15 +132,19 @@ function Infrastructure() {
 						5
 					</Box>
 				</Stack>
-				<TableContainer>
+				<TableContainer
+					component={Paper}
+					sx={{ maxHeight: "55vh" }}
+				>
 					<Table stickyHeader>
-						<TableHead>
+						<TableHead sx={{ backgroundColor: theme.palette.background.accent }}>
 							<TableRow>
 								{columns.map((column, index) => (
 									<TableCell
 										key={index}
-										/* align={column.align} */
-										/* style={{ minWidth: column.minWidth }} */
+										align={index === 0 ? "left" : "center"}
+										/* TODO I don't understand why it was needed to pass this to override some #ffffff color from MUI here, but that wasn't needed in other pages.  */
+										sx={{ backgroundColor: "transparent" }}
 									>
 										{column.label}
 									</TableCell>
@@ -165,45 +156,68 @@ function Infrastructure() {
 								<TableRow key={index}>
 									{/* TODO iterate over column and get column id, applying row[column.id] */}
 									<TableCell>{row.ip}</TableCell>
-									<TableCell>
+									<TableCell align="center">
 										<StatusLabel
 											status={row.status}
 											text={row.status}
-											/* Usar o capitalize dentro do Status Label */
-											/* Fazer nao precisar mais passar o text*/
+											/* Use capitalize inside of Status Label */
+											/* Update component so we don't need to pass text and status separately*/
 											customStyles={{ textTransform: "capitalize" }}
 										/>
 									</TableCell>
-									<TableCell>{row.processor}</TableCell>
-									<TableCell>
+									<TableCell align="center">
+										<Stack
+											direction={"row"}
+											justifyContent={"center"}
+											alignItems={"center"}
+											gap=".25rem"
+										>
+											<CPUChipIcon
+												width={20}
+												height={20}
+											/>
+											{row.processor}
+										</Stack>
+									</TableCell>
+									<TableCell align="center">
 										<Gauge
 											progressValue={row.cpu}
 											containerWidth={60}
 										/>
 									</TableCell>
-									<TableCell>
+									<TableCell align="center">
 										<Gauge
 											progressValue={row.mem}
 											containerWidth={60}
 										/>
 									</TableCell>
-									<TableCell>
+									<TableCell align="center">
 										<Gauge
 											progressValue={row.disk}
 											containerWidth={60}
 										/>
 									</TableCell>
-									<TableCell>actions</TableCell>
+									<TableCell align="center">
+										{/* Get ActionsMenu from Monitor Table and create a component */}
+										<IconButton
+											sx={{
+												"& svg path": {
+													stroke: theme.palette.other.icon,
+												},
+											}}
+										>
+											<GearIcon
+												width={20}
+												height={20}
+											/>
+										</IconButton>
+									</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
-						<TableFooter>
-							<TableRow>
-								<TablePagination></TablePagination>
-							</TableRow>
-						</TableFooter>
 					</Table>
 				</TableContainer>
+				<TablePagination></TablePagination>
 			</Stack>
 		</Stack>
 	);
