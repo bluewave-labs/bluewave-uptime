@@ -179,9 +179,6 @@ function Infrastructure() {
 										<Gauge
 											progressValue={row.cpu}
 											containerWidth={60}
-											/* displayText={row.cpu}
-											containerHeight={100}
-											containerWidth={100} */
 										/>
 									</TableCell>
 									<TableCell>

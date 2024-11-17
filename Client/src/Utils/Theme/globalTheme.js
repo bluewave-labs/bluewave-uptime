@@ -32,19 +32,7 @@ const baseTheme = (palette) => ({
 			fontWeight: 400,
 		},
 	},
-	/* TODO take chart from here, it should live inside of the gauge, and get info from the theme */
-	chart: {
-		header: {
-			fontWeight: 400,
-			fill: palette.text.tertiary,
-			fontSize: typographyLevels.m,
-		},
-		subheader: {
-			fontWeight: 400,
-			fill: palette.text.tertiary,
-			fontSize: typographyLevels.xs,
-		},
-	},
+
 	spacing: 2,
 	/* TODO All these should live inside of a component*/
 	components: {
