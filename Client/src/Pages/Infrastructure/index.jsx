@@ -6,24 +6,28 @@ import {
 	TableBody,
 	TableCell,
 	TableContainer,
+	TableFooter,
 	TableHead,
+	TablePagination,
 	TableRow,
 } from "@mui/material";
 import { Heading } from "../../Components/Heading";
 import { useTheme } from "@emotion/react";
 import Greeting from "../../Utils/greeting";
 import Breadcrumbs from "../../Components/Breadcrumbs";
+import { StatusLabel } from "../../Components/Label";
+import { Gauge } from "../../Components/Charts/Gauge";
 
 const mockedData = {
 	ip: "https://192.168.1.30",
-	status: "Up",
+	status: "up",
 	processor: "2Ghz",
 	cpu: 80,
 	mem: 50,
 	disk: 70,
 };
 
-const ROWS = Array.from(Array(5).keys()).map(() => mockedData);
+const ROWS = Array.from(Array(20).keys()).map(() => mockedData);
 console.log(ROWS);
 
 const columns = [
@@ -100,7 +104,9 @@ function Infrastructure() {
 					marginBottom: "3rem",
 				}}
 			>
-				<Greeting type="uptime" />
+				<Box style={{ maxWidth: "65ch" }}>
+					<Greeting type="uptime" />
+				</Box>
 				<Button
 					variant="contained"
 					color="primary"
@@ -159,15 +165,46 @@ function Infrastructure() {
 								<TableRow key={index}>
 									{/* TODO iterate over column and get column id, applying row[column.id] */}
 									<TableCell>{row.ip}</TableCell>
-									<TableCell>{row.status}</TableCell>
+									<TableCell>
+										<StatusLabel
+											status={row.status}
+											text={row.status}
+											/* Usar o capitalize dentro do Status Label */
+											/* Fazer nao precisar mais passar o text*/
+											customStyles={{ textTransform: "capitalize" }}
+										/>
+									</TableCell>
 									<TableCell>{row.processor}</TableCell>
-									<TableCell>{row.cpu}</TableCell>
-									<TableCell>{row.mem}</TableCell>
-									<TableCell>{row.disk}</TableCell>
+									<TableCell>
+										<Gauge
+											progressValue={row.cpu}
+											containerWidth={60}
+											/* displayText={row.cpu}
+											containerHeight={100}
+											containerWidth={100} */
+										/>
+									</TableCell>
+									<TableCell>
+										<Gauge
+											progressValue={row.mem}
+											containerWidth={60}
+										/>
+									</TableCell>
+									<TableCell>
+										<Gauge
+											progressValue={row.disk}
+											containerWidth={60}
+										/>
+									</TableCell>
 									<TableCell>actions</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TablePagination></TablePagination>
+							</TableRow>
+						</TableFooter>
 					</Table>
 				</TableContainer>
 			</Stack>
