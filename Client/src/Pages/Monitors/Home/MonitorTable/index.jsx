@@ -398,6 +398,7 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 				alignItems="center"
 				justifyContent="space-between"
 				px={theme.spacing(4)}
+				marginTop={8}
 			>
 				<Typography
 					px={theme.spacing(2)}
@@ -433,7 +434,9 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 								},
 								transformOrigin: { vertical: "bottom", horizontal: "left" },
 								anchorOrigin: { vertical: "top", horizontal: "left" },
-								sx: { mt: theme.spacing(-2) },
+								sx: {
+									mt: theme.spacing(-2),
+								},
 							},
 							inputProps: { id: "pagination-dropdown" },
 							IconComponent: SelectorVertical,
@@ -449,7 +452,7 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 						},
 					}}
 					sx={{
-						mt: theme.spacing(6),
+						/* mt: theme.spacing(6), */
 						color: theme.palette.text.secondary,
 						"& svg path": {
 							stroke: theme.palette.text.tertiary,
