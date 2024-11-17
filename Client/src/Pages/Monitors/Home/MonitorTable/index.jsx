@@ -452,7 +452,6 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 						},
 					}}
 					sx={{
-						/* mt: theme.spacing(6), */
 						color: theme.palette.text.secondary,
 						"& svg path": {
 							stroke: theme.palette.text.tertiary,

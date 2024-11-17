@@ -9,8 +9,9 @@ import {
 	TableCell,
 	TableContainer,
 	TableHead,
-	TablePagination,
 	TableRow,
+	// TablePagination,
+	// Typography,
 } from "@mui/material";
 import { Heading } from "../../Components/Heading";
 import { useTheme } from "@emotion/react";
@@ -217,7 +218,77 @@ function Infrastructure() {
 						</TableBody>
 					</Table>
 				</TableContainer>
-				<TablePagination></TablePagination>
+				{/* <Stack
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					marginTop={8}
+				>
+					<Typography
+						// px={theme.spacing(2)}
+						variant="body2"
+						// sx={{ opacity: 0.7 }}
+					>
+						Showing {getRange()} of {monitorCount} monitor(s)
+					</Typography>
+					<TablePagination
+						component="div"
+						count={monitorCount}
+						page={page}
+						onPageChange={handleChangePage}
+						rowsPerPage={rowsPerPage}
+						rowsPerPageOptions={[5, 10, 15, 25]}
+						onRowsPerPageChange={handleChangeRowsPerPage}
+						ActionsComponent={TablePaginationActions}
+						labelRowsPerPage="Rows per page"
+						labelDisplayedRows={({ page, count }) =>
+							`Page ${page + 1} of ${Math.max(0, Math.ceil(count / rowsPerPage))}`
+						}
+						slotProps={{
+							select: {
+								MenuProps: {
+									keepMounted: true,
+									disableScrollLock: true,
+									PaperProps: {
+										className: "pagination-dropdown",
+										sx: {
+											mt: 0,
+											mb: theme.spacing(2),
+										},
+									},
+									transformOrigin: { vertical: "bottom", horizontal: "left" },
+									anchorOrigin: { vertical: "top", horizontal: "left" },
+									sx: {
+										mt: theme.spacing(-2),
+									},
+								},
+								inputProps: { id: "pagination-dropdown" },
+								IconComponent: SelectorVertical,
+								sx: {
+									ml: theme.spacing(4),
+									mr: theme.spacing(12),
+									minWidth: theme.spacing(20),
+									textAlign: "left",
+									"&.Mui-focused > div": {
+										backgroundColor: theme.palette.background.main,
+									},
+								},
+							},
+						}}
+						sx={{
+							color: theme.palette.text.secondary,
+							"& svg path": {
+								stroke: theme.palette.text.tertiary,
+								strokeWidth: 1.3,
+							},
+							"& .MuiSelect-select": {
+								border: 1,
+								borderColor: theme.palette.border.light,
+								borderRadius: theme.shape.borderRadius,
+							},
+						}}
+					/>
+				</Stack> */}
 			</Stack>
 		</Stack>
 	);
