@@ -135,7 +135,19 @@ function Infrastructure() {
 				</Stack>
 				<TableContainer
 					component={Paper}
-					sx={{ maxHeight: "55vh" }}
+					sx={{
+						maxHeight: "55vh",
+						"&::-webkit-scrollbar": {
+							width: ".75rem",
+						},
+						"&::-webkit-scrollbar-track": {
+							backgroundColor: theme.palette.secondary.light,
+						},
+						"&::-webkit-scrollbar-thumb": {
+							backgroundColor: theme.palette.secondary.contrastText,
+							outline: `1px solid ${theme.palette.secondary.contrastText}`,
+						},
+					}}
 				>
 					<Table stickyHeader>
 						<TableHead sx={{ backgroundColor: theme.palette.background.accent }}>
@@ -144,8 +156,9 @@ function Infrastructure() {
 									<TableCell
 										key={index}
 										align={index === 0 ? "left" : "center"}
-										/* TODO I don't understand why it was needed to pass this to override some #ffffff color from MUI here, but that wasn't needed in other pages.  */
-										sx={{ backgroundColor: "transparent" }}
+										sx={{
+											backgroundColor: theme.palette.background.accent,
+										}}
 									>
 										{column.label}
 									</TableCell>
