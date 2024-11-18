@@ -42,7 +42,7 @@ export const CustomThreshold = ({
         sx={{
             width: "50%",
             justifyContent: "space-between",
-            overflowWrap: "anywhere"
+            flexWrap: "wrap"         
         }}
     >
         <Box>
