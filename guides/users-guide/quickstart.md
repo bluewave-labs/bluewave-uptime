@@ -6,7 +6,7 @@ icon: sign-posts-wrench
 
 ## Quickstart for users (quick method) <a href="#user-quickstart" id="user-quickstart"></a>
 
-1. Download our [Docker compose file](https://github.com/bluewave-labs/bluewave-uptime/blob/develop/Docker/dist/docker-compose.yaml)
+1. Download our [Docker compose file](https://raw.githubusercontent.com/bluewave-labs/bluewave-uptime/refs/heads/master/Docker/dev/docker-compose.yaml)
 2. Run `docker compose up` to start the application
 3. Now the application is running at `http://localhost`
 
