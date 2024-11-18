@@ -198,7 +198,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 											</TableCell>
 											<TableCell>{formattedDate}</TableCell>
 											<TableCell>
-												<HttpStatusLabel status={check.statusCode || "N/A"} />
+												<HttpStatusLabel status={check.statusCode} />
 											</TableCell>
 											<TableCell>{check.message}</TableCell>
 										</TableRow>

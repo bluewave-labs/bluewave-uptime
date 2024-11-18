@@ -5,7 +5,7 @@ import { BaseLabel } from "../Label";
 /**
  * @component
  * @param {Object} props
- * @param {number | 'N/A'} props.status - The http status for the label
+ * @param {number} props.status - The http status for the label
  * @param {Styles} props.customStyles - CSS Styles passed from parent component
  * @returns {JSX.Element}
  * @example
@@ -13,11 +13,17 @@ import { BaseLabel } from "../Label";
  * <HttpStatusLabel status={404} />
  */
 
-const getRoundedStatusCode = (status) => {
-	if (typeof status === "number" && status >= 100 && status < 600) {
-		return Math.floor(status / 100) * 100;
+const DEFAULT_CODE = 9999; // Default code for unknown status
+
+const handleStatusCode = (status) => {
+	if (status >= 100 && status < 600) {
+		return status;
 	}
-	return status;
+	return DEFAULT_CODE;
+};
+
+const getRoundedStatusCode = (status) => {
+		return Math.floor(status / 100) * 100;
 };
 
 const HttpStatusLabel = ({ status, customStyles }) => {
@@ -33,19 +39,21 @@ const HttpStatusLabel = ({ status, customStyles }) => {
 			bgColor: theme.palette.error.bg,
 			borderColor: theme.palette.error.light,
 		},
-		"N/A": {
+		default: {
 			dotColor: theme.palette.unresolved.main,
 			bgColor: theme.palette.unresolved.bg,
 			borderColor: theme.palette.unresolved.light,
 		},
 	};
 
+	const statusCode = handleStatusCode(status)
+
 	const { borderColor, bgColor, dotColor } =
-		colors[getRoundedStatusCode(status)] || colors["N/A"];
+		colors[getRoundedStatusCode(statusCode)] || colors.default;
 
 	return (
 		<BaseLabel
-			label={String(status)}
+			label={String(statusCode)}
 			styles={{
 				color: dotColor,
 				backgroundColor: bgColor,
@@ -56,9 +64,8 @@ const HttpStatusLabel = ({ status, customStyles }) => {
 	);
 };
 
-// TODO: Restrict status type to accept only numeric values after "N/A" status in IncidentTable is resolved
 HttpStatusLabel.propTypes = {
-	status: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(["N/A"])]).isRequired,
+	status:PropTypes.number,
 	customStyles: PropTypes.object,
 };
 
