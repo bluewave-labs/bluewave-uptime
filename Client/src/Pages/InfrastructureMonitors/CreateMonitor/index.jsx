@@ -340,7 +340,8 @@ const CreateInfrastructureMonitor = () => {
 								fieldValue={infrastructureMonitor[THRESHOLD_FIELD_PREFIX + type] ?? ""}
 								onFieldChange={handleChange}
 								onFieldBlur={handleBlur}
-								alertUnit="%"
+								// TODO: need BE, maybe in another PR
+								alertUnit={type == "temperature" ? "°C" : "%"}
 								infrastructureMonitor={infrastructureMonitor}
 								errors={errors}
 							/>
@@ -349,7 +350,7 @@ const CreateInfrastructureMonitor = () => {
 							<Typography
 								component="span"
 								className="input-error"
-								color={theme.palette.error.text}
+								color={theme.palette.error.main}
 								mt={theme.spacing(2)}
 								sx={{
 									opacity: 0.8,

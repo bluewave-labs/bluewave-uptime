@@ -891,6 +891,18 @@ describe("monitorModule", () => {
 				url: "https://test.com",
 			}),
 		};
+		const mockMonitorDocker = {
+			_id: "monitor123",
+			type: "docker",
+			name: "Test Monitor",
+			url: "https://test.com",
+			toObject: () => ({
+				_id: "monitor123",
+				type: "http",
+				name: "Test Monitor",
+				url: "https://test.com",
+			}),
+		};
 
 		const checkDocs = [
 			{
@@ -982,6 +994,30 @@ describe("monitorModule", () => {
 		});
 		it("should return monitor stats with calculated values, ping type", async () => {
 			monitorFindByIdStub.returns(mockMonitorPing);
+			req.query.sortOrder = "desc";
+			const result = await getMonitorStatsById(req);
+			expect(result).to.include.keys([
+				"_id",
+				"type",
+				"name",
+				"url",
+				"uptimeDuration",
+				"lastChecked",
+				"latestResponseTime",
+				"periodIncidents",
+				"periodTotalChecks",
+				"periodAvgResponseTime",
+				"periodUptime",
+				"aggregateData",
+			]);
+			expect(result.latestResponseTime).to.equal(100);
+			expect(result.periodTotalChecks).to.equal(3);
+			expect(result.periodIncidents).to.equal(1);
+			expect(result.periodUptime).to.be.a("number");
+			expect(result.aggregateData).to.be.an("array");
+		});
+		it("should return monitor stats with calculated values, docker type", async () => {
+			monitorFindByIdStub.returns(mockMonitorDocker);
 			req.query.sortOrder = "desc";
 			const result = await getMonitorStatsById(req);
 			expect(result).to.include.keys([

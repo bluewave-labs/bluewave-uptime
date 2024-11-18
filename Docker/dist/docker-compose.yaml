@@ -18,6 +18,8 @@ services:
     environment:
       - DB_CONNECTION_STRING=mongodb://mongodb:27017/uptime_db
       - REDIS_HOST=redis
+    # volumes:
+    # - /var/run/docker.sock:/var/run/docker.sock:ro
   redis:
     image: bluewaveuptime/uptime_redis:latest
     ports:

@@ -68,7 +68,7 @@ const Field = forwardRef(
 							borderColor: theme.palette.border.dark,
 						},
 					"&:has(.input-error) .MuiOutlinedInput-root fieldset": {
-						borderColor: theme.palette.error.contrastText,
+						borderColor: theme.palette.error.main,
 					},
 					display: hidden ? "none" : "",
 				}}
@@ -84,7 +84,7 @@ const Field = forwardRef(
 							<Typography
 								component="span"
 								ml={theme.spacing(1)}
-								color={theme.palette.error.contrastText}
+								color={theme.palette.error.main}
 							>
 								*
 							</Typography>
@@ -191,7 +191,7 @@ const Field = forwardRef(
 						component="span"
 						className="input-error"
 						hidden={className? true: false}						
-						color={theme.palette.error.contrastText}
+						color={theme.palette.error.main}
 						mt={theme.spacing(2)}
 						sx={{
 							opacity: 0.8,

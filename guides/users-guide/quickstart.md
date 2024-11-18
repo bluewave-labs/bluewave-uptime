@@ -10,6 +10,17 @@ icon: sign-posts-wrench
 2. Run `docker compose up` to start the application
 3. Now the application is running at `http://localhost`
 
+##### Optional Config:
+
+- If you want to monitor Docker containers, uncomment this line in `docker-compose.yaml`:
+
+```
+  # volumes:
+  # - /var/run/docker.sock:/var/run/docker.sock:ro
+```
+
+This gives the app access to your docker daemon via unix socket, please be aware of what you are doing.
+
 ---
 
 ## Quickstart for users (remote server) <a href="#user-quickstart" id="user-quickstart"></a>
@@ -18,6 +29,17 @@ icon: sign-posts-wrench
 2. Edit the `UPTIME_APP_API_BASE_URL` variable in the docker-compose file to point to your remote server.
 3. Run `docker compose up` to start the application
 4. Now the application is running at `http://<remote_server_ip>`
+
+##### Optional Config:
+
+- If you want to monitor Docker containers, uncomment this line in `docker-compose.yaml`:
+
+```
+  # volumes:
+  # - /var/run/docker.sock:/var/run/docker.sock:ro
+```
+
+This gives the app access to your docker daemon via unix socket, please be aware of what you are doing.
 
 ---
 
