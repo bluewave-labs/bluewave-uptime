@@ -343,7 +343,6 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 									percentageColor,
 									status: determineState(monitor),
 								};
-								console.log({ params });
 
 								return (
 									<TableRow
