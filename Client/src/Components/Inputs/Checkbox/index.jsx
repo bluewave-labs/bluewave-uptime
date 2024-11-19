@@ -89,7 +89,7 @@ const Checkbox = ({
 
 Checkbox.propTypes = {
 	id: PropTypes.string.isRequired,
-	label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
 	size: PropTypes.oneOf(["small", "medium", "large"]),
 	isChecked: PropTypes.bool.isRequired,
 	value: PropTypes.string,
