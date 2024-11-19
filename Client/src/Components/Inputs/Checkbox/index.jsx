@@ -40,8 +40,6 @@ const Checkbox = ({
 	/* TODO move sizes to theme */
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
-	const checkBoxPosition = typeof label === "string" ? {} : { pb: "65px" };
-
 	return (
 		<FormControlLabel
 			className="checkbox-wrapper"
@@ -56,9 +54,10 @@ const Checkbox = ({
 						"aria-label": "controlled checkbox",
 						id: id,
 					}}
-					sx={{
+					sx={{						
 						"&:hover": { backgroundColor: "transparent" },
 						"& svg": { width: sizes[size], height: sizes[size] },
+						alignSelf: "flex-start",
 					}}
 				/>
 			}
@@ -71,7 +70,6 @@ const Checkbox = ({
 					width: theme.spacing(10),
 					p: 0,
 					mr: theme.spacing(6),
-					...checkBoxPosition,
 				},
 				"&:not(:has(.Mui-disabled)):hover": {
 					backgroundColor: theme.palette.background.accent,
