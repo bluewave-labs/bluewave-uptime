@@ -89,7 +89,7 @@ const CustomAreaChart = ({
 	return (
 		<ResponsiveContainer
 			width="100%"
-			height="100%"
+			height="80%" // FE team HELP!  Why does this overflow if set to 100%?
 		>
 			<AreaChart data={data}>
 				<XAxis
