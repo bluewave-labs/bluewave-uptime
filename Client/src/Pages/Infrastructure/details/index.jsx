@@ -23,6 +23,7 @@ const BaseBox = ({ children }) => {
 	return (
 		<Box
 			sx={{
+				height: "100%",
 				padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
 				minWidth: 200,
 				width: 225,
@@ -98,7 +99,6 @@ const InfrastructureDetails = () => {
 		{ name: "infrastructure monitors", path: "/infrastructure" },
 		{ name: "details", path: `/infrastructure/${monitorId}` },
 	];
-	console.log(testData);
 
 	return (
 		<Box>
@@ -130,7 +130,7 @@ const InfrastructureDetails = () => {
 					/>
 					<StatBox
 						heading={"Status"}
-						subHeading={"Active"}
+						subHeading={latestCheck.status === true ? "Active" : "Inactive"}
 					/>
 				</Stack>
 				<Stack
@@ -138,7 +138,7 @@ const InfrastructureDetails = () => {
 					gap={theme.spacing(8)}
 				>
 					<GaugeBox
-						value={latestCheck.cpu.usage_percent}
+						value={latestCheck.cpu.usage_percent * 100}
 						heading={"Memory Usage"}
 						metricOne={"Used"}
 						valueOne={`${bytesToGB(latestCheck.memory.used_bytes)}GB`}
@@ -146,7 +146,7 @@ const InfrastructureDetails = () => {
 						valueTwo={`${bytesToGB(latestCheck.memory.total_bytes)}GB`}
 					/>
 					<GaugeBox
-						value={latestCheck.cpu.usage_percent}
+						value={latestCheck.cpu.usage_percent * 100}
 						heading={"CPU Usage"}
 						metricOne={"Cores"}
 						valueOne={latestCheck.cpu.physical_core}
@@ -157,7 +157,7 @@ const InfrastructureDetails = () => {
 						return (
 							<GaugeBox
 								key={disk._id}
-								value={disk.usage_percent}
+								value={disk.usage_percent * 100}
 								heading={`Disk${idx} usage`}
 								metricOne={"Used"}
 								valueOne={`${bytesToGB(disk.total_bytes - disk.free_bytes)}GB`}
@@ -169,84 +169,108 @@ const InfrastructureDetails = () => {
 				</Stack>
 				<Stack
 					direction={"row"}
-					height={300}
-					gap={theme.spacing(2)}
-					flexWrap="wrap" // Better way to do this?  FE team HELP!
+					height={300} // FE team HELP!
+					gap={theme.spacing(8)} // FE team HELP!
+					flexWrap="wrap" // //FE team HELP! Better way to do this?
 					sx={{
 						"& > *": {
-							flexBasis: `calc(50% - ${theme.spacing(2)})`,
-							maxWidth: `calc(50% - ${theme.spacing(2)})`,
+							flexBasis: `calc(50% - ${theme.spacing(8)})`,
+							maxWidth: `calc(50% - ${theme.spacing(8)})`,
 						},
 					}}
 				>
-					<AreaChart
-						data={testData}
-						dataKey="memory.usage_percent"
-						xKey="createdAt"
-						yKey="memory.usage_percent"
-						customTooltip={({ active, payload, label }) => (
-							<InfrastructureTooltip
-								label={label}
-								yKey="memory.usage_percent"
-								yLabel="Memory Usage"
-								active={active}
-								payload={payload}
-							/>
-						)}
-						xTick={<TzTick />}
-						yTick={<PercentTick />}
-						strokeColor={theme.palette.primary.main}
-						gradient={true}
-						gradientStartColor={theme.palette.primary.main}
-						gradientEndColor="#ffffff"
-					/>
-					<AreaChart
-						data={testData}
-						dataKey="cpu.usage_percent"
-						xKey="createdAt"
-						yKey="cpu.usage_percent"
-						customTooltip={({ active, payload, label }) => (
-							<InfrastructureTooltip
-								label={label}
-								yKey="cpu.usage_percent"
-								yLabel="CPU Usage"
-								active={active}
-								payload={payload}
-							/>
-						)}
-						xTick={<TzTick />}
-						yTick={<PercentTick />}
-						strokeColor={theme.palette.primary.main}
-						gradient={true}
-						gradientStartColor={theme.palette.primary.main}
-						gradientEndColor="#ffffff"
-					/>
+					<BaseBox>
+						<Typography
+							component="h2"
+							padding={theme.spacing(8)}
+						>
+							Memory usage
+						</Typography>
+						<AreaChart
+							data={testData}
+							dataKey="memory.usage_percent"
+							xKey="createdAt"
+							yKey="memory.usage_percent"
+							customTooltip={({ active, payload, label }) => (
+								<InfrastructureTooltip
+									label={label}
+									yKey="memory.usage_percent"
+									yLabel="Memory Usage"
+									active={active}
+									payload={payload}
+								/>
+							)}
+							xTick={<TzTick />}
+							yTick={<PercentTick />}
+							strokeColor={theme.palette.primary.main}
+							gradient={true}
+							gradientStartColor={theme.palette.primary.main} //FE team HELP!  Not sure what colors to use
+							gradientEndColor="#ffffff" // FE team HELP!
+						/>
+					</BaseBox>
+					<BaseBox>
+						<Typography
+							component="h2"
+							padding={theme.spacing(8)}
+						>
+							CPU usage
+						</Typography>
+						<AreaChart
+							data={testData}
+							dataKey="cpu.usage_percent"
+							xKey="createdAt"
+							yKey="cpu.usage_percent"
+							customTooltip={({ active, payload, label }) => (
+								<InfrastructureTooltip
+									label={label}
+									yKey="cpu.usage_percent"
+									yLabel="CPU Usage"
+									active={active}
+									payload={payload}
+								/>
+							)}
+							xTick={<TzTick />}
+							yTick={<PercentTick />}
+							strokeColor={theme.palette.success.main} // FE team HELP!
+							gradient={true}
+							fill={theme.palette.success.main} // FE team HELP!
+							gradientStartColor={theme.palette.success.main}
+							gradientEndColor="#ffffff"
+						/>
+					</BaseBox>
 					{latestCheck.disk.map((disk, idx) => {
 						// disk is an array of disks, so we need to map over it
 						return (
-							<AreaChart
-								key={disk._id}
-								data={testData}
-								dataKey={`disk[${idx}].usage_percent`}
-								xKey="createdAt"
-								yKey={`disk[${idx}].usage_percent`} // We are looking for the usage_percent of the current disk in the array
-								customTooltip={({ active, payload, label }) => (
-									<InfrastructureTooltip
-										label={label} // label must be a string
-										yKey={`disk.usage_percent`}
-										yLabel="Disk Usage"
-										yIdx={idx}
-										active={active}
-										payload={payload}
-									/>
-								)}
-								xTick={<TzTick />}
-								yTick={<PercentTick />}
-								strokeColor={theme.palette.primary.main}
-								gradient={true}
-								gradientStartColor={theme.palette.primary.main}
-								gradientEndColor="#ffffff"
-							/>
+							<BaseBox key={disk._id}>
+								<Typography
+									component="h2"
+									padding={theme.spacing(8)}
+								>
+									{`Disk${idx} usage`}
+								</Typography>
+								<AreaChart
+									data={testData}
+									dataKey={`disk[${idx}].usage_percent`}
+									xKey="createdAt"
+									yKey={`disk[${idx}].usage_percent`} // We are looking for the usage_percent of the current disk in the array
+									customTooltip={({ active, payload, label }) => (
+										<InfrastructureTooltip
+											label={label} // label must be a string
+											yKey={`disk.usage_percent`}
+											yLabel="Disk Usage"
+											yIdx={idx}
+											active={active}
+											payload={payload}
+										/>
+									)}
+									xTick={<TzTick />}
+									yTick={<PercentTick />}
+									strokeColor={theme.palette.warning.main}
+									gradient={true}
+									gradientStartColor={theme.palette.warning.main}
+									gradientEndColor="#ffffff"
+								/>
+							</BaseBox>
 						);
 					})}
 				</Stack>
