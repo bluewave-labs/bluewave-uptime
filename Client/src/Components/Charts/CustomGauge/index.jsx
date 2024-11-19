@@ -92,7 +92,7 @@ const CustomGauge = ({
 					fill: theme.typography.body2.color,
 				}}
 			>
-				{`${progress}%`}
+				{`${progress.toFixed(2)}%`}
 			</Typography>
 		</Box>
 	);
