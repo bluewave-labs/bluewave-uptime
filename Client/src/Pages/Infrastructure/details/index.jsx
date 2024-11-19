@@ -186,7 +186,7 @@ const InfrastructureDetails = () => {
 						yKey="memory.usage_percent"
 						customTooltip={({ active, payload, label }) => (
 							<InfrastructureTooltip
-								label={label?.toString() ?? ""}
+								label={label}
 								yKey="memory.usage_percent"
 								yLabel="Memory Usage"
 								active={active}
@@ -207,7 +207,7 @@ const InfrastructureDetails = () => {
 						yKey="cpu.usage_percent"
 						customTooltip={({ active, payload, label }) => (
 							<InfrastructureTooltip
-								label={label?.toString() ?? ""}
+								label={label}
 								yKey="cpu.usage_percent"
 								yLabel="CPU Usage"
 								active={active}
@@ -222,16 +222,17 @@ const InfrastructureDetails = () => {
 						gradientEndColor="#ffffff"
 					/>
 					{latestCheck.disk.map((disk, idx) => {
+						// disk is an array of disks, so we need to map over it
 						return (
 							<AreaChart
 								key={disk._id}
 								data={testData}
 								dataKey={`disk[${idx}].usage_percent`}
 								xKey="createdAt"
-								yKey={`disk[${idx}].usage_percent`}
+								yKey={`disk[${idx}].usage_percent`} // We are looking for the usage_percent of the current disk in the array
 								customTooltip={({ active, payload, label }) => (
 									<InfrastructureTooltip
-										label={label?.toString() ?? ""}
+										label={label} // label must be a string
 										yKey={`disk.usage_percent`}
 										yLabel="Disk Usage"
 										yIdx={idx}

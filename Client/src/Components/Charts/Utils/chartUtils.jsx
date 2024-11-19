@@ -162,7 +162,11 @@ export const InfrastructureTooltip = ({
 InfrastructureTooltip.propTypes = {
 	active: PropTypes.bool,
 	payload: PropTypes.array,
-	label: PropTypes.string,
+	label: PropTypes.oneOfType([
+		PropTypes.instanceOf(Date),
+		PropTypes.string,
+		PropTypes.number,
+	]),
 	yKey: PropTypes.string,
 	yIdx: PropTypes.number,
 	yLabel: PropTypes.string,
