@@ -1,26 +1,30 @@
 function generateMonitorEntries(monitorId, count = 10, options = {}) {
 	const defaultOptions = {
 		timeRange: {
-			start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 hours ago
+			start: new Date(Date.now() - 24 * 60 * 60 * 1000 * 20),
 			end: new Date(),
 		},
 		statusVariation: [true, false],
 		responseTimeRange: [50, 500],
-		cpuUsageRange: [0, 100],
-		memoryUsageRange: [0, 100],
-		diskUsageRange: [0, 100],
+		cpuUsageRange: [0, 1],
+		memoryUsageRange: [0, 1],
+		diskUsageRange: [0, 1],
 	};
 
 	const mergedOptions = { ...defaultOptions, ...options };
+	const startTime = mergedOptions.timeRange.start.getTime();
+	const endTime = mergedOptions.timeRange.end.getTime();
+	const totalTimeSpan = endTime - startTime;
 
-	return Array.from({ length: count }, (_, index) => {
-		const createdAt = new Date(
-			mergedOptions.timeRange.start.getTime() +
-				(index *
-					(mergedOptions.timeRange.end.getTime() -
-						mergedOptions.timeRange.start.getTime())) /
-					count
-		);
+	// Generate sorted random time points
+	const timePoints = Array.from({ length: count }, (_, index) => {
+		// Use a non-linear distribution to create more varied spacing
+		const progress = Math.pow(Math.random(), 2); // Bias towards earlier times
+		return startTime + progress * totalTimeSpan;
+	}).sort((a, b) => a - b);
+
+	return timePoints.map((timestamp) => {
+		const createdAt = new Date(timestamp);
 
 		return {
 			_id: "123",
@@ -34,7 +38,7 @@ function generateMonitorEntries(monitorId, count = 10, options = {}) {
 				logical_core: randomInRange([4, 16]),
 				frequency: randomInRange([10, 4000]),
 				temperature: randomInRange([20, 90]),
-				free_percent: 100 - randomInRange(mergedOptions.cpuUsageRange),
+				free_percent: 1 - randomInRange(mergedOptions.cpuUsageRange),
 				usage_percent: randomInRange(mergedOptions.cpuUsageRange),
 				_id: "123",
 			},
@@ -70,11 +74,12 @@ function generateMonitorEntries(monitorId, count = 10, options = {}) {
 	});
 }
 
-// Helper functions
+// Modify randomInRange to work with decimal ranges
 function randomInRange([min, max]) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+	return Number((Math.random() * (max - min) + min).toFixed(2));
 }
 
+// ... rest of the code remains the same
 function randomFromArray(arr) {
 	return arr[Math.floor(Math.random() * arr.length)];
 }

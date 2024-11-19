@@ -4,6 +4,12 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { Stack, Box, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CustomGauge from "../../../Components/Charts/CustomGauge";
+import AreaChart from "../../../Components/Charts/AreaChart";
+import {
+	TzTick,
+	PercentTick,
+	InfrastructureTooltip,
+} from "../../../Components/Charts/Utils/chartUtils";
 
 const bytesToGB = (bytes) => {
 	if (typeof bytes !== "number") return 0;
@@ -92,6 +98,7 @@ const InfrastructureDetails = () => {
 		{ name: "infrastructure monitors", path: "/infrastructure" },
 		{ name: "details", path: `/infrastructure/${monitorId}` },
 	];
+	console.log(testData);
 
 	return (
 		<Box>
@@ -156,6 +163,88 @@ const InfrastructureDetails = () => {
 								valueOne={`${bytesToGB(disk.total_bytes - disk.free_bytes)}GB`}
 								metricTwo={"Total"}
 								valueTwo={`${bytesToGB(disk.total_bytes)}GB`}
+							/>
+						);
+					})}
+				</Stack>
+				<Stack
+					direction={"row"}
+					height={300}
+					gap={theme.spacing(2)}
+					flexWrap="wrap" // Better way to do this?  FE team HELP!
+					sx={{
+						"& > *": {
+							flexBasis: `calc(50% - ${theme.spacing(2)})`,
+							maxWidth: `calc(50% - ${theme.spacing(2)})`,
+						},
+					}}
+				>
+					<AreaChart
+						data={testData}
+						dataKey="memory.usage_percent"
+						xKey="createdAt"
+						yKey="memory.usage_percent"
+						customTooltip={({ active, payload, label }) => (
+							<InfrastructureTooltip
+								label={label?.toString() ?? ""}
+								yKey="memory.usage_percent"
+								yLabel="Memory Usage"
+								active={active}
+								payload={payload}
+							/>
+						)}
+						xTick={<TzTick />}
+						yTick={<PercentTick />}
+						strokeColor={theme.palette.primary.main}
+						gradient={true}
+						gradientStartColor={theme.palette.primary.main}
+						gradientEndColor="#ffffff"
+					/>
+					<AreaChart
+						data={testData}
+						dataKey="cpu.usage_percent"
+						xKey="createdAt"
+						yKey="cpu.usage_percent"
+						customTooltip={({ active, payload, label }) => (
+							<InfrastructureTooltip
+								label={label?.toString() ?? ""}
+								yKey="cpu.usage_percent"
+								yLabel="CPU Usage"
+								active={active}
+								payload={payload}
+							/>
+						)}
+						xTick={<TzTick />}
+						yTick={<PercentTick />}
+						strokeColor={theme.palette.primary.main}
+						gradient={true}
+						gradientStartColor={theme.palette.primary.main}
+						gradientEndColor="#ffffff"
+					/>
+					{latestCheck.disk.map((disk, idx) => {
+						return (
+							<AreaChart
+								key={disk._id}
+								data={testData}
+								dataKey={`disk[${idx}].usage_percent`}
+								xKey="createdAt"
+								yKey={`disk[${idx}].usage_percent`}
+								customTooltip={({ active, payload, label }) => (
+									<InfrastructureTooltip
+										label={label?.toString() ?? ""}
+										yKey={`disk.usage_percent`}
+										yLabel="Disk Usage"
+										yIdx={idx}
+										active={active}
+										payload={payload}
+									/>
+								)}
+								xTick={<TzTick />}
+								yTick={<PercentTick />}
+								strokeColor={theme.palette.primary.main}
+								gradient={true}
+								gradientStartColor={theme.palette.primary.main}
+								gradientEndColor="#ffffff"
 							/>
 						);
 					})}
