@@ -25,7 +25,7 @@ const CreateInfrastructureMonitor = () => {
 		url: "",
 		name: "",
 		notifications: [],
-		interval: 15,
+		interval: 0.25,
 		cpu: false,
 		usage_cpu: "",
 		memory: false,
@@ -35,7 +35,7 @@ const CreateInfrastructureMonitor = () => {
 		secret: "",
 	});
 
-	const MS_PER_SECOND = 1000;
+	const MS_PER_MINUTE = 60000;
 	const THRESHOLD_FIELD_PREFIX = "usage_";
 	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk"];
 	const { user, authToken } = useSelector((state) => state.auth);
@@ -156,7 +156,7 @@ const CreateInfrastructureMonitor = () => {
 				infrastructureMonitor.name === ""
 					? infrastructureMonitor.url
 					: infrastructureMonitor.name,
-			interval: infrastructureMonitor.interval * MS_PER_SECOND,
+			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
 		};
 		delete form.notifications;
 		if (hasValidationErrors(form, infrastructureMonitorValidation, setErrors)) {
@@ -186,12 +186,12 @@ const CreateInfrastructureMonitor = () => {
 
 	//select values
 	const frequencies = [
-		{ _id: 15, name: "15 seconds" },
-		{ _id: 30, name: "30 seconds" },
-		{ _id: 60, name: "1 minute" },
-		{ _id: 120, name: "2 minutes" },
-		{ _id: 300, name: "5 minutes" },
-		{ _id: 600, name: "10 minutes" },
+		{ _id: 0.25, name: "15 seconds" },
+		{ _id: 0.5, name: "30 seconds" },
+		{ _id: 1, name: "1 minute" },
+		{ _id: 2, name: "2 minutes" },
+		{ _id: 5, name: "5 minutes" },
+		{ _id: 10, name: "10 minutes" },
 	];
 
 	const NOTIFY_MULTIPLE_EMAIL_LABEL = (
@@ -270,7 +270,7 @@ const CreateInfrastructureMonitor = () => {
 						<Field
 							type="text"
 							id="name"
-							label="Friendly name(optional)"
+							label="Friendly name"
 							isOptional={true}
 							value={infrastructureMonitor.name}
 							onBlur={handleBlur}
@@ -323,7 +323,7 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">Customize alerts</Typography>
 						<Typography component="p">
-							Send a notification to user(s) When the theresholds exceed a certain number
+							Send a notification to user(s) When the thresholds exceed a certain number
 							or percentage.
 						</Typography>
 					</Box>
@@ -368,7 +368,7 @@ const CreateInfrastructureMonitor = () => {
 						)}
 					</Stack>
 				</ConfigBox>
-				<ConfigBox>
+				{/* <ConfigBox>
 					<Box>
 						<Typography component="h2">Logging retention</Typography>
 						<Typography component="p">
@@ -386,8 +386,8 @@ const CreateInfrastructureMonitor = () => {
 							onBlur={handleBlur}
 							alertUnit="days"
 						/>
-					</Stack> */}
-				</ConfigBox>
+					</Stack>
+				</ConfigBox> */}
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">Advanced settings</Typography>
