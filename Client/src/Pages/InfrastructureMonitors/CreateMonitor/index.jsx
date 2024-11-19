@@ -368,26 +368,6 @@ const CreateInfrastructureMonitor = () => {
 						)}
 					</Stack>
 				</ConfigBox>
-				{/* <ConfigBox>
-					<Box>
-						<Typography component="h2">Logging retention</Typography>
-						<Typography component="p">
-							Configure how logs are stored. After this period, the Uptime Manager will
-							start deleting oldest data.
-						</Typography>
-					</Box>
-					{/* <Stack gap={theme.spacing(6)}>
-						<CustomAlertStack
-							checkboxId="retain-log"
-							checkboxLabel="Retain data for"
-							checkboxValue={""}
-							fieldId={"retries_max"}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							alertUnit="days"
-						/>
-					</Stack>
-				</ConfigBox> */}
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">Advanced settings</Typography>
