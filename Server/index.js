@@ -92,6 +92,23 @@ const startApp = async () => {
 	app.use("/api/v1/queue", verifyJWT, queueRouter);
 	app.use("/api/v1/status-page", statusPageRouter);
 
+	app.use("/api/v1/dummy-data", async (req, res) => {
+		try {
+			const response = await axios.get(
+				"https://gist.githubusercontent.com/ajhollid/9afa39410c7bbf52cc905f285a2225bf/raw/429a231a3559ebc95f6f488ed2c766bd7d6f46e5/dummyData.json",
+				{
+					headers: {
+						"Content-Type": "application/json",
+						"Cache-Control": "no-cache",
+					},
+				}
+			);
+			return res.status(200).json(response.data);
+		} catch (error) {
+			return res.status(500).json({ message: error.message });
+		}
+	});
+
 	//health check
 	app.use("/api/v1/healthy", (req, res) => {
 		try {
