@@ -10,7 +10,13 @@ import {
 	PercentTick,
 	InfrastructureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
+import PropTypes from "prop-types";
 
+/**
+ * Converts bytes to gigabytes
+ * @param {number} bytes - Number of bytes to convert
+ * @returns {number} Converted value in gigabytes
+ */
 const bytesToGB = (bytes) => {
 	if (typeof bytes !== "number") return 0;
 	if (bytes === 0) return 0;
@@ -18,6 +24,12 @@ const bytesToGB = (bytes) => {
 	return Number(GB.toFixed(0));
 };
 
+/**
+ * Renders a base box with consistent styling
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Child components to render inside the box
+ * @returns {React.ReactElement} Styled box component
+ */
 const BaseBox = ({ children }) => {
 	const theme = useTheme();
 	return (
@@ -38,6 +50,17 @@ const BaseBox = ({ children }) => {
 	);
 };
 
+BaseBox.propTypes = {
+	children: PropTypes.node.isRequired,
+};
+
+/**
+ * Renders a statistic box with a heading and subheading
+ * @param {Object} props - Component properties
+ * @param {string} props.heading - Primary heading text
+ * @param {string} props.subHeading - Secondary heading text
+ * @returns {React.ReactElement} Stat box component
+ */
 const StatBox = ({ heading, subHeading }) => {
 	return (
 		<BaseBox>
@@ -47,6 +70,22 @@ const StatBox = ({ heading, subHeading }) => {
 	);
 };
 
+StatBox.propTypes = {
+	heading: PropTypes.string.isRequired,
+	subHeading: PropTypes.string.isRequired,
+};
+
+/**
+ * Renders a gauge box with usage visualization
+ * @param {Object} props - Component properties
+ * @param {number} props.value - Percentage value for gauge
+ * @param {string} props.heading - Box heading
+ * @param {string} props.metricOne - First metric label
+ * @param {string} props.valueOne - First metric value
+ * @param {string} props.metricTwo - Second metric label
+ * @param {string} props.valueTwo - Second metric value
+ * @returns {React.ReactElement} Gauge box component
+ */
 const GaugeBox = ({ value, heading, metricOne, valueOne, metricTwo, valueTwo }) => {
 	const theme = useTheme();
 	return (
@@ -90,6 +129,19 @@ const GaugeBox = ({ value, heading, metricOne, valueOne, metricTwo, valueTwo }) 
 	);
 };
 
+GaugeBox.propTypes = {
+	value: PropTypes.number.isRequired,
+	heading: PropTypes.string.isRequired,
+	metricOne: PropTypes.string.isRequired,
+	valueOne: PropTypes.string.isRequired,
+	metricTwo: PropTypes.string.isRequired,
+	valueTwo: PropTypes.string.isRequired,
+};
+
+/**
+ * Renders the infrastructure details page
+ * @returns {React.ReactElement} Infrastructure details page component
+ */
 const InfrastructureDetails = () => {
 	const theme = useTheme();
 	const { monitorId } = useParams();
