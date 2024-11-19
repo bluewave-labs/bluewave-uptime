@@ -85,6 +85,7 @@ const CustomAreaChart = ({
 	customTooltip,
 }) => {
 	const theme = useTheme();
+	const gradientId = `gradient-${Math.random().toString(36).slice(2, 9)}`;
 	return (
 		<ResponsiveContainer
 			width="100%"
@@ -101,6 +102,7 @@ const CustomAreaChart = ({
 				/>
 				{gradient === true &&
 					createGradient({
+						id: gradientId,
 						startColor: gradientStartColor,
 						endColor: gradientEndColor,
 						direction: gradientDirection,
@@ -116,7 +118,7 @@ const CustomAreaChart = ({
 					type="monotone"
 					dataKey={dataKey}
 					stroke={strokeColor}
-					fill={gradient === true ? "url(#colorUv)" : fillColor}
+					fill={gradient === true ? `url(#${gradientId})` : fillColor}
 				/>
 
 				{customTooltip ? (

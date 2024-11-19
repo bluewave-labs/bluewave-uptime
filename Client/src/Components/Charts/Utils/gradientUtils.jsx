@@ -17,7 +17,7 @@
  */
 
 export const createGradient = ({
-	id = "colorUv",
+	id,
 	startColor,
 	endColor,
 	startOpacity = 0.8,
