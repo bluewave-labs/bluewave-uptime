@@ -47,14 +47,22 @@ import { useTheme } from "@mui/material";
  *       data={data}
  *       xKey="createdAt"
  *       yKey="cpu.usage_percent"
- *       xTick={TzTick}
- *       yTick={PercentTick}
+ *       xTick={<TzTick />}
+ *       yTick={<PercentTick />}
  *       strokeColor="#8884d8"
  *       fillColor="#8884d8"
  *       gradient={true}
  *       gradientStartColor="#8884d8"
  *       gradientEndColor="#82ca9d"
- *       customTooltip={InfrastructureTooltip}
+ *       customTooltip={({ active, payload, label }) => (
+ *         <InfrastructureTooltip
+ *           label={label?.toString() ?? ""}
+ *           yKey="cpu.usage_percent"
+ *           yLabel="CPU Usage"
+ *           active={active}
+ *           payload={payload}
+ *         />
+ *       )}
  *     />
  *   );
  * };
@@ -138,7 +146,7 @@ CustomAreaChart.propTypes = {
 	gradientDirection: PropTypes.string,
 	gradientStartColor: PropTypes.string,
 	gradientEndColor: PropTypes.string,
-	customTooltip: PropTypes.object,
+	customTooltip: PropTypes.func,
 };
 
 export default CustomAreaChart;
