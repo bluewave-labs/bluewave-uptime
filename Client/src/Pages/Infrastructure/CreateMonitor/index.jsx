@@ -177,7 +177,7 @@ const CreateInfrastructureMonitor = () => {
 			);
 			if (action.meta.requestStatus === "fulfilled") {
 				createToast({ body: "Infrastructure monitor created successfully!" });
-				navigate("/infrastructure-monitors/create");
+				navigate("/infrastructure");
 			} else {
 				createToast({ body: "Failed to create monitor." });
 			}
@@ -217,8 +217,8 @@ const CreateInfrastructureMonitor = () => {
 		<Box className="create-infrastructure-monitor">
 			<Breadcrumbs
 				list={[
-					{ name: "Infrastructure monitors", path: "/infrastructure-monitors/create" },
-					{ name: "create", path: `/infrastructure-monitors/create` },
+					{ name: "Infrastructure monitors", path: "infrastructure" },
+					{ name: "create", path: `infrastructure/create` },
 				]}
 			/>
 			<Stack
