@@ -13,6 +13,9 @@ import {
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
 
+const BASE_BOX_PADDING_VERTICAL = 4;
+const BASE_BOX_PADDING_HORIZONTAL = 8;
+const TYPOGRAPHY_PADDING = 8;
 /**
  * Converts bytes to gigabytes
  * @param {number} bytes - Number of bytes to convert
@@ -36,21 +39,23 @@ const formatBytes = (bytes) => {
  * Renders a base box with consistent styling
  * @param {Object} props - Component properties
  * @param {React.ReactNode} props.children - Child components to render inside the box
+ * @param {Object} props.sx - Additional styling for the box
  * @returns {React.ReactElement} Styled box component
  */
-const BaseBox = ({ children }) => {
+const BaseBox = ({ children, sx = {} }) => {
 	const theme = useTheme();
 	return (
 		<Box
 			sx={{
 				height: "100%",
-				padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
+				padding: `${theme.spacing(BASE_BOX_PADDING_VERTICAL)} ${theme.spacing(BASE_BOX_PADDING_HORIZONTAL)}`,
 				minWidth: 200,
 				width: 225,
 				backgroundColor: theme.palette.background.main,
 				border: 1,
 				borderStyle: "solid",
 				borderColor: theme.palette.border.light,
+				...sx,
 			}}
 		>
 			{children}
@@ -60,6 +65,7 @@ const BaseBox = ({ children }) => {
 
 BaseBox.propTypes = {
 	children: PropTypes.node.isRequired,
+	sx: PropTypes.object,
 };
 
 /**
@@ -159,6 +165,18 @@ const InfrastructureDetails = () => {
 	];
 	const [monitor, setMonitor] = useState(null);
 
+	// These calculations are needed because ResponsiveContainer
+	// doesn't take padding of parent/siblings into account
+	// when calculating height.
+	const chartContainerHeight = 300;
+	const totalChartContainerPadding =
+		parseInt(theme.spacing(BASE_BOX_PADDING_VERTICAL), 10) * 2;
+	const totalTypographyPadding = parseInt(theme.spacing(TYPOGRAPHY_PADDING), 10) * 2;
+	const areaChartHeight =
+		(chartContainerHeight - totalChartContainerPadding - totalTypographyPadding) * 0.95;
+	// end height calculations
+
+	// Fetch data
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -176,6 +194,86 @@ const InfrastructureDetails = () => {
 		fetchData();
 	}, []);
 
+	const statBoxConfigs = [
+		{
+			id: 0,
+			heading: "CPU",
+			subHeading: `${monitor?.checks[0]?.cpu?.physical_core} cores`,
+		},
+		{
+			id: 1,
+			heading: "Memory",
+			subHeading: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
+		},
+		{
+			id: 2,
+			heading: "Disk",
+			subHeading: formatBytes(monitor?.checks[0]?.disk[0]?.total_bytes),
+		},
+		{ id: 3, heading: "Uptime", subHeading: "100%" },
+		{
+			id: 4,
+			heading: "Status",
+			subHeading: monitor?.status === true ? "Active" : "Inactive",
+		},
+	];
+
+	const gaugeBoxConfigs = [
+		{
+			type: "memory",
+			value: monitor?.checks[0]?.memory?.usage_percent * 100,
+			heading: "Memory Usage",
+			metricOne: "Used",
+			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes),
+			metricTwo: "Total",
+			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
+		},
+		{
+			type: "cpu",
+			value: monitor?.checks[0]?.cpu?.usage_percent * 100,
+			heading: "CPU Usage",
+			metricOne: "Cores",
+			valueOne: monitor?.checks[0]?.cpu?.physical_core,
+			metricTwo: "Frequency",
+			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency / 1000).toFixed(2)} Ghz`,
+		},
+		...(monitor?.checks[0]?.disk ?? []).map((disk, idx) => ({
+			type: "disk",
+			diskIndex: idx,
+			value: disk.usage_percent * 100,
+			heading: `Disk${idx} usage`,
+			metricOne: "Used",
+			valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
+			metricTwo: "Total",
+			valueTwo: formatBytes(disk.total_bytes),
+		})),
+	];
+
+	const areaChartConfigs = [
+		{
+			type: "memory",
+			dataKey: "memory.usage_percent",
+			heading: "Memory usage",
+			strokeColor: theme.palette.primary.main,
+			yLabel: "Memory Usage",
+		},
+		{
+			type: "cpu",
+			dataKey: "cpu.usage_percent",
+			heading: "CPU usage",
+			strokeColor: theme.palette.success.main,
+			yLabel: "CPU Usage",
+		},
+		...(monitor?.checks?.[0]?.disk?.map((disk, idx) => ({
+			type: "disk",
+			diskIndex: idx,
+			dataKey: `disk[${idx}].usage_percent`,
+			heading: `Disk${idx} usage`,
+			strokeColor: theme.palette.warning.main,
+			yLabel: "Disk Usage",
+		})) || []),
+	];
+
 	return (
 		monitor && (
 			<Box>
@@ -189,64 +287,32 @@ const InfrastructureDetails = () => {
 						direction="row"
 						gap={theme.spacing(8)}
 					>
-						<StatBox
-							heading={"CPU"}
-							subHeading={`${monitor.checks[0].cpu.physical_core} cores`}
-						/>
-						<StatBox
-							heading={"Memory"}
-							subHeading={formatBytes(monitor.checks[0].memory.total_bytes)}
-						/>
-						<StatBox
-							heading={"Disk"}
-							subHeading={formatBytes(monitor.checks[0].disk[0].total_bytes)}
-						/>
-						<StatBox
-							heading={"Uptime"}
-							subHeading={"100%"}
-						/>
-						<StatBox
-							heading={"Status"}
-							subHeading={monitor.status === true ? "Active" : "Inactive"}
-						/>
+						{statBoxConfigs.map((statBox) => (
+							<StatBox
+								key={statBox.id}
+								{...statBox}
+							/>
+						))}
 					</Stack>
 					<Stack
 						direction="row"
 						gap={theme.spacing(8)}
 					>
-						<GaugeBox
-							value={monitor.checks[0].memory.usage_percent * 100}
-							heading={"Memory Usage"}
-							metricOne={"Used"}
-							valueOne={formatBytes(monitor.checks[0].memory.used_bytes)}
-							metricTwo={"Total"}
-							valueTwo={formatBytes(monitor.checks[0].memory.total_bytes)}
-						/>
-						<GaugeBox
-							value={monitor.checks[0].cpu.usage_percent * 100}
-							heading={"CPU Usage"}
-							metricOne={"Cores"}
-							valueOne={monitor.checks[0].cpu.physical_core}
-							metricTwo={"Frequency"}
-							valueTwo={`${(monitor.checks[0].cpu.frequency / 1000).toFixed(2)} Ghz`}
-						/>
-						{monitor.checks[0].disk.map((disk, idx) => {
-							return (
-								<GaugeBox
-									key={disk._id}
-									value={disk.usage_percent * 100}
-									heading={`Disk${idx} usage`}
-									metricOne={"Used"}
-									valueOne={formatBytes(disk.total_bytes - disk.free_bytes)}
-									metricTwo={"Total"}
-									valueTwo={formatBytes(disk.total_bytes)}
-								/>
-							);
-						})}
+						{gaugeBoxConfigs.map((config) => (
+							<GaugeBox
+								key={`${config.type}-${config.diskIndex ?? ""}`}
+								value={config.value}
+								heading={config.heading}
+								metricOne={config.metricOne}
+								valueOne={config.valueOne}
+								metricTwo={config.metricTwo}
+								valueTwo={config.valueTwo}
+							/>
+						))}
 					</Stack>
 					<Stack
 						direction={"row"}
-						height={300} // FE team HELP!
+						height={chartContainerHeight} // FE team HELP!
 						gap={theme.spacing(8)} // FE team HELP!
 						flexWrap="wrap" // //FE team HELP! Better way to do this?
 						sx={{
@@ -256,100 +322,41 @@ const InfrastructureDetails = () => {
 							},
 						}}
 					>
-						<BaseBox>
-							<Typography
-								component="h2"
-								padding={theme.spacing(8)}
-							>
-								Memory usage
-							</Typography>
-							<AreaChart
-								data={monitor?.checks ?? []}
-								dataKey="memory.usage_percent"
-								xKey="createdAt"
-								yKey="memory.usage_percent"
-								customTooltip={({ active, payload, label }) => (
-									<InfrastructureTooltip
-										label={label}
-										yKey="memory.usage_percent"
-										yLabel="Memory Usage"
-										active={active}
-										payload={payload}
-									/>
-								)}
-								xTick={<TzTick />}
-								yTick={<PercentTick />}
-								strokeColor={theme.palette.primary.main}
-								gradient={true}
-								gradientStartColor={theme.palette.primary.main} //FE team HELP!  Not sure what colors to use
-								gradientEndColor="#ffffff" // FE team HELP!
-							/>
-						</BaseBox>
-						<BaseBox>
-							<Typography
-								component="h2"
-								padding={theme.spacing(8)}
-							>
-								CPU usage
-							</Typography>
-							<AreaChart
-								data={monitor?.checks ?? []}
-								dataKey="cpu.usage_percent"
-								xKey="createdAt"
-								yKey="cpu.usage_percent"
-								customTooltip={({ active, payload, label }) => (
-									<InfrastructureTooltip
-										label={label}
-										yKey="cpu.usage_percent"
-										yLabel="CPU Usage"
-										active={active}
-										payload={payload}
-									/>
-								)}
-								xTick={<TzTick />}
-								yTick={<PercentTick />}
-								strokeColor={theme.palette.success.main} // FE team HELP!
-								gradient={true}
-								fill={theme.palette.success.main} // FE team HELP!
-								gradientStartColor={theme.palette.success.main}
-								gradientEndColor="#ffffff"
-							/>
-						</BaseBox>
-						{monitor?.checks?.[0]?.disk?.map((disk, idx) => {
-							// disk is an array of disks, so we need to map over it
-							return (
-								<BaseBox key={disk._id}>
-									<Typography
-										component="h2"
-										padding={theme.spacing(8)}
-									>
-										{`Disk${idx} usage`}
-									</Typography>
-									<AreaChart
-										data={monitor?.checks ?? []}
-										dataKey={`disk[${idx}].usage_percent`}
-										xKey="createdAt"
-										yKey={`disk[${idx}].usage_percent`} // We are looking for the usage_percent of the current disk in the array
-										customTooltip={({ active, payload, label }) => (
-											<InfrastructureTooltip
-												label={label} // label must be a string
-												yKey={`disk.usage_percent`}
-												yLabel="Disk Usage"
-												yIdx={idx}
-												active={active}
-												payload={payload}
-											/>
-										)}
-										xTick={<TzTick />}
-										yTick={<PercentTick />}
-										strokeColor={theme.palette.warning.main}
-										gradient={true}
-										gradientStartColor={theme.palette.warning.main}
-										gradientEndColor="#ffffff"
-									/>
-								</BaseBox>
-							);
-						})}
+						{areaChartConfigs.map((config) => (
+							<BaseBox key={`${config.type}-${config.diskIndex ?? ""}`}>
+								<Typography
+									component="h2"
+									padding={theme.spacing(8)}
+								>
+									{config.heading}
+								</Typography>
+								<AreaChart
+									height={areaChartHeight}
+									data={monitor?.checks ?? []}
+									dataKey={config.dataKey}
+									xKey="createdAt"
+									yKey={config.dataKey}
+									customTooltip={({ active, payload, label }) => (
+										<InfrastructureTooltip
+											label={label}
+											yKey={
+												config.type === "disk" ? "disk.usage_percent" : config.dataKey
+											}
+											yLabel={config.yLabel}
+											yIdx={config.diskIndex}
+											active={active}
+											payload={payload}
+										/>
+									)}
+									xTick={<TzTick />}
+									yTick={<PercentTick />}
+									strokeColor={config.strokeColor}
+									gradient={true}
+									gradientStartColor={config.strokeColor}
+									gradientEndColor="#ffffff"
+								/>
+							</BaseBox>
+						))}
 					</Stack>
 				</Stack>
 			</Box>
