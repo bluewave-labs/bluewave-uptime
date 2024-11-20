@@ -10,7 +10,7 @@ import {
 import { createGradient } from "../Utils/gradientUtils";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material";
-
+import { useId } from "react";
 /**
  * CustomAreaChart component for rendering an area chart with optional gradient and custom ticks.
  *
@@ -83,13 +83,16 @@ const CustomAreaChart = ({
 	gradientStartColor,
 	gradientEndColor,
 	customTooltip,
+	height = "100%",
 }) => {
 	const theme = useTheme();
-	const gradientId = `gradient-${Math.random().toString(36).slice(2, 9)}`;
+	const uniqueId = useId();
+	const gradientId = `gradient-${uniqueId}`;
 	return (
 		<ResponsiveContainer
 			width="100%"
-			height="80%" // FE team HELP!  Why does this overflow if set to 100%?
+			height={height}
+			// FE team HELP!  Why does this overflow if set to 100%?
 		>
 			<AreaChart data={data}>
 				<XAxis
@@ -120,7 +123,6 @@ const CustomAreaChart = ({
 					stroke={strokeColor}
 					fill={gradient === true ? `url(#${gradientId})` : fillColor}
 				/>
-
 				{customTooltip ? (
 					<Tooltip
 						cursor={{ stroke: theme.palette.border.light }}
@@ -149,6 +151,7 @@ CustomAreaChart.propTypes = {
 	gradientStartColor: PropTypes.string,
 	gradientEndColor: PropTypes.string,
 	customTooltip: PropTypes.func,
+	height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default CustomAreaChart;

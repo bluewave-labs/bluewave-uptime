@@ -1,5 +1,6 @@
 import { Box, Button } from "@mui/material";
 import { Heading } from "../../Components/Heading";
+import { useNavigate } from "react-router-dom";
 
 /**
  * This is the Infrastructure monitoring page. This is a work in progress
@@ -9,13 +10,14 @@ import { Heading } from "../../Components/Heading";
  */
 
 function Infrastructure() {
+	const navigate = useNavigate();	
 	return (
 		<Box component="main">
 			<Button
 				variant="contained"
 				color="primary"
 				onClick={() => {
-					// navigate("/monitors/create");
+					navigate("/infrastructure/create");
 				}}
 				sx={{ fontWeight: 500 }}
 			>

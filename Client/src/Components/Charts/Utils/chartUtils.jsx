@@ -75,6 +75,22 @@ PercentTick.propTypes = {
 };
 
 /**
+ * Converts a decimal value to a formatted percentage string.
+ *
+ * @param {number} value - The decimal value to convert (e.g., 0.75)
+ * @returns {string} Formatted percentage string (e.g., "75.00%") or original input if not a number
+ *
+ * @example
+ * getFormattedPercentage(0.7543)   // Returns "75.43%"
+ * getFormattedPercentage(1)        // Returns "100.00%"
+ * getFormattedPercentage("test")   // Returns "test"
+ */
+const getFormattedPercentage = (value) => {
+	if (typeof value !== "number") return value;
+	return `${(value * 100).toFixed(2)}.%`;
+};
+
+/**
  * Custom tooltip component for displaying infrastructure data.
  *
  * @param {Object} props - The properties object.
@@ -146,8 +162,8 @@ export const InfrastructureTooltip = ({
 							sx={{ opacity: 0.8 }}
 						>
 							{yIdx >= 0
-								? `${yLabel} ${payload[0].payload[hardwareType][yIdx][metric] * 100}%`
-								: `${yLabel} ${payload[0].payload[hardwareType][metric] * 100}%`}
+								? `${yLabel} ${getFormattedPercentage(payload[0].payload[hardwareType][yIdx][metric])}`
+								: `${yLabel} ${getFormattedPercentage(payload[0].payload[hardwareType][metric])}`}
 						</Typography>
 						<Typography component="span"></Typography>
 					</Stack>

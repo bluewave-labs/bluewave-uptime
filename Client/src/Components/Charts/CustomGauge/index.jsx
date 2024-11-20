@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import "./index.css";
@@ -31,9 +31,14 @@ const CustomGauge = ({
 	strokeWidth = 15,
 }) => {
 	// Calculate the length of the stroke for the circle
-	const circumference = 2 * Math.PI * radius;
-	const totalSize = radius * 2 + strokeWidth * 2; // This is the total size of the SVG, needed for the viewBox
-	const strokeLength = (progress / 100) * circumference;
+	const { circumference, totalSize, strokeLength } = useMemo(
+		() => ({
+			circumference: 2 * Math.PI * radius,
+			totalSize: radius * 2 + strokeWidth * 2,
+			strokeLength: (progress / 100) * (2 * Math.PI * radius),
+		}),
+		[radius, strokeWidth, progress]
+	);
 	const [offset, setOffset] = useState(circumference);
 	const theme = useTheme();
 

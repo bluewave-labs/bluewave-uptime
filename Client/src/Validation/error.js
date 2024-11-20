@@ -1,7 +1,7 @@
 const buildErrors = (prev, id, error) => {
 	const updatedErrors = { ...prev };
 	if (error) {
-		updatedErrors[id] = error.details[0].message?? "Validation error";
+		updatedErrors[id] = error.details[0].message ?? "Validation error";
 	} else {
 		delete updatedErrors[id];
 	}
@@ -22,15 +22,29 @@ const hasValidationErrors = (form, validation, setErrors) => {
 					"dbConnectionString",
 					"refreshTokenTTL",
 					"jwtTTL",
+					"notify-email-list",
 				].includes(err.path[0])
 			) {
 				newErrors[err.path[0]] = err.message ?? "Validation error";
 			}
+			// Handle conditionally usage number required cases
+			if (!form.cpu || form.usage_cpu) {
+				newErrors["usage_cpu"] = null;
+			}
+			if (!form.memory || form.usage_memory) {
+				newErrors["usage_memory"] = null;
+			}
+			if (!form.disk || form.usage_disk) {
+				newErrors["usage_disk"] = null;
+			}
 		});
-		if (Object.keys(newErrors).length > 0) {
+		if (Object.values(newErrors).some(v=> v)) {
 			setErrors(newErrors);
 			return true;
-		} else return false;
+		} else {
+			setErrors({});
+			return false;
+		}
 	}
 	return false;
 };

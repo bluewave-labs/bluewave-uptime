@@ -10,6 +10,7 @@ import Register from "./Pages/Auth/Register/Register";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
+import CreateInfrastructureMonitor from "./Pages/Infrastructure/CreateMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
@@ -39,7 +40,7 @@ import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 import { Infrastructure } from "./Pages/Infrastructure";
-import InfrastructureDetails from "./Pages/Infrastructure/details";
+import InfrastructureDetails from "./Pages/Infrastructure/Details";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -129,7 +130,10 @@ function App() {
 						path="infrastructure"
 						element={<ProtectedRoute Component={Infrastructure} />}
 					/>
-
+					<Route
+						path="infrastructure/create"
+						element={<ProtectedRoute Component={CreateInfrastructureMonitor} />}
+					/>
 					<Route
 						path="infrastructure/:monitorId"
 						element={<ProtectedRoute Component={InfrastructureDetailsWithAdminProp} />}
