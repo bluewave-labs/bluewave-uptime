@@ -57,7 +57,7 @@ const Field = forwardRef(
 		return (
 			<Stack
 				gap={theme.spacing(2)}
-				className={`${className ?? `field field-${type}`}`}
+				className={`field field-${type} ${className}`}
 				sx={{
 					"& fieldset": {
 						borderColor: theme.palette.border.dark,
@@ -186,11 +186,11 @@ const Field = forwardRef(
 						),
 					}}
 				/>
-				{ error && (
+				{error && (
 					<Typography
 						component="span"
 						className="input-error"
-						hidden={className? true: false}						
+						hidden={className ? true : false}
 						color={theme.palette.error.main}
 						mt={theme.spacing(2)}
 						sx={{

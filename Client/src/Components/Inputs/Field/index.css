@@ -2,12 +2,9 @@
 	min-width: var(--env-var-width-3);
 }
 
-.field-infrastructure-alert {
+.field-infrastructure-alert{
 	max-width: var(--env-var-width-4);
-}
-
-.field-infrastructure-alert .MuiInputBase-root:has(input) {
-	height: var(--env-var-height-2);
+	min-width: unset;
 }
 
 .field h3.MuiTypography-root,
