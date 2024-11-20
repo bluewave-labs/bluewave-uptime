@@ -40,6 +40,7 @@ import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 import { Infrastructure } from "./Pages/Infrastructure";
+import InfrastructureDetails from "./Pages/Infrastructure/Details";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -49,6 +50,7 @@ function App() {
 	const MaintenanceWithAdminProp = withAdminProp(Maintenance);
 	const SettingsWithAdminProp = withAdminProp(Settings);
 	const AdvancedSettingsWithAdminProp = withAdminProp(AdvancedSettings);
+	const InfrastructureDetailsWithAdminProp = withAdminProp(InfrastructureDetails);
 	const mode = useSelector((state) => state.ui.mode);
 	const { authToken } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
@@ -132,6 +134,11 @@ function App() {
 						path="infrastructure/create"
 						element={<ProtectedRoute Component={CreateInfrastructureMonitor} />}
 					/>
+					<Route
+						path="infrastructure/:monitorId"
+						element={<ProtectedRoute Component={InfrastructureDetailsWithAdminProp} />}
+					/>
+
 					<Route
 						path="incidents/:monitorId?"
 						element={<ProtectedRoute Component={Incidents} />}
