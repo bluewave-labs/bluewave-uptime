@@ -146,8 +146,8 @@ export const InfrastructureTooltip = ({
 							sx={{ opacity: 0.8 }}
 						>
 							{yIdx >= 0
-								? `${yLabel} ${payload[0].payload[hardwareType][yIdx][metric] * 100}%`
-								: `${yLabel} ${payload[0].payload[hardwareType][metric] * 100}%`}
+								? `${yLabel} ${(payload[0].payload[hardwareType][yIdx][metric] * 100).toFixed(2)}%`
+								: `${yLabel} ${(payload[0].payload[hardwareType][metric] * 100).toFixed(2)}%`}
 						</Typography>
 						<Typography component="span"></Typography>
 					</Stack>
