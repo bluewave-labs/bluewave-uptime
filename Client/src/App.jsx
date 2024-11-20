@@ -39,7 +39,7 @@ import { getAppSettings } from "./Features/Settings/settingsSlice";
 import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 import { Infrastructure } from "./Pages/Infrastructure";
-import InfrastructureDetails from "./Pages/Infrastructure/details";
+import InfrastructureDetails from "./Pages/Infrastructure/Details";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
