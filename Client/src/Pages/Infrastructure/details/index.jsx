@@ -5,6 +5,8 @@ import { Stack, Box, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CustomGauge from "../../../Components/Charts/CustomGauge";
 import AreaChart from "../../../Components/Charts/AreaChart";
+import { useSelector } from "react-redux";
+import { networkService } from "../../../main";
 import axios from "axios";
 import {
 	TzTick,
@@ -158,15 +160,20 @@ const InfrastructureDetails = () => {
 		{ name: "details", path: `/infrastructure/${monitorId}` },
 	];
 	const [monitor, setMonitor] = useState(null);
+	const { authToken } = useSelector((state) => state.auth);
+	const [dateRange, setDateRange] = useState("day");
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://localhost:5000/api/v1/dummy-data", {
-					headers: {
-						"Content-Type": "application/json",
-						"Cache-Control": "no-cache",
-					},
+				const response = await networkService.getStatsByMonitorId({
+					authToken: authToken,
+					monitorId: monitorId,
+					sortOrder: null,
+					limit: null,
+					dateRange: dateRange,
+					numToDisplay: 50,
+					normalize: true,
 				});
 				setMonitor(response.data.data);
 			} catch (error) {
