@@ -18,7 +18,7 @@ import jwt from "jsonwebtoken";
 import sinon from "sinon";
 import { successMessages } from "../../utils/messages.js";
 import logger from "../../utils/logger.js";
-import dns from "dns";
+import axios from "axios";
 const SERVICE_NAME = "monitorController";
 
 describe("Monitor Controller - getAllMonitors", () => {
@@ -476,38 +476,40 @@ describe("Monitor Controller - createMonitor", () => {
 	});
 });
 
-describe("Monitor Controllor - checkEndpointResolution", () => {
-	let req, res, next, dnsResolveStub;
+describe("Monitor Controller - checkEndpointResolution", () => {
+	let req, res, next, axiosGetStub;
 	beforeEach(() => {
 		req = { query: { monitorURL: "https://example.com" } };
 		res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
 		next = sinon.stub();
-		dnsResolveStub = sinon.stub(dns, "resolve");
+		axiosGetStub = sinon.stub(axios, "get");
 	});
 	afterEach(() => {
-		dnsResolveStub.restore();
+		sinon.restore();
 	});
 	it("should resolve the URL successfully", async () => {
-		dnsResolveStub.callsFake((hostname, callback) => callback(null));
+		axiosGetStub.resolves({ status: 200, statusText: "OK" });
 		await checkEndpointResolution(req, res, next);
 		expect(res.status.calledWith(200)).to.be.true;
 		expect(
 			res.json.calledWith({
 				success: true,
+				code: 200,
+				statusText: "OK",
 				msg: "URL resolved successfully",
 			})
 		).to.be.true;
 		expect(next.called).to.be.false;
 	});
-	it("should return an error if DNS resolution fails", async () => {
-		const dnsError = new Error("DNS resolution failed");
-		dnsError.code = "ENOTFOUND";
-		dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
+	it("should return an error if endpoint resolution fails", async () => {
+		const axiosError = new Error("resolution failed");
+		axiosError.code = "ENOTFOUND";
+		axiosGetStub.rejects(axiosError);
 		await checkEndpointResolution(req, res, next);
 		expect(next.calledOnce).to.be.true;
 		const errorPassedToNext = next.getCall(0).args[0];
 		expect(errorPassedToNext).to.be.an.instanceOf(Error);
-		expect(errorPassedToNext.message).to.include("DNS resolution failed");
+		expect(errorPassedToNext.message).to.include("resolution failed");
 		expect(errorPassedToNext.code).to.equal("ENOTFOUND");
 		expect(errorPassedToNext.status).to.equal(500);
 	});
