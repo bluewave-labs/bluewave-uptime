@@ -10,6 +10,7 @@ import Register from "./Pages/Auth/Register/Register";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors/Home";
 import CreateMonitor from "./Pages/Monitors/CreateMonitor";
+import CreateInfrastructureMonitor from "./Pages/Infrastructure/CreateMonitor";
 import Incidents from "./Pages/Incidents";
 import Status from "./Pages/Status";
 import Integrations from "./Pages/Integrations";
@@ -127,7 +128,10 @@ function App() {
 						path="infrastructure"
 						element={<ProtectedRoute Component={Infrastructure} />}
 					/>
-
+					<Route
+						path="infrastructure/create"
+						element={<ProtectedRoute Component={CreateInfrastructureMonitor} />}
+					/>
 					<Route
 						path="incidents/:monitorId?"
 						element={<ProtectedRoute Component={Incidents} />}

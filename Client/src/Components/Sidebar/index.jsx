@@ -90,6 +90,7 @@ const URL_MAP = {
 const PATH_MAP = {
 	monitors: "Dashboard",
 	pagespeed: "Dashboard",
+	infrastructure: "Dashboard",
 	account: "Account",
 	settings: "Other",
 };
