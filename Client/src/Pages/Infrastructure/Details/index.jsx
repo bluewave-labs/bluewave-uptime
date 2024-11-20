@@ -5,6 +5,9 @@ import { Stack, Box, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CustomGauge from "../../../Components/Charts/CustomGauge";
 import AreaChart from "../../../Components/Charts/AreaChart";
+import PulseDot from "../../../Components/Animated/PulseDot";
+import useUtils from "../../Monitors/utils";
+import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
 import axios from "axios";
 import {
 	TzTick,
@@ -164,7 +167,7 @@ const InfrastructureDetails = () => {
 		{ name: "details", path: `/infrastructure/${monitorId}` },
 	];
 	const [monitor, setMonitor] = useState(null);
-
+	const { statusColor, determineState } = useUtils();
 	// These calculations are needed because ResponsiveContainer
 	// doesn't take padding of parent/siblings into account
 	// when calculating height.
@@ -283,6 +286,30 @@ const InfrastructureDetails = () => {
 					gap={theme.spacing(10)}
 					mt={theme.spacing(10)}
 				>
+					<Stack
+						direction="row"
+						gap={theme.spacing(8)}
+					>
+						<Box>
+							<PulseDot color={statusColor[determineState(monitor)]} />
+						</Box>
+						<Typography
+							alignSelf="end"
+							component="h1"
+							variant="h1"
+						>
+							{monitor.name}
+						</Typography>
+						<Typography alignSelf="end">{monitor.url || "..."}</Typography>
+						<Box sx={{ flexGrow: 1 }} />
+						<Typography alignSelf="end">
+							Checking every {formatDurationRounded(monitor?.interval)}
+						</Typography>
+						<Typography alignSelf="end">
+							Last checked {formatDurationSplit(monitor?.lastChecked).time}{" "}
+							{formatDurationSplit(monitor?.lastChecked).format} ago
+						</Typography>
+					</Stack>
 					<Stack
 						direction="row"
 						gap={theme.spacing(8)}
