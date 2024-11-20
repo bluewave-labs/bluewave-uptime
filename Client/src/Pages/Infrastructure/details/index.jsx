@@ -7,7 +7,6 @@ import CustomGauge from "../../../Components/Charts/CustomGauge";
 import AreaChart from "../../../Components/Charts/AreaChart";
 import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
-import axios from "axios";
 import {
 	TzTick,
 	PercentTick,
