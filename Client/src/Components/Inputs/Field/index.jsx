@@ -46,7 +46,8 @@ const Field = forwardRef(
 			error,
 			disabled,
 			hidden,
-			className
+			className,
+			hideErrorText = false,
 		},
 		ref
 	) => {
@@ -57,7 +58,7 @@ const Field = forwardRef(
 		return (
 			<Stack
 				gap={theme.spacing(2)}
-				className={`${className ?? `field field-${type}`}`}
+				className={`${className} field field-${type}`}
 				sx={{
 					"& fieldset": {
 						borderColor: theme.palette.border.dark,
@@ -186,11 +187,11 @@ const Field = forwardRef(
 						),
 					}}
 				/>
-				{ error && (
+				{error && (
 					<Typography
 						component="span"
 						className="input-error"
-						hidden={className? true: false}						
+						hidden={hideErrorText}
 						color={theme.palette.error.main}
 						mt={theme.spacing(2)}
 						sx={{
@@ -225,7 +226,8 @@ Field.propTypes = {
 	error: PropTypes.string,
 	disabled: PropTypes.bool,
 	hidden: PropTypes.bool,
-	className: PropTypes.string
+	className: PropTypes.string,
+	showErrorText: PropTypes.bool,
 };
 
 export default Field;
