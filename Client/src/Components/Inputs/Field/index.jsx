@@ -46,7 +46,7 @@ const Field = forwardRef(
 			error,
 			disabled,
 			hidden,
-			className
+			className,
 		},
 		ref
 	) => {
@@ -186,11 +186,11 @@ const Field = forwardRef(
 						),
 					}}
 				/>
-				{ error && (
+				{error && (
 					<Typography
 						component="span"
 						className="input-error"
-						hidden={className? true: false}						
+						hidden={className ? true : false}
 						color={theme.palette.error.main}
 						mt={theme.spacing(2)}
 						sx={{
@@ -225,7 +225,7 @@ Field.propTypes = {
 	error: PropTypes.string,
 	disabled: PropTypes.bool,
 	hidden: PropTypes.bool,
-	className: PropTypes.string
+	className: PropTypes.string,
 };
 
 export default Field;
