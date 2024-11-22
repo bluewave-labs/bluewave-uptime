@@ -234,7 +234,8 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">General settings</Typography>
 						<Typography component="p">
-							Here you can select the URL of the host, together with the type of monitor.
+							Here you can select the URL of the host, together with the friendly name and
+							authorization secret to connect to the server agent.
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
@@ -295,8 +296,8 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">Customize alerts</Typography>
 						<Typography component="p">
-							Send a notification to user(s) When the thresholds exceed a certain number
-							or percentage.
+							Send a notification to user(s) when thresholds exceed a certain number of
+							percentage.
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
