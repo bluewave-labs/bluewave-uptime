@@ -66,7 +66,7 @@ const Field = forwardRef(
 		return (
 			<Stack
 				gap={theme.spacing(2)}
-				className={`${className} field field-${type}`}
+				className={`field field-${type} ${className}`}
 				sx={{
 					"& fieldset": {
 						borderColor: theme.palette.border.dark,

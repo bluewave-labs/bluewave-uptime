@@ -3,7 +3,7 @@
 }
 
 .field-infrastructure-alert {
-	min-width: 0;
+	min-width: unset;
 	max-width: var(--env-var-width-4);
 }
 
