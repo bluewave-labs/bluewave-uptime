@@ -194,25 +194,6 @@ const CreateInfrastructureMonitor = () => {
 		{ _id: 10, name: "10 minutes" },
 	];
 
-	const NOTIFY_MULTIPLE_EMAIL_LABEL = (
-		<Box>
-			<Typography mb={theme.spacing(4)}>
-				Also notify via email to multiple addresses (coming soon)
-			</Typography>
-			<Field
-				id="notify-email-list"
-				type="text"
-				placeholder="name@gmail.com"
-				value=""
-				onChange={() => logger.warn("disabled")}
-				onBlur={handleBlur}
-			/>
-			<Typography mt={theme.spacing(4)}>
-				You can separate multiple emails with a comma
-			</Typography>
-		</Box>
-	);
-
 	return (
 		<Box className="create-infrastructure-monitor">
 			<Breadcrumbs
@@ -306,15 +287,6 @@ const CreateInfrastructureMonitor = () => {
 							value={user?.email}
 							onChange={(e) => handleChange(e)}
 							onBlur={handleBlur}
-						/>
-						<Checkbox
-							id="notify-email"
-							label={NOTIFY_MULTIPLE_EMAIL_LABEL}
-							isChecked={false}
-							value=""
-							onChange={() => logger.warn("disabled")}
-							onBlur={handleBlur}
-							isDisabled={true}
 						/>
 					</Stack>
 				</ConfigBox>
