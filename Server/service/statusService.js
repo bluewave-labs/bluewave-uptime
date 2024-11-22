@@ -29,7 +29,8 @@ class StatusService {
 			const { monitorId, status } = networkResponse;
 			const monitor = await this.db.getMonitorById(monitorId);
 			// No change in monitor status, return early
-			if (monitor.status === status) return { statusChanged: false };
+			if (monitor.status === status)
+				return { monitor, statusChanged: false, prevStatus: monitor.status };
 			// Monitor status changed, save prev status and update monitor
 
 			this.logger.info({
