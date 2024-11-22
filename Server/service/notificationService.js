@@ -101,7 +101,7 @@ class NotificationService {
 			const alertTypes = ["cpu", "memory", "disk"];
 
 			for (const type of alertTypes) {
-				// Iterate over each alert type to see if any need to be decmremented
+				// Iterate over each alert type to see if any need to be decremented
 				if (alerts[type] === true) {
 					notification[`${type}AlertThreshold`]--; // Decrement threshold if an alert is triggered
 
