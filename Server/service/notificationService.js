@@ -86,19 +86,11 @@ class NotificationService {
 		} = metrics;
 
 		const alerts = {
-			cpu:
-				cpuThreshold !== -1 && cpuUsage > cpuThreshold / 100
-					? "CPU usage is above threshold"
-					: null,
-			memory:
-				memoryThreshold !== -1 && memoryUsage > memoryThreshold / 100
-					? "Memory usage is above threshold"
-					: null,
-			disk: disk.some(
-				(d) => diskThreshold !== -1 && d.usage_percent > diskThreshold / 100
-			)
-				? "Disk usage is above threshold"
-				: null,
+			cpu: cpuThreshold !== -1 && cpuUsage > cpuThreshold ? true : false,
+			memory: memoryThreshold !== -1 && memoryUsage > memoryThreshold ? true : false,
+			disk: disk.some((d) => diskThreshold !== -1 && d.usage_percent > diskThreshold)
+				? true
+				: false,
 		};
 
 		const notifications = await this.db.getNotificationsByMonitorId(
@@ -110,7 +102,7 @@ class NotificationService {
 
 			for (const type of alertTypes) {
 				// Iterate over each alert type to see if any need to be decmremented
-				if (alerts[type] !== null) {
+				if (alerts[type] === true) {
 					notification[`${type}AlertThreshold`]--; // Decrement threshold if an alert is triggered
 
 					if (notification[`${type}AlertThreshold`] <= 0) {
@@ -119,13 +111,15 @@ class NotificationService {
 
 						const formatAlert = {
 							cpu: () =>
-								`${alerts.cpu} ${(cpuUsage * 100).toFixed(0)}% (${cpuThreshold}%)`,
+								`Your current CPU usage (${(cpuUsage * 100).toFixed(0)}%) is above your threshold (${(cpuThreshold * 100).toFixed(0)}%)`,
 							memory: () =>
-								`${alerts.memory} ${(memoryUsage * 100).toFixed(0)}% (${memoryThreshold}%)`,
+								`Your current memory usage (${(memoryUsage * 100).toFixed(0)}%) is above your threshold (${(memoryThreshold * 100).toFixed(0)}%)`,
 							disk: () =>
-								`${alerts.disk} ${disk
-									.map((d, idx) => `Disk${idx}: ${(d.usage_percent * 100).toFixed(0)}%`)
-									.join(", ")} (${diskThreshold}%)`,
+								`Your current disk usage: ${disk
+									.map((d, idx) => `(Disk${idx}: ${(d.usage_percent * 100).toFixed(0)}%)`)
+									.join(
+										", "
+									)} is above your threshold (${(diskThreshold * 100).toFixed(0)}%)`,
 						};
 
 						alertsToSend.push(formatAlert[type]());
