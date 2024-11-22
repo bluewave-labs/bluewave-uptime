@@ -132,7 +132,7 @@ const CreateInfrastructureMonitor = () => {
 		Object.keys(form)
 			.filter((k) => k.startsWith(THRESHOLD_FIELD_PREFIX))
 			.map((k) => {
-				if (form[k]) thresholds[k] = form[k];
+				if (form[k]) thresholds[k] = form[k] / 100;
 				delete form[k];
 				delete form[k.substring(THRESHOLD_FIELD_PREFIX.length)];
 			});
@@ -158,6 +158,7 @@ const CreateInfrastructureMonitor = () => {
 					: infrastructureMonitor.name,
 			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
 		};
+
 		delete form.notifications;
 		if (hasValidationErrors(form, infrastructureMonitorValidation, setErrors)) {
 			return;
