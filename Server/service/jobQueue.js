@@ -166,6 +166,15 @@ class JobQueue {
 				const { monitor, statusChanged, prevStatus } =
 					await this.statusService.updateStatus(networkResponse);
 
+				// If this is an infrastructure monitor, we need to check for thresholds
+				if (monitor.type === "hardware") {
+					await this.notificationService.handleInfrastructureNotifications({
+						...networkResponse,
+						monitor,
+						prevStatus,
+					});
+				}
+
 				//If status hasn't changed, we're done
 				if (statusChanged === false) return;
 
