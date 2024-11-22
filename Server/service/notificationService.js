@@ -24,8 +24,15 @@ class NotificationService {
 	 * @param {boolean} networkResponse.prevStatus - The previous status of the monitor (true for up, false for down).
 	 * @param {string} address - The email address to send the notification to.
 	 */
-	async sendEmail(networkResponse, address) {
+	async sendEmail(networkResponse, address, alerts = []) {
 		const { monitor, status, prevStatus } = networkResponse;
+		if (monitor.type === "hardware") {
+			const template = "hardwareIncidentTemplate";
+			const context = { monitor: monitor.name, url: monitor.url, alerts };
+			const subject = `Monitor ${monitor.name} infrastructure alerts`;
+			this.emailService.buildAndSendEmail(template, context, address, subject);
+			return;
+		}
 		const template = prevStatus === false ? "serverIsUpTemplate" : "serverIsDownTemplate";
 		const context = { monitor: monitor.name, url: monitor.url };
 		const subject = `Monitor ${monitor.name} is ${status === true ? "up" : "down"}`;
@@ -56,6 +63,83 @@ class NotificationService {
 				method: "handleNotifications",
 				stack: error.stack,
 			});
+		}
+	}
+
+	async handleInfrastructureNotifications(networkResponse) {
+		const thresholds = networkResponse?.monitor?.thresholds;
+		if (thresholds === undefined) return; // No thresholds set, we're done
+
+		// Get thresholds from monitor
+		const {
+			usage_cpu: cpuThreshold = -1,
+			usage_memory: memoryThreshold = -1,
+			usage_disk: diskThreshold = -1,
+		} = thresholds;
+
+		// Get metrics from response
+		const metrics = networkResponse?.payload?.data ?? {};
+		const {
+			cpu: { usage_percent: cpuUsage = -1 } = {},
+			memory: { usage_percent: memoryUsage = -1 } = {},
+			disk = [],
+		} = metrics;
+
+		const alerts = {
+			cpu:
+				cpuThreshold !== -1 && cpuUsage > cpuThreshold / 100
+					? "CPU usage is above threshold"
+					: null,
+			memory:
+				memoryThreshold !== -1 && memoryUsage > memoryThreshold / 100
+					? "Memory usage is above threshold"
+					: null,
+			disk: disk.some(
+				(d) => diskThreshold !== -1 && d.usage_percent > diskThreshold / 100
+			)
+				? "Disk usage is above threshold"
+				: null,
+		};
+
+		const notifications = await this.db.getNotificationsByMonitorId(
+			networkResponse.monitorId
+		);
+		for (const notification of notifications) {
+			const alertsToSend = [];
+			const alertTypes = ["cpu", "memory", "disk"];
+
+			for (const type of alertTypes) {
+				// Iterate over each alert type to see if any need to be decmremented
+				if (alerts[type] !== null) {
+					notification[`${type}AlertThreshold`]--; // Decrement threshold if an alert is triggered
+
+					if (notification[`${type}AlertThreshold`] <= 0) {
+						// If threshold drops below 0, reset and send notification
+						notification[`${type}AlertThreshold`] = notification.alertThreshold;
+
+						const formatAlert = {
+							cpu: () =>
+								`${alerts.cpu} ${(cpuUsage * 100).toFixed(0)}% (${cpuThreshold}%)`,
+							memory: () =>
+								`${alerts.memory} ${(memoryUsage * 100).toFixed(0)}% (${memoryThreshold}%)`,
+							disk: () =>
+								`${alerts.disk} ${disk
+									.map((d, idx) => `Disk${idx}: ${(d.usage_percent * 100).toFixed(0)}%`)
+									.join(", ")} (${diskThreshold}%)`,
+						};
+
+						alertsToSend.push(formatAlert[type]());
+					}
+				}
+			}
+
+			await notification.save();
+
+			if (alertsToSend.length === 0) continue; // No alerts to send, we're done
+
+			if (notification.type === "email") {
+				this.sendEmail(networkResponse, notification.address, alertsToSend);
+			}
 		}
 	}
 }
