@@ -16,6 +16,7 @@ import {
 	InfrastructureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
+import { DateRangeIcon } from "@mui/x-date-pickers";
 
 const BASE_BOX_PADDING_VERTICAL = 4;
 const BASE_BOX_PADDING_HORIZONTAL = 8;
@@ -106,6 +107,7 @@ StatBox.propTypes = {
  */
 const GaugeBox = ({ value, heading, metricOne, valueOne, metricTwo, valueTwo }) => {
 	const theme = useTheme();
+
 	return (
 		<BaseBox>
 			<Stack
@@ -195,19 +197,20 @@ const InfrastructureDetails = () => {
 					numToDisplay: 50,
 					normalize: true,
 				});
+
 				setMonitor(response.data.data);
 			} catch (error) {
 				console.error(error);
 			}
 		};
 		fetchData();
-	}, []);
+	}, [authToken, monitorId, dateRange]);
 
 	const statBoxConfigs = [
 		{
 			id: 0,
 			heading: "CPU",
-			subHeading: `${monitor?.checks[0]?.cpu?.physical_core} cores`,
+			subHeading: `${monitor?.checks[0]?.cpu?.physical_core ?? 0} cores`,
 		},
 		{
 			id: 1,
@@ -230,26 +233,26 @@ const InfrastructureDetails = () => {
 	const gaugeBoxConfigs = [
 		{
 			type: "memory",
-			value: monitor?.checks[0]?.memory?.usage_percent * 100,
+			value: monitor?.checks[0]?.memory?.usage_percent ?? 0 * 100,
 			heading: "Memory Usage",
 			metricOne: "Used",
-			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes),
+			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes ?? 0),
 			metricTwo: "Total",
-			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
+			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes ?? 0),
 		},
 		{
 			type: "cpu",
-			value: monitor?.checks[0]?.cpu?.usage_percent * 100,
+			value: monitor?.checks[0]?.cpu?.usage_percent ?? 0 * 100,
 			heading: "CPU Usage",
 			metricOne: "Cores",
-			valueOne: monitor?.checks[0]?.cpu?.physical_core,
+			valueOne: monitor?.checks[0]?.cpu?.physical_core ?? 0,
 			metricTwo: "Frequency",
-			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency / 1000).toFixed(2)} Ghz`,
+			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency ?? 0 / 1000).toFixed(2)} Ghz`,
 		},
-		...(monitor?.checks[0]?.disk ?? []).map((disk, idx) => ({
+		...(monitor?.checks?.[0]?.disk ?? []).map((disk, idx) => ({
 			type: "disk",
 			diskIndex: idx,
-			value: disk.usage_percent * 100,
+			value: disk.usage_percent * 100 ?? 0,
 			heading: `Disk${idx} usage`,
 			metricOne: "Used",
 			valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
@@ -284,9 +287,9 @@ const InfrastructureDetails = () => {
 	];
 
 	return (
-		monitor && (
-			<Box>
-				<Breadcrumbs list={navList} />
+		<Box>
+			<Breadcrumbs list={navList} />
+			{monitor?.checks?.length > 0 ? (
 				<Stack
 					direction="column"
 					gap={theme.spacing(10)}
@@ -392,8 +395,16 @@ const InfrastructureDetails = () => {
 						))}
 					</Stack>
 				</Stack>
-			</Box>
-		)
+			) : (
+				<Stack
+					direction="column"
+					gap={theme.spacing(10)}
+					mt={theme.spacing(10)}
+				>
+					<Typography variant="h2">Hang tight, there's no data yet</Typography>
+				</Stack>
+			)}
+		</Box>
 	);
 };
 
