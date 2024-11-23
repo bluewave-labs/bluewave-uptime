@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import useUtils from "../../Monitors/utils";
+import Empty from "./empty";
 import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
 import {
 	TzTick,
@@ -16,7 +17,6 @@ import {
 	InfrastructureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
-import { DateRangeIcon } from "@mui/x-date-pickers";
 
 const BASE_BOX_PADDING_VERTICAL = 4;
 const BASE_BOX_PADDING_HORIZONTAL = 8;
@@ -396,13 +396,15 @@ const InfrastructureDetails = () => {
 					</Stack>
 				</Stack>
 			) : (
-				<Stack
-					direction="column"
-					gap={theme.spacing(10)}
-					mt={theme.spacing(10)}
-				>
-					<Typography variant="h2">Hang tight, there's no data yet</Typography>
-				</Stack>
+				<Empty
+					styles={{
+						border: 1,
+						borderColor: theme.palette.border.light,
+						borderRadius: theme.shape.borderRadius,
+						backgroundColor: theme.palette.background.main,
+						p: theme.spacing(30),
+					}}
+				/>
 			)}
 		</Box>
 	);
