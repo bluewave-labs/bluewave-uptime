@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import useUtils from "../../Monitors/utils";
+import { useNavigate } from "react-router-dom";
 import Empty from "./empty";
 import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
 import {
@@ -163,6 +164,7 @@ GaugeBox.propTypes = {
  * @returns {React.ReactElement} Infrastructure details page component
  */
 const InfrastructureDetails = () => {
+	const navigate = useNavigate();
 	const theme = useTheme();
 	const { monitorId } = useParams();
 	const navList = [
@@ -200,6 +202,8 @@ const InfrastructureDetails = () => {
 
 				setMonitor(response.data.data);
 			} catch (error) {
+				navigate("/not-found", { replace: true });
+
 				console.error(error);
 			}
 		};
