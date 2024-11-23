@@ -296,8 +296,7 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">Customize alerts</Typography>
 						<Typography component="p">
-							Send a notification to user(s) when thresholds exceed a certain number of
-							percentage.
+							Send a notification to user(s) when thresholds exceed a specified percentage.
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
