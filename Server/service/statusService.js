@@ -104,7 +104,7 @@ class StatusService {
 
 		if (type === "hardware") {
 			const { cpu, memory, disk, host } = payload?.data ?? {};
-			const { errors } = payload;
+			const { errors } = payload?.errors ?? [];
 			check.cpu = cpu ?? {};
 			check.memory = memory ?? {};
 			check.disk = disk ?? {};
