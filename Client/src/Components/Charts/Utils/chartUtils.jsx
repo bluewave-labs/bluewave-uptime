@@ -165,7 +165,6 @@ export const InfrastructureTooltip = ({
 								? `${yLabel} ${getFormattedPercentage(payload[0].payload[hardwareType][yIdx][metric])}`
 								: `${yLabel} ${getFormattedPercentage(payload[0].payload[hardwareType][metric])}`}
 						</Typography>
-						<Typography component="span"></Typography>
 					</Stack>
 				</Box>
 				{/* Display original value */}
@@ -187,4 +186,92 @@ InfrastructureTooltip.propTypes = {
 	yIdx: PropTypes.number,
 	yLabel: PropTypes.string,
 	dotColor: PropTypes.string,
+};
+
+export const TemperatureTooltip = ({ active, payload, label, keys, dotColor }) => {
+	const uiTimezone = useSelector((state) => state.ui.timezone);
+	const theme = useTheme();
+	const formatCoreKey = (key) => {
+		return key.replace(/^core(\d+)$/, "Core $1");
+	};
+	if (active && payload && payload.length) {
+		return (
+			<Box
+				className="area-tooltip"
+				sx={{
+					backgroundColor: theme.palette.background.main,
+					border: 1,
+					borderColor: theme.palette.border.dark,
+					borderRadius: theme.shape.borderRadius,
+					py: theme.spacing(2),
+					px: theme.spacing(4),
+				}}
+			>
+				<Typography
+					sx={{
+						color: theme.palette.text.tertiary,
+						fontSize: 12,
+						fontWeight: 500,
+					}}
+				>
+					{formatDateWithTz(label, "ddd, MMMM D, YYYY, h:mm A", uiTimezone)}
+				</Typography>
+
+				<Stack direction="column">
+					{keys.map((key) => {
+						return (
+							<Stack
+								key={key}
+								display="inline-flex"
+								direction="row"
+								justifyContent="space-between"
+								ml={theme.spacing(3)}
+								sx={{
+									"& span": {
+										color: theme.palette.text.tertiary,
+										fontSize: 11,
+										fontWeight: 500,
+									},
+								}}
+							>
+								<Stack
+									direction="row"
+									alignItems="center"
+									gap={theme.spacing(2)}
+								>
+									<Box
+										display="inline-block"
+										width={theme.spacing(4)}
+										height={theme.spacing(4)}
+										backgroundColor={dotColor}
+										sx={{ borderRadius: "50%" }}
+									/>
+
+									<Typography
+										component="span"
+										sx={{ opacity: 0.8 }}
+									>
+										{`${formatCoreKey(key)}: ${payload[0].payload[key]} °C`}
+									</Typography>
+								</Stack>
+								<Typography component="span"></Typography>
+							</Stack>
+						);
+					})}
+				</Stack>
+			</Box>
+		);
+	}
+	return null;
+};
+
+TemperatureTooltip.propTypes = {
+	active: PropTypes.bool,
+	keys: PropTypes.array,
+	payload: PropTypes.array,
+	label: PropTypes.oneOfType([
+		PropTypes.instanceOf(Date),
+		PropTypes.string,
+		PropTypes.number,
+	]),
 };
