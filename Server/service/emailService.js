@@ -65,7 +65,7 @@ class EmailService {
 			serverIsDownTemplate: this.loadTemplate("serverIsDown"),
 			serverIsUpTemplate: this.loadTemplate("serverIsUp"),
 			passwordResetTemplate: this.loadTemplate("passwordReset"),
-			thresholdViolatedTemplate: this.loadTemplate("thresholdViolated"),
+			hardwareIncidentTemplate: this.loadTemplate("hardwareIncident"),
 		};
 
 		/**

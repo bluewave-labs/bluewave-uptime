@@ -16,6 +16,28 @@ const NotificationSchema = mongoose.Schema(
 		phone: {
 			type: String,
 		},
+		alertThreshold: {
+			type: Number,
+			default: 5,
+		},
+		cpuAlertThreshold: {
+			type: Number,
+			default: function () {
+				return this.alertThreshold;
+			},
+		},
+		memoryAlertThreshold: {
+			type: Number,
+			default: function () {
+				return this.alertThreshold;
+			},
+		},
+		diskAlertThreshold: {
+			type: Number,
+			default: function () {
+				return this.alertThreshold;
+			},
+		},
 	},
 	{
 		timestamps: true,
