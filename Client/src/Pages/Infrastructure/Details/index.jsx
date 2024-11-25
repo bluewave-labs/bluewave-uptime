@@ -460,7 +460,7 @@ const InfrastructureDetails = () => {
 								<AreaChart
 									height={areaChartHeight}
 									data={monitor?.checks ?? []}
-									dataKey={config.dataKey}
+									dataKeys={[config.dataKey]}
 									xKey="createdAt"
 									yKey={config.dataKey}
 									yDomain={config.yDomain}

@@ -45,6 +45,7 @@ import { useId } from "react";
  *   return (
  *     <CustomAreaChart
  *       data={data}
+ *       dataKeys={["cpu.usage_percent"]}
  *       xKey="createdAt"
  * 		 xDomain={["2023-01-01T00:00:00Z", "2023-01-01T02:00:00Z"]}
  *       yKey="cpu.usage_percent"
@@ -73,7 +74,7 @@ import { useId } from "react";
  */
 const CustomAreaChart = ({
 	data,
-	dataKey,
+	dataKeys,
 	xKey,
 	xDomain,
 	yKey,
@@ -123,12 +124,15 @@ const CustomAreaChart = ({
 					fill="transparent"
 					vertical={false}
 				/>
-				<Area
-					type="monotone"
-					dataKey={dataKey}
-					stroke={strokeColor}
-					fill={gradient === true ? `url(#${gradientId})` : fillColor}
-				/>
+				{dataKeys.map((dataKey) => (
+					<Area
+						key={dataKey}
+						type="monotone"
+						dataKey={dataKey}
+						stroke={strokeColor}
+						fill={gradient === true ? `url(#${gradientId})` : fillColor}
+					/>
+				))}
 				{customTooltip ? (
 					<Tooltip
 						cursor={{ stroke: theme.palette.border.light }}
@@ -145,7 +149,7 @@ const CustomAreaChart = ({
 
 CustomAreaChart.propTypes = {
 	data: PropTypes.array.isRequired,
-	dataKey: PropTypes.string.isRequired,
+	dataKeys: PropTypes.array.isRequired,
 	xTick: PropTypes.object, // Recharts takes an instance of component, so we can't pass the component itself
 	yTick: PropTypes.object, // Recharts takes an instance of component, so we can't pass the component itself
 	xKey: PropTypes.string.isRequired,
