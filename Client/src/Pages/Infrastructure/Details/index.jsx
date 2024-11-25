@@ -54,7 +54,7 @@ const formatBytes = (bytes) => {
  * decimalToPercentage(null)  // Returns 0
  */
 const decimalToPercentage = (value) => {
-	if (value === null || undefined) return 0;
+	if (value === null || value === undefined) return 0;
 	return value * 100;
 };
 
