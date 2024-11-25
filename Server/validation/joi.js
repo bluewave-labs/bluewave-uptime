@@ -201,6 +201,7 @@ const createMonitorBodyValidation = joi.object({
 		usage_cpu: joi.number(),
 		usage_memory: joi.number(),
 		usage_disk: joi.number(),
+		usage_temperature: joi.number(),
 	}),
 	notifications: joi.array().items(joi.object()),
 	secret: joi.string(),
