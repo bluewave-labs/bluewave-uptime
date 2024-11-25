@@ -192,7 +192,7 @@ const InfrastructureDetails = () => {
 					sortOrder: "asc",
 					limit: null,
 					dateRange: dateRange,
-					numToDisplay: null,
+					numToDisplay: 50,
 					normalize: false,
 				});
 				setMonitor(response.data.data);
