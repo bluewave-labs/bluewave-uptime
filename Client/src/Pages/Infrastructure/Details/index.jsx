@@ -9,6 +9,8 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import useUtils from "../../Monitors/utils";
+import { useNavigate } from "react-router-dom";
+import Empty from "./empty";
 import { logger } from "../../../Utils/Logger";
 import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
 import {
@@ -27,6 +29,7 @@ const TYPOGRAPHY_PADDING = 8;
  * @returns {number} Converted value in gigabytes
  */
 const formatBytes = (bytes) => {
+	if (bytes === undefined || bytes === null) return "0 GB";
 	if (typeof bytes !== "number") return "0 GB";
 	if (bytes === 0) return "0 GB";
 
@@ -38,6 +41,22 @@ const formatBytes = (bytes) => {
 	} else {
 		return `${Number(MB.toFixed(0))} MB`;
 	}
+};
+
+/**
+ * Converts a decimal value to a percentage
+ *
+ * @function decimalToPercentage
+ * @param {number} value - Decimal value to convert
+ * @returns {number} Percentage representation
+ *
+ * @example
+ * decimalToPercentage(0.75)  // Returns 75
+ * decimalToPercentage(null)  // Returns 0
+ */
+const decimalToPercentage = (value) => {
+	if (value === null || value === undefined) return 0;
+	return value * 100;
 };
 
 /**
@@ -107,6 +126,7 @@ StatBox.propTypes = {
  */
 const GaugeBox = ({ value, heading, metricOne, valueOne, metricTwo, valueTwo }) => {
 	const theme = useTheme();
+
 	return (
 		<BaseBox>
 			<Stack
@@ -162,6 +182,7 @@ GaugeBox.propTypes = {
  * @returns {React.ReactElement} Infrastructure details page component
  */
 const InfrastructureDetails = () => {
+	const navigate = useNavigate();
 	const theme = useTheme();
 	const { monitorId } = useParams();
 	const navList = [
@@ -196,19 +217,22 @@ const InfrastructureDetails = () => {
 					numToDisplay: 50,
 					normalize: false,
 				});
+
 				setMonitor(response.data.data);
 			} catch (error) {
-				logger.error(error);
+				navigate("/not-found", { replace: true });
+        logger.error(error);
 			}
 		};
 		fetchData();
-	}, [dateRange, monitorId, authToken]);
+	}, [authToken, monitorId, dateRange]);
+
 
 	const statBoxConfigs = [
 		{
 			id: 0,
 			heading: "CPU",
-			subHeading: `${monitor?.checks[0]?.cpu?.physical_core} cores`,
+			subHeading: `${monitor?.checks[0]?.cpu?.physical_core ?? 0} cores`,
 		},
 		{
 			id: 1,
@@ -231,7 +255,7 @@ const InfrastructureDetails = () => {
 	const gaugeBoxConfigs = [
 		{
 			type: "memory",
-			value: monitor?.checks[0]?.memory?.usage_percent * 100,
+			value: decimalToPercentage(monitor?.checks[0]?.memory?.usage_percent),
 			heading: "Memory Usage",
 			metricOne: "Used",
 			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes),
@@ -240,17 +264,17 @@ const InfrastructureDetails = () => {
 		},
 		{
 			type: "cpu",
-			value: monitor?.checks[0]?.cpu?.usage_percent * 100,
+			value: decimalToPercentage(monitor?.checks[0]?.cpu?.usage_percent),
 			heading: "CPU Usage",
 			metricOne: "Cores",
-			valueOne: monitor?.checks[0]?.cpu?.physical_core,
+			valueOne: monitor?.checks[0]?.cpu?.physical_core ?? 0,
 			metricTwo: "Frequency",
-			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency / 1000).toFixed(2)} Ghz`,
+			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency ?? 0 / 1000).toFixed(2)} Ghz`,
 		},
-		...(monitor?.checks[0]?.disk ?? []).map((disk, idx) => ({
+		...(monitor?.checks?.[0]?.disk ?? []).map((disk, idx) => ({
 			type: "disk",
 			diskIndex: idx,
-			value: disk.usage_percent * 100,
+			value: decimalToPercentage(disk.usage_percent),
 			heading: `Disk${idx} usage`,
 			metricOne: "Used",
 			valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
@@ -285,9 +309,9 @@ const InfrastructureDetails = () => {
 	];
 
 	return (
-		monitor && (
-			<Box>
-				<Breadcrumbs list={navList} />
+		<Box>
+			<Breadcrumbs list={navList} />
+			{monitor?.checks?.length > 0 ? (
 				<Stack
 					direction="column"
 					gap={theme.spacing(10)}
@@ -393,8 +417,18 @@ const InfrastructureDetails = () => {
 						))}
 					</Stack>
 				</Stack>
-			</Box>
-		)
+			) : (
+				<Empty
+					styles={{
+						border: 1,
+						borderColor: theme.palette.border.light,
+						borderRadius: theme.shape.borderRadius,
+						backgroundColor: theme.palette.background.main,
+						p: theme.spacing(30),
+					}}
+				/>
+			)}
+		</Box>
 	);
 };
 
