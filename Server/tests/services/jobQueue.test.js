@@ -30,6 +30,14 @@ class QueueStub {
 	async getJobs() {
 		return this.jobs;
 	}
+
+	async pause() {
+		return true;
+	}
+
+	async obliterate() {
+		return true;
+	}
 }
 
 class WorkerStub {

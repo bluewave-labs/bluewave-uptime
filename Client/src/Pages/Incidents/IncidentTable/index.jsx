@@ -39,7 +39,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 		page: 0,
 		rowsPerPage: 14,
 	});
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		setPaginationController((prevPaginationController) => ({

@@ -27,6 +27,18 @@ describe("StatusService", () => {
 		});
 	});
 
+	describe("getStatusString", () => {
+		it("should return 'up' if status is true", () => {
+			expect(statusService.getStatusString(true)).to.equal("up");
+		});
+		it("should return 'down' if status is false", () => {
+			expect(statusService.getStatusString(false)).to.equal("down");
+		});
+		it("should return 'unknown' if status is undefined or null", () => {
+			expect(statusService.getStatusString(undefined)).to.equal("unknown");
+		});
+	});
+
 	describe("updateStatus", async () => {
 		beforeEach(() => {
 			// statusService.insertCheck = sinon.stub().resolves;
@@ -182,7 +194,7 @@ describe("StatusService", () => {
 				responseTime: 100,
 				code: 200,
 				message: "Test message",
-				payload: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" },
+				payload: { data: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" } },
 			});
 			expect(check.monitorId).to.equal("test");
 			expect(check.status).to.be.true;

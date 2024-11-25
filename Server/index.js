@@ -28,6 +28,7 @@ import NetworkService from "./service/networkService.js";
 import axios from "axios";
 import ping from "ping";
 import http from "http";
+import Docker from "dockerode";
 
 // Email service and dependencies
 import EmailService from "./service/emailService.js";
@@ -45,7 +46,7 @@ import NotificationService from "./service/notificationService.js";
 
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
-const SHUTDOWN_TIMEOUT = 0;
+const SHUTDOWN_TIMEOUT = 1000;
 
 let isShuttingDown = false;
 const __filename = fileURLToPath(import.meta.url);
@@ -91,6 +92,23 @@ const startApp = async () => {
 	app.use("/api/v1/queue", verifyJWT, queueRouter);
 	app.use("/api/v1/status-page", statusPageRouter);
 
+	app.use("/api/v1/dummy-data", async (req, res) => {
+		try {
+			const response = await axios.get(
+				"https://gist.githubusercontent.com/ajhollid/9afa39410c7bbf52cc905f285a2225bf/raw/429a231a3559ebc95f6f488ed2c766bd7d6f46e5/dummyData.json",
+				{
+					headers: {
+						"Content-Type": "application/json",
+						"Cache-Control": "no-cache",
+					},
+				}
+			);
+			return res.status(200).json(response.data);
+		} catch (error) {
+			return res.status(500).json({ message: error.message });
+		}
+	});
+
 	//health check
 	app.use("/api/v1/healthy", (req, res) => {
 		try {
@@ -130,7 +148,7 @@ const startApp = async () => {
 		nodemailer,
 		logger
 	);
-	const networkService = new NetworkService(axios, ping, logger, http);
+	const networkService = new NetworkService(axios, ping, logger, http, Docker);
 	const statusService = new StatusService(db, logger);
 	const notificationService = new NotificationService(emailService, db, logger);
 	const jobQueue = await JobQueue.createJobQueue(

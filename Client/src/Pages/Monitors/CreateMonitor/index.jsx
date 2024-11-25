@@ -31,7 +31,26 @@ const CreateMonitor = () => {
 		"monitor-name": "name",
 		"monitor-checks-http": "type",
 		"monitor-checks-ping": "type",
+		"monitor-checks-docker": "type",
 		"notify-email-default": "notification-email",
+	};
+
+	const monitorTypeMaps = {
+		http: {
+			label: "URL to monitor",
+			placeholder: "google.com",
+			namePlaceholder: "Google",
+		},
+		ping: {
+			label: "IP address to monitor",
+			placeholder: "1.1.1.1",
+			namePlaceholder: "Google",
+		},
+		docker: {
+			label: "Container ID",
+			placeholder: "abc123",
+			namePlaceholder: "My Container",
+		},
 	};
 
 	const { monitorId } = useParams();
@@ -112,7 +131,6 @@ const CreateMonitor = () => {
 				{ [name]: value },
 				{ abortEarly: false }
 			);
-			console.log(error);
 			setErrors((prev) => {
 				const updatedErrors = { ...prev };
 				if (error) updatedErrors[name] = error.details[0].message;
@@ -234,9 +252,9 @@ const CreateMonitor = () => {
 						<Field
 							type={monitor.type === "http" ? "url" : "text"}
 							id="monitor-url"
-							label="URL to monitor"
+							label={monitorTypeMaps[monitor.type].label || "URL to monitor"}
 							https={https}
-							placeholder="google.com"
+							placeholder={monitorTypeMaps[monitor.type].placeholder || ""}
 							value={monitor.url}
 							onChange={handleChange}
 							error={errors["url"]}
@@ -246,7 +264,7 @@ const CreateMonitor = () => {
 							id="monitor-name"
 							label="Display name"
 							isOptional={true}
-							placeholder="Google"
+							placeholder={monitorTypeMaps[monitor.type].namePlaceholder || ""}
 							value={monitor.name}
 							onChange={handleChange}
 							error={errors["name"]}
@@ -299,6 +317,15 @@ const CreateMonitor = () => {
 							size="small"
 							value="ping"
 							checked={monitor.type === "ping"}
+							onChange={(event) => handleChange(event)}
+						/>
+						<Radio
+							id="monitor-checks-docker"
+							title="Docker container monitoring"
+							desc="Check whether your container is running or not."
+							size="small"
+							value="docker"
+							checked={monitor.type === "docker"}
 							onChange={(event) => handleChange(event)}
 						/>
 						{errors["type"] ? (

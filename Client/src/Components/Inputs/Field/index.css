@@ -1,6 +1,12 @@
 .field {
-	min-width: 250px;
+	min-width: var(--env-var-width-3);
 }
+
+.field-infrastructure-alert{
+	max-width: var(--env-var-width-4);
+	min-width: unset;
+}
+
 .field h3.MuiTypography-root,
 .field h5.MuiTypography-root,
 .field input,
@@ -14,7 +20,7 @@
 	padding-right: var(--env-var-spacing-1-minus);
 }
 .field .MuiInputBase-root:has(input) {
-	height: 34px;
+	height: var(--env-var-height-2);
 }
 .field .MuiInputBase-root:has(.MuiInputAdornment-root) {
 	padding-right: var(--env-var-spacing-1-minus);

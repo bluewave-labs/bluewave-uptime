@@ -1,6 +1,8 @@
 import joi from "joi";
 import dayjs from "dayjs";
 
+const THRESHOLD_COMMON_BASE_MSG = "Threshold must be a number.";
+
 const nameSchema = joi
 	.string()
 	.max(50)
@@ -173,6 +175,42 @@ const advancedSettingsValidation = joi.object({
 	pagespeedApiKey: joi.string().allow(""),
 });
 
+const infrastructureMonitorValidation = joi.object({
+	url: joi.string().uri({ allowRelative: true }).trim().messages({
+		"string.empty": "This field is required.",
+		"string.uri": "The URL you provided is not valid.",
+	}),
+	name: joi.string().trim().max(50).allow("").messages({
+		"string.max": "This field should not exceed the 50 characters limit.",
+	}),
+	secret: joi.string().trim().messages({ "string.empty": "This field is required." }),
+	usage_cpu: joi.number().messages({
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+	}),
+	cpu: joi.boolean(),
+	memory: joi.boolean(),
+	disk: joi.boolean(),
+	usage_memory: joi.number().messages({
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+	}),
+	usage_disk: joi.number().messages({
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+	}),
+	// usage_temperature: joi.number().messages({
+	// 	"number.base": "Temperature must be a number.",
+	// }),
+	// usage_system: joi.number().messages({
+	// 	"number.base": "System load must be a number.",
+	// }),
+	// usage_swap: joi.number().messages({
+	// 	"number.base": "Swap used must be a number.",
+	// }),
+	interval: joi.number().messages({
+		"number.base": "Frequency must be a number.",
+		"any.required": "Frequency is required.",
+	}),
+});
+
 export {
 	credentials,
 	imageValidation,
@@ -180,4 +218,5 @@ export {
 	settingsValidation,
 	maintenanceWindowValidation,
 	advancedSettingsValidation,
+	infrastructureMonitorValidation,
 };

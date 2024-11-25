@@ -14,6 +14,7 @@ import {
 	// Typography,
 } from "@mui/material";
 import { Heading } from "../../Components/Heading";
+
 import { useTheme } from "@emotion/react";
 import Greeting from "../../Utils/greeting";
 import Breadcrumbs from "../../Components/Breadcrumbs";
@@ -68,6 +69,8 @@ Apply to Monitor Table, and Account/Team.
 Analyze existing BasicTable
 */
 
+import { useNavigate } from "react-router-dom";
+
 /**
  * This is the Infrastructure monitoring page. This is a work in progress
  *
@@ -77,6 +80,7 @@ Analyze existing BasicTable
 
 function Infrastructure() {
 	const theme = useTheme();
+	const navigate = useNavigate();
 	return (
 		<Stack
 			component="main"
@@ -100,7 +104,7 @@ function Infrastructure() {
 					variant="contained"
 					color="primary"
 					onClick={() => {
-						// navigate("/monitors/create");
+						navigate("/infrastructure/create");
 					}}
 					sx={{ fontWeight: 500 }}
 				>
