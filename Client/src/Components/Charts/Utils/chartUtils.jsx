@@ -62,7 +62,7 @@ export const PercentTick = ({ x, y, payload, index }) => {
 			fontSize={11}
 			fontWeight={400}
 		>
-			{`${payload?.value * 100}%`}
+			{`${(payload?.value * 100).toFixed()}%`}
 		</Text>
 	);
 };
