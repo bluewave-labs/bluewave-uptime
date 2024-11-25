@@ -17,8 +17,10 @@ import {
 	TzTick,
 	PercentTick,
 	InfrastructureTooltip,
+	TemperatureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
+import Monitors from "../../Monitors/Home";
 
 const BASE_BOX_PADDING_VERTICAL = 4;
 const BASE_BOX_PADDING_HORIZONTAL = 8;
@@ -205,52 +207,51 @@ const InfrastructureDetails = () => {
 	// end height calculations
 
 	const buildStatBoxes = (monitor) => {
-		let latestCheck = monitor?.checks[0] ?? null;
+		let latestCheck = monitor?.checks[monitor?.checks.length - 1] ?? null;
 		if (latestCheck === null) return [];
 
 		// Extract values from latest check
-		const physicalCores = latestCheck?.cpu?.physical_core ?? null;
-		const logicalCores = latestCheck?.cpu?.logical_core ?? null;
-		const cpuFrequency = latestCheck?.cpu?.frequency ?? null;
+		const physicalCores = latestCheck?.cpu?.physical_core ?? 0;
+		const logicalCores = latestCheck?.cpu?.logical_core ?? 0;
+		const cpuFrequency = latestCheck?.cpu?.frequency ?? 0;
 		const cpuTemperature =
 			latestCheck?.cpu?.temperature?.reduce((acc, curr) => acc + curr, 0) /
 				latestCheck?.cpu?.temperature?.length ?? 0;
-		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? null;
-		const diskTotalBytes = latestCheck?.disk[0]?.total_bytes ?? null;
+		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? 0;
+		const diskTotalBytes = latestCheck?.disk[0]?.total_bytes ?? 0;
 		const os = latestCheck?.host?.os ?? null;
 		const platform = latestCheck?.host?.platform ?? null;
 		const osPlatform = os === null && platform === null ? null : `${os} ${platform}`;
-
 		return [
 			{
 				id: 0,
 				heading: "CPU (Physical)",
-				subHeading: physicalCores ? `${physicalCores} cores` : null,
+				subHeading: `${physicalCores} cores`,
 			},
 			{
 				id: 1,
 				heading: "CPU (Logical)",
-				subHeading: logicalCores ? `${logicalCores} cores` : null,
+				subHeading: `${logicalCores} cores`,
 			},
 			{
 				id: 2,
 				heading: "CPU Frequency",
-				subHeading: cpuFrequency ? `${(cpuFrequency / 1000).toFixed(2)} Ghz` : null,
+				subHeading: `${(cpuFrequency / 1000).toFixed(2)} Ghz`,
 			},
 			{
 				id: 3,
 				heading: "Average CPU Temperature",
-				subHeading: cpuTemperature ? `${cpuTemperature.toFixed(2)} C` : null,
+				subHeading: `${cpuTemperature.toFixed(2)} C`,
 			},
 			{
 				id: 4,
 				heading: "Memory",
-				subHeading: memoryTotalBytes ? formatBytes(memoryTotalBytes) : null,
+				subHeading: formatBytes(memoryTotalBytes),
 			},
 			{
 				id: 5,
 				heading: "Disk",
-				subHeading: diskTotalBytes ? formatBytes(diskTotalBytes) : null,
+				subHeading: formatBytes(diskTotalBytes),
 			},
 			{ id: 6, heading: "Uptime", subHeading: "100%" },
 			{
@@ -263,38 +264,38 @@ const InfrastructureDetails = () => {
 				heading: "OS",
 				subHeading: osPlatform,
 			},
-		].filter((box) => box.subHeading !== null);
+		];
 	};
 
 	const buildGaugeBoxConfigs = (monitor) => {
-		let latestCheck = monitor?.checks[0] ?? null;
+		let latestCheck = monitor?.checks[monitor?.checks.length - 1] ?? null;
 		if (latestCheck === null) return [];
 
 		// Extract values from latest check
-		const memoryUsagePercent = latestCheck?.memory?.usage_percent ?? null;
-		const memoryUsedBytes = latestCheck?.memory?.used_bytes ?? null;
-		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? null;
-		const cpuUsagePercent = latestCheck?.cpu?.usage_percent ?? null;
-		const cpuPhysicalCores = latestCheck?.cpu?.physical_core ?? null;
-		const cpuFrequency = latestCheck?.cpu?.frequency ?? null;
+		const memoryUsagePercent = latestCheck?.memory?.usage_percent ?? 0;
+		const memoryUsedBytes = latestCheck?.memory?.used_bytes ?? 0;
+		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? 0;
+		const cpuUsagePercent = latestCheck?.cpu?.usage_percent ?? 0;
+		const cpuPhysicalCores = latestCheck?.cpu?.physical_core ?? 0;
+		const cpuFrequency = latestCheck?.cpu?.frequency ?? 0;
 		return [
 			{
 				type: "memory",
-				value: memoryUsagePercent ? decimalToPercentage(memoryUsagePercent) : null,
+				value: decimalToPercentage(memoryUsagePercent),
 				heading: "Memory Usage",
 				metricOne: "Used",
-				valueOne: memoryUsedBytes ? formatBytes(memoryUsedBytes) : null,
+				valueOne: formatBytes(memoryUsedBytes),
 				metricTwo: "Total",
-				valueTwo: memoryTotalBytes ? formatBytes(memoryTotalBytes) : null,
+				valueTwo: formatBytes(memoryTotalBytes),
 			},
 			{
 				type: "cpu",
-				value: cpuUsagePercent ? decimalToPercentage(cpuUsagePercent) : null,
+				value: decimalToPercentage(cpuUsagePercent),
 				heading: "CPU Usage",
 				metricOne: "Cores",
 				valueOne: cpuPhysicalCores ?? 0,
 				metricTwo: "Frequency",
-				valueTwo: cpuFrequency ? `${(cpuFrequency / 1000).toFixed(2)} Ghz` : null,
+				valueTwo: `${(cpuFrequency / 1000).toFixed(2)} Ghz`,
 			},
 			...(latestCheck?.disk ?? []).map((disk, idx) => ({
 				type: "disk",
@@ -306,48 +307,127 @@ const InfrastructureDetails = () => {
 				metricTwo: "Total",
 				valueTwo: formatBytes(disk.total_bytes),
 			})),
-		].filter(
-			(box) => box.value !== null && box.valueOne !== null && box.valueTwo !== null
-		);
+		];
+	};
+
+	const buildTemps = (monitor) => {
+		let numCores = 0;
+		const checks = monitor?.checks ?? null;
+		if (checks === null) return [];
+		for (const check of checks) {
+			if (check.cpu.temperature.length > numCores) {
+				numCores = check.cpu.temperature.length;
+				break;
+			}
+		}
+
+		if (numCores === 0) return [];
+
+		const temps = monitor?.checks?.map((check) => {
+			if (check.cpu.temperature.length > numCores) {
+				numCores = check.cpu.temperature.length;
+			}
+
+			// If there's no data, set the temperature to 0
+			if (check.cpu.temperature.length === 0) {
+				check.cpu.temperature = Array(numCores).fill(0);
+			}
+
+			return check.cpu.temperature.reduce(
+				(acc, cur, idx) => {
+					acc[`core${idx + 1}`] = cur;
+					return acc;
+				},
+				{
+					createdAt: check.createdAt,
+				}
+			);
+		});
+		return { tempKeys: Object.keys(temps[0]).slice(1), temps };
 	};
 
 	const buildAreaChartConfigs = (monitor) => {
-		let latestCheck = monitor?.checks[0] ?? null;
+		let latestCheck = monitor?.checks[monitor?.checks.length - 1] ?? null;
 		if (latestCheck === null) return [];
-		const temps = monitor?.checks?.map((check) =>
-			check.cpu.temperature.map((temp, idx) => {
-				return { [`core${idx + 1}`]: temp };
-			})
-		);
-		console.log(temps);
-		console.log(latestCheck);
+		const tempData = buildTemps(monitor);
 		return [
 			{
 				type: "memory",
-				dataKey: latestCheck?.memory?.usage_percent ? "memory.usage_percent" : null,
+				data: monitor?.checks ?? [],
+				dataKeys: ["memory.usage_percent"],
 				heading: "Memory usage",
 				strokeColor: theme.palette.primary.main,
+				gradientStartColor: theme.palette.primary.main,
 				yLabel: "Memory Usage",
 				yDomain: [0, 1],
+				yTick: <PercentTick />,
+				xTick: <TzTick />,
+				toolTip: (
+					<InfrastructureTooltip
+						dotColor={theme.palette.primary.main}
+						yKey={"memory.usage_percent"}
+						yLabel={"Memory Usage"}
+					/>
+				),
 			},
 			{
 				type: "cpu",
-				dataKey: latestCheck?.cpu?.usage_percent ? "cpu.usage_percent" : null,
+				data: monitor?.checks ?? [],
+				dataKeys: ["cpu.usage_percent"],
 				heading: "CPU usage",
 				strokeColor: theme.palette.success.main,
+				gradientStartColor: theme.palette.success.main,
 				yLabel: "CPU Usage",
 				yDomain: [0, 1],
+				yTick: <PercentTick />,
+				xTick: <TzTick />,
+				toolTip: (
+					<InfrastructureTooltip
+						dotColor={theme.palette.success.main}
+						yKey={"cpu.usage_percent"}
+						yLabel={"CPU Usage"}
+					/>
+				),
+			},
+			{
+				type: "temperature",
+				data: tempData.temps,
+				dataKeys: tempData.tempKeys,
+				strokeColor: theme.palette.error.main,
+				gradientStartColor: theme.palette.error.main,
+				heading: "CPU Temperature",
+				yLabel: "Temperature",
+				xTick: <TzTick />,
+				yDomain: [0, 200],
+				toolTip: (
+					<TemperatureTooltip
+						keys={tempData.tempKeys}
+						dotColor={theme.palette.error.main}
+					/>
+				),
 			},
 			...(latestCheck?.disk?.map((disk, idx) => ({
 				type: "disk",
+				data: monitor?.checks ?? [],
 				diskIndex: idx,
-				dataKey: `disk[${idx}].usage_percent`,
+				dataKeys: [`disk[${idx}].usage_percent`],
 				heading: `Disk${idx} usage`,
 				strokeColor: theme.palette.warning.main,
+				gradientStartColor: theme.palette.warning.main,
 				yLabel: "Disk Usage",
 				yDomain: [0, 1],
+				yTick: <PercentTick />,
+				xTick: <TzTick />,
+				toolTip: (
+					<InfrastructureTooltip
+						dotColor={theme.palette.warning.main}
+						yKey={`disk.usage_percent`}
+						yLabel={"Disc usage"}
+						yIdx={idx}
+					/>
+				),
 			})) || []),
-		].filter((box) => box.dataKey !== null);
+		];
 	};
 
 	// Fetch data
@@ -459,28 +539,16 @@ const InfrastructureDetails = () => {
 								</Typography>
 								<AreaChart
 									height={areaChartHeight}
-									data={monitor?.checks ?? []}
-									dataKeys={[config.dataKey]}
+									data={config.data}
+									dataKeys={config.dataKeys}
 									xKey="createdAt"
-									yKey={config.dataKey}
 									yDomain={config.yDomain}
-									customTooltip={({ active, payload, label }) => (
-										<InfrastructureTooltip
-											label={label}
-											yKey={
-												config.type === "disk" ? "disk.usage_percent" : config.dataKey
-											}
-											yLabel={config.yLabel}
-											yIdx={config.diskIndex}
-											active={active}
-											payload={payload}
-										/>
-									)}
-									xTick={<TzTick />}
-									yTick={<PercentTick />}
+									customTooltip={config.toolTip}
+									xTick={config.xTick}
+									yTick={config.yTick}
 									strokeColor={config.strokeColor}
 									gradient={true}
-									gradientStartColor={config.strokeColor}
+									gradientStartColor={config.gradientStartColor}
 									gradientEndColor="#ffffff"
 								/>
 							</BaseBox>
