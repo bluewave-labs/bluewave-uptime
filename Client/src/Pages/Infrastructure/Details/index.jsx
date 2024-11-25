@@ -221,12 +221,11 @@ const InfrastructureDetails = () => {
 				setMonitor(response.data.data);
 			} catch (error) {
 				navigate("/not-found", { replace: true });
-        logger.error(error);
+				logger.error(error);
 			}
 		};
 		fetchData();
 	}, [authToken, monitorId, dateRange]);
-
 
 	const statBoxConfigs = [
 		{
@@ -290,6 +289,7 @@ const InfrastructureDetails = () => {
 			heading: "Memory usage",
 			strokeColor: theme.palette.primary.main,
 			yLabel: "Memory Usage",
+			yDomain: [0, 1],
 		},
 		{
 			type: "cpu",
@@ -297,6 +297,7 @@ const InfrastructureDetails = () => {
 			heading: "CPU usage",
 			strokeColor: theme.palette.success.main,
 			yLabel: "CPU Usage",
+			yDomain: [0, 1],
 		},
 		...(monitor?.checks?.[0]?.disk?.map((disk, idx) => ({
 			type: "disk",
@@ -305,6 +306,7 @@ const InfrastructureDetails = () => {
 			heading: `Disk${idx} usage`,
 			strokeColor: theme.palette.warning.main,
 			yLabel: "Disk Usage",
+			yDomain: [0, 1],
 		})) || []),
 	];
 
@@ -394,6 +396,7 @@ const InfrastructureDetails = () => {
 									dataKey={config.dataKey}
 									xKey="createdAt"
 									yKey={config.dataKey}
+									yDomain={config.yDomain}
 									customTooltip={({ active, payload, label }) => (
 										<InfrastructureTooltip
 											label={label}
