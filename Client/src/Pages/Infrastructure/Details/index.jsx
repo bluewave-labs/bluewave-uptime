@@ -215,8 +215,10 @@ const InfrastructureDetails = () => {
 		const logicalCores = latestCheck?.cpu?.logical_core ?? 0;
 		const cpuFrequency = latestCheck?.cpu?.frequency ?? 0;
 		const cpuTemperature =
-			latestCheck?.cpu?.temperature?.reduce((acc, curr) => acc + curr, 0) /
-				latestCheck?.cpu?.temperature?.length ?? 0;
+			latestCheck?.cpu?.temperature?.length > 0
+				? latestCheck.cpu.temperature.reduce((acc, curr) => acc + curr, 0) /
+					latestCheck.cpu.temperature.length
+				: 0;
 		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? 0;
 		const diskTotalBytes = latestCheck?.disk[0]?.total_bytes ?? 0;
 		const os = latestCheck?.host?.os ?? null;
