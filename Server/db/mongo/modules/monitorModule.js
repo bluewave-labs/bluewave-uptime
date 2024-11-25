@@ -198,7 +198,7 @@ const getIncidents = (checks) => {
 
 /**
  * Get date range parameters
- * @param {string} dateRange - 'day' | 'week' | 'month'
+ * @param {string} dateRange - 'day' | 'week' | 'month' | 'all'
  * @returns {Object} Start and end dates
  */
 const getDateRange = (dateRange) => {
@@ -206,6 +206,7 @@ const getDateRange = (dateRange) => {
 		day: new Date(new Date().setDate(new Date().getDate() - 1)),
 		week: new Date(new Date().setDate(new Date().getDate() - 7)),
 		month: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+		all: new Date(0),
 	};
 	return {
 		start: startDates[dateRange],

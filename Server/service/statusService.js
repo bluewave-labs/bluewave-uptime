@@ -29,7 +29,8 @@ class StatusService {
 			const { monitorId, status } = networkResponse;
 			const monitor = await this.db.getMonitorById(monitorId);
 			// No change in monitor status, return early
-			if (monitor.status === status) return { statusChanged: false };
+			if (monitor.status === status)
+				return { monitor, statusChanged: false, prevStatus: monitor.status };
 			// Monitor status changed, save prev status and update monitor
 
 			this.logger.info({
@@ -103,7 +104,7 @@ class StatusService {
 
 		if (type === "hardware") {
 			const { cpu, memory, disk, host } = payload?.data ?? {};
-			const { errors } = payload;
+			const { errors } = payload?.errors ?? [];
 			check.cpu = cpu ?? {};
 			check.memory = memory ?? {};
 			check.disk = disk ?? {};

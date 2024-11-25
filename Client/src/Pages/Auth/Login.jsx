@@ -548,23 +548,6 @@ const Login = () => {
 					)
 				)}
 			</Stack>
-			<Box
-				textAlign="center"
-				p={theme.spacing(12)}
-			>
-				<Typography display="inline-block">Don&apos;t have an account? —</Typography>
-				<Typography
-					component="span"
-					color={theme.palette.primary.main}
-					ml={theme.spacing(2)}
-					onClick={() => {
-						navigate("/register");
-					}}
-					sx={{ userSelect: "none" }}
-				>
-					Sign Up
-				</Typography>
-			</Box>
 		</Stack>
 	);
 };
