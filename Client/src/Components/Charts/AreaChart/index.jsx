@@ -1,3 +1,57 @@
+/**
+ * CustomAreaChart component for rendering an area chart with optional gradient and custom ticks.
+ *
+ * @param {Object} props - The properties object.
+ * @param {Array} props.data - The data array for the chart.
+ * @param {Array} props.dataKeys - An array of data keys to be plotted as separate areas.
+ * @param {string} props.xKey - The key for the x-axis data.
+ * @param {string} [props.yKey] - The key for the y-axis data (optional).
+ * @param {Object} [props.xTick] - Custom tick component for the x-axis.
+ * @param {Object} [props.yTick] - Custom tick component for the y-axis.
+ * @param {string} [props.strokeColor] - The base stroke color for the areas.
+ *                                       If not provided, uses a predefined color palette.
+ * @param {string} [props.fillColor] - The base fill color for the areas.
+ * @param {boolean} [props.gradient=false] - Whether to apply a gradient fill to the areas.
+ * @param {string} [props.gradientDirection="vertical"] - The direction of the gradient.
+ * @param {string} [props.gradientStartColor] - The start color of the gradient.
+ *                                              Defaults to the area's stroke color if not provided.
+ * @param {string} [props.gradientEndColor] - The end color of the gradient.
+ * @param {Object} [props.customTooltip] - Custom tooltip component for the chart.
+ * @param {string|number} [props.height="100%"] - Height of the chart container.
+ *
+ * @returns {JSX.Element} The rendered area chart component.
+ *
+ * @example
+ * // Single series chart
+ * <CustomAreaChart
+ *   data={temperatureData}
+ *   dataKeys={["temperature"]}
+ *   xKey="date"
+ *   yKey="temperature"
+ *   gradient={true}
+ *   gradientStartColor="#ff6b6b"
+ *   gradientEndColor="#4ecdc4"
+ * />
+ *
+ * @example
+ * // Multi-series chart with custom tooltip
+ * <CustomAreaChart
+ *   data={performanceData}
+ *   dataKeys={["cpu.usage", "memory.usage"]}
+ *   xKey="timestamp"
+ *   xTick={<CustomTimeTick />}
+ *   yTick={<PercentageTick />}
+ *   gradient={true}
+ *   customTooltip={({ active, payload, label }) => (
+ *     <CustomTooltip
+ *       label={label}
+ *       payload={payload}
+ *       active={active}
+ *     />
+ *   )}
+ * />
+ */
+
 import {
 	AreaChart,
 	Area,
@@ -12,67 +66,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@mui/material";
 import { useId } from "react";
 import { Fragment } from "react";
-/**
- * CustomAreaChart component for rendering an area chart with optional gradient and custom ticks.
- *
- * @param {Object} props - The properties object.
- * @param {Array} props.data - The data array for the chart.
- * @param {string} props.xKey - The key for the x-axis data.
- * @param {string} props.yKey - The key for the y-axis data.
- * @param {Object} [props.xTick] - Custom tick component for the x-axis.
- * @param {Object} [props.yTick] - Custom tick component for the y-axis.
- * @param {string} [props.strokeColor] - The stroke color for the area.
- * @param {string} [props.fillColor] - The fill color for the area.
- * @param {boolean} [props.gradient=false] - Whether to apply a gradient fill.
- * @param {string} [props.gradientDirection="vertical"] - The direction of the gradient.
- * @param {string} [props.gradientStartColor] - The start color of the gradient.
- * @param {string} [props.gradientEndColor] - The end color of the gradient.
- * @param {Object} [props.customTooltip] - Custom tooltip component.
- * @returns {JSX.Element} The rendered area chart component.
- *
- * @example
- * // Example usage of CustomAreaChart
- * import React from 'react';
- * import CustomAreaChart from './CustomAreaChart';
- * import { TzTick, PercentTick, InfrastructureTooltip } from './chartUtils';
- *
- * const data = [
- *   { createdAt: '2023-01-01T00:00:00Z', cpu: { usage_percent: 0.5 } },
- *   { createdAt: '2023-01-01T01:00:00Z', cpu: { usage_percent: 0.6 } },
- *   // more data points...
- * ];
- *
- * const MyChartComponent = () => {
- *   return (
- *     <CustomAreaChart
- *       data={data}
- *       dataKeys={["cpu.usage_percent"]}
- *       xKey="createdAt"
- * 		 xDomain={["2023-01-01T00:00:00Z", "2023-01-01T02:00:00Z"]}
- *       yKey="cpu.usage_percent"
- *       yDomain={[0, 1]}
- *       xTick={<TzTick />}
- *       yTick={<PercentTick />}
- *       strokeColor="#8884d8"
- *       fillColor="#8884d8"
- *       gradient={true}
- *       gradientStartColor="#8884d8"
- *       gradientEndColor="#82ca9d"
- *       customTooltip={({ active, payload, label }) => (
- *         <InfrastructureTooltip
- *           label={label?.toString() ?? ""}
- *           yKey="cpu.usage_percent"
- *           yLabel="CPU Usage"
- *           active={active}
- *           payload={payload}
- *         />
- *       )}
- *     />
- *   );
- * };
- *
- * export default MyChartComponent;
- */
+
 const CustomAreaChart = ({
 	data,
 	dataKeys,
