@@ -28,6 +28,7 @@ const TYPOGRAPHY_PADDING = 8;
  * @returns {number} Converted value in gigabytes
  */
 const formatBytes = (bytes) => {
+	if (bytes === undefined || bytes === null) return "0 GB";
 	if (typeof bytes !== "number") return "0 GB";
 	if (bytes === 0) return "0 GB";
 
@@ -39,6 +40,22 @@ const formatBytes = (bytes) => {
 	} else {
 		return `${Number(MB.toFixed(0))} MB`;
 	}
+};
+
+/**
+ * Converts a decimal value to a percentage
+ *
+ * @function decimalToPercentage
+ * @param {number} value - Decimal value to convert
+ * @returns {number} Percentage representation
+ *
+ * @example
+ * decimalToPercentage(0.75)  // Returns 75
+ * decimalToPercentage(null)  // Returns 0
+ */
+const decimalToPercentage = (value) => {
+	if (value === null || undefined) return 0;
+	return value * 100;
 };
 
 /**
@@ -237,16 +254,16 @@ const InfrastructureDetails = () => {
 	const gaugeBoxConfigs = [
 		{
 			type: "memory",
-			value: monitor?.checks[0]?.memory?.usage_percent ?? 0 * 100,
+			value: decimalToPercentage(monitor?.checks[0]?.memory?.usage_percent),
 			heading: "Memory Usage",
 			metricOne: "Used",
-			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes ?? 0),
+			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes),
 			metricTwo: "Total",
-			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes ?? 0),
+			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
 		},
 		{
 			type: "cpu",
-			value: monitor?.checks[0]?.cpu?.usage_percent ?? 0 * 100,
+			value: decimalToPercentage(monitor?.checks[0]?.cpu?.usage_percent),
 			heading: "CPU Usage",
 			metricOne: "Cores",
 			valueOne: monitor?.checks[0]?.cpu?.physical_core ?? 0,
@@ -256,7 +273,7 @@ const InfrastructureDetails = () => {
 		...(monitor?.checks?.[0]?.disk ?? []).map((disk, idx) => ({
 			type: "disk",
 			diskIndex: idx,
-			value: disk.usage_percent * 100 ?? 0,
+			value: decimalToPercentage(disk.usage_percent),
 			heading: `Disk${idx} usage`,
 			metricOne: "Used",
 			valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
