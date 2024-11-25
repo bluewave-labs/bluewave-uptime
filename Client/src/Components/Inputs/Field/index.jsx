@@ -7,23 +7,31 @@ import Visibility from "@mui/icons-material/Visibility";
 import "./index.css";
 
 /**
+ * Field component for rendering various types of input fields with customizable properties
+ *
  * @param {Object} props
- * @param {string} [props.type] - Type of input field (e.g., 'text', 'password').
- * @param {string} props.id - ID of the input field.
- * @param {string} props.name - Name of the input field.
- * @param {string} [props.label] - Label for the input field.
- * @param {boolean} [props.https] - Indicates if it should display http or https.
- * @param {boolean} [props.isRequired] - Indicates if the field is required, will display a red asterisk.
- * @param {boolean} [props.isOptional] - Indicates if the field is optional, will display optional text.
- * @param {string} [props.optionalLabel] - Optional label for the input field.
- * @param {string} [props.autoComplete] - Autocomplete value for the input field.
+ * @param {string} [props.type='text'] - Type of input field (text, password, url, email, description, number).
+ * @param {string} props.id - Unique identifier for the input field.
+ * @param {string} props.name - Name attribute for the input field.
+ * @param {string} [props.label] - Label text displayed above the input field.
+ * @param {boolean} [props.https=true] - For URL type, determines whether to show https:// or http://.
+ * @param {boolean} [props.isRequired=false] - Displays a red asterisk if the field is required.
+ * @param {boolean} [props.isOptional=false] - Displays an optional label next to the field.
+ * @param {string} [props.optionalLabel='(optional)'] - Custom text for optional label.
+ * @param {string} [props.autoComplete] - Autocomplete attribute for the input.
  * @param {string} [props.placeholder] - Placeholder text for the input field.
- * @param {string} props.value - Value of the input field.
- * @param {function} props.onChange - Function called on input change.
- * @param {string} [props.error] - Error message to display for the input field.
- * @param {boolean} [props.disabled] - Indicates if the input field is disabled.
- * @param {boolean} [props.hidden] - Indicates if the input field is hidden.
- * @param {React.Ref} [ref] - Ref forwarded to the underlying `TextField` component. Allows for direct interactions such as focusing.
+ * @param {string} props.value - Current value of the input field.
+ * @param {function} props.onChange - Callback function triggered on input value change.
+ * @param {function} [props.onBlur] - Callback function triggered when input loses focus.
+ * @param {function} [props.onInput] - Callback function triggered on input event.
+ * @param {string} [props.error] - Error message to display below the input field.
+ * @param {boolean} [props.disabled=false] - Disables the input field if true.
+ * @param {boolean} [props.hidden=false] - Hides the entire input field if true.
+ * @param {string} [props.className] - Additional CSS class names for the input container.
+ * @param {boolean} [props.hideErrorText=false] - Hides the error message if true.
+ * @param {React.Ref} [ref] - Ref forwarded to the underlying TextField component.
+ *
+ * @returns {React.ReactElement} Rendered input field component
  */
 
 const Field = forwardRef(
@@ -47,6 +55,7 @@ const Field = forwardRef(
 			disabled,
 			hidden,
 			className,
+			hideErrorText = false,
 		},
 		ref
 	) => {
@@ -57,7 +66,7 @@ const Field = forwardRef(
 		return (
 			<Stack
 				gap={theme.spacing(2)}
-				className={`${className ?? `field field-${type}`}`}
+				className={`field field-${type} ${className}`}
 				sx={{
 					"& fieldset": {
 						borderColor: theme.palette.border.dark,
@@ -190,7 +199,7 @@ const Field = forwardRef(
 					<Typography
 						component="span"
 						className="input-error"
-						hidden={className ? true : false}
+						hidden={hideErrorText}
 						color={theme.palette.error.main}
 						mt={theme.spacing(2)}
 						sx={{
@@ -226,6 +235,7 @@ Field.propTypes = {
 	disabled: PropTypes.bool,
 	hidden: PropTypes.bool,
 	className: PropTypes.string,
+	hideErrorText: PropTypes.bool,
 };
 
 export default Field;

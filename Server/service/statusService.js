@@ -11,6 +11,11 @@ class StatusService {
 		this.SERVICE_NAME = "StatusService";
 	}
 
+	getStatusString = (status) => {
+		if (status === true) return "up";
+		if (status === false) return "down";
+		return "unknown";
+	};
 	/**
 	 * Updates the status of a monitor based on the network response.
 	 *
@@ -29,12 +34,13 @@ class StatusService {
 			const { monitorId, status } = networkResponse;
 			const monitor = await this.db.getMonitorById(monitorId);
 			// No change in monitor status, return early
-			if (monitor.status === status) return { statusChanged: false };
+			if (monitor.status === status)
+				return { monitor, statusChanged: false, prevStatus: monitor.status };
 			// Monitor status changed, save prev status and update monitor
 
 			this.logger.info({
 				service: this.SERVICE_NAME,
-				message: `${monitor.name} went from ${monitor.status === true ? "up" : "down"} to ${status === true ? "up" : "down"}`,
+				message: `${monitor.name} went from ${this.getStatusString(monitor.status)} to ${this.getStatusString(status)}`,
 				prevStatus: monitor.status,
 				newStatus: status,
 			});
@@ -103,7 +109,7 @@ class StatusService {
 
 		if (type === "hardware") {
 			const { cpu, memory, disk, host } = payload?.data ?? {};
-			const { errors } = payload;
+			const { errors } = payload?.errors ?? [];
 			check.cpu = cpu ?? {};
 			check.memory = memory ?? {};
 			check.disk = disk ?? {};

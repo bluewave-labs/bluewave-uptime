@@ -132,7 +132,7 @@ const CreateInfrastructureMonitor = () => {
 		Object.keys(form)
 			.filter((k) => k.startsWith(THRESHOLD_FIELD_PREFIX))
 			.map((k) => {
-				if (form[k]) thresholds[k] = form[k];
+				if (form[k]) thresholds[k] = form[k] / 100;
 				delete form[k];
 				delete form[k.substring(THRESHOLD_FIELD_PREFIX.length)];
 			});
@@ -158,6 +158,7 @@ const CreateInfrastructureMonitor = () => {
 					: infrastructureMonitor.name,
 			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
 		};
+
 		delete form.notifications;
 		if (hasValidationErrors(form, infrastructureMonitorValidation, setErrors)) {
 			return;
@@ -193,25 +194,6 @@ const CreateInfrastructureMonitor = () => {
 		{ _id: 5, name: "5 minutes" },
 		{ _id: 10, name: "10 minutes" },
 	];
-
-	const NOTIFY_MULTIPLE_EMAIL_LABEL = (
-		<Box>
-			<Typography mb={theme.spacing(4)}>
-				Also notify via email to multiple addresses (coming soon)
-			</Typography>
-			<Field
-				id="notify-email-list"
-				type="text"
-				placeholder="name@gmail.com"
-				value=""
-				onChange={() => logger.warn("disabled")}
-				onBlur={handleBlur}
-			/>
-			<Typography mt={theme.spacing(4)}>
-				You can separate multiple emails with a comma
-			</Typography>
-		</Box>
-	);
 
 	return (
 		<Box className="create-infrastructure-monitor">
@@ -253,7 +235,8 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">General settings</Typography>
 						<Typography component="p">
-							Here you can select the URL of the host, together with the type of monitor.
+							Here you can select the URL of the host, together with the friendly name and
+							authorization secret to connect to the server agent.
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
@@ -307,15 +290,6 @@ const CreateInfrastructureMonitor = () => {
 							onChange={(e) => handleChange(e)}
 							onBlur={handleBlur}
 						/>
-						<Checkbox
-							id="notify-email"
-							label={NOTIFY_MULTIPLE_EMAIL_LABEL}
-							isChecked={false}
-							value=""
-							onChange={() => logger.warn("disabled")}
-							onBlur={handleBlur}
-							isDisabled={true}
-						/>
 					</Stack>
 				</ConfigBox>
 
@@ -323,8 +297,7 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">Customize alerts</Typography>
 						<Typography component="p">
-							Send a notification to user(s) When the thresholds exceed a certain number
-							or percentage.
+							Send a notification to user(s) when thresholds exceed a specified percentage.
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
