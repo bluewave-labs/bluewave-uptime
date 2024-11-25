@@ -38,6 +38,12 @@ const NotificationSchema = mongoose.Schema(
 				return this.alertThreshold;
 			},
 		},
+		tempAlertThreshold: {
+			type: Number,
+			default: function () {
+				return this.alertThreshold;
+			},
+		},
 	},
 	{
 		timestamps: true,
