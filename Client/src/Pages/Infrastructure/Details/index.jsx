@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import useUtils from "../../Monitors/utils";
+import { logger } from "../../../Utils/Logger";
 import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
 import {
 	TzTick,
@@ -197,7 +198,7 @@ const InfrastructureDetails = () => {
 				});
 				setMonitor(response.data.data);
 			} catch (error) {
-				console.error(error);
+				logger.error(error);
 			}
 		};
 		fetchData();
