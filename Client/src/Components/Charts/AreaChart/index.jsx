@@ -46,7 +46,9 @@ import { useId } from "react";
  *     <CustomAreaChart
  *       data={data}
  *       xKey="createdAt"
+ * 		 xDomain={["2023-01-01T00:00:00Z", "2023-01-01T02:00:00Z"]}
  *       yKey="cpu.usage_percent"
+ *       yDomain={[0, 1]}
  *       xTick={<TzTick />}
  *       yTick={<PercentTick />}
  *       strokeColor="#8884d8"
@@ -73,7 +75,9 @@ const CustomAreaChart = ({
 	data,
 	dataKey,
 	xKey,
+	xDomain,
 	yKey,
+	yDomain,
 	xTick,
 	yTick,
 	strokeColor,
@@ -97,9 +101,11 @@ const CustomAreaChart = ({
 			<AreaChart data={data}>
 				<XAxis
 					dataKey={xKey}
+					{...(xDomain && { domain: xDomain })}
 					{...(xTick && { tick: xTick })}
 				/>
 				<YAxis
+					{...(yDomain && { domain: yDomain })}
 					dataKey={yKey}
 					{...(yTick && { tick: yTick })}
 				/>
@@ -143,7 +149,9 @@ CustomAreaChart.propTypes = {
 	xTick: PropTypes.object, // Recharts takes an instance of component, so we can't pass the component itself
 	yTick: PropTypes.object, // Recharts takes an instance of component, so we can't pass the component itself
 	xKey: PropTypes.string.isRequired,
+	xDomain: PropTypes.array,
 	yKey: PropTypes.string.isRequired,
+	yDomain: PropTypes.array,
 	fillColor: PropTypes.string,
 	strokeColor: PropTypes.string,
 	gradient: PropTypes.bool,
