@@ -217,7 +217,6 @@ const InfrastructureDetails = () => {
 					numToDisplay: 50,
 					normalize: false,
 				});
-
 				setMonitor(response.data.data);
 			} catch (error) {
 				navigate("/not-found", { replace: true });
@@ -225,7 +224,7 @@ const InfrastructureDetails = () => {
 			}
 		};
 		fetchData();
-	}, [authToken, monitorId, dateRange]);
+	}, [authToken, monitorId, dateRange, navigate]);
 
 	const statBoxConfigs = [
 		{
