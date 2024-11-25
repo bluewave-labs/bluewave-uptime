@@ -165,17 +165,12 @@ class JobQueue {
 				// Handle status change
 				const { monitor, statusChanged, prevStatus } =
 					await this.statusService.updateStatus(networkResponse);
-
-				//If status hasn't changed, we're done
-				if (statusChanged === false) return;
-
-				// if prevStatus is undefined, monitor is resuming, we're done
-				if (prevStatus === undefined) return;
-
+				// Handle notifications
 				this.notificationService.handleNotifications({
 					...networkResponse,
 					monitor,
 					prevStatus,
+					statusChanged,
 				});
 			} catch (error) {
 				this.logger.error({
