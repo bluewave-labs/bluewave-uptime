@@ -201,7 +201,7 @@ const InfrastructureDetails = () => {
 			}
 		};
 		fetchData();
-	}, []);
+	}, [dateRange, monitorId, authToken]);
 
 	const statBoxConfigs = [
 		{
