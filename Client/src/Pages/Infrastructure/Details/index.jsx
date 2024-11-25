@@ -204,6 +204,152 @@ const InfrastructureDetails = () => {
 		(chartContainerHeight - totalChartContainerPadding - totalTypographyPadding) * 0.95;
 	// end height calculations
 
+	const buildStatBoxes = (monitor) => {
+		let latestCheck = monitor?.checks[0] ?? null;
+		if (latestCheck === null) return [];
+
+		// Extract values from latest check
+		const physicalCores = latestCheck?.cpu?.physical_core ?? null;
+		const logicalCores = latestCheck?.cpu?.logical_core ?? null;
+		const cpuFrequency = latestCheck?.cpu?.frequency ?? null;
+		const cpuTemperature =
+			latestCheck?.cpu?.temperature?.reduce((acc, curr) => acc + curr, 0) /
+				latestCheck?.cpu?.temperature?.length ?? 0;
+		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? null;
+		const diskTotalBytes = latestCheck?.disk[0]?.total_bytes ?? null;
+		const os = latestCheck?.host?.os ?? null;
+		const platform = latestCheck?.host?.platform ?? null;
+		const osPlatform = os === null && platform === null ? null : `${os} ${platform}`;
+
+		return [
+			{
+				id: 0,
+				heading: "CPU (Physical)",
+				subHeading: physicalCores ? `${physicalCores} cores` : null,
+			},
+			{
+				id: 1,
+				heading: "CPU (Logical)",
+				subHeading: logicalCores ? `${logicalCores} cores` : null,
+			},
+			{
+				id: 2,
+				heading: "CPU Frequency",
+				subHeading: cpuFrequency ? `${(cpuFrequency / 1000).toFixed(2)} Ghz` : null,
+			},
+			{
+				id: 3,
+				heading: "Average CPU Temperature",
+				subHeading: cpuTemperature ? `${cpuTemperature.toFixed(2)} C` : null,
+			},
+			{
+				id: 4,
+				heading: "Memory",
+				subHeading: memoryTotalBytes ? formatBytes(memoryTotalBytes) : null,
+			},
+			{
+				id: 5,
+				heading: "Disk",
+				subHeading: diskTotalBytes ? formatBytes(diskTotalBytes) : null,
+			},
+			{ id: 6, heading: "Uptime", subHeading: "100%" },
+			{
+				id: 7,
+				heading: "Status",
+				subHeading: monitor?.status === true ? "Active" : "Inactive",
+			},
+			{
+				id: 8,
+				heading: "OS",
+				subHeading: osPlatform,
+			},
+		].filter((box) => box.subHeading !== null);
+	};
+
+	const buildGaugeBoxConfigs = (monitor) => {
+		let latestCheck = monitor?.checks[0] ?? null;
+		if (latestCheck === null) return [];
+
+		// Extract values from latest check
+		const memoryUsagePercent = latestCheck?.memory?.usage_percent ?? null;
+		const memoryUsedBytes = latestCheck?.memory?.used_bytes ?? null;
+		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? null;
+		const cpuUsagePercent = latestCheck?.cpu?.usage_percent ?? null;
+		const cpuPhysicalCores = latestCheck?.cpu?.physical_core ?? null;
+		const cpuFrequency = latestCheck?.cpu?.frequency ?? null;
+		return [
+			{
+				type: "memory",
+				value: memoryUsagePercent ? decimalToPercentage(memoryUsagePercent) : null,
+				heading: "Memory Usage",
+				metricOne: "Used",
+				valueOne: memoryUsedBytes ? formatBytes(memoryUsedBytes) : null,
+				metricTwo: "Total",
+				valueTwo: memoryTotalBytes ? formatBytes(memoryTotalBytes) : null,
+			},
+			{
+				type: "cpu",
+				value: cpuUsagePercent ? decimalToPercentage(cpuUsagePercent) : null,
+				heading: "CPU Usage",
+				metricOne: "Cores",
+				valueOne: cpuPhysicalCores ?? 0,
+				metricTwo: "Frequency",
+				valueTwo: cpuFrequency ? `${(cpuFrequency / 1000).toFixed(2)} Ghz` : null,
+			},
+			...(latestCheck?.disk ?? []).map((disk, idx) => ({
+				type: "disk",
+				diskIndex: idx,
+				value: decimalToPercentage(disk.usage_percent),
+				heading: `Disk${idx} usage`,
+				metricOne: "Used",
+				valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
+				metricTwo: "Total",
+				valueTwo: formatBytes(disk.total_bytes),
+			})),
+		].filter(
+			(box) => box.value !== null && box.valueOne !== null && box.valueTwo !== null
+		);
+	};
+
+	const buildAreaChartConfigs = (monitor) => {
+		let latestCheck = monitor?.checks[0] ?? null;
+		if (latestCheck === null) return [];
+		const temps = monitor?.checks?.map((check) =>
+			check.cpu.temperature.map((temp, idx) => {
+				return { [`core${idx + 1}`]: temp };
+			})
+		);
+		console.log(temps);
+		console.log(latestCheck);
+		return [
+			{
+				type: "memory",
+				dataKey: latestCheck?.memory?.usage_percent ? "memory.usage_percent" : null,
+				heading: "Memory usage",
+				strokeColor: theme.palette.primary.main,
+				yLabel: "Memory Usage",
+				yDomain: [0, 1],
+			},
+			{
+				type: "cpu",
+				dataKey: latestCheck?.cpu?.usage_percent ? "cpu.usage_percent" : null,
+				heading: "CPU usage",
+				strokeColor: theme.palette.success.main,
+				yLabel: "CPU Usage",
+				yDomain: [0, 1],
+			},
+			...(latestCheck?.disk?.map((disk, idx) => ({
+				type: "disk",
+				diskIndex: idx,
+				dataKey: `disk[${idx}].usage_percent`,
+				heading: `Disk${idx} usage`,
+				strokeColor: theme.palette.warning.main,
+				yLabel: "Disk Usage",
+				yDomain: [0, 1],
+			})) || []),
+		].filter((box) => box.dataKey !== null);
+	};
+
 	// Fetch data
 	useEffect(() => {
 		const fetchData = async () => {
@@ -226,88 +372,9 @@ const InfrastructureDetails = () => {
 		fetchData();
 	}, [authToken, monitorId, dateRange, navigate]);
 
-	const statBoxConfigs = [
-		{
-			id: 0,
-			heading: "CPU",
-			subHeading: `${monitor?.checks[0]?.cpu?.physical_core ?? 0} cores`,
-		},
-		{
-			id: 1,
-			heading: "Memory",
-			subHeading: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
-		},
-		{
-			id: 2,
-			heading: "Disk",
-			subHeading: formatBytes(monitor?.checks[0]?.disk[0]?.total_bytes),
-		},
-		{ id: 3, heading: "Uptime", subHeading: "100%" },
-		{
-			id: 4,
-			heading: "Status",
-			subHeading: monitor?.status === true ? "Active" : "Inactive",
-		},
-	];
-
-	const gaugeBoxConfigs = [
-		{
-			type: "memory",
-			value: decimalToPercentage(monitor?.checks[0]?.memory?.usage_percent),
-			heading: "Memory Usage",
-			metricOne: "Used",
-			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes),
-			metricTwo: "Total",
-			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
-		},
-		{
-			type: "cpu",
-			value: decimalToPercentage(monitor?.checks[0]?.cpu?.usage_percent),
-			heading: "CPU Usage",
-			metricOne: "Cores",
-			valueOne: monitor?.checks[0]?.cpu?.physical_core ?? 0,
-			metricTwo: "Frequency",
-			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency ?? 0 / 1000).toFixed(2)} Ghz`,
-		},
-		...(monitor?.checks?.[0]?.disk ?? []).map((disk, idx) => ({
-			type: "disk",
-			diskIndex: idx,
-			value: decimalToPercentage(disk.usage_percent),
-			heading: `Disk${idx} usage`,
-			metricOne: "Used",
-			valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
-			metricTwo: "Total",
-			valueTwo: formatBytes(disk.total_bytes),
-		})),
-	];
-
-	const areaChartConfigs = [
-		{
-			type: "memory",
-			dataKey: "memory.usage_percent",
-			heading: "Memory usage",
-			strokeColor: theme.palette.primary.main,
-			yLabel: "Memory Usage",
-			yDomain: [0, 1],
-		},
-		{
-			type: "cpu",
-			dataKey: "cpu.usage_percent",
-			heading: "CPU usage",
-			strokeColor: theme.palette.success.main,
-			yLabel: "CPU Usage",
-			yDomain: [0, 1],
-		},
-		...(monitor?.checks?.[0]?.disk?.map((disk, idx) => ({
-			type: "disk",
-			diskIndex: idx,
-			dataKey: `disk[${idx}].usage_percent`,
-			heading: `Disk${idx} usage`,
-			strokeColor: theme.palette.warning.main,
-			yLabel: "Disk Usage",
-			yDomain: [0, 1],
-		})) || []),
-	];
+	const statBoxConfigs = buildStatBoxes(monitor);
+	const gaugeBoxConfigs = buildGaugeBoxConfigs(monitor);
+	const areaChartConfigs = buildAreaChartConfigs(monitor);
 
 	return (
 		<Box>
@@ -344,6 +411,7 @@ const InfrastructureDetails = () => {
 					</Stack>
 					<Stack
 						direction="row"
+						flexWrap="wrap"
 						gap={theme.spacing(8)}
 					>
 						{statBoxConfigs.map((statBox) => (
