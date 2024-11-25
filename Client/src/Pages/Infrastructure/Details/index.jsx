@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { networkService } from "../../../main";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import useUtils from "../../Monitors/utils";
+import { logger } from "../../../Utils/Logger";
 import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
 import {
 	TzTick,
@@ -169,7 +170,7 @@ const InfrastructureDetails = () => {
 	];
 	const [monitor, setMonitor] = useState(null);
 	const { authToken } = useSelector((state) => state.auth);
-	const [dateRange, setDateRange] = useState("day");
+	const [dateRange, setDateRange] = useState("all");
 	const { statusColor, determineState } = useUtils();
 	// These calculations are needed because ResponsiveContainer
 	// doesn't take padding of parent/siblings into account
@@ -189,19 +190,19 @@ const InfrastructureDetails = () => {
 				const response = await networkService.getStatsByMonitorId({
 					authToken: authToken,
 					monitorId: monitorId,
-					sortOrder: null,
+					sortOrder: "asc",
 					limit: null,
 					dateRange: dateRange,
 					numToDisplay: 50,
-					normalize: true,
+					normalize: false,
 				});
 				setMonitor(response.data.data);
 			} catch (error) {
-				console.error(error);
+				logger.error(error);
 			}
 		};
 		fetchData();
-	}, []);
+	}, [dateRange, monitorId, authToken]);
 
 	const statBoxConfigs = [
 		{
