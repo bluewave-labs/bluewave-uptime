@@ -20,7 +20,6 @@ import {
 	TemperatureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
-import Monitors from "../../Monitors/Home";
 
 const BASE_BOX_PADDING_VERTICAL = 4;
 const BASE_BOX_PADDING_HORIZONTAL = 8;
@@ -314,15 +313,15 @@ const InfrastructureDetails = () => {
 
 	const buildTemps = (checks) => {
 		let numCores = 0;
-		if (checks === null) return [];
+		if (checks === null) return { temps: [], tempKeys: [] };
+
 		for (const check of checks) {
-			if (check.cpu.temperature.length > numCores) {
+			if (check?.cpu?.temperature?.length > numCores) {
 				numCores = check.cpu.temperature.length;
 				break;
 			}
 		}
-
-		if (numCores === 0) return [];
+		if (numCores === 0) return { temps: [], tempKeys: [] };
 
 		const temps = checks.map((check) => {
 			if (check.cpu.temperature.length > numCores) {
@@ -401,7 +400,12 @@ const InfrastructureDetails = () => {
 				heading: "CPU Temperature",
 				yLabel: "Temperature",
 				xTick: <TzTick />,
-				yDomain: [0, 200],
+				yDomain: [
+					Math.min(...tempData.temps.flatMap((t) => tempData.tempKeys.map((k) => t[k]))) *
+						0.9,
+					Math.max(...tempData.temps.flatMap((t) => tempData.tempKeys.map((k) => t[k]))) *
+						1.1,
+				],
 				toolTip: (
 					<TemperatureTooltip
 						keys={tempData.tempKeys}
@@ -532,30 +536,36 @@ const InfrastructureDetails = () => {
 							},
 						}}
 					>
-						{areaChartConfigs.map((config) => (
-							<BaseBox key={`${config.type}-${config.diskIndex ?? ""}`}>
-								<Typography
-									component="h2"
-									padding={theme.spacing(8)}
-								>
-									{config.heading}
-								</Typography>
-								<AreaChart
-									height={areaChartHeight}
-									data={config.data}
-									dataKeys={config.dataKeys}
-									xKey="createdAt"
-									yDomain={config.yDomain}
-									customTooltip={config.toolTip}
-									xTick={config.xTick}
-									yTick={config.yTick}
-									strokeColor={config.strokeColor}
-									gradient={true}
-									gradientStartColor={config.gradientStartColor}
-									gradientEndColor="#ffffff"
-								/>
-							</BaseBox>
-						))}
+						{areaChartConfigs.map((config) => {
+							if (config?.data?.length === 0) {
+								return;
+							}
+
+							return (
+								<BaseBox key={`${config.type}-${config.diskIndex ?? ""}`}>
+									<Typography
+										component="h2"
+										padding={theme.spacing(8)}
+									>
+										{config.heading}
+									</Typography>
+									<AreaChart
+										height={areaChartHeight}
+										data={config.data}
+										dataKeys={config.dataKeys}
+										xKey="createdAt"
+										yDomain={config.yDomain}
+										customTooltip={config.toolTip}
+										xTick={config.xTick}
+										yTick={config.yTick}
+										strokeColor={config.strokeColor}
+										gradient={true}
+										gradientStartColor={config.gradientStartColor}
+										gradientEndColor="#ffffff"
+									/>
+								</BaseBox>
+							);
+						})}
 					</Stack>
 				</Stack>
 			) : (
