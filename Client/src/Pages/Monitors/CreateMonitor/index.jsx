@@ -13,7 +13,6 @@ import { ConfigBox } from "../styled";
 import Radio from "../../../Components/Inputs/Radio";
 import TextInput from "../../../Components/Inputs/TextInput";
 import { HttpAdornment } from "../../../Components/Inputs/TextInput/Adornments";
-import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -386,7 +385,7 @@ const CreateMonitor = () => {
 							(notification) => notification.type === "emails"
 						) ? (
 							<Box mx={theme.spacing(16)}>
-								<Field
+								<TextInput
 									id="notify-email-list"
 									type="text"
 									placeholder="name@gmail.com"
