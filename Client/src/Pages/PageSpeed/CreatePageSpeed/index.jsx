@@ -13,6 +13,8 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
 import Radio from "../../../Components/Inputs/Radio";
+import TextInput from "../../../Components/Inputs/TextInput";
+import { HttpAdornment } from "../../../Components/Inputs/TextInput/Adornments";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
@@ -205,17 +207,18 @@ const CreatePageSpeed = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
-						<Field
+						<TextInput
 							type={"url"}
 							id="monitor-url"
 							label="URL to monitor"
-							https={https}
+							startAdornment={<HttpAdornment https={https} />}
 							placeholder="google.com"
 							value={monitor.url}
 							onChange={handleChange}
-							error={errors["url"]}
+							error={errors["url"] ? true : false}
+							helperText={errors["url"]}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="monitor-name"
 							label="Display name"
@@ -223,7 +226,8 @@ const CreatePageSpeed = () => {
 							placeholder="Google"
 							value={monitor.name}
 							onChange={handleChange}
-							error={errors["name"]}
+							error={errors["name"] ? true : false}
+							helperText={errors["name"]}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -315,7 +319,7 @@ const CreatePageSpeed = () => {
 							(notification) => notification.type === "emails"
 						) ? (
 							<Box mx={theme.spacing(16)}>
-								<Field
+								<TextInput
 									id="notify-email-list"
 									type="text"
 									placeholder="name@gmail.com"
