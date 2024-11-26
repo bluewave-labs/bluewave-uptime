@@ -14,7 +14,8 @@ import {
 	getUptimeMonitorsByTeamId,
 	deleteUptimeMonitor,
 } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import Field from "../../../Components/Inputs/Field";
+import TextInput from "../../../Components/Inputs/TextInput";
+import { HttpAdornment } from "../../../Components/Inputs/TextInput/Adornments";
 import PauseIcon from "../../../assets/icons/pause-icon.svg?react";
 import ResumeIcon from "../../../assets/icons/resume-icon.svg?react";
 import Select from "../../../Components/Inputs/Select";
@@ -343,17 +344,17 @@ const Configure = () => {
 								</Typography>
 							</Box>
 							<Stack gap={theme.spacing(20)}>
-								<Field
+								<TextInput
 									type={monitor?.type === "http" ? "url" : "text"}
 									https={protocol === "https"}
+									startAdornment={<HttpAdornment https={protocol === "https"} />}
 									id="monitor-url"
 									label="URL to monitor"
 									placeholder="google.com"
 									value={parsedUrl?.host || monitor?.url || ""}
 									disabled={true}
-									error={errors["url"]}
 								/>
-								<Field
+								<TextInput
 									type="text"
 									id="monitor-name"
 									label="Display name"
@@ -361,7 +362,8 @@ const Configure = () => {
 									placeholder="Google"
 									value={monitor?.name || ""}
 									onChange={handleChange}
-									error={errors["name"]}
+									error={errors["name"] ? true : false}
+									helperText={errors["name"]}
 								/>
 							</Stack>
 						</ConfigBox>
@@ -405,7 +407,7 @@ const Configure = () => {
 									(notification) => notification.type === "emails"
 								) ? (
 									<Box mx={theme.spacing(16)}>
-										<Field
+										<TextInput
 											id="notify-email-list"
 											type="text"
 											placeholder="name@gmail.com"
