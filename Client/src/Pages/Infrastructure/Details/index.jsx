@@ -207,7 +207,8 @@ const InfrastructureDetails = () => {
 	// end height calculations
 
 	const buildStatBoxes = (monitor) => {
-		let latestCheck = monitor?.checks[monitor?.checks.length - 1] ?? null;
+		let latestCheck = monitor?.checks[0] ?? null;
+		console.log(latestCheck);
 		if (latestCheck === null) return [];
 
 		// Extract values from latest check
@@ -270,7 +271,7 @@ const InfrastructureDetails = () => {
 	};
 
 	const buildGaugeBoxConfigs = (monitor) => {
-		let latestCheck = monitor?.checks[monitor?.checks.length - 1] ?? null;
+		let latestCheck = monitor?.checks[0] ?? null;
 		if (latestCheck === null) return [];
 
 		// Extract values from latest check
@@ -349,13 +350,13 @@ const InfrastructureDetails = () => {
 	};
 
 	const buildAreaChartConfigs = (monitor) => {
-		let latestCheck = monitor?.checks[monitor?.checks.length - 1] ?? null;
+		let latestCheck = monitor?.checks[0] ?? null;
 		if (latestCheck === null) return [];
 		const tempData = buildTemps(monitor);
 		return [
 			{
 				type: "memory",
-				data: monitor?.checks ?? [],
+				data: monitor?.checks?.reverse() ?? [],
 				dataKeys: ["memory.usage_percent"],
 				heading: "Memory usage",
 				strokeColor: theme.palette.primary.main,
@@ -374,7 +375,7 @@ const InfrastructureDetails = () => {
 			},
 			{
 				type: "cpu",
-				data: monitor?.checks ?? [],
+				data: monitor?.checks?.reverse() ?? [],
 				dataKeys: ["cpu.usage_percent"],
 				heading: "CPU usage",
 				strokeColor: theme.palette.success.main,
@@ -410,7 +411,7 @@ const InfrastructureDetails = () => {
 			},
 			...(latestCheck?.disk?.map((disk, idx) => ({
 				type: "disk",
-				data: monitor?.checks ?? [],
+				data: monitor?.checks?.reverse() ?? [],
 				diskIndex: idx,
 				dataKeys: [`disk[${idx}].usage_percent`],
 				heading: `Disk${idx} usage`,
@@ -439,7 +440,7 @@ const InfrastructureDetails = () => {
 				const response = await networkService.getStatsByMonitorId({
 					authToken: authToken,
 					monitorId: monitorId,
-					sortOrder: "asc",
+					sortOrder: null,
 					limit: null,
 					dateRange: dateRange,
 					numToDisplay: 50,
