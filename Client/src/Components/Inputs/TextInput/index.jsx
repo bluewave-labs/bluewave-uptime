@@ -78,6 +78,10 @@ const TextInput = forwardRef(
 			label = null,
 			maxWidth = "100%",
 			flex,
+			marginTop,
+			marginRight,
+			marginBottom,
+			marginLeft,
 			disabled = false,
 			hidden = false,
 		},
@@ -89,6 +93,10 @@ const TextInput = forwardRef(
 			<Stack
 				flex={flex}
 				display={hidden ? "none" : ""}
+				marginTop={marginTop}
+				marginRight={marginRight}
+				marginBottom={marginBottom}
+				marginLeft={marginLeft}
 			>
 				<Typography
 					component="h3"
@@ -147,6 +155,10 @@ TextInput.propTypes = {
 	label: PropTypes.string,
 	maxWidth: PropTypes.string,
 	flex: PropTypes.number,
+	marginTop: PropTypes.string,
+	marginRight: PropTypes.string,
+	marginBottom: PropTypes.string,
+	marginLeft: PropTypes.string,
 	disabled: PropTypes.bool,
 	hidden: PropTypes.bool,
 };
