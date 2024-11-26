@@ -324,7 +324,7 @@ const InfrastructureDetails = () => {
 
 		if (numCores === 0) return [];
 
-		const temps = monitor?.checks?.map((check) => {
+		const temps = checks.map((check) => {
 			if (check.cpu.temperature.length > numCores) {
 				numCores = check.cpu.temperature.length;
 			}
