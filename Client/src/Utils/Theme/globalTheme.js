@@ -209,6 +209,43 @@ const baseTheme = (palette) => ({
 				}),
 			},
 		},
+		MuiTextField: {
+			styleOverrides: {
+				root: ({ theme }) => ({
+					"& fieldset": {
+						borderColor: theme.palette.border.dark,
+						borderRadius: theme.shape.borderRadius,
+					},
+					"& .MuiInputBase-input": {
+						height: "var(--env-var-height-2)",
+						fontSize: "var(--env-var-font-size-medium)",
+						fontWeight: 400,
+						color: palette.text.secondary, // or any color from your palette
+					},
+					"& .MuiInputBase-input.MuiOutlinedInput-input": {
+						padding: "0 var(--env-var-spacing-1-minus) !important",
+					},
+					"& .MuiOutlinedInput-root": {
+						borderRadius: 4,
+					},
+					"& .MuiOutlinedInput-notchedOutline": {
+						borderRadius: 4,
+					},
+					"& .MuiFormHelperText-root": {
+						color: palette.error.main,
+						opacity: 0.8,
+						fontSize: "var(--env-var-font-size-medium)",
+
+						marginLeft: 0,
+					},
+					"& .MuiFormHelperText-root.Mui-error": {
+						opacity: 0.8,
+						fontSize: "var(--env-var-font-size-medium)",
+						color: palette.error.main,
+					},
+				}),
+			},
+		},
 	},
 	shape: {
 		borderRadius: 2,
