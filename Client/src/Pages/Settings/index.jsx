@@ -348,14 +348,14 @@ const Settings = ({ isAdmin }) => {
 						<Typography component="h1">About</Typography>
 					</Box>
 					<Box>
-						<Typography component="h2">BlueWave Uptime {version}</Typography>
+						<Typography component="h2">Checkmate {version}</Typography>
 						<Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(6), opacity: 0.6 }}>
 							Developed by Bluewave Labs.
 						</Typography>
 						<Link
 							level="secondary"
-							url="https://github.com/bluewave-labs/bluewave-uptime"
-							label="https://github.com/bluewave-labs/bluewave-uptime"
+							url="https://github.com/bluewave-labs/checkmate"
+							label="https://github.com/bluewave-labs/checkmate"
 						/>
 					</Box>
 				</ConfigBox>

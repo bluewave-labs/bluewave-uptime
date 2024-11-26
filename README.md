@@ -6,26 +6,26 @@
 ![](https://img.shields.io/github/issues-pr/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/issues/bluewave-labs/bluewave-uptime)
 
-<h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">BlueWave Uptime</a></h1>
+<h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">Checkmate</a></h1>
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
 ![Dashboard-dark](https://github.com/user-attachments/assets/db875138-164f-453c-a75e-889f88747578)
 (yes, we have a light theme as well, but this looks better on readme.md)
 
-BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
+Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
 ## Demo
 
-See [BlueWave Uptime](https://uptime-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
+See [Checkmate](https://uptime-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
 
 ## User's guide
 
-Usage instructions can be found [here](https://bluewavelabs.gitbook.io/uptime-manager).
+Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate).
 
 ## Installation
 
-See installation instructions in [Uptime Manager documentation portal](https://bluewavelabs.gitbook.io/uptime-manager/quickstart).
+See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
 
 ## Questions & ideas
 
@@ -44,7 +44,7 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 **Roadmap (short term):**
 
-We are actively developing **infrastructure monitoring** features for Uptime Manager, which will include comprehensive monitoring of memory, disk usage, and CPU performance. Our goal is to build a lightweight agent that runs on Linux servers, continuously collecting and transmitting health metrics to Uptime Manager, where the data will be visualized for real-time insights.
+We are actively developing **infrastructure monitoring** features for Checkmate, which will include comprehensive monitoring of memory, disk usage, and CPU performance. Our goal is to build a lightweight agent that runs on Linux servers, continuously collecting and transmitting health metrics to Checkmate, where the data will be visualized for real-time insights.
 
 Additionally, we will introduce **Docker monitoring** to track the performance and health of containerized environments.
 

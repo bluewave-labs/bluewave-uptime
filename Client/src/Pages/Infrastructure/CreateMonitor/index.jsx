@@ -10,7 +10,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
-import { logger } from "../../../Utils/Logger";
+import Link from "../../../Components/Link";
+
 import { ConfigBox } from "../../Monitors/styled";
 import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
@@ -233,11 +234,21 @@ const CreateInfrastructureMonitor = () => {
 				</Typography>
 				<ConfigBox>
 					<Box>
-						<Typography component="h2">General settings</Typography>
-						<Typography component="p">
-							Here you can select the URL of the host, together with the friendly name and
-							authorization secret to connect to the server agent.
-						</Typography>
+						<Stack gap={theme.spacing(6)}>
+							<Typography component="h2">General settings</Typography>
+							<Typography component="p">
+								Here you can select the URL of the host, together with the friendly name
+								and authorization secret to connect to the server agent.
+							</Typography>
+							<Typography component="p">
+								The server you are monitoring must be running the{" "}
+								<Link
+									level="primary"
+									url="https://github.com/bluewave-labs/checkmate-agent"
+									label="Checkmate Monitoring Agent"
+								/>
+							</Typography>
+						</Stack>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
 						<Field
@@ -297,7 +308,8 @@ const CreateInfrastructureMonitor = () => {
 					<Box>
 						<Typography component="h2">Customize alerts</Typography>
 						<Typography component="p">
-							Send a notification to user(s) when thresholds exceed a specified percentage.
+							Send a notification to user(s) when thresholds exceed a specified
+							percentage.
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
