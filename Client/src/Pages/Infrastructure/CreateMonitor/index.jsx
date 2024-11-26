@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
 import { ConfigBox } from "../../Monitors/styled";
-import Field from "../../../Components/Inputs/Field";
 import TextInput from "../../../Components/Inputs/TextInput";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
@@ -356,15 +355,6 @@ const CreateInfrastructureMonitor = () => {
 							onBlur={(e) => handleBlur(e, "interval")}
 							items={frequencies}
 						/>
-						{/* <Field
-							type={"number"}
-							id="monitor-retries"
-							label="Maximum retries before the service is marked as down"
-							value={infrastructureMonitor.url}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							error={errors["url"]}
-						/>						 */}
 					</Stack>
 				</ConfigBox>
 				<Stack

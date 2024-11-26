@@ -4,7 +4,6 @@ import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import TextInput from "../../../../Components/Inputs/TextInput";
-import Field from "../../../../Components/Inputs/Field";
 
 StepTwo.propTypes = {
 	form: PropTypes.object,
