@@ -21,11 +21,11 @@ See [Checkmate](https://uptime-demo.bluewavelabs.ca/) in action. The username is
 
 ## User's guide
 
-Usage instructions can be found [here](https://bluewavelabs.gitbook.io/uptime-manager).
+Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate).
 
 ## Installation
 
-See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/uptime-manager/quickstart).
+See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
 
 ## Questions & ideas
 
