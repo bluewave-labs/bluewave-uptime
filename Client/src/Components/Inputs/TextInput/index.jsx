@@ -77,6 +77,7 @@ const TextInput = forwardRef(
 			endAdornment = null,
 			label = null,
 			maxWidth = "100%",
+			flex,
 			disabled = false,
 		},
 		ref
@@ -84,7 +85,7 @@ const TextInput = forwardRef(
 		const [fieldType, setFieldType] = useState(type);
 		const theme = useTheme();
 		return (
-			<Stack>
+			<Stack flex={flex}>
 				<Typography
 					component="h3"
 					fontSize={"var(--env-var-font-size-medium)"}
@@ -141,6 +142,7 @@ TextInput.propTypes = {
 	endAdornment: PropTypes.node,
 	label: PropTypes.string,
 	maxWidth: PropTypes.string,
+	flex: PropTypes.number,
 	disabled: PropTypes.bool,
 };
 
