@@ -56,6 +56,7 @@ Optional.propTypes = {
 const TextInput = forwardRef(
 	(
 		{
+			id,
 			type,
 			value,
 			placeholder,
@@ -63,12 +64,14 @@ const TextInput = forwardRef(
 			isOptional,
 			optionalLabel,
 			onChange,
+			onBlur,
 			error = false,
 			helperText = null,
 			startAdornment = null,
 			endAdornment = null,
 			label = null,
 			maxWidth = "100%",
+			disabled = false,
 		},
 		ref
 	) => {
@@ -87,10 +90,12 @@ const TextInput = forwardRef(
 					{isOptional && <Optional optionalLabel={optionalLabel} />}
 				</Typography>
 				<TextField
+					id={id}
 					type={fieldType}
 					value={value}
 					placeholder={placeholder}
 					onChange={onChange}
+					onBlur={onBlur}
 					error={error}
 					helperText={helperText}
 					inputRef={ref}
@@ -103,6 +108,7 @@ const TextInput = forwardRef(
 								: null,
 						},
 					}}
+					disabled={disabled}
 				/>
 			</Stack>
 		);
@@ -113,18 +119,21 @@ TextInput.displayName = "TextInput";
 
 TextInput.propTypes = {
 	type: PropTypes.string,
+	id: PropTypes.string.isRequired,
 	value: PropTypes.string,
 	placeholder: PropTypes.string,
 	isRequired: PropTypes.bool,
 	isOptional: PropTypes.bool,
 	optionalLabel: PropTypes.string,
 	onChange: PropTypes.func,
+	onBlur: PropTypes.func,
 	error: PropTypes.bool,
 	helperText: PropTypes.string,
 	startAdornment: PropTypes.node,
 	endAdornment: PropTypes.node,
 	label: PropTypes.string,
 	maxWidth: PropTypes.string,
+	disabled: PropTypes.bool,
 };
 
 export default TextInput;
