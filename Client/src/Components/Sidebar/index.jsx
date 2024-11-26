@@ -83,7 +83,7 @@ const menu = [
 
 const URL_MAP = {
 	support: "https://github.com/bluewave-labs/bluewave-uptime/issues",
-	docs: "https://bluewavelabs.gitbook.io/uptime-manager",
+	docs: "https://bluewavelabs.gitbook.io/checkmate",
 	changelog: "https://github.com/bluewave-labs/bluewave-uptime/releases",
 };
 
