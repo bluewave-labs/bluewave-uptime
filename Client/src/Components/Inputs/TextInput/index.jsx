@@ -8,8 +8,8 @@ const getSx = (theme, type, maxWidth) => {
 		maxWidth: maxWidth,
 		"& .MuiFormHelperText-root": {
 			position: "absolute",
-			bottom: `-${theme.spacing(12)}`,
-			minHeight: theme.spacing(12),
+			bottom: `-${theme.spacing(24)}`,
+			minHeight: theme.spacing(24),
 		},
 	};
 
@@ -79,13 +79,17 @@ const TextInput = forwardRef(
 			maxWidth = "100%",
 			flex,
 			disabled = false,
+			hidden = false,
 		},
 		ref
 	) => {
 		const [fieldType, setFieldType] = useState(type);
 		const theme = useTheme();
 		return (
-			<Stack flex={flex}>
+			<Stack
+				flex={flex}
+				display={hidden ? "none" : ""}
+			>
 				<Typography
 					component="h3"
 					fontSize={"var(--env-var-font-size-medium)"}
@@ -144,6 +148,7 @@ TextInput.propTypes = {
 	maxWidth: PropTypes.string,
 	flex: PropTypes.number,
 	disabled: PropTypes.bool,
+	hidden: PropTypes.bool,
 };
 
 export default TextInput;
