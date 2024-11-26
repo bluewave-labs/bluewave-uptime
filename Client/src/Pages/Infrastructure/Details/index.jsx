@@ -206,9 +206,8 @@ const InfrastructureDetails = () => {
 		(chartContainerHeight - totalChartContainerPadding - totalTypographyPadding) * 0.95;
 	// end height calculations
 
-	const buildStatBoxes = (monitor) => {
-		let latestCheck = monitor?.checks[0] ?? null;
-		console.log(latestCheck);
+	const buildStatBoxes = (checks) => {
+		let latestCheck = checks[0] ?? null;
 		if (latestCheck === null) return [];
 
 		// Extract values from latest check
@@ -270,8 +269,8 @@ const InfrastructureDetails = () => {
 		];
 	};
 
-	const buildGaugeBoxConfigs = (monitor) => {
-		let latestCheck = monitor?.checks[0] ?? null;
+	const buildGaugeBoxConfigs = (checks) => {
+		let latestCheck = checks[0] ?? null;
 		if (latestCheck === null) return [];
 
 		// Extract values from latest check
@@ -313,9 +312,8 @@ const InfrastructureDetails = () => {
 		];
 	};
 
-	const buildTemps = (monitor) => {
+	const buildTemps = (checks) => {
 		let numCores = 0;
-		const checks = monitor?.checks ?? null;
 		if (checks === null) return [];
 		for (const check of checks) {
 			if (check.cpu.temperature.length > numCores) {
@@ -346,17 +344,19 @@ const InfrastructureDetails = () => {
 				}
 			);
 		});
+		// Slice to remove `createdAt` key
 		return { tempKeys: Object.keys(temps[0]).slice(1), temps };
 	};
 
-	const buildAreaChartConfigs = (monitor) => {
-		let latestCheck = monitor?.checks[0] ?? null;
+	const buildAreaChartConfigs = (checks) => {
+		let latestCheck = checks[0] ?? null;
 		if (latestCheck === null) return [];
-		const tempData = buildTemps(monitor);
+		const reversedChecks = checks.toReversed();
+		const tempData = buildTemps(reversedChecks);
 		return [
 			{
 				type: "memory",
-				data: monitor?.checks?.reverse() ?? [],
+				data: reversedChecks,
 				dataKeys: ["memory.usage_percent"],
 				heading: "Memory usage",
 				strokeColor: theme.palette.primary.main,
@@ -375,7 +375,7 @@ const InfrastructureDetails = () => {
 			},
 			{
 				type: "cpu",
-				data: monitor?.checks?.reverse() ?? [],
+				data: reversedChecks,
 				dataKeys: ["cpu.usage_percent"],
 				heading: "CPU usage",
 				strokeColor: theme.palette.success.main,
@@ -411,7 +411,7 @@ const InfrastructureDetails = () => {
 			},
 			...(latestCheck?.disk?.map((disk, idx) => ({
 				type: "disk",
-				data: monitor?.checks?.reverse() ?? [],
+				data: reversedChecks,
 				diskIndex: idx,
 				dataKeys: [`disk[${idx}].usage_percent`],
 				heading: `Disk${idx} usage`,
@@ -455,9 +455,9 @@ const InfrastructureDetails = () => {
 		fetchData();
 	}, [authToken, monitorId, dateRange, navigate]);
 
-	const statBoxConfigs = buildStatBoxes(monitor);
-	const gaugeBoxConfigs = buildGaugeBoxConfigs(monitor);
-	const areaChartConfigs = buildAreaChartConfigs(monitor);
+	const statBoxConfigs = buildStatBoxes(monitor?.checks ?? []);
+	const gaugeBoxConfigs = buildGaugeBoxConfigs(monitor?.checks ?? []);
+	const areaChartConfigs = buildAreaChartConfigs(monitor?.checks ?? []);
 
 	return (
 		<Box>
