@@ -6,6 +6,11 @@ import PropTypes from "prop-types";
 const getSx = (theme, type, maxWidth) => {
 	const sx = {
 		maxWidth: maxWidth,
+		"& .MuiFormHelperText-root": {
+			position: "absolute",
+			bottom: `-${theme.spacing(12)}`,
+			minHeight: theme.spacing(12),
+		},
 	};
 
 	if (type === "url") {
@@ -57,6 +62,7 @@ const TextInput = forwardRef(
 	(
 		{
 			id,
+			name,
 			type,
 			value,
 			placeholder,
@@ -91,6 +97,7 @@ const TextInput = forwardRef(
 				</Typography>
 				<TextField
 					id={id}
+					name={name}
 					type={fieldType}
 					value={value}
 					placeholder={placeholder}
@@ -120,6 +127,7 @@ TextInput.displayName = "TextInput";
 TextInput.propTypes = {
 	type: PropTypes.string,
 	id: PropTypes.string.isRequired,
+	name: PropTypes.string,
 	value: PropTypes.string,
 	placeholder: PropTypes.string,
 	isRequired: PropTypes.bool,

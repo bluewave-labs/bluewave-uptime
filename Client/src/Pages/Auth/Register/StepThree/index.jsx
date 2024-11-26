@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import Field from "../../../../Components/Inputs/Field";
+import TextInput from "../../../../Components/Inputs/TextInput";
 import Check from "../../../../Components/Check/Check";
 import { useValidatePassword } from "../../hooks/useValidatePassword";
 
@@ -31,6 +31,7 @@ function StepThree({ onSubmit, onBack }) {
 	}, []);
 
 	const { handleChange, feedbacks, form, errors } = useValidatePassword();
+	console.log(errors);
 	return (
 		<>
 			<Stack
@@ -59,7 +60,7 @@ function StepThree({ onSubmit, onBack }) {
 						display="grid"
 						gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
 					>
-						<Field
+						<TextInput
 							type="password"
 							id="register-password-input"
 							name="password"
@@ -69,10 +70,10 @@ function StepThree({ onSubmit, onBack }) {
 							autoComplete="current-password"
 							value={form.password}
 							onChange={handleChange}
-							error={errors.password && errors.password[0]}
+							error={errors.password && errors.password[0] ? true : false}
 							ref={inputRef}
 						/>
-						<Field
+						<TextInput
 							type="password"
 							id="register-confirm-input"
 							name="confirm"
@@ -82,7 +83,7 @@ function StepThree({ onSubmit, onBack }) {
 							autoComplete="current-password"
 							value={form.confirm}
 							onChange={handleChange}
-							error={errors.confirm && errors.confirm[0]}
+							error={errors.confirm && errors.confirm[0] ? true : false}
 						/>
 					</Box>
 					<Stack
