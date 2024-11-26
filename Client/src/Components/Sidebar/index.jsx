@@ -207,14 +207,14 @@ function Sidebar() {
 							userSelect: "none",
 						}}
 					>
-						BU
+						C
 					</Stack>
 					<Typography
 						component="span"
 						mt={theme.spacing(2)}
 						sx={{ opacity: 0.8, fontWeight: 500 }}
 					>
-						BlueWave Uptime
+						Checkmate
 					</Typography>
 				</Stack>
 				<IconButton
