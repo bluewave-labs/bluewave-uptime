@@ -220,7 +220,7 @@ const baseTheme = (palette) => ({
 						height: "var(--env-var-height-2)",
 						fontSize: "var(--env-var-font-size-medium)",
 						fontWeight: 400,
-						color: palette.text.secondary, // or any color from your palette
+						color: "palette.text.secondary",
 					},
 					"& .MuiInputBase-input.MuiOutlinedInput-input": {
 						padding: "0 var(--env-var-spacing-1-minus) !important",
@@ -231,6 +231,7 @@ const baseTheme = (palette) => ({
 					"& .MuiOutlinedInput-notchedOutline": {
 						borderRadius: 4,
 					},
+
 					"& .MuiFormHelperText-root": {
 						color: palette.error.main,
 						opacity: 0.8,
