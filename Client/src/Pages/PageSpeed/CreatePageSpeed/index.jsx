@@ -17,6 +17,7 @@ import Field from "../../../Components/Inputs/Field";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { parseDomainName } from "../../../Utils/monitorUtils";
 import "./index.css";
 
 const CreatePageSpeed = () => {
@@ -91,6 +92,16 @@ const CreatePageSpeed = () => {
 				else delete updatedErrors[name];
 				return updatedErrors;
 			});
+		}
+	};
+
+	const onUrlBlur = (event) => {
+		const { value } = event.target;
+		if (monitor.name === "") {
+			setMonitor((prev) => ({
+				...prev,
+				name: parseDomainName(value),
+			}));
 		}
 	};
 
@@ -213,6 +224,7 @@ const CreatePageSpeed = () => {
 							placeholder="google.com"
 							value={monitor.url}
 							onChange={handleChange}
+							onBlur={onUrlBlur}
 							error={errors["url"]}
 						/>
 						<Field
