@@ -4,6 +4,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import { networkService } from "../../main";
@@ -231,6 +232,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const inputRef = useRef(null);
+	const authState = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		if (inputRef.current) {
@@ -302,10 +304,11 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 							<ArrowBackRoundedIcon />
 							Back
 						</Button>
-						<Button
+						{/* <LoadingButton
 							variant="contained"
 							color="primary"
 							type="submit"
+							loading={authState.isLoading}
 							disabled={errors.password && true}
 							sx={{
 								width: "30%",
@@ -317,7 +320,15 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 							}}
 						>
 							Continue
-						</Button>
+						</LoadingButton> */}
+						<LoadingButton
+							type="submit"
+							variant="contained"
+							color="primary"
+							loading={authState.isLoading}
+						>
+							{"Continue"}
+						</LoadingButton>
 					</Stack>
 				</Box>
 				<Box
@@ -378,6 +389,8 @@ const Login = () => {
 	});
 	const [errors, setErrors] = useState({});
 	const [step, setStep] = useState(0);
+
+	useEffect(() => {}, [authState.isLoading]);
 
 	useEffect(() => {
 		if (authToken) {
