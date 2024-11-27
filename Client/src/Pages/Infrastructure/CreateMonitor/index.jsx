@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
+import Link from "../../../Components/Link";
 import { ConfigBox } from "../../Monitors/styled";
 import TextInput from "../../../Components/Inputs/TextInput";
 import Select from "../../../Components/Inputs/Select";
@@ -31,12 +32,14 @@ const CreateInfrastructureMonitor = () => {
 		usage_memory: "",
 		disk: false,
 		usage_disk: "",
+		temperature: false,
+		usage_temperature: "",
 		secret: "",
 	});
 
 	const MS_PER_MINUTE = 60000;
 	const THRESHOLD_FIELD_PREFIX = "usage_";
-	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk"];
+	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk", "temperature"];
 	const { user, authToken } = useSelector((state) => state.auth);
 	const monitorState = useSelector((state) => state.infrastructureMonitor);
 	const dispatch = useDispatch();
@@ -73,18 +76,18 @@ const CreateInfrastructureMonitor = () => {
 		});
 	};
 
-	const handleBlur = (event, appenedID) => {
+	const handleBlur = (event, appendID) => {
 		event.preventDefault();
 		const { value, id } = event.target;
 		if (id?.startsWith("notify-email-")) return;
 		const { error } = infrastructureMonitorValidation.validate(
-			{ [id ?? appenedID]: value },
+			{ [id ?? appendID]: value },
 			{
 				abortEarly: false,
 			}
 		);
 		setErrors((prev) => {
-			return buildErrors(prev, id ?? appenedID, error);
+			return buildErrors(prev, id ?? appendID, error);
 		});
 	};
 
@@ -231,11 +234,21 @@ const CreateInfrastructureMonitor = () => {
 				</Typography>
 				<ConfigBox>
 					<Box>
-						<Typography component="h2">General settings</Typography>
-						<Typography component="p">
-							Here you can select the URL of the host, together with the friendly name and
-							authorization secret to connect to the server agent.
-						</Typography>
+						<Stack gap={theme.spacing(6)}>
+							<Typography component="h2">General settings</Typography>
+							<Typography component="p">
+								Here you can select the URL of the host, together with the friendly name
+								and authorization secret to connect to the server agent.
+							</Typography>
+							<Typography component="p">
+								The server you are monitoring must be running the{" "}
+								<Link
+									level="primary"
+									url="https://github.com/bluewave-labs/checkmate-agent"
+									label="Checkmate Monitoring Agent"
+								/>
+							</Typography>
+						</Stack>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
 						<TextInput

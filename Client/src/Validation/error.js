@@ -37,8 +37,13 @@ const hasValidationErrors = (form, validation, setErrors) => {
 			if (!form.disk || form.usage_disk) {
 				newErrors["usage_disk"] = null;
 			}
+			if (!form.temperature || form.usage_temperature) {
+				newErrors["usage_temperature"] = null;
+			}
 		});
-		if (Object.values(newErrors).some(v=> v)) {
+
+		console.log("newErrors", newErrors);
+		if (Object.values(newErrors).some((v) => v)) {
 			setErrors(newErrors);
 			return true;
 		} else {

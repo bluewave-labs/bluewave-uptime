@@ -13,7 +13,7 @@
 ![Dashboard-dark](https://github.com/user-attachments/assets/db875138-164f-453c-a75e-889f88747578)
 (yes, we have a light theme as well, but this looks better on readme.md)
 
-Checkmate is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
+Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
 
 ## Demo
 
@@ -21,11 +21,11 @@ See [Checkmate](https://uptime-demo.bluewavelabs.ca/) in action. The username is
 
 ## User's guide
 
-Usage instructions can be found [here](https://bluewavelabs.gitbook.io/uptime-manager).
+Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate).
 
 ## Installation
 
-See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/uptime-manager/quickstart).
+See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
 
 ## Questions & ideas
 

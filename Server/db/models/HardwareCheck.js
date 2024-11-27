@@ -4,7 +4,7 @@ const cpuSchema = mongoose.Schema({
 	physical_core: { type: Number, default: 0 },
 	logical_core: { type: Number, default: 0 },
 	frequency: { type: Number, default: 0 },
-	temperature: { type: Number, default: 0 },
+	temperature: { type: [Number], default: [] },
 	free_percent: { type: Number, default: 0 },
 	usage_percent: { type: Number, default: 0 },
 });
@@ -54,6 +54,7 @@ const HardwareCheckSchema = mongoose.Schema(
 			type: hostSchema,
 			default: () => ({}),
 		},
+
 		errors: {
 			type: [errorSchema],
 			default: () => [],

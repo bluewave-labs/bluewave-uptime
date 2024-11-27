@@ -190,15 +190,16 @@ const infrastructureMonitorValidation = joi.object({
 	cpu: joi.boolean(),
 	memory: joi.boolean(),
 	disk: joi.boolean(),
+	temperature: joi.boolean(),
 	usage_memory: joi.number().messages({
 		"number.base": THRESHOLD_COMMON_BASE_MSG,
 	}),
 	usage_disk: joi.number().messages({
 		"number.base": THRESHOLD_COMMON_BASE_MSG,
 	}),
-	// usage_temperature: joi.number().messages({
-	// 	"number.base": "Temperature must be a number.",
-	// }),
+	usage_temperature: joi.number().messages({
+		"number.base": "Temperature must be a number.",
+	}),
 	// usage_system: joi.number().messages({
 	// 	"number.base": "System load must be a number.",
 	// }),
