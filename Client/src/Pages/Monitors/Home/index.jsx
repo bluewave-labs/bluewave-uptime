@@ -20,6 +20,8 @@ const Monitors = ({ isAdmin }) => {
 	const authState = useSelector((state) => state.auth);
 	const dispatch = useDispatch({});
 
+	console.log({ monitorState });
+
 	useEffect(() => {
 		dispatch(getUptimeMonitorsByTeamId(authState.authToken));
 	}, [authState.authToken, dispatch]);
