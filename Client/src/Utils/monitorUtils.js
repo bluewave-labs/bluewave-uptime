@@ -15,3 +15,28 @@ export const getLastChecked = (checks, duration = true) => {
 	}
 	return new Date() - new Date(checks[0].createdAt);
 };
+
+export const parseDomainName = (url) => {
+	url = url.replace(/^https?:\/\//, "");
+	// Remove leading/trailing dots
+	url = url.replace(/^\.+|\.+$/g, "");
+	// Split by dots
+	const parts = url.split(".");
+	// Remove common prefixes and empty parts
+	const cleanParts = parts.filter((part) => part !== "www" && part !== "");
+	if (cleanParts.length > 2) {
+		// Don't know how to parse this, return URL
+		return url;
+	}
+	// If there's more than one part, take the second to last
+	const domainPart =
+		cleanParts.length > 1
+			? cleanParts[cleanParts.length - 2]
+			: cleanParts[cleanParts.length - 1];
+
+	if (domainPart) {
+		return domainPart.charAt(0).toUpperCase() + domainPart.slice(1).toLowerCase();
+	}
+
+	return url;
+};
