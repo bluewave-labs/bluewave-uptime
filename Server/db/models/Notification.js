@@ -38,9 +38,42 @@ const NotificationSchema = mongoose.Schema(
 				return this.alertThreshold;
 			},
 		},
+		tempAlertThreshold: {
+			type: Number,
+			default: function () {
+				return this.alertThreshold;
+			},
+		},
 	},
 	{
 		timestamps: true,
 	}
 );
+
+NotificationSchema.pre("save", function (next) {
+	if (!this.cpuAlertThreshold || this.isModified("alertThreshold")) {
+		this.cpuAlertThreshold = this.alertThreshold;
+	}
+	if (!this.memoryAlertThreshold || this.isModified("alertThreshold")) {
+		this.memoryAlertThreshold = this.alertThreshold;
+	}
+	if (!this.diskAlertThreshold || this.isModified("alertThreshold")) {
+		this.diskAlertThreshold = this.alertThreshold;
+	}
+	if (!this.tempAlertThreshold || this.isModified("alertThreshold")) {
+		this.tempAlertThreshold = this.alertThreshold;
+	}
+	next();
+});
+
+NotificationSchema.pre("findOneAndUpdate", function (next) {
+	const update = this.getUpdate();
+	if (update.alertThreshold) {
+		update.cpuAlertThreshold = update.alertThreshold;
+		update.memoryAlertThreshold = update.alertThreshold;
+		update.diskAlertThreshold = update.alertThreshold;
+		update.tempAlertThreshold = update.alertThreshold;
+	}
+	next();
+});
 export default mongoose.model("Notification", NotificationSchema);
