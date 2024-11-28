@@ -17,6 +17,7 @@ import {
 	TzTick,
 	PercentTick,
 	InfrastructureTooltip,
+	TemperatureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
 
@@ -204,6 +205,245 @@ const InfrastructureDetails = () => {
 		(chartContainerHeight - totalChartContainerPadding - totalTypographyPadding) * 0.95;
 	// end height calculations
 
+	const buildStatBoxes = (checks) => {
+		let latestCheck = checks[0] ?? null;
+		if (latestCheck === null) return [];
+
+		// Extract values from latest check
+		const physicalCores = latestCheck?.cpu?.physical_core ?? 0;
+		const logicalCores = latestCheck?.cpu?.logical_core ?? 0;
+		const cpuFrequency = latestCheck?.cpu?.frequency ?? 0;
+		const cpuTemperature =
+			latestCheck?.cpu?.temperature?.length > 0
+				? latestCheck.cpu.temperature.reduce((acc, curr) => acc + curr, 0) /
+					latestCheck.cpu.temperature.length
+				: 0;
+		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? 0;
+		const diskTotalBytes = latestCheck?.disk[0]?.total_bytes ?? 0;
+		const os = latestCheck?.host?.os ?? null;
+		const platform = latestCheck?.host?.platform ?? null;
+		const osPlatform = os === null && platform === null ? null : `${os} ${platform}`;
+		return [
+			{
+				id: 0,
+				heading: "CPU (Physical)",
+				subHeading: `${physicalCores} cores`,
+			},
+			{
+				id: 1,
+				heading: "CPU (Logical)",
+				subHeading: `${logicalCores} cores`,
+			},
+			{
+				id: 2,
+				heading: "CPU Frequency",
+				subHeading: `${(cpuFrequency / 1000).toFixed(2)} Ghz`,
+			},
+			{
+				id: 3,
+				heading: "Average CPU Temperature",
+				subHeading: `${cpuTemperature.toFixed(2)} C`,
+			},
+			{
+				id: 4,
+				heading: "Memory",
+				subHeading: formatBytes(memoryTotalBytes),
+			},
+			{
+				id: 5,
+				heading: "Disk",
+				subHeading: formatBytes(diskTotalBytes),
+			},
+			{ id: 6, heading: "Uptime", subHeading: "100%" },
+			{
+				id: 7,
+				heading: "Status",
+				subHeading: monitor?.status === true ? "Active" : "Inactive",
+			},
+			{
+				id: 8,
+				heading: "OS",
+				subHeading: osPlatform,
+			},
+		];
+	};
+
+	const buildGaugeBoxConfigs = (checks) => {
+		let latestCheck = checks[0] ?? null;
+		if (latestCheck === null) return [];
+
+		// Extract values from latest check
+		const memoryUsagePercent = latestCheck?.memory?.usage_percent ?? 0;
+		const memoryUsedBytes = latestCheck?.memory?.used_bytes ?? 0;
+		const memoryTotalBytes = latestCheck?.memory?.total_bytes ?? 0;
+		const cpuUsagePercent = latestCheck?.cpu?.usage_percent ?? 0;
+		const cpuPhysicalCores = latestCheck?.cpu?.physical_core ?? 0;
+		const cpuFrequency = latestCheck?.cpu?.frequency ?? 0;
+		return [
+			{
+				type: "memory",
+				value: decimalToPercentage(memoryUsagePercent),
+				heading: "Memory Usage",
+				metricOne: "Used",
+				valueOne: formatBytes(memoryUsedBytes),
+				metricTwo: "Total",
+				valueTwo: formatBytes(memoryTotalBytes),
+			},
+			{
+				type: "cpu",
+				value: decimalToPercentage(cpuUsagePercent),
+				heading: "CPU Usage",
+				metricOne: "Cores",
+				valueOne: cpuPhysicalCores ?? 0,
+				metricTwo: "Frequency",
+				valueTwo: `${(cpuFrequency / 1000).toFixed(2)} Ghz`,
+			},
+			...(latestCheck?.disk ?? []).map((disk, idx) => ({
+				type: "disk",
+				diskIndex: idx,
+				value: decimalToPercentage(disk.usage_percent),
+				heading: `Disk${idx} usage`,
+				metricOne: "Used",
+				valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
+				metricTwo: "Total",
+				valueTwo: formatBytes(disk.total_bytes),
+			})),
+		];
+	};
+
+	const buildTemps = (checks) => {
+		let numCores = 1;
+		if (checks === null) return { temps: [], tempKeys: [] };
+
+		for (const check of checks) {
+			if (check?.cpu?.temperature?.length > numCores) {
+				numCores = check.cpu.temperature.length;
+				break;
+			}
+		}
+		const temps = checks.map((check) => {
+			// If there's no data, set the temperature to 0
+			if (
+				check?.cpu?.temperature?.length === 0 ||
+				check?.cpu?.temperature === undefined ||
+				check?.cpu?.temperature === null
+			) {
+				check.cpu.temperature = Array(numCores).fill(0);
+			}
+			const res = check?.cpu?.temperature?.reduce(
+				(acc, cur, idx) => {
+					acc[`core${idx + 1}`] = cur;
+					return acc;
+				},
+				{
+					createdAt: check.createdAt,
+				}
+			);
+			return res;
+		});
+		if (temps.length === 0 || !temps[0]) {
+			return { temps: [], tempKeys: [] };
+		}
+
+		return {
+			tempKeys: Object.keys(temps[0] || {}).filter((key) => key !== "createdAt"),
+			temps,
+		};
+	};
+
+	const buildAreaChartConfigs = (checks) => {
+		let latestCheck = checks[0] ?? null;
+		if (latestCheck === null) return [];
+		const reversedChecks = checks.toReversed();
+		const tempData = buildTemps(reversedChecks);
+		return [
+			{
+				type: "memory",
+				data: reversedChecks,
+				dataKeys: ["memory.usage_percent"],
+				heading: "Memory usage",
+				strokeColor: theme.palette.primary.main,
+				gradientStartColor: theme.palette.primary.main,
+				yLabel: "Memory Usage",
+				yDomain: [0, 1],
+				yTick: <PercentTick />,
+				xTick: <TzTick />,
+				toolTip: (
+					<InfrastructureTooltip
+						dotColor={theme.palette.primary.main}
+						yKey={"memory.usage_percent"}
+						yLabel={"Memory Usage"}
+					/>
+				),
+			},
+			{
+				type: "cpu",
+				data: reversedChecks,
+				dataKeys: ["cpu.usage_percent"],
+				heading: "CPU usage",
+				strokeColor: theme.palette.success.main,
+				gradientStartColor: theme.palette.success.main,
+				yLabel: "CPU Usage",
+				yDomain: [0, 1],
+				yTick: <PercentTick />,
+				xTick: <TzTick />,
+				toolTip: (
+					<InfrastructureTooltip
+						dotColor={theme.palette.success.main}
+						yKey={"cpu.usage_percent"}
+						yLabel={"CPU Usage"}
+					/>
+				),
+			},
+			{
+				type: "temperature",
+				data: tempData.temps,
+				dataKeys: tempData.tempKeys,
+				strokeColor: theme.palette.error.main,
+				gradientStartColor: theme.palette.error.main,
+				heading: "CPU Temperature",
+				yLabel: "Temperature",
+				xTick: <TzTick />,
+				yDomain: [
+					0,
+					Math.max(
+						Math.max(
+							...tempData.temps.flatMap((t) => tempData.tempKeys.map((k) => t[k]))
+						) * 1.1,
+						200
+					),
+				],
+				toolTip: (
+					<TemperatureTooltip
+						keys={tempData.tempKeys}
+						dotColor={theme.palette.error.main}
+					/>
+				),
+			},
+			...(latestCheck?.disk?.map((disk, idx) => ({
+				type: "disk",
+				data: reversedChecks,
+				diskIndex: idx,
+				dataKeys: [`disk[${idx}].usage_percent`],
+				heading: `Disk${idx} usage`,
+				strokeColor: theme.palette.warning.main,
+				gradientStartColor: theme.palette.warning.main,
+				yLabel: "Disk Usage",
+				yDomain: [0, 1],
+				yTick: <PercentTick />,
+				xTick: <TzTick />,
+				toolTip: (
+					<InfrastructureTooltip
+						dotColor={theme.palette.warning.main}
+						yKey={`disk.usage_percent`}
+						yLabel={"Disc usage"}
+						yIdx={idx}
+					/>
+				),
+			})) || []),
+		];
+	};
+
 	// Fetch data
 	useEffect(() => {
 		const fetchData = async () => {
@@ -211,102 +451,24 @@ const InfrastructureDetails = () => {
 				const response = await networkService.getStatsByMonitorId({
 					authToken: authToken,
 					monitorId: monitorId,
-					sortOrder: "asc",
+					sortOrder: null,
 					limit: null,
 					dateRange: dateRange,
 					numToDisplay: 50,
 					normalize: false,
 				});
-
 				setMonitor(response.data.data);
 			} catch (error) {
 				navigate("/not-found", { replace: true });
-        logger.error(error);
+				logger.error(error);
 			}
 		};
 		fetchData();
-	}, [authToken, monitorId, dateRange]);
+	}, [authToken, monitorId, dateRange, navigate]);
 
-
-	const statBoxConfigs = [
-		{
-			id: 0,
-			heading: "CPU",
-			subHeading: `${monitor?.checks[0]?.cpu?.physical_core ?? 0} cores`,
-		},
-		{
-			id: 1,
-			heading: "Memory",
-			subHeading: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
-		},
-		{
-			id: 2,
-			heading: "Disk",
-			subHeading: formatBytes(monitor?.checks[0]?.disk[0]?.total_bytes),
-		},
-		{ id: 3, heading: "Uptime", subHeading: "100%" },
-		{
-			id: 4,
-			heading: "Status",
-			subHeading: monitor?.status === true ? "Active" : "Inactive",
-		},
-	];
-
-	const gaugeBoxConfigs = [
-		{
-			type: "memory",
-			value: decimalToPercentage(monitor?.checks[0]?.memory?.usage_percent),
-			heading: "Memory Usage",
-			metricOne: "Used",
-			valueOne: formatBytes(monitor?.checks[0]?.memory?.used_bytes),
-			metricTwo: "Total",
-			valueTwo: formatBytes(monitor?.checks[0]?.memory?.total_bytes),
-		},
-		{
-			type: "cpu",
-			value: decimalToPercentage(monitor?.checks[0]?.cpu?.usage_percent),
-			heading: "CPU Usage",
-			metricOne: "Cores",
-			valueOne: monitor?.checks[0]?.cpu?.physical_core ?? 0,
-			metricTwo: "Frequency",
-			valueTwo: `${(monitor?.checks[0]?.cpu?.frequency ?? 0 / 1000).toFixed(2)} Ghz`,
-		},
-		...(monitor?.checks?.[0]?.disk ?? []).map((disk, idx) => ({
-			type: "disk",
-			diskIndex: idx,
-			value: decimalToPercentage(disk.usage_percent),
-			heading: `Disk${idx} usage`,
-			metricOne: "Used",
-			valueOne: formatBytes(disk.total_bytes - disk.free_bytes),
-			metricTwo: "Total",
-			valueTwo: formatBytes(disk.total_bytes),
-		})),
-	];
-
-	const areaChartConfigs = [
-		{
-			type: "memory",
-			dataKey: "memory.usage_percent",
-			heading: "Memory usage",
-			strokeColor: theme.palette.primary.main,
-			yLabel: "Memory Usage",
-		},
-		{
-			type: "cpu",
-			dataKey: "cpu.usage_percent",
-			heading: "CPU usage",
-			strokeColor: theme.palette.success.main,
-			yLabel: "CPU Usage",
-		},
-		...(monitor?.checks?.[0]?.disk?.map((disk, idx) => ({
-			type: "disk",
-			diskIndex: idx,
-			dataKey: `disk[${idx}].usage_percent`,
-			heading: `Disk${idx} usage`,
-			strokeColor: theme.palette.warning.main,
-			yLabel: "Disk Usage",
-		})) || []),
-	];
+	const statBoxConfigs = buildStatBoxes(monitor?.checks ?? []);
+	const gaugeBoxConfigs = buildGaugeBoxConfigs(monitor?.checks ?? []);
+	const areaChartConfigs = buildAreaChartConfigs(monitor?.checks ?? []);
 
 	return (
 		<Box>
@@ -343,6 +505,7 @@ const InfrastructureDetails = () => {
 					</Stack>
 					<Stack
 						direction="row"
+						flexWrap="wrap"
 						gap={theme.spacing(8)}
 					>
 						{statBoxConfigs.map((statBox) => (
@@ -380,41 +543,32 @@ const InfrastructureDetails = () => {
 							},
 						}}
 					>
-						{areaChartConfigs.map((config) => (
-							<BaseBox key={`${config.type}-${config.diskIndex ?? ""}`}>
-								<Typography
-									component="h2"
-									padding={theme.spacing(8)}
-								>
-									{config.heading}
-								</Typography>
-								<AreaChart
-									height={areaChartHeight}
-									data={monitor?.checks ?? []}
-									dataKey={config.dataKey}
-									xKey="createdAt"
-									yKey={config.dataKey}
-									customTooltip={({ active, payload, label }) => (
-										<InfrastructureTooltip
-											label={label}
-											yKey={
-												config.type === "disk" ? "disk.usage_percent" : config.dataKey
-											}
-											yLabel={config.yLabel}
-											yIdx={config.diskIndex}
-											active={active}
-											payload={payload}
-										/>
-									)}
-									xTick={<TzTick />}
-									yTick={<PercentTick />}
-									strokeColor={config.strokeColor}
-									gradient={true}
-									gradientStartColor={config.strokeColor}
-									gradientEndColor="#ffffff"
-								/>
-							</BaseBox>
-						))}
+						{areaChartConfigs.map((config) => {
+							return (
+								<BaseBox key={`${config.type}-${config.diskIndex ?? ""}`}>
+									<Typography
+										component="h2"
+										padding={theme.spacing(8)}
+									>
+										{config.heading}
+									</Typography>
+									<AreaChart
+										height={areaChartHeight}
+										data={config.data}
+										dataKeys={config.dataKeys}
+										xKey="createdAt"
+										yDomain={config.yDomain}
+										customTooltip={config.toolTip}
+										xTick={config.xTick}
+										yTick={config.yTick}
+										strokeColor={config.strokeColor}
+										gradient={true}
+										gradientStartColor={config.gradientStartColor}
+										gradientEndColor="#ffffff"
+									/>
+								</BaseBox>
+							);
+						})}
 					</Stack>
 				</Stack>
 			) : (
