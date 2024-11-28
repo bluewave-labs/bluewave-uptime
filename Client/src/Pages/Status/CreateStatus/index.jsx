@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+
 import { Box, Tab, useTheme } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import GeneralSettingsPanel from "../../../Components/TabPanels/Status/GeneralSettingsPanel";
+import ImageField from "../../../Components/Inputs/Image";
+import Checkbox from "../../../Components/Inputs/Checkbox";
 
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
@@ -19,10 +21,14 @@ const CreateStatus = ({ open = "general settings" }) => {
 	const handleTabChange = (event, newTab) => {
 		navigate(`/status/${newTab}`);
 	};
-	const { user } = useSelector((state) => state.auth);
-
-	const requiredRoles = ["superadmin", "admin"];
 	let tabList = ["General Settings", "Contents"];
+	const handlePicture = (event) => {}
+
+	const handleSubmit = () => {};
+
+	const handleChange = () => {};
+
+	const handleBlur = () => {};	
 
 	return (
 		<Box
