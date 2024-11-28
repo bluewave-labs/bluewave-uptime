@@ -62,6 +62,7 @@ const ImageField = ({ id, src, loading, onChange }) => {
 									cursor: "pointer",
 									maxWidth: "500px",
 									minHeight: "175px",
+									zIndex: 1
 								},
 								"& fieldset": {
 									padding: 0,
@@ -78,7 +79,7 @@ const ImageField = ({ id, src, loading, onChange }) => {
 								top: "50%",
 								left: "50%",
 								transform: "translate(-50%, -50%)",
-								zIndex: "-1",
+								zIndex:0,								
 								width: "100%",
 							}}
 						>
