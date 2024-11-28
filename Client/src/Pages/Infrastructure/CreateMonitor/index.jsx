@@ -33,12 +33,14 @@ const CreateInfrastructureMonitor = () => {
 		usage_memory: "",
 		disk: false,
 		usage_disk: "",
+		temperature: false,
+		usage_temperature: "",
 		secret: "",
 	});
 
 	const MS_PER_MINUTE = 60000;
 	const THRESHOLD_FIELD_PREFIX = "usage_";
-	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk"];
+	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk", "temperature"];
 	const { user, authToken } = useSelector((state) => state.auth);
 	const monitorState = useSelector((state) => state.infrastructureMonitor);
 	const dispatch = useDispatch();
@@ -75,18 +77,18 @@ const CreateInfrastructureMonitor = () => {
 		});
 	};
 
-	const handleBlur = (event, appenedID) => {
+	const handleBlur = (event, appendID) => {
 		event.preventDefault();
 		const { value, id } = event.target;
 		if (id?.startsWith("notify-email-")) return;
 		const { error } = infrastructureMonitorValidation.validate(
-			{ [id ?? appenedID]: value },
+			{ [id ?? appendID]: value },
 			{
 				abortEarly: false,
 			}
 		);
 		setErrors((prev) => {
-			return buildErrors(prev, id ?? appenedID, error);
+			return buildErrors(prev, id ?? appendID, error);
 		});
 	};
 
