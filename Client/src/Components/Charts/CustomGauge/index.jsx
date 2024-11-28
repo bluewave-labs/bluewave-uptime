@@ -4,6 +4,9 @@ import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import "./index.css";
 
+const MINIMUM_VALUE = 0;
+const MAXIMUM_VALUE = 100;
+
 /**
  * A Performant SVG based circular gauge
  *
@@ -11,25 +14,21 @@ import "./index.css";
  * @param {Object} props - Component properties
  * @param {number} [props.progress=0] - Progress percentage (0-100)
  * @param {number} [props.radius=60] - Radius of the gauge circle
- * @param {string} [props.color="#000000"] - Color of the progress stroke
  * @param {number} [props.strokeWidth=15] - Width of the gauge stroke
+ * @param {number} [props.threshold=50] - Threshold for color change
  *
  * @example
  * <CustomGauge
  *   progress={75}
  *   radius={50}
- *   color="#00ff00"
  *   strokeWidth={10}
+ * 	 threshold={50}
  * />
  *
  * @returns {React.ReactElement} Rendered CustomGauge component
  */
-const CustomGauge = ({
-	progress = 0,
-	radius = 60,
-	color = "#000000",
-	strokeWidth = 15,
-}) => {
+const CustomGauge = ({ progress = 0, radius = 70, strokeWidth = 15, threshold = 50 }) => {
+	const theme = useTheme();
 	// Calculate the length of the stroke for the circle
 	const { circumference, totalSize, strokeLength } = useMemo(
 		() => ({
@@ -39,10 +38,9 @@ const CustomGauge = ({
 		}),
 		[radius, strokeWidth, progress]
 	);
-	const [offset, setOffset] = useState(circumference);
-	const theme = useTheme();
 
 	// Handle initial animation
+	const [offset, setOffset] = useState(circumference);
 	useEffect(() => {
 		setOffset(circumference);
 		const timer = setTimeout(() => {
@@ -51,6 +49,13 @@ const CustomGauge = ({
 
 		return () => clearTimeout(timer);
 	}, [progress, circumference, strokeLength]);
+
+	const progressWithinRange = Math.max(MINIMUM_VALUE, Math.min(progress, MAXIMUM_VALUE));
+
+	const fillColor =
+		progressWithinRange > threshold
+			? theme.palette.primary.main
+			: theme.palette.percentage.uptimePoor;
 
 	return (
 		<Box
@@ -74,7 +79,7 @@ const CustomGauge = ({
 				/>
 				<circle
 					className="radial-chart-progress"
-					stroke={color}
+					stroke={fillColor}
 					strokeWidth={strokeWidth}
 					strokeDasharray={`${circumference} ${circumference}`}
 					strokeDashoffset={offset}
@@ -97,7 +102,7 @@ const CustomGauge = ({
 					fill: theme.typography.body2.color,
 				}}
 			>
-				{`${progress.toFixed(2)}%`}
+				{`${progressWithinRange.toFixed(1)}%`}
 			</Typography>
 		</Box>
 	);
@@ -108,6 +113,6 @@ export default CustomGauge;
 CustomGauge.propTypes = {
 	progress: PropTypes.number,
 	radius: PropTypes.number,
-	color: PropTypes.string,
 	strokeWidth: PropTypes.number,
+	threshold: PropTypes.number,
 };

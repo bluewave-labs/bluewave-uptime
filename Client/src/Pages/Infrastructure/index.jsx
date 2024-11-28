@@ -27,6 +27,7 @@ import { Gauge } from "../../Components/Charts/Gauge";
 import { Pagination } from "./components/TablePagination";
 // import { getInfrastructureMonitorsByTeamId } from "../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { networkService } from "../../Utils/NetworkService.js";
+import CustomGauge from "../../Components/Charts/CustomGauge/index.jsx";
 
 // const ROWS = Array.from(Array(20).keys()).map(() => mockedData);
 
@@ -246,10 +247,11 @@ function Infrastructure(/* {isAdmin} */) {
 											</Stack>
 										</TableCell>
 										<TableCell align="center">
-											<Gauge
+											{/* <Gauge
 												progressValue={row.cpu}
 												containerWidth={60}
-											/>
+											/> */}
+											<CustomGauge progress={row.cpu} />
 										</TableCell>
 										<TableCell align="center">
 											<Gauge
