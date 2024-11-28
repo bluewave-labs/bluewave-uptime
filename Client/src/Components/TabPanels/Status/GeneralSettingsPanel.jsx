@@ -14,13 +14,19 @@ import Select from "../../Inputs/Select"
 const GeneralSettingsPanel = () => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
-	const [error, setError] = useState("");
-	// Local state for form data, errors, and file handling
-	const [localData, setLocalData] = useState({});
 	const [errors, setErrors] = useState({});
-	const [file, setFile] = useState();
-	const { timezone } = useSelector((state) => state.ui);
-	const { mode } = useSelector((state) => state.ui);
+	const [file, setFile] = useState();	
+	// Local state for form data, errors, and file handling
+	const [localData, setLocalData] = useState({
+		companyName: "",
+		url: "",
+		timezone: "America/Toronto",
+		color: "#4169E1",		
+		theme: "light",
+		//which fields matching below?
+		publish: false,
+		file: null
+	});
 
 	const handleChange = (event, appendedId) => {
 		event.preventDefault();
@@ -72,8 +78,8 @@ const GeneralSettingsPanel = () => {
 						<Checkbox
 							id="published-to-public"
 							label={`Published and visible to the public`}
-							isChecked={false}
-							value={"dd"}
+							isChecked={localData.publish}
+							value={localData.publish}
 							onChange={handleChange}
 							onBlur={handleBlur}
 						/>
@@ -94,7 +100,7 @@ const GeneralSettingsPanel = () => {
 							id="company-name"
 							type="text"
 							label="Company name"
-							value={localData.name}
+							value={localData.companyName}
 						/>
 						<Field
 							id="suburl"
@@ -141,7 +147,7 @@ const GeneralSettingsPanel = () => {
 						<Select
 							id="theme"
 							label="Theme"
-							value={localData.mode}
+							value={localData.theme}
 							onChange={(e) => {
 								dispatch(setMode(e.target.value));
 							}}
