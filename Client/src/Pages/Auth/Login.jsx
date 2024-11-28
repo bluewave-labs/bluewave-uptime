@@ -304,7 +304,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 							<ArrowBackRoundedIcon />
 							Back
 						</Button>
-						{/* <LoadingButton
+						<LoadingButton
 							variant="contained"
 							color="primary"
 							type="submit"
@@ -320,14 +320,6 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 							}}
 						>
 							Continue
-						</LoadingButton> */}
-						<LoadingButton
-							type="submit"
-							variant="contained"
-							color="primary"
-							loading={authState.isLoading}
-						>
-							{"Continue"}
 						</LoadingButton>
 					</Stack>
 				</Box>
