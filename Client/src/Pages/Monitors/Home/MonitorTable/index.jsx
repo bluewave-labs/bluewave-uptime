@@ -115,16 +115,6 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 		prevFilter.current = filter;
 	}, [filter, fetchPage]);
 
-	/**
-	 * Helper function to calculate the range of displayed rows.
-	 * @returns {string}
-	 */
-	// const getRange = () => {
-	// 	let start = page * rowsPerPage + 1;
-	// 	let end = Math.min(page * rowsPerPage + rowsPerPage, monitorCount);
-	// 	return `${start} - ${end}`;
-	// };
-
 	const handleSort = async (field) => {
 		let order = "";
 		if (sort.field !== field) {
@@ -317,11 +307,11 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 				</Table>
 			</TableContainer>
 			<Pagination
+				monitorCount={monitorCount}
 				page={page}
 				rowsPerPage={rowsPerPage}
 				handleChangePage={handleChangePage}
 				handleChangeRowsPerPage={handleChangeRowsPerPage}
-				monitorCount={monitorCount}
 			/>
 		</Box>
 	);

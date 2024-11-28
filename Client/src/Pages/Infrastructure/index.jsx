@@ -1,3 +1,12 @@
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { /* useDispatch, */ useSelector } from "react-redux";
+import { useTheme } from "@emotion/react";
+import useUtils from "../Monitors/utils";
+import { jwtDecode } from "jwt-decode";
+import Greeting from "../../Utils/greeting";
+import GearIcon from "../../Assets/icons/settings-bold.svg?react";
+import CPUChipIcon from "../../Assets/icons/cpu-chip.svg?react";
 import {
 	Box,
 	Button,
@@ -10,23 +19,14 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	// TablePagination,
-	// Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useTheme } from "@emotion/react";
-import Greeting from "../../Utils/greeting";
-import GearIcon from "../../Assets/icons/settings-bold.svg?react";
-import CPUChipIcon from "../../Assets/icons/cpu-chip.svg?react";
 import Breadcrumbs from "../../Components/Breadcrumbs";
 import { StatusLabel } from "../../Components/Label";
 import { Heading } from "../../Components/Heading";
 import { Gauge } from "../../Components/Charts/Gauge";
-import { getInfrastructureMonitorsByTeamId } from "../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
-import useUtils from "../Monitors/utils";
 import { Pagination } from "./components/TablePagination";
+// import { getInfrastructureMonitorsByTeamId } from "../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
+import { networkService } from "../../Utils/NetworkService.js";
 
 // const ROWS = Array.from(Array(20).keys()).map(() => mockedData);
 
@@ -73,17 +73,54 @@ Analyze existing BasicTable
 
 function Infrastructure(/* {isAdmin} */) {
 	const theme = useTheme();
-	const { determineState } = useUtils();
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const { authToken } = useSelector((state) => state.auth);
-	const { isLoading, monitorsSummary, msg, success, ...rest } = useSelector(
-		(state) => state.infrastructureMonitors
-	);
 
-	const { monitorCounts = {}, monitors = [] } = monitorsSummary;
-	const { total: totalMonitors = 0 } = monitorCounts;
-	console.log({ monitors });
+	const navigate = useNavigate();
+	const navigateToCreate = () => navigate("/infrastructure/create");
+
+	const [page, setPage] = useState(0);
+	/* TODO refactor this, so it is not aware of the MUI implementation. First argument only exists because of MUI. This should require onlu the new page. Adapting for MUI should happen inside of table pagination component */
+	const handleChangePage = (_, newPage) => {
+		setPage(newPage);
+	};
+
+	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(parseInt(event.target.value));
+		setPage(0);
+	};
+	const [monitorState, setMonitorState] = useState({ monitors: [], total: 0 });
+
+	const { authToken } = useSelector((state) => state.auth);
+	const user = jwtDecode(authToken);
+
+	const fetchMonitors = useCallback(async () => {
+		try {
+			const response = await networkService.getMonitorsByTeamId({
+				authToken,
+				teamId: user.teamId,
+				limit: 1,
+				types: ["hardware"],
+				status: null,
+				checkOrder: "desc",
+				normalize: true,
+				page: page,
+				rowsPerPage: rowsPerPage,
+			});
+			setMonitorState({
+				monitors: response?.data?.data?.monitors ?? [],
+				total: response?.data?.data?.monitorCount ?? 0,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	}, [page, rowsPerPage, authToken]);
+
+	useEffect(() => {
+		fetchMonitors();
+	}, [page, rowsPerPage]);
+
+	const { determineState } = useUtils();
+	const { monitors, total: totalMonitors } = monitorState;
 	const monitorsAsRows = monitors.map((monitor) => ({
 		ip: monitor.name,
 		status: determineState(monitor),
@@ -92,11 +129,6 @@ function Infrastructure(/* {isAdmin} */) {
 		mem: 50 /* How to retrieve that?  */,
 		disk: 70 /* How to retrieve that?  */,
 	}));
-
-	useEffect(() => {
-		dispatch(getInfrastructureMonitorsByTeamId(authToken));
-	}, [authToken]);
-	// console.log({ isLoading, monitorsSummary, msg, success, rest });
 
 	return (
 		<Stack
@@ -120,9 +152,7 @@ function Infrastructure(/* {isAdmin} */) {
 				<Button
 					variant="contained"
 					color="primary"
-					onClick={() => {
-						navigate("/infrastructure/create");
-					}}
+					onClick={navigateToCreate}
 					sx={{ fontWeight: 500 }}
 				>
 					Create infrastructure monitor
@@ -254,14 +284,13 @@ function Infrastructure(/* {isAdmin} */) {
 						</TableBody>
 					</Table>
 				</TableContainer>
-				{/* 
-				  TODO continue creating pagination component. It should change the current page, which will trigger refetch? 
-				
-				*/}
-				{/* <Pagination
-					// monitorCount={totalMonitors}
-					page={0}
-				/> */}
+				<Pagination
+					monitorCount={totalMonitors}
+					page={page}
+					rowsPerPage={rowsPerPage}
+					handleChangePage={handleChangePage}
+					handleChangeRowsPerPage={handleChangeRowsPerPage}
+				/>
 			</Stack>
 		</Stack>
 	);

@@ -88,6 +88,7 @@ export const getInfrastructureMonitorsByTeamId = createAsyncThunk(
 				teamId: user.teamId,
 				types: ["hardware"],
 				limit: 1,
+				rowsPerPage: 0,
 			});
 			return res.data;
 		} catch (error) {
