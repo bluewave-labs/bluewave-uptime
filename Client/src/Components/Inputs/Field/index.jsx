@@ -55,6 +55,7 @@ const Field = forwardRef(
 			disabled,
 			hidden,
 			className,
+			prefix,
 			hideErrorText = false,
 		},
 		ref
@@ -167,7 +168,7 @@ const Field = forwardRef(
 									color={theme.palette.text.secondary}
 									sx={{ lineHeight: 1 }}
 								>
-									{https ? "https" : "http"}://
+									{prefix? prefix: https? "https://":"http://"}
 								</Typography>
 							</Stack>
 						),
@@ -235,6 +236,7 @@ Field.propTypes = {
 	disabled: PropTypes.bool,
 	hidden: PropTypes.bool,
 	className: PropTypes.string,
+	prefix: PropTypes.string,
 	hideErrorText: PropTypes.bool,
 };
 
