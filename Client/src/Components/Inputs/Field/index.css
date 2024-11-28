@@ -4,10 +4,6 @@
 
 .field-infrastructure-alert{
 	max-width: var(--env-var-width-4);
-}
-
-.field-infrastructure-alert .MuiInputBase-root:has(input) {
-	/* height: var(--env-var-height-2); */
 	min-width: unset;
 }
 
@@ -24,7 +20,7 @@
 	padding-right: var(--env-var-spacing-1-minus);
 }
 .field .MuiInputBase-root:has(input) {
-	/* height: var(--env-var-height-2); */
+	height: var(--env-var-height-2);
 }
 .field .MuiInputBase-root:has(.MuiInputAdornment-root) {
 	padding-right: var(--env-var-spacing-1-minus);
