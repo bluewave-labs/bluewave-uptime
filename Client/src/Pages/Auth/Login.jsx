@@ -390,8 +390,6 @@ const Login = () => {
 	const [errors, setErrors] = useState({});
 	const [step, setStep] = useState(0);
 
-	useEffect(() => {}, [authState.isLoading]);
-
 	useEffect(() => {
 		if (authToken) {
 			navigate("/monitors");
