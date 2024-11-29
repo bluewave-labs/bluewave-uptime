@@ -168,7 +168,7 @@ const semanticColors = {
 	background: {
 		main: {
 			light: paletteColors.white,
-			dark: paletteColors.gray850,
+			dark: paletteColors.gray890,
 		},
 		alt: {
 			light: paletteColors.gray90,

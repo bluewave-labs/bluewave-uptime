@@ -124,6 +124,7 @@ function Infrastructure(/* {isAdmin} */) {
 	console.log({ monitors });
 	console.log(monitors[0]?.checks[0]?.memory.usage_percent);
 	const monitorsAsRows = monitors.map((monitor) => ({
+		id: monitor._id,
 		url: monitor.url,
 		name: monitor.name,
 		status: determineState(monitor),
@@ -132,10 +133,12 @@ function Infrastructure(/* {isAdmin} */) {
 		mem: monitor?.checks[0]?.memory.usage_percent * 100,
 		disk: monitor?.checks[0]?.disk[0]?.usage_percent * 100,
 	}));
-
-	/* Fix search in monitors page */
-	/* Adding actions to the table */
 	/* Adding click on row action */
+	/* Adding actions to the table */
+
+	function openDetails(id) {
+		navigate(`/infrastructure/${id}`);
+	}
 
 	return (
 		<Stack
@@ -211,66 +214,73 @@ function Infrastructure(/* {isAdmin} */) {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{
-								/* ROWS */ monitorsAsRows.map((row, index) => (
-									<TableRow key={index}>
-										{/* TODO iterate over column and get column id, applying row[column.id] */}
-										<TableCell>
-											<Host
-												title={row.name}
-												url={row.url}
+							{monitorsAsRows.map((row) => (
+								<TableRow
+									key={row.id}
+									onClick={() => openDetails(row.id)}
+									sx={{
+										cursor: "pointer",
+										"&:hover": {
+											backgroundColor: theme.palette.background.accent,
+										},
+									}}
+								>
+									{/* TODO iterate over column and get column id, applying row[column.id] */}
+									<TableCell>
+										<Host
+											title={row.name}
+											url={row.url}
+										/>
+									</TableCell>
+									<TableCell align="center">
+										<StatusLabel
+											status={row.status}
+											text={row.status}
+											/* Use capitalize inside of Status Label */
+											/* Update component so we don't need to pass text and status separately*/
+											customStyles={{ textTransform: "capitalize" }}
+										/>
+									</TableCell>
+									<TableCell align="center">
+										<Stack
+											direction={"row"}
+											justifyContent={"center"}
+											alignItems={"center"}
+											gap=".25rem"
+										>
+											<CPUChipIcon
+												width={20}
+												height={20}
 											/>
-										</TableCell>
-										<TableCell align="center">
-											<StatusLabel
-												status={row.status}
-												text={row.status}
-												/* Use capitalize inside of Status Label */
-												/* Update component so we don't need to pass text and status separately*/
-												customStyles={{ textTransform: "capitalize" }}
+											{row.processor}
+										</Stack>
+									</TableCell>
+									<TableCell align="center">
+										<CustomGauge progress={row.cpu} />
+									</TableCell>
+									<TableCell align="center">
+										<CustomGauge progress={row.mem} />
+									</TableCell>
+									<TableCell align="center">
+										<CustomGauge progress={row.disk} />
+									</TableCell>
+									<TableCell align="center">
+										{/* Get ActionsMenu from Monitor Table and create a component */}
+										<IconButton
+											sx={{
+												"& svg path": {
+													stroke: theme.palette.other.icon,
+												},
+											}}
+										>
+											<GearIcon
+												width={20}
+												height={20}
 											/>
-										</TableCell>
-										<TableCell align="center">
-											<Stack
-												direction={"row"}
-												justifyContent={"center"}
-												alignItems={"center"}
-												gap=".25rem"
-											>
-												<CPUChipIcon
-													width={20}
-													height={20}
-												/>
-												{row.processor}
-											</Stack>
-										</TableCell>
-										<TableCell align="center">
-											<CustomGauge progress={row.cpu} />
-										</TableCell>
-										<TableCell align="center">
-											<CustomGauge progress={row.mem} />
-										</TableCell>
-										<TableCell align="center">
-											<CustomGauge progress={row.disk} />
-										</TableCell>
-										<TableCell align="center">
-											{/* Get ActionsMenu from Monitor Table and create a component */}
-											<IconButton
-												sx={{
-													"& svg path": {
-														stroke: theme.palette.other.icon,
-													},
-												}}
-											>
-												<GearIcon
-													width={20}
-													height={20}
-												/>
-											</IconButton>
-										</TableCell>
-									</TableRow>
-								))
-							}
+										</IconButton>
+									</TableCell>
+								</TableRow>
+							))}
 						</TableBody>
 					</Table>
 				</TableContainer>
