@@ -2,6 +2,8 @@ import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 
+/* TODO delete component */
+
 const MINIMUM_VALUE = 0;
 const MAXIMUM_VALUE = 100;
 const CHART_MAXIMUM_DATA = {

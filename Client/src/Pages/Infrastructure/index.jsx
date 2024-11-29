@@ -23,13 +23,10 @@ import {
 import Breadcrumbs from "../../Components/Breadcrumbs";
 import { StatusLabel } from "../../Components/Label";
 import { Heading } from "../../Components/Heading";
-import { Gauge } from "../../Components/Charts/Gauge";
 import { Pagination } from "./components/TablePagination";
 // import { getInfrastructureMonitorsByTeamId } from "../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { networkService } from "../../Utils/NetworkService.js";
 import CustomGauge from "../../Components/Charts/CustomGauge/index.jsx";
-
-// const ROWS = Array.from(Array(20).keys()).map(() => mockedData);
 
 const columns = [
 	{ label: "Host" },
@@ -40,6 +37,8 @@ const columns = [
 	{ label: "Disk" },
 	{ label: "Actions" },
 ];
+
+const BREADCRUMBS = [{ name: `infrastructure`, path: "/infrastructure" }];
 
 /* TODO 
 Create reusable table component.
@@ -122,21 +121,28 @@ function Infrastructure(/* {isAdmin} */) {
 
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
+	console.log({ monitors });
+	console.log(monitors[0]?.checks[0]?.memory.usage_percent);
 	const monitorsAsRows = monitors.map((monitor) => ({
 		ip: monitor.name,
 		status: determineState(monitor),
-		processor: "2Ghz" /* How to retrieve that?  */,
-		cpu: 80 /* How to retrieve that?  */,
-		mem: 50 /* How to retrieve that?  */,
-		disk: 70 /* How to retrieve that?  */,
+		processor: (monitor?.checks[0]?.cpu.frequency / 1000).toFixed(2) + " GHz",
+		cpu: monitor?.checks[0]?.cpu.usage_percent * 100,
+		mem: monitor?.checks[0]?.memory.usage_percent * 100,
+		disk: monitor?.checks[0]?.disk[0]?.usage_percent * 100,
 	}));
+	/* TODO when friendyly name i added, it shoul display frindly name + url */
+	/* TODO remove table scrollbar */
+	/* Fix search in monitors page */
+	/* Adding actions to the table */
+	/* Adding click on row action */
 
 	return (
 		<Stack
 			component="main"
 			style={{ width: "100%", gap: "1rem" }}
 		>
-			<Breadcrumbs list={[{ name: `infrastructure`, path: "/infrastructure" }]} />
+			<Breadcrumbs list={BREADCRUMBS} />
 			<Stack
 				direction="row"
 				sx={{
@@ -247,23 +253,13 @@ function Infrastructure(/* {isAdmin} */) {
 											</Stack>
 										</TableCell>
 										<TableCell align="center">
-											{/* <Gauge
-												progressValue={row.cpu}
-												containerWidth={60}
-											/> */}
 											<CustomGauge progress={row.cpu} />
 										</TableCell>
 										<TableCell align="center">
-											<Gauge
-												progressValue={row.mem}
-												containerWidth={60}
-											/>
+											<CustomGauge progress={row.mem} />
 										</TableCell>
 										<TableCell align="center">
-											<Gauge
-												progressValue={row.disk}
-												containerWidth={60}
-											/>
+											<CustomGauge progress={row.disk} />
 										</TableCell>
 										<TableCell align="center">
 											{/* Get ActionsMenu from Monitor Table and create a component */}
