@@ -4,7 +4,6 @@ import { /* useDispatch, */ useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import useUtils from "../Monitors/utils";
 import { jwtDecode } from "jwt-decode";
-import Greeting from "../../Utils/greeting";
 import GearIcon from "../../Assets/icons/settings-bold.svg?react";
 import CPUChipIcon from "../../Assets/icons/cpu-chip.svg?react";
 import {
@@ -133,8 +132,7 @@ function Infrastructure(/* {isAdmin} */) {
 		mem: monitor?.checks[0]?.memory.usage_percent * 100,
 		disk: monitor?.checks[0]?.disk[0]?.usage_percent * 100,
 	}));
-	/* TODO when friendyly name i added, it shoul display frindly name + url */
-	/* TODO remove table scrollbar */
+
 	/* Fix search in monitors page */
 	/* Adding actions to the table */
 	/* Adding click on row action */
@@ -148,16 +146,18 @@ function Infrastructure(/* {isAdmin} */) {
 			<Stack
 				direction="row"
 				sx={{
-					justifyContent: "space-between",
+					justifyContent: "end",
 					alignItems: "center",
 					gap: "1rem",
 					flexWrap: "wrap",
-					marginBottom: "3rem",
+					marginBottom: "2rem",
 				}}
 			>
+				{/* 
+				This will be removed from here, but keeping the commented code to remind me to add a max width to the greeting component
 				<Box style={{ maxWidth: "65ch" }}>
 					<Greeting type="uptime" />
-				</Box>
+				</Box> */}
 				<Button
 					variant="contained"
 					color="primary"
@@ -193,22 +193,7 @@ function Infrastructure(/* {isAdmin} */) {
 						{totalMonitors}
 					</Box>
 				</Stack>
-				<TableContainer
-					component={Paper}
-					sx={{
-						maxHeight: "55vh",
-						"&::-webkit-scrollbar": {
-							width: ".75rem",
-						},
-						"&::-webkit-scrollbar-track": {
-							backgroundColor: theme.palette.secondary.light,
-						},
-						"&::-webkit-scrollbar-thumb": {
-							backgroundColor: theme.palette.secondary.contrastText,
-							outline: `1px solid ${theme.palette.secondary.contrastText}`,
-						},
-					}}
-				>
+				<TableContainer component={Paper}>
 					<Table stickyHeader>
 						<TableHead sx={{ backgroundColor: theme.palette.background.accent }}>
 							<TableRow>
