@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { /* useDispatch, */ useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
@@ -27,7 +27,6 @@ import { Pagination } from "./components/TablePagination";
 import { networkService } from "../../Utils/NetworkService.js";
 import CustomGauge from "../../Components/Charts/CustomGauge/index.jsx";
 import Host from "../Monitors/Home/host.jsx";
-import ActionsMenu from "../Monitors/Home/actionsMenu.jsx";
 import { useIsAdmin } from "../../Hooks/useIsAdmin.js";
 import { InfrastructureMenu } from "./components/Menu";
 
@@ -137,14 +136,6 @@ function Infrastructure() {
 		mem: monitor?.checks[0]?.memory.usage_percent * 100,
 		disk: monitor?.checks[0]?.disk[0]?.usage_percent * 100,
 	}));
-
-	/* 
-	TODO
-Clean component (actions component)
-Add padding to inputs (I took of their height)
-Add toast
-
-	*/
 
 	function openDetails(id) {
 		navigate(`/infrastructure/${id}`);

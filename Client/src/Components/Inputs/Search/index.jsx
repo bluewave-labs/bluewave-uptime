@@ -161,7 +161,7 @@ const Search = ({
 				},
 			}}
 			sx={{
-				height: 34,
+				/* 	height: 34,*/
 				"&.MuiAutocomplete-root .MuiAutocomplete-input": { p: 0 },
 				...sx,
 			}}

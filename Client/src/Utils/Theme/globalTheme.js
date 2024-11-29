@@ -206,12 +206,10 @@ const baseTheme = (palette) => ({
 						borderRadius: theme.shape.borderRadius,
 					},
 					"& .MuiInputBase-input": {
+						padding: ".75em",
 						fontSize: "var(--env-var-font-size-medium)",
 						fontWeight: 400,
 						color: palette.text.secondary,
-					},
-					"& .MuiInputBase-input.MuiOutlinedInput-input": {
-						padding: "0 var(--env-var-spacing-1-minus) !important",
 					},
 					"& .MuiOutlinedInput-root": {
 						borderRadius: 4,
