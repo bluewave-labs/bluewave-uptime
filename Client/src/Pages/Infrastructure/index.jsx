@@ -4,7 +4,7 @@ import { /* useDispatch, */ useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import useUtils from "../Monitors/utils";
 import { jwtDecode } from "jwt-decode";
-import GearIcon from "../../Assets/icons/settings-bold.svg?react";
+// import GearIcon from "../../Assets/icons/settings-bold.svg?react";
 import CPUChipIcon from "../../Assets/icons/cpu-chip.svg?react";
 import {
 	Box,
@@ -27,6 +27,9 @@ import { Pagination } from "./components/TablePagination";
 import { networkService } from "../../Utils/NetworkService.js";
 import CustomGauge from "../../Components/Charts/CustomGauge/index.jsx";
 import Host from "../Monitors/Home/host.jsx";
+import ActionsMenu from "../Monitors/Home/actionsMenu.jsx";
+import { useIsAdmin } from "../../Hooks/useIsAdmin.js";
+import { InfrastructureMenu } from "./components/Menu";
 
 const columns = [
 	{ label: "Host" },
@@ -71,7 +74,9 @@ Analyze existing BasicTable
  * @returns {JSX.Element} The infrastructure monitoring page.
  */
 
-function Infrastructure(/* {isAdmin} */) {
+function Infrastructure() {
+	/* Adding this custom hook so we can avoid using the HOC approach that can lower performance (we are calling the admin logic N times on initializing the project. using a custom hook will cal it ass needed ) */
+	const isAdmin = useIsAdmin();
 	const theme = useTheme();
 
 	const navigate = useNavigate();
@@ -93,7 +98,7 @@ function Infrastructure(/* {isAdmin} */) {
 	const { authToken } = useSelector((state) => state.auth);
 	const user = jwtDecode(authToken);
 
-	const fetchMonitors = useCallback(async () => {
+	const fetchMonitors = async () => {
 		try {
 			const response = await networkService.getMonitorsByTeamId({
 				authToken,
@@ -106,6 +111,7 @@ function Infrastructure(/* {isAdmin} */) {
 				page: page,
 				rowsPerPage: rowsPerPage,
 			});
+			console.log({ response });
 			setMonitorState({
 				monitors: response?.data?.data?.monitors ?? [],
 				total: response?.data?.data?.monitorCount ?? 0,
@@ -113,7 +119,7 @@ function Infrastructure(/* {isAdmin} */) {
 		} catch (error) {
 			console.error(error);
 		}
-	}, [page, rowsPerPage, authToken]);
+	};
 
 	useEffect(() => {
 		fetchMonitors();
@@ -121,8 +127,6 @@ function Infrastructure(/* {isAdmin} */) {
 
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
-	console.log({ monitors });
-	console.log(monitors[0]?.checks[0]?.memory.usage_percent);
 	const monitorsAsRows = monitors.map((monitor) => ({
 		id: monitor._id,
 		url: monitor.url,
@@ -133,11 +137,20 @@ function Infrastructure(/* {isAdmin} */) {
 		mem: monitor?.checks[0]?.memory.usage_percent * 100,
 		disk: monitor?.checks[0]?.disk[0]?.usage_percent * 100,
 	}));
-	/* Adding click on row action */
-	/* Adding actions to the table */
+
+	/* 
+	TODO
+Clean component (actions component)
+Add padding to inputs (I took of their height)
+Add toast
+
+	*/
 
 	function openDetails(id) {
 		navigate(`/infrastructure/${id}`);
+	}
+	function handleActionMenuDelete() {
+		fetchMonitors();
 	}
 
 	return (
@@ -273,10 +286,15 @@ function Infrastructure(/* {isAdmin} */) {
 												},
 											}}
 										>
-											<GearIcon
+											<InfrastructureMenu
+												monitor={row}
+												isAdmin={isAdmin}
+												updateCallback={handleActionMenuDelete}
+											/>
+											{/* <GearIcon
 												width={20}
 												height={20}
-											/>
+											/> */}
 										</IconButton>
 									</TableCell>
 								</TableRow>
