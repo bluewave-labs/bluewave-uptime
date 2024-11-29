@@ -32,6 +32,7 @@ const baseTheme = (palette) => ({
 			fontWeight: 400,
 		},
 	},
+	/* TODO we can skip using the callback functions on the next lines since we are already accessing it on line 10. That was the last thing I managed to do, so we are sort of doing it twice*/
 
 	spacing: 2,
 	/* TODO All these should live inside of a component*/
@@ -205,10 +206,9 @@ const baseTheme = (palette) => ({
 						borderRadius: theme.shape.borderRadius,
 					},
 					"& .MuiInputBase-input": {
-						height: "var(--env-var-height-2)",
 						fontSize: "var(--env-var-font-size-medium)",
 						fontWeight: 400,
-						color: palette.text.secondary, // or any color from your palette
+						color: palette.text.secondary,
 					},
 					"& .MuiInputBase-input.MuiOutlinedInput-input": {
 						padding: "0 var(--env-var-spacing-1-minus) !important",
