@@ -274,7 +274,10 @@ const MonitorTable = ({ isAdmin, filter, setIsSearching, isSearching }) => {
 										<TableCell>
 											<Host
 												key={monitor._id}
-												params={params}
+												url={params.url}
+												title={params.title}
+												percentageColor={params.percentageColor}
+												percentage={params.percentage}
 											/>
 										</TableCell>
 										<TableCell>

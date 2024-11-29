@@ -27,6 +27,7 @@ import { Pagination } from "./components/TablePagination";
 // import { getInfrastructureMonitorsByTeamId } from "../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { networkService } from "../../Utils/NetworkService.js";
 import CustomGauge from "../../Components/Charts/CustomGauge/index.jsx";
+import Host from "../Monitors/Home/host.jsx";
 
 const columns = [
 	{ label: "Host" },
@@ -124,7 +125,8 @@ function Infrastructure(/* {isAdmin} */) {
 	console.log({ monitors });
 	console.log(monitors[0]?.checks[0]?.memory.usage_percent);
 	const monitorsAsRows = monitors.map((monitor) => ({
-		ip: monitor.name,
+		url: monitor.url,
+		name: monitor.name,
 		status: determineState(monitor),
 		processor: (monitor?.checks[0]?.cpu.frequency / 1000).toFixed(2) + " GHz",
 		cpu: monitor?.checks[0]?.cpu.usage_percent * 100,
@@ -228,7 +230,12 @@ function Infrastructure(/* {isAdmin} */) {
 								/* ROWS */ monitorsAsRows.map((row, index) => (
 									<TableRow key={index}>
 										{/* TODO iterate over column and get column id, applying row[column.id] */}
-										<TableCell>{row.ip}</TableCell>
+										<TableCell>
+											<Host
+												title={row.name}
+												url={row.url}
+											/>
+										</TableCell>
 										<TableCell align="center">
 											<StatusLabel
 												status={row.status}
