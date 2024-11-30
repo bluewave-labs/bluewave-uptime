@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
-import Field from "../../Components/Inputs/Field";
+import TextInput from "../../Components/Inputs/TextInput";
 import Link from "../../Components/Link";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -160,13 +160,14 @@ const AdvancedSettings = ({ isAdmin }) => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(20)}>
-						<Field
+						<TextInput
 							id="apiBaseUrl"
 							label="API URL Host"
 							value={localSettings.apiBaseUrl}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.apiBaseUrl}
+							error={errors.apiBaseUrl ? true : false}
+							helperText={errors.apiBaseUrl}
 						/>
 						<Select
 							id="logLevel"
@@ -189,7 +190,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(20)}>
-						<Field
+						<TextInput
 							type="text"
 							id="systemEmailHost"
 							label="System email host"
@@ -197,9 +198,10 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.systemEmailHost}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.systemEmailHost}
+							error={errors.systemEmailHost ? true : false}
+							helperText={errors.systemEmailHost}
 						/>
-						<Field
+						<TextInput
 							type="number"
 							id="systemEmailPort"
 							label="System email port"
@@ -207,18 +209,21 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.systemEmailPort?.toString()}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.systemEmailPort}
+							error={errors.systemEmailPort ? true : false}
+							helperText={errors.systemEmailPort}
 						/>
-						<Field
+						<TextInput
 							type="email"
 							id="systemEmailAddress"
 							label="System email address"
 							name="systemEmailAddress"
 							value={localSettings.systemEmailAddress}
 							onChange={handleChange}
-							error={errors.systemEmailAddress}
+							onBlur={handleBlur}
+							error={errors.systemEmailAddress ? true : false}
+							helperText={errors.systemEmailAddress}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="systemEmailPassword"
 							label="System email password"
@@ -226,7 +231,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.systemEmailPassword}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.systemEmailPassword}
+							error={errors.systemEmailPassword ? true : false}
+							helperText={errors.systemEmailPassword}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -242,7 +248,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 							direction="row"
 							gap={theme.spacing(10)}
 						>
-							<Field
+							<TextInput
 								type="number"
 								id="jwtTTLNum"
 								label="JWT time to live"
@@ -250,7 +256,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 								value={localSettings.jwtTTLNum.toString()}
 								onChange={handleChange}
 								onBlur={handleBlur}
-								error={errors.jwtTTLNum}
+								error={errors.jwtTTLNum ? true : false}
+								helperText={errors.jwtTTLNum}
 							/>
 							<Select
 								id="jwtTTLUnits"
@@ -265,7 +272,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 								error={errors.jwtTTLUnits}
 							/>
 						</Stack>
-						<Field
+						<TextInput
 							type="text"
 							id="dbType"
 							label="Database type"
@@ -273,9 +280,10 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.dbType}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.dbType}
+							error={errors.dbType ? true : false}
+							helperText={errors.dbType}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="redisHost"
 							label="Redis host"
@@ -283,9 +291,10 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.redisHost}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.redisHost}
+							error={errors.redisHost ? true : false}
+							helperText={errors.redisHost}
 						/>
-						<Field
+						<TextInput
 							type="number"
 							id="redisPort"
 							label="Redis port"
@@ -293,9 +302,10 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.redisPort?.toString()}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.redisPort}
+							error={errors.redisPort ? true : false}
+							helperText={errors.redisPort}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="pagespeedApiKey"
 							label="PageSpeed API key"
@@ -303,7 +313,8 @@ const AdvancedSettings = ({ isAdmin }) => {
 							value={localSettings.pagespeedApiKey}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors.pagespeedApiKey}
+							error={errors.pagespeedApiKey ? true : false}
+							helperText={errors.pagespeedApiKey}
 						/>
 					</Stack>
 				</ConfigBox>

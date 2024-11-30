@@ -29,6 +29,10 @@ export const HttpAdornment = ({ https }) => {
 	);
 };
 
+HttpAdornment.propTypes = {
+	https: PropTypes.bool.isRequired,
+};
+
 export const PasswordEndAdornment = ({ fieldType, setFieldType }) => {
 	const theme = useTheme();
 	return (
@@ -55,6 +59,7 @@ export const PasswordEndAdornment = ({ fieldType, setFieldType }) => {
 	);
 };
 
-HttpAdornment.propTypes = {
-	https: PropTypes.bool.isRequired,
+PasswordEndAdornment.propTypes = {
+	fieldType: PropTypes.string,
+	setFieldType: PropTypes.func,
 };
