@@ -34,7 +34,7 @@ const Account = ({ open = "profile" }) => {
 
 	// Remove password for demo
 	if (user.role.includes("demo")) {
-		tabList = ["Profile", "Password", "Team"];
+		tabList = ["Profile"];
 	}
 
 	const handleKeyDown = (event) => {
