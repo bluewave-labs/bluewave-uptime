@@ -1,3 +1,5 @@
+import { capitalizeFirstLetter } from "./stringUtils";
+
 /**
  * Helper function to get duration since last check or the last date checked
  * @param {Array} checks Array of check objects.
@@ -22,21 +24,15 @@ export const parseDomainName = (url) => {
 	url = url.replace(/^\.+|\.+$/g, "");
 	// Split by dots
 	const parts = url.split(".");
-	// Remove common prefixes and empty parts
-	const cleanParts = parts.filter((part) => part !== "www" && part !== "");
-	if (cleanParts.length > 2) {
-		// Don't know how to parse this, return URL
-		return url;
-	}
-	// If there's more than one part, take the second to last
+	// Remove common prefixes and empty parts and exclude the last element of the array (the last element should be the TLD)
+	const cleanParts = parts.filter((part) => part !== "www" && part !== "").slice(0, -1);
+	// If there's more than one part, append the two words and capitalize the first letters (e.g. ["api", "test"] -> "Api Test")
 	const domainPart =
 		cleanParts.length > 1
-			? cleanParts[cleanParts.length - 2]
-			: cleanParts[cleanParts.length - 1];
+			? cleanParts.map((part) => capitalizeFirstLetter(part)).join(" ")
+			: capitalizeFirstLetter(cleanParts[0]);
 
-	if (domainPart) {
-		return domainPart.charAt(0).toUpperCase() + domainPart.slice(1).toLowerCase();
-	}
+	if (domainPart) return domainPart;
 
 	return url;
 };
