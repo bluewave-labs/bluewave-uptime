@@ -127,11 +127,11 @@ const StatusLabel = ({ status, text, customStyles }) => {
 	const colors = {
 		up: {
 			dotColor: theme.palette.success.main,
-			bgColor: theme.palette.success./* dark */ contrastText,
+			bgColor: theme.palette.success.contrastText /* dark */,
 			borderColor: theme.palette.success.main /* light */,
 		},
 		down: {
-			dotColor: theme.palette.error.contrastText,
+			dotColor: theme.palette.error.main,
 			bgColor: theme.palette.error.dark,
 			borderColor: theme.palette.error.light,
 		},

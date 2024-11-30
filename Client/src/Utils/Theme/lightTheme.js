@@ -28,6 +28,9 @@ const {
 } = colors;
 
 const palette = {
+	action: {
+		disabled: border.light.disabled,
+	},
 	primary: { main: primary.main.light },
 	secondary: {
 		main: secondary.main.light,
