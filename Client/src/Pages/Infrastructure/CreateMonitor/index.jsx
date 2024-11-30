@@ -12,9 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { createToast } from "../../../Utils/toastUtils";
 import Link from "../../../Components/Link";
-
 import { ConfigBox } from "../../Monitors/styled";
-import Field from "../../../Components/Inputs/Field";
+import TextInput from "../../../Components/Inputs/TextInput";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -106,7 +105,6 @@ const CreateInfrastructureMonitor = () => {
 		event.preventDefault();
 		const { value, id } = event.target;
 		let name = appendedId ?? idMap[id] ?? id;
-
 		if (name.includes("notification-")) {
 			name = name.replace("notification-", "");
 			let hasNotif = infrastructureMonitor.notifications.some(
@@ -263,7 +261,7 @@ const CreateInfrastructureMonitor = () => {
 						</Stack>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
-						<Field
+						<TextInput
 							type="text"
 							id="url"
 							label="Server URL"
@@ -271,9 +269,10 @@ const CreateInfrastructureMonitor = () => {
 							value={infrastructureMonitor.url}
 							onBlur={handleBlur}
 							onChange={handleChange}
-							error={errors["url"]}
+							error={errors["url"] ? true : false}
+							helperText={errors["url"]}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="name"
 							label="Friendly name"
@@ -283,14 +282,15 @@ const CreateInfrastructureMonitor = () => {
 							onChange={handleChange}
 							error={errors["name"]}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="secret"
 							label="Authorization secret"
 							value={infrastructureMonitor.secret}
 							onBlur={handleBlur}
 							onChange={handleChange}
-							error={errors["secret"]}
+							error={errors["secret"] ? true : false}
+							helperText={errors["secret"]}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -378,15 +378,6 @@ const CreateInfrastructureMonitor = () => {
 							onBlur={(e) => handleBlur(e, "interval")}
 							items={frequencies}
 						/>
-						{/* <Field
-							type={"number"}
-							id="monitor-retries"
-							label="Maximum retries before the service is marked as down"
-							value={infrastructureMonitor.url}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							error={errors["url"]}
-						/>						 */}
 					</Stack>
 				</ConfigBox>
 				<Stack

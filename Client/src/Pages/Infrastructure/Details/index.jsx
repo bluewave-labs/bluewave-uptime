@@ -312,7 +312,7 @@ const InfrastructureDetails = () => {
 	};
 
 	const buildTemps = (checks) => {
-		let numCores = 0;
+		let numCores = 1;
 		if (checks === null) return { temps: [], tempKeys: [] };
 
 		for (const check of checks) {
@@ -321,19 +321,16 @@ const InfrastructureDetails = () => {
 				break;
 			}
 		}
-		if (numCores === 0) return { temps: [], tempKeys: [] };
-
 		const temps = checks.map((check) => {
-			if (check.cpu.temperature.length > numCores) {
-				numCores = check.cpu.temperature.length;
-			}
-
 			// If there's no data, set the temperature to 0
-			if (check.cpu.temperature.length === 0) {
+			if (
+				check?.cpu?.temperature?.length === 0 ||
+				check?.cpu?.temperature === undefined ||
+				check?.cpu?.temperature === null
+			) {
 				check.cpu.temperature = Array(numCores).fill(0);
 			}
-
-			return check.cpu.temperature.reduce(
+			const res = check?.cpu?.temperature?.reduce(
 				(acc, cur, idx) => {
 					acc[`core${idx + 1}`] = cur;
 					return acc;
@@ -342,9 +339,16 @@ const InfrastructureDetails = () => {
 					createdAt: check.createdAt,
 				}
 			);
+			return res;
 		});
-		// Slice to remove `createdAt` key
-		return { tempKeys: Object.keys(temps[0]).slice(1), temps };
+		if (temps.length === 0 || !temps[0]) {
+			return { temps: [], tempKeys: [] };
+		}
+
+		return {
+			tempKeys: Object.keys(temps[0] || {}).filter((key) => key !== "createdAt"),
+			temps,
+		};
 	};
 
 	const buildAreaChartConfigs = (checks) => {
@@ -401,10 +405,13 @@ const InfrastructureDetails = () => {
 				yLabel: "Temperature",
 				xTick: <TzTick />,
 				yDomain: [
-					Math.min(...tempData.temps.flatMap((t) => tempData.tempKeys.map((k) => t[k]))) *
-						0.9,
-					Math.max(...tempData.temps.flatMap((t) => tempData.tempKeys.map((k) => t[k]))) *
-						1.1,
+					0,
+					Math.max(
+						Math.max(
+							...tempData.temps.flatMap((t) => tempData.tempKeys.map((k) => t[k]))
+						) * 1.1,
+						200
+					),
 				],
 				toolTip: (
 					<TemperatureTooltip
@@ -537,10 +544,6 @@ const InfrastructureDetails = () => {
 						}}
 					>
 						{areaChartConfigs.map((config) => {
-							if (config?.data?.length === 0) {
-								return;
-							}
-
 							return (
 								<BaseBox key={`${config.type}-${config.diskIndex ?? ""}`}>
 									<Typography

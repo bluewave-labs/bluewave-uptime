@@ -23,6 +23,9 @@ const {
 } = colors;
 
 const palette = {
+	action: {
+		disabled: border.dark.disabled,
+	},
 	primary: { main: primary.main.dark },
 	secondary: {
 		main: secondary.main.dark,

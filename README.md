@@ -17,7 +17,7 @@ Checkmate is an open source uptime manager, server & Docker monitoring tool used
 
 ## Demo
 
-See [Checkmate](https://uptime-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
+See [Checkmate](https://checkmate-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
 
 ## User's guide
 
