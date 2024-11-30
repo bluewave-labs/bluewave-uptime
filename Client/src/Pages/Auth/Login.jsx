@@ -7,7 +7,8 @@ import { login } from "../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import { networkService } from "../../main";
-import Field from "../../Components/Inputs/Field";
+import TextInput from "../../Components/Inputs/TextInput";
+import { PasswordEndAdornment } from "../../Components/Inputs/TextInput/Adornments";
 import Background from "../../assets/Images/background-grid.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
@@ -150,7 +151,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 					display="grid"
 					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				>
-					<Field
+					<TextInput
 						type="email"
 						id="login-email-input"
 						label="Email"
@@ -160,7 +161,8 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 						value={form.email}
 						onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
 						onChange={onChange}
-						error={errors.email}
+						error={errors.email ? true : false}
+						helperText={errors.email}
 						ref={inputRef}
 					/>
 					<Stack
@@ -268,7 +270,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 						gap: { xs: theme.spacing(12), sm: theme.spacing(16) },
 					}}
 				>
-					<Field
+					<TextInput
 						type="password"
 						id="login-password-input"
 						label="Password"
@@ -277,8 +279,10 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 						autoComplete="current-password"
 						value={form.password}
 						onChange={onChange}
-						error={errors.password}
+						error={errors.password ? true : false}
+						helperText={errors.password}
 						ref={inputRef}
+						endAdornment={<PasswordEndAdornment />}
 					/>
 					<Stack
 						direction="row"

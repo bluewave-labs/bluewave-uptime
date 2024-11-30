@@ -11,7 +11,8 @@ import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../styled";
 import Radio from "../../../Components/Inputs/Radio";
-import Field from "../../../Components/Inputs/Field";
+import TextInput from "../../../Components/Inputs/TextInput";
+import { HttpAdornment } from "../../../Components/Inputs/TextInput/Adornments";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
@@ -249,17 +250,19 @@ const CreateMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
-						<Field
+						<TextInput
 							type={monitor.type === "http" ? "url" : "text"}
 							id="monitor-url"
+							startAdornment={<HttpAdornment https={https} />}
 							label={monitorTypeMaps[monitor.type].label || "URL to monitor"}
 							https={https}
 							placeholder={monitorTypeMaps[monitor.type].placeholder || ""}
 							value={monitor.url}
 							onChange={handleChange}
-							error={errors["url"]}
+							error={errors["url"] ? true : false}
+							helperText={errors["url"]}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="monitor-name"
 							label="Display name"
@@ -267,7 +270,8 @@ const CreateMonitor = () => {
 							placeholder={monitorTypeMaps[monitor.type].namePlaceholder || ""}
 							value={monitor.name}
 							onChange={handleChange}
-							error={errors["name"]}
+							error={errors["name"] ? true : false}
+							helperText={errors["name"]}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -381,7 +385,7 @@ const CreateMonitor = () => {
 							(notification) => notification.type === "emails"
 						) ? (
 							<Box mx={theme.spacing(16)}>
-								<Field
+								<TextInput
 									id="notify-email-list"
 									type="text"
 									placeholder="name@gmail.com"

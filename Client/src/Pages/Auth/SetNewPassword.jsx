@@ -9,7 +9,9 @@ import { setNewPassword } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
 import { credentials } from "../../Validation/validation";
 import Check from "../../Components/Check/Check";
-import Field from "../../Components/Inputs/Field";
+import TextInput from "../../Components/Inputs/TextInput";
+import { PasswordEndAdornment } from "../../Components/Inputs/TextInput/Adornments";
+
 import { IconBox } from "./styled";
 import LockIcon from "../../assets/icons/lock.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
@@ -147,7 +149,7 @@ const SetNewPassword = () => {
 							spellCheck={false}
 							onSubmit={handleSubmit}
 						>
-							<Field
+							<TextInput
 								id={passwordId}
 								type="password"
 								name="password"
@@ -156,7 +158,9 @@ const SetNewPassword = () => {
 								placeholder="••••••••"
 								value={form.password}
 								onChange={handleChange}
-								error={errors.password}
+								error={errors.password ? true : false}
+								helperText={errors.password}
+								endAdornment={<PasswordEndAdornment />}
 							/>
 						</Box>
 						<Box
@@ -165,7 +169,7 @@ const SetNewPassword = () => {
 							spellCheck={false}
 							onSubmit={handleSubmit}
 						>
-							<Field
+							<TextInput
 								id={confirmPasswordId}
 								type="password"
 								name="confirm"
@@ -174,7 +178,9 @@ const SetNewPassword = () => {
 								placeholder="••••••••"
 								value={form.confirm}
 								onChange={handleChange}
-								error={errors.confirm}
+								error={errors.confirm ? true : false}
+								helperText={errors.confirm}
+								endAdornment={<PasswordEndAdornment />}
 							/>
 						</Box>
 						<Stack

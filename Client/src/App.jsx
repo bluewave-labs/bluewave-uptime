@@ -41,7 +41,6 @@ import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 import { Infrastructure } from "./Pages/Infrastructure";
 import InfrastructureDetails from "./Pages/Infrastructure/Details";
-import Test from "./Pages/test";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -90,11 +89,6 @@ function App() {
 					path="/"
 					element={<HomeLayout />}
 				>
-					<Route
-						path="/test"
-						element={<Test />}
-					/>
-
 					<Route
 						exact
 						path="/"
