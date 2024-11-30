@@ -125,16 +125,23 @@ function Infrastructure() {
 
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
-	const monitorsAsRows = monitors.map((monitor) => ({
-		id: monitor._id,
-		url: monitor.url,
-		name: monitor.name,
-		status: determineState(monitor),
-		processor: (monitor?.checks[0]?.cpu.frequency / 1000).toFixed(2) + " GHz",
-		cpu: monitor?.checks[0]?.cpu.usage_percent * 100,
-		mem: monitor?.checks[0]?.memory.usage_percent * 100,
-		disk: monitor?.checks[0]?.disk[0]?.usage_percent * 100,
-	}));
+	const monitorsAsRows = monitors.map((monitor) => {
+		const processor =
+			((monitor.checks[0]?.cpu?.usage_frequency ?? 0) / 1000).toFixed(2) + " GHz";
+		const cpu = (monitor?.checks[0]?.cpu.usage_percent ?? 0) * 100;
+		const mem = (monitor?.checks[0]?.memory.usage_percent ?? 0) * 100;
+		const disk = (monitor?.checks[0]?.disk[0]?.usage_percent ?? 0) * 100;
+		return {
+			id: monitor._id,
+			url: monitor.url,
+			name: monitor.name,
+			status: determineState(monitor),
+			processor,
+			cpu,
+			mem,
+			disk,
+		};
+	});
 
 	function openDetails(id) {
 		navigate(`/infrastructure/${id}`);
