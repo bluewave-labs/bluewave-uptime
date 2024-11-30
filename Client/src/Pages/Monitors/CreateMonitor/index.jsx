@@ -143,12 +143,10 @@ const CreateMonitor = () => {
 
 	const onUrlBlur = (event) => {
 		const { value } = event.target;
-		if (monitor.name === "") {
-			setMonitor((prev) => ({
-				...prev,
-				name: parseDomainName(value),
-			}));
-		}
+		setMonitor((prev) => ({
+			...prev,
+			name: parseDomainName(value),
+		}));
 	};
 
 	const handleCreateMonitor = async (event) => {
