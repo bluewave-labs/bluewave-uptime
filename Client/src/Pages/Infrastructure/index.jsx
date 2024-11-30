@@ -125,6 +125,8 @@ function Infrastructure() {
 
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
+
+	console.log(monitors);
 	const monitorsAsRows = monitors.map((monitor) => {
 		const processor =
 			((monitor.checks[0]?.cpu?.usage_frequency ?? 0) / 1000).toFixed(2) + " GHz";
@@ -224,78 +226,80 @@ function Infrastructure() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{monitorsAsRows.map((row) => (
-								<TableRow
-									key={row.id}
-									onClick={() => openDetails(row.id)}
-									sx={{
-										cursor: "pointer",
-										"&:hover": {
-											backgroundColor: theme.palette.background.accent,
-										},
-									}}
-								>
-									{/* TODO iterate over column and get column id, applying row[column.id] */}
-									<TableCell>
-										<Host
-											title={row.name}
-											url={row.url}
-										/>
-									</TableCell>
-									<TableCell align="center">
-										<StatusLabel
-											status={row.status}
-											text={row.status}
-											/* Use capitalize inside of Status Label */
-											/* Update component so we don't need to pass text and status separately*/
-											customStyles={{ textTransform: "capitalize" }}
-										/>
-									</TableCell>
-									<TableCell align="center">
-										<Stack
-											direction={"row"}
-											justifyContent={"center"}
-											alignItems={"center"}
-											gap=".25rem"
-										>
-											<CPUChipIcon
-												width={20}
-												height={20}
+							{monitorsAsRows.map((row) => {
+								return (
+									<TableRow
+										key={row.id}
+										onClick={() => openDetails(row.id)}
+										sx={{
+											cursor: "pointer",
+											"&:hover": {
+												backgroundColor: theme.palette.background.accent,
+											},
+										}}
+									>
+										{/* TODO iterate over column and get column id, applying row[column.id] */}
+										<TableCell>
+											<Host
+												title={row.name}
+												url={row.url}
 											/>
-											{row.processor}
-										</Stack>
-									</TableCell>
-									<TableCell align="center">
-										<CustomGauge progress={row.cpu} />
-									</TableCell>
-									<TableCell align="center">
-										<CustomGauge progress={row.mem} />
-									</TableCell>
-									<TableCell align="center">
-										<CustomGauge progress={row.disk} />
-									</TableCell>
-									<TableCell align="center">
-										{/* Get ActionsMenu from Monitor Table and create a component */}
-										<IconButton
-											sx={{
-												"& svg path": {
-													stroke: theme.palette.other.icon,
-												},
-											}}
-										>
-											<InfrastructureMenu
-												monitor={row}
-												isAdmin={isAdmin}
-												updateCallback={handleActionMenuDelete}
+										</TableCell>
+										<TableCell align="center">
+											<StatusLabel
+												status={row.status}
+												text={row.status}
+												/* Use capitalize inside of Status Label */
+												/* Update component so we don't need to pass text and status separately*/
+												customStyles={{ textTransform: "capitalize" }}
 											/>
-											{/* <GearIcon
+										</TableCell>
+										<TableCell align="center">
+											<Stack
+												direction={"row"}
+												justifyContent={"center"}
+												alignItems={"center"}
+												gap=".25rem"
+											>
+												<CPUChipIcon
+													width={20}
+													height={20}
+												/>
+												{row.processor}
+											</Stack>
+										</TableCell>
+										<TableCell align="center">
+											<CustomGauge progress={row.cpu} />
+										</TableCell>
+										<TableCell align="center">
+											<CustomGauge progress={row.mem} />
+										</TableCell>
+										<TableCell align="center">
+											<CustomGauge progress={row.disk} />
+										</TableCell>
+										<TableCell align="center">
+											{/* Get ActionsMenu from Monitor Table and create a component */}
+											<IconButton
+												sx={{
+													"& svg path": {
+														stroke: theme.palette.other.icon,
+													},
+												}}
+											>
+												<InfrastructureMenu
+													monitor={row}
+													isAdmin={isAdmin}
+													updateCallback={handleActionMenuDelete}
+												/>
+												{/* <GearIcon
 												width={20}
 												height={20}
 											/> */}
-										</IconButton>
-									</TableCell>
-								</TableRow>
-							))}
+											</IconButton>
+										</TableCell>
+									</TableRow>
+								);
+							})}
 						</TableBody>
 					</Table>
 				</TableContainer>
