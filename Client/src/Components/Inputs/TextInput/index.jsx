@@ -6,6 +6,11 @@ import PropTypes from "prop-types";
 const getSx = (theme, type, maxWidth) => {
 	const sx = {
 		maxWidth: maxWidth,
+		"& .MuiFormHelperText-root": {
+			position: "absolute",
+			bottom: `-${theme.spacing(24)}`,
+			minHeight: theme.spacing(24),
+		},
 	};
 
 	if (type === "url") {
@@ -56,6 +61,8 @@ Optional.propTypes = {
 const TextInput = forwardRef(
 	(
 		{
+			id,
+			name,
 			type,
 			value,
 			placeholder,
@@ -63,19 +70,34 @@ const TextInput = forwardRef(
 			isOptional,
 			optionalLabel,
 			onChange,
+			onBlur,
 			error = false,
 			helperText = null,
 			startAdornment = null,
 			endAdornment = null,
 			label = null,
 			maxWidth = "100%",
+			flex,
+			marginTop,
+			marginRight,
+			marginBottom,
+			marginLeft,
+			disabled = false,
+			hidden = false,
 		},
 		ref
 	) => {
 		const [fieldType, setFieldType] = useState(type);
 		const theme = useTheme();
 		return (
-			<Stack>
+			<Stack
+				flex={flex}
+				display={hidden ? "none" : ""}
+				marginTop={marginTop}
+				marginRight={marginRight}
+				marginBottom={marginBottom}
+				marginLeft={marginLeft}
+			>
 				<Typography
 					component="h3"
 					fontSize={"var(--env-var-font-size-medium)"}
@@ -87,10 +109,13 @@ const TextInput = forwardRef(
 					{isOptional && <Optional optionalLabel={optionalLabel} />}
 				</Typography>
 				<TextField
+					id={id}
+					name={name}
 					type={fieldType}
 					value={value}
 					placeholder={placeholder}
 					onChange={onChange}
+					onBlur={onBlur}
 					error={error}
 					helperText={helperText}
 					inputRef={ref}
@@ -103,6 +128,7 @@ const TextInput = forwardRef(
 								: null,
 						},
 					}}
+					disabled={disabled}
 				/>
 			</Stack>
 		);
@@ -113,18 +139,28 @@ TextInput.displayName = "TextInput";
 
 TextInput.propTypes = {
 	type: PropTypes.string,
+	id: PropTypes.string.isRequired,
+	name: PropTypes.string,
 	value: PropTypes.string,
 	placeholder: PropTypes.string,
 	isRequired: PropTypes.bool,
 	isOptional: PropTypes.bool,
 	optionalLabel: PropTypes.string,
 	onChange: PropTypes.func,
+	onBlur: PropTypes.func,
 	error: PropTypes.bool,
 	helperText: PropTypes.string,
 	startAdornment: PropTypes.node,
 	endAdornment: PropTypes.node,
 	label: PropTypes.string,
 	maxWidth: PropTypes.string,
+	flex: PropTypes.number,
+	marginTop: PropTypes.string,
+	marginRight: PropTypes.string,
+	marginBottom: PropTypes.string,
+	marginLeft: PropTypes.string,
+	disabled: PropTypes.bool,
+	hidden: PropTypes.bool,
 };
 
 export default TextInput;

@@ -24,10 +24,9 @@ const Check = ({ text, noHighlightText, variant = "info", outlined = false }) =>
 	const theme = useTheme();
 	const colors = {
 		success: theme.palette.success.main,
-		error: theme.palette.error.contrastText,
+		error: theme.palette.error.main,
 		info: theme.palette.info.border,
 	};
-
 	return (
 		<Stack
 			direction="row"

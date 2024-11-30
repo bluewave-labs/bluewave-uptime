@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { credentials } from "../../Validation/validation";
 import { useNavigate } from "react-router-dom";
 import { IconBox } from "./styled";
-import Field from "../../Components/Inputs/Field";
+import TextInput from "../../Components/Inputs/TextInput";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Key from "../../assets/icons/key.svg?react";
 import Background from "../../assets/Images/background-grid.svg?react";
@@ -160,7 +160,7 @@ const ForgotPassword = () => {
 						spellCheck={false}
 						onSubmit={handleSubmit}
 					>
-						<Field
+						<TextInput
 							type="email"
 							id="forgot-password-email-input"
 							label="Email"
@@ -168,7 +168,8 @@ const ForgotPassword = () => {
 							placeholder="Enter your email"
 							value={form.email}
 							onChange={handleChange}
-							error={errors.email}
+							error={errors.email ? true : false}
+							helperText={errors.email}
 						/>
 						<LoadingButton
 							variant="contained"

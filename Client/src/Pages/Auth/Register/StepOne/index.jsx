@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import Field from "../../../../Components/Inputs/Field";
+import TextInput from "../../../../Components/Inputs/TextInput";
 
 StepOne.propTypes = {
 	form: PropTypes.object,
@@ -60,7 +60,7 @@ function StepOne({ form, errors, onSubmit, onChange, onBack }) {
 						display="grid"
 						gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
 					>
-						<Field
+						<TextInput
 							id="register-firstname-input"
 							label="Name"
 							isRequired={true}
@@ -68,10 +68,11 @@ function StepOne({ form, errors, onSubmit, onChange, onBack }) {
 							autoComplete="given-name"
 							value={form.firstName}
 							onChange={onChange}
-							error={errors.firstName}
+							error={errors.firstName ? true : false}
+							helperText={errors.firstName}
 							ref={inputRef}
 						/>
-						<Field
+						<TextInput
 							id="register-lastname-input"
 							label="Surname"
 							isRequired={true}
@@ -79,7 +80,9 @@ function StepOne({ form, errors, onSubmit, onChange, onBack }) {
 							autoComplete="family-name"
 							value={form.lastName}
 							onChange={onChange}
-							error={errors.lastName}
+							error={errors.lastName ? true : false}
+							helperText={errors.lastName}
+							ref={inputRef}
 						/>
 					</Box>
 					<Stack
