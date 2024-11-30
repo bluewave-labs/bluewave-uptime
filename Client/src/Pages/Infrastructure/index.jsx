@@ -126,25 +126,6 @@ function Infrastructure() {
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
 
-	console.log(monitors);
-	const monitorsAsRows = monitors.map((monitor) => {
-		const processor =
-			((monitor.checks[0]?.cpu?.usage_frequency ?? 0) / 1000).toFixed(2) + " GHz";
-		const cpu = (monitor?.checks[0]?.cpu.usage_percent ?? 0) * 100;
-		const mem = (monitor?.checks[0]?.memory.usage_percent ?? 0) * 100;
-		const disk = (monitor?.checks[0]?.disk[0]?.usage_percent ?? 0) * 100;
-		return {
-			id: monitor._id,
-			url: monitor.url,
-			name: monitor.name,
-			status: determineState(monitor),
-			processor,
-			cpu,
-			mem,
-			disk,
-		};
-	});
-
 	function openDetails(id) {
 		navigate(`/infrastructure/${id}`);
 	}
@@ -226,11 +207,29 @@ function Infrastructure() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{monitorsAsRows.map((row) => {
+							{monitors.map((monitor) => {
+								const processor =
+									((monitor.checks[0]?.cpu?.usage_frequency ?? 0) / 1000).toFixed(2) +
+									" GHz";
+								const cpu = (monitor?.checks[0]?.cpu.usage_percent ?? 0) * 100;
+								const mem = (monitor?.checks[0]?.memory.usage_percent ?? 0) * 100;
+								const disk = (monitor?.checks[0]?.disk[0]?.usage_percent ?? 0) * 100;
+								const status = determineState(monitor);
+								const uptimePercentage = ((monitor?.uptimePercentage ?? 0) * 100)
+									.toFixed(2)
+									.toString();
+								const percentageColor =
+									monitor.uptimePercentage < 0.25
+										? theme.palette.percentage.uptimePoor
+										: monitor.uptimePercentage < 0.5
+											? theme.palette.percentage.uptimeFair
+											: monitor.uptimePercentage < 0.75
+												? theme.palette.percentage.uptimeGood
+												: theme.palette.percentage.uptimeExcellent;
 								return (
 									<TableRow
-										key={row.id}
-										onClick={() => openDetails(row.id)}
+										key={monitor._id}
+										onClick={() => openDetails(monitor.id)}
 										sx={{
 											cursor: "pointer",
 											"&:hover": {
@@ -241,14 +240,16 @@ function Infrastructure() {
 										{/* TODO iterate over column and get column id, applying row[column.id] */}
 										<TableCell>
 											<Host
-												title={row.name}
-												url={row.url}
+												title={monitor.name}
+												url={monitor.url}
+												percentage={uptimePercentage}
+												percentageColor={percentageColor}
 											/>
 										</TableCell>
 										<TableCell align="center">
 											<StatusLabel
-												status={row.status}
-												text={row.status}
+												status={status}
+												text={status}
 												/* Use capitalize inside of Status Label */
 												/* Update component so we don't need to pass text and status separately*/
 												customStyles={{ textTransform: "capitalize" }}
@@ -265,17 +266,17 @@ function Infrastructure() {
 													width={20}
 													height={20}
 												/>
-												{row.processor}
+												{processor}
 											</Stack>
 										</TableCell>
 										<TableCell align="center">
-											<CustomGauge progress={row.cpu} />
+											<CustomGauge progress={cpu} />
 										</TableCell>
 										<TableCell align="center">
-											<CustomGauge progress={row.mem} />
+											<CustomGauge progress={mem} />
 										</TableCell>
 										<TableCell align="center">
-											<CustomGauge progress={row.disk} />
+											<CustomGauge progress={disk} />
 										</TableCell>
 										<TableCell align="center">
 											{/* Get ActionsMenu from Monitor Table and create a component */}
@@ -287,7 +288,7 @@ function Infrastructure() {
 												}}
 											>
 												<InfrastructureMenu
-													monitor={row}
+													monitor={monitor}
 													isAdmin={isAdmin}
 													updateCallback={handleActionMenuDelete}
 												/>
