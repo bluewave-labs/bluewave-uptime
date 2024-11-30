@@ -5,7 +5,7 @@ import { useTheme } from "@emotion/react";
 import useUtils from "../Monitors/utils";
 import { jwtDecode } from "jwt-decode";
 // import GearIcon from "../../Assets/icons/settings-bold.svg?react";
-import CPUChipIcon from "../../Assets/icons/cpu-chip.svg?react";
+import CPUChipIcon from "../../assets/icons/cpu-chip.svg?react";
 import {
 	Box,
 	Button,
