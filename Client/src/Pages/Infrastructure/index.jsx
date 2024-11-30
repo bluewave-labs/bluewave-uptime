@@ -110,7 +110,6 @@ function Infrastructure() {
 				page: page,
 				rowsPerPage: rowsPerPage,
 			});
-			console.log({ response });
 			setMonitorState({
 				monitors: response?.data?.data?.monitors ?? [],
 				total: response?.data?.data?.monitorCount ?? 0,
