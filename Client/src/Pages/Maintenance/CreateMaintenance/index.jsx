@@ -1,4 +1,4 @@
-import { Box, Button, duration, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import dayjs from "dayjs";
 import Select from "../../../Components/Inputs/Select";
-import Field from "../../../Components/Inputs/Field";
+import TextInput from "../../../Components/Inputs/TextInput";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import CalendarIcon from "../../../assets/icons/calendar.svg?react";
 import "./index.css";
@@ -215,8 +215,7 @@ const CreateMaintenance = () => {
 	};
 
 	const handleSubmit = async () => {
-		if (hasValidationErrors(form, maintenanceWindowValidation, setErrors))
-			return;		
+		if (hasValidationErrors(form, maintenanceWindowValidation, setErrors)) return;
 		// Build timestamp for maintenance window from startDate and startTime
 		const start = dayjs(form.startDate)
 			.set("hour", form.startTime.hour())
@@ -467,14 +466,15 @@ const CreateMaintenance = () => {
 							direction="row"
 							spacing={theme.spacing(8)}
 						>
-							<Field
+							<TextInput
 								type="number"
 								id="duration"
 								value={form.duration}
 								onChange={(event) => {
 									handleFormChange("duration", event.target.value);
 								}}
-								error={errors["duration"]}
+								error={errors["duration"] ? true : false}
+								helperText={errors["duration"]}
 							/>
 							<Select
 								id="durationUnit"
@@ -511,14 +511,15 @@ const CreateMaintenance = () => {
 								</Typography>
 							</Box>
 							<Box>
-								<Field
+								<TextInput
 									id="name"
 									placeholder="Maintenance at __ : __ for ___ minutes"
 									value={form.name}
 									onChange={(event) => {
 										handleFormChange("name", event.target.value);
 									}}
-									error={errors["name"]}
+									error={errors["name"] ? true : false}
+									helperText={errors["name"]}
 								/>
 							</Box>
 						</Stack>

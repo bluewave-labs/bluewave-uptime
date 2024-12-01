@@ -211,12 +211,16 @@ const baseTheme = (palette) => ({
 						fontWeight: 400,
 						color: palette.text.secondary,
 					},
+					"& .MuiInputBase-input.MuiOutlinedInput-input": {
+						padding: "0 var(--env-var-spacing-1-minus) !important",
+					},
 					"& .MuiOutlinedInput-root": {
 						borderRadius: 4,
 					},
 					"& .MuiOutlinedInput-notchedOutline": {
 						borderRadius: 4,
 					},
+
 					"& .MuiFormHelperText-root": {
 						color: palette.error.main,
 						opacity: 0.8,

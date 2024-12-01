@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Field from "../../Inputs/Field";
+import { PasswordEndAdornment } from "../../Inputs/TextInput/Adornments";
+import TextInput from "../../Inputs/TextInput";
 import { credentials } from "../../../Validation/validation";
 import Alert from "../../Alert";
 import { update } from "../../../Features/Auth/authSlice";
@@ -113,7 +114,7 @@ const PasswordPanel = () => {
 				maxWidth={"80ch"}
 				marginInline={"auto"}
 			>
-				<Field
+				<TextInput
 					type="text"
 					id="hidden-username"
 					name="username"
@@ -135,14 +136,17 @@ const PasswordPanel = () => {
 					>
 						Current password
 					</Typography>
-					<Field
+					<TextInput
 						type="password"
 						id="edit-current-password"
 						placeholder="Enter your current password"
 						autoComplete="current-password"
 						value={localData.password}
 						onChange={handleChange}
-						error={errors[idToName["edit-current-password"]]}
+						error={errors[idToName["edit-current-password"]] ? true : false}
+						helperText={errors[idToName["edit-current-password"]]}
+						endAdornment={<PasswordEndAdornment />}
+						flex={1}
 					/>
 				</Stack>
 				<Stack
@@ -158,14 +162,17 @@ const PasswordPanel = () => {
 						New password
 					</Typography>
 
-					<Field
+					<TextInput
 						type="password"
 						id="edit-new-password"
 						placeholder="Enter your new password"
 						autoComplete="new-password"
 						value={localData.newPassword}
 						onChange={handleChange}
-						error={errors[idToName["edit-new-password"]]}
+						error={errors[idToName["edit-new-password"]] ? true : false}
+						helperText={errors[idToName["edit-new-password"]]}
+						endAdornment={<PasswordEndAdornment />}
+						flex={1}
 					/>
 				</Stack>
 				<Stack
@@ -181,14 +188,17 @@ const PasswordPanel = () => {
 						Confirm new password
 					</Typography>
 
-					<Field
+					<TextInput
 						type="password"
 						id="edit-confirm-password"
 						placeholder="Reenter your new password"
 						autoComplete="new-password"
 						value={localData.confirm}
 						onChange={handleChange}
-						error={errors[idToName["edit-confirm-password"]]}
+						error={errors[idToName["edit-confirm-password"]] ? true : false}
+						helperText={errors[idToName["edit-confirm-password"]]}
+						endAdornment={<PasswordEndAdornment />}
+						flex={1}
 					/>
 				</Stack>
 				{Object.keys(errors).length > 0 && (
