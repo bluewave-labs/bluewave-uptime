@@ -125,13 +125,45 @@ function Infrastructure() {
 
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
-
+	// do it here
 	function openDetails(id) {
 		navigate(`/infrastructure/${id}`);
 	}
 	function handleActionMenuDelete() {
 		fetchMonitors();
 	}
+
+	const monitorsAsRows = monitors.map((monitor) => {
+		const processor =
+			((monitor.checks[0]?.cpu?.usage_frequency ?? 0) / 1000).toFixed(2) + " GHz";
+		const cpu = (monitor?.checks[0]?.cpu.usage_percent ?? 0) * 100;
+		const mem = (monitor?.checks[0]?.memory.usage_percent ?? 0) * 100;
+		const disk = (monitor?.checks[0]?.disk[0]?.usage_percent ?? 0) * 100;
+		const status = determineState(monitor);
+		const uptimePercentage = ((monitor?.uptimePercentage ?? 0) * 100)
+			.toFixed(2)
+			.toString();
+		const percentageColor =
+			monitor.uptimePercentage < 0.25
+				? theme.palette.percentage.uptimePoor
+				: monitor.uptimePercentage < 0.5
+					? theme.palette.percentage.uptimeFair
+					: monitor.uptimePercentage < 0.75
+						? theme.palette.percentage.uptimeGood
+						: theme.palette.percentage.uptimeExcellent;
+		return {
+			id: monitor._id,
+			name: monitor.name,
+			url: monitor.url,
+			processor,
+			cpu,
+			mem,
+			disk,
+			status,
+			uptimePercentage,
+			percentageColor,
+		};
+	});
 
 	return (
 		<Stack
@@ -207,29 +239,11 @@ function Infrastructure() {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{monitors.map((monitor) => {
-								const processor =
-									((monitor.checks[0]?.cpu?.usage_frequency ?? 0) / 1000).toFixed(2) +
-									" GHz";
-								const cpu = (monitor?.checks[0]?.cpu.usage_percent ?? 0) * 100;
-								const mem = (monitor?.checks[0]?.memory.usage_percent ?? 0) * 100;
-								const disk = (monitor?.checks[0]?.disk[0]?.usage_percent ?? 0) * 100;
-								const status = determineState(monitor);
-								const uptimePercentage = ((monitor?.uptimePercentage ?? 0) * 100)
-									.toFixed(2)
-									.toString();
-								const percentageColor =
-									monitor.uptimePercentage < 0.25
-										? theme.palette.percentage.uptimePoor
-										: monitor.uptimePercentage < 0.5
-											? theme.palette.percentage.uptimeFair
-											: monitor.uptimePercentage < 0.75
-												? theme.palette.percentage.uptimeGood
-												: theme.palette.percentage.uptimeExcellent;
+							{monitorsAsRows.map((row) => {
 								return (
 									<TableRow
-										key={monitor._id}
-										onClick={() => openDetails(monitor.id)}
+										key={row.id}
+										onClick={() => openDetails(row.id)}
 										sx={{
 											cursor: "pointer",
 											"&:hover": {
@@ -240,16 +254,16 @@ function Infrastructure() {
 										{/* TODO iterate over column and get column id, applying row[column.id] */}
 										<TableCell>
 											<Host
-												title={monitor.name}
-												url={monitor.url}
-												percentage={uptimePercentage}
-												percentageColor={percentageColor}
+												title={row.name}
+												url={row.url}
+												percentage={row.uptimePercentage}
+												percentageColor={row.percentageColor}
 											/>
 										</TableCell>
 										<TableCell align="center">
 											<StatusLabel
-												status={status}
-												text={status}
+												status={row.status}
+												text={row.status}
 												/* Use capitalize inside of Status Label */
 												/* Update component so we don't need to pass text and status separately*/
 												customStyles={{ textTransform: "capitalize" }}
@@ -266,17 +280,17 @@ function Infrastructure() {
 													width={20}
 													height={20}
 												/>
-												{processor}
+												{row.processor}
 											</Stack>
 										</TableCell>
 										<TableCell align="center">
-											<CustomGauge progress={cpu} />
+											<CustomGauge progress={row.cpu} />
 										</TableCell>
 										<TableCell align="center">
-											<CustomGauge progress={mem} />
+											<CustomGauge progress={row.mem} />
 										</TableCell>
 										<TableCell align="center">
-											<CustomGauge progress={disk} />
+											<CustomGauge progress={row.disk} />
 										</TableCell>
 										<TableCell align="center">
 											{/* Get ActionsMenu from Monitor Table and create a component */}
@@ -288,7 +302,7 @@ function Infrastructure() {
 												}}
 											>
 												<InfrastructureMenu
-													monitor={monitor}
+													monitor={row}
 													isAdmin={isAdmin}
 													updateCallback={handleActionMenuDelete}
 												/>
