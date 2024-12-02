@@ -70,7 +70,13 @@ const baseTheme = (palette) => ({
 							},
 						},
 						{
-							props: (props) => props.variant === "contained" && props.disabled,
+							props: (props) => {
+								return (
+									props.variant === "contained" &&
+									props.disabled &&
+									props.classes.loadingIndicator === undefined // Do not apply to loading button
+								);
+							},
 							style: {
 								backgroundColor: `${theme.palette.secondary.main} !important`,
 								color: `${theme.palette.secondary.contrastText} !important`,
@@ -90,6 +96,7 @@ const baseTheme = (palette) => ({
 				}),
 			},
 		},
+
 		MuiIconButton: {
 			styleOverrides: {
 				root: ({ theme }) => ({
