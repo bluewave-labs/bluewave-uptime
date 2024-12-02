@@ -207,6 +207,7 @@ const baseTheme = (palette) => ({
 					},
 					"& .MuiInputBase-input": {
 						padding: ".75em",
+						minHeight: "var(--env-var-height-2)",
 						fontSize: "var(--env-var-font-size-medium)",
 						fontWeight: 400,
 						color: palette.text.secondary,
