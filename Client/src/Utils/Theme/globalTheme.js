@@ -32,19 +32,8 @@ const baseTheme = (palette) => ({
 			fontWeight: 400,
 		},
 	},
-	/* TODO take chart from here, it should live inside of the gauge, and get info from the theme */
-	chart: {
-		header: {
-			fontWeight: 400,
-			fill: palette.text.tertiary,
-			fontSize: typographyLevels.m,
-		},
-		subheader: {
-			fontWeight: 400,
-			fill: palette.text.tertiary,
-			fontSize: typographyLevels.xs,
-		},
-	},
+	/* TODO we can skip using the callback functions on the next lines since we are already accessing it on line 10. That was the last thing I managed to do, so we are sort of doing it twice*/
+
 	spacing: 2,
 	/* TODO All these should live inside of a component*/
 	components: {
@@ -217,7 +206,8 @@ const baseTheme = (palette) => ({
 						borderRadius: theme.shape.borderRadius,
 					},
 					"& .MuiInputBase-input": {
-						height: "var(--env-var-height-2)",
+						padding: ".75em",
+						minHeight: "var(--env-var-height-2)",
 						fontSize: "var(--env-var-font-size-medium)",
 						fontWeight: 400,
 						color: palette.text.secondary,

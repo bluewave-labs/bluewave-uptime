@@ -1,12 +1,14 @@
 import { useTheme } from "@mui/material";
 
 const useUtils = () => {
-	const theme = useTheme();
 	const determineState = (monitor) => {
 		if (monitor.isActive === false) return "paused";
 		if (monitor?.status === undefined) return "pending";
 		return monitor?.status == true ? "up" : "down";
 	};
+
+	/* TODO Refactor: from here on shouldn't live in a custom hook, but on theme, or constants  */
+	const theme = useTheme();
 
 	const statusColor = {
 		up: theme.palette.success.main,

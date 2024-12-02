@@ -265,7 +265,8 @@ const CreateInfrastructureMonitor = () => {
 						<TextInput
 							type="text"
 							id="name"
-							label="Friendly name"
+							label="Display name"
+							placeholder="Google"
 							isOptional={true}
 							value={infrastructureMonitor.name}
 							onBlur={handleBlur}

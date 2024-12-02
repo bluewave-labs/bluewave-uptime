@@ -221,6 +221,7 @@ export const addDemoMonitors = createAsyncThunk(
 		}
 	}
 );
+
 export const deleteAllMonitors = createAsyncThunk(
 	"monitors/deleteAllMonitors",
 	async (data, thunkApi) => {

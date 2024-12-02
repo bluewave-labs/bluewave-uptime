@@ -40,7 +40,7 @@ export const checkInfrastructureEndpointResolution = createAsyncThunk(
 			const res = await networkService.checkEndpointResolution({
 				authToken: authToken,
 				monitorURL: monitorURL,
-			})
+			});
 			return res.data;
 		} catch (error) {
 			if (error.response && error.response.data) {
@@ -53,7 +53,7 @@ export const checkInfrastructureEndpointResolution = createAsyncThunk(
 			return thunkApi.rejectWithValue(payload);
 		}
 	}
-)
+);
 
 export const getInfrastructureMonitorById = createAsyncThunk(
 	"infrastructureMonitors/getMonitorById",
@@ -87,6 +87,8 @@ export const getInfrastructureMonitorsByTeamId = createAsyncThunk(
 				authToken: token,
 				teamId: user.teamId,
 				types: ["hardware"],
+				limit: 1,
+				rowsPerPage: 0,
 			});
 			return res.data;
 		} catch (error) {
@@ -112,7 +114,7 @@ export const updateInfrastructureMonitor = createAsyncThunk(
 				description: monitor.description,
 				interval: monitor.interval,
 				notifications: monitor.notifications,
-				threshold: monitor.threshold
+				threshold: monitor.threshold,
 			};
 			const res = await networkService.updateMonitor({
 				authToken: authToken,
@@ -307,7 +309,9 @@ const infrastructureMonitorsSlice = createSlice({
 			.addCase(getInfrastructureMonitorById.rejected, (state, action) => {
 				state.isLoading = false;
 				state.success = false;
-				state.msg = action.payload ? action.payload.msg : "Failed to get infrastructure monitor";
+				state.msg = action.payload
+					? action.payload.msg
+					: "Failed to get infrastructure monitor";
 			})
 			// *****************************************************
 			// update Monitor
@@ -401,6 +405,7 @@ const infrastructureMonitorsSlice = createSlice({
 	},
 });
 
-export const { setInfrastructureMonitors, clearInfrastructureMonitorState } = infrastructureMonitorsSlice.actions;
+export const { setInfrastructureMonitors, clearInfrastructureMonitorState } =
+	infrastructureMonitorsSlice.actions;
 
 export default infrastructureMonitorsSlice.reducer;

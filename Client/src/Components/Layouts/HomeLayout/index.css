@@ -6,6 +6,13 @@
 	padding: var(--env-var-spacing-2);
 }
 
+/* TODO go for this approach for responsiveness. The aside needs to be taken care of */
+/* @media (max-width: 1000px) {
+	.home-layout {
+		flex-direction: column !important;
+	}
+} */
+
 .home-layout aside {
 	position: sticky;
 	top: var(--env-var-spacing-2);
