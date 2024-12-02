@@ -20,7 +20,7 @@ import "./index.css";
  * @returns {JSX.Element} The rendered fallback UI.
  */
 
-const Fallback = ({ title, checks, link = "/", isAdmin }) => {
+const Fallback = ({ title, checks, link = "/", isAdmin, ovalStart }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const mode = useSelector((state) => state.ui.mode);
@@ -48,7 +48,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
 			</Box>
 			<Stack
 				gap={theme.spacing(4)}
-				maxWidth={"275px"}
+				maxWidth={"300px"}
 				zIndex={1}
 			>
 				<Typography
@@ -56,7 +56,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
 					marginY={theme.spacing(4)}
 					color={theme.palette.text.tertiary}
 				>
-					A {title} is used to:
+					{ovalStart ? "An" : "A"} {title} is used to:
 				</Typography>
 				{checks.map((check, index) => (
 					<Check
