@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import Field from "../../../../Components/Inputs/Field";
+import TextInput from "../../../../Components/Inputs/TextInput";
 import Checkbox from "../../../../Components/Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
 import PropTypes from "prop-types";
@@ -57,17 +57,17 @@ export const CustomThreshold = ({
 					justifyContent: "flex-end",
 				}}
 			>
-				<Field
+				<TextInput
+					maxWidth="var(--env-var-width-4)"
 					type="number"
-					className="field-infrastructure-alert"
 					id={fieldId}
 					value={infrastructureMonitor[fieldId]}
 					onBlur={onFieldBlur}
 					onChange={onFieldChange}
-					error={errors[fieldId]}
+					error={errors[fieldId] ? true : false}
 					disabled={!infrastructureMonitor[checkboxId]}
-					hideErrorText={true}
-				></Field>
+				/>
+
 				<Typography
 					component="p"
 					m={theme.spacing(3)}

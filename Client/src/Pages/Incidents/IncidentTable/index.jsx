@@ -24,6 +24,7 @@ import { useTheme } from "@emotion/react";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
 import PlaceholderLight from "../../../assets/Images/data_placeholder.svg?react";
 import PlaceholderDark from "../../../assets/Images/data_placeholder_dark.svg?react";
+import { HttpStatusLabel } from "../../../Components/HttpStatusLabel";
 import { Empty } from "./Empty/Empty";
 import { IncidentSkeleton } from "./Skeleton/Skeleton";
 
@@ -184,7 +185,7 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 										"YYYY-MM-DD HH:mm:ss A",
 										uiTimezone
 									);
-
+					
 									return (
 										<TableRow key={check._id}>
 											<TableCell>{monitors[check.monitorId]?.name}</TableCell>
@@ -196,7 +197,9 @@ const IncidentTable = ({ monitors, selectedMonitor, filter }) => {
 												/>
 											</TableCell>
 											<TableCell>{formattedDate}</TableCell>
-											<TableCell>{check.statusCode ? check.statusCode : "N/A"}</TableCell>
+											<TableCell>
+												<HttpStatusLabel status={check.statusCode} />
+											</TableCell>
 											<TableCell>{check.message}</TableCell>
 										</TableRow>
 									);

@@ -22,6 +22,7 @@ const paletteColors = {
 	gray80: "#FDFCFD",
 	gray90: "#FCFCFD",
 	gray100: "#F4F4F4",
+	gray150: "#EFEFEF",
 	gray200: "#E3E3E3",
 	gray300: "#A2A3A3",
 	gray500: "#838C99",
@@ -168,7 +169,7 @@ const semanticColors = {
 	background: {
 		main: {
 			light: paletteColors.white,
-			dark: paletteColors.gray850,
+			dark: paletteColors.gray890,
 		},
 		alt: {
 			light: paletteColors.gray90,
@@ -205,10 +206,12 @@ const semanticColors = {
 		light: {
 			light: paletteColors.gray200,
 			dark: paletteColors.gray800,
+			disabled: paletteColors.gray150,
 		},
 		dark: {
 			light: paletteColors.gray200,
 			dark: paletteColors.gray750,
+			disabled: paletteColors.gray800,
 		},
 	},
 	unresolved: {

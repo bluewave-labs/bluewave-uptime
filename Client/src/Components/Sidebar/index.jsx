@@ -48,15 +48,9 @@ import StatusPages from "../../assets/icons/status-pages.svg?react";
 import "./index.css";
 
 const menu = [
-	{
-		name: "Dashboard",
-		icon: <Dashboard />,
-		nested: [
-			{ name: "Monitors", path: "monitors", icon: <Monitors /> },
-			{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
-			{ name: "Infrastructure", path: "infrastructure", icon: <Integrations /> },
-		],
-	},
+	{ name: "Monitors", path: "monitors", icon: <Monitors /> },
+	{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
+	{ name: "Infrastructure", path: "infrastructure", icon: <Integrations /> },
 	{ name: "Incidents", path: "incidents", icon: <Incidents /> },
 	{ name: "Status pages", path: "status", icon: <StatusPages /> },
 	{ name: "Maintenance", path: "maintenance", icon: <Maintenance /> },

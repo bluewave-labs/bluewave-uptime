@@ -92,11 +92,6 @@ function App() {
 					element={<HomeLayout />}
 				>
 					<Route
-						path="/test"
-						element={<Test />}
-					/>
-
-					<Route
 						exact
 						path="/"
 						element={<Navigate to="/monitors" />}

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import Field from "../../../../Components/Inputs/Field";
+import TextInput from "../../../../Components/Inputs/TextInput";
 
 StepTwo.propTypes = {
 	form: PropTypes.object,
@@ -55,7 +55,7 @@ function StepTwo({ form, errors, onSubmit, onChange, onBack }) {
 					display="grid"
 					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				>
-					<Field
+					<TextInput
 						type="email"
 						id="register-email-input"
 						label="Email"
@@ -65,7 +65,8 @@ function StepTwo({ form, errors, onSubmit, onChange, onBack }) {
 						value={form.email}
 						onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
 						onChange={onChange}
-						error={errors.email}
+						error={errors.email ? true : false}
+						helperText={errors.email}
 						ref={inputRef}
 					/>
 					<Stack
