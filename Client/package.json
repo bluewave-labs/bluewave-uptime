@@ -22,7 +22,6 @@
 		"@mui/x-date-pickers": "7.23.0",
 		"@reduxjs/toolkit": "2.4.0",
 		"axios": "^1.7.4",
-		"chart.js": "^4.4.3",
 		"dayjs": "1.11.13",
 		"joi": "17.13.3",
 		"jwt-decode": "^4.0.0",
