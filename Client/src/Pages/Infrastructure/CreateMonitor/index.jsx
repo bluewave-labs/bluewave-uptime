@@ -3,6 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { infrastructureMonitorValidation } from "../../../Validation/validation";
+import { parseDomainName } from "../../../Utils/monitorUtils";
 import {
 	createInfrastructureMonitor,
 	checkInfrastructureEndpointResolution,
@@ -79,6 +80,15 @@ const CreateInfrastructureMonitor = () => {
 	const handleBlur = (event, appendID) => {
 		event.preventDefault();
 		const { value, id } = event.target;
+
+		let name = idMap[id] ?? id;
+		if (name === "url" && infrastructureMonitor.name === "") {
+			setInfrastructureMonitor((prev) => ({
+				...prev,
+				name: parseDomainName(value),
+			}));
+		}
+
 		if (id?.startsWith("notify-email-")) return;
 		const { error } = infrastructureMonitorValidation.validate(
 			{ [id ?? appendID]: value },
