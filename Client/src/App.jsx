@@ -42,7 +42,6 @@ import { networkService } from "./main";
 import { Infrastructure } from "./Pages/Infrastructure";
 import InfrastructureDetails from "./Pages/Infrastructure/Details";
 import CreateStatus from "./Pages/Status/CreateStatus";
-import Test from "./Pages/test";
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
