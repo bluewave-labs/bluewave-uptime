@@ -3,11 +3,9 @@ import { Button, Box, Stack, Typography } from "@mui/material";
 import { ConfigBox } from "../../../Pages/Settings/styled";
 import Checkbox from "../../Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
-import { useDispatch, useSelector } from "react-redux";
 import TabPanel from "@mui/lab/TabPanel";
-import Field from "../../Inputs/Field";
+import TextInput from "../../Inputs/TextInput";
 import ImageField from "../../Inputs/Image";
-import { setMode, setTimezone } from "../../../Features/UI/uiSlice";
 import timezones from "../../../Utils/timezones.json";
 import Select from "../../Inputs/Select"
 import { logoImageValidation, publicPageGeneralSettingsValidation } from "../../../Validation/validation"
@@ -15,10 +13,10 @@ import { buildErrors } from "../../../Validation/error";
 import { formatBytes } from "../../../Utils/fileUtils";
 import ProgressUpload from "../../ProgressBars";
 import ImageIcon from "@mui/icons-material/Image";
+import { HttpAdornment } from "../../Inputs/TextInput/Adornments";
 
 const GeneralSettingsPanel = () => {
 	const theme = useTheme();
-	const dispatch = useDispatch();
 	const [errors, setErrors] = useState({});
 	const [logo, setLogo] = useState();
 	const [progress, setProgress] = useState({ value: 0, isLoading: false });
@@ -57,7 +55,7 @@ const GeneralSettingsPanel = () => {
 		setLocalData((prev) => ({
 			...prev,
 			logo: logo.src,
-		}));
+		}));		
 	};
 
 	const handleChange = (event) => {
@@ -170,7 +168,7 @@ const GeneralSettingsPanel = () => {
 						</Stack>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
-						<Field
+						<TextInput
 							id="companyName"
 							type="text"
 							label="Company name"
@@ -179,20 +177,19 @@ const GeneralSettingsPanel = () => {
 							onBlur={handleBlur}
 							error={errors["companyName"]}
 						/>
-						<Field
+						<TextInput
 							id="url"
 							type="url"
 							label="SubURL"
-							placeholder={""}
 							value={localData.url}
-							prefix={"http://uptimegenie.com/"}
+							startAdornment={<HttpAdornment https={true} />}
+							//prefix={"http://uptimegenie.com/"}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							error={errors["url"]}
 						/>
 					</Stack>
 				</ConfigBox>
-
 				<ConfigBox>
 					<Box>
 						<Stack gap={theme.spacing(6)}>
@@ -212,10 +209,9 @@ const GeneralSettingsPanel = () => {
 							items={timezones}
 							error={errors["display-timezone"]}
 						/>
-
 						<ImageField
 							id="logo"
-							src={localData.logo?.src??logo?.src}
+							src={localData.logo?.src ?? logo?.src}
 							loading={progress.isLoading && progress.value !== 100}
 							onChange={handleLogo}
 						/>
@@ -231,34 +227,36 @@ const GeneralSettingsPanel = () => {
 						) : (
 							""
 						)}
-						<Stack
-							direction="row"
-							mt={theme.spacing(10)}
-							gap={theme.spacing(5)}
-							justifyContent="flex-end"
-						>
-							<Button
-								variant="text"
-								color="info"
-								onClick={removeLogo}
+						{logo?.src && (
+							<Stack
+								direction="row"
+								mt={theme.spacing(10)}
+								gap={theme.spacing(5)}
+								justifyContent="flex-end"
 							>
-								Remove
-							</Button>
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={handleUpdateLogo}
-								disabled={
-									(Object.keys(errors).length !== 0 && errors?.logo) ||
-									progress.value !== 100
-										? true
-										: false
-								}
-							>
-								Update
-							</Button>
-						</Stack>
-						<Field
+								<Button
+									variant="text"
+									color="info"
+									onClick={removeLogo}
+								>
+									Remove
+								</Button>
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={handleUpdateLogo}
+									disabled={
+										(Object.keys(errors).length !== 0 && errors?.logo) ||
+										progress.value !== 100
+											? true
+											: false
+									}
+								>
+									Update
+								</Button>
+							</Stack>
+						)}
+						<TextInput
 							id="color"
 							label="Color"
 							value={localData.color}
