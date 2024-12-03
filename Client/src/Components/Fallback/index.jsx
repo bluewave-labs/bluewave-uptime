@@ -16,11 +16,11 @@ import "./index.css";
  * @param {string} props.title - The title to be displayed in the fallback UI.
  * @param {Array<string>} props.checks - An array of strings representing the checks to display.
  * @param {string} [props.link="/"] - The link to navigate to.
- *
+ * @param {boolean} [props.vowelStart=false] - Whether the title starts with a vowel.
  * @returns {JSX.Element} The rendered fallback UI.
  */
 
-const Fallback = ({ title, checks, link = "/", isAdmin }) => {
+const Fallback = ({ title, checks, link = "/", isAdmin, vowelStart = false }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const mode = useSelector((state) => state.ui.mode);
@@ -48,7 +48,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
 			</Box>
 			<Stack
 				gap={theme.spacing(4)}
-				maxWidth={"275px"}
+				maxWidth={"300px"}
 				zIndex={1}
 			>
 				<Typography
@@ -56,7 +56,7 @@ const Fallback = ({ title, checks, link = "/", isAdmin }) => {
 					marginY={theme.spacing(4)}
 					color={theme.palette.text.tertiary}
 				>
-					A {title} is used to:
+					{vowelStart ? "An" : "A"} {title} is used to:
 				</Typography>
 				{checks.map((check, index) => (
 					<Check
@@ -86,6 +86,7 @@ Fallback.propTypes = {
 	checks: PropTypes.arrayOf(PropTypes.string).isRequired,
 	link: PropTypes.string,
 	isAdmin: PropTypes.bool,
+	vowelStart: PropTypes.bool,
 };
 
 export default Fallback;

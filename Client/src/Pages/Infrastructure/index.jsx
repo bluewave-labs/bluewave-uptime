@@ -4,6 +4,8 @@ import { /* useDispatch, */ useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import useUtils from "../Monitors/utils";
 import { jwtDecode } from "jwt-decode";
+import SkeletonLayout from "./skeleton";
+import Fallback from "../../Components/Fallback";
 // import GearIcon from "../../Assets/icons/settings-bold.svg?react";
 import CPUChipIcon from "../../assets/icons/cpu-chip.svg?react";
 import {
@@ -77,6 +79,7 @@ function Infrastructure() {
 	/* Adding this custom hook so we can avoid using the HOC approach that can lower performance (we are calling the admin logic N times on initializing the project. using a custom hook will cal it ass needed ) */
 	const isAdmin = useIsAdmin();
 	const theme = useTheme();
+	const [isLoading, setIsLoading] = useState(true);
 
 	const navigate = useNavigate();
 	const navigateToCreate = () => navigate("/infrastructure/create");
@@ -99,6 +102,7 @@ function Infrastructure() {
 
 	const fetchMonitors = async () => {
 		try {
+			setIsLoading(true);
 			const response = await networkService.getMonitorsByTeamId({
 				authToken,
 				teamId: user.teamId,
@@ -116,6 +120,8 @@ function Infrastructure() {
 			});
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -165,165 +171,197 @@ function Infrastructure() {
 		};
 	});
 
+	let isActuallyLoading = isLoading && monitorState.monitors?.length === 0;
 	return (
-		<Stack gap={theme.spacing(8)}>
-			<Breadcrumbs list={BREADCRUMBS} />
-			<Stack
-				direction="row"
-				sx={{
-					justifyContent: "end",
-					alignItems: "center",
-					gap: "1rem",
-					flexWrap: "wrap",
-					marginBottom: "2rem",
-				}}
-			>
-				{/* 
+		<Box
+			className="infrastructure-monitor"
+			sx={{
+				':has(> [class*="fallback__"])': {
+					position: "relative",
+					border: 1,
+					borderColor: theme.palette.border.light,
+					borderRadius: theme.shape.borderRadius,
+					borderStyle: "dashed",
+					backgroundColor: theme.palette.background.main,
+					overflow: "hidden",
+				},
+			}}
+		>
+			{isActuallyLoading ? (
+				<SkeletonLayout />
+			) : monitorState.monitors?.length !== 0 ? (
+				<Stack gap={theme.spacing(8)}>
+					<Breadcrumbs list={BREADCRUMBS} />
+					<Stack
+						direction="row"
+						sx={{
+							justifyContent: "end",
+							alignItems: "center",
+							gap: "1rem",
+							flexWrap: "wrap",
+							marginBottom: "2rem",
+						}}
+					>
+						{/* 
 				This will be removed from here, but keeping the commented code to remind me to add a max width to the greeting component
 				<Box style={{ maxWidth: "65ch" }}>
 					<Greeting type="uptime" />
 				</Box> */}
-				<Button
-					variant="contained"
-					color="primary"
-					onClick={navigateToCreate}
-					sx={{ fontWeight: 500 }}
-				>
-					Create infrastructure monitor
-				</Button>
-			</Stack>
-			<Stack
-				sx={{
-					gap: "1rem",
-				}}
-			>
-				<Stack
-					direction="row"
-					sx={{
-						alignItems: "center",
-						gap: ".25rem",
-						flexWrap: "wrap",
-					}}
-				>
-					<Heading component="h2">Infrastructure monitors</Heading>
-					{/* TODO Correct the class current-monitors-counter, there are some unnecessary things there	 */}
-					<Box
-						component="span"
-						className="current-monitors-counter"
-						color={theme.palette.text.primary}
-						border={1}
-						borderColor={theme.palette.border.light}
-						backgroundColor={theme.palette.background.accent}
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={navigateToCreate}
+							sx={{ fontWeight: 500 }}
+						>
+							Create infrastructure monitor
+						</Button>
+					</Stack>
+					<Stack
+						sx={{
+							gap: "1rem",
+						}}
 					>
-						{totalMonitors}
-					</Box>
-				</Stack>
-				<TableContainer component={Paper}>
-					<Table stickyHeader>
-						<TableHead sx={{ backgroundColor: theme.palette.background.accent }}>
-							<TableRow>
-								{columns.map((column, index) => (
-									<TableCell
-										key={index}
-										align={index === 0 ? "left" : "center"}
-										sx={{
-											backgroundColor: theme.palette.background.accent,
-										}}
-									>
-										{column.label}
-									</TableCell>
-								))}
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{monitorsAsRows.map((row) => {
-								return (
-									<TableRow
-										key={row.id}
-										onClick={() => openDetails(row.id)}
-										sx={{
-											cursor: "pointer",
-											"&:hover": {
-												backgroundColor: theme.palette.background.accent,
-											},
-										}}
-									>
-										{/* TODO iterate over column and get column id, applying row[column.id] */}
-										<TableCell>
-											<Host
-												title={row.name}
-												url={row.url}
-												percentage={row.uptimePercentage}
-												percentageColor={row.percentageColor}
-											/>
-										</TableCell>
-										<TableCell align="center">
-											<StatusLabel
-												status={row.status}
-												text={row.status}
-												/* Use capitalize inside of Status Label */
-												/* Update component so we don't need to pass text and status separately*/
-												customStyles={{ textTransform: "capitalize" }}
-											/>
-										</TableCell>
-										<TableCell align="center">
-											<Stack
-												direction={"row"}
-												justifyContent={"center"}
-												alignItems={"center"}
-												gap=".25rem"
-											>
-												<CPUChipIcon
-													width={20}
-													height={20}
-												/>
-												{row.processor}
-											</Stack>
-										</TableCell>
-										<TableCell align="center">
-											<CustomGauge progress={row.cpu} />
-										</TableCell>
-										<TableCell align="center">
-											<CustomGauge progress={row.mem} />
-										</TableCell>
-										<TableCell align="center">
-											<CustomGauge progress={row.disk} />
-										</TableCell>
-										<TableCell align="center">
-											{/* Get ActionsMenu from Monitor Table and create a component */}
-											<IconButton
+						<Stack
+							direction="row"
+							sx={{
+								alignItems: "center",
+								gap: ".25rem",
+								flexWrap: "wrap",
+							}}
+						>
+							<Heading component="h2">Infrastructure monitors</Heading>
+							{/* TODO Correct the class current-monitors-counter, there are some unnecessary things there	 */}
+							<Box
+								component="span"
+								className="current-monitors-counter"
+								color={theme.palette.text.primary}
+								border={1}
+								borderColor={theme.palette.border.light}
+								backgroundColor={theme.palette.background.accent}
+							>
+								{totalMonitors}
+							</Box>
+						</Stack>
+						<TableContainer component={Paper}>
+							<Table stickyHeader>
+								<TableHead sx={{ backgroundColor: theme.palette.background.accent }}>
+									<TableRow>
+										{columns.map((column, index) => (
+											<TableCell
+												key={index}
+												align={index === 0 ? "left" : "center"}
 												sx={{
-													"& svg path": {
-														stroke: theme.palette.other.icon,
+													backgroundColor: theme.palette.background.accent,
+												}}
+											>
+												{column.label}
+											</TableCell>
+										))}
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{monitorsAsRows.map((row) => {
+										return (
+											<TableRow
+												key={row.id}
+												onClick={() => openDetails(row.id)}
+												sx={{
+													cursor: "pointer",
+													"&:hover": {
+														backgroundColor: theme.palette.background.accent,
 													},
 												}}
 											>
-												<InfrastructureMenu
-													monitor={row}
-													isAdmin={isAdmin}
-													updateCallback={handleActionMenuDelete}
-												/>
-												{/* <GearIcon
+												{/* TODO iterate over column and get column id, applying row[column.id] */}
+												<TableCell>
+													<Host
+														title={row.name}
+														url={row.url}
+														percentage={row.uptimePercentage}
+														percentageColor={row.percentageColor}
+													/>
+												</TableCell>
+												<TableCell align="center">
+													<StatusLabel
+														status={row.status}
+														text={row.status}
+														/* Use capitalize inside of Status Label */
+														/* Update component so we don't need to pass text and status separately*/
+														customStyles={{ textTransform: "capitalize" }}
+													/>
+												</TableCell>
+												<TableCell align="center">
+													<Stack
+														direction={"row"}
+														justifyContent={"center"}
+														alignItems={"center"}
+														gap=".25rem"
+													>
+														<CPUChipIcon
+															width={20}
+															height={20}
+														/>
+														{row.processor}
+													</Stack>
+												</TableCell>
+												<TableCell align="center">
+													<CustomGauge progress={row.cpu} />
+												</TableCell>
+												<TableCell align="center">
+													<CustomGauge progress={row.mem} />
+												</TableCell>
+												<TableCell align="center">
+													<CustomGauge progress={row.disk} />
+												</TableCell>
+												<TableCell align="center">
+													{/* Get ActionsMenu from Monitor Table and create a component */}
+													<IconButton
+														sx={{
+															"& svg path": {
+																stroke: theme.palette.other.icon,
+															},
+														}}
+													>
+														<InfrastructureMenu
+															monitor={row}
+															isAdmin={isAdmin}
+															updateCallback={handleActionMenuDelete}
+														/>
+														{/* <GearIcon
 												width={20}
 												height={20}
 											/> */}
-											</IconButton>
-										</TableCell>
-									</TableRow>
-								);
-							})}
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<Pagination
-					monitorCount={totalMonitors}
-					page={page}
-					rowsPerPage={rowsPerPage}
-					handleChangePage={handleChangePage}
-					handleChangeRowsPerPage={handleChangeRowsPerPage}
+													</IconButton>
+												</TableCell>
+											</TableRow>
+										);
+									})}
+								</TableBody>
+							</Table>
+						</TableContainer>
+						<Pagination
+							monitorCount={totalMonitors}
+							page={page}
+							rowsPerPage={rowsPerPage}
+							handleChangePage={handleChangePage}
+							handleChangeRowsPerPage={handleChangeRowsPerPage}
+						/>
+					</Stack>
+				</Stack>
+			) : (
+				<Fallback
+					ovalStart={true}
+					title="infrastructure monitor"
+					checks={[
+						"Track the performance of your servers",
+						"Identify bottlenecks and optimize usage",
+						"Ensure reliability with real-time monitoring",
+					]}
+					link="/infrastructure/create"
+					isAdmin={isAdmin}
 				/>
-			</Stack>
-		</Stack>
+			)}
+		</Box>
 	);
 }
 
