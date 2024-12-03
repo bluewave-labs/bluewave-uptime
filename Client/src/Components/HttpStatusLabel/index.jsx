@@ -23,7 +23,7 @@ const handleStatusCode = (status) => {
 };
 
 const getRoundedStatusCode = (status) => {
-		return Math.floor(status / 100) * 100;
+	return Math.floor(status / 100) * 100;
 };
 
 const HttpStatusLabel = ({ status, customStyles }) => {
@@ -31,12 +31,12 @@ const HttpStatusLabel = ({ status, customStyles }) => {
 	const colors = {
 		400: {
 			dotColor: theme.palette.warning.main,
-			bgColor: theme.palette.warning.bg,
+			bgColor: theme.palette.warning.dark,
 			borderColor: theme.palette.warning.light,
 		},
 		500: {
 			dotColor: theme.palette.error.main,
-			bgColor: theme.palette.error.bg,
+			bgColor: theme.palette.error.dark,
 			borderColor: theme.palette.error.light,
 		},
 		default: {
@@ -46,11 +46,10 @@ const HttpStatusLabel = ({ status, customStyles }) => {
 		},
 	};
 
-	const statusCode = handleStatusCode(status)
+	const statusCode = handleStatusCode(status);
 
 	const { borderColor, bgColor, dotColor } =
 		colors[getRoundedStatusCode(statusCode)] || colors.default;
-
 	return (
 		<BaseLabel
 			label={String(statusCode)}
@@ -65,7 +64,7 @@ const HttpStatusLabel = ({ status, customStyles }) => {
 };
 
 HttpStatusLabel.propTypes = {
-	status:PropTypes.number,
+	status: PropTypes.number,
 	customStyles: PropTypes.object,
 };
 
