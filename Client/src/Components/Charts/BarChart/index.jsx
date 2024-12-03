@@ -44,7 +44,7 @@ const BarChart = ({ checks = [] }) => {
 						position="relative"
 						width={theme.spacing(4.5)}
 						height="100%"
-						backgroundColor={theme.palette.background.fill}
+						backgroundColor={theme.palette.border.light}
 						sx={{
 							borderRadius: theme.spacing(1.5),
 						}}

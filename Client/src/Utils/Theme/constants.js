@@ -206,12 +206,14 @@ const semanticColors = {
 		light: {
 			light: paletteColors.gray200,
 			dark: paletteColors.gray800,
+			/* TODO this should live in a different key (border.disabled.light and .dark) */
 			disabled: paletteColors.gray150,
 		},
 		dark: {
 			light: paletteColors.gray200,
 			dark: paletteColors.gray750,
-			disabled: paletteColors.gray800,
+			/* TODO this should live in a different key (border.disabled.light and .dark) */
+			disabled: paletteColors.gray150,
 		},
 	},
 	unresolved: {

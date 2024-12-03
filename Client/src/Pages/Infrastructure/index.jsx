@@ -190,10 +190,7 @@ function Infrastructure() {
 			{isActuallyLoading ? (
 				<SkeletonLayout />
 			) : monitorState.monitors?.length !== 0 ? (
-				<Stack
-					component="main"
-					style={{ width: "100%", gap: "1rem" }}
-				>
+				<Stack gap={theme.spacing(8)}>
 					<Breadcrumbs list={BREADCRUMBS} />
 					<Stack
 						direction="row"
