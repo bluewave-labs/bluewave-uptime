@@ -214,7 +214,7 @@ const CreateMonitor = () => {
 		{ _id: 4, name: "4 minutes" },
 		{ _id: 5, name: "5 minutes" },
 	];
-
+	console.log(monitor.type);
 	return (
 		<Box className="create-monitor">
 			<Breadcrumbs
@@ -262,7 +262,9 @@ const CreateMonitor = () => {
 						<TextInput
 							type={monitor.type === "http" ? "url" : "text"}
 							id="monitor-url"
-							startAdornment={<HttpAdornment https={https} />}
+							startAdornment={
+								monitor.type === "http" ? <HttpAdornment https={https} /> : null
+							}
 							label={monitorTypeMaps[monitor.type].label || "URL to monitor"}
 							https={https}
 							placeholder={monitorTypeMaps[monitor.type].placeholder || ""}
