@@ -28,6 +28,7 @@ const {
 } = colors;
 
 const palette = {
+	/* TODO check if we need the addition of a new color gray150 for this. Also, this color would probably fit for primary contrastText */
 	action: {
 		disabled: border.light.disabled,
 	},
