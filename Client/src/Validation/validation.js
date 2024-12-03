@@ -82,7 +82,7 @@ const credentials = joi.object({
 			return value;
 		})
 		.messages({
-			"string.empty": "empty",
+			"string.empty": "This field can't be empty",
 			different: "Passwords do not match",
 		}),
 	role: joi.array(),
