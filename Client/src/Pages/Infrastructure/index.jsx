@@ -350,7 +350,7 @@ function Infrastructure() {
 				</Stack>
 			) : (
 				<Fallback
-					ovalStart={true}
+					vowelStart={true}
 					title="infrastructure monitor"
 					checks={[
 						"Track the performance of your servers",
