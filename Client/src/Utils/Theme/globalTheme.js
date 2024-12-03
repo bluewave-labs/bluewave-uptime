@@ -244,6 +244,36 @@ const baseTheme = (palette) => ({
 				}),
 			},
 		},
+		MuiRadio: {
+			styleOverrides: {
+				root: ({ theme }) => ({
+					color: "transparent",
+					width: 16,
+					height: 16,
+					boxShadow: `inset 0 0 0 1px ${theme.palette.secondary.main}`,
+					mt: theme.spacing(0.5),
+				}),
+			},
+		},
+		MuiFormControlLabel: {
+			styleOverrides: {
+				root: ({ theme }) => {
+					return {
+						alignItems: "flex-start",
+						borderRadius: theme.shape.borderRadius,
+						padding: theme.spacing(2.5),
+
+						"& .MuiButtonBase-root": {
+							padding: 0,
+							marginRight: theme.spacing(6),
+						},
+						"&:hover": {
+							backgroundColor: theme.palette.background.accent,
+						},
+					};
+				},
+			},
+		},
 	},
 	shape: {
 		borderRadius: 2,

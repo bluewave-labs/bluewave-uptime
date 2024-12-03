@@ -37,13 +37,6 @@ const Radio = (props) => {
 					id={props.id}
 					size={props.size}
 					checkedIcon={<RadioChecked />}
-					sx={{
-						color: "transparent",
-						width: 16,
-						height: 16,
-						boxShadow: `inset 0 0 0 1px ${theme.palette.secondary.main}`,
-						mt: theme.spacing(0.5),
-					}}
 				/>
 			}
 			onChange={props.onChange}
@@ -60,19 +53,7 @@ const Radio = (props) => {
 				</>
 			}
 			labelPlacement="end"
-			sx={{
-				alignItems: "flex-start",
-				p: theme.spacing(2.5),
-				m: theme.spacing(-2.5),
-				borderRadius: theme.shape.borderRadius,
-				"&:hover": {
-					backgroundColor: theme.palette.background.accent,
-				},
-				"& .MuiButtonBase-root": {
-					p: 0,
-					mr: theme.spacing(6),
-				},
-			}}
+			sx={{}}
 		/>
 	);
 };
@@ -81,6 +62,9 @@ Radio.propTypes = {
 	title: PropTypes.string.isRequired,
 	desc: PropTypes.string,
 	size: PropTypes.string,
+	checked: PropTypes.bool,
+	value: PropTypes.string,
+	onChange: PropTypes.func,
 };
 
 export default Radio;
