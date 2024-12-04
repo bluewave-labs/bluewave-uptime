@@ -29,6 +29,9 @@ import Dialog from "../../Dialog";
 const ProfilePanel = () => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
+	
+	// Define the constant for consistent gap
+	const SPACING_GAP = theme.spacing(12);
 
 	//redux state
 	const { user, authToken, isLoading } = useSelector((state) => state.auth);
@@ -223,7 +226,7 @@ const ProfilePanel = () => {
 				className="edit-profile-form"
 				noValidate
 				spellCheck="false"
-				gap={theme.spacing(20)}
+				gap={SPACING_GAP} // Applied SPACING_GAP for consistent spacing
 			>
 				<Stack direction="row">
 					<Box flex={0.9}>
