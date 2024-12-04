@@ -93,6 +93,20 @@ const baseTheme = (palette) => ({
 					"&:hover": {
 						boxShadow: "none",
 					},
+					"&.MuiLoadingButton-root": {
+						"&:disabled": {
+							backgroundColor: theme.palette.secondary.main,
+							color: theme.palette.text.primary,
+						},
+					},
+					"&.MuiLoadingButton-loading": {
+						"& .MuiLoadingButton-label": {
+							color: "transparent",
+						},
+						"& .MuiLoadingButton-loadingIndicator": {
+							color: "inherit",
+						},
+					},
 				}),
 			},
 		},
@@ -218,6 +232,10 @@ const baseTheme = (palette) => ({
 						fontSize: "var(--env-var-font-size-medium)",
 						fontWeight: 400,
 						color: palette.text.secondary,
+						"&.Mui-disabled": {
+							opacity: 0.25,
+							"-webkit-text-fill-color": "unset",
+						},
 					},
 					"& .MuiInputBase-input.MuiOutlinedInput-input": {
 						padding: "0 var(--env-var-spacing-1-minus) !important",
