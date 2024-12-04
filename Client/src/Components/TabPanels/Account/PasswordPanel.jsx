@@ -11,233 +11,217 @@ import { update } from "../../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../../Utils/toastUtils";
 
-/**
- * PasswordPanel component manages the form for editing password.
- *
- * @returns {JSX.Element}
- */
-
 const PasswordPanel = () => {
-	const theme = useTheme();
-	const dispatch = useDispatch();
+  const theme = useTheme();
+  const dispatch = useDispatch();
 
-	//redux state
-	const { authToken, isLoading } = useSelector((state) => state.auth);
+  // Define the constant for consistent gap
+  const GAP_SIZE = theme.spacing(12); // EDITED: Added a constant for gap size.
 
-	const idToName = {
-		"edit-current-password": "password",
-		"edit-new-password": "newPassword",
-		"edit-confirm-password": "confirm",
-	};
+  const { authToken, isLoading } = useSelector((state) => state.auth);
 
-	const [localData, setLocalData] = useState({
-		password: "",
-		newPassword: "",
-		confirm: "",
-	});
-	const [errors, setErrors] = useState({});
-	const handleChange = (event) => {
-		const { value, id } = event.target;
-		const name = idToName[id];
-		setLocalData((prev) => ({
-			...prev,
-			[name]: value,
-		}));
+  const idToName = {
+    "edit-current-password": "password",
+    "edit-new-password": "newPassword",
+    "edit-confirm-password": "confirm",
+  };
 
-		const validation = credentials.validate(
-			{ [name]: value },
-			{ abortEarly: false, context: { password: localData.newPassword } }
-		);
+  const [localData, setLocalData] = useState({
+    password: "",
+    newPassword: "",
+    confirm: "",
+  });
+  const [errors, setErrors] = useState({});
 
-		setErrors((prev) => {
-			const updatedErrors = { ...prev };
+  const handleChange = (event) => {
+    const { value, id } = event.target;
+    const name = idToName[id];
+    setLocalData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-			if (validation.error) {
-				updatedErrors[name] = validation.error.details[0].message;
-			} else {
-				delete updatedErrors[name];
-			}
-			return updatedErrors;
-		});
-	};
+    const validation = credentials.validate(
+      { [name]: value },
+      { abortEarly: false, context: { password: localData.newPassword } }
+    );
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
 
-		const { error } = credentials.validate(localData, {
-			abortEarly: false,
-			context: { password: localData.newPassword },
-		});
+      if (validation.error) {
+        updatedErrors[name] = validation.error.details[0].message;
+      } else {
+        delete updatedErrors[name];
+      }
+      return updatedErrors;
+    });
+  };
 
-		if (error) {
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
-		} else {
-			const action = await dispatch(update({ authToken, localData }));
-			if (action.payload.success) {
-				createToast({
-					body: "Your password was changed successfully.",
-				});
-				setLocalData({
-					password: "",
-					newPassword: "",
-					confirm: "",
-				});
-			} else {
-				// TODO: Check for other errors?
-				createToast({
-					body: "Your password input was incorrect.",
-				});
-				setErrors({ password: "*" + action.payload.msg + "." });
-			}
-		}
-	};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-	return (
-		<TabPanel
-			value="password"
-			sx={{
-				"& h1, & input": {
-					color: theme.palette.text.tertiary,
-				},
-			}}
-		>
-			<Stack
-				component="form"
-				onSubmit={handleSubmit}
-				noValidate
-				spellCheck="false"
-				gap={theme.spacing(26)}
-				maxWidth={"80ch"}
-				marginInline={"auto"}
-			>
-				<TextInput
-					type="text"
-					id="hidden-username"
-					name="username"
-					autoComplete="username"
-					hidden={true}
-					value=""
-				/>
+    const { error } = credentials.validate(localData, {
+      abortEarly: false,
+      context: { password: localData.newPassword },
+    });
 
-				<Stack
-					direction="row"
-					justifyContent={"flex-start"}
-					alignItems={"center"}
-					gap={theme.spacing(8)}
-					flexWrap={"wrap"}
-				>
-					<Typography
-						component="h1"
-						width="20ch"
-					>
-						Current password
-					</Typography>
-					<TextInput
-						type="password"
-						id="edit-current-password"
-						placeholder="Enter your current password"
-						autoComplete="current-password"
-						value={localData.password}
-						onChange={handleChange}
-						error={errors[idToName["edit-current-password"]] ? true : false}
-						helperText={errors[idToName["edit-current-password"]]}
-						endAdornment={<PasswordEndAdornment />}
-						flex={1}
-					/>
-				</Stack>
-				<Stack
-					direction="row"
-					alignItems={"center"}
-					gap={theme.spacing(8)}
-					flexWrap={"wrap"}
-				>
-					<Typography
-						component="h1"
-						width="20ch"
-					>
-						New password
-					</Typography>
+    if (error) {
+      const newErrors = {};
+      error.details.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+    } else {
+      const action = await dispatch(update({ authToken, localData }));
+      if (action.payload.success) {
+        createToast({
+          body: "Your password was changed successfully.",
+        });
+        setLocalData({
+          password: "",
+          newPassword: "",
+          confirm: "",
+        });
+      } else {
+        createToast({
+          body: "Your password input was incorrect.",
+        });
+        setErrors({ password: "*" + action.payload.msg + "." });
+      }
+    }
+  };
 
-					<TextInput
-						type="password"
-						id="edit-new-password"
-						placeholder="Enter your new password"
-						autoComplete="new-password"
-						value={localData.newPassword}
-						onChange={handleChange}
-						error={errors[idToName["edit-new-password"]] ? true : false}
-						helperText={errors[idToName["edit-new-password"]]}
-						endAdornment={<PasswordEndAdornment />}
-						flex={1}
-					/>
-				</Stack>
-				<Stack
-					direction="row"
-					alignItems={"center"}
-					gap={theme.spacing(8)}
-					flexWrap={"wrap"}
-				>
-					<Typography
-						component="h1"
-						width="20ch"
-					>
-						Confirm new password
-					</Typography>
+  return (
+    <TabPanel
+      value="password"
+      sx={{
+        "& h1, & input": {
+          color: theme.palette.text.tertiary,
+        },
+      }}
+    >
+      <Stack
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+        spellCheck="false"
+        gap={theme.spacing(26)}
+        maxWidth={"80ch"}
+        marginInline={"auto"}
+      >
+        <TextInput
+          type="text"
+          id="hidden-username"
+          name="username"
+          autoComplete="username"
+          hidden={true}
+          value=""
+        />
 
-					<TextInput
-						type="password"
-						id="edit-confirm-password"
-						placeholder="Reenter your new password"
-						autoComplete="new-password"
-						value={localData.confirm}
-						onChange={handleChange}
-						error={errors[idToName["edit-confirm-password"]] ? true : false}
-						helperText={errors[idToName["edit-confirm-password"]]}
-						endAdornment={<PasswordEndAdornment />}
-						flex={1}
-					/>
-				</Stack>
-				{Object.keys(errors).length > 0 && (
-					<Box sx={{ maxWidth: "70ch" }}>
-						<Alert
-							variant="warning"
-							body="New password must contain at least 8 characters and must have at least one uppercase letter, one lowercase letter, one number and one special character."
-						/>
-					</Box>
-				)}
-				<Stack
-					direction="row"
-					justifyContent="flex-end"
-				>
-					<LoadingButton
-						variant="contained"
-						color="primary"
-						type="submit"
-						loading={isLoading}
-						loadingIndicator="Saving..."
-						disabled={
-							Object.keys(errors).length !== 0 ||
-							Object.values(localData).filter((value) => value !== "").length === 0
-						}
-						sx={{
-							px: theme.spacing(12),
-							mt: theme.spacing(20),
-						}}
-					>
-						Save
-					</LoadingButton>
-				</Stack>
-			</Stack>
-		</TabPanel>
-	);
+        <Stack
+          direction="row"
+          justifyContent={"flex-start"}
+          alignItems={"center"}
+          gap={GAP_SIZE} // EDITED: Replaced gap with GAP_SIZE constant
+          flexWrap={"wrap"}
+        >
+          <Typography component="h1" width="20ch">
+            Current password
+          </Typography>
+          <TextInput
+            type="password"
+            id="edit-current-password"
+            placeholder="Enter your current password"
+            autoComplete="current-password"
+            value={localData.password}
+            onChange={handleChange}
+            error={errors[idToName["edit-current-password"]] ? true : false}
+            helperText={errors[idToName["edit-current-password"]]}
+            endAdornment={<PasswordEndAdornment />}
+            flex={1}
+          />
+        </Stack>
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          gap={GAP_SIZE} //  Replaced gap with GAP_SIZE constant
+          flexWrap={"wrap"}
+        >
+          <Typography component="h1" width="20ch">
+            New password
+          </Typography>
+
+          <TextInput
+            type="password"
+            id="edit-new-password"
+            placeholder="Enter your new password"
+            autoComplete="new-password"
+            value={localData.newPassword}
+            onChange={handleChange}
+            error={errors[idToName["edit-new-password"]] ? true : false}
+            helperText={errors[idToName["edit-new-password"]]}
+            endAdornment={<PasswordEndAdornment />}
+            flex={1}
+          />
+        </Stack>
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          gap={GAP_SIZE} // Used a constant Gap size to show gap
+          flexWrap={"wrap"}
+        >
+          <Typography component="h1" width="20ch">
+            Confirm new password
+          </Typography>
+
+          <TextInput
+            type="password"
+            id="edit-confirm-password"
+            placeholder="Reenter your new password"
+            autoComplete="new-password"
+            value={localData.confirm}
+            onChange={handleChange}
+            error={errors[idToName["edit-confirm-password"]] ? true : false}
+            helperText={errors[idToName["edit-confirm-password"]]}
+            endAdornment={<PasswordEndAdornment />}
+            flex={1}
+          />
+        </Stack>
+        {Object.keys(errors).length > 0 && (
+          <Box sx={{ maxWidth: "70ch" }}>
+            <Alert
+              variant="warning"
+              body="New password must contain at least 8 characters and must have at least one uppercase letter, one lowercase letter, one number and one special character."
+            />
+          </Box>
+        )}
+        <Stack direction="row" justifyContent="flex-end">
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            type="submit"
+            loading={isLoading}
+            loadingIndicator="Saving..."
+            disabled={
+              Object.keys(errors).length !== 0 ||
+              Object.values(localData).filter((value) => value !== "").length === 0
+            }
+            sx={{
+              px: theme.spacing(12),
+              mt: theme.spacing(20),
+            }}
+          >
+            Save
+          </LoadingButton>
+        </Stack>
+      </Stack>
+    </TabPanel>
+  );
 };
 
 PasswordPanel.propTypes = {
-	// No props are being passed to this component, hence no specific PropTypes are defined.
+  // No props are being passed to this component, hence no specific PropTypes are defined.
 };
 
 export default PasswordPanel;
