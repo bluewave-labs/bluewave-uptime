@@ -13,297 +13,307 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { GenericDialog } from "../../Dialog/genericDialog";
 
 const TeamPanel = () => {
-  const theme = useTheme();
+	const theme = useTheme();
 
-  // Define the constant for consistent gap
-  const GAP_SIZE = theme.spacing(12); 
+	// Define the constant for consistent gap
+	const SPACING_GAP = theme.spacing(13);
 
-  const roleMap = {
-    superadmin: "Super admin",
-    admin: "Admin",
-    user: "Team member",
-    demo: "Demo User",
-  };
+	const roleMap = {
+		superadmin: "Super admin",
+		admin: "Admin",
+		user: "Team member",
+		demo: "Demo User",
+	};
 
-  const { authToken, user } = useSelector((state) => state.auth);
-  const [toInvite, setToInvite] = useState({
-    email: "",
-    role: ["0"],
-  });
-  const [tableData, setTableData] = useState({});
-  const [members, setMembers] = useState([]);
-  const [filter, setFilter] = useState("all");
-  const [isDisabled, setIsDisabled] = useState(true);
-  const [errors, setErrors] = useState({});
-  const [isSendingInvite, setIsSendingInvite] = useState(false);
+	const { authToken, user } = useSelector((state) => state.auth);
+	const [toInvite, setToInvite] = useState({
+		email: "",
+		role: ["0"],
+	});
+	const [tableData, setTableData] = useState({});
+	const [members, setMembers] = useState([]);
+	const [filter, setFilter] = useState("all");
+	const [isDisabled, setIsDisabled] = useState(true);
+	const [errors, setErrors] = useState({});
+	const [isSendingInvite, setIsSendingInvite] = useState(false);
 
-  useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        const response = await networkService.getAllUsers({
-          authToken: authToken,
-        });
-        setMembers(response.data.data);
-      } catch (error) {
-        createToast({
-          body: error.message || "Error fetching team members.",
-        });
-      }
-    };
+	useEffect(() => {
+		const fetchTeam = async () => {
+			try {
+				const response = await networkService.getAllUsers({
+					authToken: authToken,
+				});
+				setMembers(response.data.data);
+			} catch (error) {
+				createToast({
+					body: error.message || "Error fetching team members.",
+				});
+			}
+		};
 
-    fetchTeam();
-  }, [user]);
+		fetchTeam();
+	}, [user]);
 
-  useEffect(() => {
-    let team = members;
-    if (filter !== "all")
-      team = members.filter((member) => {
-        if (filter === "admin") {
-          return member.role.includes("admin") || member.role.includes("superadmin");
-        }
-        return member.role.includes(filter);
-      });
+	useEffect(() => {
+		let team = members;
+		if (filter !== "all")
+			team = members.filter((member) => {
+				if (filter === "admin") {
+					return member.role.includes("admin") || member.role.includes("superadmin");
+				}
+				return member.role.includes(filter);
+			});
 
-    const data = {
-      cols: [
-        { id: 1, name: "NAME" },
-        { id: 2, name: "EMAIL" },
-        { id: 3, name: "ROLE" },
-      ],
-      rows: team?.map((member, idx) => {
-        const roles = member.role.map((role) => roleMap[role]).join(",");
-        return {
-          id: member._id,
-          data: [
-            {
-              id: idx,
-              data: (
-                <Stack>
-                  <Typography color={theme.palette.text.secondary}>
-                    {member.firstName + " " + member.lastName}
-                  </Typography>
-                  <Typography>
-                    Created {new Date(member.createdAt).toLocaleDateString()}
-                  </Typography>
-                </Stack>
-              ),
-            },
-            { id: idx + 1, data: member.email },
-            {
-              id: idx + 2,
-              data: roles,
-            },
-          ],
-        };
-      }),
-    };
+		const data = {
+			cols: [
+				{ id: 1, name: "NAME" },
+				{ id: 2, name: "EMAIL" },
+				{ id: 3, name: "ROLE" },
+			],
+			rows: team?.map((member, idx) => {
+				const roles = member.role.map((role) => roleMap[role]).join(",");
+				return {
+					id: member._id,
+					data: [
+						{
+							id: idx,
+							data: (
+								<Stack>
+									<Typography color={theme.palette.text.secondary}>
+										{member.firstName + " " + member.lastName}
+									</Typography>
+									<Typography>
+										Created {new Date(member.createdAt).toLocaleDateString()}
+									</Typography>
+								</Stack>
+							),
+						},
+						{ id: idx + 1, data: member.email },
+						{
+							id: idx + 2,
+							data: roles,
+						},
+					],
+				};
+			}),
+		};
 
-    setTableData(data);
-  }, [members, filter]);
+		setTableData(data);
+	}, [members, filter]);
 
-  useEffect(() => {
-    setIsDisabled(Object.keys(errors).length !== 0 || toInvite.email === "");
-  }, [errors, toInvite.email]);
+	useEffect(() => {
+		setIsDisabled(Object.keys(errors).length !== 0 || toInvite.email === "");
+	}, [errors, toInvite.email]);
 
-  const [isOpen, setIsOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setToInvite((prev) => ({
-      ...prev,
-      email: value,
-    }));
+	const handleChange = (event) => {
+		const { value } = event.target;
+		setToInvite((prev) => ({
+			...prev,
+			email: value,
+		}));
 
-    const validation = credentials.validate({ email: value }, { abortEarly: false });
+		const validation = credentials.validate({ email: value }, { abortEarly: false });
 
-    setErrors((prev) => {
-      const updatedErrors = { ...prev };
+		setErrors((prev) => {
+			const updatedErrors = { ...prev };
 
-      if (validation.error) {
-        updatedErrors.email = validation.error.details[0].message;
-      } else {
-        delete updatedErrors.email;
-      }
-      return updatedErrors;
-    });
-  };
+			if (validation.error) {
+				updatedErrors.email = validation.error.details[0].message;
+			} else {
+				delete updatedErrors.email;
+			}
+			return updatedErrors;
+		});
+	};
 
-  const handleInviteMember = async () => {
-    if (!toInvite.email) {
-      setErrors((prev) => ({ ...prev, email: "Email is required." }));
-      return;
-    }
-    setIsSendingInvite(true);
-    if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
-      setToInvite((prev) => ({ ...prev, role: ["user"] }));
+	const handleInviteMember = async () => {
+		if (!toInvite.email) {
+			setErrors((prev) => ({ ...prev, email: "Email is required." }));
+			return;
+		}
+		setIsSendingInvite(true);
+		if (!toInvite.role.includes("user") || !toInvite.role.includes("admin"))
+			setToInvite((prev) => ({ ...prev, role: ["user"] }));
 
-    const { error } = credentials.validate(
-      { email: toInvite.email },
-      {
-        abortEarly: false,
-      }
-    );
+		const { error } = credentials.validate(
+			{ email: toInvite.email },
+			{
+				abortEarly: false,
+			}
+		);
 
-    if (error) {
-      setErrors((prev) => ({ ...prev, email: error.details[0].message }));
-      return;
-    }
+		if (error) {
+			setErrors((prev) => ({ ...prev, email: error.details[0].message }));
+			return;
+		}
 
-    try {
-      await networkService.requestInvitationToken({
-        authToken: authToken,
-        email: toInvite.email,
-        role: toInvite.role,
-      });
-      closeInviteModal();
-      createToast({
-        body: "Member invited. They will receive an email with details on how to create their account.",
-      });
-    } catch (error) {
-      createToast({
-        body: error.message || "Unknown error.",
-      });
-    } finally {
-      setIsSendingInvite(false);
-    }
-  };
+		try {
+			await networkService.requestInvitationToken({
+				authToken: authToken,
+				email: toInvite.email,
+				role: toInvite.role,
+			});
+			closeInviteModal();
+			createToast({
+				body: "Member invited. They will receive an email with details on how to create their account.",
+			});
+		} catch (error) {
+			createToast({
+				body: error.message || "Unknown error.",
+			});
+		} finally {
+			setIsSendingInvite(false);
+		}
+	};
 
-  const closeInviteModal = () => {
-    setIsOpen(false);
-    setToInvite({ email: "", role: ["0"] });
-    setErrors({});
-  };
+	const closeInviteModal = () => {
+		setIsOpen(false);
+		setToInvite({ email: "", role: ["0"] });
+		setErrors({});
+	};
 
-  return (
-    <TabPanel
-      className="team-panel table-container"
-      value="team"
-      sx={{
-        "& h1": {
-          color: theme.palette.text.tertiary,
-        },
-        "& .MuiTable-root .MuiTableBody-root .MuiTableCell-root, & .MuiTable-root p + p":
-          {
-            color: theme.palette.text.accent,
-          },
-      }}
-    >
-      <Stack component="form" noValidate spellCheck="false" gap={GAP_SIZE}> {}
-        <Typography component="h1">Team members</Typography>
-        <Stack direction="row" justifyContent="space-between">
-          <Stack
-            direction="row"
-            alignItems="flex-end"
-            gap={theme.spacing(6)}
-            sx={{ fontSize: 14 }}
-          >
-            <ButtonGroup>
-              <Button
-                variant="group"
-                filled={(filter === "all").toString()}
-                onClick={() => setFilter("all")}
-              >
-                All
-              </Button>
-              <Button
-                variant="group"
-                filled={(filter === "admin").toString()}
-                onClick={() => setFilter("admin")}
-              >
-                Administrator
-              </Button>
-              <Button
-                variant="group"
-                filled={(filter === "user").toString()}
-                onClick={() => setFilter("user")}
-              >
-                Member
-              </Button>
-            </ButtonGroup>
-          </Stack>
-          <LoadingButton
-            loading={isSendingInvite}
-            variant="contained"
-            color="primary"
-            onClick={() => setIsOpen(true)}
-          >
-            Invite a team member
-          </LoadingButton>
-        </Stack>
-        <BasicTable
-          data={tableData}
-          paginated={false}
-          reversed={true}
-          table={"team"}
-        />
-      </Stack>
+	return (
+		<TabPanel
+			className="team-panel table-container"
+			value="team"
+			sx={{
+				"& h1": {
+					color: theme.palette.text.tertiary,
+				},
+				"& .MuiTable-root .MuiTableBody-root .MuiTableCell-root, & .MuiTable-root p + p":
+					{
+						color: theme.palette.text.accent,
+					},
+			}}
+		>
+			<Stack
+				component="form"
+				noValidate
+				spellCheck="false"
+				gap={SPACING_GAP}
+			>
+				{" "}
+				{}
+				<Typography component="h1">Team members</Typography>
+				<Stack
+					direction="row"
+					justifyContent="space-between"
+				>
+					<Stack
+						direction="row"
+						alignItems="flex-end"
+						gap={theme.spacing(6)}
+						sx={{ fontSize: 14 }}
+					>
+						<ButtonGroup>
+							<Button
+								variant="group"
+								filled={(filter === "all").toString()}
+								onClick={() => setFilter("all")}
+							>
+								All
+							</Button>
+							<Button
+								variant="group"
+								filled={(filter === "admin").toString()}
+								onClick={() => setFilter("admin")}
+							>
+								Administrator
+							</Button>
+							<Button
+								variant="group"
+								filled={(filter === "user").toString()}
+								onClick={() => setFilter("user")}
+							>
+								Member
+							</Button>
+						</ButtonGroup>
+					</Stack>
+					<LoadingButton
+						loading={isSendingInvite}
+						variant="contained"
+						color="primary"
+						onClick={() => setIsOpen(true)}
+					>
+						Invite a team member
+					</LoadingButton>
+				</Stack>
+				<BasicTable
+					data={tableData}
+					paginated={false}
+					reversed={true}
+					table={"team"}
+				/>
+			</Stack>
 
-      <GenericDialog
-        title={"Invite new team member"}
-        description={
-          "When you add a new team member, they will get access to all monitors."
-        }
-        open={isOpen}
-        onClose={closeInviteModal}
-        theme={theme}
-      >
-        <TextInput
-          marginBottom={GAP_SIZE} // Applied GAP_SIZE for consistent spacing
-          type="email"
-          id="input-team-member"
-          placeholder="Email"
-          value={toInvite.email}
-          onChange={handleChange}
-          error={errors.email ? true : false}
-          helperText={errors.email}
-        />
-        <Select
-          id="team-member-role"
-          placeholder="Select role"
-          isHidden={true}
-          value={toInvite.role[0]}
-          onChange={(event) =>
-            setToInvite((prev) => ({
-              ...prev,
-              role: [event.target.value],
-            }))
-          }
-          items={[
-            { _id: "admin", name: "Admin" },
-            { _id: "user", name: "User" },
-          ]}
-        />
-        <Stack
-          direction="row"
-          gap={theme.spacing(4)}
-          mt={theme.spacing(8)}
-          justifyContent="flex-end"
-        >
-          <LoadingButton
-            loading={isSendingInvite}
-            variant="text"
-            color="info"
-            onClick={closeInviteModal}
-          >
-            Cancel
-          </LoadingButton>
-          <LoadingButton
-            variant="contained"
-            color="primary"
-            onClick={handleInviteMember}
-            loading={isSendingInvite}
-            disabled={isDisabled}
-          >
-            Send invite
-          </LoadingButton>
-        </Stack>
-      </GenericDialog>
-    </TabPanel>
-  );
+			<GenericDialog
+				title={"Invite new team member"}
+				description={
+					"When you add a new team member, they will get access to all monitors."
+				}
+				open={isOpen}
+				onClose={closeInviteModal}
+				theme={theme}
+			>
+				<TextInput
+					marginBottom={SPACING_GAP} // Applied SPACING_GAP for consistent spacing
+					type="email"
+					id="input-team-member"
+					placeholder="Email"
+					value={toInvite.email}
+					onChange={handleChange}
+					error={errors.email ? true : false}
+					helperText={errors.email}
+				/>
+				<Select
+					id="team-member-role"
+					placeholder="Select role"
+					isHidden={true}
+					value={toInvite.role[0]}
+					onChange={(event) =>
+						setToInvite((prev) => ({
+							...prev,
+							role: [event.target.value],
+						}))
+					}
+					items={[
+						{ _id: "admin", name: "Admin" },
+						{ _id: "user", name: "User" },
+					]}
+				/>
+				<Stack
+					direction="row"
+					gap={theme.spacing(4)}
+					mt={theme.spacing(8)}
+					justifyContent="flex-end"
+				>
+					<LoadingButton
+						loading={isSendingInvite}
+						variant="text"
+						color="info"
+						onClick={closeInviteModal}
+					>
+						Cancel
+					</LoadingButton>
+					<LoadingButton
+						variant="contained"
+						color="primary"
+						onClick={handleInviteMember}
+						loading={isSendingInvite}
+						disabled={isDisabled}
+					>
+						Send invite
+					</LoadingButton>
+				</Stack>
+			</GenericDialog>
+		</TabPanel>
+	);
 };
 
 TeamPanel.propTypes = {
-  // No props are being passed to this component, hence no specific PropTypes are defined.
+	// No props are being passed to this component, hence no specific PropTypes are defined.
 };
 
 export default TeamPanel;
