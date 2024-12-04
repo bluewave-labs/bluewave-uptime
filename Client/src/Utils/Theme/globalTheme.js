@@ -93,9 +93,19 @@ const baseTheme = (palette) => ({
 					"&:hover": {
 						boxShadow: "none",
 					},
-					"&.MuiLoadingButton-root:disabled": {
-						backgroundColor: theme.palette.secondary.main,
-						color: theme.palette.text.primary,
+					"&.MuiLoadingButton-root": {
+						"&:disabled": {
+							backgroundColor: theme.palette.secondary.main,
+							color: theme.palette.text.primary,
+						},
+					},
+					"&.MuiLoadingButton-loading": {
+						"& .MuiLoadingButton-label": {
+							color: "transparent",
+						},
+						"& .MuiLoadingButton-loadingIndicator": {
+							color: "inherit",
+						},
 					},
 				}),
 			},
