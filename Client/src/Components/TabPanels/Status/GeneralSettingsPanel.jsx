@@ -7,13 +7,17 @@ import TabPanel from "@mui/lab/TabPanel";
 import TextInput from "../../Inputs/TextInput";
 import ImageField from "../../Inputs/Image";
 import timezones from "../../../Utils/timezones.json";
-import Select from "../../Inputs/Select"
-import { logoImageValidation, publicPageGeneralSettingsValidation } from "../../../Validation/validation"
+import Select from "../../Inputs/Select";
+import {
+	logoImageValidation,
+	publicPageGeneralSettingsValidation,
+} from "../../../Validation/validation";
 import { buildErrors } from "../../../Validation/error";
 import { formatBytes } from "../../../Utils/fileUtils";
 import ProgressUpload from "../../ProgressBars";
 import ImageIcon from "@mui/icons-material/Image";
 import { HttpAdornment } from "../../Inputs/TextInput/Adornments";
+import { hasValidationErrors } from "../../../Validation/error";
 
 const GeneralSettingsPanel = () => {
 	const theme = useTheme();
@@ -32,7 +36,6 @@ const GeneralSettingsPanel = () => {
 		publish: false,
 		logo: null,
 	});
-
 	// Clears specific error from errors state
 	const clearError = (err) => {
 		setErrors((prev) => {
@@ -40,22 +43,17 @@ const GeneralSettingsPanel = () => {
 			if (updatedErrors[err]) delete updatedErrors[err];
 			return updatedErrors;
 		});
-	};	
+	};
 	const removeLogo = () => {
 		errors["logo"] && clearError("logo");
 		setLogo({});
-		// interrupt interval if image upload is canceled prior to completing the process
-		clearInterval(intervalRef.current); 
-		setProgress({ value: 0, isLoading: false });
-	};
-
-	// Updates profile image displayed on UI
-	const handleUpdateLogo = () => {
-		setProgress({ value: 0, isLoading: false });
 		setLocalData((prev) => ({
 			...prev,
-			logo: logo.src,
-		}));		
+			logo: logo?.src,
+		}));
+		// interrupt interval if image upload is canceled prior to completing the process
+		clearInterval(intervalRef.current);
+		setProgress({ value: 0, isLoading: false });
 	};
 
 	const handleChange = (event) => {
@@ -67,7 +65,21 @@ const GeneralSettingsPanel = () => {
 		}));
 	};
 
-	const handleSubmit = () => {};
+	const handleSubmit = () => {
+		//validate rest of the form
+		delete localData.logo;
+		delete localData.publish;
+		if (hasValidationErrors(localData, publicPageGeneralSettingsValidation, setErrors)) {
+			return;
+		}
+		//validate image field
+		let error = validateField(
+			{ type: logo?.type ?? null, size: logo?.size ?? null },
+			logoImageValidation
+		);
+		if (error) return;
+		localData.logo = { ...logo, size: formatBytes(logo?.size) };
+	};
 
 	const handleBlur = (event) => {
 		event.preventDefault();
@@ -92,11 +104,11 @@ const GeneralSettingsPanel = () => {
 			else delete prevErrors[name];
 			return prevErrors;
 		});
-		if (error) return true;		
+		if (error) return true;
 	};
 
 	const handleLogo = (event) => {
-		const pic = event.target.files[0];
+		const pic = event.target?.files?.[0];
 		let error = validateField({ type: pic?.type, size: pic?.size }, logoImageValidation);
 		if (error) return;
 
@@ -104,9 +116,9 @@ const GeneralSettingsPanel = () => {
 		setLogo({
 			src: URL.createObjectURL(pic),
 			name: pic.name,
-			size: formatBytes(pic.size),
+			type: pic.type,
+			size: pic.size,
 		});
-
 		intervalRef.current = setInterval(() => {
 			const buffer = 12;
 			setProgress((prev) => {
@@ -121,7 +133,7 @@ const GeneralSettingsPanel = () => {
 
 	return (
 		<TabPanel
-			value="general settings"
+			value="General Settings"
 			sx={{
 				"& h1, & p, & input": {
 					color: theme.palette.text.tertiary,
@@ -131,7 +143,6 @@ const GeneralSettingsPanel = () => {
 			<Stack
 				component="form"
 				className="status-general-settings-form"
-				onSubmit={handleSubmit}
 				noValidate
 				spellCheck="false"
 				gap={theme.spacing(12)}
@@ -167,7 +178,7 @@ const GeneralSettingsPanel = () => {
 							</Typography>
 						</Stack>
 					</Box>
-					<Stack gap={theme.spacing(6)}>
+					<Stack gap={theme.spacing(18)}>
 						<TextInput
 							id="companyName"
 							type="text"
@@ -175,7 +186,8 @@ const GeneralSettingsPanel = () => {
 							value={localData.companyName}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors["companyName"]}
+							helperText={errors["companyName"]}
+							error={errors["companyName"] ? true : false}
 						/>
 						<TextInput
 							id="url"
@@ -186,7 +198,8 @@ const GeneralSettingsPanel = () => {
 							//prefix={"http://uptimegenie.com/"}
 							onChange={handleChange}
 							onBlur={handleBlur}
-							error={errors["url"]}
+							helperText={errors["url"]}
+							error={errors["url"] ? true : false}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -219,42 +232,13 @@ const GeneralSettingsPanel = () => {
 							<ProgressUpload
 								icon={<ImageIcon />}
 								label={logo?.name}
-								size={logo?.size}
+								size={formatBytes(logo?.size)}
 								progress={progress.value}
 								onClick={removeLogo}
 								error={errors["logo"]}
 							/>
 						) : (
 							""
-						)}
-						{logo?.src && (
-							<Stack
-								direction="row"
-								mt={theme.spacing(10)}
-								gap={theme.spacing(5)}
-								justifyContent="flex-end"
-							>
-								<Button
-									variant="text"
-									color="info"
-									onClick={removeLogo}
-								>
-									Remove
-								</Button>
-								<Button
-									variant="contained"
-									color="primary"
-									onClick={handleUpdateLogo}
-									disabled={
-										(Object.keys(errors).length !== 0 && errors?.logo) ||
-										progress.value !== 100
-											? true
-											: false
-									}
-								>
-									Update
-								</Button>
-							</Stack>
 						)}
 						<TextInput
 							id="color"
@@ -277,6 +261,18 @@ const GeneralSettingsPanel = () => {
 						/>
 					</Stack>
 				</ConfigBox>
+				<Stack
+					direction="row"
+					justifyContent="flex-end"
+				>
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={handleSubmit}
+					>
+						Next
+					</Button>
+				</Stack>
 			</Stack>
 		</TabPanel>
 	);

@@ -5,8 +5,10 @@ import { Box, Tab, useTheme } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import GeneralSettingsPanel from "../../../Components/TabPanels/Status/GeneralSettingsPanel";
-import ImageField from "../../../Components/Inputs/Image";
-import Checkbox from "../../../Components/Inputs/Checkbox";
+import {
+	capitalizeFirstLetter,
+	toLowerCaseFirstLetter,
+} from "../../../Utils/stringUtils";
 
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
@@ -14,22 +16,19 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
  * @returns {JSX.Element}
  */
 
-const CreateStatus = ({ open = "general settings" }) => {
+const CreateStatus = ({ open = "general-settings" }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
-	const tab = open;
+	const tab = open
+		.split("-")
+		.map((a) => capitalizeFirstLetter(a))
+		.join(" ");
 	const handleTabChange = (event, newTab) => {
-		navigate(`/status/${newTab}`);
+		let toNavString = newTab.split(" ").map((a) => toLowerCaseFirstLetter(a));
+		toNavString = toNavString.join("-");
+		navigate(`/status/${toNavString}`);
 	};
 	let tabList = ["General Settings", "Contents"];
-	const handlePicture = (event) => {}
-
-	const handleSubmit = () => {};
-
-	const handleChange = () => {};
-
-	const handleBlur = () => {};	
-
 	return (
 		<Box
 			className="status"
@@ -56,7 +55,7 @@ const CreateStatus = ({ open = "general settings" }) => {
 							<Tab
 								label={label}
 								key={index}
-								value={label.toLowerCase()}
+								value={label}
 								sx={{
 									fontSize: 13,
 									color: theme.palette.text.tertiary,
@@ -82,7 +81,7 @@ const CreateStatus = ({ open = "general settings" }) => {
 };
 
 CreateStatus.propTypes = {
-	open: PropTypes.oneOf(["general settings", "contents"]),
+	open: PropTypes.oneOf(["general-settings", "contents"]),
 };
 
 export default CreateStatus;
