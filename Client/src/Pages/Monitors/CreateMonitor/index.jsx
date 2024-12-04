@@ -35,6 +35,24 @@ const CreateMonitor = () => {
 		{ _id: 5, name: "5 minutes" },
 	];
 
+	const monitorTypeMaps = {
+		http: {
+			label: "URL to monitor",
+			placeholder: "google.com",
+			namePlaceholder: "Google",
+		},
+		ping: {
+			label: "IP address to monitor",
+			placeholder: "1.1.1.1",
+			namePlaceholder: "Google",
+		},
+		docker: {
+			label: "Container ID",
+			placeholder: "abc123",
+			namePlaceholder: "My Container",
+		},
+	};
+
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
 	const dispatch = useDispatch();
@@ -155,8 +173,6 @@ const CreateMonitor = () => {
 			notifications,
 		}));
 	};
-
-
 
 	useEffect(() => {
 		const fetchMonitor = async () => {
