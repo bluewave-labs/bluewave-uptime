@@ -139,20 +139,29 @@ function App() {
 						path="infrastructure/:monitorId"
 						element={<ProtectedRoute Component={InfrastructureDetailsWithAdminProp} />}
 					/>
-
 					<Route
 						path="incidents/:monitorId?"
 						element={<ProtectedRoute Component={Incidents} />}
 					/>
-
 					<Route
-						path="status"
-						element={<ProtectedRoute Component={Status} />}
+						path="status/general-settings"
+						element={
+							<ProtectedRoute
+								Component={CreateStatus}
+								open="general-settings"
+							/>
+						}
 					/>
 					<Route
-						path="status/create"
-						element={<ProtectedRoute Component={CreateStatus} />}
-					/>					
+						path="status/contents"
+						element={
+							<ProtectedRoute
+								Component={CreateStatus}
+								open="contents"
+							/>
+						}
+					/>
+
 					<Route
 						path="integrations"
 						element={<ProtectedRoute Component={Integrations} />}
