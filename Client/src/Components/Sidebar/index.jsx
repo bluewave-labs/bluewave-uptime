@@ -52,7 +52,14 @@ const menu = [
 	{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
 	{ name: "Infrastructure", path: "infrastructure", icon: <Integrations /> },
 	{ name: "Incidents", path: "incidents", icon: <Incidents /> },
-	{ name: "Status pages", path: "status", icon: <StatusPages /> },
+	{
+		name: "Status pages",
+		icon: <StatusPages />,
+		nested: [
+			{ name: "General Settings", path: "status/general-settings", icon: <UserSvg /> },
+			{ name: "Contents", path: "status/contents", icon: <LockSvg /> },
+		],
+	},
 	{ name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
 	// { name: "Integrations", path: "integrations", icon: <Integrations /> },
 	{
