@@ -233,8 +233,8 @@ const baseTheme = (palette) => ({
 						fontWeight: 400,
 						color: palette.text.secondary,
 						"&.Mui-disabled": {
-							opacity: 0.25,
-							"-webkit-text-fill-color": "unset",
+							opacity: 0.3,
+							WebkitTextFillColor: "unset",
 						},
 					},
 					"& .MuiInputBase-input.MuiOutlinedInput-input": {
