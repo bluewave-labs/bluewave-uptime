@@ -35,6 +35,24 @@ const CreateMonitor = () => {
 		{ _id: 5, name: "5 minutes" },
 	];
 
+	const monitorTypeMaps = {
+		http: {
+			label: "URL to monitor",
+			placeholder: "google.com",
+			namePlaceholder: "Google",
+		},
+		ping: {
+			label: "IP address to monitor",
+			placeholder: "1.1.1.1",
+			namePlaceholder: "Google",
+		},
+		docker: {
+			label: "Container ID",
+			placeholder: "abc123",
+			namePlaceholder: "My Container",
+		},
+	};
+
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
 	const dispatch = useDispatch();
@@ -224,7 +242,12 @@ const CreateMonitor = () => {
 						<TextInput
 							type={monitor.type === "http" ? "url" : "text"}
 							id="monitor-url"
-							startAdornment={<HttpAdornment https={https} />}
+							startAdornment={
+								monitor.type === "http" ? <HttpAdornment https={https} /> : null
+							}
+							label={monitorTypeMaps[monitor.type].label || "URL to monitor"}
+							https={https}
+							placeholder={monitorTypeMaps[monitor.type].placeholder || ""}
 							value={monitor.url}
 							onChange={(event) => handleChange(event, "url")}
 							error={errors["url"] ? true : false}
