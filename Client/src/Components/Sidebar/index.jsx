@@ -56,8 +56,8 @@ const menu = [
 		name: "Status pages",
 		icon: <StatusPages />,
 		nested: [
-			{ name: "General Settings", path: "status/general-settings", icon: <UserSvg /> },
-			{ name: "Contents", path: "status/contents", icon: <LockSvg /> },
+			{ name: "General Settings", path: "status/general-settings", icon: <Settings /> },
+			{ name: "Contents", path: "status/contents", icon: <Settings /> },
 		],
 	},
 	{ name: "Maintenance", path: "maintenance", icon: <Maintenance /> },

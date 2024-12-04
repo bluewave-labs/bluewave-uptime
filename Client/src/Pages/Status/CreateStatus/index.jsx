@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
-
+import { useEffect, useState } from "react";
 import { Box, Tab, useTheme } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -9,6 +9,7 @@ import {
 	capitalizeFirstLetter,
 	toLowerCaseFirstLetter,
 } from "../../../Utils/stringUtils";
+import ContentPanel from "../../../Components/TabPanels/Status/ContentPanel";
 
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
@@ -19,16 +20,25 @@ import {
 const CreateStatus = ({ open = "general-settings" }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
+	let tabList = ["General Settings", "Contents"];
 	const tab = open
 		.split("-")
 		.map((a) => capitalizeFirstLetter(a))
 		.join(" ");
+
+	const [tabIdx, setTabIdx] = useState(tabList.indexOf(tab));
+
 	const handleTabChange = (event, newTab) => {
 		let toNavString = newTab.split(" ").map((a) => toLowerCaseFirstLetter(a));
+		setTabIdx(tabList.indexOf(newTab));
 		toNavString = toNavString.join("-");
 		navigate(`/status/${toNavString}`);
 	};
-	let tabList = ["General Settings", "Contents"];
+
+	useEffect(() => {
+		setTabIdx(tabList.indexOf(tab));
+	}, [tab]);
+
 	return (
 		<Box
 			className="status"
@@ -74,7 +84,7 @@ const CreateStatus = ({ open = "general-settings" }) => {
 						))}
 					</TabList>
 				</Box>
-				<GeneralSettingsPanel />
+				{tabIdx == 0 ? <GeneralSettingsPanel /> : <ContentPanel />}
 			</TabContext>
 		</Box>
 	);
