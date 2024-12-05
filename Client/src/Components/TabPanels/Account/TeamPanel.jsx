@@ -301,7 +301,7 @@ const TeamPanel = () => {
 								filled={(filter === "admin").toString()}
 								onClick={() => setFilter("admin")}
 							>
-								Administrator
+								Super admin
 							</Button>
 							<Button
 								variant="group"

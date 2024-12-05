@@ -1,6 +1,8 @@
 import sinon from "sinon";
 import HardwareCheck from "../../db/models/HardwareCheck.js";
 import { createHardwareCheck } from "../../db/mongo/modules/hardwareCheckModule.js";
+import Monitor from "../../db/models/Monitor.js";
+import logger from "../../utils/logger.js";
 
 const mockHardwareCheck = {
 	data: {
@@ -42,10 +44,23 @@ const mockHardwareCheck = {
 	],
 };
 
+const mockMonitor = {
+	_id: "123",
+	uptimePercentage: 1,
+	status: true,
+	save: () => this,
+};
+
 describe("HardwareCheckModule", () => {
-	let hardwareCheckSaveStub;
+	let hardwareCheckSaveStub,
+		hardwareCheckCountDocumentsStub,
+		monitorFindByIdStub,
+		loggerStub;
 	beforeEach(() => {
+		loggerStub = sinon.stub(logger, "error");
 		hardwareCheckSaveStub = sinon.stub(HardwareCheck.prototype, "save");
+		monitorFindByIdStub = sinon.stub(Monitor, "findById");
+		hardwareCheckCountDocumentsStub = sinon.stub(HardwareCheck, "countDocuments");
 	});
 
 	afterEach(() => {
@@ -55,12 +70,23 @@ describe("HardwareCheckModule", () => {
 	describe("createHardwareCheck", () => {
 		it("should return a hardware check", async () => {
 			hardwareCheckSaveStub.resolves(mockHardwareCheck);
-			const hardwareCheck = await createHardwareCheck({});
+			monitorFindByIdStub.resolves(mockMonitor);
+			hardwareCheckCountDocumentsStub.resolves(1);
+			const hardwareCheck = await createHardwareCheck({ status: true });
+			expect(hardwareCheck).to.exist;
+			expect(hardwareCheck).to.deep.equal(mockHardwareCheck);
+		});
+		it("should return a hardware check for a check with status false", async () => {
+			hardwareCheckSaveStub.resolves(mockHardwareCheck);
+			monitorFindByIdStub.resolves(mockMonitor);
+			hardwareCheckCountDocumentsStub.resolves(1);
+			const hardwareCheck = await createHardwareCheck({ status: false });
 			expect(hardwareCheck).to.exist;
 			expect(hardwareCheck).to.deep.equal(mockHardwareCheck);
 		});
 		it("should handle an error", async () => {
 			const err = new Error("test error");
+			monitorFindByIdStub.resolves(mockMonitor);
 			hardwareCheckSaveStub.rejects(err);
 			try {
 				await createHardwareCheck({});
@@ -68,6 +94,39 @@ describe("HardwareCheckModule", () => {
 				expect(error).to.exist;
 				expect(error).to.deep.equal(err);
 			}
+		});
+		it("should log an error if a monitor is not found", async () => {
+			monitorFindByIdStub.resolves(null);
+			const res = await createHardwareCheck({});
+			expect(loggerStub.calledOnce).to.be.true;
+			expect(res).to.be.null;
+		});
+		it("should handle a monitor with undefined uptimePercentage", async () => {
+			monitorFindByIdStub.resolves({ ...mockMonitor, uptimePercentage: undefined });
+			hardwareCheckSaveStub.resolves(mockHardwareCheck);
+			hardwareCheckCountDocumentsStub.resolves(1);
+			const res = await createHardwareCheck({});
+			expect(res).to.exist;
+		});
+		it("should handle a monitor with undefined uptimePercentage and true status", async () => {
+			monitorFindByIdStub.resolves({
+				...mockMonitor,
+				uptimePercentage: undefined,
+			});
+			hardwareCheckSaveStub.resolves(mockHardwareCheck);
+			hardwareCheckCountDocumentsStub.resolves(1);
+			const res = await createHardwareCheck({ status: true });
+			expect(res).to.exist;
+		});
+		it("should handle a monitor with undefined uptimePercentage and false status", async () => {
+			monitorFindByIdStub.resolves({
+				...mockMonitor,
+				uptimePercentage: undefined,
+			});
+			hardwareCheckSaveStub.resolves(mockHardwareCheck);
+			hardwareCheckCountDocumentsStub.resolves(1);
+			const res = await createHardwareCheck({ status: false });
+			expect(res).to.exist;
 		});
 	});
 });
