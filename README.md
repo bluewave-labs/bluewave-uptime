@@ -44,11 +44,13 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 - E-mail notifications
 - Scheduled maintenance
 
-** Roadmap (short term):**
+**Short term roadmap:**
 
 - DNS monitoring
 - SSL monitoring
 - Status pages
+- Better notification options
+- More configuration options
 
 ## 🏗️ Tech stack
 
