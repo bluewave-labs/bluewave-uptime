@@ -100,10 +100,10 @@ const semanticColors = {
 		},
 		light: {
 			light: paletteColors.green50,
-			dark: paletteColors.green150,
+			dark: paletteColors.green800,
 		},
 		dark: {
-			light: paletteColors.green800,
+			light: paletteColors.green400,
 			dark: paletteColors.green900,
 		},
 	},

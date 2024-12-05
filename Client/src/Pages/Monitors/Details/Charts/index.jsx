@@ -246,13 +246,13 @@ const ResponseGaugeChart = ({ data }) => {
 			? {
 					category: "Excellent",
 					main: theme.palette.success.main,
-					bg: theme.palette.success.dark,
+					bg: theme.palette.success.contrastText,
 				}
 			: responseTime <= 500
 				? {
 						category: "Fair",
 						main: theme.palette.success.main,
-						bg: theme.palette.success.dark,
+						bg: theme.palette.success.contrastText,
 					}
 				: responseTime <= 600
 					? {
