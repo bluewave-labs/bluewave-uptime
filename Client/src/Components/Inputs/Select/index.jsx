@@ -145,7 +145,7 @@ Select.propTypes = {
 	onChange: PropTypes.func.isRequired,
 	onBlur: PropTypes.func,
 	sx: PropTypes.object,
-	labelControlSpacing:PropTypes.number,
+	labelControlSpacing: PropTypes.number,
 };
 
 export default Select;
