@@ -15,23 +15,23 @@
 
 Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time. Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status.
 
-## Demo
+## 📦 Demo
 
 See [Checkmate](https://checkmate-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
 
-## User's guide
+## 🔗 User's guide
 
 Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate).
 
-## Installation
+## 🛠️ Installation
 
 See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
 
-## Questions & ideas
+## 💚 Questions & ideas
 
 We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-uptime/discussions) page! Feel free to ask questions or share your ideas—we'd love to hear from you!
 
-## Features
+## 🧩 Features
 
 - Completely open source, deployable on your servers
 - Website monitoring
@@ -44,20 +44,20 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 - E-mail notifications
 - Scheduled maintenance
 
-**Roadmap (short term):**
+** Roadmap (short term):**
 
 - DNS monitoring
 - SSL monitoring
 - Status pages
 
-## Tech stack
+## 🏗️ Tech stack
 
 - [ReactJs](https://react.dev/)
 - [MUI (React framework)](https://mui.com/)
 - [Node.js](https://nodejs.org/en)
 - [MongoDB](https://mongodb.com)
 
-## Contributing
+## 🤝 Contributing
 
 We are known for our great relationship with outside contributors. Checkmate is a young project, but we already have 600+ stars and 30+ contributors from all over the world. The last thing you should do here is to be shy. 
 
