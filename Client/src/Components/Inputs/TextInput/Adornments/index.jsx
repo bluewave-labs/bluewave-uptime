@@ -1,11 +1,10 @@
 import { Stack, Typography, InputAdornment, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
 import PropTypes from "prop-types";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import Docs from "../../../../assets/icons/docs.svg?react";
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import DeleteIcon from "../../../../assets/icons/trash-bin.svg?react";
 
 export const HttpAdornment = ({ https }) => {
 	const theme = useTheme();
@@ -96,7 +95,7 @@ export const ServerEndAdornment = ({ id, removeItem }) => {
 					},
 				}}
 			>
-				<DeleteTwoToneIcon/>
+				<DeleteIcon/>
 			</IconButton>
 		</InputAdornment>
 	);
