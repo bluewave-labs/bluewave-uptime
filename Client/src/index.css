@@ -20,6 +20,8 @@ html {
 
 	--env-var-width-1: 100vw;
 	--env-var-width-2: 360px;
+	--env-var-width-3: 250px;
+	--env-var-width-4: 100px;
 
 	--env-var-height-1: 100vh;
 	--env-var-height-2: 34px;

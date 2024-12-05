@@ -8,13 +8,13 @@ import cors from "cors";
 import logger from "./utils/logger.js";
 import { verifyJWT } from "./middleware/verifyJWT.js";
 import { handleErrors } from "./middleware/handleErrors.js";
-import { errorMessages } from "./utils/messages.js";
 import authRouter from "./routes/authRoute.js";
 import inviteRouter from "./routes/inviteRoute.js";
 import monitorRouter from "./routes/monitorRoute.js";
 import checkRouter from "./routes/checkRoute.js";
 import maintenanceWindowRouter from "./routes/maintenanceWindowRoute.js";
 import settingsRouter from "./routes/settingsRoute.js";
+import statusPageRouter from "./routes/statusPageRoute.js";
 import { fileURLToPath } from "url";
 
 import queueRouter from "./routes/queueRoute.js";
@@ -28,6 +28,7 @@ import NetworkService from "./service/networkService.js";
 import axios from "axios";
 import ping from "ping";
 import http from "http";
+import Docker from "dockerode";
 
 // Email service and dependencies
 import EmailService from "./service/emailService.js";
@@ -45,8 +46,9 @@ import NotificationService from "./service/notificationService.js";
 
 import db from "./db/mongo/MongoDB.js";
 const SERVICE_NAME = "Server";
+const SHUTDOWN_TIMEOUT = 1000;
 
-let cleaningUp = false;
+let isShuttingDown = false;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -88,6 +90,24 @@ const startApp = async () => {
 	app.use("/api/v1/checks", verifyJWT, checkRouter);
 	app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
 	app.use("/api/v1/queue", verifyJWT, queueRouter);
+	app.use("/api/v1/status-page", statusPageRouter);
+
+	app.use("/api/v1/dummy-data", async (req, res) => {
+		try {
+			const response = await axios.get(
+				"https://gist.githubusercontent.com/ajhollid/9afa39410c7bbf52cc905f285a2225bf/raw/429a231a3559ebc95f6f488ed2c766bd7d6f46e5/dummyData.json",
+				{
+					headers: {
+						"Content-Type": "application/json",
+						"Cache-Control": "no-cache",
+					},
+				}
+			);
+			return res.status(200).json(response.data);
+		} catch (error) {
+			return res.status(500).json({ message: error.message });
+		}
+	});
 
 	//health check
 	app.use("/api/v1/healthy", (req, res) => {
@@ -113,11 +133,11 @@ const startApp = async () => {
 
 	// Create services
 	await db.connect();
-	app.listen(PORT, () => {
+	const server = app.listen(PORT, () => {
 		logger.info({ message: `server started on port:${PORT}` });
 	});
-	const settingsService = new SettingsService(AppSettings);
 
+	const settingsService = new SettingsService(AppSettings);
 	await settingsService.loadSettings();
 	const emailService = new EmailService(
 		settingsService,
@@ -128,7 +148,7 @@ const startApp = async () => {
 		nodemailer,
 		logger
 	);
-	const networkService = new NetworkService(axios, ping, logger, http);
+	const networkService = new NetworkService(axios, ping, logger, http, Docker);
 	const statusService = new StatusService(db, logger);
 	const notificationService = new NotificationService(emailService, db, logger);
 	const jobQueue = await JobQueue.createJobQueue(
@@ -142,30 +162,39 @@ const startApp = async () => {
 		Worker
 	);
 
-	const cleanup = async () => {
-		if (cleaningUp) {
-			logger.warn({ message: "Already cleaning up" });
+	const shutdown = async () => {
+		if (isShuttingDown) {
 			return;
 		}
-		cleaningUp = true;
+		isShuttingDown = true;
+		logger.info({ message: "Attempting graceful shutdown" });
+		setTimeout(() => {
+			logger.error({
+				message: "Could not shut down in time, forcing shutdown",
+				service: SERVICE_NAME,
+				method: "shutdown",
+			});
+			process.exit(1);
+		}, SHUTDOWN_TIMEOUT);
 		try {
-			logger.info({ message: "shutting down gracefully" });
+			server.close();
 			await jobQueue.obliterate();
 			await db.disconnect();
-			logger.info({ message: "shut down gracefully" });
+			logger.info({ message: "Graceful shutdown complete" });
+			process.exit(0);
 		} catch (error) {
 			logger.error({
 				message: error.message,
 				service: SERVICE_NAME,
-				method: "cleanup",
+				method: "shutdown",
 				stack: error.stack,
 			});
 		}
-		process.exit(0);
 	};
-	process.on("SIGUSR2", cleanup);
-	process.on("SIGINT", cleanup);
-	process.on("SIGTERM", cleanup);
+
+	process.on("SIGUSR2", shutdown);
+	process.on("SIGINT", shutdown);
+	process.on("SIGTERM", shutdown);
 };
 
 startApp().catch((error) => {

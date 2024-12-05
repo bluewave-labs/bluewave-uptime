@@ -27,6 +27,18 @@ describe("StatusService", () => {
 		});
 	});
 
+	describe("getStatusString", () => {
+		it("should return 'up' if status is true", () => {
+			expect(statusService.getStatusString(true)).to.equal("up");
+		});
+		it("should return 'down' if status is false", () => {
+			expect(statusService.getStatusString(false)).to.equal("down");
+		});
+		it("should return 'unknown' if status is undefined or null", () => {
+			expect(statusService.getStatusString(undefined)).to.equal("unknown");
+		});
+	});
+
 	describe("updateStatus", async () => {
 		beforeEach(() => {
 			// statusService.insertCheck = sinon.stub().resolves;
@@ -98,6 +110,7 @@ describe("StatusService", () => {
 			expect(check.responseTime).to.equal(100);
 			expect(check.message).to.equal("Test message");
 		});
+
 		it("should build a check object for pagespeed type", () => {
 			const check = statusService.buildCheck({
 				monitorId: "test",
@@ -181,7 +194,7 @@ describe("StatusService", () => {
 				responseTime: 100,
 				code: 200,
 				message: "Test message",
-				payload: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" },
+				payload: { data: { cpu: "cpu", memory: "memory", disk: "disk", host: "host" } },
 			});
 			expect(check.monitorId).to.equal("test");
 			expect(check.status).to.be.true;
@@ -192,6 +205,26 @@ describe("StatusService", () => {
 			expect(check.memory).to.equal("memory");
 			expect(check.disk).to.equal("disk");
 			expect(check.host).to.equal("host");
+		});
+		it("should build a check for hardware type with missing data", () => {
+			const check = statusService.buildCheck({
+				monitorId: "test",
+				type: "hardware",
+				status: true,
+				responseTime: 100,
+				code: 200,
+				message: "Test message",
+				payload: {},
+			});
+			expect(check.monitorId).to.equal("test");
+			expect(check.status).to.be.true;
+			expect(check.statusCode).to.equal(200);
+			expect(check.responseTime).to.equal(100);
+			expect(check.message).to.equal("Test message");
+			expect(check.cpu).to.deep.equal({});
+			expect(check.memory).to.deep.equal({});
+			expect(check.disk).to.deep.equal({});
+			expect(check.host).to.deep.equal({});
 		});
 	});
 	describe("insertCheck", () => {

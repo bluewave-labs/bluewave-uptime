@@ -20,14 +20,13 @@ import { useTheme } from "@emotion/react";
  *
  * @returns {React.Element} The `Check` component with a check icon and a label, defined by the `text` prop.
  */
-const Check = ({ text, variant = "info", outlined = false }) => {
+const Check = ({ text, noHighlightText, variant = "info", outlined = false }) => {
 	const theme = useTheme();
 	const colors = {
 		success: theme.palette.success.main,
-		error: theme.palette.error.text,
+		error: theme.palette.error.main,
 		info: theme.palette.info.border,
 	};
-
 	return (
 		<Stack
 			direction="row"
@@ -54,6 +53,7 @@ const Check = ({ text, variant = "info", outlined = false }) => {
 					opacity: 0.8,
 				}}
 			>
+				{noHighlightText && <Typography component="span">{noHighlightText}</Typography>}{" "}
 				{text}
 			</Typography>
 		</Stack>
@@ -62,6 +62,7 @@ const Check = ({ text, variant = "info", outlined = false }) => {
 
 Check.propTypes = {
 	text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+	noHighlightText: PropTypes.string,
 	variant: PropTypes.oneOf(["info", "error", "success"]),
 	outlined: PropTypes.bool,
 };

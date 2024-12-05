@@ -1,40 +1,72 @@
-import { useState, useEffect } from "react";
-import { Box, Button, ButtonGroup, Stack, Typography } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
-import { useSelector, useDispatch } from "react-redux";
-import { monitorValidation } from "../../../Validation/validation";
-import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice"
-import { useNavigate, useParams } from "react-router-dom";
+// React, Redux, Router
 import { useTheme } from "@emotion/react";
-import { createToast } from "../../../Utils/toastUtils";
-import { logger } from "../../../Utils/Logger";
-import { ConfigBox } from "../styled";
-import Radio from "../../../Components/Inputs/Radio";
-import Field from "../../../Components/Inputs/Field";
-import Select from "../../../Components/Inputs/Select";
-import Checkbox from "../../../Components/Inputs/Checkbox";
-import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+// Utility and Network
+import { checkEndpointResolution } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import { monitorValidation } from "../../../Validation/validation";
 import { getUptimeMonitorById } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
-import "./index.css";
+import { createUptimeMonitor } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
+
+// MUI
+import { Box, Stack, Typography, Button, ButtonGroup } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
+//Components
+import Breadcrumbs from "../../../Components/Breadcrumbs";
+import { ConfigBox } from "../styled";
+import TextInput from "../../../Components/Inputs/TextInput";
+import { HttpAdornment } from "../../../Components/Inputs/TextInput/Adornments";
+import { createToast } from "../../../Utils/toastUtils";
+import Radio from "../../../Components/Inputs/Radio";
+import Checkbox from "../../../Components/Inputs/Checkbox";
+import Select from "../../../Components/Inputs/Select";
 
 const CreateMonitor = () => {
-  const MS_PER_MINUTE = 60000;
-  const { user, authToken } = useSelector((state) => state.auth);
-  const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const theme = useTheme();
+	const MS_PER_MINUTE = 60000;
+	const SELECT_VALUES = [
+		{ _id: 1, name: "1 minute" },
+		{ _id: 2, name: "2 minutes" },
+		{ _id: 3, name: "3 minutes" },
+		{ _id: 4, name: "4 minutes" },
+		{ _id: 5, name: "5 minutes" },
+	];
 
-	const idMap = {
-		"monitor-url": "url",
-		"monitor-name": "name",
-		"monitor-checks-http": "type",
-		"monitor-checks-ping": "type",
-		"notify-email-default": "notification-email",
+	const monitorTypeMaps = {
+		http: {
+			label: "URL to monitor",
+			placeholder: "google.com",
+			namePlaceholder: "Google",
+		},
+		ping: {
+			label: "IP address to monitor",
+			placeholder: "1.1.1.1",
+			namePlaceholder: "Google",
+		},
+		docker: {
+			label: "Container ID",
+			placeholder: "abc123",
+			namePlaceholder: "My Container",
+		},
 	};
 
+	const { user, authToken } = useSelector((state) => state.auth);
+	const { monitors, isLoading } = useSelector((state) => state.uptimeMonitors);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const theme = useTheme();
 	const { monitorId } = useParams();
+	const crumbs = [
+		{ name: "monitors", path: "/monitors" },
+		{ name: "create", path: `/monitors/create` },
+	];
+
+	// State
+	const [errors, setErrors] = useState({});
+	const [https, setHttps] = useState(true);
 	const [monitor, setMonitor] = useState({
 		url: "",
 		name: "",
@@ -42,8 +74,105 @@ const CreateMonitor = () => {
 		notifications: [],
 		interval: 1,
 	});
-	const [https, setHttps] = useState(true);
-	const [errors, setErrors] = useState({});
+
+	const handleCreateMonitor = async (event) => {
+		event.preventDefault();
+		let form = {
+			url:
+				//prepending protocol for url
+				monitor.type === "http"
+					? `http${https ? "s" : ""}://` + monitor.url
+					: monitor.url,
+			name: monitor.name === "" ? monitor.url : monitor.name,
+			type: monitor.type,
+			interval: monitor.interval * MS_PER_MINUTE,
+		};
+
+		const { error } = monitorValidation.validate(form, {
+			abortEarly: false,
+		});
+
+		if (error) {
+			const newErrors = {};
+			error.details.forEach((err) => {
+				newErrors[err.path[0]] = err.message;
+			});
+			setErrors(newErrors);
+			createToast({ body: "Please check the form for errors." });
+			return;
+		}
+
+		if (monitor.type === "http") {
+			const checkEndpointAction = await dispatch(
+				checkEndpointResolution({ authToken, monitorURL: form.url })
+			);
+			if (checkEndpointAction.meta.requestStatus === "rejected") {
+				createToast({
+					body: "The endpoint you entered doesn't resolve. Check the URL again.",
+				});
+				setErrors({ url: "The entered URL is not reachable." });
+				return;
+			}
+		}
+
+		form = {
+			...form,
+			description: form.name,
+			teamId: user.teamId,
+			userId: user._id,
+			notifications: monitor.notifications,
+		};
+		const action = await dispatch(createUptimeMonitor({ authToken, monitor: form }));
+		if (action.meta.requestStatus === "fulfilled") {
+			createToast({ body: "Monitor created successfully!" });
+			navigate("/monitors");
+		} else {
+			createToast({ body: "Failed to create monitor." });
+		}
+	};
+
+	const handleChange = (event, formName) => {
+		const { value } = event.target;
+		setMonitor({
+			...monitor,
+			[formName]: value,
+		});
+
+		const { error } = monitorValidation.validate(
+			{ [formName]: value },
+			{ abortEarly: false }
+		);
+		setErrors((prev) => ({
+			...prev,
+			...(error ? { [formName]: error.details[0].message } : { [formName]: undefined }),
+		}));
+	};
+
+	const handleNotifications = (event, type) => {
+		const { value } = event.target;
+		let notifications = [...monitor.notifications];
+		const notificationExists = notifications.some((notification) => {
+			if (notification.type === type && notification.address === value) {
+				return true;
+			}
+			return false;
+		});
+		if (notificationExists) {
+			notifications = notifications.filter((notification) => {
+				if (notification.type === type && notification.address === value) {
+					return false;
+				}
+				return true;
+			});
+		} else {
+			notifications.push({ type, address: value });
+		}
+
+		setMonitor((prev) => ({
+			...prev,
+			notifications,
+		}));
+	};
 
 	useEffect(() => {
 		const fetchMonitor = async () => {
@@ -71,136 +200,16 @@ const CreateMonitor = () => {
 			}
 		};
 		fetchMonitor();
-	}, [monitorId, authToken, monitors]);
-
-	const handleChange = (event, name) => {
-		const { value, id } = event.target;
-		if (!name) name = idMap[id];
-
-		if (name.includes("notification-")) {
-			name = name.replace("notification-", "");
-			let hasNotif = monitor.notifications.some(
-				(notification) => notification.type === name
-			);
-			setMonitor((prev) => {
-				const notifs = [...prev.notifications];
-				if (hasNotif) {
-					return {
-						...prev,
-						notifications: notifs.filter((notif) => notif.type !== name),
-					};
-				} else {
-					return {
-						...prev,
-						notifications: [
-							...notifs,
-							name === "email"
-								? { type: name, address: value }
-								: // TODO - phone number
-									{ type: name, phone: value },
-						],
-					};
-				}
-			});
-		} else {
-			setMonitor((prev) => ({
-				...prev,
-				[name]: value,
-			}));
-
-			const { error } = monitorValidation.validate(
-				{ [name]: value },
-				{ abortEarly: false }
-			);
-			console.log(error);
-			setErrors((prev) => {
-				const updatedErrors = { ...prev };
-				if (error) updatedErrors[name] = error.details[0].message;
-				else delete updatedErrors[name];
-				return updatedErrors;
-			});
-		}
-	};
-
-	const handleCreateMonitor = async (event) => {
-		event.preventDefault();
-		//obj to submit
-		let form = {
-			url:
-				//preprending protocol for url
-				monitor.type === "http"
-					? `http${https ? "s" : ""}://` + monitor.url
-					: monitor.url,
-			name: monitor.name === "" ? monitor.url : monitor.name,
-			type: monitor.type,
-			interval: monitor.interval * MS_PER_MINUTE,
-		};
-
-		const { error } = monitorValidation.validate(form, {
-			abortEarly: false,
-		});
-
-		if (error) {
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
-			createToast({ body: "Error validation data." });
-		} else {
-      if (monitor.type === "http") {
-        const checkEndpointAction = await dispatch(
-          checkEndpointResolution({ authToken, monitorURL: form.url })
-        )
-        if (checkEndpointAction.meta.requestStatus === "rejected") {
-          createToast({ body: "The endpoint you entered doesn't resolve. Check the URL again." });
-          setErrors({ url: "The entered URL is not reachable." });
-          return;
-        }
-      }
-
-			form = {
-				...form,
-				description: form.name,
-				teamId: user.teamId,
-				userId: user._id,
-				notifications: monitor.notifications,
-			};
-			const action = await dispatch(createUptimeMonitor({ authToken, monitor: form }));
-			if (action.meta.requestStatus === "fulfilled") {
-				createToast({ body: "Monitor created successfully!" });
-				navigate("/monitors");
-			} else {
-				createToast({ body: "Failed to create monitor." });
-			}
-		}
-	};
-
-	//select values
-	const frequencies = [
-		{ _id: 1, name: "1 minute" },
-		{ _id: 2, name: "2 minutes" },
-		{ _id: 3, name: "3 minutes" },
-		{ _id: 4, name: "4 minutes" },
-		{ _id: 5, name: "5 minutes" },
-	];
+	}, [monitorId, authToken, monitors, dispatch, navigate]);
 
 	return (
 		<Box className="create-monitor">
-			<Breadcrumbs
-				list={[
-					{ name: "monitors", path: "/monitors" },
-					{ name: "create", path: `/monitors/create` },
-				]}
-			/>
+			<Breadcrumbs list={crumbs} />
 			<Stack
 				component="form"
-				className="create-monitor-form"
-				onSubmit={handleCreateMonitor}
-				noValidate
-				spellCheck="false"
 				gap={theme.spacing(12)}
 				mt={theme.spacing(6)}
+				onSubmit={handleCreateMonitor}
 			>
 				<Typography
 					component="h1"
@@ -221,6 +230,7 @@ const CreateMonitor = () => {
 						monitor
 					</Typography>
 				</Typography>
+
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">General settings</Typography>
@@ -229,25 +239,29 @@ const CreateMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(15)}>
-						<Field
+						<TextInput
 							type={monitor.type === "http" ? "url" : "text"}
 							id="monitor-url"
-							label="URL to monitor"
+							startAdornment={
+								monitor.type === "http" ? <HttpAdornment https={https} /> : null
+							}
+							label={monitorTypeMaps[monitor.type].label || "URL to monitor"}
 							https={https}
-							placeholder="google.com"
+							placeholder={monitorTypeMaps[monitor.type].placeholder || ""}
 							value={monitor.url}
-							onChange={handleChange}
-							error={errors["url"]}
+							onChange={(event) => handleChange(event, "url")}
+							error={errors["url"] ? true : false}
+							helperText={errors["url"]}
 						/>
-						<Field
+						<TextInput
 							type="text"
 							id="monitor-name"
 							label="Display name"
 							isOptional={true}
-							placeholder="Google"
 							value={monitor.name}
-							onChange={handleChange}
-							error={errors["name"]}
+							onChange={(event) => handleChange(event, "name")}
+							error={errors["name"] ? true : false}
+							helperText={errors["name"]}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -267,7 +281,7 @@ const CreateMonitor = () => {
 								size="small"
 								value="http"
 								checked={monitor.type === "http"}
-								onChange={(event) => handleChange(event)}
+								onChange={(event) => handleChange(event, "type")}
 							/>
 							{monitor.type === "http" ? (
 								<ButtonGroup sx={{ ml: theme.spacing(16) }}>
@@ -297,14 +311,23 @@ const CreateMonitor = () => {
 							size="small"
 							value="ping"
 							checked={monitor.type === "ping"}
-							onChange={(event) => handleChange(event)}
+							onChange={(event) => handleChange(event, "type")}
+						/>
+						<Radio
+							id="monitor-checks-docker"
+							title="Docker container monitoring"
+							desc="Check whether your container is running or not."
+							size="small"
+							value="docker"
+							checked={monitor.type === "docker"}
+							onChange={(event) => handleChange(event, "type")}
 						/>
 						{errors["type"] ? (
 							<Box className="error-container">
 								<Typography
 									component="p"
 									className="input-error"
-									color={theme.palette.error.text}
+									color={theme.palette.error.contrastText}
 								>
 									{errors["type"]}
 								</Typography>
@@ -323,14 +346,7 @@ const CreateMonitor = () => {
 					</Box>
 					<Stack gap={theme.spacing(6)}>
 						<Typography component="p">When there is a new incident,</Typography>
-						<Checkbox
-							id="notify-sms"
-							label="Notify via SMS (coming soon)"
-							isChecked={false}
-							value=""
-							onChange={() => logger.warn("disabled")}
-							isDisabled={true}
-						/>
+
 						<Checkbox
 							id="notify-email-default"
 							label={`Notify via email (to ${user.email})`}
@@ -338,34 +354,8 @@ const CreateMonitor = () => {
 								(notification) => notification.type === "email"
 							)}
 							value={user?.email}
-							onChange={(event) => handleChange(event)}
+							onChange={(event) => handleNotifications(event, "email")}
 						/>
-						<Checkbox
-							id="notify-email"
-							label="Also notify via email to multiple addresses (coming soon)"
-							isChecked={false}
-							value=""
-							onChange={() => logger.warn("disabled")}
-							isDisabled={true}
-						/>
-						{monitor.notifications.some(
-							(notification) => notification.type === "emails"
-						) ? (
-							<Box mx={theme.spacing(16)}>
-								<Field
-									id="notify-email-list"
-									type="text"
-									placeholder="name@gmail.com"
-									value=""
-									onChange={() => logger.warn("disabled")}
-								/>
-								<Typography mt={theme.spacing(4)}>
-									You can separate multiple emails with a comma
-								</Typography>
-							</Box>
-						) : (
-							""
-						)}
 					</Stack>
 				</ConfigBox>
 				<ConfigBox>
@@ -378,7 +368,7 @@ const CreateMonitor = () => {
 							label="Check frequency"
 							value={monitor.interval || 1}
 							onChange={(event) => handleChange(event, "interval")}
-							items={frequencies}
+							items={SELECT_VALUES}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -386,15 +376,15 @@ const CreateMonitor = () => {
 					direction="row"
 					justifyContent="flex-end"
 				>
-					<LoadingButton 
-            variant="contained"
-            color="primary"
-            onClick={handleCreateMonitor}
-            disabled={Object.keys(errors).length !== 0 && true}
-            loading={isLoading}
-          >
-            Create monitor
-          </LoadingButton>
+					<LoadingButton
+						variant="contained"
+						color="primary"
+						onClick={handleCreateMonitor}
+						disabled={!Object.values(errors).every((value) => value === undefined)}
+						loading={isLoading}
+					>
+						Create monitor
+					</LoadingButton>
 				</Stack>
 			</Stack>
 		</Box>

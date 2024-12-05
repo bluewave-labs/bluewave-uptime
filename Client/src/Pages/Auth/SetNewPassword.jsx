@@ -1,56 +1,45 @@
+import { useId } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import { Box, Stack, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { setNewPassword } from "../../Features/Auth/authSlice";
 import { createToast } from "../../Utils/toastUtils";
-import { Box, Stack, Typography } from "@mui/material";
-import { useTheme } from "@emotion/react";
-import { useParams } from "react-router-dom";
-import { useState } from "react";
 import { credentials } from "../../Validation/validation";
-import { useNavigate } from "react-router-dom";
 import Check from "../../Components/Check/Check";
-import Field from "../../Components/Inputs/Field";
-import LockIcon from "../../assets/icons/lock.svg?react";
-import Background from "../../assets/Images/background-grid.svg?react";
-import Logo from "../../assets/icons/bwu-icon.svg?react";
-import LoadingButton from "@mui/lab/LoadingButton";
-import "./index.css";
+import TextInput from "../../Components/Inputs/TextInput";
+import { PasswordEndAdornment } from "../../Components/Inputs/TextInput/Adornments";
+
 import { IconBox } from "./styled";
+import LockIcon from "../../assets/icons/lock.svg?react";
+import Logo from "../../assets/icons/bwu-icon.svg?react";
+import Background from "../../assets/Images/background-grid.svg?react";
+import "./index.css";
+import { useValidatePassword } from "./hooks/useValidatePassword";
 
 const SetNewPassword = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const theme = useTheme();
 
-	const [errors, setErrors] = useState({});
-	const [form, setForm] = useState({
-		password: "",
-		confirm: "",
-	});
+	const passwordId = useId();
+	const confirmPasswordId = useId();
 
-	const idMap = {
-		"register-password-input": "password",
-		"confirm-password-input": "confirm",
-	};
+	const { form, errors, handleChange, feedbacks } = useValidatePassword();
 
 	const { isLoading } = useSelector((state) => state.auth);
 	const { token } = useParams();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
-		const passwordForm = { ...form };
-		const { error } = credentials.validate(passwordForm, {
+		const { error } = credentials.validate(form, {
 			abortEarly: false,
 			context: { password: form.password },
 		});
 
 		if (error) {
-			// validation errors
-			const newErrors = {};
-			error.details.forEach((err) => {
-				newErrors[err.path[0]] = err.message;
-			});
-			setErrors(newErrors);
 			createToast({
 				body:
 					error.details && error.details.length > 0
@@ -58,48 +47,21 @@ const SetNewPassword = () => {
 						: "Error validating data.",
 			});
 		} else {
-			delete passwordForm.confirm;
-			const action = await dispatch(setNewPassword({ token: token, form: passwordForm }));
+			const action = await dispatch(setNewPassword({ token, form }));
 			if (action.payload.success) {
 				navigate("/new-password-confirmed");
 				createToast({
 					body: "Your password was reset successfully.",
 				});
 			} else {
-				if (action.payload) {
-					// dispatch errors
-					createToast({
-						body: action.payload.msg,
-					});
-				} else {
-					// unknown errors
-					createToast({
-						body: "Unknown error.",
-					});
-				}
+				const errorMessage = action.payload
+					? action.payload.msg
+					: "Unable to reset password. Please try again later or contact support.";
+				createToast({
+					body: errorMessage,
+				});
 			}
 		}
-	};
-
-	const handleChange = (event) => {
-		const { value, id } = event.target;
-		const name = idMap[id];
-		setForm((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-
-		const { error } = credentials.validate(
-			{ [name]: value },
-			{ abortEarly: false, context: { password: form.password } }
-		);
-
-		setErrors((prev) => {
-			const prevErrors = { ...prev };
-			if (error) prevErrors[name] = error.details[0].message;
-			else delete prevErrors[name];
-			return prevErrors;
-		});
 	};
 
 	return (
@@ -187,15 +149,18 @@ const SetNewPassword = () => {
 							spellCheck={false}
 							onSubmit={handleSubmit}
 						>
-							<Field
+							<TextInput
+								id={passwordId}
 								type="password"
-								id="register-password-input"
+								name="password"
 								label="Password"
 								isRequired={true}
 								placeholder="••••••••"
 								value={form.password}
 								onChange={handleChange}
-								error={errors.password}
+								error={errors.password ? true : false}
+								helperText={errors.password}
+								endAdornment={<PasswordEndAdornment />}
 							/>
 						</Box>
 						<Box
@@ -204,15 +169,18 @@ const SetNewPassword = () => {
 							spellCheck={false}
 							onSubmit={handleSubmit}
 						>
-							<Field
+							<TextInput
+								id={confirmPasswordId}
 								type="password"
-								id="confirm-password-input"
+								name="confirm"
 								label="Confirm password"
 								isRequired={true}
 								placeholder="••••••••"
 								value={form.confirm}
 								onChange={handleChange}
-								error={errors.confirm}
+								error={errors.confirm ? true : false}
+								helperText={errors.confirm}
+								endAdornment={<PasswordEndAdornment />}
 							/>
 						</Box>
 						<Stack
@@ -220,55 +188,34 @@ const SetNewPassword = () => {
 							mb={theme.spacing(12)}
 						>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must be at least</Typography> 8
-										characters long
-									</>
-								}
-								variant={
-									errors?.password === "Password is required"
-										? "error"
-										: form.password === ""
-											? "info"
-											: form.password.length < 8
-												? "error"
-												: "success"
-								}
+								noHighlightText={"Must be at least"}
+								text={"8 characters long"}
+								variant={feedbacks.length}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must contain</Typography> one special
-										character and a number
-									</>
-								}
-								variant={
-									errors?.password === "Password is required"
-										? "error"
-										: form.password === ""
-											? "info"
-											: !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(form.password)
-												? "error"
-												: "success"
-								}
+								noHighlightText={"Must contain at least"}
+								text={"one special character"}
+								variant={feedbacks.special}
 							/>
 							<Check
-								text={
-									<>
-										<Typography component="span">Must contain at least</Typography> one
-										upper and lower character
-									</>
-								}
-								variant={
-									errors?.password === "Password is required"
-										? "error"
-										: form.password === ""
-											? "info"
-											: !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
-												? "error"
-												: "success"
-								}
+								noHighlightText={"Must contain at least"}
+								text={"one number"}
+								variant={feedbacks.number}
+							/>
+							<Check
+								noHighlightText={"Must contain at least"}
+								text={"one upper character"}
+								variant={feedbacks.uppercase}
+							/>
+							<Check
+								noHighlightText={"Must contain at least"}
+								text={"one lower character"}
+								variant={feedbacks.lowercase}
+							/>
+							<Check
+								noHighlightText={"Confirm password and password"}
+								text={"must match"}
+								variant={feedbacks.confirm}
 							/>
 						</Stack>
 					</Box>
@@ -277,7 +224,11 @@ const SetNewPassword = () => {
 						color="primary"
 						loading={isLoading}
 						onClick={handleSubmit}
-						disabled={Object.keys(errors).length !== 0}
+						disabled={
+							form.password.length === 0 ||
+							form.confirm.length === 0 ||
+							Object.keys(errors).length !== 0
+						}
 						sx={{ width: "100%", maxWidth: 400 }}
 					>
 						Reset password

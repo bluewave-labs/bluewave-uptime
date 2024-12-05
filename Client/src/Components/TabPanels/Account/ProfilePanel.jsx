@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import Avatar from "../../Avatar";
-import Field from "../../Inputs/Field";
+import TextInput from "../../Inputs/TextInput";
 import ImageField from "../../Inputs/Image";
 import { credentials, imageValidation } from "../../../Validation/validation";
 import { useDispatch, useSelector } from "react-redux";
@@ -229,26 +229,30 @@ const ProfilePanel = () => {
 					<Box flex={0.9}>
 						<Typography component="h1">First name</Typography>
 					</Box>
-					<Field
+					<TextInput
 						id="edit-first-name"
 						value={localData.firstName}
 						placeholder="Enter your first name"
 						autoComplete="given-name"
 						onChange={handleChange}
-						error={errors[idToName["edit-first-name"]]}
+						error={errors[idToName["edit-first-name"]] ? true : false}
+						helperText={errors[idToName["edit-first-name"]]}
+						flex={1}
 					/>
 				</Stack>
 				<Stack direction="row">
 					<Box flex={0.9}>
 						<Typography component="h1">Last name</Typography>
 					</Box>
-					<Field
+					<TextInput
 						id="edit-last-name"
 						placeholder="Enter your last name"
 						autoComplete="family-name"
 						value={localData.lastName}
 						onChange={handleChange}
-						error={errors[idToName["edit-last-name"]]}
+						error={errors[idToName["edit-last-name"]] ? true : false}
+						helperText={errors[idToName["edit-last-name"]]}
+						flex={1}
 					/>
 				</Stack>
 				<Stack direction="row">
@@ -261,14 +265,14 @@ const ProfilePanel = () => {
 							This is your current email address — it cannot be changed.
 						</Typography>
 					</Stack>
-					<Field
+					<TextInput
 						id="edit-email"
 						value={user.email}
 						placeholder="Enter your email"
 						autoComplete="email"
 						onChange={() => logger.warn("disabled")}
-						// error={errors[idToName["edit-email"]]}
 						disabled={true}
+						flex={1}
 					/>
 				</Stack>
 				<Stack direction="row">
@@ -370,8 +374,6 @@ const ProfilePanel = () => {
 					</Button>
 				</Box>
 			)}
-			{/* TODO - Update ModalPopup Component with @mui for reusability */}
-
 			<Dialog
 				open={isModalOpen("delete")}
 				theme={theme}

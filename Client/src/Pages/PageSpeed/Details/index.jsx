@@ -362,7 +362,7 @@ const PageSpeedDetails = ({ isAdmin }) => {
 											: score >= 50
 												? theme.palette.warning.main
 												: score >= 0
-													? theme.palette.error.text
+													? theme.palette.error.contrastText
 													: theme.palette.unresolved.main;
 
 									// Find the position where the number ends and the unit begins

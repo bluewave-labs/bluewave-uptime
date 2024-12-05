@@ -1,5 +1,6 @@
 import {
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorCertificate,
 	getMonitorById,
@@ -17,7 +18,7 @@ import jwt from "jsonwebtoken";
 import sinon from "sinon";
 import { successMessages } from "../../utils/messages.js";
 import logger from "../../utils/logger.js";
-import dns from "dns";
+import axios from "axios";
 const SERVICE_NAME = "monitorController";
 
 describe("Monitor Controller - getAllMonitors", () => {
@@ -51,6 +52,47 @@ describe("Monitor Controller - getAllMonitors", () => {
 		const data = [{ monitor: "data" }];
 		req.db.getAllMonitors.returns(data);
 		await getAllMonitors(req, res, next);
+		expect(res.status.firstCall.args[0]).to.equal(200);
+		expect(
+			res.json.calledOnceWith({
+				success: true,
+				msg: successMessages.MONITOR_GET_ALL,
+				data: data,
+			})
+		).to.be.true;
+	});
+});
+describe("Monitor Controller - getAllMonitorsWithUptimeStats", () => {
+	let req, res, next;
+	beforeEach(() => {
+		req = {
+			params: {},
+			query: {},
+			body: {},
+			db: {
+				getAllMonitorsWithUptimeStats: sinon.stub(),
+			},
+		};
+		res = {
+			status: sinon.stub().returnsThis(),
+			json: sinon.stub(),
+		};
+		next = sinon.stub();
+	});
+	afterEach(() => {
+		sinon.restore();
+	});
+	it("should reject with an error if DB operations fail", async () => {
+		req.db.getAllMonitorsWithUptimeStats.throws(new Error("DB error"));
+		await getAllMonitorsWithUptimeStats(req, res, next);
+		expect(next.firstCall.args[0]).to.be.an("error");
+		expect(next.firstCall.args[0].message).to.equal("DB error");
+	});
+
+	it("should return success message and data if all operations succeed", async () => {
+		const data = [{ monitor: "data" }];
+		req.db.getAllMonitorsWithUptimeStats.returns(data);
+		await getAllMonitorsWithUptimeStats(req, res, next);
 		expect(res.status.firstCall.args[0]).to.equal(200);
 		expect(
 			res.json.calledOnceWith({
@@ -434,38 +476,40 @@ describe("Monitor Controller - createMonitor", () => {
 	});
 });
 
-describe("Monitor Controllor - checkEndpointResolution", () => {
-	let req, res, next, dnsResolveStub;
+describe("Monitor Controller - checkEndpointResolution", () => {
+	let req, res, next, axiosGetStub;
 	beforeEach(() => {
 		req = { query: { monitorURL: "https://example.com" } };
 		res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
 		next = sinon.stub();
-		dnsResolveStub = sinon.stub(dns, "resolve");
+		axiosGetStub = sinon.stub(axios, "get");
 	});
 	afterEach(() => {
-		dnsResolveStub.restore();
+		sinon.restore();
 	});
 	it("should resolve the URL successfully", async () => {
-		dnsResolveStub.callsFake((hostname, callback) => callback(null));
+		axiosGetStub.resolves({ status: 200, statusText: "OK" });
 		await checkEndpointResolution(req, res, next);
 		expect(res.status.calledWith(200)).to.be.true;
 		expect(
 			res.json.calledWith({
 				success: true,
+				code: 200,
+				statusText: "OK",
 				msg: "URL resolved successfully",
 			})
 		).to.be.true;
 		expect(next.called).to.be.false;
 	});
-	it("should return an error if DNS resolution fails", async () => {
-		const dnsError = new Error("DNS resolution failed");
-		dnsError.code = "ENOTFOUND";
-		dnsResolveStub.callsFake((hostname, callback) => callback(dnsError));
+	it("should return an error if endpoint resolution fails", async () => {
+		const axiosError = new Error("resolution failed");
+		axiosError.code = "ENOTFOUND";
+		axiosGetStub.rejects(axiosError);
 		await checkEndpointResolution(req, res, next);
 		expect(next.calledOnce).to.be.true;
 		const errorPassedToNext = next.getCall(0).args[0];
 		expect(errorPassedToNext).to.be.an.instanceOf(Error);
-		expect(errorPassedToNext.message).to.include("DNS resolution failed");
+		expect(errorPassedToNext.message).to.include("resolution failed");
 		expect(errorPassedToNext.code).to.equal("ENOTFOUND");
 		expect(errorPassedToNext.status).to.equal(500);
 	});

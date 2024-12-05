@@ -3,6 +3,7 @@ const ROWS_NUMBER = 7;
 const ROWS_ARRAY = Array.from({ length: ROWS_NUMBER }, (_, i) => i);
 
 const TableBodySkeleton = () => {
+	/* TODO Skeleton does not follow light and dark theme */
 	return (
 		<>
 			{ROWS_ARRAY.map((row) => (

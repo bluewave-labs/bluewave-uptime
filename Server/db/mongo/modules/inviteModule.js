@@ -78,7 +78,7 @@ const getInviteTokenAndDelete = async (token) => {
 		return invite;
 	} catch (error) {
 		error.service = SERVICE_NAME;
-		error.method = "getInviteToken";
+		error.method = "getInviteTokenAndDelete";
 		throw error;
 	}
 };

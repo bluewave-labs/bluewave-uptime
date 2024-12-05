@@ -14,7 +14,7 @@ import { monitorValidation } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { logger } from "../../../Utils/Logger";
 import { ConfigBox } from "../../Monitors/styled";
-import Field from "../../../Components/Inputs/Field";
+import TextInput from "../../../Components/Inputs/TextInput";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
@@ -321,17 +321,18 @@ const PageSpeedConfigure = () => {
 									},
 								}}
 							>
-								<Field
+								<TextInput
 									type="url"
 									id="monitor-url"
 									label="URL"
 									placeholder="random.website.com"
-									value={monitor?.url?.replace("http://", "") || ""}
+									value={monitor?.url || ""}
 									onChange={handleChange}
-									error={errors.url}
+									error={errors.url ? true : false}
+									helperText={errors.url}
 									disabled={true}
 								/>
-								<Field
+								<TextInput
 									type="text"
 									id="monitor-name"
 									label="Monitor display name"
@@ -339,7 +340,8 @@ const PageSpeedConfigure = () => {
 									isOptional={true}
 									value={monitor?.name || ""}
 									onChange={handleChange}
-									error={errors.name}
+									error={errors.name ? true : false}
+									helperText={errors.name}
 								/>
 							</Stack>
 						</ConfigBox>
@@ -383,7 +385,7 @@ const PageSpeedConfigure = () => {
 									(notification) => notification.type === "emails"
 								) ? (
 									<Box mx={theme.spacing(16)}>
-										<Field
+										<TextInput
 											id="notify-email-list"
 											type="text"
 											placeholder="name@gmail.com"

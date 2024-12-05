@@ -27,7 +27,7 @@
 	font-size: var(--env-var-font-size-medium);
 }
 .MuiTable-root .MuiTableHead-root .MuiTableCell-root {
-	padding: var(--env-var-spacing-1) var(--env-var-spacing-2);
+	padding: var(--env-var-spacing-1);
 	font-weight: 500;
 }
 .MuiTable-root .MuiTableHead-root span {
@@ -43,7 +43,7 @@
 	height: 20px;
 }
 .MuiTable-root .MuiTableBody-root .MuiTableCell-root {
-	padding: 6px var(--env-var-spacing-2);
+	padding: var(--env-var-spacing-1);
 }
 .MuiTable-root .MuiTableBody-root .MuiTableRow-root {
 	height: 50px;

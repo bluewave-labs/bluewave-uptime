@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
 import { Button, ButtonGroup, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import Field from "../../Inputs/Field";
+import TextInput from "../../Inputs/TextInput";
 import { credentials } from "../../../Validation/validation";
 import { networkService } from "../../../main";
 import { createToast } from "../../../Utils/toastUtils";
@@ -301,7 +301,7 @@ const TeamPanel = () => {
 								filled={(filter === "admin").toString()}
 								onClick={() => setFilter("admin")}
 							>
-								Administrator
+								Super admin
 							</Button>
 							<Button
 								variant="group"
@@ -338,13 +338,15 @@ const TeamPanel = () => {
 				onClose={closeInviteModal}
 				theme={theme}
 			>
-				<Field
+				<TextInput
+					marginBottom={theme.spacing(12)}
 					type="email"
 					id="input-team-member"
 					placeholder="Email"
 					value={toInvite.email}
 					onChange={handleChange}
-					error={errors.email}
+					error={errors.email ? true : false}
+					helperText={errors.email}
 				/>
 				<Select
 					id="team-member-role"

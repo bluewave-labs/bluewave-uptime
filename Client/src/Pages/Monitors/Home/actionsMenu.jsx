@@ -109,7 +109,7 @@ const ActionsMenu = ({ monitor, isAdmin, updateCallback }) => {
 							"& ul": { p: theme.spacing(2.5) },
 							"& li": { m: 0 },
 							"& li:last-of-type": {
-								color: theme.palette.error.text,
+								color: theme.palette.error.main,
 							},
 						},
 					},

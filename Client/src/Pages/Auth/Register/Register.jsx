@@ -1,20 +1,19 @@
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { StepOne } from "./StepOne";
+import { StepTwo } from "./StepTwo";
+import { StepThree } from "./StepThree";
+import { networkService } from "../../../main";
 import { credentials } from "../../../Validation/validation";
 import { createToast } from "../../../Utils/toastUtils";
 import { register } from "../../../Features/Auth/authSlice";
-import { useParams } from "react-router-dom";
 import Background from "../../../assets/Images/background-grid.svg?react";
 import Logo from "../../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../../assets/icons/mail.svg?react";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import Check from "../../../Components/Check/Check";
-import Field from "../../../Components/Inputs/Field";
-import { networkService } from "../../../main";
 import "../index.css";
 
 /**
@@ -53,6 +52,10 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
 								"& path": {
 									stroke: theme.palette.other.icon,
 								},
+							},
+							"&:focus-visible": {
+								outline: `2px solid ${theme.palette.primary.main}`,
+								outlineOffset: `2px`,
 							},
 						}}
 					>
@@ -108,389 +111,6 @@ const LandingPage = ({ isSuperAdmin, onSignup }) => {
 LandingPage.propTypes = {
 	isSuperAdmin: PropTypes.bool,
 	onSignup: PropTypes.func,
-};
-
-/**
- * Renders the first step of the sign up process.
- *
- * @param {Object} props
- * @param {Object} props.form - Form state object.
- * @param {Object} props.errors - Object containing form validation errors.
- * @param {Function} props.onSubmit - Callback function to handle form submission.
- * @param {Function} props.onChange - Callback function to handle form input changes.
- * @param {Function} props.onBack - Callback function to handle "Back" button click.
- * @returns {JSX.Element}
- */
-const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
-	const theme = useTheme();
-	const inputRef = useRef(null);
-
-	useEffect(() => {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-	}, []);
-
-	return (
-		<>
-			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
-				textAlign="center"
-			>
-				<Box>
-					<Typography component="h1">Sign Up</Typography>
-					<Typography>Enter your personal details</Typography>
-				</Box>
-				<Box textAlign="left">
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-						mb={theme.spacing(10)}
-					>
-						<Field
-							id="register-firstname-input"
-							label="Name"
-							isRequired={true}
-							placeholder="Jordan"
-							autoComplete="given-name"
-							value={form.firstName}
-							onChange={onChange}
-							error={errors.firstName}
-							ref={inputRef}
-						/>
-					</Box>
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-						mb={theme.spacing(5)}
-					>
-						<Field
-							id="register-lastname-input"
-							label="Surname"
-							isRequired={true}
-							placeholder="Ellis"
-							autoComplete="family-name"
-							value={form.lastName}
-							onChange={onChange}
-							error={errors.lastName}
-						/>
-					</Box>
-				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={(errors.firstName || errors.lastName) && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
-			</Stack>
-		</>
-	);
-};
-
-StepOne.propTypes = {
-	form: PropTypes.object,
-	errors: PropTypes.object,
-	onSubmit: PropTypes.func,
-	onChange: PropTypes.func,
-	onBack: PropTypes.func,
-};
-
-/**
- * Renders the second step of the sign up process.
- *
- * @param {Object} props
- * @param {Object} props.form - Form state object.
- * @param {Object} props.errors - Object containing form validation errors.
- * @param {Function} props.onSubmit - Callback function to handle form submission.
- * @param {Function} props.onChange - Callback function to handle form input changes.
- * @param {Function} props.onBack - Callback function to handle "Back" button click.
- * @returns {JSX.Element}
- */
-const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
-	const theme = useTheme();
-	const inputRef = useRef(null);
-
-	useEffect(() => {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-	}, []);
-
-	return (
-		<>
-			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
-				textAlign="center"
-			>
-				<Box>
-					<Typography component="h1">Sign Up</Typography>
-					<Typography>Enter your email address</Typography>
-				</Box>
-				<Box textAlign="left">
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-						mb={theme.spacing(5)}
-					>
-						<Field
-							type="email"
-							id="register-email-input"
-							label="Email"
-							isRequired={true}
-							placeholder="jordan.ellis@domain.com"
-							autoComplete="email"
-							value={form.email}
-							onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
-							onChange={onChange}
-							error={errors.email}
-							ref={inputRef}
-						/>
-					</Box>
-				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.email && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
-			</Stack>
-		</>
-	);
-};
-
-StepTwo.propTypes = {
-	form: PropTypes.object,
-	errors: PropTypes.object,
-	onSubmit: PropTypes.func,
-	onChange: PropTypes.func,
-	onBack: PropTypes.func,
-};
-
-/**
- * Renders the third step of the sign up process.
- *
- * @param {Object} props
- * @param {Object} props.form - Form state object.
- * @param {Object} props.errors - Object containing form validation errors.
- * @param {Function} props.onSubmit - Callback function to handle form submission.
- * @param {Function} props.onChange - Callback function to handle form input changes.
- * @param {Function} props.onBack - Callback function to handle "Back" button click.
- * @returns {JSX.Element}
- */
-const StepThree = ({ form, errors, onSubmit, onChange, onBack }) => {
-	const theme = useTheme();
-	const inputRef = useRef(null);
-
-	useEffect(() => {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-	}, []);
-
-	return (
-		<>
-			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
-				textAlign="center"
-			>
-				<Box>
-					<Typography component="h1">Sign Up</Typography>
-					<Typography>Create your password</Typography>
-				</Box>
-				<Box
-					textAlign="left"
-					sx={{
-						"& .input-error": {
-							display: "none",
-						},
-					}}
-				>
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-					>
-						<Field
-							type="password"
-							id="register-password-input"
-							label="Password"
-							isRequired={true}
-							placeholder="Create a password"
-							autoComplete="current-password"
-							value={form.password}
-							onChange={onChange}
-							error={errors.password}
-							ref={inputRef}
-						/>
-					</Box>
-					<Box
-						component="form"
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
-					>
-						<Field
-							type="password"
-							id="register-confirm-input"
-							label="Confirm password"
-							isRequired={true}
-							placeholder="Confirm your password"
-							autoComplete="current-password"
-							value={form.confirm}
-							onChange={onChange}
-							error={errors.confirm}
-						/>
-					</Box>
-					<Stack
-						gap={theme.spacing(4)}
-						mb={{ xs: theme.spacing(6), sm: theme.spacing(8) }}
-					>
-						<Check
-							text={
-								<>
-									<Typography component="span">Must be at least</Typography> 8 characters
-									long
-								</>
-							}
-							variant={
-								errors?.password === "Password is required"
-									? "error"
-									: form.password === ""
-										? "info"
-										: form.password.length < 8
-											? "error"
-											: "success"
-							}
-						/>
-						<Check
-							text={
-								<>
-									<Typography component="span">Must contain</Typography> one special
-									character and a number
-								</>
-							}
-							variant={
-								errors?.password === "Password is required"
-									? "error"
-									: form.password === ""
-										? "info"
-										: !/^(?=.*[!@#$%^&*(),.?":{}|])(?=.*\d).+$/.test(form.password)
-											? "error"
-											: "success"
-							}
-						/>
-						<Check
-							text={
-								<>
-									<Typography component="span">Must contain at least</Typography> one
-									upper and lower character
-								</>
-							}
-							variant={
-								errors?.password === "Password is required"
-									? "error"
-									: form.password === ""
-										? "info"
-										: !/^(?=.*[A-Z])(?=.*[a-z]).+$/.test(form.password)
-											? "error"
-											: "success"
-							}
-						/>
-					</Stack>
-				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.email && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
-			</Stack>
-		</>
-	);
-};
-
-StepThree.propTypes = {
-	form: PropTypes.object,
-	errors: PropTypes.object,
-	onSubmit: PropTypes.func,
-	onChange: PropTypes.func,
-	onBack: PropTypes.func,
 };
 
 const Register = ({ isSuperAdmin }) => {
@@ -596,14 +216,16 @@ const Register = ({ isSuperAdmin }) => {
 	// Attempts account registration
 	const handleStepThree = async (e) => {
 		e.preventDefault();
-
+		const { password, confirm } = e.target.elements;
 		let registerForm = {
 			...form,
+			password: password.value,
+			confirm: confirm.value,
 			role: isSuperAdmin ? ["superadmin"] : form.role,
 			inviteToken: token ? token : "", // Add the token to the request for verification
 		};
 		let error = validateForm(registerForm, {
-			context: { password: form.password },
+			context: { password: registerForm.password },
 		});
 		if (error) {
 			handleError(error);
@@ -615,18 +237,16 @@ const Register = ({ isSuperAdmin }) => {
 		if (action.payload.success) {
 			const authToken = action.payload.data;
 			localStorage.setItem("token", authToken);
-			navigate("/");
+			navigate("/monitors");
 			createToast({
 				body: "Welcome! Your account was created successfully.",
 			});
 		} else {
 			if (action.payload) {
-				// dispatch errors
 				createToast({
 					body: action.payload.msg,
 				});
 			} else {
-				// unknown errors
 				createToast({
 					body: "Unknown error.",
 				});
@@ -732,10 +352,10 @@ const Register = ({ isSuperAdmin }) => {
 					/>
 				) : step === 3 ? (
 					<StepThree
-						form={form}
-						errors={errors}
+						/* form={form}
+						errors={errors} */
 						onSubmit={handleStepThree}
-						onChange={handleChange}
+						/* onChange={handleChange} */
 						onBack={() => setStep(2)}
 					/>
 				) : (

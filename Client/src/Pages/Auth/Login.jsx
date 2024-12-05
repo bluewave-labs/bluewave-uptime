@@ -4,10 +4,12 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { credentials } from "../../Validation/validation";
 import { login } from "../../Features/Auth/authSlice";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../Utils/toastUtils";
 import { networkService } from "../../main";
-import Field from "../../Components/Inputs/Field";
+import TextInput from "../../Components/Inputs/TextInput";
+import { PasswordEndAdornment } from "../../Components/Inputs/TextInput/Adornments";
 import Background from "../../assets/Images/background-grid.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
 import Mail from "../../assets/icons/mail.svg?react";
@@ -50,6 +52,10 @@ const LandingPage = ({ onContinue }) => {
 								"& path": {
 									stroke: theme.palette.other.icon,
 								},
+							},
+							"&:focus-visible": {
+								outline: `2px solid ${theme.palette.primary.main}`,
+								outlineOffset: `2px`,
 							},
 						}}
 					>
@@ -130,7 +136,7 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 	return (
 		<>
 			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+				gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				textAlign="center"
 			>
 				<Box>
@@ -139,57 +145,67 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 				</Box>
 				<Box
 					textAlign="left"
-					mb={theme.spacing(5)}
+					component="form"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
+					display="grid"
+					gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				>
-					<form
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
+					<TextInput
+						type="email"
+						id="login-email-input"
+						label="Email"
+						isRequired={true}
+						placeholder="jordan.ellis@domain.com"
+						autoComplete="email"
+						value={form.email}
+						onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
+						onChange={onChange}
+						error={errors.email ? true : false}
+						helperText={errors.email}
+						ref={inputRef}
+					/>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
 					>
-						<Field
-							type="email"
-							id="login-email-input"
-							label="Email"
-							isRequired={true}
-							placeholder="jordan.ellis@domain.com"
-							autoComplete="email"
-							value={form.email}
-							onInput={(e) => (e.target.value = e.target.value.toLowerCase())}
-							onChange={onChange}
-							error={errors.email}
-							ref={inputRef}
-						/>
-					</form>
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<Button
+							variant="contained"
+							color="primary"
+							type="submit"
+							disabled={errors.email && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</Button>
+					</Stack>
 				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.email && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
 			</Stack>
 		</>
 	);
@@ -218,6 +234,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const inputRef = useRef(null);
+	const authState = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		if (inputRef.current) {
@@ -235,7 +252,7 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 	return (
 		<>
 			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
+				gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				position="relative"
 				textAlign="center"
 			>
@@ -244,64 +261,79 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 					<Typography>Enter your password</Typography>
 				</Box>
 				<Box
+					component="form"
+					noValidate
+					spellCheck={false}
+					onSubmit={onSubmit}
 					textAlign="left"
 					mb={theme.spacing(5)}
+					sx={{
+						display: "grid",
+						gap: { xs: theme.spacing(12), sm: theme.spacing(16) },
+					}}
 				>
-					<form
-						noValidate
-						spellCheck={false}
-						onSubmit={onSubmit}
+					<TextInput
+						type="password"
+						id="login-password-input"
+						label="Password"
+						isRequired={true}
+						placeholder="••••••••••"
+						autoComplete="current-password"
+						value={form.password}
+						onChange={onChange}
+						error={errors.password ? true : false}
+						helperText={errors.password}
+						ref={inputRef}
+						endAdornment={<PasswordEndAdornment />}
+					/>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
 					>
-						<Field
-							type="password"
-							id="login-password-input"
-							label="Password"
-							isRequired={true}
-							placeholder="••••••••••"
-							autoComplete="current-password"
-							value={form.password}
-							onChange={onChange}
-							error={errors.password}
-							ref={inputRef}
-						/>
-					</form>
+						<Button
+							variant="outlined"
+							color="info"
+							onClick={onBack}
+							sx={{
+								px: theme.spacing(5),
+								"& svg.MuiSvgIcon-root": {
+									mr: theme.spacing(3),
+								},
+								"&:focus-visible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+								},
+							}}
+						>
+							<ArrowBackRoundedIcon />
+							Back
+						</Button>
+						<LoadingButton
+							variant="contained"
+							color="primary"
+							type="submit"
+							loading={authState.isLoading}
+							disabled={errors.password && true}
+							sx={{
+								width: "30%",
+								"&.Mui-focusVisible": {
+									outline: `2px solid ${theme.palette.primary.main}`,
+									outlineOffset: `2px`,
+									boxShadow: `none`,
+								},
+							}}
+						>
+							Continue
+						</LoadingButton>
+					</Stack>
 				</Box>
-				<Stack
-					direction="row"
-					justifyContent="space-between"
-				>
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onBack}
-						sx={{
-							px: theme.spacing(5),
-							"& svg.MuiSvgIcon-root": {
-								mr: theme.spacing(3),
-							},
-						}}
-						props={{ tabIndex: -1 }}
-					>
-						<ArrowBackRoundedIcon />
-						Back
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={onSubmit}
-						disabled={errors.password && true}
-						sx={{ width: "30%" }}
-					>
-						Continue
-					</Button>
-				</Stack>
 				<Box
 					textAlign="center"
 					sx={{
 						position: "absolute",
-						top: "104%",
+						bottom: 0,
 						left: "50%",
-						transform: "translateX(-50%)",
+						transform: `translate(-50%, 150%)`,
 					}}
 				>
 					<Typography
@@ -523,23 +555,6 @@ const Login = () => {
 					)
 				)}
 			</Stack>
-			<Box
-				textAlign="center"
-				p={theme.spacing(12)}
-			>
-				<Typography display="inline-block">Don&apos;t have an account? —</Typography>
-				<Typography
-					component="span"
-					color={theme.palette.primary.main}
-					ml={theme.spacing(2)}
-					onClick={() => {
-						navigate("/register");
-					}}
-					sx={{ userSelect: "none" }}
-				>
-					Sign Up
-				</Typography>
-			</Box>
 		</Stack>
 	);
 };

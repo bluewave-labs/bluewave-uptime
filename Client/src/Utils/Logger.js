@@ -44,6 +44,14 @@ class Logger {
 			this.log = NO_OP;
 			return;
 		}
+
+		if (logLevel === "debug") {
+			this.error = console.error.bind(console);
+			this.warn = console.warn.bind(console);
+			this.info = console.info.bind(console);
+			this.log = console.log.bind(console);
+			return;
+		}
 	}
 
 	cleanup() {

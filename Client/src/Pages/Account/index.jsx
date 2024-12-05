@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
@@ -14,10 +15,10 @@ import "./index.css";
  * @param {string} [props.open] - Specifies the initially open tab: 'profile', 'password', or 'team'.
  * @returns {JSX.Element}
  */
-
 const Account = ({ open = "profile" }) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
+	const [focusedTab, setFocusedTab] = useState(null); // Track focused tab
 	const tab = open;
 	const handleTabChange = (event, newTab) => {
 		navigate(`/account/${newTab}`);
@@ -35,6 +36,21 @@ const Account = ({ open = "profile" }) => {
 	if (user.role.includes("demo")) {
 		tabList = ["Profile"];
 	}
+
+	const handleKeyDown = (event) => {
+		const currentIndex = tabList.findIndex((label) => label.toLowerCase() === tab);
+		if (event.key === "Tab") {
+			const nextIndex = (currentIndex + 1) % tabList.length;
+			setFocusedTab(tabList[nextIndex].toLowerCase());
+		} else if (event.key === "Enter") {
+			event.preventDefault();
+			navigate(`/account/${focusedTab}`);
+		}
+	};
+
+	const handleFocus = (tabName) => {
+		setFocusedTab(tabName);
+	};
 
 	return (
 		<Box
@@ -63,6 +79,9 @@ const Account = ({ open = "profile" }) => {
 								label={label}
 								key={index}
 								value={label.toLowerCase()}
+								onKeyDown={handleKeyDown}
+								onFocus={() => handleFocus(label.toLowerCase())}
+								tabIndex={index}
 								sx={{
 									fontSize: 13,
 									color: theme.palette.text.tertiary,
@@ -74,7 +93,11 @@ const Account = ({ open = "profile" }) => {
 									fontWeight: 400,
 									marginRight: theme.spacing(8),
 									"&:focus": {
-										outline: "none",
+										borderBottom: `2px solid ${theme.palette.border.light}`,
+									},
+
+									"&:hover": {
+										borderBottom: `2px solid ${theme.palette.border.light}`,
 									},
 								}}
 							/>

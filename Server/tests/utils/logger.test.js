@@ -46,6 +46,26 @@ describe("Logger", () => {
 			const logger = new Logger();
 			logger.logger.info(logMessage);
 		});
+		it("should convert details to JSON string if it is an object", function () {
+			const logDetails = { key: "value" };
+			const expectedDetails = JSON.stringify(logDetails, null, 2); // Removed .s
+
+			createLoggerStub.callsFake((config) => {
+				const consoleTransport = config.transports[0];
+				const logEntry = {
+					level: "info",
+					message: "", // Add empty message since it's required
+					details: logDetails,
+					timestamp: new Date().toISOString(),
+				};
+				const formattedMessage = consoleTransport.format.transform(logEntry);
+				expect(formattedMessage).to.include(expectedDetails);
+				return { info: sinon.spy() }; // Changed to return info method
+			});
+
+			const logger = new Logger();
+			logger.logger.info("", { details: logDetails }); // Updated to pass details properly
+		});
 	});
 
 	describe("info", () => {

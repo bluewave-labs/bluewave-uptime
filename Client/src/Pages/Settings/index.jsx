@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { Box, Stack, Typography, Button } from "@mui/material";
-import Field from "../../Components/Inputs/Field";
+import TextInput from "../../Components/Inputs/TextInput";
 import Link from "../../Components/Link";
 import Select from "../../Components/Inputs/Select";
 import { logger } from "../../Utils/Logger";
@@ -240,13 +240,14 @@ const Settings = ({ isAdmin }) => {
 							</Typography>
 						</Box>
 						<Stack gap={theme.spacing(20)}>
-							<Field
+							<TextInput
 								id="ttl"
 								label="The days you want to keep monitoring history."
 								optionalLabel="0 for infinite"
 								value={form.ttl}
 								onChange={handleChange}
-								error={errors.ttl}
+								error={errors.ttl ? true : false}
+								helperText={errors.ttl}
 							/>
 							<Box>
 								<Typography>Clear all stats. This is irreversible.</Typography>
@@ -348,14 +349,14 @@ const Settings = ({ isAdmin }) => {
 						<Typography component="h1">About</Typography>
 					</Box>
 					<Box>
-						<Typography component="h2">BlueWave Uptime {version}</Typography>
+						<Typography component="h2">Checkmate {version}</Typography>
 						<Typography sx={{ mt: theme.spacing(2), mb: theme.spacing(6), opacity: 0.6 }}>
 							Developed by Bluewave Labs.
 						</Typography>
 						<Link
 							level="secondary"
-							url="https://github.com/bluewave-labs/bluewave-uptime"
-							label="https://github.com/bluewave-labs/bluewave-uptime"
+							url="https://github.com/bluewave-labs/checkmate"
+							label="https://github.com/bluewave-labs/checkmate"
 						/>
 					</Box>
 				</ConfigBox>

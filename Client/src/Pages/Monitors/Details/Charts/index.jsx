@@ -61,7 +61,7 @@ const UpBarChart = memo(({ data, type, onBarHover }) => {
 			? { main: theme.palette.success.main, light: theme.palette.success.light }
 			: uptime > 50
 				? { main: theme.palette.warning.main, light: theme.palette.warning.light }
-				: { main: theme.palette.error.text, light: theme.palette.error.light };
+				: { main: theme.palette.error.contrastText, light: theme.palette.error.light };
 	};
 
 	// TODO - REMOVE THIS LATER
@@ -201,10 +201,10 @@ const DownBarChart = memo(({ data, type, onBarHover }) => {
 							key={`cell-${entry.time}`}
 							fill={
 								hoveredBarIndex === index
-									? theme.palette.error.text
+									? theme.palette.error.contrastText
 									: chartHovered
 										? theme.palette.error.light
-										: theme.palette.error.text
+										: theme.palette.error.contrastText
 							}
 							onMouseEnter={() => {
 								setHoveredBarIndex(index);
@@ -246,24 +246,24 @@ const ResponseGaugeChart = ({ data }) => {
 			? {
 					category: "Excellent",
 					main: theme.palette.success.main,
-					bg: theme.palette.success.bg,
+					bg: theme.palette.success.contrastText,
 				}
 			: responseTime <= 500
 				? {
 						category: "Fair",
 						main: theme.palette.success.main,
-						bg: theme.palette.success.bg,
+						bg: theme.palette.success.contrastText,
 					}
 				: responseTime <= 600
 					? {
 							category: "Acceptable",
 							main: theme.palette.warning.main,
-							bg: theme.palette.warning.bg,
+							bg: theme.palette.warning.dark,
 						}
 					: {
 							category: "Poor",
-							main: theme.palette.error.text,
-							bg: theme.palette.error.bg,
+							main: theme.palette.error.contrastText,
+							bg: theme.palette.error.dark,
 						};
 
 	return (

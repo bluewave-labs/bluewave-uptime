@@ -127,22 +127,22 @@ const PieChart = ({ audits }) => {
 			return {
 				stroke: theme.palette.success.main,
 				strokeBg: theme.palette.success.light,
-				text: theme.palette.success.text,
-				bg: theme.palette.success.bg,
+				text: theme.palette.success.contrastText,
+				bg: theme.palette.success.dark,
 			};
 		else if (value >= 50 && value < 90)
 			return {
 				stroke: theme.palette.warning.main,
 				strokeBg: theme.palette.warning.light,
-				text: theme.palette.warning.text,
-				bg: theme.palette.warning.bg,
+				text: theme.palette.warning.contrastText,
+				bg: theme.palette.warning.dark,
 			};
 		else if (value >= 0 && value < 50)
 			return {
-				stroke: theme.palette.error.text,
+				stroke: theme.palette.error.contrastText,
 				strokeBg: theme.palette.error.light,
-				text: theme.palette.error.text,
-				bg: theme.palette.error.bg,
+				text: theme.palette.error.contrastText,
+				bg: theme.palette.error.dark,
 			};
 		return {
 			stroke: theme.palette.unresolved.main,

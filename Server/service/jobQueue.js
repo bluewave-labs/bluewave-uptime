@@ -36,10 +36,10 @@ class JobQueue {
 			host: redisHost,
 			port: redisPort,
 		};
-		this.connection = connection;
 		this.queue = new Queue(QUEUE_NAME, {
 			connection,
 		});
+		this.connection = connection;
 		this.workers = [];
 		this.db = null;
 		this.networkService = null;
@@ -165,23 +165,18 @@ class JobQueue {
 				// Handle status change
 				const { monitor, statusChanged, prevStatus } =
 					await this.statusService.updateStatus(networkResponse);
-
-				//If status hasn't changed, we're done
-				if (statusChanged === false) return;
-
-				// if prevStatus is undefined, monitor is resuming, we're done
-				if (prevStatus === undefined) return;
-
+				// Handle notifications
 				this.notificationService.handleNotifications({
 					...networkResponse,
 					monitor,
 					prevStatus,
+					statusChanged,
 				});
 			} catch (error) {
 				this.logger.error({
 					message: error.message,
-					service: SERVICE_NAME,
-					method: "createWorker",
+					service: error.service ?? SERVICE_NAME,
+					method: error.method ?? "createJobHandler",
 					details: `Error processing job ${job.id}: ${error.message}`,
 					stack: error.stack,
 				});
@@ -406,9 +401,6 @@ class JobQueue {
 				delayed: await this.queue.getDelayedCount(),
 				repeatableJobs: (await this.queue.getRepeatableJobs()).length,
 			};
-			this.logger.info({
-				message: metrics,
-			});
 			return metrics;
 		} catch (error) {
 			this.logger.error({
@@ -424,17 +416,20 @@ class JobQueue {
 	 * @async
 	 * @returns {Promise<boolean>} - Returns true if obliteration is successful
 	 */
+
 	async obliterate() {
 		try {
-			let metrics = await this.getMetrics();
-			this.logger.info({ message: metrics });
+			this.logger.info({ message: "Attempting to obliterate job queue..." });
 			await this.queue.pause();
 			const jobs = await this.getJobs();
 
+			// Remove all repeatable jobs
 			for (const job of jobs) {
 				await this.queue.removeRepeatableByKey(job.key);
 				await this.queue.remove(job.id);
 			}
+
+			// Close workers
 			await Promise.all(
 				this.workers.map(async (worker) => {
 					await worker.close();
@@ -442,9 +437,13 @@ class JobQueue {
 			);
 
 			await this.queue.obliterate();
-			metrics = await this.getMetrics();
-			this.logger.info({ message: metrics });
-			this.logger.info({ message: successMessages.JOB_QUEUE_OBLITERATE });
+			const metrics = await this.getMetrics();
+			this.logger.info({
+				message: successMessages.JOB_QUEUE_OBLITERATE,
+				service: SERVICE_NAME,
+				method: "obliterate",
+				details: metrics,
+			});
 			return true;
 		} catch (error) {
 			error.service === undefined ? (error.service = SERVICE_NAME) : null;

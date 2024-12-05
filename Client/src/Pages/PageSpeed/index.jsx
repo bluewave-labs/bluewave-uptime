@@ -8,7 +8,6 @@ import "./index.css";
 import { useNavigate } from "react-router";
 import PropTypes from "prop-types";
 import Breadcrumbs from "../../Components/Breadcrumbs";
-import Greeting from "../../Utils/greeting";
 import SkeletonLayout from "./skeleton";
 import Card from "./card";
 import { networkService } from "../../main";
@@ -82,11 +81,10 @@ const PageSpeed = ({ isAdmin }) => {
 						<Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
 						<Stack
 							direction="row"
-							justifyContent="space-between"
+							justifyContent="end"
 							alignItems="center"
 							mt={theme.spacing(5)}
 						>
-							<Greeting type="pagespeed" />
 							{isAdmin && (
 								<Button
 									variant="contained"

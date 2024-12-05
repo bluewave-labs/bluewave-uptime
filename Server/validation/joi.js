@@ -18,6 +18,9 @@ const roleValidatior = (role) => (value, helpers) => {
 // Auth
 //****************************************
 
+const passwordPattern =
+	/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/])[A-Za-z0-9!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/]+$/;
+
 const loginValidation = joi.object({
 	email: joi
 		.string()
@@ -30,13 +33,7 @@ const loginValidation = joi.object({
 			}
 			return lowercasedValue;
 		}),
-	password: joi
-		.string()
-		.min(8)
-		.required()
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	password: joi.string().min(8).required().pattern(passwordPattern),
 });
 
 const registrationBodyValidation = joi.object({
@@ -59,13 +56,7 @@ const registrationBodyValidation = joi.object({
 			}
 			return lowercasedValue;
 		}),
-	password: joi
-		.string()
-		.min(8)
-		.required()
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	password: joi.string().min(8).required().pattern(passwordPattern),
 	profileImage: joi.any(),
 	role: joi
 		.array()
@@ -84,18 +75,8 @@ const editUserBodyValidation = joi.object({
 	firstName: joi.string().pattern(/^[A-Za-z]+$/),
 	lastName: joi.string().pattern(/^[A-Za-z]+$/),
 	profileImage: joi.any(),
-	newPassword: joi
-		.string()
-		.min(8)
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
-	password: joi
-		.string()
-		.min(8)
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	newPassword: joi.string().min(8).pattern(passwordPattern),
+	password: joi.string().min(8).pattern(passwordPattern),
 	deleteProfileImage: joi.boolean(),
 	role: joi.array(),
 });
@@ -113,13 +94,7 @@ const recoveryTokenValidation = joi.object({
 
 const newPasswordValidation = joi.object({
 	recoveryToken: joi.string().required(),
-	password: joi
-		.string()
-		.min(8)
-		.required()
-		.pattern(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z0-9!@#$%^&*()]+$/
-		),
+	password: joi.string().min(8).required().pattern(passwordPattern),
 	confirm: joi.string(),
 });
 
@@ -169,8 +144,10 @@ const getMonitorsAndSummaryByTeamIdQueryValidation = joi.object({
 	type: joi
 		.alternatives()
 		.try(
-			joi.string().valid("http", "ping", "pagespeed"),
-			joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+			joi.string().valid("http", "ping", "pagespeed", "docker", "hardware"),
+			joi
+				.array()
+				.items(joi.string().valid("http", "ping", "pagespeed", "docker", "hardware"))
 		),
 });
 
@@ -186,8 +163,10 @@ const getMonitorsByTeamIdQueryValidation = joi.object({
 	type: joi
 		.alternatives()
 		.try(
-			joi.string().valid("http", "ping", "pagespeed"),
-			joi.array().items(joi.string().valid("http", "ping", "pagespeed"))
+			joi.string().valid("http", "ping", "pagespeed", "docker", "hardware"),
+			joi
+				.array()
+				.items(joi.string().valid("http", "ping", "pagespeed", "docker", "hardware"))
 		),
 	page: joi.number(),
 	rowsPerPage: joi.number(),
@@ -203,7 +182,7 @@ const getMonitorStatsByIdQueryValidation = joi.object({
 	status: joi.string(),
 	limit: joi.number(),
 	sortOrder: joi.string().valid("asc", "desc"),
-	dateRange: joi.string().valid("day", "week", "month"),
+	dateRange: joi.string().valid("day", "week", "month", "all"),
 	numToDisplay: joi.number(),
 	normalize: joi.boolean(),
 });
@@ -226,6 +205,7 @@ const createMonitorBodyValidation = joi.object({
 		usage_cpu: joi.number(),
 		usage_memory: joi.number(),
 		usage_disk: joi.number(),
+		usage_temperature: joi.number(),
 	}),
 	notifications: joi.array().items(joi.object()),
 	secret: joi.string(),
@@ -435,6 +415,32 @@ const updateAppSettingsBodyValidation = joi.object({
 	systemEmailPassword: joi.string().allow(""),
 });
 
+//****************************************
+// Status Page Validation
+//****************************************
+
+const getStatusPageParamValidation = joi.object({
+	url: joi.string().required(),
+});
+
+const createStatusPageBodyValidation = joi.object({
+	companyName: joi.string().required(),
+	url: joi.string().required(),
+	timezone: joi.string().required(),
+	color: joi.string().required(),
+	theme: joi.string().required(),
+	monitors: joi
+		.array()
+		.items(joi.string().pattern(/^[0-9a-fA-F]{24}$/))
+		.required()
+		.messages({
+			"string.pattern.base": "Must be a valid monitor ID",
+			"array.base": "Monitors must be an array",
+			"array.empty": "At least one monitor is required",
+			"any.required": "Monitors are required",
+		}),
+});
+
 export {
 	roleValidatior,
 	loginValidation,
@@ -490,4 +496,6 @@ export {
 	editMaintenanceWindowByIdParamValidation,
 	editMaintenanceByIdWindowBodyValidation,
 	updateAppSettingsBodyValidation,
+	createStatusPageBodyValidation,
+	getStatusPageParamValidation,
 };

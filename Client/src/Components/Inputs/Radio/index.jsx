@@ -41,7 +41,7 @@ const Radio = (props) => {
 						color: "transparent",
 						width: 16,
 						height: 16,
-						boxShadow: "inset 0 0 0 1px #656a74",
+						boxShadow: `inset 0 0 0 1px ${theme.palette.secondary.main}`,
 						mt: theme.spacing(0.5),
 					}}
 				/>

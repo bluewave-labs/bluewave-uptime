@@ -51,6 +51,14 @@ const errorMessages = {
 
 	// PING Operations
 	PING_CANNOT_RESOLVE: "No response",
+
+	// Status Page Errors
+	STATUS_PAGE_NOT_FOUND: "Status page not found",
+	STATUS_PAGE_URL_NOT_UNIQUE: "Status page url must be unique",
+
+	// Docker
+	DOCKER_FAIL: "Failed to fetch Docker container information",
+	DOCKER_NOT_FOUND: "Docker container not found",
 };
 
 const successMessages = {
@@ -115,6 +123,13 @@ const successMessages = {
 	// App Settings
 	GET_APP_SETTINGS: "Got app settings successfully",
 	UPDATE_APP_SETTINGS: "Updated app settings successfully",
+
+	// Status Page
+	STATUS_PAGE_BY_URL: "Got status page by url successfully",
+	STATUS_PAGE_CREATE: "Status page created successfully",
+
+	// Docker
+	DOCKER_SUCCESS: "Docker container status fetched successfully",
 };
 
 export { errorMessages, successMessages };

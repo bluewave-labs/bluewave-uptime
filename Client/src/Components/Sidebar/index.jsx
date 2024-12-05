@@ -19,7 +19,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
-import { setMode, toggleSidebar } from "../../Features/UI/uiSlice";
+import { toggleSidebar } from "../../Features/UI/uiSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
@@ -29,7 +29,6 @@ import LogoutSvg from "../../assets/icons/logout.svg?react";
 import Support from "../../assets/icons/support.svg?react";
 import Dashboard from "../../assets/icons/dashboard.svg?react";
 import Account from "../../assets/icons/user-edit.svg?react";
-import StatusPages from "../../assets/icons/status-pages.svg?react";
 import Maintenance from "../../assets/icons/maintenance.svg?react";
 import Monitors from "../../assets/icons/monitors.svg?react";
 import Incidents from "../../assets/icons/incidents.svg?react";
@@ -48,14 +47,9 @@ import Folder from "../../assets/icons/folder.svg?react";
 import "./index.css";
 
 const menu = [
-	{
-		name: "Dashboard",
-		icon: <Dashboard />,
-		nested: [
-			{ name: "Monitors", path: "monitors", icon: <Monitors /> },
-			{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
-		],
-	},
+	{ name: "Monitors", path: "monitors", icon: <Monitors /> },
+	{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
+	{ name: "Infrastructure", path: "infrastructure", icon: <Integrations /> },
 	{ name: "Incidents", path: "incidents", icon: <Incidents /> },
 	// { name: "Status pages", path: "status", icon: <StatusPages /> },
 	{ name: "Maintenance", path: "maintenance", icon: <Maintenance /> },
@@ -83,13 +77,14 @@ const menu = [
 
 const URL_MAP = {
 	support: "https://github.com/bluewave-labs/bluewave-uptime/issues",
-	docs: "https://bluewavelabs.gitbook.io/uptime-manager",
+	docs: "https://bluewavelabs.gitbook.io/checkmate",
 	changelog: "https://github.com/bluewave-labs/bluewave-uptime/releases",
 };
 
 const PATH_MAP = {
 	monitors: "Dashboard",
 	pagespeed: "Dashboard",
+	infrastructure: "Dashboard",
 	account: "Account",
 	settings: "Other",
 };
@@ -113,7 +108,6 @@ function Sidebar() {
 	const [popup, setPopup] = useState();
 	const { user } = useSelector((state) => state.auth);
 
-	// Remove demo password if demo
 	const accountMenuItem = menu.find((item) => item.name === "Account");
 	if (user.role?.includes("demo") && accountMenuItem) {
 		accountMenuItem.nested = accountMenuItem.nested.filter((item) => {
@@ -148,7 +142,9 @@ function Sidebar() {
 		if (matchedKey) {
 			setOpen((prev) => ({ ...prev, [PATH_MAP[matchedKey]]: true }));
 		}
-	}, []);
+	}, [location]);
+
+	/* TODO refactor this, there are a some ternaries and comments in the return  */
 
 	return (
 		<Stack
@@ -181,7 +177,13 @@ function Sidebar() {
 					direction="row"
 					alignItems="center"
 					gap={theme.spacing(4)}
-					onClick={() => window.open("https://github.com/bluewave-labs/bluewave-uptime", "_blank", "noreferrer")} 
+					onClick={() =>
+						window.open(
+							"https://github.com/bluewave-labs/bluewave-uptime",
+							"_blank",
+							"noreferrer"
+						)
+					}
 					sx={{ cursor: "pointer" }}
 				>
 					<Stack
@@ -199,14 +201,14 @@ function Sidebar() {
 							userSelect: "none",
 						}}
 					>
-						BU
+						C
 					</Stack>
 					<Typography
 						component="span"
 						mt={theme.spacing(2)}
 						sx={{ opacity: 0.8, fontWeight: 500 }}
 					>
-						BlueWave Uptime
+						Checkmate
 					</Typography>
 				</Stack>
 				<IconButton
@@ -297,6 +299,7 @@ function Sidebar() {
 							</ListItemButton>
 						</Tooltip>
 					) : collapsed ? (
+						/* TODO Do we ever get here? */
 						<React.Fragment key={item.name}>
 							<Tooltip
 								placement="right"
@@ -616,22 +619,6 @@ function Sidebar() {
 						</MenuItem>
 					)}
 					{collapsed && <Divider />}
-					{/* <MenuItem
-            onClick={() => {
-              dispatch(setMode("light"));
-              closePopup();
-            }}
-          >
-            Light
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              dispatch(setMode("dark"));
-              closePopup();
-            }}
-          >
-            Dark
-          </MenuItem> */}
 					<Divider />
 					<MenuItem
 						onClick={logout}

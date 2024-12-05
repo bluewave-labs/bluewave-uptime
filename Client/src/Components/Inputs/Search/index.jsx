@@ -99,7 +99,7 @@ const Search = ({
 						<Typography
 							component="span"
 							className="input-error"
-							color={theme.palette.error.text}
+							color={theme.palette.error.contrastText}
 							mt={theme.spacing(2)}
 							sx={{
 								opacity: 0.8,
@@ -161,7 +161,7 @@ const Search = ({
 				},
 			}}
 			sx={{
-				height: 34,
+				/* 	height: 34,*/
 				"&.MuiAutocomplete-root .MuiAutocomplete-input": { p: 0 },
 				...sx,
 			}}

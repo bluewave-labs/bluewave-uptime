@@ -99,6 +99,7 @@ import {
 
 import {
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorById,
 	getMonitorsAndSummaryByTeamId,
@@ -117,7 +118,6 @@ import {
 
 import {
 	createPageSpeedCheck,
-	getPageSpeedChecks,
 	deletePageSpeedChecksByMonitorId,
 } from "./modules/pageSpeedCheckModule.js";
 
@@ -168,6 +168,11 @@ import {
 //****************************************
 import { getAppSettings, updateAppSettings } from "./modules/settingsModule.js";
 
+//****************************************
+// Status Page
+//****************************************
+import { createStatusPage, getStatusPageByUrl } from "./modules/statusPageModule.js";
+
 export default {
 	connect,
 	disconnect,
@@ -187,6 +192,7 @@ export default {
 	resetPassword,
 	checkSuperadmin,
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorById,
 	getMonitorsAndSummaryByTeamId,
@@ -205,7 +211,6 @@ export default {
 	updateChecksTTL,
 	deleteMonitorsByUserId,
 	createPageSpeedCheck,
-	getPageSpeedChecks,
 	deletePageSpeedChecksByMonitorId,
 	createHardwareCheck,
 	createMaintenanceWindow,
@@ -221,4 +226,6 @@ export default {
 	deleteNotificationsByMonitorId,
 	getAppSettings,
 	updateAppSettings,
+	createStatusPage,
+	getStatusPageByUrl,
 };

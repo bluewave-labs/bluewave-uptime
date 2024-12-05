@@ -6,66 +6,69 @@
 ![](https://img.shields.io/github/issues-pr/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/issues/bluewave-labs/bluewave-uptime)
 
-<h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">BlueWave Uptime</a></h1>
+<h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">Checkmate</a></h1>
 
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
 ![Dashboard-dark](https://github.com/user-attachments/assets/db875138-164f-453c-a75e-889f88747578)
 (yes, we have a light theme as well, but this looks better on readme.md)
 
-BlueWave Uptime is an open source server monitoring application used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time.
+Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time. Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status.
 
-## Demo
+## 📦 Demo
 
-See [BlueWave Uptime](https://uptime-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
+See [Checkmate](https://checkmate-demo.bluewavelabs.ca/) in action. The username is uptimedemo@demo.com and the password is Demouser1!
 
-## User's guide
+## 🔗 User's guide
 
-Usage instructions can be found [here](https://bluewavelabs.gitbook.io/uptime-manager).
+Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate).
 
-## Installation
+## 🛠️ Installation
 
-See installation instructions in [Uptime Manager documentation portal](https://bluewavelabs.gitbook.io/uptime-manager/quickstart).
+See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
 
-## Questions & ideas
+## 💚 Questions & ideas
 
 We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-uptime/discussions) page! Feel free to ask questions or share your ideas—we'd love to hear from you!
 
-## Features
+## 🧩 Features
 
 - Completely open source, deployable on your servers
 - Website monitoring
+- Page speed monitoring
+- Infrastructure monitoring (memory, disk usage, CPU performance etc) - requires [Capture](https://github.com/bluewave-labs/capture)
+- Docker monitoring
 - Port monitoring
 - Ping monitoring
 - Incidents at a glance
-- Page speed monitoring
 - E-mail notifications
 - Scheduled maintenance
 
-**Roadmap (short term):**
-
-We are actively developing **infrastructure monitoring** features for Uptime Manager, which will include comprehensive monitoring of memory, disk usage, and CPU performance. Our goal is to build a lightweight agent that runs on Linux servers, continuously collecting and transmitting health metrics to Uptime Manager, where the data will be visualized for real-time insights.
-
-**Roadmap (long term):**
+**Short term roadmap:**
 
 - DNS monitoring
 - SSL monitoring
 - Status pages
+- Better notification options
+- More configuration options
 
-## Tech stack
+## 🏗️ Tech stack
 
 - [ReactJs](https://react.dev/)
 - [MUI (React framework)](https://mui.com/)
 - [Node.js](https://nodejs.org/en)
 - [MongoDB](https://mongodb.com)
 
-## Contributing
+## 🤝 Contributing
 
-We love contributors. Here's how you can contribute:
+We are known for our great relationship with outside contributors. Checkmate is a young project, but we already have 600+ stars and 30+ contributors from all over the world. The last thing you should do here is to be shy. 
+
+Here's how you can contribute:
 
 - Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
 - Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
 - Open an issue if you believe you've encountered a bug
+- Check for good-first-issue's if you are a newcomer
 - Make a pull request to add new features/make quality-of-life improvements/fix bugs.
 
 <a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">

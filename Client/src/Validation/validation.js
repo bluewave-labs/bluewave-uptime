@@ -1,6 +1,8 @@
 import joi from "joi";
 import dayjs from "dayjs";
 
+const THRESHOLD_COMMON_BASE_MSG = "Threshold must be a number.";
+
 const nameSchema = joi
 	.string()
 	.max(50)
@@ -16,25 +18,37 @@ const passwordSchema = joi
 	.string()
 	.trim()
 	.min(8)
+	.custom((value, helpers) => {
+		if (!/[A-Z]/.test(value)) {
+			return helpers.error("uppercase");
+		}
+		return value;
+	})
+	.custom((value, helpers) => {
+		if (!/[a-z]/.test(value)) {
+			return helpers.error("lowercase");
+		}
+		return value;
+	})
+	.custom((value, helpers) => {
+		if (!/\d/.test(value)) {
+			return helpers.error("number");
+		}
+		return value;
+	})
+	.custom((value, helpers) => {
+		if (!/[!?@#$%^&*()\-_=+[\]{};:'",.<>~`|\\/]/.test(value)) {
+			return helpers.error("special");
+		}
+		return value;
+	})
 	.messages({
 		"string.empty": "Password is required",
 		"string.min": "Password must be at least 8 characters long",
-	})
-	.custom((value, helpers) => {
-		if (!/[A-Z]/.test(value)) {
-			return helpers.message("Password must contain at least one uppercase letter");
-		}
-		if (!/[a-z]/.test(value)) {
-			return helpers.message("Password must contain at least one lowercase letter");
-		}
-		if (!/\d/.test(value)) {
-			return helpers.message("Password must contain at least one number");
-		}
-		if (!/[!@#$%^&*]/.test(value)) {
-			return helpers.message("Password must contain at least one special character");
-		}
-
-		return value;
+		uppercase: "Password must contain at least one uppercase letter",
+		lowercase: "Password must contain at least one lowercase letter",
+		number: "Password must contain at least one number",
+		special: "Password must contain at least one special character",
 	});
 
 const credentials = joi.object({
@@ -60,15 +74,16 @@ const credentials = joi.object({
 	confirm: joi
 		.string()
 		.trim()
-		.messages({
-			"string.empty": "Password confirmation is required",
-		})
 		.custom((value, helpers) => {
 			const { password } = helpers.prefs.context;
 			if (value !== password) {
-				return helpers.message("Passwords do not match");
+				return helpers.error("different");
 			}
 			return value;
+		})
+		.messages({
+			"string.empty": "This field can't be empty",
+			different: "Passwords do not match",
 		}),
 	role: joi.array(),
 	teamId: joi.string().allow("").optional(),
@@ -160,11 +175,49 @@ const advancedSettingsValidation = joi.object({
 	pagespeedApiKey: joi.string().allow(""),
 });
 
+const infrastructureMonitorValidation = joi.object({
+	url: joi.string().uri({ allowRelative: true }).trim().messages({
+		"string.empty": "This field is required.",
+		"string.uri": "The URL you provided is not valid.",
+	}),
+	name: joi.string().trim().max(50).allow("").messages({
+		"string.max": "This field should not exceed the 50 characters limit.",
+	}),
+	secret: joi.string().trim().messages({ "string.empty": "This field is required." }),
+	usage_cpu: joi.number().messages({
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+	}),
+	cpu: joi.boolean(),
+	memory: joi.boolean(),
+	disk: joi.boolean(),
+	temperature: joi.boolean(),
+	usage_memory: joi.number().messages({
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+	}),
+	usage_disk: joi.number().messages({
+		"number.base": THRESHOLD_COMMON_BASE_MSG,
+	}),
+	usage_temperature: joi.number().messages({
+		"number.base": "Temperature must be a number.",
+	}),
+	// usage_system: joi.number().messages({
+	// 	"number.base": "System load must be a number.",
+	// }),
+	// usage_swap: joi.number().messages({
+	// 	"number.base": "Swap used must be a number.",
+	// }),
+	interval: joi.number().messages({
+		"number.base": "Frequency must be a number.",
+		"any.required": "Frequency is required.",
+	}),
+});
+
 export {
 	credentials,
 	imageValidation,
 	monitorValidation,
 	settingsValidation,
 	maintenanceWindowValidation,
-	advancedSettingsValidation
+	advancedSettingsValidation,
+	infrastructureMonitorValidation,
 };

@@ -37,9 +37,9 @@ const Checkbox = ({
 	onChange,
 	isDisabled,
 }) => {
+	/* TODO move sizes to theme */
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
-
 	return (
 		<FormControlLabel
 			className="checkbox-wrapper"
@@ -54,9 +54,10 @@ const Checkbox = ({
 						"aria-label": "controlled checkbox",
 						id: id,
 					}}
-					sx={{
+					sx={{						
 						"&:hover": { backgroundColor: "transparent" },
 						"& svg": { width: sizes[size], height: sizes[size] },
+						alignSelf: "flex-start",
 					}}
 				/>
 			}
@@ -65,7 +66,6 @@ const Checkbox = ({
 			sx={{
 				borderRadius: theme.shape.borderRadius,
 				p: theme.spacing(2.5),
-				m: theme.spacing(-2.5),
 				"& .MuiButtonBase-root": {
 					width: theme.spacing(10),
 					p: 0,
@@ -78,6 +78,10 @@ const Checkbox = ({
 					fontSize: 13,
 					color: theme.palette.text.tertiary,
 				},
+				".MuiFormControlLabel-label.Mui-disabled": {
+					color: theme.palette.text.tertiary,
+					opacity: 0.25,
+				},
 			}}
 		/>
 	);
@@ -85,7 +89,7 @@ const Checkbox = ({
 
 Checkbox.propTypes = {
 	id: PropTypes.string.isRequired,
-	label: PropTypes.string.isRequired,
+	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
 	size: PropTypes.oneOf(["small", "medium", "large"]),
 	isChecked: PropTypes.bool.isRequired,
 	value: PropTypes.string,

@@ -19,7 +19,7 @@ import jwt from "jsonwebtoken";
 import { getTokenFromHeaders } from "../utils/utils.js";
 import logger from "../utils/logger.js";
 import { handleError, handleValidationError } from "./controllerUtils.js";
-import dns from "dns";
+import axios from "axios";
 
 const SERVICE_NAME = "monitorController";
 
@@ -42,6 +42,28 @@ const getAllMonitors = async (req, res, next) => {
 		});
 	} catch (error) {
 		next(handleError(error, SERVICE_NAME, "getAllMonitors"));
+	}
+};
+
+/**
+ * Returns all monitors with uptime stats for 1,7,30, and 90 days
+ * @async
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @param {function} next
+ * @returns {Promise<Express.Response>}
+ * @throws {Error}
+ */
+const getAllMonitorsWithUptimeStats = async (req, res, next) => {
+	try {
+		const monitors = await req.db.getAllMonitorsWithUptimeStats();
+		return res.status(200).json({
+			success: true,
+			msg: successMessages.MONITOR_GET_ALL,
+			data: monitors,
+		});
+	} catch (error) {
+		next(handleError(error, SERVICE_NAME, "getAllMonitorsWithUptimeStats"));
 	}
 };
 
@@ -266,18 +288,16 @@ const checkEndpointResolution = async (req, res, next) => {
 	}
 
 	try {
-		let { monitorURL } = req.query;
-		monitorURL = new URL(monitorURL);
-		await new Promise((resolve, reject) => {
-			dns.resolve(monitorURL.hostname, (error) => {
-				if (error) {
-					reject(error);
-				}
-				resolve();
-			});
+		const { monitorURL } = req.query;
+		const parsedUrl = new URL(monitorURL);
+		const response = await axios.get(parsedUrl, {
+			timeout: 5000,
+			validateStatus: () => true,
 		});
 		return res.status(200).json({
 			success: true,
+			code: response.status,
+			statusText: response.statusText,
 			msg: `URL resolved successfully`,
 		});
 	} catch (error) {
@@ -495,6 +515,7 @@ const addDemoMonitors = async (req, res, next) => {
 
 export {
 	getAllMonitors,
+	getAllMonitorsWithUptimeStats,
 	getMonitorStatsById,
 	getMonitorCertificate,
 	getMonitorById,
