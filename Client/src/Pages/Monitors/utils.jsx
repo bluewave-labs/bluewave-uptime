@@ -31,7 +31,7 @@ const useUtils = () => {
 	const statusStyles = {
 		up: {
 			backgroundColor: theme.palette.success.dark,
-			background: `linear-gradient(340deg, ${theme.palette.success.light} -60%, ${theme.palette.success.dark} 35%)`,
+			background: `linear-gradient(340deg, ${theme.palette.success.dark} -60%, ${theme.palette.success.light} 35%)`,
 			borderColor: theme.palette.success.light,
 			"& h2": { color: theme.palette.success.main },
 		},
