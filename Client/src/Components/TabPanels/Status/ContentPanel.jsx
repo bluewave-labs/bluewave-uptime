@@ -40,6 +40,17 @@ const ContentPanel = () => {
 		}
 	};
 
+	const handleAddNew = () => {
+		let arr = localData.monitors;
+		arr.push({ id: "" + Math.random() });
+		setLocalData({ ...localData, monitors: arr });
+	}
+
+	const removeItem = (id) =>{
+		const currentMonitors = localData.monitors.filter(m => m.id !=id)
+		setLocalData({...localData, monitors: currentMonitors})
+	}
+
 	const handleBlur = (event) => {
 		event.preventDefault();
 		const { value, id } = event.target;
@@ -82,9 +93,9 @@ const ContentPanel = () => {
 							</Typography>
 						</Stack>
 					</Box>
-					<Box 
-                        className="status-contents-server-list"	
-                    		sx={{
+					<Box
+						className="status-contents-server-list"
+						sx={{
 							height: "fit-content",
 							border: "solid",
 							borderRadius: theme.shape.borderRadius,
@@ -94,22 +105,44 @@ const ContentPanel = () => {
 							"&:hover": {
 								borderColor: theme.palette.primary.main,
 								backgroundColor: "hsl(215, 87%, 51%, 0.05)",
-							}
-                        }}>
-						<Stack
-							direction="row"
-							justifyContent="space-around"
-						>
-							<Typography
-								component="p"
-								alignSelf={"center"}
+							},
+						}}
+					>
+						<Box>
+							<Stack
+								direction="row"
+								justifyContent="space-around"
 							>
-								{" "}
-								Servers list{" "}
-							</Typography>
-							<Button>Add New</Button>                            
-						</Stack>
-						<Server id="id"/>
+								<Typography
+									component="p"
+									alignSelf={"center"}
+								>
+									{" "}
+									Servers list{" "}
+								</Typography>
+								<Button onClick={handleAddNew}>Add New</Button>
+							</Stack>
+							{localData.monitors.length > 0 && (
+								<Stack
+									direction="column"
+									alignItems="center"
+									gap={theme.spacing(6)}
+									sx={{ml: theme.spacing(4),
+										mr: theme.spacing(8),
+										mb: theme.spacing(8)
+									}}
+								>
+									{localData.monitors.map((m, idx) => (
+										<Server
+											key={idx}
+											id={m.id ?? "" + Math.random()}
+											removeItem={removeItem}
+											value={m.url}
+										/>
+									))}
+								</Stack>
+							)}
+						</Box>
 					</Box>
 				</ConfigBox>
 
