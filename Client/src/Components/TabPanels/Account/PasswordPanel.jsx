@@ -10,6 +10,13 @@ import Alert from "../../Alert";
 import { update } from "../../../Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createToast } from "../../../Utils/toastUtils";
+import { getTouchedFieldErrors } from "../../../Validation/error";
+
+const defaultPasswordsState = {
+	password: "",
+	newPassword: "",
+	confirm: "",
+};
 
 /**
  * PasswordPanel component manages the form for editing password.
@@ -30,35 +37,40 @@ const PasswordPanel = () => {
 		"edit-confirm-password": "confirm",
 	};
 
-	const [localData, setLocalData] = useState({
-		password: "",
-		newPassword: "",
-		confirm: "",
+	const [localData, setLocalData] = useState(defaultPasswordsState);
+	const [errors, setErrors] = useState(defaultPasswordsState);
+	const [touchedFields, setTouchedFields] = useState({
+		password: false,
+		newPassword: false,
+		confirm: false,
 	});
-	const [errors, setErrors] = useState({});
+
 	const handleChange = (event) => {
 		const { value, id } = event.target;
 		const name = idToName[id];
-		setLocalData((prev) => ({
-			...prev,
+
+		const updatedData = {
+			...localData,
 			[name]: value,
-		}));
+		};
+		const updatedTouchedFields = {
+			...touchedFields,
+			[name]: true,
+		};
 
 		const validation = credentials.validate(
-			{ [name]: value },
-			{ abortEarly: false, context: { password: localData.newPassword } }
+			{ ...updatedData },
+			{ abortEarly: false, context: { password: updatedData.newPassword } }
 		);
 
-		setErrors((prev) => {
-			const updatedErrors = { ...prev };
+		const updatedErrors = getTouchedFieldErrors(validation, updatedTouchedFields);
 
-			if (validation.error) {
-				updatedErrors[name] = validation.error.details[0].message;
-			} else {
-				delete updatedErrors[name];
-			}
-			return updatedErrors;
-		});
+		if (!touchedFields[name]) {
+			setTouchedFields(updatedTouchedFields);
+		}
+
+		setLocalData(updatedData);
+		setErrors(updatedErrors);
 	};
 
 	const handleSubmit = async (event) => {
@@ -220,8 +232,8 @@ const PasswordPanel = () => {
 						loading={isLoading}
 						loadingIndicator="Saving..."
 						disabled={
-							Object.keys(errors).length !== 0 ||
-							Object.values(localData).filter((value) => value !== "").length === 0
+							Object.keys(errors).length > 0 ||
+							Object.values(localData).filter((value) => value === "").length > 0
 						}
 						sx={{
 							px: theme.spacing(12),
