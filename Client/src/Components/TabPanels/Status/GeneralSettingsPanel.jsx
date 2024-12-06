@@ -270,7 +270,7 @@ const GeneralSettingsPanel = () => {
 						color="primary"
 						onClick={handleSubmit}
 					>
-						Next
+						Save
 					</Button>
 				</Stack>
 			</Stack>
