@@ -11,9 +11,12 @@
 <p align="center"><strong>An open source server monitoring application</strong></p>
 
 ![Dashboard-dark](https://github.com/user-attachments/assets/db875138-164f-453c-a75e-889f88747578)
-(yes, we have a light theme as well, but this looks better on readme.md)
 
-Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time. Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status.
+Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time. 
+
+Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status.
+
+We **love** what we are building here, and learn a few things about Reactjs, Nodejs, MongoDB and Docker while building Checkmate. **If you would like to support us, please consider giving it a ⭐, think about contributing or providing feedback.** Please note that we do not operate a monetary donation program, make money by deploying servers, or run a SaaS business.
 
 ## 📦 Demo
 
@@ -46,11 +49,11 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 **Short term roadmap:**
 
-- DNS monitoring
-- SSL monitoring
 - Status pages
 - Better notification options
 - More configuration options
+- DNS monitoring
+- SSL monitoring
 
 ## 🏗️ Tech stack
 
@@ -61,7 +64,7 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 ## 🤝 Contributing
 
-We are known for our great relationship with outside contributors. Checkmate is a young project, but we already have 600+ stars and 30+ contributors from all over the world. The last thing you should do here is to be shy. 
+We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 600+ stars and attracted 30+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
 
 Here's how you can contribute:
 
