@@ -50,12 +50,14 @@ const ConfigureInfrastructureMonitor = () => {
 	).length;
 
 	useEffect(() => {
-		dispatch(getInfrastructureMonitorById({ authToken, monitorId }));
+		if (!infrastructureMonitor) {
+			dispatch(getInfrastructureMonitorById({ authToken, monitorId }));
+		}
 	}, [monitorId, authToken]);
 
 	useEffect(() => {
-		if (!success) navigate("/not-found", { replace: true });
-	}, [success, navigate]);
+		if (!isLoading && success === false) navigate("/not-found", { replace: true });
+	}, [success, isLoading, navigate]);
 
 	useEffect(() => {
 		setInfrastructureMonitor(selectedInfraMonitor);
@@ -479,7 +481,7 @@ const ConfigureInfrastructureMonitor = () => {
 							<Select
 								id="interval"
 								label="Check frequency"
-								value={infrastructureMonitor.interval || 15}
+								value={infrastructureMonitor.interval / MS_PER_MINUTE || 0.25}
 								onChange={(e) => handleChange(e, "interval")}
 								onBlur={(e) => handleBlur(e, "interval")}
 								items={frequencies}
