@@ -246,6 +246,7 @@ const infrastructureMonitorsSlice = createSlice({
 
 			.addCase(getInfrastructureMonitorsByTeamId.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(getInfrastructureMonitorsByTeamId.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -265,6 +266,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(createInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(createInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -283,6 +285,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(checkInfrastructureEndpointResolution.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(checkInfrastructureEndpointResolution.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -301,6 +304,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(getInfrastructureMonitorById.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(getInfrastructureMonitorById.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -320,6 +324,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(updateInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(updateInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -339,6 +344,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(deleteInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(deleteInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -357,6 +363,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(deleteInfrastructureMonitorChecksByTeamId.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(deleteInfrastructureMonitorChecksByTeamId.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -375,6 +382,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(pauseInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(pauseInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -393,6 +401,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(deleteAllInfrastructureMonitors.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(deleteAllInfrastructureMonitors.fulfilled, (state, action) => {
 				state.isLoading = false;
