@@ -149,10 +149,10 @@ export const deleteInfrastructureMonitor = createAsyncThunk(
 	"infrastructureMonitors/deleteMonitor",
 	async (data, thunkApi) => {
 		try {
-			const { authToken, monitor } = data;
+			const { authToken, monitorId } = data;
 			const res = await networkService.deleteMonitorById({
 				authToken: authToken,
-				monitorId: monitor._id,
+				monitorId: monitorId,
 			});
 			return res.data;
 		} catch (error) {
