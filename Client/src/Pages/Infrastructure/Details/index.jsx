@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { Stack, Box, Typography } from "@mui/material";
+import { Stack, Box, Typography, Tooltip, Button } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import CustomGauge from "../../../Components/Charts/CustomGauge";
 import AreaChart from "../../../Components/Charts/AreaChart";
@@ -12,7 +12,7 @@ import useUtils from "../../Monitors/utils";
 import { useNavigate } from "react-router-dom";
 import Empty from "./empty";
 import { logger } from "../../../Utils/Logger";
-import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
+import { formatDurationRounded } from "../../../Utils/timeUtils";
 import {
 	TzTick,
 	PercentTick,
@@ -20,6 +20,7 @@ import {
 	TemperatureTooltip,
 } from "../../../Components/Charts/Utils/chartUtils";
 import PropTypes from "prop-types";
+import SettingsIcon from "../../../assets/icons/settings-bold.svg?react";
 
 const BASE_BOX_PADDING_VERTICAL = 4;
 const BASE_BOX_PADDING_HORIZONTAL = 8;
@@ -182,7 +183,7 @@ GaugeBox.propTypes = {
  * Renders the infrastructure details page
  * @returns {React.ReactElement} Infrastructure details page component
  */
-const InfrastructureDetails = () => {
+const InfrastructureDetails = ({ isAdmin }) => {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const { monitorId } = useParams();
@@ -193,7 +194,7 @@ const InfrastructureDetails = () => {
 	const [monitor, setMonitor] = useState(null);
 	const { authToken } = useSelector((state) => state.auth);
 	const [dateRange, setDateRange] = useState("all");
-	const { statusColor, determineState } = useUtils();
+	const { statusColor, statusMsg, determineState } = useUtils();
 	// These calculations are needed because ResponsiveContainer
 	// doesn't take padding of parent/siblings into account
 	// when calculating height.
@@ -482,26 +483,90 @@ const InfrastructureDetails = () => {
 					<Stack
 						direction="row"
 						gap={theme.spacing(8)}
+						justifyContent="space-between"
+						alignItems="flex-start"
 					>
 						<Box>
-							<PulseDot color={statusColor[determineState(monitor)]} />
+							<Typography
+								component="h1"
+								variant="h1"
+							>
+								{monitor.name}
+							</Typography>
+							<Stack
+								direction="row"
+								alignItems="center"
+								height="fit-content"
+								gap={theme.spacing(2)}
+							>
+								<Tooltip
+									title={statusMsg[determineState(monitor)]}
+									disableInteractive
+									slotProps={{
+										popper: {
+											modifiers: [
+												{
+													name: "offset",
+													options: {
+														offset: [0, -8],
+													},
+												},
+											],
+										},
+									}}
+								>
+									<Box>
+										<PulseDot color={statusColor[determineState(monitor)]} />
+									</Box>
+								</Tooltip>
+								<Typography
+									component="h2"
+									variant="h2"
+								>
+									{monitor.url?.replace(/^https?:\/\//, "") || "..."}
+								</Typography>
+								<Typography
+									position="relative"
+									variant="body2"
+									mt={theme.spacing(1)}
+									ml={theme.spacing(6)}
+									sx={{
+										"&:before": {
+											position: "absolute",
+											content: `""`,
+											width: 4,
+											height: 4,
+											borderRadius: "50%",
+											backgroundColor: theme.palette.text.tertiary,
+											opacity: 0.8,
+											left: -9,
+											top: "50%",
+											transform: "translateY(-50%)",
+										},
+									}}
+								>
+									Checking every {formatDurationRounded(monitor?.interval)}.
+								</Typography>
+							</Stack>
 						</Box>
-						<Typography
-							alignSelf="end"
-							component="h1"
-							variant="h1"
-						>
-							{monitor.name}
-						</Typography>
-						<Typography alignSelf="end">{monitor.url || "..."}</Typography>
-						<Box sx={{ flexGrow: 1 }} />
-						<Typography alignSelf="end">
-							Checking every {formatDurationRounded(monitor?.interval)}
-						</Typography>
-						<Typography alignSelf="end">
-							Last checked {formatDurationSplit(monitor?.lastChecked).time}{" "}
-							{formatDurationSplit(monitor?.lastChecked).format} ago
-						</Typography>
+						{isAdmin && (
+							<Button
+								variant="contained"
+								color="secondary"
+								onClick={() => navigate(`/monitors`)}
+								sx={{
+									px: theme.spacing(5),
+									"& svg": {
+										mr: theme.spacing(3),
+										"& path": {
+											stroke: theme.palette.text.tertiary,
+										},
+									},
+								}}
+							>
+								<SettingsIcon /> Configure
+							</Button>
+						)}
 					</Stack>
 					<Stack
 						direction="row"
