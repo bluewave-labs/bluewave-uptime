@@ -305,6 +305,7 @@ const infrastructureMonitorsSlice = createSlice({
 			.addCase(getInfrastructureMonitorById.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.success = action.payload.success;
+				state.msg = action.payload.msg;
 				state.selectedInfraMonitor = action.payload.data;
 			})
 			.addCase(getInfrastructureMonitorById.rejected, (state, action) => {

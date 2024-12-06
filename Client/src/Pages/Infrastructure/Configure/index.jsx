@@ -32,7 +32,7 @@ const ConfigureInfrastructureMonitor = () => {
 	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk", "temperature"];
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { monitorId } = useParams();
-	const { isLoading, selectedInfraMonitor, msg } = useSelector(
+	const { isLoading, selectedInfraMonitor, success } = useSelector(
 		(state) => state.infrastructureMonitors
 	);
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState(null);
@@ -54,8 +54,8 @@ const ConfigureInfrastructureMonitor = () => {
 	}, [monitorId, authToken]);
 
 	useEffect(() => {
-		if (msg) navigate("/not-found", { replace: true });
-	}, [msg, navigate]);
+		if (!success) navigate("/not-found", { replace: true });
+	}, [success, navigate]);
 
 	useEffect(() => {
 		setInfrastructureMonitor(selectedInfraMonitor);
