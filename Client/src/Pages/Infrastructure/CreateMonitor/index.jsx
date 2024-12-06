@@ -210,8 +210,8 @@ const CreateInfrastructureMonitor = () => {
 		<Box className="create-infrastructure-monitor">
 			<Breadcrumbs
 				list={[
-					{ name: "Infrastructure monitors", path: "infrastructure" },
-					{ name: "create", path: `infrastructure/create` },
+					{ name: "Infrastructure monitors", path: "/infrastructure" },
+					{ name: "create", path: `/infrastructure/create` },
 				]}
 			/>
 			<Stack
