@@ -504,7 +504,7 @@ const ConfigureInfrastructureMonitor = () => {
 							onClick={handleCreateInfrastructureMonitor}
 							loading={isLoading}
 						>
-							Create infrastructure monitor
+							Save
 						</LoadingButton>
 					</Stack>
 				</Stack>
