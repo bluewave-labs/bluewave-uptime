@@ -30,7 +30,6 @@ const TeamPanel = () => {
 
 	const theme = useTheme();
 
-	// Define the constant for consistent gap
 	const SPACING_GAP = theme.spacing(12);
 
 	const { authToken, user } = useSelector((state) => state.auth);
@@ -278,7 +277,7 @@ const TeamPanel = () => {
 				component="form"
 				noValidate
 				spellCheck="false"
-				gap={SPACING_GAP} // Added a constant Spacing gap
+				gap={SPACING_GAP} 
 			>
 				<Typography component="h1">Team members</Typography>
 				<Stack
@@ -342,7 +341,7 @@ const TeamPanel = () => {
 				theme={theme}
 			>
 				<TextInput
-					marginBottom={SPACING_GAP}  // Applied SPACING_GAP for consistent spacing
+					marginBottom={SPACING_GAP} 
 					type="email"
 					id="input-team-member"
 					placeholder="Email"

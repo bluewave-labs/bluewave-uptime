@@ -21,9 +21,8 @@ const PasswordPanel = () => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
 
-	// Define the constant for consistent gap
-	const SPACING_GAP = theme.spacing(12); // EDITED: Added a constant for gap size.
 
+	const SPACING_GAP = theme.spacing(12); 
 
 	//redux state
 	const { authToken, isLoading } = useSelector((state) => state.auth);
@@ -131,7 +130,7 @@ const PasswordPanel = () => {
 					direction="row"
 					justifyContent={"flex-start"}
 					alignItems={"center"}
-					gap={SPACING_GAP} // Replaced gap with SPACING_GAP constant
+					gap={SPACING_GAP} 
 					flexWrap={"wrap"}
 				>
 					<Typography
@@ -156,7 +155,7 @@ const PasswordPanel = () => {
 				<Stack
 					direction="row"
 					alignItems={"center"}
-					gap={SPACING_GAP} //Replaced gap with SPACING_GAP constant
+					gap={SPACING_GAP} 
 					flexWrap={"wrap"}
 				>
 					<Typography
@@ -182,7 +181,7 @@ const PasswordPanel = () => {
 				<Stack
 					direction="row"
 					alignItems={"center"}
-					gap={SPACING_GAP} //Replaced gap with SPACING_GAP constant
+					gap={SPACING_GAP} 
 					flexWrap={"wrap"}
 				>
 					<Typography
