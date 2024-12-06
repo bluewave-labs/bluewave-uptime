@@ -9,6 +9,8 @@ import {
 	checkInfrastructureEndpointResolution,
 	getInfrastructureMonitorById,
 	pauseInfrastructureMonitor,
+	deleteInfrastructureMonitor,
+	CurrentAction,
 } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
@@ -26,6 +28,7 @@ import useUtils from "../../Monitors/utils";
 import PulseDot from "../../../Components/Animated/PulseDot";
 import PauseIcon from "../../../assets/icons/pause-icon.svg?react";
 import ResumeIcon from "../../../assets/icons/resume-icon.svg?react";
+import Dialog from "../../../Components/Dialog";
 
 const ConfigureInfrastructureMonitor = () => {
 	const MS_PER_MINUTE = 60000;
@@ -33,10 +36,11 @@ const ConfigureInfrastructureMonitor = () => {
 	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk", "temperature"];
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { monitorId } = useParams();
-	const { isLoading, selectedInfraMonitor, success } = useSelector(
+	const { isLoading, selectedInfraMonitor, success, currentAction } = useSelector(
 		(state) => state.infrastructureMonitors
 	);
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState(null);
+	const [isOpen, setIsOpen] = useState(false);
 	const { statusColor, statusMsg, determineState } = useUtils();
 	const [errors, setErrors] = useState({});
 	const dispatch = useDispatch();
@@ -54,18 +58,33 @@ const ConfigureInfrastructureMonitor = () => {
 		if (!infrastructureMonitor) {
 			dispatch(getInfrastructureMonitorById({ authToken, monitorId }));
 		}
-	}, [monitorId, authToken]);
+	}, [monitorId, authToken, dispatch]);
 
 	useEffect(() => {
-		if (!isLoading && success === false) navigate("/not-found", { replace: true });
+		if (currentAction === CurrentAction.GET && !isLoading && success === false)
+			navigate("/not-found", { replace: true });
 	}, [success, isLoading, navigate]);
 
 	useEffect(() => {
 		setInfrastructureMonitor(selectedInfraMonitor);
 	}, [selectedInfraMonitor]);
 
+	useEffect(() => {
+		if (currentAction === CurrentAction.DELETE && !isLoading) {
+			if (success) {
+				navigate("/infrastructure");
+			} else {
+				createToast({ body: "Failed to delete monitor." });
+			}
+		}
+	}, [currentAction, isLoading, success, navigate]);
+
 	const handlePause = () => {
 		dispatch(pauseInfrastructureMonitor({ authToken, monitorId }));
+	};
+
+	const handleRemove = () => {
+		dispatch(deleteInfrastructureMonitor({ authToken, monitorId }));
 	};
 
 	const handleCustomAlertCheckChange = (event) => {
@@ -508,6 +527,17 @@ const ConfigureInfrastructureMonitor = () => {
 						</LoadingButton>
 					</Stack>
 				</Stack>
+
+				<Dialog
+					open={isOpen}
+					theme={theme}
+					title={"Do you really want to delete this infrastructure monitor?"}
+					description={"Once deleted, this monitor cannot be retrieved."}
+					onCancel={() => setIsOpen(false)}
+					confirmationButtonLabel={"Delete"}
+					onConfirm={handleRemove}
+					isLoading={isLoading}
+				/>
 			</Box>
 		)
 	);
