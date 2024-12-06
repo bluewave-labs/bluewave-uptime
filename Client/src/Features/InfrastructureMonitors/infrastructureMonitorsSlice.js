@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import { networkService } from "../../main";
 
-export const CurrentAction = Object.freeze({
+export const FormAction = Object.freeze({
 	NONE: "none",
 	DELETE: "delete",
 	UPDATE: "update",
@@ -15,7 +15,7 @@ const initialState = {
 	success: null,
 	msg: null,
 	selectedInfraMonitor: null,
-	currentAction: CurrentAction.NONE,
+	formAction: FormAction.NONE,
 };
 
 export const createInfrastructureMonitor = createAsyncThunk(
@@ -246,6 +246,9 @@ const infrastructureMonitorsSlice = createSlice({
 			state.success = null;
 			state.msg = null;
 		},
+		resetInfrastructureMonitorFormAction: (state) => {
+			state.formAction = initialState.formAction;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -312,7 +315,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// Get Monitor By Id
 			// *****************************************************
 			.addCase(getInfrastructureMonitorById.pending, (state) => {
-				state.currentAction = CurrentAction.GET;
+				state.formAction = FormAction.GET;
 				state.isLoading = true;
 				state.success = false;
 			})
@@ -353,7 +356,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// Delete Monitor
 			// *****************************************************
 			.addCase(deleteInfrastructureMonitor.pending, (state) => {
-				state.currentAction = CurrentAction.DELETE;
+				state.formAction = FormAction.DELETE;
 				state.isLoading = true;
 				state.success = false;
 			})
@@ -428,7 +431,7 @@ const infrastructureMonitorsSlice = createSlice({
 	},
 });
 
-export const { setInfrastructureMonitors, clearInfrastructureMonitorState } =
+export const { clearInfrastructureMonitorState, resetInfrastructureMonitorFormAction } =
 	infrastructureMonitorsSlice.actions;
 
 export default infrastructureMonitorsSlice.reducer;

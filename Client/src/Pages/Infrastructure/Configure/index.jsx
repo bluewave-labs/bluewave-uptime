@@ -8,7 +8,7 @@ import {
 	getInfrastructureMonitorById,
 	pauseInfrastructureMonitor,
 	deleteInfrastructureMonitor,
-	CurrentAction,
+	FormAction,
 } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
@@ -33,7 +33,7 @@ import { HARDWARE_MONITOR_TYPES, THRESHOLD_FIELD_PREFIX } from "../constants";
 const ConfigureInfrastructureMonitor = () => {
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { monitorId } = useParams();
-	const { isLoading, selectedInfraMonitor, success, currentAction } = useSelector(
+	const { isLoading, selectedInfraMonitor, success, formAction } = useSelector(
 		(state) => state.infrastructureMonitors
 	);
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState(null);
@@ -58,23 +58,25 @@ const ConfigureInfrastructureMonitor = () => {
 	}, [monitorId, authToken, dispatch]);
 
 	useEffect(() => {
-		if (currentAction === CurrentAction.GET && !isLoading && success === false)
+		if (formAction === FormAction.GET && !isLoading && success === false)
 			navigate("/not-found", { replace: true });
 	}, [success, isLoading, navigate]);
 
 	useEffect(() => {
-		setInfrastructureMonitor(selectedInfraMonitor);
+		if (selectedInfraMonitor) {
+			setInfrastructureMonitor(selectedInfraMonitor);
+		}
 	}, [selectedInfraMonitor]);
 
 	useEffect(() => {
-		if (currentAction === CurrentAction.DELETE && !isLoading) {
+		if (formAction === FormAction.DELETE && !isLoading) {
 			if (success) {
-				navigate("/infrastructure");
+				navigate("/infrastructure", { replace: true });
 			} else {
 				createToast({ body: "Failed to delete monitor." });
 			}
 		}
-	}, [currentAction, isLoading, success, navigate]);
+	}, [formAction, isLoading, success, navigate]);
 
 	const handlePause = () => {
 		dispatch(pauseInfrastructureMonitor({ authToken, monitorId }));
