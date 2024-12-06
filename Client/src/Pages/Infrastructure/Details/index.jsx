@@ -553,7 +553,7 @@ const InfrastructureDetails = ({ isAdmin }) => {
 							<Button
 								variant="contained"
 								color="secondary"
-								onClick={() => navigate(`/monitors`)}
+								onClick={() => navigate(`/infrastructure/configure/${monitorId}`)}
 								sx={{
 									px: theme.spacing(5),
 									"& svg": {
