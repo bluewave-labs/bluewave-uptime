@@ -1,12 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import { networkService } from "../../main";
+
+export const CurrentAction = Object.freeze({
+	NONE: "none",
+	DELETE: "delete",
+	UPDATE: "update",
+	GET: "get",
+});
+
 const initialState = {
 	isLoading: false,
 	monitorsSummary: [],
 	success: null,
 	msg: null,
 	selectedInfraMonitor: null,
+	currentAction: CurrentAction.NONE,
 };
 
 export const createInfrastructureMonitor = createAsyncThunk(
@@ -303,6 +312,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// Get Monitor By Id
 			// *****************************************************
 			.addCase(getInfrastructureMonitorById.pending, (state) => {
+				state.currentAction = CurrentAction.GET;
 				state.isLoading = true;
 				state.success = false;
 			})
@@ -343,6 +353,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// Delete Monitor
 			// *****************************************************
 			.addCase(deleteInfrastructureMonitor.pending, (state) => {
+				state.currentAction = CurrentAction.DELETE;
 				state.isLoading = true;
 				state.success = false;
 			})
