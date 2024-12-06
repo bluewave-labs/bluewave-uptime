@@ -41,6 +41,8 @@ import { logger } from "./Utils/Logger"; // Import the logger
 import { networkService } from "./main";
 import { Infrastructure } from "./Pages/Infrastructure";
 import InfrastructureDetails from "./Pages/Infrastructure/Details";
+import ConfigureInfrastructureMonitor from "./Pages/Infrastructure/Configure";
+
 function App() {
 	const AdminCheckedRegister = withAdminCheck(Register);
 	const MonitorsWithAdminProp = withAdminProp(Monitors);
@@ -137,6 +139,10 @@ function App() {
 					<Route
 						path="infrastructure/:monitorId"
 						element={<ProtectedRoute Component={InfrastructureDetailsWithAdminProp} />}
+					/>
+					<Route
+						path="infrastructure/configure/:monitorId"
+						element={<ProtectedRoute Component={ConfigureInfrastructureMonitor} />}
 					/>
 
 					<Route
