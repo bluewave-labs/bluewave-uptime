@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
 import { infrastructureMonitorValidation } from "../../../Validation/validation";
@@ -21,6 +21,10 @@ import Breadcrumbs from "../../../Components/Breadcrumbs";
 import { buildErrors, hasValidationErrors } from "../../../Validation/error";
 import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 import { CustomThreshold } from "../CreateMonitor/CustomThreshold";
+import useUtils from "../../Monitors/utils";
+import PulseDot from "../../../Components/Animated/PulseDot";
+import PauseIcon from "../../../assets/icons/pause-icon.svg?react";
+import ResumeIcon from "../../../assets/icons/resume-icon.svg?react";
 
 const ConfigureInfrastructureMonitor = () => {
 	const MS_PER_MINUTE = 60000;
@@ -32,6 +36,7 @@ const ConfigureInfrastructureMonitor = () => {
 		(state) => state.infrastructureMonitors
 	);
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState(null);
+	const { statusColor, statusMsg, determineState } = useUtils();
 	const [errors, setErrors] = useState({});
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -217,32 +222,130 @@ const ConfigureInfrastructureMonitor = () => {
 				/>
 				<Stack
 					component="form"
-					className="create-infrastructure-monitor-form"
 					onSubmit={handleCreateInfrastructureMonitor}
 					noValidate
 					spellCheck="false"
 					gap={theme.spacing(12)}
 					mt={theme.spacing(6)}
 				>
-					<Typography
-						component="h1"
-						variant="h1"
+					<Stack
+						direction="row"
+						gap={theme.spacing(2)}
 					>
-						<Typography
-							component="span"
-							fontSize="inherit"
+						<Box>
+							<Typography
+								component="h1"
+								variant="h1"
+							>
+								{infrastructureMonitor.name}
+							</Typography>
+							<Stack
+								direction="row"
+								alignItems="center"
+								height="fit-content"
+								gap={theme.spacing(2)}
+							>
+								<Tooltip
+									title={statusMsg[determineState(infrastructureMonitor)]}
+									disableInteractive
+									slotProps={{
+										popper: {
+											modifiers: [
+												{
+													name: "offset",
+													options: {
+														offset: [0, -8],
+													},
+												},
+											],
+										},
+									}}
+								>
+									<Box>
+										<PulseDot
+											color={statusColor[determineState(infrastructureMonitor)]}
+										/>
+									</Box>
+								</Tooltip>
+								<Typography
+									component="h2"
+									variant="h2"
+								>
+									{infrastructureMonitor.url?.replace(/^https?:\/\//, "") || "..."}
+								</Typography>
+								<Typography
+									position="relative"
+									variant="body2"
+									ml={theme.spacing(6)}
+									mt={theme.spacing(1)}
+									sx={{
+										"&:before": {
+											position: "absolute",
+											content: `""`,
+											width: 4,
+											height: 4,
+											borderRadius: "50%",
+											backgroundColor: theme.palette.text.tertiary,
+											opacity: 0.8,
+											left: -10,
+											top: "50%",
+											transform: "translateY(-50%)",
+										},
+									}}
+								>
+									Editting...
+								</Typography>
+							</Stack>
+						</Box>
+						<Box
+							sx={{
+								alignSelf: "flex-end",
+								ml: "auto",
+							}}
 						>
-							Create your{" "}
-						</Typography>
-						<Typography
-							component="span"
-							variant="h2"
-							fontSize="inherit"
-							fontWeight="inherit"
-						>
-							infrastructure monitor
-						</Typography>
-					</Typography>
+							<LoadingButton
+								variant="contained"
+								color="secondary"
+								loading={isLoading}
+								sx={{
+									pl: theme.spacing(4),
+									pr: theme.spacing(6),
+									mr: theme.spacing(6),
+									"& svg": {
+										mr: theme.spacing(2),
+										width: 22,
+										height: 22,
+										"& path": {
+											stroke: theme.palette.text.tertiary,
+											strokeWidth: 1.7,
+										},
+									},
+								}}
+								onClick={() => console.log("handle pause")}
+							>
+								{infrastructureMonitor?.isActive ? (
+									<>
+										<PauseIcon />
+										Pause
+									</>
+								) : (
+									<>
+										<ResumeIcon />
+										Resume
+									</>
+								)}
+							</LoadingButton>
+							<LoadingButton
+								loading={isLoading}
+								variant="contained"
+								color="error"
+								sx={{ px: theme.spacing(8) }}
+								onClick={() => setIsOpen(true)}
+							>
+								Remove
+							</LoadingButton>
+						</Box>
+					</Stack>
 					<ConfigBox>
 						<Box>
 							<Stack gap={theme.spacing(6)}>
