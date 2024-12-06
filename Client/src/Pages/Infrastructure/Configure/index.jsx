@@ -5,8 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { infrastructureMonitorValidation } from "../../../Validation/validation";
 import { parseDomainName } from "../../../Utils/monitorUtils";
 import {
-	createInfrastructureMonitor,
-	checkInfrastructureEndpointResolution,
 	getInfrastructureMonitorById,
 	pauseInfrastructureMonitor,
 	deleteInfrastructureMonitor,
@@ -21,7 +19,7 @@ import TextInput from "../../../Components/Inputs/TextInput";
 import Select from "../../../Components/Inputs/Select";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { buildErrors, hasValidationErrors } from "../../../Validation/error";
+import { buildErrors } from "../../../Validation/error";
 import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 import { CustomThreshold } from "../CreateMonitor/CustomThreshold";
 import useUtils from "../../Monitors/utils";
@@ -29,11 +27,10 @@ import PulseDot from "../../../Components/Animated/PulseDot";
 import PauseIcon from "../../../assets/icons/pause-icon.svg?react";
 import ResumeIcon from "../../../assets/icons/resume-icon.svg?react";
 import Dialog from "../../../Components/Dialog";
+import { MS_PER_MINUTE } from "../../../Utils/timeUtils";
+import { HARDWARE_MONITOR_TYPES, THRESHOLD_FIELD_PREFIX } from "../constants";
 
 const ConfigureInfrastructureMonitor = () => {
-	const MS_PER_MINUTE = 60000;
-	const THRESHOLD_FIELD_PREFIX = "usage_";
-	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk", "temperature"];
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { monitorId } = useParams();
 	const { isLoading, selectedInfraMonitor, success, currentAction } = useSelector(
@@ -168,63 +165,9 @@ const ConfigureInfrastructureMonitor = () => {
 		}
 	};
 
-	const generatePayload = (form) => {
-		let thresholds = {};
-		Object.keys(form)
-			.filter((k) => k.startsWith(THRESHOLD_FIELD_PREFIX))
-			.map((k) => {
-				if (form[k]) thresholds[k] = form[k] / 100;
-				delete form[k];
-				delete form[k.substring(THRESHOLD_FIELD_PREFIX.length)];
-			});
-
-		form = {
-			...form,
-			description: form.name,
-			teamId: user.teamId,
-			userId: user._id,
-			type: "hardware",
-			notifications: infrastructureMonitor.notifications,
-			thresholds,
-		};
-		return form;
-	};
-
-	const handleCreateInfrastructureMonitor = async (event) => {
-		event.preventDefault();
-		let form = {
-			...infrastructureMonitor,
-			name:
-				infrastructureMonitor.name === ""
-					? infrastructureMonitor.url
-					: infrastructureMonitor.name,
-			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
-		};
-
-		delete form.notifications;
-		if (hasValidationErrors(form, infrastructureMonitorValidation, setErrors)) {
-			return;
-		} else {
-			const checkEndpointAction = await dispatch(
-				checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
-			);
-			if (checkEndpointAction.meta.requestStatus === "rejected") {
-				createToast({
-					body: "The endpoint you entered doesn't resolve. Check the URL again.",
-				});
-				setErrors({ url: "The entered URL is not reachable." });
-				return;
-			}
-			const action = await dispatch(
-				createInfrastructureMonitor({ authToken, monitor: generatePayload(form) })
-			);
-			if (action.meta.requestStatus === "fulfilled") {
-				createToast({ body: "Infrastructure monitor created successfully!" });
-				navigate("/infrastructure");
-			} else {
-				createToast({ body: "Failed to create monitor." });
-			}
-		}
+	// TODO: add update infrastructure monitor functionalityf
+	const handleUpdateInfrastructureMonitor = () => {
+		console.log("Update infrastructure monitor...");
 	};
 
 	//select values
@@ -249,7 +192,6 @@ const ConfigureInfrastructureMonitor = () => {
 				/>
 				<Stack
 					component="form"
-					onSubmit={handleCreateInfrastructureMonitor}
 					noValidate
 					spellCheck="false"
 					gap={theme.spacing(12)}
@@ -520,7 +462,7 @@ const ConfigureInfrastructureMonitor = () => {
 						<LoadingButton
 							variant="contained"
 							color="primary"
-							onClick={handleCreateInfrastructureMonitor}
+							onClick={handleUpdateInfrastructureMonitor}
 							loading={isLoading}
 						>
 							Save
