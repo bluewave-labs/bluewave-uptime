@@ -388,6 +388,7 @@ const infrastructureMonitorsSlice = createSlice({
 				state.isLoading = false;
 				state.success = action.payload.success;
 				state.msg = action.payload.msg;
+				state.selectedInfraMonitor = action.payload.data;
 			})
 			.addCase(pauseInfrastructureMonitor.rejected, (state, action) => {
 				state.isLoading = false;

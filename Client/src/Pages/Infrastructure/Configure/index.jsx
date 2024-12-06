@@ -8,6 +8,7 @@ import {
 	createInfrastructureMonitor,
 	checkInfrastructureEndpointResolution,
 	getInfrastructureMonitorById,
+	pauseInfrastructureMonitor,
 } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@emotion/react";
@@ -62,6 +63,10 @@ const ConfigureInfrastructureMonitor = () => {
 	useEffect(() => {
 		setInfrastructureMonitor(selectedInfraMonitor);
 	}, [selectedInfraMonitor]);
+
+	const handlePause = () => {
+		dispatch(pauseInfrastructureMonitor({ authToken, monitorId }));
+	};
 
 	const handleCustomAlertCheckChange = (event) => {
 		const { value, id } = event.target;
@@ -165,6 +170,7 @@ const ConfigureInfrastructureMonitor = () => {
 		};
 		return form;
 	};
+
 	const handleCreateInfrastructureMonitor = async (event) => {
 		event.preventDefault();
 		let form = {
@@ -323,7 +329,7 @@ const ConfigureInfrastructureMonitor = () => {
 										},
 									},
 								}}
-								onClick={() => console.log("handle pause")}
+								onClick={handlePause}
 							>
 								{infrastructureMonitor?.isActive ? (
 									<>
