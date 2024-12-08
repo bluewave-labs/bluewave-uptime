@@ -1,11 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import { networkService } from "../../main";
+
+export const FormAction = Object.freeze({
+	NONE: "none",
+	DELETE: "delete",
+	UPDATE: "update",
+	GET: "get",
+});
+
 const initialState = {
 	isLoading: false,
 	monitorsSummary: [],
 	success: null,
 	msg: null,
+	selectedInfraMonitor: null,
+	formAction: FormAction.NONE,
 };
 
 export const createInfrastructureMonitor = createAsyncThunk(
@@ -139,10 +149,10 @@ export const deleteInfrastructureMonitor = createAsyncThunk(
 	"infrastructureMonitors/deleteMonitor",
 	async (data, thunkApi) => {
 		try {
-			const { authToken, monitor } = data;
+			const { authToken, monitorId } = data;
 			const res = await networkService.deleteMonitorById({
 				authToken: authToken,
-				monitorId: monitor._id,
+				monitorId: monitorId,
 			});
 			return res.data;
 		} catch (error) {
@@ -236,6 +246,9 @@ const infrastructureMonitorsSlice = createSlice({
 			state.success = null;
 			state.msg = null;
 		},
+		resetInfrastructureMonitorFormAction: (state) => {
+			state.formAction = initialState.formAction;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -245,6 +258,7 @@ const infrastructureMonitorsSlice = createSlice({
 
 			.addCase(getInfrastructureMonitorsByTeamId.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(getInfrastructureMonitorsByTeamId.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -264,6 +278,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(createInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(createInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -282,6 +297,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(checkInfrastructureEndpointResolution.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(checkInfrastructureEndpointResolution.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -299,12 +315,15 @@ const infrastructureMonitorsSlice = createSlice({
 			// Get Monitor By Id
 			// *****************************************************
 			.addCase(getInfrastructureMonitorById.pending, (state) => {
+				state.formAction = FormAction.GET;
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(getInfrastructureMonitorById.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.success = action.payload.success;
 				state.msg = action.payload.msg;
+				state.selectedInfraMonitor = action.payload.data;
 			})
 			.addCase(getInfrastructureMonitorById.rejected, (state, action) => {
 				state.isLoading = false;
@@ -318,6 +337,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(updateInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(updateInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -336,7 +356,9 @@ const infrastructureMonitorsSlice = createSlice({
 			// Delete Monitor
 			// *****************************************************
 			.addCase(deleteInfrastructureMonitor.pending, (state) => {
+				state.formAction = FormAction.DELETE;
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(deleteInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -355,6 +377,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(deleteInfrastructureMonitorChecksByTeamId.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(deleteInfrastructureMonitorChecksByTeamId.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -373,11 +396,13 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(pauseInfrastructureMonitor.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(pauseInfrastructureMonitor.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.success = action.payload.success;
 				state.msg = action.payload.msg;
+				state.selectedInfraMonitor = action.payload.data;
 			})
 			.addCase(pauseInfrastructureMonitor.rejected, (state, action) => {
 				state.isLoading = false;
@@ -391,6 +416,7 @@ const infrastructureMonitorsSlice = createSlice({
 			// *****************************************************
 			.addCase(deleteAllInfrastructureMonitors.pending, (state) => {
 				state.isLoading = true;
+				state.success = false;
 			})
 			.addCase(deleteAllInfrastructureMonitors.fulfilled, (state, action) => {
 				state.isLoading = false;
@@ -405,7 +431,7 @@ const infrastructureMonitorsSlice = createSlice({
 	},
 });
 
-export const { setInfrastructureMonitors, clearInfrastructureMonitorState } =
+export const { clearInfrastructureMonitorState, resetInfrastructureMonitorFormAction } =
 	infrastructureMonitorsSlice.actions;
 
 export default infrastructureMonitorsSlice.reducer;
