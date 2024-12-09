@@ -1,27 +1,66 @@
+// React, Redux, Router
+import { useTheme } from "@emotion/react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import { useSelector, useDispatch } from "react-redux";
+
+// Utility and Network
 import { infrastructureMonitorValidation } from "../../../Validation/validation";
-import { parseDomainName } from "../../../Utils/monitorUtils";
 import {
 	createInfrastructureMonitor,
 	checkInfrastructureEndpointResolution,
 } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "@emotion/react";
-import { createToast } from "../../../Utils/toastUtils";
+import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
+
+// MUI
+import { Box, Stack, Typography, Button, ButtonGroup } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
+//Components
+import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Link from "../../../Components/Link";
 import { ConfigBox } from "../../Monitors/styled";
 import TextInput from "../../../Components/Inputs/TextInput";
-import Select from "../../../Components/Inputs/Select";
+import { HttpAdornment } from "../../../Components/Inputs/TextInput/Adornments";
+import { createToast } from "../../../Utils/toastUtils";
 import Checkbox from "../../../Components/Inputs/Checkbox";
-import Breadcrumbs from "../../../Components/Breadcrumbs";
-import { buildErrors, hasValidationErrors } from "../../../Validation/error";
-import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
-import { CustomThreshold } from "../CreateMonitor/CustomThreshold";
+import Select from "../../../Components/Inputs/Select";
+import { CustomThreshold } from "./CustomThreshold";
+
+const SELECT_VALUES = [
+	{ _id: 0.25, name: "15 seconds" },
+	{ _id: 0.5, name: "30 seconds" },
+	{ _id: 1, name: "1 minute" },
+	{ _id: 2, name: "2 minutes" },
+	{ _id: 5, name: "5 minutes" },
+	{ _id: 10, name: "10 minutes" },
+];
+
+const METRICS = ["cpu", "memory", "disk", "temperature"];
+const METRIC_PREFIX = "usage_";
+const MS_PER_MINUTE = 60000;
+
+const hasAlertError = (errors) => {
+	return Object.keys(errors).filter((k) => k.startsWith(METRIC_PREFIX)).length > 0;
+};
+
+const getAlertError = (errors) => {
+	return Object.keys(errors).find((key) => key.startsWith(METRIC_PREFIX))
+		? errors[Object.keys(errors).find((key) => key.startsWith(METRIC_PREFIX))]
+		: null;
+};
 
 const CreateInfrastructureMonitor = () => {
+	const theme = useTheme();
+	const { user, authToken } = useSelector((state) => state.auth);
+	const monitorState = useSelector((state) => state.infrastructureMonitor);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	// State
+	const [errors, setErrors] = useState({});
+	const [https, setHttps] = useState(false);
 	const [infrastructureMonitor, setInfrastructureMonitor] = useState({
 		url: "",
 		name: "",
@@ -38,118 +77,73 @@ const CreateInfrastructureMonitor = () => {
 		secret: "",
 	});
 
-	const MS_PER_MINUTE = 60000;
-	const THRESHOLD_FIELD_PREFIX = "usage_";
-	const HARDWARE_MONITOR_TYPES = ["cpu", "memory", "disk", "temperature"];
-	const { user, authToken } = useSelector((state) => state.auth);
-	const monitorState = useSelector((state) => state.infrastructureMonitor);
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-	const theme = useTheme();
-
-	const idMap = {
-		"notify-email-default": "notification-email",
-	};
-
-	const [errors, setErrors] = useState({});
-
-	const alertErrKeyLen = Object.keys(errors).filter((k) =>
-		k.startsWith(THRESHOLD_FIELD_PREFIX)
-	).length;
-
-	const handleCustomAlertCheckChange = (event) => {
-		const { value, id } = event.target;
-		setInfrastructureMonitor((prev) => {
-			const newState = {
-				[id]: prev[id] == undefined && value == "on" ? true : !prev[id],
-			};
-			return {
-				...prev,
-				...newState,
-				[THRESHOLD_FIELD_PREFIX + id]: newState[id]
-					? prev[THRESHOLD_FIELD_PREFIX + id]
-					: "",
-			};
-		});
-		// Remove the error if unchecked
-		setErrors((prev) => {
-			return buildErrors(prev, [THRESHOLD_FIELD_PREFIX + id]);
-		});
-	};
-
-	const handleBlur = (event, appendID) => {
+	// Handlers
+	const handleCreateInfrastructureMonitor = async (event) => {
 		event.preventDefault();
-		const { value, id } = event.target;
 
-		let name = idMap[id] ?? id;
-		if (name === "url" && infrastructureMonitor.name === "") {
-			setInfrastructureMonitor((prev) => ({
-				...prev,
-				name: parseDomainName(value),
-			}));
+		// Build the form
+		let form = {
+			url: `http${https ? "s" : ""}://` + infrastructureMonitor.url,
+			name:
+				infrastructureMonitor.name === ""
+					? infrastructureMonitor.url
+					: infrastructureMonitor.name,
+			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
+			cpu: infrastructureMonitor.cpu,
+			...(infrastructureMonitor.cpu
+				? { usage_cpu: infrastructureMonitor.usage_cpu }
+				: {}),
+			memory: infrastructureMonitor.memory,
+			...(infrastructureMonitor.memory
+				? { usage_memory: infrastructureMonitor.usage_memory }
+				: {}),
+			disk: infrastructureMonitor.disk,
+			...(infrastructureMonitor.disk
+				? { usage_disk: infrastructureMonitor.usage_disk }
+				: {}),
+			temperature: infrastructureMonitor.temperature,
+			...(infrastructureMonitor.temperature
+				? { usage_temperature: infrastructureMonitor.usage_temperature }
+				: {}),
+			secret: infrastructureMonitor.secret,
+		};
+
+		const { error } = infrastructureMonitorValidation.validate(form, {
+			abortEarly: false,
+		});
+
+		if (error) {
+			const newErrors = {};
+			error.details.forEach((err) => {
+				newErrors[err.path[0]] = err.message;
+			});
+			setErrors(newErrors);
+			createToast({ body: "Please check the form for errors." });
+			return;
 		}
 
-		if (id?.startsWith("notify-email-")) return;
-		const { error } = infrastructureMonitorValidation.validate(
-			{ [id ?? appendID]: value },
-			{
-				abortEarly: false,
-			}
-		);
-		setErrors((prev) => {
-			return buildErrors(prev, id ?? appendID, error);
-		});
-	};
+		// Build the thresholds for the form
+		const {
+			cpu,
+			usage_cpu,
+			memory,
+			usage_memory,
+			disk,
+			usage_disk,
+			temperature,
+			usage_temperature,
+			...rest
+		} = form;
 
-	const handleChange = (event, appendedId) => {
-		event.preventDefault();
-		const { value, id } = event.target;
-		let name = appendedId ?? idMap[id] ?? id;
-		if (name.includes("notification-")) {
-			name = name.replace("notification-", "");
-			let hasNotif = infrastructureMonitor.notifications.some(
-				(notification) => notification.type === name
-			);
-			setInfrastructureMonitor((prev) => {
-				const notifs = [...prev.notifications];
-				if (hasNotif) {
-					return {
-						...prev,
-						notifications: notifs.filter((notif) => notif.type !== name),
-					};
-				} else {
-					return {
-						...prev,
-						notifications: [
-							...notifs,
-							name === "email"
-								? { type: name, address: value }
-								: // TODO - phone number
-									{ type: name, phone: value },
-						],
-					};
-				}
-			});
-		} else {
-			setInfrastructureMonitor((prev) => ({
-				...prev,
-				[name]: value,
-			}));
-		}
-	};
-
-	const generatePayload = (form) => {
-		let thresholds = {};
-		Object.keys(form)
-			.filter((k) => k.startsWith(THRESHOLD_FIELD_PREFIX))
-			.map((k) => {
-				if (form[k]) thresholds[k] = form[k] / 100;
-				delete form[k];
-				delete form[k.substring(THRESHOLD_FIELD_PREFIX.length)];
-			});
+		const thresholds = {
+			...(cpu ? { usage_cpu: usage_cpu / 100 } : {}),
+			...(memory ? { usage_memory: usage_memory / 100 } : {}),
+			...(disk ? { usage_disk: usage_disk / 100 } : {}),
+			...(temperature ? { usage_temperature: usage_temperature / 100 } : {}),
+		};
 
 		form = {
-			...form,
+			...rest,
 			description: form.name,
 			teamId: user.teamId,
 			userId: user._id,
@@ -157,54 +151,75 @@ const CreateInfrastructureMonitor = () => {
 			notifications: infrastructureMonitor.notifications,
 			thresholds,
 		};
-		return form;
-	};
-	const handleCreateInfrastructureMonitor = async (event) => {
-		event.preventDefault();
-		let form = {
-			...infrastructureMonitor,
-			name:
-				infrastructureMonitor.name === ""
-					? infrastructureMonitor.url
-					: infrastructureMonitor.name,
-			interval: infrastructureMonitor.interval * MS_PER_MINUTE,
-		};
 
-		delete form.notifications;
-		if (hasValidationErrors(form, infrastructureMonitorValidation, setErrors)) {
-			return;
+		console.log(form);
+
+		const action = await dispatch(
+			createInfrastructureMonitor({ authToken, monitor: form })
+		);
+		if (action.meta.requestStatus === "fulfilled") {
+			createToast({ body: "Infrastructure monitor created successfully!" });
+			navigate("/infrastructure");
 		} else {
-			const checkEndpointAction = await dispatch(
-				checkInfrastructureEndpointResolution({ authToken, monitorURL: form.url })
-			);
-			if (checkEndpointAction.meta.requestStatus === "rejected") {
-				createToast({
-					body: "The endpoint you entered doesn't resolve. Check the URL again.",
-				});
-				setErrors({ url: "The entered URL is not reachable." });
-				return;
-			}
-			const action = await dispatch(
-				createInfrastructureMonitor({ authToken, monitor: generatePayload(form) })
-			);
-			if (action.meta.requestStatus === "fulfilled") {
-				createToast({ body: "Infrastructure monitor created successfully!" });
-				navigate("/infrastructure");
-			} else {
-				createToast({ body: "Failed to create monitor." });
-			}
+			createToast({ body: "Failed to create monitor." });
 		}
 	};
 
-	//select values
-	const frequencies = [
-		{ _id: 0.25, name: "15 seconds" },
-		{ _id: 0.5, name: "30 seconds" },
-		{ _id: 1, name: "1 minute" },
-		{ _id: 2, name: "2 minutes" },
-		{ _id: 5, name: "5 minutes" },
-		{ _id: 10, name: "10 minutes" },
-	];
+	const handleChange = (event, formName) => {
+		const { value } = event.target;
+		setInfrastructureMonitor({
+			...infrastructureMonitor,
+			[formName]: value,
+		});
+
+		const { error } = infrastructureMonitorValidation.validate(
+			{ [formName]: value },
+			{ abortEarly: false }
+		);
+		setErrors((prev) => ({
+			...prev,
+			...(error ? { [formName]: error.details[0].message } : { [formName]: undefined }),
+		}));
+	};
+
+	const handleCheckboxChange = (event, formName) => {
+		console.log(event.target.checked, formName);
+		const { checked } = event.target;
+		setInfrastructureMonitor({
+			...infrastructureMonitor,
+			[formName]: checked,
+		});
+	};
+
+	const handleBlur = (event) => {
+		console.log("hanldeBlur", event);
+	};
+
+	const handleNotifications = (event, type) => {
+		const { value } = event.target;
+		let notifications = [...infrastructureMonitor.notifications];
+		const notificationExists = notifications.some((notification) => {
+			if (notification.type === type && notification.address === value) {
+				return true;
+			}
+			return false;
+		});
+		if (notificationExists) {
+			notifications = notifications.filter((notification) => {
+				if (notification.type === type && notification.address === value) {
+					return false;
+				}
+				return true;
+			});
+		} else {
+			notifications.push({ type, address: value });
+		}
+
+		setInfrastructureMonitor((prev) => ({
+			...prev,
+			notifications,
+		}));
+	};
 
 	return (
 		<Box className="create-infrastructure-monitor">
@@ -239,39 +254,57 @@ const CreateInfrastructureMonitor = () => {
 						fontSize="inherit"
 						fontWeight="inherit"
 					>
-						infrastructure monitor
+						monitor
 					</Typography>
 				</Typography>
 				<ConfigBox>
-					<Box>
-						<Stack gap={theme.spacing(6)}>
-							<Typography component="h2">General settings</Typography>
-							<Typography component="p">
-								Here you can select the URL of the host, together with the friendly name
-								and authorization secret to connect to the server agent.
-							</Typography>
-							<Typography component="p">
-								The server you are monitoring must be running the{" "}
-								<Link
-									level="primary"
-									url="https://github.com/bluewave-labs/checkmate-agent"
-									label="Checkmate Monitoring Agent"
-								/>
-							</Typography>
-						</Stack>
-					</Box>
+					<Stack gap={theme.spacing(6)}>
+						<Typography component="h2">General settings</Typography>
+						<Typography component="p">
+							Here you can select the URL of the host, together with the friendly name and
+							authorization secret to connect to the server agent.
+						</Typography>
+						<Typography component="p">
+							The server you are monitoring must be running the{" "}
+							<Link
+								level="primary"
+								url="https://github.com/bluewave-labs/checkmate-agent"
+								label="Checkmate Monitoring Agent"
+							/>
+						</Typography>
+					</Stack>
 					<Stack gap={theme.spacing(15)}>
 						<TextInput
-							type="text"
+							type="url"
 							id="url"
+							startAdornment={<HttpAdornment https={https} />}
+							placeholder={"localhost:59232/api/v1/metrics"}
 							label="Server URL"
-							placeholder="https://"
+							https={https}
 							value={infrastructureMonitor.url}
-							onBlur={handleBlur}
-							onChange={handleChange}
+							onChange={(event) => handleChange(event, "url")}
 							error={errors["url"] ? true : false}
 							helperText={errors["url"]}
 						/>
+						<Box>
+							<Typography component="p">Protocol</Typography>
+							<ButtonGroup>
+								<Button
+									variant="group"
+									filled={https.toString()}
+									onClick={() => setHttps(true)}
+								>
+									HTTPS
+								</Button>
+								<Button
+									variant="group"
+									filled={(!https).toString()}
+									onClick={() => setHttps(false)}
+								>
+									HTTP
+								</Button>
+							</ButtonGroup>
+						</Box>
 						<TextInput
 							type="text"
 							id="name"
@@ -279,8 +312,7 @@ const CreateInfrastructureMonitor = () => {
 							placeholder="Google"
 							isOptional={true}
 							value={infrastructureMonitor.name}
-							onBlur={handleBlur}
-							onChange={handleChange}
+							onChange={(event) => handleChange(event, "name")}
 							error={errors["name"]}
 						/>
 						<TextInput
@@ -288,8 +320,7 @@ const CreateInfrastructureMonitor = () => {
 							id="secret"
 							label="Authorization secret"
 							value={infrastructureMonitor.secret}
-							onBlur={handleBlur}
-							onChange={handleChange}
+							onChange={(event) => handleChange(event, "secret")}
 							error={errors["secret"] ? true : false}
 							helperText={errors["secret"]}
 						/>
@@ -311,12 +342,11 @@ const CreateInfrastructureMonitor = () => {
 								(notification) => notification.type === "email"
 							)}
 							value={user?.email}
-							onChange={(e) => handleChange(e)}
+							onChange={(event) => handleNotifications(event, "email")}
 							onBlur={handleBlur}
 						/>
 					</Stack>
 				</ConfigBox>
-
 				<ConfigBox>
 					<Box>
 						<Typography component="h2">Customize alerts</Typography>
@@ -326,25 +356,30 @@ const CreateInfrastructureMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
-						{HARDWARE_MONITOR_TYPES.map((type, idx) => (
-							<CustomThreshold
-								key={idx}
-								checkboxId={type}
-								checkboxLabel={
-									type !== "cpu" ? capitalizeFirstLetter(type) : type.toUpperCase()
-								}
-								onCheckboxChange={handleCustomAlertCheckChange}
-								fieldId={THRESHOLD_FIELD_PREFIX + type}
-								fieldValue={infrastructureMonitor[THRESHOLD_FIELD_PREFIX + type] ?? ""}
-								onFieldChange={handleChange}
-								onFieldBlur={handleBlur}
-								// TODO: need BE, maybe in another PR
-								alertUnit={type == "temperature" ? "°C" : "%"}
-								infrastructureMonitor={infrastructureMonitor}
-								errors={errors}
-							/>
-						))}
-						{alertErrKeyLen > 0 && (
+						{METRICS.map((metric) => {
+							return (
+								<CustomThreshold
+									key={metric}
+									infrastructureMonitor={infrastructureMonitor}
+									errors={errors}
+									checkboxId={metric}
+									checkboxLabel={
+										metric !== "cpu"
+											? capitalizeFirstLetter(metric)
+											: metric.toUpperCase()
+									}
+									onCheckboxChange={(event) => handleCheckboxChange(event, metric)}
+									isChecked={infrastructureMonitor[metric]}
+									fieldId={METRIC_PREFIX + metric}
+									fieldValue={infrastructureMonitor[METRIC_PREFIX + metric]}
+									onFieldChange={(event) => handleChange(event, METRIC_PREFIX + metric)}
+									onFieldBlur={(event) => handleBlur(event, METRIC_PREFIX + metric)}
+									alertUnit={metric == "temperature" ? "°C" : "%"}
+								/>
+							);
+						})}
+						{/* Error text */}
+						{hasAlertError(errors) && (
 							<Typography
 								component="span"
 								className="input-error"
@@ -354,14 +389,7 @@ const CreateInfrastructureMonitor = () => {
 									opacity: 0.8,
 								}}
 							>
-								{
-									errors[
-										THRESHOLD_FIELD_PREFIX +
-											HARDWARE_MONITOR_TYPES.filter(
-												(type) => errors[THRESHOLD_FIELD_PREFIX + type]
-											)[0]
-									]
-								}
+								{getAlertError(errors)}
 							</Typography>
 						)}
 					</Stack>
@@ -377,7 +405,7 @@ const CreateInfrastructureMonitor = () => {
 							value={infrastructureMonitor.interval || 15}
 							onChange={(e) => handleChange(e, "interval")}
 							onBlur={(e) => handleBlur(e, "interval")}
-							items={frequencies}
+							items={SELECT_VALUES}
 						/>
 					</Stack>
 				</ConfigBox>
