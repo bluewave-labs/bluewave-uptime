@@ -1,21 +1,24 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button, Box, Stack, Typography } from "@mui/material";
 import { ConfigBox } from "../../../Pages/Settings/styled";
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
-import {	
-	publicPageGeneralSettingsValidation,
-} from "../../../Validation/validation";
+import { publicPageGeneralSettingsValidation } from "../../../Validation/validation";
 import { buildErrors } from "../../../Validation/error";
 import { hasValidationErrors } from "../../../Validation/error";
-import Server from "./Server"
+import Card from "./Card";
+import update from "immutability-helper";
+
 const ContentPanel = () => {
 	const theme = useTheme();
 	const [errors, setErrors] = useState({});
 	// Local state for form data, errors, and file handling
 	const [localData, setLocalData] = useState({
-        monitors: []
+		monitors: [],
 	});
+
+	const [cards, setCards] = useState(localData.monitors);
+
 	// Clears specific error from errors state
 	const clearError = (err) => {
 		setErrors((prev) => {
@@ -24,6 +27,21 @@ const ContentPanel = () => {
 			return updatedErrors;
 		});
 	};
+
+	const moveCard = useCallback(
+		(dragIndex, hoverIndex) => {
+			const dragCard = cards[dragIndex];
+			setCards(
+				update(cards, {
+					$splice: [
+						[dragIndex, 1],
+						[hoverIndex, 0, dragCard],
+					],
+				})
+			);
+		},
+		[cards]
+	);
 
 	const handleChange = (event) => {
 		event.preventDefault();
@@ -41,16 +59,11 @@ const ContentPanel = () => {
 	};
 
 	const handleAddNew = () => {
-		let arr = localData.monitors;
-		arr.push({ id: "" + Math.random() });
-		setLocalData({ ...localData, monitors: arr });
-	}
-
-	const removeItem = (id) =>{
-		const currentMonitors = localData.monitors.filter(m => m.id !=id)
-		setLocalData({...localData, monitors: currentMonitors})
-	}
-
+		setCards([...cards, { id: "" + Math.random() }]);
+	};
+	const removeCard = (id) => {
+		setCards(cards.filter((c) => c?.id != id));
+	};
 	const handleBlur = (event) => {
 		event.preventDefault();
 		const { value, id } = event.target;
@@ -122,22 +135,26 @@ const ContentPanel = () => {
 								</Typography>
 								<Button onClick={handleAddNew}>Add New</Button>
 							</Stack>
-							{localData.monitors.length > 0 && (
+							{cards.length > 0 && (
 								<Stack
 									direction="column"
 									alignItems="center"
 									gap={theme.spacing(6)}
-									sx={{ml: theme.spacing(4),
+									sx={{
+										ml: theme.spacing(4),
 										mr: theme.spacing(8),
-										mb: theme.spacing(8)
+										mb: theme.spacing(8),
 									}}
 								>
-									{localData.monitors.map((m, idx) => (
-										<Server
+									{cards.map((card, idx) => (
+										<Card
 											key={idx}
-											id={m.id ?? "" + Math.random()}
-											removeItem={removeItem}
-											value={m.url}
+											index={idx}
+											id={card?.id ?? "" + Math.random()}
+											text={"" + idx}
+											moveCard={moveCard}
+											removeCard={removeCard}
+											value={card?.url ?? card?.id}
 										/>
 									))}
 								</Stack>

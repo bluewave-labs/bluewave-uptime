@@ -1,5 +1,5 @@
-import TextInput from "../../../Inputs/TextInput";
-import { ServerStartAdornment, ServerEndAdornment } from "../../../Inputs/TextInput/Adornments";
+import TextInput from "../../../../Inputs/TextInput";
+import { ServerStartAdornment, ServerEndAdornment } from "../../../../Inputs/TextInput/Adornments";
 
 
 const Server = ({ id, removeItem, value }) => {
