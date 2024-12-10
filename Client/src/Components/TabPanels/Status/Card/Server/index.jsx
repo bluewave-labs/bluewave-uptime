@@ -2,7 +2,7 @@ import TextInput from "../../../../Inputs/TextInput";
 import { ServerStartAdornment, ServerEndAdornment } from "../../../../Inputs/TextInput/Adornments";
 
 
-const Server = ({ id, removeItem, value }) => {
+const Server = ({ id, removeItem, value, onChange }) => {
 	return (
 		<TextInput
 			type="text"
@@ -15,6 +15,7 @@ const Server = ({ id, removeItem, value }) => {
 			}
 			id={id}
 			value= {value}
+			onChange ={ onChange }
 		></TextInput>
 	);
 };

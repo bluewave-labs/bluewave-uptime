@@ -8,6 +8,7 @@ import { buildErrors } from "../../../Validation/error";
 import { hasValidationErrors } from "../../../Validation/error";
 import Card from "./Card";
 import update from "immutability-helper";
+import Checkbox from "../../Inputs/Checkbox";
 
 const ContentPanel = () => {
 	const theme = useTheme();
@@ -15,6 +16,9 @@ const ContentPanel = () => {
 	// Local state for form data, errors, and file handling
 	const [localData, setLocalData] = useState({
 		monitors: [],
+		showUptimePercentage: false,
+		showBarcode: false
+
 	});
 
 	const [cards, setCards] = useState(localData.monitors);
@@ -51,6 +55,17 @@ const ContentPanel = () => {
 			[id]: value,
 		}));
 	};
+
+	const handleCardChange = (event) => {
+		event.preventDefault();
+		const { value, id } = event.target;
+		let idx = cards.findIndex((a) => a.id == id);
+		if (idx >= 0) {
+			let x = JSON.parse(JSON.stringify(cards[idx]));
+			x.url = value;
+			setCards(update(cards, { $splice: [[idx, 1, x]] }));
+		} else setCards(update(cards, { $push: [{ id: id, url: value }] }));
+	}
 
 	const handleSubmit = () => {
 		if (hasValidationErrors(localData, publicPageGeneralSettingsValidation, setErrors)) {
@@ -154,13 +169,41 @@ const ContentPanel = () => {
 											text={"" + idx}
 											moveCard={moveCard}
 											removeCard={removeCard}
-											value={card?.url ?? card?.id}
+											value={card?.url}
+											onChange = {handleCardChange}
 										/>
 									))}
 								</Stack>
 							)}
 						</Box>
 					</Box>
+				</ConfigBox>
+				<ConfigBox>
+					<Box>
+						<Stack gap={theme.spacing(6)}>
+							<Typography component="h2">Features</Typography>
+							<Typography component="p">Show more details on the status page</Typography>
+						</Stack>
+					</Box>
+					<Stack						
+					>
+						<Checkbox
+							id="show-barcode"
+							label={`Show Barcode`}
+							isChecked={localData.showBarcode}
+							value={"localData.showBarcode"}
+							onChange={handleChange}
+							onBlur={handleBlur}
+						/>
+						<Checkbox
+							id="show-uptime-percentage"
+							label={`Show Uptime Percentage`}
+							isChecked={localData.showUptimePercentage}
+							value={"localData.showUptimePercentage"}
+							onChange={handleChange}
+							onBlur={handleBlur}
+						/>						
+					</Stack>
 				</ConfigBox>
 
 				<Stack

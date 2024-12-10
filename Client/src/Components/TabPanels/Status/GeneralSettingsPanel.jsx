@@ -194,8 +194,7 @@ const GeneralSettingsPanel = () => {
 							type="url"
 							label="SubURL"
 							value={localData.url}
-							startAdornment={<HttpAdornment https={true} />}
-							//prefix={"http://uptimegenie.com/"}
+							startAdornment={<HttpAdornment prefix = {"http://uptimegenie.com/"} https={false} />}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							helperText={errors["url"]}

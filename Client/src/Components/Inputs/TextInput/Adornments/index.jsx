@@ -6,7 +6,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import Docs from "../../../../assets/icons/docs.svg?react";
 import DeleteIcon from "../../../../assets/icons/trash-bin.svg?react";
 
-export const HttpAdornment = ({ https }) => {
+export const HttpAdornment = ({ https, prefix }) => {
 	const theme = useTheme();
 	return (
 		<Stack
@@ -25,7 +25,7 @@ export const HttpAdornment = ({ https }) => {
 				color={theme.palette.text.secondary}
 				sx={{ lineHeight: 1, opacity: 0.8 }}
 			>
-				{https ? "https" : "http"}://
+				{prefix !== undefined ? prefix : https ? "https://" : "http://"}
 			</Typography>
 		</Stack>
 	);
@@ -33,6 +33,7 @@ export const HttpAdornment = ({ https }) => {
 
 HttpAdornment.propTypes = {
 	https: PropTypes.bool.isRequired,
+	prefix: PropTypes.string,
 };
 
 export const PasswordEndAdornment = ({ fieldType, setFieldType }) => {
@@ -69,11 +70,10 @@ PasswordEndAdornment.propTypes = {
 export const ServerStartAdornment = () => {
 	return (
 		<InputAdornment position="start">
-			<Docs/>
+			<Docs />
 		</InputAdornment>
 	);
 };
-
 
 export const ServerEndAdornment = ({ id, removeItem }) => {
 	const theme = useTheme();
@@ -95,7 +95,7 @@ export const ServerEndAdornment = ({ id, removeItem }) => {
 					},
 				}}
 			>
-				<DeleteIcon/>
+				<DeleteIcon />
 			</IconButton>
 		</InputAdornment>
 	);
