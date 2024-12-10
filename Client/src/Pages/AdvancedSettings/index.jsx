@@ -270,6 +270,7 @@ const AdvancedSettings = ({ isAdmin }) => {
 								onChange={handleJWTTTLUnits}
 								onBlur={handleBlur}
 								error={errors.jwtTTLUnits}
+								labelControlSpacing={0}
 							/>
 						</Stack>
 						<TextInput

@@ -270,7 +270,11 @@ function Sidebar() {
 						Menu
 					</ListSubheader>
 				}
-				sx={{ px: theme.spacing(6) }}
+				sx={{ 
+					px: theme.spacing(6),
+					height: "100%",
+					overflow: "hidden"
+				}}
 			>
 				{menu.map((item) =>
 					item.path ? (
