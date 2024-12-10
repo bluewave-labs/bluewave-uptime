@@ -257,7 +257,13 @@ const Settings = ({ isAdmin }) => {
 									onClick={() =>
 										setIsOpen({ ...deleteStatsMonitorsInitState, deleteStats: true })
 									}
-									sx={{ mt: theme.spacing(4) }}
+									sx={{
+										mt: theme.spacing(4),
+										'&:hover': {
+											backgroundColor:
+												theme.palette.mode === 'light' ? '#912018' : theme.palette.error.dark,
+										},
+									}}
 								>
 									Clear all stats
 								</Button>
