@@ -13,15 +13,17 @@ import PropTypes from "prop-types";
  * @component
  * @param {Object} props - Component properties
  * @param {string} [props.checkboxId] - Optional unique identifier for the checkbox
+ * @param {string} [props.checkboxName] - Optional name attribute for the checkbox
  * @param {string} props.checkboxLabel - Label text for the checkbox
  * @param {boolean} props.isChecked - Current checked state of the checkbox
  * @param {Function} props.onCheckboxChange - Callback function when checkbox is toggled
  * @param {string} props.fieldId - Unique identifier for the input field
+ * @param {string} [props.fieldName] - Optional name attribute for the input field
  * @param {string} props.fieldValue - Current value of the input field
  * @param {Function} props.onFieldChange - Callback function when input field value changes
  * @param {Function} props.onFieldBlur - Callback function when input field loses focus
  * @param {string} props.alertUnit - Unit label displayed next to the input field
- * @param {Object} props.errors - Object containing validation errors
+ * @param {Object} props.errors - Object containing validation errors for the field
  * @param {Object} props.infrastructureMonitor - Infrastructure monitor configuration object
  *
  * @returns {React.ReactElement} Rendered CustomThreshold component
@@ -29,10 +31,12 @@ import PropTypes from "prop-types";
  * @example
  * <CustomThreshold
  *   checkboxId="cpu-threshold"
+ *   checkboxName="cpu_threshold"
  *   checkboxLabel="Enable CPU Threshold"
  *   isChecked={true}
  *   onCheckboxChange={handleCheckboxToggle}
  *   fieldId="cpu-threshold-value"
+ *   fieldName="cpu_threshold_value"
  *   fieldValue="80"
  *   onFieldChange={handleFieldChange}
  *   onFieldBlur={handleFieldBlur}
