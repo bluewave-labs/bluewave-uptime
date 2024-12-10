@@ -43,10 +43,12 @@ import PropTypes from "prop-types";
  */
 export const CustomThreshold = ({
 	checkboxId,
+	checkboxName,
 	checkboxLabel,
 	onCheckboxChange,
 	isChecked,
 	fieldId,
+	fieldName,
 	fieldValue,
 	onFieldChange,
 	onFieldBlur,
@@ -66,6 +68,7 @@ export const CustomThreshold = ({
 			<Box>
 				<Checkbox
 					id={checkboxId}
+					name={checkboxName}
 					label={checkboxLabel}
 					isChecked={isChecked}
 					onChange={onCheckboxChange}
@@ -81,6 +84,7 @@ export const CustomThreshold = ({
 					maxWidth="var(--env-var-width-4)"
 					type="number"
 					id={fieldId}
+					name={fieldName}
 					value={fieldValue}
 					onBlur={onFieldBlur}
 					onChange={onFieldChange}
@@ -101,10 +105,12 @@ export const CustomThreshold = ({
 
 CustomThreshold.propTypes = {
 	checkboxId: PropTypes.string,
+	checkboxName: PropTypes.string,
 	checkboxLabel: PropTypes.string.isRequired,
 	isChecked: PropTypes.bool.isRequired,
 	onCheckboxChange: PropTypes.func.isRequired,
 	fieldId: PropTypes.string.isRequired,
+	fieldName: PropTypes.string,
 	fieldValue: PropTypes.string.isRequired,
 	onFieldChange: PropTypes.func.isRequired,
 	onFieldBlur: PropTypes.func.isRequired,
