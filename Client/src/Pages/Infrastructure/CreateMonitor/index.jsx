@@ -1,16 +1,12 @@
 // React, Redux, Router
 import { useTheme } from "@emotion/react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 // Utility and Network
 import { infrastructureMonitorValidation } from "../../../Validation/validation";
-import {
-	createInfrastructureMonitor,
-	checkInfrastructureEndpointResolution,
-} from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
+import { createInfrastructureMonitor } from "../../../Features/InfrastructureMonitors/infrastructureMonitorsSlice";
 import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 
 // MUI
@@ -165,34 +161,34 @@ const CreateInfrastructureMonitor = () => {
 		}
 	};
 
-	const handleChange = (event, formName) => {
-		const { value } = event.target;
+	const handleChange = (event) => {
+		const { value, name } = event.target;
 		setInfrastructureMonitor({
 			...infrastructureMonitor,
-			[formName]: value,
+			[name]: value,
 		});
 
 		const { error } = infrastructureMonitorValidation.validate(
-			{ [formName]: value },
+			{ [name]: value },
 			{ abortEarly: false }
 		);
 		setErrors((prev) => ({
 			...prev,
-			...(error ? { [formName]: error.details[0].message } : { [formName]: undefined }),
+			...(error ? { [name]: error.details[0].message } : { [name]: undefined }),
 		}));
 	};
 
-	const handleCheckboxChange = (event, formName) => {
-		console.log(event.target.checked, formName);
+	const handleCheckboxChange = (event) => {
+		const { name } = event.target;
 		const { checked } = event.target;
 		setInfrastructureMonitor({
 			...infrastructureMonitor,
-			[formName]: checked,
+			[name]: checked,
 		});
 	};
 
 	const handleBlur = (event) => {
-		console.log("hanldeBlur", event);
+		console.log("handleBlur", event);
 	};
 
 	const handleNotifications = (event, type) => {
@@ -277,12 +273,13 @@ const CreateInfrastructureMonitor = () => {
 						<TextInput
 							type="url"
 							id="url"
+							name="url"
 							startAdornment={<HttpAdornment https={https} />}
 							placeholder={"localhost:59232/api/v1/metrics"}
 							label="Server URL"
 							https={https}
 							value={infrastructureMonitor.url}
-							onChange={(event) => handleChange(event, "url")}
+							onChange={handleChange}
 							error={errors["url"] ? true : false}
 							helperText={errors["url"]}
 						/>
@@ -308,19 +305,21 @@ const CreateInfrastructureMonitor = () => {
 						<TextInput
 							type="text"
 							id="name"
+							name="name"
 							label="Display name"
 							placeholder="Google"
 							isOptional={true}
 							value={infrastructureMonitor.name}
-							onChange={(event) => handleChange(event, "name")}
+							onChange={handleChange}
 							error={errors["name"]}
 						/>
 						<TextInput
 							type="text"
 							id="secret"
+							name="secret"
 							label="Authorization secret"
 							value={infrastructureMonitor.secret}
-							onChange={(event) => handleChange(event, "secret")}
+							onChange={handleChange}
 							error={errors["secret"] ? true : false}
 							helperText={errors["secret"]}
 						/>
@@ -363,17 +362,19 @@ const CreateInfrastructureMonitor = () => {
 									infrastructureMonitor={infrastructureMonitor}
 									errors={errors}
 									checkboxId={metric}
+									checkboxName={metric}
 									checkboxLabel={
 										metric !== "cpu"
 											? capitalizeFirstLetter(metric)
 											: metric.toUpperCase()
 									}
-									onCheckboxChange={(event) => handleCheckboxChange(event, metric)}
+									onCheckboxChange={handleCheckboxChange}
 									isChecked={infrastructureMonitor[metric]}
 									fieldId={METRIC_PREFIX + metric}
+									fieldName={METRIC_PREFIX + metric}
 									fieldValue={infrastructureMonitor[METRIC_PREFIX + metric]}
-									onFieldChange={(event) => handleChange(event, METRIC_PREFIX + metric)}
-									onFieldBlur={(event) => handleBlur(event, METRIC_PREFIX + metric)}
+									onFieldChange={handleChange}
+									onFieldBlur={handleBlur}
 									alertUnit={metric == "temperature" ? "°C" : "%"}
 								/>
 							);
@@ -401,10 +402,11 @@ const CreateInfrastructureMonitor = () => {
 					<Stack gap={theme.spacing(12)}>
 						<Select
 							id="interval"
+							name="interval"
 							label="Check frequency"
 							value={infrastructureMonitor.interval || 15}
-							onChange={(e) => handleChange(e, "interval")}
-							onBlur={(e) => handleBlur(e, "interval")}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							items={SELECT_VALUES}
 						/>
 					</Stack>
