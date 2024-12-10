@@ -282,7 +282,7 @@ const Configure = () => {
 											},
 										}}
 									>
-										Editting...
+										Editing...
 									</Typography>
 								</Stack>
 							</Box>
