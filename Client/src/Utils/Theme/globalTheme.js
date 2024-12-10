@@ -237,6 +237,11 @@ const baseTheme = (palette) => ({
 							WebkitTextFillColor: "unset",
 						},
 					},
+					"& .MuiInputBase-input:-webkit-autofill": {
+						transition: "background-color 5000s ease-in-out 0s", 
+						WebkitBoxShadow: `0 0 0px 1000px ${theme.palette.background.main} inset`, 
+						WebkitTextFillColor: theme.palette.text.primary,
+					},
 					"& .MuiInputBase-input.MuiOutlinedInput-input": {
 						padding: "0 var(--env-var-spacing-1-minus) !important",
 					},
