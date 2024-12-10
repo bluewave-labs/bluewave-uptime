@@ -30,6 +30,7 @@ import "./index.css";
 
 const Checkbox = ({
 	id,
+	name,
 	label,
 	size = "medium",
 	isChecked,
@@ -46,6 +47,7 @@ const Checkbox = ({
 			control={
 				<MuiCheckbox
 					checked={isDisabled ? false : isChecked}
+					name={name}
 					value={value}
 					onChange={onChange}
 					icon={<CheckboxOutline />}
@@ -54,7 +56,7 @@ const Checkbox = ({
 						"aria-label": "controlled checkbox",
 						id: id,
 					}}
-					sx={{						
+					sx={{
 						"&:hover": { backgroundColor: "transparent" },
 						"& svg": { width: sizes[size], height: sizes[size] },
 						alignSelf: "flex-start",
@@ -89,6 +91,7 @@ const Checkbox = ({
 
 Checkbox.propTypes = {
 	id: PropTypes.string.isRequired,
+	name: PropTypes.string,
 	label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
 	size: PropTypes.oneOf(["small", "medium", "large"]),
 	isChecked: PropTypes.bool.isRequired,
