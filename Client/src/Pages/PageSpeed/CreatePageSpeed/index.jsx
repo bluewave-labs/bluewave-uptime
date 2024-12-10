@@ -1,11 +1,9 @@
 // React, Redux, Router
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 // Utility and Network
-import { logger } from "../../../Utils/Logger";
 import { monitorValidation } from "../../../Validation/validation";
 import {
 	createPageSpeed,
@@ -29,23 +27,24 @@ import Radio from "../../../Components/Inputs/Radio";
 import Checkbox from "../../../Components/Inputs/Checkbox";
 import Select from "../../../Components/Inputs/Select";
 
+const MS_PER_MINUTE = 60000;
+
+const CRUMBS = [
+	{ name: "pagespeed", path: "/pagespeed" },
+	{ name: "create", path: `/pagespeed/create` },
+];
+
+const SELECT_VALUES = [
+	{ _id: 3, name: "3 minutes" },
+	{ _id: 5, name: "5 minutes" },
+	{ _id: 10, name: "10 minutes" },
+	{ _id: 20, name: "20 minutes" },
+	{ _id: 60, name: "1 hour" },
+	{ _id: 1440, name: "1 day" },
+	{ _id: 10080, name: "1 week" },
+];
+
 const CreatePageSpeed = () => {
-	const MS_PER_MINUTE = 60000;
-
-	const CRUMBS = [
-		{ name: "pagespeed", path: "/pagespeed" },
-		{ name: "create", path: `/pagespeed/create` },
-	];
-
-	const SELECT_VALUES = [
-		{ _id: 3, name: "3 minutes" },
-		{ _id: 5, name: "5 minutes" },
-		{ _id: 10, name: "10 minutes" },
-		{ _id: 20, name: "20 minutes" },
-		{ _id: 60, name: "1 hour" },
-		{ _id: 1440, name: "1 day" },
-		{ _id: 10080, name: "1 week" },
-	];
 	// State
 	const [monitor, setMonitor] = useState({
 		url: "",
@@ -118,23 +117,21 @@ const CreatePageSpeed = () => {
 		}
 	};
 
-	const handleChange = (event, formItemName) => {
-		const { value } = event.target;
+	const handleChange = (event) => {
+		const { value, name } = event.target;
 		setMonitor({
 			...monitor,
-			[formItemName]: value,
+			[name]: value,
 		});
 
 		const { error } = monitorValidation.validate(
-			{ [formItemName]: value },
+			{ [name]: value },
 			{ abortEarly: false }
 		);
 
 		setErrors((prev) => ({
 			...prev,
-			...(error
-				? { [formItemName]: error.details[0].message }
-				: { [formItemName]: undefined }),
+			...(error ? { [name]: error.details[0].message } : { [name]: undefined }),
 		}));
 	};
 
@@ -164,8 +161,9 @@ const CreatePageSpeed = () => {
 		}));
 	};
 
-	const handleBlur = (event, formItemName) => {
-		if (formItemName === "url") {
+	const handleBlur = (event) => {
+		const { name } = event.target;
+		if (name === "url") {
 			const { value } = event.target;
 			if (monitor.name !== "") {
 				return;
@@ -225,24 +223,26 @@ const CreatePageSpeed = () => {
 					<Stack gap={theme.spacing(15)}>
 						<TextInput
 							type={"url"}
+							name="url"
 							id="monitor-url"
 							label="URL to monitor"
 							startAdornment={<HttpAdornment https={https} />}
 							placeholder="google.com"
 							value={monitor.url}
-							onChange={(event) => handleChange(event, "url")}
-							onBlur={(event) => handleBlur(event, "url")}
+							onChange={handleChange}
+							onBlur={handleBlur}
 							error={errors["url"] ? true : false}
 							helperText={errors["url"]}
 						/>
 						<TextInput
 							type="text"
 							id="monitor-name"
+							name="name"
 							label="Display name"
 							isOptional={true}
 							placeholder="Google"
 							value={monitor.name}
-							onChange={(event) => handleChange(event, "name")}
+							onChange={handleChange}
 							error={errors["name"] ? true : false}
 							helperText={errors["name"]}
 						/>
@@ -264,7 +264,6 @@ const CreatePageSpeed = () => {
 								size="small"
 								value="http"
 								checked={monitor.type === "pagespeed"}
-								onChange={(event) => handleChange(event)}
 							/>
 							<ButtonGroup sx={{ ml: "32px" }}>
 								<Button
@@ -325,9 +324,10 @@ const CreatePageSpeed = () => {
 					<Stack gap={theme.spacing(12)}>
 						<Select
 							id="monitor-interval"
+							name="interval"
 							label="Check frequency"
 							value={monitor.interval || 3}
-							onChange={(event) => handleChange(event, "interval")}
+							onChange={handleChange}
 							items={SELECT_VALUES}
 						/>
 					</Stack>
