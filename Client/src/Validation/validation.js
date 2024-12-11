@@ -140,7 +140,8 @@ const publicPageGeneralSettingsValidation = joi.object({
 	url: joi.string().trim().messages({ "string.empty": "URL is required." }),
 	timezone: joi.string().trim().messages({ "string.empty": "Timezone is required." }),
 	color: joi.string().trim().messages({ "string.empty": "Color is required." }),
-	theme: joi.string().trim().messages({ "string.empty": "Theme is required." })
+	publish: joi.bool()
+
 }
 
 )
