@@ -29,7 +29,7 @@ const DEMO = import.meta.env.VITE_APP_DEMO;
  * @param {Function} props.onBack - Callback function to handle "Back" button click.
  * @returns {JSX.Element}
  */
-const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
+const StepOne = ({ form, errors, onSubmit, onChange }) => {
 	const theme = useTheme();
 	const inputRef = useRef(null);
 
@@ -271,7 +271,7 @@ const Login = () => {
 		password: DEMO !== undefined ? "Demouser1!" : "",
 	});
 	const [errors, setErrors] = useState({});
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState(0);
 
 	useEffect(() => {
 		if (authToken) {
@@ -311,7 +311,7 @@ const Login = () => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		if (step === 1) {
+		if (step === 0) {
 			const { error } = credentials.validate(
 				{ email: form.email },
 				{ abortEarly: false }
@@ -320,9 +320,9 @@ const Login = () => {
 				setErrors((prev) => ({ ...prev, email: error.details[0].message }));
 				createToast({ body: error.details[0].message });
 			} else {
-				setStep(2);
+				setStep(1);
 			}
-		} else if (step === 2) {
+		} else if (step === 1) {
 			const { error } = credentials.validate(form, { abortEarly: false });
 
 			if (error) {
@@ -420,7 +420,7 @@ const Login = () => {
 					},
 				}}
 			>
-				{step === 1 ? (
+				{step === 0 ? (
 					<StepOne
 						form={form}
 						errors={errors}
@@ -428,13 +428,13 @@ const Login = () => {
 						onChange={handleChange}
 					/>
 				) : (
-					step === 2 && (
+					step === 1 && (
 						<StepTwo
 							form={form}
 							errors={errors}
 							onSubmit={handleSubmit}
 							onChange={handleChange}
-							onBack={() => setStep(1)}
+							onBack={() => setStep(0)}
 						/>
 					)
 				)}
