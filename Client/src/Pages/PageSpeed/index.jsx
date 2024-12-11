@@ -11,7 +11,7 @@ import Breadcrumbs from "../../Components/Breadcrumbs";
 import SkeletonLayout from "./skeleton";
 import Card from "./card";
 import { networkService } from "../../main";
-
+import { Heading } from "../../Components/Heading";
 const PageSpeed = ({ isAdmin }) => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const PageSpeed = ({ isAdmin }) => {
 	const { user, authToken } = useSelector((state) => state.auth);
 	const [isLoading, setIsLoading] = useState(true);
 	const [monitors, setMonitors] = useState([]);
+	const [monitorCount, setMonitorCount] = useState(0);
 	useEffect(() => {
 		dispatch(getPageSpeedByTeamId(authToken));
 	}, [authToken, dispatch]);
@@ -44,6 +45,7 @@ const PageSpeed = ({ isAdmin }) => {
 				});
 				if (res?.data?.data?.monitors) {
 					setMonitors(res.data.data.monitors);
+					setMonitorCount(res.data.data.monitorCount);
 				}
 			} catch (error) {
 				console.log(error);
@@ -53,7 +55,7 @@ const PageSpeed = ({ isAdmin }) => {
 		};
 
 		fetchMonitors();
-	}, []);
+	}, [authToken, user.teamId]);
 
 	// will show skeletons only on initial load
 	// since monitor state is being added to redux persist, there's no reason to display skeletons on every render
@@ -76,8 +78,8 @@ const PageSpeed = ({ isAdmin }) => {
 			{isActuallyLoading ? (
 				<SkeletonLayout />
 			) : monitors?.length !== 0 ? (
-				<Box>
-					<Box mb={theme.spacing(12)}>
+				<Stack gap={theme.spacing(8)}>
+					<Box>
 						<Breadcrumbs list={[{ name: `pagespeed`, path: "/pagespeed" }]} />
 						<Stack
 							direction="row"
@@ -97,6 +99,27 @@ const PageSpeed = ({ isAdmin }) => {
 							)}
 						</Stack>
 					</Box>
+					<Stack
+						direction="row"
+						sx={{
+							alignItems: "center",
+							gap: ".25rem",
+							flexWrap: "wrap",
+						}}
+					>
+						<Heading component="h2">PageSpeed monitors</Heading>
+						{/* TODO Correct the class current-monitors-counter, there are some unnecessary things there	 */}
+						<Box
+							component="span"
+							className="current-monitors-counter"
+							color={theme.palette.text.primary}
+							border={1}
+							borderColor={theme.palette.border.light}
+							backgroundColor={theme.palette.background.accent}
+						>
+							{monitorCount}
+						</Box>
+					</Stack>
 					<Grid
 						container
 						spacing={theme.spacing(12)}
@@ -108,7 +131,7 @@ const PageSpeed = ({ isAdmin }) => {
 							/>
 						))}
 					</Grid>
-				</Box>
+				</Stack>
 			) : (
 				<Fallback
 					title="pagespeed monitor"
