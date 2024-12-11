@@ -15,6 +15,7 @@ import "./index.css";
  * @param {string} [props.value] - The value of the checkbox input.
  * @param {function} [props.onChange] - The function to call when the checkbox value changes.
  * @param {boolean} [props.isDisabled] - Whether the checkbox is disabled or not.
+ * @param {boolean} [props.alignSelf] - Whether the checkbox label should be positioned on flex-start.
  *
  * @returns {JSX.Element}
  *
@@ -25,6 +26,7 @@ import "./index.css";
  *  isChecked={checks.type === "ping"}
  *  value="ping"
  *  onChange={handleChange}
+ *  alignSelf = {alignSelf}
  * />
  */
 
@@ -36,11 +38,12 @@ const Checkbox = ({
 	value,
 	onChange,
 	isDisabled,
+	alignSelf
 }) => {
 	/* TODO move sizes to theme */
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
-	const override = typeof label == "string" ? {} : { alignSelf: "flex-start" };
+	const override = alignSelf?  { alignSelf: "flex-start" } : {}
 	return (
 		<FormControlLabel
 			className="checkbox-wrapper"
@@ -58,7 +61,7 @@ const Checkbox = ({
 					sx={{						
 						"&:hover": { backgroundColor: "transparent" },
 						"& svg": { width: sizes[size], height: sizes[size] },
-                        ...override						
+                        ...override
 					}}
 				/>
 			}
@@ -96,6 +99,7 @@ Checkbox.propTypes = {
 	value: PropTypes.string,
 	onChange: PropTypes.func,
 	isDisabled: PropTypes.bool,
+	alignSelf: PropTypes.bool,
 };
 
 export default Checkbox;
