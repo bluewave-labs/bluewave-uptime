@@ -48,7 +48,7 @@ import StatusPages from "../../assets/icons/status-pages.svg?react";
 import "./index.css";
 
 const menu = [
-	{ name: "Monitors", path: "monitors", icon: <Monitors /> },
+	{ name: "Uptime", path: "uptime", icon: <Monitors /> },
 	{ name: "Pagespeed", path: "pagespeed", icon: <PageSpeed /> },
 	{ name: "Infrastructure", path: "infrastructure", icon: <Integrations /> },
 	{ name: "Incidents", path: "incidents", icon: <Incidents /> },
@@ -270,10 +270,10 @@ function Sidebar() {
 						Menu
 					</ListSubheader>
 				}
-				sx={{ 
+				sx={{
 					px: theme.spacing(6),
 					height: "100%",
-					overflow: "hidden"
+					overflow: "hidden",
 				}}
 			>
 				{menu.map((item) =>
