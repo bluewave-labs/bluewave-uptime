@@ -148,8 +148,6 @@ const CreateInfrastructureMonitor = () => {
 			thresholds,
 		};
 
-		console.log(form);
-
 		const action = await dispatch(
 			createInfrastructureMonitor({ authToken, monitor: form })
 		);
