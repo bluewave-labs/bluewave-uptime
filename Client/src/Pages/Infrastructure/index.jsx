@@ -204,7 +204,7 @@ function Infrastructure() {
 									variant="contained"
 									color="primary"
 									onClick={navigateToCreate}
-									sx={{ whiteSpace: "nowrap" }}
+									sx={{ fontWeight: 500, whiteSpace: "nowrap" }}
 								>
 									Create new
 								</Button>

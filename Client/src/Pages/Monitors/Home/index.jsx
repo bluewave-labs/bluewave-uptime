@@ -61,7 +61,7 @@ const Monitors = ({ isAdmin }) => {
 							onClick={() => {
 								navigate("/monitors/create");
 							}}
-							sx={{ fontWeight: 500 }}
+							sx={{ fontWeight: 500, whiteSpace: "nowrap" }}
 						>
 							Create monitor
 						</Button>
