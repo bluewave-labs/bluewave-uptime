@@ -23,11 +23,13 @@ import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
 import { useNavigate } from "react-router";
 import Dialog from "../../Components/Dialog";
+import { useIsAdmin } from "../../Hooks/useIsAdmin";
 
 const SECONDS_PER_DAY = 86400;
 
-const Settings = ({ isAdmin }) => {
+const Settings = () => {
 	const theme = useTheme();
+	const isAdmin = useIsAdmin();
 	const { user, authToken } = useSelector((state) => state.auth);
 	const { checkTTL } = user;
 	const { isLoading } = useSelector((state) => state.uptimeMonitors);

@@ -14,10 +14,11 @@ import { useState, useEffect } from "react";
 import Select from "../../Components/Inputs/Select";
 import { advancedSettingsValidation } from "../../Validation/validation";
 import { buildErrors, hasValidationErrors } from "../../Validation/error";
+import { useIsAdmin } from "../../Hooks/useIsAdmin";
 
-const AdvancedSettings = ({ isAdmin }) => {
+const AdvancedSettings = () => {
 	const navigate = useNavigate();
-
+	const isAdmin = useIsAdmin;
 	useEffect(() => {
 		if (!isAdmin) {
 			navigate("/");

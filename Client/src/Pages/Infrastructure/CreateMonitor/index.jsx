@@ -397,7 +397,6 @@ const CreateInfrastructureMonitor = () => {
 							label="Check frequency"
 							value={infrastructureMonitor.interval || 15}
 							onChange={handleChange}
-							onBlur={}
 							items={SELECT_VALUES}
 						/>
 					</Stack>
