@@ -185,10 +185,6 @@ const CreateInfrastructureMonitor = () => {
 		});
 	};
 
-	const handleBlur = (event) => {
-		console.log("handleBlur", event);
-	};
-
 	const handleNotifications = (event, type) => {
 		const { value } = event.target;
 		let notifications = [...infrastructureMonitor.notifications];
@@ -340,7 +336,6 @@ const CreateInfrastructureMonitor = () => {
 							)}
 							value={user?.email}
 							onChange={(event) => handleNotifications(event, "email")}
-							onBlur={handleBlur}
 						/>
 					</Stack>
 				</ConfigBox>
@@ -372,7 +367,6 @@ const CreateInfrastructureMonitor = () => {
 									fieldName={METRIC_PREFIX + metric}
 									fieldValue={infrastructureMonitor[METRIC_PREFIX + metric]}
 									onFieldChange={handleChange}
-									onFieldBlur={handleBlur}
 									alertUnit={metric == "temperature" ? "°C" : "%"}
 								/>
 							);
@@ -404,7 +398,7 @@ const CreateInfrastructureMonitor = () => {
 							label="Check frequency"
 							value={infrastructureMonitor.interval || 15}
 							onChange={handleChange}
-							onBlur={handleBlur}
+							onBlur={}
 							items={SELECT_VALUES}
 						/>
 					</Stack>
