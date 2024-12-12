@@ -55,6 +55,14 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 - DNS monitoring
 - SSL monitoring
 
+## 🏗️ Screenshots
+
+![Group 3765](https://github.com/user-attachments/assets/8e8144f2-a769-4707-8ea1-99cf758284a8)
+
+![Group 3768](https://github.com/user-attachments/assets/05aed2f2-2cf7-487f-879b-cf8bfb0e9241)
+
+![Group 3768-1](https://github.com/user-attachments/assets/d4ee4bcf-4d69-4e4a-9bce-fd3541129c24)
+
 ## 🏗️ Tech stack
 
 - [ReactJs](https://react.dev/)
@@ -64,15 +72,16 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 ## 🤝 Contributing
 
-We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 600+ stars and attracted 30+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
+We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 1300+ stars and attracted 30+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
 
 Here's how you can contribute:
 
-- Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
-- Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
-- Open an issue if you believe you've encountered a bug
-- Check for good-first-issue's if you are a newcomer
-- Make a pull request to add new features/make quality-of-life improvements/fix bugs.
+0. Star this repo :)
+1. Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
+2. Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
+3. Open an issue if you believe you've encountered a bug
+4. Check for good-first-issue's if you are a newcomer
+5. Make a pull request to add new features/make quality-of-life improvements/fix bugs.
 
 <a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=bluewave-labs/bluewave-uptime" />

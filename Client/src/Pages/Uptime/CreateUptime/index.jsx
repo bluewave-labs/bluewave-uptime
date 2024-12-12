@@ -60,8 +60,8 @@ const CreateMonitor = () => {
 	const theme = useTheme();
 	const { monitorId } = useParams();
 	const crumbs = [
-		{ name: "monitors", path: "/monitors" },
-		{ name: "create", path: `/monitors/create` },
+		{ name: "uptime", path: "/uptime" },
+		{ name: "create", path: `/uptime/create` },
 	];
 
 	// State
@@ -125,7 +125,7 @@ const CreateMonitor = () => {
 		const action = await dispatch(createUptimeMonitor({ authToken, monitor: form }));
 		if (action.meta.requestStatus === "fulfilled") {
 			createToast({ body: "Monitor created successfully!" });
-			navigate("/monitors");
+			navigate("/uptime");
 		} else {
 			createToast({ body: "Failed to create monitor." });
 		}
@@ -345,8 +345,6 @@ const CreateMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
-						<Typography component="p">When there is a new incident,</Typography>
-
 						<Checkbox
 							id="notify-email-default"
 							label={`Notify via email (to ${user.email})`}
