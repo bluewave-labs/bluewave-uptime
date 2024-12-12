@@ -44,7 +44,7 @@ const Routes = () => {
 		<LibRoutes>
 			<Route
 				path="/"
-				element={<HomeLayout />}
+				element={<ProtectedRoute Component={HomeLayout} />}
 			>
 				<Route
 					path="/"
@@ -52,65 +52,65 @@ const Routes = () => {
 				/>
 				<Route
 					path="/monitors"
-					element={<ProtectedRoute Component={MonitorsWithAdminProp} />}
+					element={<MonitorsWithAdminProp />}
 				/>
 				<Route
 					path="/monitors/create/:monitorId?"
-					element={<ProtectedRoute Component={CreateMonitor} />}
+					element={<CreateMonitor />}
 				/>
 				<Route
 					path="/monitors/:monitorId/"
-					element={<ProtectedRoute Component={MonitorDetailsWithAdminProp} />}
+					element={<MonitorDetailsWithAdminProp />}
 				/>
 				<Route
 					path="/monitors/configure/:monitorId/"
-					element={<ProtectedRoute Component={Configure} />}
+					element={<Configure />}
 				/>
 				<Route
 					path="pagespeed"
-					element={<ProtectedRoute Component={PageSpeedWithAdminProp} />}
+					element={<PageSpeedWithAdminProp />}
 				/>
 				<Route
 					path="pagespeed/create"
-					element={<ProtectedRoute Component={CreatePageSpeed} />}
+					element={<CreatePageSpeed />}
 				/>
 				<Route
 					path="pagespeed/:monitorId"
-					element={<ProtectedRoute Component={PageSpeedDetailsWithAdminProp} />}
+					element={<PageSpeedDetailsWithAdminProp />}
 				/>
 				<Route
 					path="pagespeed/configure/:monitorId"
-					element={<ProtectedRoute Component={PageSpeedConfigure} />}
+					element={<PageSpeedConfigure />}
 				/>
 				<Route
 					path="infrastructure"
-					element={<ProtectedRoute Component={Infrastructure} />}
+					element={<Infrastructure />}
 				/>
 				<Route
 					path="infrastructure/create"
-					element={<ProtectedRoute Component={CreateInfrastructureMonitor} />}
+					element={<CreateInfrastructureMonitor />}
 				/>
 				<Route
 					path="infrastructure/:monitorId"
-					element={<ProtectedRoute Component={InfrastructureDetailsWithAdminProp} />}
+					element={<InfrastructureDetailsWithAdminProp />}
 				/>
 
 				<Route
 					path="incidents/:monitorId?"
-					element={<ProtectedRoute Component={Incidents} />}
+					element={<Incidents />}
 				/>
 
 				<Route
 					path="status"
-					element={<ProtectedRoute Component={Status} />}
+					element={<Status />}
 				/>
 				<Route
 					path="integrations"
-					element={<ProtectedRoute Component={Integrations} />}
+					element={<Integrations />}
 				/>
 				<Route
 					path="maintenance"
-					element={<ProtectedRoute Component={MaintenanceWithAdminProp} />}
+					element={<MaintenanceWithAdminProp />}
 				/>
 				<Route
 					path="/maintenance/create/:maintenanceWindowId?"
@@ -118,20 +118,15 @@ const Routes = () => {
 				/>
 				<Route
 					path="settings"
-					element={<ProtectedRoute Component={SettingsWithAdminProp} />}
+					element={<SettingsWithAdminProp />}
 				/>
 				<Route
 					path="advanced-settings"
-					element={<ProtectedRoute Component={AdvancedSettingsWithAdminProp} />}
+					element={<AdvancedSettingsWithAdminProp />}
 				/>
 				<Route
 					path="account/profile"
-					element={
-						<ProtectedRoute
-							Component={Account}
-							open="profile"
-						/>
-					}
+					element={<Account open={"profile"} />}
 				/>
 				<Route
 					path="account/password"
@@ -154,13 +149,11 @@ const Routes = () => {
 			</Route>
 
 			<Route
-				exact
 				path="/login"
 				element={<Login />}
 			/>
 
 			<Route
-				exact
 				path="/register"
 				element={<AdminCheckedRegister />}
 			/>
@@ -169,11 +162,6 @@ const Routes = () => {
 				exact
 				path="/register/:token"
 				element={<Register />}
-			/>
-
-			<Route
-				path="*"
-				element={<NotFound />}
 			/>
 
 			<Route
@@ -191,6 +179,11 @@ const Routes = () => {
 			<Route
 				path="/new-password-confirmed"
 				element={<NewPasswordConfirmed />}
+			/>
+
+			<Route
+				path="*"
+				element={<NotFound />}
 			/>
 		</LibRoutes>
 	);

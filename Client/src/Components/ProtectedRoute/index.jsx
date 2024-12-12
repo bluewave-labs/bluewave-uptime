@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 
 const ProtectedRoute = ({ Component, ...rest }) => {
 	const authState = useSelector((state) => state.auth);
-
+	console.log("Protected");
 	return authState.authToken ? (
 		<Component {...rest} />
 	) : (
