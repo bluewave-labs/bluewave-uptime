@@ -57,6 +57,7 @@ const Checkbox = ({
 	/* TODO move sizes to theme */
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
+	const override = typeof label == "string" ? {} : { alignSelf: "flex-start" };
 	return (
 		<FormControlLabel
 			className="checkbox-wrapper"
@@ -75,7 +76,7 @@ const Checkbox = ({
 					sx={{
 						"&:hover": { backgroundColor: "transparent" },
 						"& svg": { width: sizes[size], height: sizes[size] },
-						alignSelf: "flex-start",
+                        ...override						
 					}}
 				/>
 			}
