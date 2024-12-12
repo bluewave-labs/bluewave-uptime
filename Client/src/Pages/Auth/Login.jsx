@@ -367,7 +367,6 @@ StepTwo.propTypes = {
 };
 
 const Login = () => {
-	console.log("login");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const theme = useTheme();
