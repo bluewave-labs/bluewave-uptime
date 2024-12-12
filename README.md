@@ -72,7 +72,7 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 
 ## 🤝 Contributing
 
-We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 1300+ stars and attracted 30+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
+We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 1500 stars and attracted 35+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
 
 Here's how you can contribute:
 
