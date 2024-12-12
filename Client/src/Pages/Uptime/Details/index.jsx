@@ -100,7 +100,7 @@ const DetailsPage = ({ isAdmin }) => {
 			}
 		};
 		fetchCertificate();
-	}, [authToken, monitorId, monitor, dateRange, uiTimezone, dateFormat]);
+	}, [authToken, monitorId, monitor, uiTimezone, dateFormat]);
 
 	const splitDuration = (duration) => {
 		const { time, format } = formatDurationSplit(duration);
