@@ -93,6 +93,9 @@ const Search = ({
 								{
 									borderColor: theme.palette.border.light,
 								},
+							"& .MuiOutlinedInput-root": {
+								paddingY: 0,
+							},
 						}}
 					/>
 					{error && (
