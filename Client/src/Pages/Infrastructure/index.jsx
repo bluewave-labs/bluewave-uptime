@@ -203,7 +203,7 @@ function Infrastructure() {
 								<Button
 									variant="contained"
 									color="primary"
-									onClick={() => navigate("/infrastructure/create")}
+									onClick={navigateToCreate}
 									sx={{ whiteSpace: "nowrap" }}
 								>
 									Create new
