@@ -28,18 +28,9 @@ import CreateNewMaintenanceWindow from "../Pages/Maintenance/CreateMaintenance";
 import PageSpeedDetails from "../Pages/PageSpeed/Details";
 import PageSpeedConfigure from "../Pages/PageSpeed/Configure";
 import withAdminCheck from "../Components/HOC/withAdminCheck";
-import withAdminProp from "../Components/HOC/withAdminProp";
 
 const Routes = () => {
 	const AdminCheckedRegister = withAdminCheck(Register);
-	const MonitorsWithAdminProp = withAdminProp(Monitors);
-	const MonitorDetailsWithAdminProp = withAdminProp(Details);
-	const PageSpeedWithAdminProp = withAdminProp(PageSpeed);
-	const PageSpeedDetailsWithAdminProp = withAdminProp(PageSpeedDetails);
-	const MaintenanceWithAdminProp = withAdminProp(Maintenance);
-	const SettingsWithAdminProp = withAdminProp(Settings);
-	const AdvancedSettingsWithAdminProp = withAdminProp(AdvancedSettings);
-	const InfrastructureDetailsWithAdminProp = withAdminProp(InfrastructureDetails);
 	return (
 		<LibRoutes>
 			<Route
@@ -52,7 +43,7 @@ const Routes = () => {
 				/>
 				<Route
 					path="/monitors"
-					element={<MonitorsWithAdminProp />}
+					element={<Monitors />}
 				/>
 				<Route
 					path="/monitors/create/:monitorId?"
@@ -60,7 +51,7 @@ const Routes = () => {
 				/>
 				<Route
 					path="/monitors/:monitorId/"
-					element={<MonitorDetailsWithAdminProp />}
+					element={<Details />}
 				/>
 				<Route
 					path="/monitors/configure/:monitorId/"
@@ -68,7 +59,7 @@ const Routes = () => {
 				/>
 				<Route
 					path="pagespeed"
-					element={<PageSpeedWithAdminProp />}
+					element={<PageSpeed />}
 				/>
 				<Route
 					path="pagespeed/create"
@@ -76,7 +67,7 @@ const Routes = () => {
 				/>
 				<Route
 					path="pagespeed/:monitorId"
-					element={<PageSpeedDetailsWithAdminProp />}
+					element={<PageSpeedDetails />}
 				/>
 				<Route
 					path="pagespeed/configure/:monitorId"
@@ -92,9 +83,8 @@ const Routes = () => {
 				/>
 				<Route
 					path="infrastructure/:monitorId"
-					element={<InfrastructureDetailsWithAdminProp />}
+					element={<InfrastructureDetails />}
 				/>
-
 				<Route
 					path="incidents/:monitorId?"
 					element={<Incidents />}
@@ -110,7 +100,7 @@ const Routes = () => {
 				/>
 				<Route
 					path="maintenance"
-					element={<MaintenanceWithAdminProp />}
+					element={<Maintenance />}
 				/>
 				<Route
 					path="/maintenance/create/:maintenanceWindowId?"
@@ -118,11 +108,11 @@ const Routes = () => {
 				/>
 				<Route
 					path="settings"
-					element={<SettingsWithAdminProp />}
+					element={<Settings />}
 				/>
 				<Route
 					path="advanced-settings"
-					element={<AdvancedSettingsWithAdminProp />}
+					element={<AdvancedSettings />}
 				/>
 				<Route
 					path="account/profile"
@@ -130,21 +120,11 @@ const Routes = () => {
 				/>
 				<Route
 					path="account/password"
-					element={
-						<ProtectedRoute
-							Component={Account}
-							open="password"
-						/>
-					}
+					element={<Account open={"password"} />}
 				/>
 				<Route
 					path="account/team"
-					element={
-						<ProtectedRoute
-							Component={Account}
-							open="team"
-						/>
-					}
+					element={<Account open={"team"} />}
 				/>
 			</Route>
 
@@ -190,13 +170,3 @@ const Routes = () => {
 };
 
 export { Routes };
-
-/* import { createBrowserRouter } from "react-router-dom";
-
-const router = createBrowserRouter({
-  {
-    path: "/",
-  }
-});
-
-export { router }; */

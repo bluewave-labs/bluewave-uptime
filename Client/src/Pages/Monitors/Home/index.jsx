@@ -12,10 +12,12 @@ import StatusBox from "./StatusBox";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import Greeting from "../../../Utils/greeting";
 import { CurrentMonitoring } from "./CurrentMonitoring";
+import { useIsAdmin } from "../../../Hooks/useIsAdmin";
 
-const Monitors = ({ isAdmin }) => {
+const Monitors = () => {
 	const theme = useTheme();
 	const navigate = useNavigate();
+	const isAdmin = useIsAdmin();
 	const monitorState = useSelector((state) => state.uptimeMonitors);
 	const authState = useSelector((state) => state.auth);
 	const dispatch = useDispatch({});

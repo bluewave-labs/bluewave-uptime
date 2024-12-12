@@ -32,14 +32,16 @@ import SkeletonLayout from "./skeleton";
 import "./index.css";
 import useUtils from "../utils";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
+import { useIsAdmin } from "../../../Hooks/useIsAdmin";
 
 /**
  * Details page component displaying monitor details and related information.
  * @component
  */
-const DetailsPage = ({ isAdmin }) => {
+const DetailsPage = () => {
 	const theme = useTheme();
 	const { statusColor, statusStyles, statusMsg, determineState } = useUtils();
+	const isAdmin = useIsAdmin();
 	const [monitor, setMonitor] = useState({});
 	const { monitorId } = useParams();
 	const { authToken } = useSelector((state) => state.auth);
