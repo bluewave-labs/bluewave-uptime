@@ -169,7 +169,7 @@ const ContentPanel = () => {
 											text={"" + idx}
 											moveCard={moveCard}
 											removeCard={removeCard}
-											value={card?.url}
+											value={card?.url??""}
 											onChange = {handleCardChange}
 										/>
 									))}

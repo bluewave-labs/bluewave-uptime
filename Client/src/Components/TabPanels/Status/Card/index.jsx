@@ -2,22 +2,19 @@ import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import ItemTypes from "./ItemTypes";
 import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardContent from "@mui/material/CardContent";
 import Server from "./Server"
+import { CardContent } from "@mui/material";
 
 const CustomCard = React.forwardRef((props, ref) => (
 	<Card ref={ref}>
-		<CardActionArea>
-			<CardContent>
-				<Server
-					id={props.id}
-					removeItem={props.removeCard}
-					value={props.value}
-          onChange={props.onChange}
-				/>
-			</CardContent>
-		</CardActionArea>
+		<CardContent>
+			<Server
+				id={props.id}
+				removeItem={props.removeCard}
+				value={props.value}
+				onChange={props.onChange}
+			/>
+		</CardContent>
 	</Card>
 ));
 
@@ -68,7 +65,7 @@ const MyCard = ({ id, index, moveCard, removeCard, value, onChange }) => {
       item.index = hoverIndex;
     }
   });
-  const [ {isDragging}, drag] = useDrag({
+  const [ _, drag] = useDrag({
     type: ItemTypes.CARD,
     item: {id: id, index:index},
     collect: monitor => ({
@@ -76,14 +73,14 @@ const MyCard = ({ id, index, moveCard, removeCard, value, onChange }) => {
     })
   });  
   drag(drop(ref));
-  return (
+	return (
 		<CustomCard
-			ref={ref}		
+			ref={ref}
 			id={id}
 			removeCard={removeCard}
 			value={value}
-      onChange={onChange}
-		/>		
+			onChange={onChange}
+		/>
 	);
 };
 
