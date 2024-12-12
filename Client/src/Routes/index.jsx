@@ -35,7 +35,11 @@ const Routes = () => {
 		<LibRoutes>
 			<Route
 				path="/"
-				element={<ProtectedRoute Component={HomeLayout} />}
+				element={
+					<ProtectedRoute>
+						<HomeLayout />
+					</ProtectedRoute>
+				}
 			>
 				<Route
 					path="/"
