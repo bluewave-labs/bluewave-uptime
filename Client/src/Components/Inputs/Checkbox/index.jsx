@@ -21,17 +21,10 @@ import "./index.css";
  * @param {string} [props.value] - Optional value associated with the checkbox
  * @param {Function} [props.onChange] - Callback function triggered when checkbox state changes
  * @param {boolean} [props.isDisabled] - Determines if the checkbox is disabled
+ * @param {boolean} [props.alignSelf] - Whether the checkbox label should be positioned on flex-start.
  *
  * @returns {React.ReactElement} Rendered Checkbox component
  *
- * @example
- * // Basic usage
- * <Checkbox
- *   id="terms-checkbox"
- *   label="I agree to terms"
- *   isChecked={agreed}
- *   onChange={handleAgree}
- * />
  *
  * @example
  * // With custom size and disabled state
@@ -42,6 +35,7 @@ import "./index.css";
  *   isChecked={isAdvanced}
  *   isDisabled={!canModify}
  *   onChange={handleAdvancedToggle}
+ *   alignSelf = {alignSelf}
  * />
  */
 const Checkbox = ({
@@ -53,10 +47,12 @@ const Checkbox = ({
 	value,
 	onChange,
 	isDisabled,
+	alignSelf
 }) => {
 	/* TODO move sizes to theme */
 	const sizes = { small: "14px", medium: "16px", large: "18px" };
 	const theme = useTheme();
+	const override = alignSelf?  { alignSelf: "flex-start" } : {}
 	return (
 		<FormControlLabel
 			className="checkbox-wrapper"
@@ -75,7 +71,7 @@ const Checkbox = ({
 					sx={{
 						"&:hover": { backgroundColor: "transparent" },
 						"& svg": { width: sizes[size], height: sizes[size] },
-						alignSelf: "flex-start",
+                        ...override
 					}}
 				/>
 			}
@@ -114,6 +110,7 @@ Checkbox.propTypes = {
 	value: PropTypes.string,
 	onChange: PropTypes.func,
 	isDisabled: PropTypes.bool,
+	alignSelf: PropTypes.bool,
 };
 
 export default Checkbox;
