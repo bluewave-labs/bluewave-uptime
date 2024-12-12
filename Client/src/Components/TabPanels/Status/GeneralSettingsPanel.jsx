@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { ConfigBox } from "../../../Pages/Monitors/styled";
+import { ConfigBox } from "../../../Pages/Uptime/styled";
 import Checkbox from "../../Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,8 +8,6 @@ import TabPanel from "@mui/lab/TabPanel";
 
 const GeneralSettingsPanel = () => {
 	const theme = useTheme();
-	const dispatch = useDispatch();
-
 	//redux state
 	const { user, authToken, isLoading } = useSelector((state) => state.auth);
 
