@@ -1,5 +1,5 @@
 import "./index.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUptimeMonitorsByTeamId } from "../../../Features/UptimeMonitors/uptimeMonitorsSlice";
 import { useNavigate } from "react-router-dom";
@@ -21,10 +21,15 @@ const UptimeMonitors = ({ isAdmin }) => {
 	const uptimeMonitorsState = useSelector((state) => state.uptimeMonitors);
 	const authState = useSelector((state) => state.auth);
 	const dispatch = useDispatch({});
+	const [monitorUpdateTrigger, setMonitorUpdateTrigger] = useState(false);
+
+	const handlePause = () => {
+		setMonitorUpdateTrigger((prev) => !prev);
+	};
 
 	useEffect(() => {
 		dispatch(getUptimeMonitorsByTeamId(authState.authToken));
-	}, [authState.authToken, dispatch]);
+	}, [authState.authToken, dispatch, monitorUpdateTrigger]);
 
 	//TODO bring fetching to this component, like on pageSpeed
 
@@ -57,7 +62,7 @@ const UptimeMonitors = ({ isAdmin }) => {
 							onClick={() => {
 								navigate("/uptime/create");
 							}}
-							sx={{ fontWeight: 500 }}
+							sx={{ fontWeight: 500, whiteSpace: "nowrap" }}
 						>
 							Create new
 						</Button>
@@ -94,6 +99,7 @@ const UptimeMonitors = ({ isAdmin }) => {
 								isAdmin={isAdmin}
 								monitors={uptimeMonitorsState.monitorsSummary.monitors}
 								totalMonitors={totalMonitors}
+								handlePause={handlePause}
 							/>
 						</>
 					)}

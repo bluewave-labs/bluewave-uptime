@@ -55,6 +55,14 @@ We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-
 - DNS monitoring
 - SSL monitoring
 
+## 🏗️ Screenshots
+
+![Group 3765](https://github.com/user-attachments/assets/8e8144f2-a769-4707-8ea1-99cf758284a8)
+
+![Group 3768](https://github.com/user-attachments/assets/05aed2f2-2cf7-487f-879b-cf8bfb0e9241)
+
+![Group 3768-1](https://github.com/user-attachments/assets/d4ee4bcf-4d69-4e4a-9bce-fd3541129c24)
+
 ## 🏗️ Tech stack
 
 - [ReactJs](https://react.dev/)
