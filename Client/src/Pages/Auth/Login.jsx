@@ -12,105 +12,11 @@ import TextInput from "../../Components/Inputs/TextInput";
 import { PasswordEndAdornment } from "../../Components/Inputs/TextInput/Adornments";
 import Background from "../../assets/Images/background-grid.svg?react";
 import Logo from "../../assets/icons/bwu-icon.svg?react";
-import Mail from "../../assets/icons/mail.svg?react";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PropTypes from "prop-types";
 import { logger } from "../../Utils/Logger";
 import "./index.css";
 const DEMO = import.meta.env.VITE_APP_DEMO;
-
-/**
- * Displays the initial landing page.
- *
- * @param {Object} props
- * @param {Function} props.onContinue - Callback function to handle "Continue with Email" button click.
- * @returns {JSX.Element}
- */
-const LandingPage = ({ onContinue }) => {
-	const theme = useTheme();
-
-	return (
-		<>
-			<Stack
-				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
-				alignItems="center"
-				textAlign="center"
-			>
-				<Box>
-					<Typography component="h1">Log In</Typography>
-					<Typography>We are pleased to see you again!</Typography>
-				</Box>
-				<Box width="100%">
-					<Button
-						variant="outlined"
-						color="info"
-						onClick={onContinue}
-						sx={{
-							width: "100%",
-							"& svg": {
-								mr: theme.spacing(4),
-								"& path": {
-									stroke: theme.palette.other.icon,
-								},
-							},
-							"&:focus-visible": {
-								outline: `2px solid ${theme.palette.primary.main}`,
-								outlineOffset: `2px`,
-							},
-						}}
-					>
-						<Mail />
-						Continue with Email
-					</Button>
-				</Box>
-				<Box maxWidth={400}>
-					<Typography className="tos-p">
-						By continuing, you agree to our{" "}
-						<Typography
-							component="span"
-							onClick={() => {
-								window.open(
-									"https://bluewavelabs.ca/terms-of-service-open-source",
-									"_blank",
-									"noreferrer"
-								);
-							}}
-							sx={{
-								"&:hover": {
-									color: theme.palette.text.tertiary,
-								},
-							}}
-						>
-							Terms of Service
-						</Typography>{" "}
-						and{" "}
-						<Typography
-							component="span"
-							onClick={() => {
-								window.open(
-									"https://bluewavelabs.ca/privacy-policy-open-source",
-									"_blank",
-									"noreferrer"
-								);
-							}}
-							sx={{
-								"&:hover": {
-									color: theme.palette.text.tertiary,
-								},
-							}}
-						>
-							Privacy Policy.
-						</Typography>
-					</Typography>
-				</Box>
-			</Stack>
-		</>
-	);
-};
-
-LandingPage.propTypes = {
-	onContinue: PropTypes.func.isRequired,
-};
 
 /**
  * Renders the first step of the login process.
@@ -123,7 +29,7 @@ LandingPage.propTypes = {
  * @param {Function} props.onBack - Callback function to handle "Back" button click.
  * @returns {JSX.Element}
  */
-const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
+const StepOne = ({ form, errors, onSubmit, onChange }) => {
 	const theme = useTheme();
 	const inputRef = useRef(null);
 
@@ -168,26 +74,8 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 					/>
 					<Stack
 						direction="row"
-						justifyContent="space-between"
+						justifyContent="flex-end"
 					>
-						<Button
-							variant="outlined"
-							color="info"
-							onClick={onBack}
-							sx={{
-								px: theme.spacing(5),
-								"& svg.MuiSvgIcon-root": {
-									mr: theme.spacing(3),
-								},
-								"&:focus-visible": {
-									outline: `2px solid ${theme.palette.primary.main}`,
-									outlineOffset: `2px`,
-								},
-							}}
-						>
-							<ArrowBackRoundedIcon />
-							Back
-						</Button>
 						<Button
 							variant="contained"
 							color="primary"
@@ -216,7 +104,6 @@ StepOne.propTypes = {
 	errors: PropTypes.object.isRequired,
 	onSubmit: PropTypes.func.isRequired,
 	onChange: PropTypes.func.isRequired,
-	onBack: PropTypes.func.isRequired,
 };
 
 /**
@@ -424,7 +311,7 @@ const Login = () => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		if (step === 1) {
+		if (step === 0) {
 			const { error } = credentials.validate(
 				{ email: form.email },
 				{ abortEarly: false }
@@ -433,9 +320,9 @@ const Login = () => {
 				setErrors((prev) => ({ ...prev, email: error.details[0].message }));
 				createToast({ body: error.details[0].message });
 			} else {
-				setStep(2);
+				setStep(1);
 			}
-		} else if (step === 2) {
+		} else if (step === 1) {
 			const { error } = credentials.validate(form, { abortEarly: false });
 
 			if (error) {
@@ -534,23 +421,20 @@ const Login = () => {
 				}}
 			>
 				{step === 0 ? (
-					<LandingPage onContinue={() => setStep(1)} />
-				) : step === 1 ? (
 					<StepOne
 						form={form}
 						errors={errors}
 						onSubmit={handleSubmit}
 						onChange={handleChange}
-						onBack={() => setStep(0)}
 					/>
 				) : (
-					step === 2 && (
+					step === 1 && (
 						<StepTwo
 							form={form}
 							errors={errors}
 							onSubmit={handleSubmit}
 							onChange={handleChange}
-							onBack={() => setStep(1)}
+							onBack={() => setStep(0)}
 						/>
 					)
 				)}
