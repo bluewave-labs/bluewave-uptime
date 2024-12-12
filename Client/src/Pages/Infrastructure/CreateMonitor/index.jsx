@@ -210,8 +210,8 @@ const CreateInfrastructureMonitor = () => {
 		<Box className="create-infrastructure-monitor">
 			<Breadcrumbs
 				list={[
-					{ name: "Infrastructure monitors", path: "infrastructure" },
-					{ name: "create", path: `infrastructure/create` },
+					{ name: "Infrastructure monitors", path: "/infrastructure" },
+					{ name: "create", path: `/infrastructure/create` },
 				]}
 			/>
 			<Stack
@@ -303,7 +303,6 @@ const CreateInfrastructureMonitor = () => {
 						</Typography>
 					</Box>
 					<Stack gap={theme.spacing(6)}>
-						<Typography component="p">When there is a new incident,</Typography>
 						<Checkbox
 							id="notify-email-default"
 							label={`Notify via email (to ${user.email})`}

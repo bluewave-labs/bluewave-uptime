@@ -49,6 +49,7 @@ const Select = ({
 	onBlur,
 	sx,
 	name = "",
+	labelControlSpacing = 2,
 }) => {
 	const theme = useTheme();
 	const itemStyles = {
@@ -57,10 +58,10 @@ const Select = ({
 		borderRadius: theme.shape.borderRadius,
 		margin: theme.spacing(2),
 	};
-
+	
 	return (
 		<Stack
-			gap={theme.spacing(2)}
+			gap={theme.spacing(labelControlSpacing)}
 			className="select-wrapper"
 		>
 			{label && (
@@ -144,6 +145,7 @@ Select.propTypes = {
 	onChange: PropTypes.func.isRequired,
 	onBlur: PropTypes.func,
 	sx: PropTypes.object,
+	labelControlSpacing: PropTypes.number,
 };
 
 export default Select;

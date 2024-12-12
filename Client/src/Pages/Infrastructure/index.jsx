@@ -191,31 +191,26 @@ function Infrastructure() {
 				<SkeletonLayout />
 			) : monitorState.monitors?.length !== 0 ? (
 				<Stack gap={theme.spacing(8)}>
-					<Breadcrumbs list={BREADCRUMBS} />
-					<Stack
-						direction="row"
-						sx={{
-							justifyContent: "end",
-							alignItems: "center",
-							gap: "1rem",
-							flexWrap: "wrap",
-							marginBottom: "2rem",
-						}}
-					>
-						{/* 
-				This will be removed from here, but keeping the commented code to remind me to add a max width to the greeting component
-				<Box style={{ maxWidth: "65ch" }}>
-					<Greeting type="uptime" />
-				</Box> */}
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={navigateToCreate}
-							sx={{ fontWeight: 500 }}
+					<Box>
+						<Breadcrumbs list={BREADCRUMBS} />
+						<Stack
+							direction="row"
+							justifyContent="end"
+							alignItems="center"
+							mt={theme.spacing(5)}
 						>
-							Create infrastructure monitor
-						</Button>
-					</Stack>
+							{isAdmin && (
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={navigateToCreate}
+									sx={{ fontWeight: 500, whiteSpace: "nowrap" }}
+								>
+									Create new
+								</Button>
+							)}
+						</Stack>
+					</Box>
 					<Stack
 						sx={{
 							gap: "1rem",
