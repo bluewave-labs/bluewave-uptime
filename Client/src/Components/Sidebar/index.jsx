@@ -177,13 +177,7 @@ function Sidebar() {
 					direction="row"
 					alignItems="center"
 					gap={theme.spacing(4)}
-					onClick={() =>
-						window.open(
-							"https://github.com/bluewave-labs/bluewave-uptime",
-							"_blank",
-							"noreferrer"
-						)
-					}
+					onClick={() => navigate("/")}
 					sx={{ cursor: "pointer" }}
 				>
 					<Stack
