@@ -79,7 +79,7 @@ We pride ourselves on building strong connections with contributors at every lev
 Here's how you can contribute:
 
 0. Star this repo :)
-1. Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
+1. Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md). First timers are encouraged to check `good-first-issue` tag.
 2. Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
 3. Open an issue if you believe you've encountered a bug
 4. Check for good-first-issue's if you are a newcomer
