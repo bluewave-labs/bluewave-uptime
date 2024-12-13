@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { /* useDispatch, */ useSelector } from "react-redux";
+import { /* useDispatch, */ useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 import useUtils from "../Uptime/utils.jsx";
 import { jwtDecode } from "jwt-decode";
@@ -31,6 +31,7 @@ import CustomGauge from "../../Components/Charts/CustomGauge/index.jsx";
 import Host from "../Uptime/Home/host.jsx";
 import { useIsAdmin } from "../../Hooks/useIsAdmin.js";
 import { InfrastructureMenu } from "./components/Menu";
+import { resetInfrastructureMonitorFormAction } from "../../Features/InfrastructureMonitors/infrastructureMonitorsSlice.js";
 
 const columns = [
 	{ label: "Host" },
@@ -81,6 +82,7 @@ function Infrastructure() {
 	const theme = useTheme();
 	const [isLoading, setIsLoading] = useState(true);
 
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const navigateToCreate = () => navigate("/infrastructure/create");
 
@@ -128,6 +130,10 @@ function Infrastructure() {
 	useEffect(() => {
 		fetchMonitors();
 	}, [page, rowsPerPage]);
+
+	useEffect(() => {
+		dispatch(resetInfrastructureMonitorFormAction());
+	}, []);
 
 	const { determineState } = useUtils();
 	const { monitors, total: totalMonitors } = monitorState;
