@@ -178,6 +178,7 @@ function Sidebar() {
 					alignItems="center"
 					gap={theme.spacing(4)}
 					onClick={() => navigate("/")}
+					aria-label="Navigate to home page"
 					sx={{ cursor: "pointer" }}
 				>
 					<Stack
