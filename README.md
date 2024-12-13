@@ -1,3 +1,5 @@
+**Need support or have a suggestion? Check our [Discord channel](https://discord.gg/NAb6H3UTjK)**
+
 ![](https://img.shields.io/github/license/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/repo-size/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/commit-activity/w/bluewave-labs/bluewave-uptime)
