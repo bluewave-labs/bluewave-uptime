@@ -5,23 +5,13 @@ import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
 import { publicPageGeneralSettingsValidation } from "../../../Validation/validation";
 import { buildErrors } from "../../../Validation/error";
-import { hasValidationErrors } from "../../../Validation/error";
 import Card from "./Card";
 import update from "immutability-helper";
 import Checkbox from "../../Inputs/Checkbox";
 
-const ContentPanel = () => {
+const ContentPanel = ({errors, setErrors}) => {
 	const theme = useTheme();
-	const [errors, setErrors] = useState({});
-	// Local state for form data, errors, and file handling
-	const [localData, setLocalData] = useState({
-		monitors: [],
-		showUptimePercentage: false,
-		showBarcode: false
-
-	});
-
-	const [cards, setCards] = useState(localData.monitors);
+	const [cards, setCards] = useState(form.monitors);
 
 	// Clears specific error from errors state
 	const clearError = (err) => {
@@ -50,7 +40,7 @@ const ContentPanel = () => {
 	const handleChange = (event) => {
 		event.preventDefault();
 		const { value, id } = event.target;
-		setLocalData((prev) => ({
+		setForm((prev) => ({
 			...prev,
 			[id]: value,
 		}));
@@ -66,13 +56,6 @@ const ContentPanel = () => {
 			setCards(update(cards, { $splice: [[idx, 1, x]] }));
 		} else setCards(update(cards, { $push: [{ id: id, url: value }] }));
 	}
-
-	const handleSubmit = () => {
-		if (hasValidationErrors(localData, publicPageGeneralSettingsValidation, setErrors)) {
-			return;
-		}
-	};
-
 	const handleAddNew = () => {
 		setCards([...cards, { id: "" + Math.random() }]);
 	};
@@ -190,34 +173,19 @@ const ContentPanel = () => {
 						<Checkbox
 							id="show-barcode"
 							label={`Show Barcode`}
-							isChecked={localData.showBarcode}
-							value={"localData.showBarcode"}
+							isChecked={form.showBarcode}
 							onChange={handleChange}
 							onBlur={handleBlur}
 						/>
 						<Checkbox
 							id="show-uptime-percentage"
 							label={`Show Uptime Percentage`}
-							isChecked={localData.showUptimePercentage}
-							value={"localData.showUptimePercentage"}
+							isChecked={form.showUptimePercentage}
 							onChange={handleChange}
 							onBlur={handleBlur}
 						/>						
 					</Stack>
 				</ConfigBox>
-
-				<Stack
-					direction="row"
-					justifyContent="flex-end"
-				>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={handleSubmit}
-					>
-						Save
-					</Button>
-				</Stack>
 			</Stack>
 		</TabPanel>
 	);

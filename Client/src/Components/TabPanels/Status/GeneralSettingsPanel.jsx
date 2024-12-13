@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { Button, Box, Stack, Typography } from "@mui/material";
 import { ConfigBox } from "../../../Pages/Settings/styled";
 import Checkbox from "../../Inputs/Checkbox";
@@ -18,23 +18,15 @@ import ProgressUpload from "../../ProgressBars";
 import ImageIcon from "@mui/icons-material/Image";
 import { HttpAdornment } from "../../Inputs/TextInput/Adornments";
 import { hasValidationErrors } from "../../../Validation/error";
+import { StatusFormContext } from "../../../Pages/Status/TabContext";
 
-const GeneralSettingsPanel = () => {
-	const theme = useTheme();
-	const [errors, setErrors] = useState({});
+const GeneralSettingsPanel = ({errors, setErrors}) => {
+	const theme = useTheme();	
 	const [logo, setLogo] = useState();
+	const { form, setForm  } = useContext(StatusFormContext);
 	const [progress, setProgress] = useState({ value: 0, isLoading: false });
 	const intervalRef = useRef(null);
-	// Local state for form data, errors, and file handling
-	const [localData, setLocalData] = useState({
-		companyName: "",
-		url: "",
-		timezone: "America/Toronto",
-		color: "#4169E1",
-		//which fields matching below?
-		publish: false,
-		logo: null,
-	});
+	
 	// Clears specific error from errors state
 	const clearError = (err) => {
 		setErrors((prev) => {
@@ -46,7 +38,7 @@ const GeneralSettingsPanel = () => {
 	const removeLogo = () => {
 		errors["logo"] && clearError("logo");
 		setLogo({});
-		setLocalData((prev) => ({
+		setForm((prev) => ({
 			...prev,
 			logo: logo?.src,
 		}));
@@ -58,25 +50,10 @@ const GeneralSettingsPanel = () => {
 	const handleChange = (event) => {
 		event.preventDefault();
 		const { value, id } = event.target;
-		setLocalData((prev) => ({
+		setForm((prev) => ({
 			...prev,
 			[id]: value,
 		}));
-	};
-
-	const handleSubmit = () => {
-		//validate rest of the form
-		delete localData.logo;
-		if (hasValidationErrors(localData, publicPageGeneralSettingsValidation, setErrors)) {
-			return;
-		}
-		//validate image field
-		let error = validateField(
-			{ type: logo?.type ?? null, size: logo?.size ?? null },
-			logoImageValidation
-		);
-		if (error) return;
-		localData.logo = { ...logo, size: formatBytes(logo?.size) };
 	};
 
 	const handleBlur = (event) => {
@@ -159,7 +136,7 @@ const GeneralSettingsPanel = () => {
 						<Checkbox
 							id="published-to-public"
 							label={`Published and visible to the public`}
-							isChecked={localData.publish}
+							isChecked={form.publish}
 							onChange={handleChange}
 							onBlur={handleBlur}
 						/>
@@ -180,7 +157,7 @@ const GeneralSettingsPanel = () => {
 							id="companyName"
 							type="text"
 							label="Company name"
-							value={localData.companyName}
+							value={form.companyName}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							helperText={errors["companyName"]}
@@ -190,7 +167,7 @@ const GeneralSettingsPanel = () => {
 							id="url"
 							type="url"
 							label="SubURL"
-							value={localData.url}
+							value={form.url}
 							startAdornment={<HttpAdornment prefix = {"http://uptimegenie.com/"} https={false} />}
 							onChange={handleChange}
 							onBlur={handleBlur}
@@ -212,7 +189,7 @@ const GeneralSettingsPanel = () => {
 						<Select
 							id="display-timezone"
 							label="Display timezone"
-							value={localData.timezone}
+							value={form.timezone}
 							onChange={handleChange}
 							onBlur={handleBlur}
 							items={timezones}
@@ -220,7 +197,7 @@ const GeneralSettingsPanel = () => {
 						/>
 						<ImageField
 							id="logo"
-							src={localData.logo?.src ?? logo?.src}
+							src={form.logo?.src ?? logo?.src}
 							loading={progress.isLoading && progress.value !== 100}
 							onChange={handleLogo}
 							isRound={false}
@@ -240,25 +217,13 @@ const GeneralSettingsPanel = () => {
 						<TextInput
 							id="color"
 							label="Color"
-							value={localData.color}
+							value={form.color}
 							error={errors["color"]}
 							onChange={handleChange}
 							onBlur={handleBlur}
 						/>
 					</Stack>
 				</ConfigBox>
-				<Stack
-					direction="row"
-					justifyContent="flex-end"
-				>
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={handleSubmit}
-					>
-						Save
-					</Button>
-				</Stack>
 			</Stack>
 		</TabPanel>
 	);

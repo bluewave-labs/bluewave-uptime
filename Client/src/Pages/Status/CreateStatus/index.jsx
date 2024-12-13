@@ -1,15 +1,18 @@
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import { Box, Tab, useTheme } from "@mui/material";
+import { Box, Tab, useTheme, Stack, Button } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import GeneralSettingsPanel from "../../../Components/TabPanels/Status/GeneralSettingsPanel";
 import {
 	capitalizeFirstLetter,
-	toLowerCaseFirstLetter,
 } from "../../../Utils/stringUtils";
 import ContentPanel from "../../../Components/TabPanels/Status/ContentPanel";
+import {
+	publicPageGeneralSettingsValidation,
+} from "../../../Validation/validation";
+import { hasValidationErrors } from "../../../Validation/error";
+import { StatusFormProvider } from "../TabContext"
 
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
@@ -19,21 +22,46 @@ import ContentPanel from "../../../Components/TabPanels/Status/ContentPanel";
 
 const CreateStatus = ({ open = "general-settings" }) => {
 	const theme = useTheme();
-	const navigate = useNavigate();
 	let tabList = ["General Settings", "Contents"];
+	const [errors, setErrors] = useState({});
 	const tab = open
 		.split("-")
 		.map((a) => capitalizeFirstLetter(a))
 		.join(" ");
-
+	
 	const [tabIdx, setTabIdx] = useState(tabList.indexOf(tab));
 
 	const handleTabChange = (event, newTab) => {
-		let toNavString = newTab.split(" ").map((a) => toLowerCaseFirstLetter(a));
 		setTabIdx(tabList.indexOf(newTab));
-		toNavString = toNavString.join("-");
-		navigate(`/status/${toNavString}`);
 	};
+
+	const [form, setForm] = useState({
+		companyName: "",
+		url: "",
+		timezone: "America/Toronto",
+		color: "#4169E1",
+		//which fields matching below?
+		publish: false,
+		logo: null,
+		monitors: [],
+		showUptimePercentage: false,
+		showBarcode: false		
+	});
+
+	const handleSubmit = () => {
+		//validate rest of the form
+		delete form.logo;
+		if (hasValidationErrors(form, publicPageGeneralSettingsValidation, setErrors)) {						
+			return;
+		}
+		// //validate image field, double check if it is required
+		// let error = validateField(
+		// 	{ type: logo?.type ?? null, size: logo?.size ?? null },
+		// 	logoImageValidation
+		// );
+		if (error) return;
+		form.logo = { ...logo, size: formatBytes(logo?.size) };
+	};	
 
 	useEffect(() => {
 		setTabIdx(tabList.indexOf(tab));
@@ -49,7 +77,7 @@ const CreateStatus = ({ open = "general-settings" }) => {
 			borderRadius={theme.shape.borderRadius}
 			backgroundColor={theme.palette.background.main}
 		>
-			<TabContext value={tab}>
+			<TabContext value={tabList[tabIdx]}>
 				<Box
 					sx={{
 						borderBottom: 1,
@@ -84,8 +112,31 @@ const CreateStatus = ({ open = "general-settings" }) => {
 						))}
 					</TabList>
 				</Box>
-				{tabIdx == 0 ? <GeneralSettingsPanel /> : <ContentPanel />}
+				<StatusFormProvider>
+					{tabIdx == 0 ? (
+						<GeneralSettingsPanel
+						errors={errors}
+						setErrors={setErrors}/>
+					) : (
+						<ContentPanel
+ss							errors={errors}
+							setErrors={setErrors}
+						/>
+					)}
+				</StatusFormProvider>
 			</TabContext>
+			<Stack
+				direction="row"
+				justifyContent="flex-end"
+			>
+				<Button
+					variant="contained"
+					color="primary"
+					onClick={handleSubmit}
+				>
+					Save
+				</Button>
+			</Stack>
 		</Box>
 	);
 };
