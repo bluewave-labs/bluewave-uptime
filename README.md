@@ -30,7 +30,7 @@ Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate
 
 ## 🛠️ Installation
 
-See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
+See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart). Alternatively, you can also use [Coolify](https://coolify.io/) for a one click Docker deployment.
 
 ## 💚 Questions & ideas
 
