@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import NotFound from "./Pages/NotFound";
-import Login from "./Pages/Auth/Login";
+import Login from "./Pages/Auth/Login/Login";
 import Register from "./Pages/Auth/Register/Register";
 import Account from "./Pages/Account";
 import Monitors from "./Pages/Monitors/Home";
