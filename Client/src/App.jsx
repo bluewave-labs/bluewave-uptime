@@ -144,23 +144,13 @@ function App() {
 						element={<ProtectedRoute Component={Incidents} />}
 					/>
 					<Route
-						path="status/general-settings"
+						path="status"
 						element={
 							<ProtectedRoute
-								Component={CreateStatus}
-								open="general-settings"
+								Component={Status}
 							/>
 						}
-					/>
-					<Route
-						path="status/contents"
-						element={
-							<ProtectedRoute
-								Component={CreateStatus}
-								open="contents"
-							/>
-						}
-					/>
+					/>					
 
 					<Route
 						path="integrations"
