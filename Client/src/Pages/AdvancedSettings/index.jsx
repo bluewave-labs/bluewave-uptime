@@ -18,7 +18,7 @@ import { useIsAdmin } from "../../Hooks/useIsAdmin";
 
 const AdvancedSettings = () => {
 	const navigate = useNavigate();
-	const isAdmin = useIsAdmin;
+	const isAdmin = useIsAdmin();
 	useEffect(() => {
 		if (!isAdmin) {
 			navigate("/");
