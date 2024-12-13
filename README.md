@@ -34,7 +34,7 @@ See installation instructions in [Checkmate documentation portal](https://bluewa
 
 ## 💚 Questions & ideas
 
-We've just launched our [Discussions](https://github.com/bluewave-labs/bluewave-uptime/discussions) page! Feel free to ask questions or share your ideas—we'd love to hear from you!
+If you have any questions, suggestions or comments, please use our [Discord channel](https://discord.gg/NAb6H3UTjK). We've also launched our [Discussions](https://github.com/bluewave-labs/bluewave-uptime/discussions) page! Feel free to ask questions or share your ideas—we'd love to hear from you!
 
 ## 🧩 Features
 
