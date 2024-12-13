@@ -31,7 +31,6 @@ const GeneralSettingsPanel = () => {
 		url: "",
 		timezone: "America/Toronto",
 		color: "#4169E1",
-		theme: "light",
 		//which fields matching below?
 		publish: false,
 		logo: null,
@@ -68,7 +67,6 @@ const GeneralSettingsPanel = () => {
 	const handleSubmit = () => {
 		//validate rest of the form
 		delete localData.logo;
-		delete localData.publish;
 		if (hasValidationErrors(localData, publicPageGeneralSettingsValidation, setErrors)) {
 			return;
 		}
@@ -162,7 +160,6 @@ const GeneralSettingsPanel = () => {
 							id="published-to-public"
 							label={`Published and visible to the public`}
 							isChecked={localData.publish}
-							value={"localData.publish"}
 							onChange={handleChange}
 							onBlur={handleBlur}
 						/>
@@ -226,6 +223,7 @@ const GeneralSettingsPanel = () => {
 							src={localData.logo?.src ?? logo?.src}
 							loading={progress.isLoading && progress.value !== 100}
 							onChange={handleLogo}
+							isRound={false}
 						/>
 						{progress.isLoading || progress.value !== 0 || errors["logo"] ? (
 							<ProgressUpload
@@ -246,17 +244,6 @@ const GeneralSettingsPanel = () => {
 							error={errors["color"]}
 							onChange={handleChange}
 							onBlur={handleBlur}
-						/>
-						<Select
-							id="theme"
-							label="Theme"
-							value={localData.theme}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							items={[
-								{ _id: "light", name: "Light" },
-								{ _id: "dark", name: "Dark" },
-							]}
 						/>
 					</Stack>
 				</ConfigBox>
