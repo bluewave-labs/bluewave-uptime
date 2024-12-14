@@ -1,4 +1,4 @@
-**Need support or have a suggestion? Check our [Discord channel](https://discord.gg/NAb6H3UTjK)**
+**Need support or have a suggestion? Check our [Discord channel](https://discord.gg/NAb6H3UTjK) or [Discussions](https://github.com/bluewave-labs/checkmate/discussions) forum.**
 
 **Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13!**
 
