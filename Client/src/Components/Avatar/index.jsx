@@ -3,26 +3,6 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
-/**
- * Generates a color based on the input string.
- * @param {string} string - The input string to generate the color from.
- * @returns {string}
- */
-const stringToColor = (string) => {
-	let hash = 0;
-	let i;
-	for (i = 0; i < string.length; i += 1) {
-		hash = string.charCodeAt(i) + ((hash << 5) - hash);
-	}
-
-	let color = "#";
-	for (i = 0; i < 3; i += 1) {
-		const value = (hash >> (i * 8)) & 0xff;
-		color += `00${value.toString(16)}`.slice(-2);
-	}
-
-	return color;
-};
 
 /**
  * @component
@@ -38,7 +18,6 @@ const stringToColor = (string) => {
 
 const Avatar = ({ src, small, sx }) => {
 	const defaultAvatarColor = "#156EEF";
-
 	const { user } = useSelector((state) => state.auth);
 
 	const style = small ? { width: 32, height: 32 } : { width: 64, height: 64 };
