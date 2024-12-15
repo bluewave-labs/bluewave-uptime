@@ -55,6 +55,7 @@ If you have any questions, suggestions or comments, please use our [Discord chan
 - Incidents at a glance
 - E-mail notifications
 - Scheduled maintenance
+- Can monitor 1000+ servers at the same time on a moderate server
 
 **Short term roadmap:**
 
