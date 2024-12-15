@@ -1,4 +1,9 @@
-**Need support or have a suggestion? Check our [Discord channel](https://discord.gg/NAb6H3UTjK)**
+**Need support or have a suggestion? Check our [Discord channel](https://discord.gg/NAb6H3UTjK) or [Discussions](https://github.com/bluewave-labs/checkmate/discussions) forum.**
+
+**Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13!**
+
+![1](https://github.com/user-attachments/assets/a4f9842e-c9d9-4672-badb-79a5eccbbf3a)
+
 
 ![](https://img.shields.io/github/license/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/repo-size/bluewave-labs/bluewave-uptime)
@@ -16,7 +21,9 @@
 
 Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time. 
 
-Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status.
+Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status. 
+
+We've run stress tests with 1000+ active monitors without any particular issues or performance bottlenecks.
 
 We **love** what we are building here, and learn a few things about Reactjs, Nodejs, MongoDB and Docker while building Checkmate. **If you would like to support us, please consider giving it a ⭐, think about contributing or providing feedback.** Please note that we do not operate a monetary donation program, make money by deploying servers, or run a SaaS business.
 
@@ -30,7 +37,7 @@ Usage instructions can be found [here](https://bluewavelabs.gitbook.io/checkmate
 
 ## 🛠️ Installation
 
-See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart).
+See installation instructions in [Checkmate documentation portal](https://bluewavelabs.gitbook.io/checkmate/quickstart). Alternatively, you can also use [Coolify](https://coolify.io/) for a one click Docker deployment.
 
 ## 💚 Questions & ideas
 
@@ -48,6 +55,7 @@ If you have any questions, suggestions or comments, please use our [Discord chan
 - Incidents at a glance
 - E-mail notifications
 - Scheduled maintenance
+- Can monitor 1000+ servers at the same time on a moderate server
 
 **Short term roadmap:**
 
@@ -74,16 +82,17 @@ If you have any questions, suggestions or comments, please use our [Discord chan
 
 ## 🤝 Contributing
 
-We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 1500 stars and attracted 35+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
+We pride ourselves on building strong connections with contributors at every level. Despite being a young project, Checkmate has already earned 1900 stars and attracted 35+ contributors from around the globe. So, don’t hold back — jump in, contribute and learn with us!
 
 Here's how you can contribute:
 
 0. Star this repo :)
-1. Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md).
-2. Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1). We encourage you to copy to your own Figma page, then work on it as it is read-only.
-3. Open an issue if you believe you've encountered a bug
-4. Check for good-first-issue's if you are a newcomer
-5. Make a pull request to add new features/make quality-of-life improvements/fix bugs.
+1. Check [Contributor's guideline](https://github.com/bluewave-labs/bluewave-uptime/blob/master/CONTRIBUTING.md). First timers are encouraged to check `good-first-issue` tag.
+2. Optionally, read [project structure](https://bluewavelabs.gitbook.io/checkmate/developers-guide/general-project-structure) and [high level overview](https://bluewavelabs.gitbook.io/checkmate/developers-guide/high-level-overview).
+3. Have a look at our Figma designs [here](https://www.figma.com/design/RPSfaw66HjzSwzntKcgDUV/Uptime-Genie?node-id=0-1&t=WqOFv9jqNTFGItpL-1) if you are going to use one of our designs. We encourage you to copy to your own Figma page, then work on it as it is read-only.
+4. Open an issue if you believe you've encountered a bug.
+5. Check for good-first-issue's if you are a newcomer.
+6. Make a pull request to add new features/make quality-of-life improvements/fix bugs.
 
 <a href="https://github.com/bluewave-labs/bluewave-uptime/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=bluewave-labs/bluewave-uptime" />
