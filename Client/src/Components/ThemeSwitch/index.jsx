@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "./index.css";
 import { IconButton } from "@mui/material";
 import SunAndMoonIcon from "./SunAndMoonIcon";
+import "./index.css";
 
 const ThemeSwitch = () => {
 	// TODO: change to use the MUI theme
