@@ -37,6 +37,8 @@ const stringToColor = (string) => {
  */
 
 const Avatar = ({ src, small, sx }) => {
+	const defaultAvatarColor = "#156EEF";
+
 	const { user } = useSelector((state) => state.auth);
 
 	const style = small ? { width: 32, height: 32 } : { width: 64, height: 64 };
@@ -57,7 +59,7 @@ const Avatar = ({ src, small, sx }) => {
 				fontSize: small ? "16px" : "22px",
 				color: "white",
 				fontWeight: 400,
-				backgroundColor: stringToColor(`${user?.firstName} ${user?.lastName}`),
+				backgroundColor: user?.avatarImage ? undefined : defaultAvatarColor,
 				display: "inline-flex",
 				"&::before": {
 					content: `""`,
