@@ -1,9 +1,8 @@
 **Need support or have a suggestion? Check our [Discord channel](https://discord.gg/NAb6H3UTjK) or [Discussions](https://github.com/bluewave-labs/checkmate/discussions) forum.**
 
-**Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13!**
+**Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13th & 15th**
 
-![1](https://github.com/user-attachments/assets/a4f9842e-c9d9-4672-badb-79a5eccbbf3a)
-
+<img width="1259" alt="2300" src="https://github.com/user-attachments/assets/4d1d796f-d560-4f81-8d97-3cdc8a387a5a" />
 
 ![](https://img.shields.io/github/license/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/repo-size/bluewave-labs/bluewave-uptime)
