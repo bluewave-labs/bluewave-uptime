@@ -4,6 +4,7 @@ import { IconButton } from "@mui/material";
 import SunAndMoonIcon from "./SunAndMoonIcon";
 
 const ThemeSwitch = () => {
+	// TODO: change to use the MUI theme
 	const [currentTheme, setCurrentTheme] = useState("light");
 	const toggleTheme = () =>
 		setCurrentTheme((prevState) => (prevState === "light" ? "dark" : "light"));
