@@ -10,7 +10,7 @@
 	fill: var(--icon-fill-hover);
 }
 
-.sun-and-moon > .sun-beams {
+.theme-toggle .sun-and-moon > .sun-beams {
 	stroke: var(--icon-fill);
 	stroke-width: 2px;
 }
