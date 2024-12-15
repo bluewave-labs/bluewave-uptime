@@ -21,7 +21,9 @@
 
 Checkmate is an open source uptime manager, server & Docker monitoring tool used to track the operational status and performance of servers and websites. It regularly checks whether a server/website is accessible and performs optimally, providing real-time alerts and reports on the monitored services' availability, downtime, and response time. 
 
-Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status.
+Checkmate also has an agent, called [Capture](https://github.com/bluewave-labs/capture), to retrieve data from remote servers. While Capture is not required to run Checkmate, it provides additional insigths about your servers' CPU, RAM, disk and temperature status. 
+
+We've run stress tests with 1000+ active monitors without any particular issues or performance bottlenecks.
 
 We **love** what we are building here, and learn a few things about Reactjs, Nodejs, MongoDB and Docker while building Checkmate. **If you would like to support us, please consider giving it a ⭐, think about contributing or providing feedback.** Please note that we do not operate a monetary donation program, make money by deploying servers, or run a SaaS business.
 
