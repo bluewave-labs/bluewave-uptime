@@ -28,13 +28,17 @@ const DEMO = import.meta.env.VITE_APP_DEMO;
  */
 const LandingPage = ({ onContinue }) => {
 	const theme = useTheme();
-
+	const navigate = useNavigate();
+	const handleNavigate = () => {
+		navigate("/forgot-password");
+	};
 	return (
 		<>
 			<Stack
 				gap={{ xs: theme.spacing(8), sm: theme.spacing(12) }}
 				alignItems="center"
 				textAlign="center"
+				position="relative"
 			>
 				<Box>
 					<Typography component="h1">Log In</Typography>
@@ -103,6 +107,32 @@ const LandingPage = ({ onContinue }) => {
 						</Typography>
 					</Typography>
 				</Box>
+				<Box
+					textAlign="center"
+					sx={{
+						position: "absolute",
+						bottom: 0,
+						left: "50%",
+						transform: `translate(-50%, 150%)`,
+					}}
+				>
+					<Typography
+						className="forgot-p"
+						display="inline-block"
+						color={theme.palette.primary.main}
+					>
+						Forgot password?
+					</Typography>
+					<Typography
+						component="span"
+						color={theme.palette.primary.main}
+						ml={theme.spacing(2)}
+						sx={{ userSelect: "none" }}
+						onClick={handleNavigate}
+					>
+						Reset password
+					</Typography>
+				</Box>
 			</Stack>
 		</>
 	);
@@ -126,18 +156,26 @@ LandingPage.propTypes = {
 const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 	const theme = useTheme();
 	const inputRef = useRef(null);
-
+	const navigate = useNavigate();
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
 		}
 	}, []);
 
+	const handleNavigate = () => {
+		if (form.email !== "" && !errors.email) {
+			sessionStorage.setItem("email", form.email);
+		}
+		navigate("/forgot-password");
+	};
+	
 	return (
 		<>
 			<Stack
 				gap={{ xs: theme.spacing(12), sm: theme.spacing(16) }}
 				textAlign="center"
+				position="relative"
 			>
 				<Box>
 					<Typography component="h1">Log In</Typography>
@@ -205,6 +243,32 @@ const StepOne = ({ form, errors, onSubmit, onChange, onBack }) => {
 							Continue
 						</Button>
 					</Stack>
+				</Box>
+				<Box
+					textAlign="center"
+					sx={{
+						position: "absolute",
+						bottom: 0,
+						left: "50%",
+						transform: `translate(-50%, 150%)`,
+					}}
+				>
+					<Typography
+						className="forgot-p"
+						display="inline-block"
+						color={theme.palette.primary.main}
+					>
+						Forgot password?
+					</Typography>
+					<Typography
+						component="span"
+						color={theme.palette.primary.main}
+						ml={theme.spacing(2)}
+						sx={{ userSelect: "none" }}
+						onClick={handleNavigate}
+					>
+						Reset password
+					</Typography>
 				</Box>
 			</Stack>
 		</>
