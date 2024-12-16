@@ -548,7 +548,7 @@ const Login = () => {
 						/>
 					)
 				)}
-				<Box sx={{ marginX: "auto"}}>
+				<Box marginX={"auto"}>
 					<ThemeSwitch />
 				</Box>
 			</Stack>
