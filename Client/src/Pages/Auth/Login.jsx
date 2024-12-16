@@ -17,6 +17,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PropTypes from "prop-types";
 import { logger } from "../../Utils/Logger";
 import "./index.css";
+import ThemeSwitch from "../../Components/ThemeSwitch";
 const DEMO = import.meta.env.VITE_APP_DEMO;
 
 /**
@@ -327,33 +328,25 @@ const StepTwo = ({ form, errors, onSubmit, onChange, onBack }) => {
 						</LoadingButton>
 					</Stack>
 				</Box>
-				<Box
-					textAlign="center"
-					sx={{
-						position: "absolute",
-						bottom: 0,
-						left: "50%",
-						transform: `translate(-50%, 150%)`,
-					}}
-				>
-					<Typography
-						className="forgot-p"
-						display="inline-block"
-						color={theme.palette.primary.main}
-					>
-						Forgot password?
-					</Typography>
-					<Typography
-						component="span"
-						color={theme.palette.primary.main}
-						ml={theme.spacing(2)}
-						sx={{ userSelect: "none" }}
-						onClick={handleNavigate}
-					>
-						Reset password
-					</Typography>
-				</Box>
 			</Stack>
+			<Box textAlign="center">
+				<Typography
+					className="forgot-p"
+					display="inline-block"
+					color={theme.palette.primary.main}
+				>
+					Forgot password?
+				</Typography>
+				<Typography
+					component="span"
+					color={theme.palette.primary.main}
+					ml={theme.spacing(2)}
+					sx={{ userSelect: "none" }}
+					onClick={handleNavigate}
+				>
+					Reset password
+				</Typography>
+			</Box>
 		</>
 	);
 };
@@ -520,6 +513,7 @@ const Login = () => {
 				px={{ xs: theme.spacing(12), lg: theme.spacing(20) }}
 				pb={theme.spacing(20)}
 				mx="auto"
+				gap={theme.spacing(8)}
 				sx={{
 					"& > .MuiStack-root": {
 						border: 1,
@@ -554,6 +548,9 @@ const Login = () => {
 						/>
 					)
 				)}
+				<Box sx={{ marginX: "auto"}}>
+					<ThemeSwitch />
+				</Box>
 			</Stack>
 		</Stack>
 	);
