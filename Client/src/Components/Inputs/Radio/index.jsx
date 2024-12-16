@@ -44,7 +44,7 @@ const Radio = (props) => {
 						boxShadow: `inset 0 0 0 1px ${theme.palette.secondary.main}`,
 						mt: theme.spacing(0.5),
 						"&:not(.Mui-checked)": {
-							boxShadow: `inset 0 0 0 0.35px black`,
+							boxShadow: `inset 0 0 0 1px ${theme.palette.text.primary}70`,
 						},
 					}}
 				/>
