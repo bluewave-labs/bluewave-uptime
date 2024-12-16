@@ -32,14 +32,16 @@ import SkeletonLayout from "./skeleton";
 import "./index.css";
 import useUtils from "../utils";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
+import { useIsAdmin } from "../../../Hooks/useIsAdmin";
 
 /**
  * Details page component displaying monitor details and related information.
  * @component
  */
-const DetailsPage = ({ isAdmin }) => {
+const DetailsPage = () => {
 	const theme = useTheme();
 	const { statusColor, statusStyles, statusMsg, determineState } = useUtils();
+	const isAdmin = useIsAdmin();
 	const [monitor, setMonitor] = useState({});
 	const { monitorId } = useParams();
 	const { authToken } = useSelector((state) => state.auth);
@@ -100,7 +102,7 @@ const DetailsPage = ({ isAdmin }) => {
 			}
 		};
 		fetchCertificate();
-	}, [authToken, monitorId, monitor]);
+	}, [authToken, monitorId, monitor, uiTimezone, dateFormat]);
 
 	const splitDuration = (duration) => {
 		const { time, format } = formatDurationSplit(duration);
@@ -117,18 +119,17 @@ const DetailsPage = ({ isAdmin }) => {
 	const [hoveredUptimeData, setHoveredUptimeData] = useState(null);
 	const [hoveredIncidentsData, setHoveredIncidentsData] = useState(null);
 
+	const BREADCRUMBS = [
+		{ name: "uptime", path: "/uptime" },
+		{ name: "details", path: `/uptime/${monitorId}` },
+	];
 	return (
 		<Box className="monitor-details">
 			{loading ? (
 				<SkeletonLayout />
 			) : (
 				<>
-					<Breadcrumbs
-						list={[
-							{ name: "monitors", path: "/monitors" },
-							{ name: "details", path: `/monitors/${monitorId}` },
-						]}
-					/>
+					<Breadcrumbs list={BREADCRUMBS} />
 					<Stack
 						gap={theme.spacing(10)}
 						mt={theme.spacing(10)}
@@ -262,7 +263,7 @@ const DetailsPage = ({ isAdmin }) => {
 									<Button
 										variant="contained"
 										color="secondary"
-										onClick={() => navigate(`/monitors/configure/${monitorId}`)}
+										onClick={() => navigate(`/uptime/configure/${monitorId}`)}
 										sx={{
 											px: theme.spacing(5),
 											"& svg": {
