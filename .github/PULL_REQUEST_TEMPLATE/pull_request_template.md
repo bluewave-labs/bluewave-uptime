@@ -1,6 +1,8 @@
+**(when sending your PR, only remove this line. Do not remove any lines below. Check all the items before sending your PR)**
+
 ## Describe your changes
 
-Briefly describe the changes you made and their purpose.
+Briefly describe the changes you made and their purpose. 
 
 ## Issue number
 
