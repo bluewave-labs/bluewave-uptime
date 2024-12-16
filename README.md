@@ -2,7 +2,7 @@
 
 **Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13th & 15th**
 
-<img width="1259" alt="2300" src="https://github.com/user-attachments/assets/4d1d796f-d560-4f81-8d97-3cdc8a387a5a" />
+<img width="1259" alt="Frame 34" src="https://github.com/user-attachments/assets/b9339bd3-8f80-4919-8255-88db8d841a3d" />
 
 ![](https://img.shields.io/github/license/bluewave-labs/bluewave-uptime)
 ![](https://img.shields.io/github/repo-size/bluewave-labs/bluewave-uptime)
