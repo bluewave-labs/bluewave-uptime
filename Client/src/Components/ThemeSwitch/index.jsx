@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import { IconButton } from "@mui/material";
 import SunAndMoonIcon from "./SunAndMoonIcon";
 import "./index.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setMode } from "../../Features/UI/uiSlice";
 
 const ThemeSwitch = () => {
-	// TODO: change to use the MUI theme
-	const [currentTheme, setCurrentTheme] = useState("light");
-	const toggleTheme = () =>
-		setCurrentTheme((prevState) => (prevState === "light" ? "dark" : "light"));
+	const mode = useSelector((state) => state.ui.mode);
+	const dispatch = useDispatch();
+
+	const toggleTheme = () => {
+		dispatch(setMode(mode === "light" ? "dark" : "light"));
+	};
 
 	useEffect(() => {
-		document.body.setAttribute("data-theme", currentTheme);
-	}, [currentTheme]);
+		document.body.setAttribute("data-theme", mode);
+	}, [mode]);
 
 	return (
 		<IconButton
