@@ -43,6 +43,9 @@ const Radio = (props) => {
 						height: 16,
 						boxShadow: `inset 0 0 0 1px ${theme.palette.secondary.main}`,
 						mt: theme.spacing(0.5),
+						"&:not(.Mui-checked)": {
+							boxShadow: `inset 0 0 0 0.35px black`,
+						},
 					}}
 				/>
 			}
