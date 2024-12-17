@@ -1,4 +1,15 @@
-import React, { useEffect, useState } from "react";
+/**
+ * ThemeSwitch Component
+ * Dark and Light Theme Switch
+ * Original Code: https://web.dev/patterns/theming/theme-switch
+ * License: Apache License 2.0
+ * Copyright © Google LLC
+ *
+ * This code has been adapted for use in this project.
+ * Apache License: https://www.apache.org/licenses/LICENSE-2.0
+ */
+
+import React, { useEffect } from "react";
 import { IconButton } from "@mui/material";
 import SunAndMoonIcon from "./SunAndMoonIcon";
 import "./index.css";
