@@ -284,7 +284,7 @@ const editUser = async (req, res, next) => {
 			// If not a match, throw a 401
 			if (!match) {
 				const error = new Error(errorMessages.AUTH_INCORRECT_PASSWORD);
-				error.status = 401;
+				error.status = 403;
 				next(error);
 				return;
 			}
