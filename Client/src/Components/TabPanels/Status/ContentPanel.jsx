@@ -1,6 +1,6 @@
 import { useState, useCallback, useContext } from "react";
 import { Button, Box, Stack, Typography } from "@mui/material";
-import { ConfigBox } from "../../../Pages/Settings/styled";
+import { ConfigBox } from "../../../Pages/Uptime/styled";
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
 import { publicPageGeneralSettingsValidation } from "../../../Validation/validation";
@@ -8,7 +8,7 @@ import { buildErrors } from "../../../Validation/error";
 import Card from "./Card";
 import update from "immutability-helper";
 import Checkbox from "../../Inputs/Checkbox";
-import { StatusFormContext } from "../../../Pages/Status/TabContext";
+import { StatusFormContext } from "../../../Pages/Status/CreateStatusContext";
 
 const ContentPanel = () => {
 	const theme = useTheme();
@@ -100,11 +100,12 @@ const ContentPanel = () => {
 					<Box
 						className="status-contents-server-list"
 						sx={{
-							height: "fit-content",
+							margin: theme.spacing(20),
+							//padding: theme.spacing(20),
 							border: "solid",
 							borderRadius: theme.shape.borderRadius,
 							borderColor: theme.palette.border.light,
-							borderWidth: "2px",
+							borderWidth: "1px",
 							transition: "0.2s",
 							"&:hover": {
 								borderColor: theme.palette.primary.main,
@@ -161,7 +162,7 @@ const ContentPanel = () => {
 							<Typography component="p">Show more details on the status page</Typography>
 						</Stack>
 					</Box>
-					<Stack						
+					<Stack	sx={{margin: theme.spacing(20)}}
 					>
 						<Checkbox
 							id="show-barcode"

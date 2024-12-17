@@ -847,13 +847,11 @@ class NetworkService {
 		);
 	}
 
-	async getStatusPageByUrl(config){
-		const params = new URLSearchParams();
-		params.append("url", encodeURIComponent(config.url));
-		
-		return this.axiosInstance.get(`/status-page?${params.toString()}`, {
+	async getStatusPageByUrl(config) {
+		const { url, authToken } = config;
+		return this.axiosInstance.get(`/status-page/${url}`, {
 			headers: {
-				Authorization: `Bearer ${config.authToken}`,
+				Authorization: `Bearer ${authToken}`,
 				"Content-Type": "application/json",
 			},
 		});

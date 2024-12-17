@@ -1,6 +1,6 @@
 import { useState, useRef, useContext } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { ConfigBox } from "../../../Pages/Settings/styled";
+import { ConfigBox } from "../../../Pages/Uptime/styled";
 import Checkbox from "../../Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
 import TabPanel from "@mui/lab/TabPanel";
@@ -17,7 +17,7 @@ import { formatBytes } from "../../../Utils/fileUtils";
 import ProgressUpload from "../../ProgressBars";
 import ImageIcon from "@mui/icons-material/Image";
 import { HttpAdornment } from "../../Inputs/TextInput/Adornments";
-import { StatusFormContext } from "../../../Pages/Status/TabContext";
+import { StatusFormContext } from "../../../Pages/Status/CreateStatusContext";
 
 const GeneralSettingsPanel = () => {
 	const theme = useTheme();	

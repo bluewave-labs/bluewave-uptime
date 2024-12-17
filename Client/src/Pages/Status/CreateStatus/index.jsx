@@ -8,7 +8,7 @@ import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 import ContentPanel from "../../../Components/TabPanels/Status/ContentPanel";
 import { publicPageGeneralSettingsValidation } from "../../../Validation/validation";
 import { hasValidationErrors } from "../../../Validation/error";
-import { StatusFormProvider } from "../TabContext";
+import { StatusFormProvider } from "../CreateStatusContext";
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
  * @param {string} [props.open] - Specifies the initially open tab: 'general settings' or 'content'.
@@ -19,6 +19,8 @@ const CreateStatus = ({ open = "general-settings", initForm }) => {
 	const theme = useTheme();
 	let tabList = ["General Settings", "Contents"];
 	const [errors, setErrors] = useState({});
+	const error_tab_maping = [["companyName","url","timezone","color","publish","logo"],["monitors",
+	"showUptimePercentage", "showBarcode"]]
 	const [form, setForm] = useState({
 		companyName: "",
 		url: "",
@@ -39,6 +41,7 @@ const CreateStatus = ({ open = "general-settings", initForm }) => {
 	const [tabIdx, setTabIdx] = useState(tabList.indexOf(tab));
 
 	const handleTabChange = (event, newTab) => {
+
 		setTabIdx(tabList.indexOf(newTab));
 	};
 
@@ -57,9 +60,24 @@ const CreateStatus = ({ open = "general-settings", initForm }) => {
 		form.logo = { ...logo, size: formatBytes(logo?.size) };
 	};
 
-	useEffect(() => {
+	useEffect(() => {		
+		let newIdx = -1;
+		Object.keys(errors).map(id=>{
+			console.log("errors id")
+			console.log(id)
+			error_tab_maping.map((val, idx)  => {
+				let anyMatch = val.some(vl=> vl==id )
+				if(anyMatch){
+					newIdx = idx;					
+				}
+			})
+		})
+		console.log("newIdx")
+		console.log(newIdx)
+		if(newIdx!==-1)
+			setTabIdx(newIdx)		
 		setTabIdx(tabList.indexOf(tab));
-	}, [tab]);
+	}, [tab,errors]);
 
 	return (
 		<Box
