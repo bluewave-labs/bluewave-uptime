@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearAuthState } from "../../Features/Auth/authSlice";
 import { toggleSidebar } from "../../Features/UI/uiSlice";
 import { clearUptimeMonitorState } from "../../Features/UptimeMonitors/uptimeMonitorsSlice";
+import ThemeSwitch from "../ThemeSwitch";
 import Avatar from "../Avatar";
 import LockSvg from "../../assets/icons/lock.svg?react";
 import UserSvg from "../../assets/icons/user.svg?react";
@@ -544,28 +545,35 @@ function Sidebar() {
 								{authState.user?.role}
 							</Typography>
 						</Box>
-						<Tooltip
-							title="Controls"
-							disableInteractive
+						<Stack
+							flexDirection={"row"}
+							marginLeft={"auto"}
+							columnGap={theme.spacing(2)}
 						>
-							<IconButton
-								sx={{
-									ml: "auto",
-									mr: "-8px",
-									"&:focus": { outline: "none" },
-									"& svg": {
-										width: "20px",
-										height: "20px",
-									},
-									"& svg path": {
-										stroke: theme.palette.other.icon,
-									},
-								}}
-								onClick={(event) => openPopup(event, "logout")}
+							<ThemeSwitch />
+							<Tooltip
+								title="Controls"
+								disableInteractive
 							>
-								<DotsVertical />
-							</IconButton>
-						</Tooltip>
+								<IconButton
+									sx={{
+										ml: "auto",
+										mr: "-8px",
+										"&:focus": { outline: "none" },
+										"& svg": {
+											width: "20px",
+											height: "20px",
+										},
+										"& svg path": {
+											stroke: theme.palette.other.icon,
+										},
+									}}
+									onClick={(event) => openPopup(event, "logout")}
+								>
+									<DotsVertical />
+								</IconButton>
+							</Tooltip>
+						</Stack>
 					</>
 				)}
 				<Menu
