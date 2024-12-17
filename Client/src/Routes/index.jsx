@@ -3,7 +3,7 @@ import HomeLayout from "../Components/Layouts/HomeLayout";
 import { Infrastructure } from "../Pages/Infrastructure";
 import InfrastructureDetails from "../Pages/Infrastructure/Details";
 import NotFound from "../Pages/NotFound";
-import Login from "../Pages/Auth/Login";
+import Login from "../Pages/Auth/Login/Login";
 import Register from "../Pages/Auth/Register/Register";
 import Account from "../Pages/Account";
 import Monitors from "../Pages/Uptime/Home";
