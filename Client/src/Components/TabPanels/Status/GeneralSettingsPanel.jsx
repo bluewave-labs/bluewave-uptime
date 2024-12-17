@@ -1,5 +1,5 @@
 import { useState, useRef, useContext } from "react";
-import { Button, Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { ConfigBox } from "../../../Pages/Settings/styled";
 import Checkbox from "../../Inputs/Checkbox";
 import { useTheme } from "@emotion/react";
@@ -17,13 +17,12 @@ import { formatBytes } from "../../../Utils/fileUtils";
 import ProgressUpload from "../../ProgressBars";
 import ImageIcon from "@mui/icons-material/Image";
 import { HttpAdornment } from "../../Inputs/TextInput/Adornments";
-import { hasValidationErrors } from "../../../Validation/error";
 import { StatusFormContext } from "../../../Pages/Status/TabContext";
 
-const GeneralSettingsPanel = ({errors, setErrors}) => {
+const GeneralSettingsPanel = () => {
 	const theme = useTheme();	
 	const [logo, setLogo] = useState();
-	const { form, setForm  } = useContext(StatusFormContext);
+	const { form, setForm, errors, setErrors  } = useContext(StatusFormContext);
 	const [progress, setProgress] = useState({ value: 0, isLoading: false });
 	const intervalRef = useRef(null);
 	

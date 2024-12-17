@@ -1,26 +1,15 @@
-import { createContext, useState, React } from 'react';
+import { createContext, useState, React } from "react";
 
 const StatusFormContext = createContext({
-    form: {},
-    setForm: ()=>{},
+	form: {},
+	setForm: () => {},
+	errors: {},
+	setErrors: () => {},
 });
 
-const StatusFormProvider = ({ children }) => {
-	const [form, setForm] = useState({
-		companyName: "",
-		url: "",
-		timezone: "America/Toronto",
-		color: "#4169E1",
-		//which fields matching below?
-		publish: false,
-		logo: null,
-		monitors: [],
-		showUptimePercentage: false,
-		showBarcode: false,
-	});
-
+const StatusFormProvider = ({ form, setForm, errors, setErrors, children }) => {
 	return (
-        <StatusFormContext.Provider value={{ form, setForm}}>
+		<StatusFormContext.Provider value={{ form, setForm, errors, setErrors }}>
 			{children}
 		</StatusFormContext.Provider>
 	);

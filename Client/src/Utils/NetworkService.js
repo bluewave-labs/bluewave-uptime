@@ -846,6 +846,18 @@ class NetworkService {
 			"https://api.github.com/repos/bluewave-labs/bluewave-uptime/releases/latest"
 		);
 	}
+
+	async getStatusPageByUrl(config){
+		const params = new URLSearchParams();
+		params.append("url", encodeURIComponent(config.url));
+		
+		return this.axiosInstance.get(`/status-page?${params.toString()}`, {
+			headers: {
+				Authorization: `Bearer ${config.authToken}`,
+				"Content-Type": "application/json",
+			},
+		});
+	}
 }
 
 export default NetworkService;

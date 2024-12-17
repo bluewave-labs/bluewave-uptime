@@ -4,37 +4,21 @@ import { Box, Tab, useTheme, Stack, Button } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import GeneralSettingsPanel from "../../../Components/TabPanels/Status/GeneralSettingsPanel";
-import {
-	capitalizeFirstLetter,
-} from "../../../Utils/stringUtils";
+import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 import ContentPanel from "../../../Components/TabPanels/Status/ContentPanel";
-import {
-	publicPageGeneralSettingsValidation,
-} from "../../../Validation/validation";
+import { publicPageGeneralSettingsValidation } from "../../../Validation/validation";
 import { hasValidationErrors } from "../../../Validation/error";
-import { StatusFormProvider } from "../TabContext"
-
+import { StatusFormProvider } from "../TabContext";
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
  * @param {string} [props.open] - Specifies the initially open tab: 'general settings' or 'content'.
  * @returns {JSX.Element}
  */
 
-const CreateStatus = ({ open = "general-settings" }) => {
+const CreateStatus = ({ open = "general-settings", initForm }) => {
 	const theme = useTheme();
 	let tabList = ["General Settings", "Contents"];
 	const [errors, setErrors] = useState({});
-	const tab = open
-		.split("-")
-		.map((a) => capitalizeFirstLetter(a))
-		.join(" ");
-	
-	const [tabIdx, setTabIdx] = useState(tabList.indexOf(tab));
-
-	const handleTabChange = (event, newTab) => {
-		setTabIdx(tabList.indexOf(newTab));
-	};
-
 	const [form, setForm] = useState({
 		companyName: "",
 		url: "",
@@ -45,13 +29,23 @@ const CreateStatus = ({ open = "general-settings" }) => {
 		logo: null,
 		monitors: [],
 		showUptimePercentage: false,
-		showBarcode: false		
+		showBarcode: false,
 	});
+	const tab = open
+		.split("-")
+		.map((a) => capitalizeFirstLetter(a))
+		.join(" ");
+
+	const [tabIdx, setTabIdx] = useState(tabList.indexOf(tab));
+
+	const handleTabChange = (event, newTab) => {
+		setTabIdx(tabList.indexOf(newTab));
+	};
 
 	const handleSubmit = () => {
 		//validate rest of the form
 		delete form.logo;
-		if (hasValidationErrors(form, publicPageGeneralSettingsValidation, setErrors)) {						
+		if (hasValidationErrors(form, publicPageGeneralSettingsValidation, setErrors)) {
 			return;
 		}
 		// //validate image field, double check if it is required
@@ -59,9 +53,9 @@ const CreateStatus = ({ open = "general-settings" }) => {
 		// 	{ type: logo?.type ?? null, size: logo?.size ?? null },
 		// 	logoImageValidation
 		// );
-		if (error) return;
+		//		if (error) return;
 		form.logo = { ...logo, size: formatBytes(logo?.size) };
-	};	
+	};
 
 	useEffect(() => {
 		setTabIdx(tabList.indexOf(tab));
@@ -112,17 +106,13 @@ const CreateStatus = ({ open = "general-settings" }) => {
 						))}
 					</TabList>
 				</Box>
-				<StatusFormProvider>
-					{tabIdx == 0 ? (
-						<GeneralSettingsPanel
-						errors={errors}
-						setErrors={setErrors}/>
-					) : (
-						<ContentPanel
-ss							errors={errors}
-							setErrors={setErrors}
-						/>
-					)}
+				<StatusFormProvider
+					form={initForm && Object.keys(initForm) > 0 ? initForm : form}
+					setForm={setForm}
+					errors={errors}
+					setErrors={setErrors}
+				>
+					{tabIdx == 0 ? <GeneralSettingsPanel /> : <ContentPanel />}
 				</StatusFormProvider>
 			</TabContext>
 			<Stack

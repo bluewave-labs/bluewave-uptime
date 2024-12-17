@@ -151,7 +151,14 @@ function App() {
 							/>
 						}
 					/>					
-
+					<Route
+						path="status/create"
+						element={
+							<ProtectedRoute
+								Component={CreateStatus}
+							/>
+						}
+					/>	
 					<Route
 						path="integrations"
 						element={<ProtectedRoute Component={Integrations} />}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 import { Button, Box, Stack, Typography } from "@mui/material";
 import { ConfigBox } from "../../../Pages/Settings/styled";
 import { useTheme } from "@emotion/react";
@@ -8,19 +8,12 @@ import { buildErrors } from "../../../Validation/error";
 import Card from "./Card";
 import update from "immutability-helper";
 import Checkbox from "../../Inputs/Checkbox";
+import { StatusFormContext } from "../../../Pages/Status/TabContext";
 
-const ContentPanel = ({errors, setErrors}) => {
+const ContentPanel = () => {
 	const theme = useTheme();
+	const { form, setForm, errors, setErrors  } = useContext(StatusFormContext);
 	const [cards, setCards] = useState(form.monitors);
-
-	// Clears specific error from errors state
-	const clearError = (err) => {
-		setErrors((prev) => {
-			const updatedErrors = { ...prev };
-			if (updatedErrors[err]) delete updatedErrors[err];
-			return updatedErrors;
-		});
-	};
 
 	const moveCard = useCallback(
 		(dragIndex, hoverIndex) => {
