@@ -27,7 +27,6 @@ import UserSvg from "../../assets/icons/user.svg?react";
 import TeamSvg from "../../assets/icons/user-two.svg?react";
 import LogoutSvg from "../../assets/icons/logout.svg?react";
 import Support from "../../assets/icons/support.svg?react";
-import Dashboard from "../../assets/icons/dashboard.svg?react";
 import Account from "../../assets/icons/user-edit.svg?react";
 import Maintenance from "../../assets/icons/maintenance.svg?react";
 import Monitors from "../../assets/icons/monitors.svg?react";
@@ -179,13 +178,7 @@ function Sidebar() {
 					direction="row"
 					alignItems="center"
 					gap={theme.spacing(4)}
-					onClick={() =>
-						window.open(
-							"https://github.com/bluewave-labs/bluewave-uptime",
-							"_blank",
-							"noreferrer"
-						)
-					}
+					onClick={() => navigate("/")}
 					sx={{ cursor: "pointer" }}
 				>
 					<Stack

@@ -21,10 +21,12 @@ import Checkbox from "../../../Components/Inputs/Checkbox";
 import PieChart from "./Charts/PieChart";
 import useUtils from "../../Uptime/utils";
 import "./index.css";
+import { useIsAdmin } from "../../../Hooks/useIsAdmin";
 
-const PageSpeedDetails = ({ isAdmin }) => {
+const PageSpeedDetails = () => {
 	const theme = useTheme();
 	const navigate = useNavigate();
+	const isAdmin = useIsAdmin();
 	const { statusColor, pagespeedStatusMsg, determineState } = useUtils();
 	const [monitor, setMonitor] = useState({});
 	const [audits, setAudits] = useState({});
