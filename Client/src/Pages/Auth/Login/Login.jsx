@@ -11,8 +11,8 @@ import Background from "../../../assets/Images/background-grid.svg?react";
 import Logo from "../../../assets/icons/bwu-icon.svg?react";
 import { logger } from "../../../Utils/Logger";
 import "../index.css";
-import  EmailStep  from "./Components/EmailStep";
-import  PasswordStep  from "./Components/PasswordStep";
+import EmailStep from "./Components/EmailStep";
+import PasswordStep from "./Components/PasswordStep";
 
 const DEMO = import.meta.env.VITE_APP_DEMO;
 
@@ -42,7 +42,7 @@ const Login = () => {
 
 	useEffect(() => {
 		if (authToken) {
-			navigate("/monitors");
+			navigate("/uptime");
 			return;
 		}
 		networkService
@@ -108,7 +108,7 @@ const Login = () => {
 			} else {
 				const action = await dispatch(login(form));
 				if (action.payload.success) {
-					navigate("/monitors");
+					navigate("/uptime");
 					createToast({
 						body: "Welcome back! You're successfully logged in.",
 					});
