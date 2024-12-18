@@ -25,62 +25,71 @@ import "./index.css";
  */
 
 const Radio = (props) => {
-	const theme = useTheme();
+  const theme = useTheme();
+  const borderColor = theme.palette.mode === "dark"
+    ? theme.palette.grey[400]
+    : theme.palette.grey[500]; // Use a lighter shade for light mode
 
-	return (
-		<FormControlLabel
-			className="custom-radio-button"
-			checked={props.checked}
-			value={props.value}
-			control={
-				<MUIRadio
-					id={props.id}
-					size={props.size}
-					checkedIcon={<RadioChecked />}
-					sx={{
-						color: "transparent",
-						width: 16,
-						height: 16,
-						boxShadow: `inset 0 0 0 1px ${theme.palette.secondary.main}`,
-						mt: theme.spacing(0.5),
-					}}
-				/>
-			}
-			onChange={props.onChange}
-			label={
-				<>
-					<Typography component="p">{props.title}</Typography>
-					<Typography
-						component="h6"
-						mt={theme.spacing(1)}
-						color={theme.palette.text.secondary}
-					>
-						{props.desc}
-					</Typography>
-				</>
-			}
-			labelPlacement="end"
-			sx={{
-				alignItems: "flex-start",
-				p: theme.spacing(2.5),
-				m: theme.spacing(-2.5),
-				borderRadius: theme.shape.borderRadius,
-				"&:hover": {
-					backgroundColor: theme.palette.background.accent,
-				},
-				"& .MuiButtonBase-root": {
-					p: 0,
-					mr: theme.spacing(6),
-				},
-			}}
-		/>
-	);
+  return (
+    <FormControlLabel
+      className="custom-radio-button"
+      checked={props.checked}
+      value={props.value}
+      control={
+        <MUIRadio
+          id={props.id}
+          size={props.size}
+          checkedIcon={<RadioChecked />}
+          sx={{
+            color: "transparent",
+            width: 16,
+            height: 16,
+            borderColor: borderColor, // Dynamic border color
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderRadius: "50%", // Ensure circular shape
+            mt: theme.spacing(0.5),
+            "&.Mui-checked": {
+              borderColor: theme.palette.primary.main, // Highlight when checked
+            },
+          }}
+        />
+      }
+      onChange={props.onChange}
+      label={
+        <>
+          <Typography component="p">{props.title}</Typography>
+          <Typography
+            component="h6"
+            mt={theme.spacing(1)}
+            color={theme.palette.text.secondary}
+          >
+            {props.desc}
+          </Typography>
+        </>
+      }
+      labelPlacement="end"
+      sx={{
+        alignItems: "flex-start",
+        p: theme.spacing(2.5),
+        m: theme.spacing(-2.5),
+        borderRadius: theme.shape.borderRadius,
+        "&:hover": {
+          backgroundColor: theme.palette.background.accent,
+        },
+        "& .MuiButtonBase-root": {
+          p: 0,
+          mr: theme.spacing(6),
+        },
+      }}
+    />
+  );
 };
 
 Radio.propTypes = {
-	title: PropTypes.string.isRequired,
-	desc: PropTypes.string,
-	size: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  desc: PropTypes.string,
+  size: PropTypes.string,
 };
 
 export default Radio;
