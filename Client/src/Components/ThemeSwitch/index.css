@@ -6,20 +6,20 @@
 	stroke-width: 2px;
 }
 
-[data-theme="dark"] .sun-and-moon > .sun {
+.theme-dark .sun-and-moon > .sun {
 	transform: scale(1.75);
 }
 
-[data-theme="dark"] .sun-and-moon > .sun-beams {
+.theme-dark .sun-and-moon > .sun-beams {
 	opacity: 0;
 }
 
-[data-theme="dark"] .sun-and-moon > .moon > circle {
+.theme-dark .sun-and-moon > .moon > circle {
 	transform: translateX(-7px);
 }
 
 @supports (cx: 1) {
-	[data-theme="dark"] .sun-and-moon > .moon > circle {
+	.theme-dark .sun-and-moon > .moon > circle {
 		cx: 17;
 		transform: translateX(0);
 	}
@@ -46,18 +46,18 @@
 		}
 	}
 
-	[data-theme="dark"] .sun-and-moon > .sun {
+	.theme-dark .sun-and-moon > .sun {
 		transition-timing-function: var(--ease-3);
 		transition-duration: 0.25s;
 		transform: scale(1.75);
 	}
 
-	[data-theme="dark"] .sun-and-moon > .sun-beams {
+	.theme-dark .sun-and-moon > .sun-beams {
 		transition-duration: 0.15s;
 		transform: rotateZ(-25deg);
 	}
 
-	[data-theme="dark"] .sun-and-moon > .moon > circle {
+	.theme-dark .sun-and-moon > .moon > circle {
 		transition-duration: 0.5s;
 		transition-delay: 0.25s;
 	}

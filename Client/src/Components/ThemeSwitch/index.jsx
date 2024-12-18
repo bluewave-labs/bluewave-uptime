@@ -9,14 +9,13 @@
  * Apache License: https://www.apache.org/licenses/LICENSE-2.0
  */
 
-import React, { useEffect } from "react";
 import { IconButton } from "@mui/material";
 import SunAndMoonIcon from "./SunAndMoonIcon";
-import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode } from "../../Features/UI/uiSlice";
+import "./index.css";
 
-const ThemeSwitch = () => {
+const ThemeSwitch = ({ width = 48, height = 48 }) => {
 	const mode = useSelector((state) => state.ui.mode);
 	const dispatch = useDispatch();
 
@@ -24,20 +23,17 @@ const ThemeSwitch = () => {
 		dispatch(setMode(mode === "light" ? "dark" : "light"));
 	};
 
-	useEffect(() => {
-		document.body.setAttribute("data-theme", mode);
-	}, [mode]);
-
 	return (
 		<IconButton
 			id="theme-toggle"
 			title="Toggles light & dark"
+			className={`theme-${mode}`}
 			aria-label="auto"
 			aria-live="polite"
 			onClick={toggleTheme}
 			sx={{
-				width: 48,
-				height: 48,
+				width,
+				height,
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "center",
