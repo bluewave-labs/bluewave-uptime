@@ -1,7 +1,32 @@
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import PropTypes from "prop-types";
 
-const StatBox = ({ heading, stat, subHeading, sx }) => {
+/**
+ * StatBox Component
+ *
+ * A reusable component that displays a statistic with a heading and subheading
+ * in a styled box with a gradient background.
+ *
+ * @component
+ * @param {Object} props - The component props
+ * @param {string} props.heading - The primary heading/title of the statistic
+ * @param {string|React.ReactNode} props.subHeading - The value or description of the statistic
+ * @param {Object} [props.sx] - Additional custom styling to be applied to the box
+ *
+ * @example
+ * return (
+ *   <StatBox
+ *     heading="Total Users"
+ *     subHeading="1,234"
+ *     sx={{ width: 300 }}
+ *   />
+ * )
+ *
+ * @returns {React.ReactElement} A styled box containing the statistic
+ */
+
+const StatBox = ({ heading, subHeading, sx }) => {
 	const theme = useTheme();
 	console.log(sx);
 	return (
@@ -39,6 +64,12 @@ const StatBox = ({ heading, stat, subHeading, sx }) => {
 			<Typography>{subHeading}</Typography>
 		</Box>
 	);
+};
+
+StatBox.propTypes = {
+	heading: PropTypes.string.isRequired,
+	subHeading: PropTypes.node.isRequired,
+	sx: PropTypes.object,
 };
 
 export default StatBox;
