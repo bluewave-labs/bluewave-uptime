@@ -26,14 +26,14 @@ import HistoryIcon from "../../../assets/icons/history-icon.svg?react";
 import PaginationTable from "./PaginationTable";
 import Breadcrumbs from "../../../Components/Breadcrumbs";
 import PulseDot from "../../../Components/Animated/PulseDot";
-import { StatBox, ChartBox, IconBox } from "./styled";
+import { StatBox, ChartBox } from "./styled";
 import { DownBarChart, ResponseGaugeChart, UpBarChart } from "./Charts";
 import SkeletonLayout from "./skeleton";
 import "./index.css";
 import useUtils from "../utils";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
 import { useIsAdmin } from "../../../Hooks/useIsAdmin";
-
+import IconBox from "../../../Components/IconBox";
 /**
  * Details page component displaying monitor details and related information.
  * @component
