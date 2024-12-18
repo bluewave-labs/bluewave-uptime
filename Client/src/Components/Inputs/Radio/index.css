@@ -1,0 +1,24 @@
+/* Scoped styles for Radio buttons inside .custom-radio-button */
+
+/* Unchecked state: apply styles when MuiRadio-root does NOT have Mui-checked */
+.custom-radio-button .MuiRadio-root:not(.Mui-checked) {
+    color: #9e9e9e; /* Default grey color for unchecked state */
+    box-shadow: inset 0 0 0 1px #9e9e9e; /* Border for unchecked radio */
+}
+
+/* Checked state: applies when Mui-checked is present */
+.custom-radio-button .MuiRadio-root.Mui-checked {
+    color: #1a73e8; /* Blue color for checked state */
+    box-shadow: none; /* Remove border for checked */
+}
+
+/* Typography updates */
+.custom-radio-button:has(.MuiRadio-root:not(.Mui-checked)) h6.MuiTypography-root {
+    font-size: var(--env-var-font-size-small-plus);
+    color: #9e9e9e; /* Match unchecked Radio color */
+}
+
+.custom-radio-button:has(.MuiRadio-root.Mui-checked) h6.MuiTypography-root {
+    font-size: var(--env-var-font-size-medium);
+    color: #1a73e8; /* Match checked Radio color */
+}
