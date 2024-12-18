@@ -19,7 +19,6 @@ import SetNewPassword from "../Pages/Auth/SetNewPassword";
 import NewPasswordConfirmed from "../Pages/Auth/NewPasswordConfirmed";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import Details from "../Pages/Uptime/Details";
-import AdvancedSettings from "../Pages/AdvancedSettings";
 import Maintenance from "../Pages/Maintenance";
 import Configure from "../Pages/Uptime/Configure";
 import PageSpeed from "../Pages/PageSpeed";
@@ -113,10 +112,6 @@ const Routes = () => {
 				<Route
 					path="settings"
 					element={<Settings />}
-				/>
-				<Route
-					path="advanced-settings"
-					element={<AdvancedSettings />}
 				/>
 				<Route
 					path="account/profile"
