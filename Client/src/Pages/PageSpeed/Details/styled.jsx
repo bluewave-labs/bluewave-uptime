@@ -41,29 +41,6 @@ export const ChartBox = styled(Stack)(({ theme }) => ({
 	},
 }));
 
-export const IconBox = styled(Box)(({ theme }) => ({
-	height: 34,
-	minWidth: 34,
-	width: 34,
-	position: "relative",
-	border: 1,
-	borderStyle: "solid",
-	borderColor: theme.palette.border.dark,
-	borderRadius: 4,
-	backgroundColor: theme.palette.background.accent,
-	"& svg": {
-		position: "absolute",
-		top: "50%",
-		left: "50%",
-		transform: "translate(-50%, -50%)",
-		width: 20,
-		height: 20,
-		"& path": {
-			stroke: theme.palette.text.tertiary,
-		},
-	},
-}));
-
 export const StatBox = styled(Box)(({ theme }) => ({
 	padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
 	minWidth: 200,
