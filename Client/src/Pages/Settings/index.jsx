@@ -18,13 +18,12 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { setTimezone, setMode } from "../../Features/UI/uiSlice";
 import timezones from "../../Utils/timezones.json";
 import { useState, useEffect } from "react";
-import { ConfigBox } from "./styled";
 import { networkService } from "../../main";
 import { settingsValidation } from "../../Validation/validation";
 import { useNavigate } from "react-router";
 import Dialog from "../../Components/Dialog";
 import { useIsAdmin } from "../../Hooks/useIsAdmin";
-
+import ConfigBox from "../../Components/ConfigBox";
 const SECONDS_PER_DAY = 86400;
 
 const Settings = () => {

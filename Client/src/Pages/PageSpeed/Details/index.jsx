@@ -5,7 +5,7 @@ import { useTheme } from "@emotion/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDurationRounded, formatDurationSplit } from "../../../Utils/timeUtils";
-import { ChartBox, IconBox } from "./styled";
+import { ChartBox } from "./styled";
 import { logger } from "../../../Utils/Logger";
 import { networkService } from "../../../main";
 import SkeletonLayout from "./skeleton";
@@ -23,6 +23,7 @@ import useUtils from "../../Uptime/utils";
 import "./index.css";
 import { useIsAdmin } from "../../../Hooks/useIsAdmin";
 import StatBox from "../../../Components/StatBox";
+import IconBox from "../../../Components/IconBox";
 
 const PageSpeedDetails = () => {
 	const theme = useTheme();
