@@ -1,6 +1,6 @@
 import { Stack, styled } from "@mui/material";
 
-export const ConfigBox = styled(Stack)(({ theme }) => ({
+const ConfigBox = styled(Stack)(({ theme }) => ({
 	display: "flex",
 	flexDirection: "row",
 	justifyContent: "space-between",
@@ -34,3 +34,5 @@ export const ConfigBox = styled(Stack)(({ theme }) => ({
 		color: theme.palette.text.tertiary,
 	},
 }));
+
+export default ConfigBox;
