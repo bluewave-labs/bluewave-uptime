@@ -72,7 +72,7 @@ const UptimeMonitors = () => {
 				</Stack>
 				<Greeting type="uptime" />
 			</Box>
-			{noMonitors && <Fallback isAdmin={isAdmin} />}
+			{!loading && noMonitors && <Fallback isAdmin={isAdmin} />}
 			{loading ? (
 				<SkeletonLayout />
 			) : (
