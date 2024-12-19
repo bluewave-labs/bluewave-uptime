@@ -13,7 +13,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"axios": "^1.7.2",
-		"bcrypt": "^5.1.1",
+		"bcrypt": "5.1.1",
 		"bullmq": "5.34.3",
 		"cors": "^2.8.5",
 		"dockerode": "4.0.2",
