@@ -34,6 +34,7 @@ import useUtils from "../utils";
 import { formatDateWithTz } from "../../../Utils/timeUtils";
 import { useIsAdmin } from "../../../Hooks/useIsAdmin";
 import IconBox from "../../../Components/IconBox";
+import StatBox from "../../../Components/StatBox";
 /**
  * Details page component displaying monitor details and related information.
  * @component
