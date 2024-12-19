@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-@import "https://unpkg.com/open-props/easings.min.css";
 
 * {
 	box-sizing: border-box;
@@ -55,6 +54,12 @@ html {
 
 	--env-var-shadow-1: 0px 4px 24px -4px rgba(16, 24, 40, 0.08),
 		0px 3px 3px -3px rgba(16, 24, 40, 0.03);
+
+	/* ThemeSwitch Component Stylings */
+	--ease-elastic-3: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+	--ease-elastic-4: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+	--ease-3: cubic-bezier(0.25, 0.1, 0.25, 1);
+	--ease-out-5: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .MuiInputBase-root.Mui-disabled input {
