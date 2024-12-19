@@ -28,7 +28,6 @@ import PropTypes from "prop-types";
 
 const StatBox = ({ heading, subHeading, sx }) => {
 	const theme = useTheme();
-	console.log(sx);
 	return (
 		<Box
 			sx={{
