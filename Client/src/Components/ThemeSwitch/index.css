@@ -27,27 +27,27 @@
 
 @media (prefers-reduced-motion: no-preference) {
 	.sun-and-moon > .sun {
-		transition: transform 0.5s var(--ease-elastic-3);
+		transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 	}
 
 	.sun-and-moon > .sun-beams {
 		transition:
-			transform 0.5s var(--ease-elastic-4),
-			opacity 0.5s var(--ease-3);
+			transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+			opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
 	}
 
 	.sun-and-moon .moon > circle {
-		transition: transform 0.25s var(--ease-out-5);
+		transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	@supports (cx: 1) {
 		.sun-and-moon .moon > circle {
-			transition: cx 0.25s var(--ease-out-5);
+			transition: cx 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 		}
 	}
 
 	.theme-dark .sun-and-moon > .sun {
-		transition-timing-function: var(--ease-3);
+		transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
 		transition-duration: 0.25s;
 		transform: scale(1.75);
 	}
