@@ -12,12 +12,13 @@ import authRouter from "./routes/authRoute.js";
 import inviteRouter from "./routes/inviteRoute.js";
 import monitorRouter from "./routes/monitorRoute.js";
 import checkRouter from "./routes/checkRoute.js";
+import distributedUptimeRouter from "./routes/distributedUptimeRoute.js";
 import maintenanceWindowRouter from "./routes/maintenanceWindowRoute.js";
+import queueRouter from "./routes/queueRoute.js";
 import settingsRouter from "./routes/settingsRoute.js";
 import statusPageRouter from "./routes/statusPageRoute.js";
 import { fileURLToPath } from "url";
-
-import queueRouter from "./routes/queueRoute.js";
+import ngrok from "ngrok";
 
 //JobQueue service and dependencies
 import JobQueue from "./service/jobQueue.js";
@@ -56,6 +57,8 @@ const openApiSpec = JSON.parse(
 	fs.readFileSync(path.join(__dirname, "openapi.json"), "utf8")
 );
 
+let ngrokUrl = null;
+
 const PORT = 5000;
 
 // Need to wrap server setup in a function to handle async nature of JobQueue
@@ -91,7 +94,7 @@ const startApp = async () => {
 	app.use("/api/v1/maintenance-window", verifyJWT, maintenanceWindowRouter);
 	app.use("/api/v1/queue", verifyJWT, queueRouter);
 	app.use("/api/v1/status-page", statusPageRouter);
-
+	app.use("/api/v1/distributed-uptime", distributedUptimeRouter);
 	app.use("/api/v1/dummy-data", async (req, res) => {
 		try {
 			const response = await axios.get(
@@ -180,6 +183,13 @@ const startApp = async () => {
 			server.close();
 			await jobQueue.obliterate();
 			await db.disconnect();
+
+			if (ngrokUrl) {
+				await ngrok.disconnect(ngrokUrl);
+				await ngrok.kill();
+				ngrokUrl = null;
+			}
+
 			logger.info({ message: "Graceful shutdown complete" });
 			process.exit(0);
 		} catch (error) {
@@ -195,6 +205,22 @@ const startApp = async () => {
 	process.on("SIGUSR2", shutdown);
 	process.on("SIGINT", shutdown);
 	process.on("SIGTERM", shutdown);
+
+	// Ngrok
+	if (process.env.NODE_ENV === "development") {
+		try {
+			ngrokUrl = await ngrok.connect({
+				proto: "http",
+				addr: PORT,
+				authtoken: process.env.NGROK_AUTH_TOKEN,
+				api_addr: false,
+			});
+			process.env.NGROK_URL = ngrokUrl;
+			console.log(process.env.NGROK_URL);
+		} catch (error) {
+			console.log(error);
+		}
+	}
 };
 
 startApp().catch((error) => {
