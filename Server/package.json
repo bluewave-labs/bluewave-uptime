@@ -6,7 +6,11 @@
 	"type": "module",
 	"scripts": {
 		"test": "c8 mocha",
-		"dev": "nodemon index.js"
+		"dev": "nodemon index.js",
+		"lint": "eslint .",
+		"lint-fix": "eslint --fix .",
+		"format": "prettier --write .",
+		"format-check": "prettier --check ."
 	},
 	"keywords": [],
 	"author": "",
