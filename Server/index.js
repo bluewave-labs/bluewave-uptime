@@ -65,6 +65,26 @@ const PORT = 5000;
 const startApp = async () => {
 	const app = express();
 
+	// Ngrok
+	if (process.env.NODE_ENV === "development") {
+		try {
+			ngrokUrl = await ngrok.connect({
+				proto: "http",
+				addr: PORT,
+				authtoken: process.env.NGROK_AUTH_TOKEN,
+				api_addr: false,
+			});
+			process.env.NGROK_URL = ngrokUrl;
+		} catch (error) {
+			logger.error({
+				message: error.message,
+				service: SERVICE_NAME,
+				method: "startApp",
+				stack: error.stack,
+			});
+		}
+	}
+
 	// middlewares
 	app.use(
 		cors()
@@ -185,7 +205,6 @@ const startApp = async () => {
 			await db.disconnect();
 
 			if (ngrokUrl) {
-				await ngrok.disconnect(ngrokUrl);
 				await ngrok.kill();
 				ngrokUrl = null;
 			}
@@ -205,22 +224,6 @@ const startApp = async () => {
 	process.on("SIGUSR2", shutdown);
 	process.on("SIGINT", shutdown);
 	process.on("SIGTERM", shutdown);
-
-	// Ngrok
-	if (process.env.NODE_ENV === "development") {
-		try {
-			ngrokUrl = await ngrok.connect({
-				proto: "http",
-				addr: PORT,
-				authtoken: process.env.NGROK_AUTH_TOKEN,
-				api_addr: false,
-			});
-			process.env.NGROK_URL = ngrokUrl;
-			console.log(process.env.NGROK_URL);
-		} catch (error) {
-			console.log(error);
-		}
-	}
 };
 
 startApp().catch((error) => {
