@@ -215,7 +215,8 @@ const startApp = async () => {
 				authtoken: process.env.NGROK_AUTH_TOKEN,
 				api_addr: false,
 			});
-			console.log(ngrokUrl);
+			process.env.NGROK_URL = ngrokUrl;
+			console.log(process.env.NGROK_URL);
 		} catch (error) {
 			console.log(error);
 		}
