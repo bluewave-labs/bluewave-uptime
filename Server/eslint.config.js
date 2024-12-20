@@ -11,7 +11,13 @@ ESlint v9 configuration is different than v8.
 /** @type {import('eslint').Linter.Config[]} */
 export default [
 	{
-		languageOptions: { globals: globals.node }, // Add Node.js globals
+		languageOptions: {
+			globals: {
+				...globals.node, // Add Node.js globals
+			},
+			ecmaVersion: 2023,
+			sourceType: "module",
+		},
 	},
 	pluginJs.configs.recommended, // Core JS rules
 	mochaPlugin.configs.flat.recommended, // Mocha rules
