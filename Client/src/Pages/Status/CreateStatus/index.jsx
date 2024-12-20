@@ -4,50 +4,70 @@ import { Box, Tab, useTheme, Stack, Button } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import GeneralSettingsPanel from "../../../Components/TabPanels/Status/GeneralSettingsPanel";
-import { capitalizeFirstLetter } from "../../../Utils/stringUtils";
 import ContentPanel from "../../../Components/TabPanels/Status/ContentPanel";
 import { publicPageGeneralSettingsValidation } from "../../../Validation/validation";
 import { hasValidationErrors } from "../../../Validation/error";
 import { StatusFormProvider } from "../CreateStatusContext";
+import { formatBytes } from "../../../Utils/fileUtils";
+import { useSelector } from "react-redux";
+import { createToast } from "../../../Utils/toastUtils";
+import { networkService } from "../../../main";
+
 /**
  * CreateStatus page renders a page with tabs for general settings and contents.
- * @param {string} [props.open] - Specifies the initially open tab: 'general settings' or 'content'.
+ * @param {object} [props.initForm] - Specifies the initial form value if the status page exists
  * @returns {JSX.Element}
  */
 
-const CreateStatus = ({ open = "general-settings", initForm }) => {
-	const theme = useTheme();
-	let tabList = ["General Settings", "Contents"];
+	const CreateStatus = ({ initForm }) => {
+	const theme = useTheme();	
+	const {authToken} = useSelector((state) => state.auth);
+	const {apiBaseUrl} = useSelector((state) => state.settings);	
+	const [tabIdx, setTabIdx] = useState(0);
 	const [errors, setErrors] = useState({});
 	const error_tab_maping = [["companyName","url","timezone","color","publish","logo"],["monitors",
 	"showUptimePercentage", "showBarcode"]]
-	const [form, setForm] = useState({
-		companyName: "",
-		url: "",
-		timezone: "America/Toronto",
-		color: "#4169E1",
-		//which fields matching below?
-		publish: false,
-		logo: null,
-		monitors: [],
-		showUptimePercentage: false,
-		showBarcode: false,
-	});
-	const tab = open
-		.split("-")
-		.map((a) => capitalizeFirstLetter(a))
-		.join(" ");
+	const tabList = ["General Settings", "Contents"];
+	const hasInitForm = initForm && Object.keys(initForm).length > 0;
+	const [form, setForm] = useState(
+		hasInitForm
+			? initForm
+			: {
+					companyName: "",
+					url: "",
+					timezone: "America/Toronto",
+					color: "#4169E1",
+					//which fields matching below?
+					//publish: false,
+					logo: null,
+					monitors: [],
+					// showUptimePercentage: false,
+					// showBarcode: false,
+				}
+	);
 
-	const [tabIdx, setTabIdx] = useState(tabList.indexOf(tab));
+	// switch to the respective tab when there is error on it
+	useEffect(() => {		
+		let newIdx = -1;
+		Object.keys(errors).map(id=>{
+			error_tab_maping.map((val, idx)  => {
+				let anyMatch = val.some(vl=> vl==id )
+				if(anyMatch){
+					newIdx = idx;					
+				}
+			})
+		})
+		if (newIdx !== -1) setTabIdx(newIdx);		
+	}, [errors]);
 
-	const handleTabChange = (event, newTab) => {
-
+	const handleTabChange = (_, newTab) => {
 		setTabIdx(tabList.indexOf(newTab));
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		//validate rest of the form
 		delete form.logo;
+		
 		if (hasValidationErrors(form, publicPageGeneralSettingsValidation, setErrors)) {
 			return;
 		}
@@ -57,27 +77,21 @@ const CreateStatus = ({ open = "general-settings", initForm }) => {
 		// 	logoImageValidation
 		// );
 		//		if (error) return;
-		form.logo = { ...logo, size: formatBytes(logo?.size) };
-	};
 
-	useEffect(() => {		
-		let newIdx = -1;
-		Object.keys(errors).map(id=>{
-			console.log("errors id")
-			console.log(id)
-			error_tab_maping.map((val, idx)  => {
-				let anyMatch = val.some(vl=> vl==id )
-				if(anyMatch){
-					newIdx = idx;					
-				}
-			})
-		})
-		console.log("newIdx")
-		console.log(newIdx)
-		if(newIdx!==-1)
-			setTabIdx(newIdx)		
-		setTabIdx(tabList.indexOf(tab));
-	}, [tab,errors]);
+		//form.logo = { ...logo, size: formatBytes(logo?.size) };
+		let config = { authToken: authToken, url: apiBaseUrl, data: form };
+		try{
+			const res = await networkService.createStatusPage(config)
+			if (!res.status === 200) {
+				throw new Error("Failed to create status page");
+			}
+			createToast({ body: "Status page created successfully!" });
+		}
+		catch(e){
+			createToast({ body: e.message || "Error creating status page" });
+		}		
+
+	};
 
 	return (
 		<Box
@@ -125,7 +139,7 @@ const CreateStatus = ({ open = "general-settings", initForm }) => {
 					</TabList>
 				</Box>
 				<StatusFormProvider
-					form={initForm && Object.keys(initForm) > 0 ? initForm : form}
+					form={hasInitForm ? initForm : form}
 					setForm={setForm}
 					errors={errors}
 					setErrors={setErrors}
@@ -150,7 +164,7 @@ const CreateStatus = ({ open = "general-settings", initForm }) => {
 };
 
 CreateStatus.propTypes = {
-	open: PropTypes.oneOf(["general-settings", "contents"]),
+	initForm: PropTypes.object
 };
 
 export default CreateStatus;

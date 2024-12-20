@@ -3,7 +3,7 @@ import Fallback from "../../Components/Fallback";
 import { Box, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CreateStatus from "./CreateStatus";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { networkService } from "../../main";
 import { useSelector } from "react-redux";
 
@@ -12,12 +12,14 @@ const Status = () => {
 	const navigate = useNavigate();	
 	const {authToken} = useSelector((state) => state.auth);
 	const {apiBaseUrl} = useSelector((state) => state.settings);	
-	let initForm = {}
+	const [initForm, setInitForm] = useState({});
 
 	useEffect(() => {
 		const getStatusPage = async () => {
 			let config = { authToken: authToken, url: apiBaseUrl };
-			initForm = await networkService.getStatusPageByUrl(config);
+			let res = await networkService.getStatusPageByUrl(config);			
+			if(res && res.data)
+				setInitForm( res.data.data)
 		};
 		getStatusPage();
 	}, []);
