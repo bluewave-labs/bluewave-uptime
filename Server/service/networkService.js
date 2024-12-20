@@ -264,15 +264,18 @@ class NetworkService {
 	}
 
 	async requestDistributed(job) {
+		let callbackUrl;
+		if (process.env.NODE_ENV === "development") {
+			callbackUrl = `${process.env.NGROK_URL}/api/v1/distributed-uptime/results`;
+		} else {
+			callbackUrl = `${process.env.NGROK_URL}/api/v1/distributed-uptime/results`;
+		}
 		try {
-			await this.axios.post(
-				`${process.env.NGROK_URL}/api/v1/distributed-uptime/results`,
-				{
-					targetUrl: job.data.url,
-					id: job.data._id,
-					callback: `${process.env.NGROK_URL}/api/v1/distributed-uptime/results`,
-				}
-			);
+			await this.axios.post(callbackUrl, {
+				targetUrl: job.data.url,
+				id: job.data._id,
+				callback: `${process.env.NGROK_URL}/api/v1/distributed-uptime/results`,
+			});
 			return null;
 		} catch (error) {
 			console.log(error);
