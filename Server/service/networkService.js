@@ -14,6 +14,7 @@ class NetworkService {
 		this.TYPE_PAGESPEED = "pagespeed";
 		this.TYPE_HARDWARE = "hardware";
 		this.TYPE_DOCKER = "docker";
+		this.TYPE_DISTRIBUTED = "distributed";
 		this.SERVICE_NAME = "NetworkService";
 		this.NETWORK_ERROR = 5000;
 		this.PING_ERROR = 5001;
@@ -262,6 +263,25 @@ class NetworkService {
 		}
 	}
 
+	async requestDistributed(job) {
+		try {
+			await this.axios.post(
+				`${process.env.NGROK_URL}/api/v1/distributed-uptime/results`,
+				{
+					targetUrl: job.data.url,
+					id: job.data._id,
+					callback: `${process.env.NGROK_URL}/api/v1/distributed-uptime/results`,
+				}
+			);
+			return null;
+		} catch (error) {
+			console.log(error);
+			error.service = this.SERVICE_NAME;
+			error.method = "requestDistributed";
+			throw error;
+		}
+	}
+
 	/**
 	 * Handles unsupported job types by throwing an error with details.
 	 *
@@ -297,6 +317,8 @@ class NetworkService {
 				return await this.requestHardware(job);
 			case this.TYPE_DOCKER:
 				return await this.requestDocker(job);
+			case this.TYPE_DISTRIBUTED:
+				return await this.requestDistributed(job);
 			default:
 				return this.handleUnsupportedType(type);
 		}
