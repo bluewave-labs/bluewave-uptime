@@ -22,7 +22,6 @@ import PropTypes from "prop-types";
  */
 const PasswordStep = ({ form, errors, onSubmit, onChange, onBack }) => {
 	const theme = useTheme();
-	const navigate = useNavigate();
 	const inputRef = useRef(null);
 	const authState = useSelector((state) => state.auth);
 
@@ -31,13 +30,6 @@ const PasswordStep = ({ form, errors, onSubmit, onChange, onBack }) => {
 			inputRef.current.focus();
 		}
 	}, []);
-
-	const handleNavigate = () => {
-		if (form.email !== "" && !errors.email) {
-			sessionStorage.setItem("email", form.email);
-		}
-		navigate("/forgot-password");
-	};
 
 	return (
 		<>
@@ -117,32 +109,6 @@ const PasswordStep = ({ form, errors, onSubmit, onChange, onBack }) => {
 						</LoadingButton>
 					</Stack>
 				</Box>
-				<Box
-					textAlign="center"
-					sx={{
-						position: "absolute",
-						bottom: 0,
-						left: "50%",
-						transform: `translate(-50%, 150%)`,
-					}}
-				>
-					<Typography
-						className="forgot-p"
-						display="inline-block"
-						color={theme.palette.primary.main}
-					>
-						Forgot password?
-					</Typography>
-					<Typography
-						component="span"
-						color={theme.palette.primary.main}
-						ml={theme.spacing(2)}
-						sx={{ userSelect: "none" }}
-						onClick={handleNavigate}
-					>
-						Reset password
-					</Typography>
-				</Box>
 			</Stack>
 		</>
 	);
@@ -156,4 +122,4 @@ PasswordStep.propTypes = {
 	onBack: PropTypes.func.isRequired,
 };
 
-export default PasswordStep
+export default PasswordStep;
