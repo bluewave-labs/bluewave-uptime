@@ -3,7 +3,6 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import TextInput from "../../../../Components/Inputs/TextInput";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router";
 
 /**
  * Renders the email step of the login process which includes an email field.
