@@ -2,15 +2,17 @@
 
 **Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13th & 15th**
 
-<img width="1259" alt="Frame 34" src="https://github.com/user-attachments/assets/b9339bd3-8f80-4919-8255-88db8d841a3d" />
+<img width="1259" alt="Frame 34" src="https://github.com/user-attachments/assets/60f3951a-253c-45aa-991f-c763945ff6df" />
 
-![](https://img.shields.io/github/license/bluewave-labs/bluewave-uptime)
-![](https://img.shields.io/github/repo-size/bluewave-labs/bluewave-uptime)
-![](https://img.shields.io/github/commit-activity/w/bluewave-labs/bluewave-uptime)
-![](https://img.shields.io/github/last-commit/bluewave-labs/bluewave-uptime)
-![](https://img.shields.io/github/languages/top/bluewave-labs/bluewave-uptime)
-![](https://img.shields.io/github/issues-pr/bluewave-labs/bluewave-uptime)
-![](https://img.shields.io/github/issues/bluewave-labs/bluewave-uptime)
+
+![](https://img.shields.io/github/license/bluewave-labs/checkmate)
+![](https://img.shields.io/github/repo-size/bluewave-labs/checkmate)
+![](https://img.shields.io/github/commit-activity/m/bluewave-labs/checkmate)
+![](https://img.shields.io/github/last-commit/bluewave-labs/checkmate)
+![](https://img.shields.io/github/languages/top/bluewave-labs/checkmate)
+![](https://img.shields.io/github/issues/bluewave-labs/checkmate)
+![](https://img.shields.io/github/issues-pr/bluewave-labs/checkmate)
+
 
 <h1 align="center"><a href="https://bluewavelabs.ca" target="_blank">Checkmate</a></h1>
 
@@ -49,7 +51,6 @@ If you have any questions, suggestions or comments, please use our [Discord chan
 - Page speed monitoring
 - Infrastructure monitoring (memory, disk usage, CPU performance etc) - requires [Capture](https://github.com/bluewave-labs/capture)
 - Docker monitoring
-- Port monitoring
 - Ping monitoring
 - Incidents at a glance
 - E-mail notifications
@@ -58,11 +59,13 @@ If you have any questions, suggestions or comments, please use our [Discord chan
 
 **Short term roadmap:**
 
+- Global (distributed) uptime checking on Solana network
 - Status pages
 - Better notification options
 - More configuration options
 - DNS monitoring
 - SSL monitoring
+- Port monitoring
 
 ## 🏗️ Screenshots
 
