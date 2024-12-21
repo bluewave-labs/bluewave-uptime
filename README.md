@@ -2,7 +2,7 @@
 
 **Checkmate is on [GitHub trending](https://github.com/trending) and #1 trending for JavaScript apps on Fri Dec 13th & 15th**
 
-**If you would like to support us, please consider giving it a ⭐, think about contributing or providing feedback.**
+**If you would like to support us, please consider giving it a ⭐, and think about contributing or providing feedback.**
 
 ![Frame 34](https://github.com/user-attachments/assets/4bf57845-3f47-4759-835b-285a5486191d)
 
